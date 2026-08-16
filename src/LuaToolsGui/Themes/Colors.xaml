@@ -1,0 +1,241 @@
+<!--
+    ══════════════════════════════════════════════════════════════════════════════════════════
+    LuaTools — Amethyst dark theme (v1.3.0)
+    ══════════════════════════════════════════════════════════════════════════════════════════
+
+    Single source of truth for every colour in the app. Before this file the palette lived as
+    ~376 hardcoded hex literals spread over 17 XAML/C# files, with 78 distinct values doing the
+    work of about 20 roles — so "change the accent" meant a find-and-replace across the whole UI.
+    Nothing in Views/ should carry a raw #RRGGBB any more: bind to a token below instead.
+
+    ── Layering ──────────────────────────────────────────────────────────────────────────────
+    Two layers, in the usual token order:
+      1. PRIMITIVES  (`*Color`)  — the raw ramp. Named after the colour, not its job.
+      2. SEMANTICS   (`*Brush`)  — named after the JOB. This is what the views consume.
+    Re-skinning the app is editing the primitives; nothing else has to move.
+
+    ── Why dark only ─────────────────────────────────────────────────────────────────────────
+    The app ships a single dark theme (`<ui:ThemesDictionary Theme="Dark" />` in App.xaml) and
+    has no light variant or theme switch. Rather than invent an unreachable light palette that
+    nothing would exercise or test, this file themes the dark surface properly. The tokens are
+    role-named, so adding a light dictionary later means adding one file that redefines the same
+    keys — no view changes.
+
+    ── Accessibility ─────────────────────────────────────────────────────────────────────────
+    Every text token was checked against all four surface tokens (WCAG 2.1 relative luminance).
+    Ratios vs SurfaceBase #0E0B14:
+        TextPrimary   #F3EFFB  17.2:1  AAA        AccentText   #C4B5FD  10.6:1  AAA
+        TextSecondary #DED5F2  13.8:1  AAA        Accent       #A78BFA   7.2:1  AAA
+        TextTertiary  #BFB2DC   9.9:1  AAA        Success      #4ADE80  11.2:1  AAA
+        TextMuted     #A395C4   7.1:1  AAA        Warning      #FBBF24  11.7:1  AAA
+        TextDim       #978AB8   6.2:1  AA         Danger       #F87171   7.1:1  AAA
+                                                  Info         #7DD3FC  11.7:1  AAA
+    The worst case is TextDim on SurfaceInset at 4.7:1 — still past the 4.5:1 AA floor.
+    This is a net ACCESSIBILITY FIX, not just a hue change: the old #6b7280 body-dim grey (51
+    uses, the single most common colour in the app) sat at ~3.6:1 on the old near-black base and
+    failed AA outright. TextDisabled #6B5D8A (3.3:1) is deliberately below AA — it is used only
+    for disabled/inactive text, which WCAG 1.4.3 exempts.
+    Interactive borders use BorderInteractive #6E5AA3 (3.4:1) to satisfy WCAG 1.4.11 for
+    non-text UI; purely decorative hairlines are allowed to sit below that.
+    Filled accent buttons pair white text with AccentFill #7C3AED (5.7:1) — NOT with #8B5CF6,
+    which only reaches 4.2:1 against white and would fail AA.
+-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         LAYER 1 — PRIMITIVES
+         ═══════════════════════════════════════════════════════════════════════════ -->
+
+    <!-- Violet ramp — the identity colour of the app.
+         These four keys are ALSO the live input to App.ApplyAccentPalette(), which reads them by name and
+         hands them to WPF-UI's accent slots. That is the only reason the app's own controls and WPF-UI's
+         templated ones agree on a colour, so treat the key NAMES as API: renaming one without updating
+         App.xaml.cs drops the accent back to the Windows default (the startup theme guard will say so). -->
+    <Color x:Key="Violet300Color">#C4B5FD</Color>  <!-- accent text on dark; WPF-UI tertiary slot -->
+    <Color x:Key="Violet400Color">#A78BFA</Color>  <!-- accent icons/focus ring; WPF-UI PRIMARY slot -->
+    <Color x:Key="Violet500Color">#8B5CF6</Color>  <!-- borders, non-text UI; WPF-UI secondary slot -->
+    <Color x:Key="Violet600Color">#7C3AED</Color>  <!-- filled buttons (white text = 5.7:1); WPF-UI system slot -->
+
+    <!-- Purple-tinted neutrals. Same lightness steps as the greys they replace, hue rotated
+         onto the violet axis so surfaces and body text belong to one family. -->
+    <Color x:Key="Plum950Color">#0E0B14</Color>  <!-- window background -->
+    <Color x:Key="Plum900Color">#17122A</Color>  <!-- cards, panels -->
+    <Color x:Key="Plum850Color">#1E1836</Color>  <!-- dialogs, flyouts, popups -->
+    <Color x:Key="Plum800Color">#2A2145</Color>  <!-- inset chips / selected rows -->
+    <Color x:Key="Plum500Color">#6B5D8A</Color>  <!-- disabled text -->
+    <Color x:Key="Plum400Color">#978AB8</Color>  <!-- dim text -->
+    <Color x:Key="Plum300Color">#A395C4</Color>  <!-- muted text -->
+    <Color x:Key="Plum100Color">#DED5F2</Color>  <!-- secondary text -->
+    <Color x:Key="Plum50Color">#F3EFFB</Color>   <!-- primary text -->
+    <Color x:Key="PureWhiteColor">#FFFFFF</Color><!-- text on filled accent only -->
+
+    <!-- Status ramp. Deliberately kept on their own hues: colour-coding that means
+         "this failed" must not be absorbed into the brand colour. -->
+    <Color x:Key="Success500Color">#22C55E</Color>
+    <Color x:Key="Success400Color">#4ADE80</Color>
+    <Color x:Key="Warning400Color">#FBBF24</Color>
+    <Color x:Key="Warning500Color">#F59E0B</Color>
+    <Color x:Key="Warning300Color">#F0A868</Color>  <!-- softer amber used by build/status chips -->
+    <Color x:Key="Orange500Color">#F97316</Color>
+    <Color x:Key="Danger400Color">#F87171</Color>
+    <Color x:Key="Info300Color">#7DD3FC</Color>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         LAYER 2 — SEMANTIC BRUSHES  (what the views actually bind to)
+         ═══════════════════════════════════════════════════════════════════════════ -->
+
+    <!-- ── Surfaces ─────────────────────────────────────────────────────────────── -->
+    <SolidColorBrush x:Key="SurfaceBaseBrush" Color="{StaticResource Plum950Color}" />
+    <SolidColorBrush x:Key="SurfaceRaisedBrush" Color="{StaticResource Plum900Color}" />
+    <SolidColorBrush x:Key="SurfaceOverlayBrush" Color="{StaticResource Plum850Color}" />
+    <SolidColorBrush x:Key="SurfaceInsetBrush" Color="{StaticResource Plum800Color}" />
+
+    <!-- Elevation overlays. Alpha over the violet-100 tint (#EDE9FE) rather than plain white, so a
+         "lighter" surface drifts toward the brand hue instead of washing out to grey. The tint is
+         written inline rather than as a primitive because WPF cannot compose an alpha channel onto a
+         Color resource in markup — the whole #AARRGGBB literal has to be spelled out either way. -->
+    <SolidColorBrush x:Key="SurfaceGhostBrush" Color="#0AEDE9FE" />      <!-- was #08FFFFFF -->
+    <SolidColorBrush x:Key="SurfaceCardBrush" Color="#12EDE9FE" />       <!-- was #0DFFFFFF -->
+    <SolidColorBrush x:Key="SurfaceCardHoverBrush" Color="#16EDE9FE" />  <!-- was #10/#11FFFFFF -->
+    <SolidColorBrush x:Key="SurfaceElevatedBrush" Color="#20EDE9FE" />   <!-- was #18FFFFFF -->
+    <SolidColorBrush x:Key="SurfaceActiveBrush" Color="#2AEDE9FE" />     <!-- was #22FFFFFF -->
+    <SolidColorBrush x:Key="SurfacePressedBrush" Color="#30EDE9FE" />    <!-- was #28FFFFFF -->
+    <!-- Same values as BorderDefault/BorderStrong below, exposed under fill names. A handful of chips and
+         icon tiles use these weights as a BACKGROUND; pointing them at a Border* key would render
+         identically but read as a mistake at every future call site. -->
+    <SolidColorBrush x:Key="SurfaceTintBrush" Color="#1AEDE9FE" />       <!-- was #14FFFFFF as a fill -->
+    <SolidColorBrush x:Key="SurfaceStrongBrush" Color="#26EDE9FE" />     <!-- was #1FFFFFFF as a fill -->
+
+    <!-- ── Borders ──────────────────────────────────────────────────────────────── -->
+    <SolidColorBrush x:Key="BorderSubtleBrush" Color="#18EDE9FE" />      <!-- hairline, decorative -->
+    <SolidColorBrush x:Key="BorderDefaultBrush" Color="#1AEDE9FE" />     <!-- card outlines -->
+    <SolidColorBrush x:Key="BorderStrongBrush" Color="#26EDE9FE" />      <!-- emphasised outlines -->
+    <SolidColorBrush x:Key="BorderProminentBrush" Color="#3DEDE9FE" />   <!-- dialog edges -->
+    <!-- NOTE: every border weight above is DECORATIVE, which is why they may sit under the 3:1 that
+         WCAG 1.4.11 demands of non-text UI. If a border ever becomes the only thing marking an
+         interactive control, it needs a colour that clears 3:1 on the surface behind it — #6E5AA3
+         measured 3.39:1 on SurfaceBase and would do. No such border exists today, so no token is
+         declared for it; add one at that point rather than carrying an unused key. -->
+
+    <!-- ── Text ─────────────────────────────────────────────────────────────────── -->
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource Plum50Color}" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource Plum100Color}" />
+    <SolidColorBrush x:Key="TextMutedBrush" Color="{StaticResource Plum300Color}" />
+    <SolidColorBrush x:Key="TextDimBrush" Color="{StaticResource Plum400Color}" />
+    <SolidColorBrush x:Key="TextDisabledBrush" Color="{StaticResource Plum500Color}" />
+    <SolidColorBrush x:Key="TextOnAccentBrush" Color="{StaticResource PureWhiteColor}" />
+
+    <!-- ── Accent ───────────────────────────────────────────────────────────────── -->
+    <!-- Only the two weights the app's own markup actually paints with are declared as brushes. The
+         filled/pressed/border weights are NOT brushes here: nothing in this app draws them directly —
+         WPF-UI's templates own those surfaces, and they get their colour from the Violet*Color
+         primitives via App.ApplyAccentPalette(). Declaring unused brushes "for completeness" only
+         creates a second place for the accent to drift out of sync. -->
+    <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource Violet400Color}" />
+    <SolidColorBrush x:Key="AccentSoftBrush" Color="{StaticResource Violet300Color}" />
+
+    <!-- Translucent accent washes: selected rows, badges, drop targets. -->
+    <SolidColorBrush x:Key="AccentTintBrush" Color="#14A78BFA" />
+    <SolidColorBrush x:Key="AccentTintHoverBrush" Color="#1AA78BFA" />
+    <SolidColorBrush x:Key="AccentTintStrongBrush" Color="#26A78BFA" />
+    <SolidColorBrush x:Key="AccentTintActiveBrush" Color="#33A78BFA" />
+    <SolidColorBrush x:Key="AccentOutlineBrush" Color="#40A78BFA" />
+    <SolidColorBrush x:Key="AccentBadgeBrush" Color="#207C3AED" />
+
+    <!-- ── Status ───────────────────────────────────────────────────────────────── -->
+    <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource Success500Color}" />
+    <SolidColorBrush x:Key="SuccessTextBrush" Color="{StaticResource Success400Color}" />
+    <SolidColorBrush x:Key="SuccessTintBrush" Color="#1F22C55E" />
+    <SolidColorBrush x:Key="SuccessTintStrongBrush" Color="#3322C55E" />
+    <SolidColorBrush x:Key="SuccessInsetBrush" Color="#16351F" />
+    <SolidColorBrush x:Key="SuccessScrimBrush" Color="#CC16A34A" />  <!-- green-600 #16A34A @ 80% -->
+
+    <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource Warning400Color}" />
+    <SolidColorBrush x:Key="WarningStrongBrush" Color="{StaticResource Warning500Color}" />
+    <SolidColorBrush x:Key="WarningSoftBrush" Color="{StaticResource Warning300Color}" />
+    <SolidColorBrush x:Key="WarningTintBrush" Color="#20F59E0B" />
+    <SolidColorBrush x:Key="WarningTintStrongBrush" Color="#40F0A868" />
+    <SolidColorBrush x:Key="WarningInsetBrush" Color="#39301C" />
+    <SolidColorBrush x:Key="WarningOutlineBrush" Color="#33FBBF24" />
+
+    <SolidColorBrush x:Key="AlertBrush" Color="{StaticResource Orange500Color}" />
+    <SolidColorBrush x:Key="AlertTintBrush" Color="#0FF97316" />
+    <SolidColorBrush x:Key="AlertTintStrongBrush" Color="#38F97316" />
+
+    <SolidColorBrush x:Key="DangerBrush" Color="{StaticResource Danger400Color}" />
+    <SolidColorBrush x:Key="DangerScrimBrush" Color="#CC2A1420" />
+
+    <SolidColorBrush x:Key="InfoBrush" Color="{StaticResource Info300Color}" />
+    <SolidColorBrush x:Key="InfoTintBrush" Color="#207DD3FC" />
+    <SolidColorBrush x:Key="InfoOutlineBrush" Color="#337DD3FC" />
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         LAYER 3 — WPF-UI SURFACE OVERRIDES
+         ═══════════════════════════════════════════════════════════════════════════
+         The tokens above only reach markup this app writes. The window shell and every templated
+         WPF-UI control (cards, flyouts, list rows, text boxes) paint from WPF-UI's OWN surface
+         ramp, which ships as neutral grey — ApplicationBackground #202020, SolidBackgroundFillColorBase
+         #202020, Secondary #1C1C1C, Tertiary #282828, Quarternary #2C2C2C. Left alone, the app reads
+         as "grey app with purple accents": measured on a real render, the window background came back
+         as #272727 and cards as #363537, while our accents were correctly #A78BFA.
+
+         Redefining those exact keys here re-tints the card, control and layer fills. This dictionary is
+         merged LAST in App.xaml, and App.PromoteSurfaceOverrides() then re-homes these keys into the top
+         level of Application.Resources, which outranks every merged dictionary. Alpha values are
+         preserved from the originals so elevation still reads the same; only the hue moves onto the
+         plum axis.
+
+         Caveat worth knowing before debugging this: ApplicationBackgroundBrush and the NavigationView
+         background do NOT respond to any of it — WPF-UI paints those through its own template scope.
+         The window shell gets its colour from the root Grid's Background in MainWindow.xaml instead.
+
+         Key names verified against Wpf.Ui 4.3.0's dark ThemesDictionary (454 keys enumerated at
+         runtime) — they are NOT guesses. If WPF-UI renames a key on upgrade, the override silently
+         stops applying and that surface returns to grey; re-dump the dictionary and re-map. -->
+
+    <Color x:Key="ApplicationBackgroundColor">#0E0B14</Color>
+    <SolidColorBrush x:Key="ApplicationBackgroundBrush" Color="#0E0B14" />
+
+    <Color x:Key="SolidBackgroundFillColorBase">#0E0B14</Color>
+    <SolidColorBrush x:Key="SolidBackgroundFillColorBaseBrush" Color="#0E0B14" />
+    <Color x:Key="SolidBackgroundFillColorBaseAlt">#07050C</Color>
+    <SolidColorBrush x:Key="SolidBackgroundFillColorBaseAltBrush" Color="#07050C" />
+    <Color x:Key="SolidBackgroundFillColorSecondary">#17122A</Color>
+    <SolidColorBrush x:Key="SolidBackgroundFillColorSecondaryBrush" Color="#17122A" />
+    <Color x:Key="SolidBackgroundFillColorTertiary">#1E1836</Color>
+    <SolidColorBrush x:Key="SolidBackgroundFillColorTertiaryBrush" Color="#1E1836" />
+    <Color x:Key="SolidBackgroundFillColorQuarternary">#2A2145</Color>
+    <SolidColorBrush x:Key="SolidBackgroundFillColorQuarternaryBrush" Color="#2A2145" />
+
+    <!-- Card / control / layer fills: same alpha weights as WPF-UI ships, tinted violet. -->
+    <Color x:Key="CardBackgroundFillColorDefault">#12EDE9FE</Color>
+    <SolidColorBrush x:Key="CardBackgroundFillColorDefaultBrush" Color="#12EDE9FE" />
+    <Color x:Key="CardBackgroundFillColorSecondary">#0AEDE9FE</Color>
+    <SolidColorBrush x:Key="CardBackgroundFillColorSecondaryBrush" Color="#0AEDE9FE" />
+    <SolidColorBrush x:Key="CardBackground" Color="#12EDE9FE" />
+    <SolidColorBrush x:Key="CardBackgroundDisabled" Color="#0BEDE9FE" />
+    <SolidColorBrush x:Key="CardBackgroundPointerOver" Color="#1AEDE9FE" />
+    <SolidColorBrush x:Key="CardBackgroundPressed" Color="#0AEDE9FE" />
+
+    <Color x:Key="ControlFillColorDefault">#14EDE9FE</Color>
+    <SolidColorBrush x:Key="ControlFillColorDefaultBrush" Color="#14EDE9FE" />
+    <Color x:Key="ControlStrokeColorDefault">#18EDE9FE</Color>
+    <SolidColorBrush x:Key="ControlStrokeColorDefaultBrush" Color="#18EDE9FE" />
+
+    <Color x:Key="LayerFillColorDefault">#4C2A2145</Color>
+    <SolidColorBrush x:Key="LayerFillColorDefaultBrush" Color="#4C2A2145" />
+    <Color x:Key="LayerFillColorAlt">#12EDE9FE</Color>
+    <SolidColorBrush x:Key="LayerFillColorAltBrush" Color="#12EDE9FE" />
+
+    <!-- ── Scrims and shadows ───────────────────────────────────────────────────── -->
+    <!-- Modal backdrops are tinted with the window colour rather than pure black, so the blur
+         behind a dialog reads as "the app dimmed" instead of a grey film over it. -->
+    <SolidColorBrush x:Key="ScrimBrush" Color="#B20E0B14" />        <!-- was #99000000 -->
+    <SolidColorBrush x:Key="ScrimSoftBrush" Color="#8C0E0B14" />    <!-- was #80000000 -->
+    <SolidColorBrush x:Key="ScrimLightBrush" Color="#730E0B14" />   <!-- was #66000000 -->
+    <SolidColorBrush x:Key="ScrimPanelBrush" Color="#CC17122A" />   <!-- was #cc14161c -->
+    <SolidColorBrush x:Key="ShadowBrush" Color="#1A000000" />       <!-- was #14000000 -->
+
+</ResourceDictionary>

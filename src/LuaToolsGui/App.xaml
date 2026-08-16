@@ -1,0 +1,31 @@
+<Application
+    x:Class="LuaToolsGui.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:local="clr-namespace:LuaToolsGui"
+    ShutdownMode="OnExplicitShutdown">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:ThemesDictionary Theme="Dark" />
+                <ui:ControlsDictionary />
+                <!-- App palette. Merged LAST so its tokens win over anything WPF-UI defines under the
+                     same key. The matching accent for WPF-UI's OWN templated controls is pushed in from
+                     App.ApplyAccentPalette() at startup, because those read WPF-UI's accent resources
+                     rather than these. See Themes/Colors.xaml for the palette and its contrast table. -->
+                <ResourceDictionary Source="pack://application:,,,/Themes/Colors.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <local:InverseBoolToVisibilityConverter x:Key="InverseBoolToVis" />
+            <local:NullToCollapsedConverter x:Key="NullToCollapsed" />
+            <local:StatusToBrushConverter x:Key="StatusToBrush" />
+            <local:ResourceKeyToBrushConverter x:Key="ResourceKeyToBrush" />
+            <local:ImagePathToSourceConverter x:Key="ImagePathToSource" />
+            <local:EqualityMultiConverter x:Key="EqualityMulti" />
+            <local:MinHeightToVisibilityConverter x:Key="MinHeightToVis" />
+            <local:FilterOptionDisplayConverter x:Key="FilterOptionDisplay" />
+            <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

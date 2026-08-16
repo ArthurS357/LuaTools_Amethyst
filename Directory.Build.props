@@ -1,0 +1,20 @@
+<Project>
+
+  <!-- Solution-wide build rigor.
+
+       TreatWarningsAsErrors is on: the solution already built with zero compiler warnings, so this costs
+       nothing today and stops the next nullability/correctness warning from being introduced unnoticed.
+
+       AnalysisLevel is deliberately NOT raised past the SDK default yet. Turning on
+       `latest-recommended` surfaces ~250 pre-existing violations in this codebase (CA1863 CompositeFormat,
+       CA1051 public instance fields, CA1848 LoggerMessage delegates, CA1305 culture-sensitive formatting,
+       CA1031 broad catch). Those are worth fixing, but as a staged cleanup with a baseline — flipping them
+       all to errors in one step would block every unrelated change until the backlog is cleared.
+
+       To pick that up: raise AnalysisLevel here, run `dotnet build`, and work through one rule family at a
+       time (start with CA1031 — it overlaps the broad `catch` blocks noted in the security audit). -->
+  <PropertyGroup>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+</Project>

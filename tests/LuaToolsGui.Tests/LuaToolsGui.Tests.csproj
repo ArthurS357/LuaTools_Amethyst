@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Must match the app's TFM (net8.0-windows) to reference the WPF WinExe assembly. The tests
+       themselves only touch System.Globalization logic (Program.MatchOsLanguage), no WPF. -->
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+
+    <!-- Let the test host run on a newer major runtime when the exact 8.0.x one isn't installed. The
+         default rollForward (Minor) refuses to start on a machine that only has 9.x/10.x, which blocks the
+         suite on any dev box without the .NET 8 runtime specifically. This affects ONLY how these tests are
+         executed; the shipped app still targets net8.0-windows with default roll-forward, and in CI (where
+         setup-dotnet installs 8.0.x) this is a no-op. -->
+    <RollForward>LatestMajor</RollForward>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AwesomeAssertions" Version="9.5.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\LuaToolsGui\LuaToolsGui.csproj" />
+  </ItemGroup>
+
+</Project>

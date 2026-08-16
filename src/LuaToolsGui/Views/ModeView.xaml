@@ -1,0 +1,318 @@
+<UserControl
+    x:Class="LuaToolsGui.Views.ModeView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:res="clr-namespace:LuaToolsGui.Resources"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:vm="clr-namespace:LuaToolsGui.ViewModels"
+    d:DataContext="{d:DesignInstance Type=vm:ModeViewModel}"
+    TextElement.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    mc:Ignorable="d">
+
+    <Grid x:Name="Root">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <!-- Fixed bottom dock (separator + CloudRedirect add-on + progress) -->
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+            <StackPanel MaxWidth="760" Margin="8,16,16,8">
+
+                <!-- Header -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock
+                            FontSize="22"
+                            FontWeight="Bold"
+                            Text="{x:Static res:Strings.Mode_Title}" />
+                        <TextBlock
+                            Margin="0,2,0,0"
+                            FontSize="13"
+                            Foreground="{StaticResource TextMutedBrush}"
+                            Text="{x:Static res:Strings.Mode_Subtitle}" />
+                    </StackPanel>
+                    <ui:Button
+                        Grid.Column="1"
+                        VerticalAlignment="Top"
+                        Command="{Binding CheckForUpdatesCommand}"
+                        Content="{x:Static res:Strings.Mode_CheckForUpdates}"
+                        Icon="{ui:SymbolIcon ArrowSync24}"
+                        IsEnabled="{Binding NotBusy}" />
+                </Grid>
+
+                <!-- Mode cards -->
+                <ItemsControl Margin="0,18,0,0" ItemsSource="{Binding Cards}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                Margin="0,0,0,12"
+                                Padding="18"
+                                Background="{StaticResource SurfaceCardBrush}"
+                                BorderBrush="{StaticResource BorderStrongBrush}"
+                                BorderThickness="1"
+                                CornerRadius="10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <ui:SymbolIcon
+                                                VerticalAlignment="Center"
+                                                Foreground="{StaticResource AccentBrush}"
+                                                Symbol="Wrench24" />
+                                            <TextBlock
+                                                Margin="10,0,0,0"
+                                                VerticalAlignment="Center"
+                                                FontSize="15"
+                                                FontWeight="SemiBold"
+                                                Text="{Binding Title}" />
+                                            <!-- Recommended: green badge to steer users to the best option. -->
+                                            <Border
+                                                Margin="10,0,0,0"
+                                                Padding="7,2"
+                                                VerticalAlignment="Center"
+                                                Background="{StaticResource SuccessTintBrush}"
+                                                CornerRadius="4"
+                                                Visibility="{Binding IsRecommended, Converter={StaticResource BoolToVis}}">
+                                                <TextBlock
+                                                    FontSize="10.5"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="{StaticResource SuccessTextBrush}"
+                                                    Text="{x:Static res:Strings.Mode_Recommended}" />
+                                            </Border>
+                                            <!-- Nightly: amber "Experimental" badge. -->
+                                            <Border
+                                                Margin="10,0,0,0"
+                                                Padding="7,2"
+                                                VerticalAlignment="Center"
+                                                Background="{StaticResource WarningTintBrush}"
+                                                CornerRadius="4"
+                                                Visibility="{Binding IsExperimental, Converter={StaticResource BoolToVis}}">
+                                                <TextBlock
+                                                    FontSize="10.5"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="{StaticResource WarningBrush}"
+                                                    Text="{x:Static res:Strings.Mode_Experimental}" />
+                                            </Border>
+                                            <!-- Nightly: blue "CloudRedirect Support" badge. -->
+                                            <Border
+                                                Margin="6,0,0,0"
+                                                Padding="7,2"
+                                                VerticalAlignment="Center"
+                                                Background="{StaticResource InfoTintBrush}"
+                                                CornerRadius="4"
+                                                Visibility="{Binding SupportsCloudRedirect, Converter={StaticResource BoolToVis}}">
+                                                <TextBlock
+                                                    FontSize="10.5"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="{StaticResource InfoBrush}"
+                                                    Text="{x:Static res:Strings.Mode_CloudRedirectSupport}" />
+                                            </Border>
+                                            <Border
+                                                Margin="6,0,0,0"
+                                                Padding="7,2"
+                                                VerticalAlignment="Center"
+                                                Background="{StaticResource AccentBadgeBrush}"
+                                                CornerRadius="4"
+                                                Visibility="{Binding IsActive, Converter={StaticResource BoolToVis}}">
+                                                <TextBlock
+                                                    FontSize="10.5"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="{StaticResource AccentSoftBrush}"
+                                                    Text="{x:Static res:Strings.Mode_Active}" />
+                                            </Border>
+                                        </StackPanel>
+                                        <TextBlock
+                                            Margin="0,6,0,0"
+                                            FontSize="12"
+                                            Foreground="{StaticResource TextDimBrush}"
+                                            Text="{Binding Description}"
+                                            TextWrapping="Wrap" />
+                                        <TextBlock
+                                            Margin="0,6,0,0"
+                                            FontSize="12.5"
+                                            Foreground="{StaticResource TextMutedBrush}"
+                                            Text="{Binding StatusText}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+                                    <StackPanel
+                                        Grid.Column="1"
+                                        VerticalAlignment="Center">
+                                        <ui:Button
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Center"
+                                            Command="{Binding DataContext.InstallCommand, ElementName=Root}"
+                                            CommandParameter="{Binding}"
+                                            Content="{Binding ButtonText}"
+                                            IsEnabled="{Binding DataContext.NotBusy, ElementName=Root}" />
+                                        <!-- CloudRedirect-only: opens its GUI manager (active mode only). -->
+                                        <ui:Button
+                                            Margin="0,8,0,0"
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Center"
+                                            Command="{Binding DataContext.ManageCloudRedirectCommand, ElementName=Root}"
+                                            Content="{x:Static res:Strings.Mode_CloudRedirect_Manage}"
+                                            Icon="{ui:SymbolIcon Cloud24}"
+                                            IsEnabled="{Binding DataContext.NotBusy, ElementName=Root}"
+                                            Visibility="{Binding ShowManage, Converter={StaticResource BoolToVis}}" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Fixed bottom dock: separator + CloudRedirect add-on + shared progress. -->
+        <StackPanel Grid.Row="1" MaxWidth="760" Margin="8,0,16,16">
+
+                <!-- Divider between the scrolling mode cards and the docked add-on. -->
+                <Border Height="1" Margin="0,0,0,14" Background="{StaticResource SurfaceStrongBrush}" />
+
+                <!-- CloudRedirect add-on: a feature of the Nightly BST build. Locked (dimmed, buttons
+                     disabled) unless BetterSteamTools Nightly is the active mode. -->
+                <Border
+                    Margin="0,0,0,0"
+                    Padding="18"
+                    Background="{StaticResource SurfaceCardBrush}"
+                    BorderBrush="{StaticResource BorderStrongBrush}"
+                    BorderThickness="1"
+                    CornerRadius="10">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CloudRedirectUnlocked}" Value="False">
+                                    <Setter Property="Opacity" Value="0.55" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon
+                                    VerticalAlignment="Center"
+                                    Foreground="{StaticResource InfoBrush}"
+                                    Symbol="Cloud24" />
+                                <TextBlock
+                                    Margin="10,0,0,0"
+                                    VerticalAlignment="Center"
+                                    FontSize="15"
+                                    FontWeight="SemiBold"
+                                    Text="CloudRedirect" />
+                            </StackPanel>
+                            <TextBlock
+                                Margin="0,6,0,0"
+                                FontSize="12"
+                                Foreground="{StaticResource TextDimBrush}"
+                                Text="{x:Static res:Strings.Mode_CloudRedirect_AddonDesc}"
+                                TextWrapping="Wrap" />
+                            <TextBlock
+                                Margin="0,6,0,0"
+                                FontSize="12.5"
+                                Foreground="{StaticResource TextMutedBrush}"
+                                Text="{Binding CloudRedirectStatusText}"
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <ui:Button
+                                MinWidth="96"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center"
+                                Command="{Binding ToggleCloudRedirectCommand}"
+                                Content="{Binding CloudRedirectToggleText}"
+                                IsEnabled="{Binding CanUseCloudRedirect}" />
+                            <ui:Button
+                                Margin="0,8,0,0"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center"
+                                Command="{Binding UpdateCloudRedirectCommand}"
+                                Content="{x:Static res:Strings.Mode_Btn_Update}"
+                                Icon="{ui:SymbolIcon ArrowSync24}"
+                                IsEnabled="{Binding CanUseCloudRedirect}"
+                                Visibility="{Binding ShowCloudRedirectUpdate, Converter={StaticResource BoolToVis}}" />
+                            <ui:Button
+                                Margin="0,8,0,0"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center"
+                                Command="{Binding ManageCloudRedirectCommand}"
+                                Content="{x:Static res:Strings.Mode_CloudRedirect_Manage}"
+                                Icon="{ui:SymbolIcon Cloud24}"
+                                IsEnabled="{Binding CanUseCloudRedirect}"
+                                Visibility="{Binding ShowCloudRedirectManage, Converter={StaticResource BoolToVis}}" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Shared progress while installing/switching -->
+                <ProgressBar
+                    Height="6"
+                    Margin="0,2,0,0"
+                    IsIndeterminate="{Binding IsProgressIndeterminate}"
+                    Maximum="100"
+                    Value="{Binding Progress}"
+                    Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}" />
+
+        </StackPanel>
+
+        <!-- Steam-shutdown confirmation overlay (covers the whole page, both rows) -->
+        <Grid
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Background="{StaticResource ScrimBrush}"
+            Visibility="{Binding IsConfirming, Converter={StaticResource BoolToVis}}">
+            <Border
+                MaxWidth="420"
+                Margin="8"
+                Padding="20"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="{StaticResource SurfaceOverlayBrush}"
+                BorderBrush="{StaticResource BorderProminentBrush}"
+                BorderThickness="1"
+                CornerRadius="12">
+                <StackPanel>
+                    <TextBlock
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Text="{Binding ConfirmTitle}"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        Margin="0,8,0,0"
+                        FontSize="12.5"
+                        Foreground="{StaticResource TextMutedBrush}"
+                        Text="{x:Static res:Strings.Mode_Confirm_Body}"
+                        TextWrapping="Wrap" />
+                    <StackPanel
+                        Margin="0,16,0,0"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                        <ui:Button
+                            Margin="0,0,8,0"
+                            Command="{Binding CancelConfirmCommand}"
+                            Content="{x:Static res:Strings.Mode_Cancel}" />
+                        <ui:Button
+                            Appearance="Primary"
+                            Command="{Binding ConfirmInstallCommand}"
+                            Content="{x:Static res:Strings.Mode_CloseSteamContinue}"
+                            Icon="{ui:SymbolIcon Power24}" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

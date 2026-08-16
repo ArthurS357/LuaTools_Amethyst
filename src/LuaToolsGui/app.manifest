@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1">
+
+  <!--
+    Declares the privilege level LuaTools runs at. This is DOCUMENTATION, not a behaviour change: with no
+    manifest the app already ran as asInvoker. Stating it explicitly means the level is a reviewed decision
+    rather than a default, and it stops a future build from silently acquiring elevation.
+
+    asInvoker is deliberate:
+      * The app must NOT auto-elevate. It runs continuously (tray, HTTP bridge on 127.0.0.1:6767, CDP
+        injector) and is launched automatically when Steam opens; an elevated always-on process with a
+        local HTTP listener is a much larger target than the same process running as the user.
+      * Everything the app does in the normal path is per-user: %AppData%, HKCU protocol registration,
+        the Steam userdata/config tree.
+      * The operations that CAN need admin (writing loader DLLs into a Steam installed under Program Files)
+        are occasional. Those report a clear "run as administrator" message instead — see
+        UnlockerService.InstallAsync. Elevating the whole app for them would be disproportionate.
+
+    No requestedPrivileges beyond this, no uiAccess, and no self-elevation anywhere in the codebase.
+  -->
+  <trustInfo xmlns="urn:schemas-microsoft-com:asm.v2">
+    <security>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+
+</assembly>
