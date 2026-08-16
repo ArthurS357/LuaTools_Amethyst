@@ -679,9 +679,17 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
     /// duplicate-destination checks entirely when it is null, so a null here would quietly turn zip-slip
     /// screening off.
     /// </para>
+    ///
+    /// <para>
+    /// <see cref="LuaScreeningProfile.ApplicationCode"/> is load-bearing. A plugin ships Lua that is a
+    /// PROGRAM, not a Steam manifest, and the default manifest profile refuses ordinary language
+    /// constructs — this shipped as a bug in 1.4.0, where installing BetterSteamTools failed on
+    /// <c>backend/main.lua</c> for using <c>require</c>. Never drop this argument to "simplify" the call.
+    /// </para>
     /// </summary>
     internal static string? ScreenPluginArchive(string zipPath, string destinationRoot) =>
-        FixAnalyzer.AnalyzeArchive(zipPath, destinationRoot) is { Blocked: true } analysis
+        FixAnalyzer.AnalyzeArchive(zipPath, destinationRoot,
+            luaProfile: LuaScreeningProfile.ApplicationCode) is { Blocked: true } analysis
             ? string.Format(Resources.Strings.Plugin_Err_ArchiveRejected, PluginZipAsset, analysis.BlockReason)
             : null;
 

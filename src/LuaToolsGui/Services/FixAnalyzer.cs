@@ -48,6 +48,27 @@ public enum FixFindingKind
     ExecutableContent,
 }
 
+/// <summary>
+/// Which rules a <c>.lua</c> entry is judged by. The two are not interchangeable, and treating them as
+/// one shipped a bug: the plugin flow screened <c>backend/main.lua</c> with the manifest rules and refused
+/// the install over <c>require</c>.
+/// </summary>
+public enum LuaScreeningProfile
+{
+    /// <summary>
+    /// A Steam manifest: a tiny DSL of <c>addappid()</c> / <c>setManifestid()</c> calls that the unlocker
+    /// interprets inside steam.exe. Anything outside that vocabulary is suspect, so the denylist is broad
+    /// — see <see cref="LuaManifestValidator"/>.
+    /// </summary>
+    SteamManifest,
+
+    /// <summary>
+    /// Ordinary Lua source that is meant to be a program (a plugin backend). Only constructs that execute
+    /// code or spawn a process are refused — see <see cref="LuaCodeValidator"/>.
+    /// </summary>
+    ApplicationCode,
+}
+
 /// <summary>One observation about a file being installed.</summary>
 /// <param name="Kind">What was observed.</param>
 /// <param name="Blocking">True when this alone must stop the install.</param>
@@ -139,7 +160,13 @@ public static partial class FixAnalyzer
     /// path-escape check is skipped as inapplicable while every other check still runs.
     /// </param>
     /// <param name="limits">Size/shape limits; <see cref="FixAnalyzerLimits.Default"/> when null.</param>
-    public static FixAnalysis AnalyzeArchive(string archivePath, string? destinationRoot, FixAnalyzerLimits? limits = null)
+    /// <param name="luaProfile">
+    /// Which rules <c>.lua</c> entries are judged by. Defaults to <see cref="LuaScreeningProfile.SteamManifest"/>
+    /// because that is what the Fixes flow ships; an archive of application code must pass
+    /// <see cref="LuaScreeningProfile.ApplicationCode"/> or every module it loads reads as a violation.
+    /// </param>
+    public static FixAnalysis AnalyzeArchive(string archivePath, string? destinationRoot,
+        FixAnalyzerLimits? limits = null, LuaScreeningProfile luaProfile = LuaScreeningProfile.SteamManifest)
     {
         limits ??= FixAnalyzerLimits.Default;
         var findings = new List<FixFinding>();
@@ -229,7 +256,7 @@ public static partial class FixAnalyzer
                 string extension = Path.GetExtension(entry.Name);
 
                 if (extension.Equals(".lua", StringComparison.OrdinalIgnoreCase))
-                    findings.AddRange(ScreenLuaEntry(entry));
+                    findings.AddRange(ScreenLuaEntry(entry, luaProfile));
                 else if (ArchiveExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase))
                     findings.Add(new(FixFindingKind.NestedArchive, false, "contains a nested archive", name));
                 else if (ExecutableExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase))
@@ -273,11 +300,16 @@ public static partial class FixAnalyzer
     /// <c>_G["\x6f\x73"]["execute"]</c> or <c>"os" .. "." .. "execute"</c> is caught too.
     /// </para>
     /// </summary>
-    public static FixAnalysis AnalyzeLuaSource(string lua, string? entryName = null)
+    public static FixAnalysis AnalyzeLuaSource(string lua, string? entryName = null,
+        LuaScreeningProfile profile = LuaScreeningProfile.SteamManifest)
     {
         var findings = new List<FixFinding>();
 
-        var direct = LuaManifestValidator.Screen(lua);
+        LuaScreenResult Screen(string source) => profile == LuaScreeningProfile.ApplicationCode
+            ? LuaCodeValidator.Screen(source)
+            : LuaManifestValidator.Screen(source);
+
+        var direct = Screen(lua);
         if (direct.Rejected)
         {
             findings.Add(new(FixFindingKind.DangerousLuaCall, true, $"the lua {direct.Reason}", entryName));
@@ -287,7 +319,7 @@ public static partial class FixAnalyzer
         string normalised = NormalizeLua(lua);
         if (!string.Equals(normalised, lua, StringComparison.Ordinal))
         {
-            var deobfuscated = LuaManifestValidator.Screen(normalised);
+            var deobfuscated = Screen(normalised);
             if (deobfuscated.Rejected)
             {
                 findings.Add(new(FixFindingKind.ObfuscatedLuaCall, true,
@@ -304,20 +336,20 @@ public static partial class FixAnalyzer
         return new FixAnalysis(findings);
     }
 
-    private static IEnumerable<FixFinding> ScreenLuaEntry(ZipArchiveEntry entry)
+    private static IEnumerable<FixFinding> ScreenLuaEntry(ZipArchiveEntry entry, LuaScreeningProfile profile)
     {
         // Cap what is read: a lua that is not a lua-sized file is itself the answer. Reading it whole to
         // screen it would otherwise be a way to make the analyser the bomb.
         const int MaxLuaBytes = 8 * 1024 * 1024;
         if (entry.Length > MaxLuaBytes)
             return [new(FixFindingKind.EntryTooLarge, true,
-                $"a .lua of {entry.Length:N0} bytes is not a manifest", entry.FullName)];
+                $"a .lua of {entry.Length:N0} bytes is implausible", entry.FullName)];
 
         try
         {
             using var stream = entry.Open();
             using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true);
-            return AnalyzeLuaSource(reader.ReadToEnd(), entry.FullName).Findings;
+            return AnalyzeLuaSource(reader.ReadToEnd(), entry.FullName, profile).Findings;
         }
         catch (Exception ex)
         {

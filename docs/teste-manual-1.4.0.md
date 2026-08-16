@@ -1,6 +1,6 @@
 # Roteiro de teste manual — LuaTools Amethyst 1.4.0
 
-O que os 492 testes automatizados **não** cobrem: a instalação empacotada, o Steam real, a junction em
+O que os 536 testes automatizados **não** cobrem: a instalação empacotada, o Steam real, a junction em
 disco, e o toast aparecendo de fato. Este roteiro é a verificação que só uma máquina real faz.
 
 > **Antes de começar.** Faça isto numa máquina onde perder a instalação do Steam não seja um problema, ou
@@ -34,11 +34,11 @@ Deve retornar vazio. Se não, remova à mão antes de seguir.
 2. Vá em **About**.
 
 **Critérios de aceite**
-- [ ] A versão exibida é **1.4.0**, não 1.3.0. (Se mostrar 1.3.0, o `Version` do `.csproj` não chegou ao
+- [X] A versão exibida é **1.4.0**, não 1.3.0. (Se mostrar 1.3.0, o `Version` do `.csproj` não chegou ao
       `InformationalVersion` — é o bug que já aconteceu antes, ver comentário no `.csproj`.)
-- [ ] O repositório mostrado é `ArthurS357/LuaTools_Amethyst`.
+- [x] O repositório mostrado é `ArthurS357/LuaTools_Amethyst`.
 - [ ] **Não** aparece o aviso de startup "esta não é uma build Amethyst".
-- [ ] A interface está roxa (Amethyst), não cinza. Cinza significa que o tema WPF-UI silenciosamente não
+- [x] A interface está roxa (Amethyst), não cinza. Cinza significa que o tema WPF-UI silenciosamente não
       aplicou — verifique `%AppData%\LuaToolsGui\crash.log` por uma linha `THEME:`.
 
 ---

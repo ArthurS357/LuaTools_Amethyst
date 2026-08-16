@@ -44,11 +44,27 @@ ataque que sobreviveram à 1.3.0 e tornar visível o que já era verificado em s
 - **`PluginAutoUpdate` não persistia.** A chave faltava no predicado `empty` de `SettingsService.SaveCore`,
   então um usuário cuja única alteração fosse ela teria o `settings.json` **apagado** e a escolha perdida
   no save seguinte. Introduzido na 1.3.0; encontrado pelo teste que fixa o novo default.
+- **`plugin.zip` era recusado por usar `require`.** Instalar o BetterSteamTools falhava com
+  `backend/main.lua: the lua contains 'require', which a Steam manifest never needs`. Erro de categoria: a
+  triagem de `plugin.zip` aplicava as regras de **manifesto Steam** a código Lua de aplicação. Um manifesto
+  é uma DSL minúscula (`addappid()`, `setManifestid()`), então a denylist dele proíbe `require`, `pcall`,
+  `setmetatable`, `_G`, `rawget`/`rawset`, `collectgarbage`, `io.open` — tudo normal num programa Lua. Um
+  plugin ficava impossível de instalar.
+
+  `FixAnalyzer.AnalyzeArchive` passou a aceitar um `LuaScreeningProfile`. O padrão continua
+  `SteamManifest`, então o fluxo de Correções não mudou em nada; o fluxo de Plugin usa `ApplicationCode`,
+  cuja denylist é curta e só cobre execução: `os.execute`, `io.popen`, `package.loadlib`, `loadstring`,
+  `load()` com argumento montado em tempo de execução, e `require`/`dofile`/`loadfile` apontando para URL.
+  Ofuscação continua sendo detectada pela mesma passada de de-ofuscação.
+
+  Escopo honesto, registrado no código: isso é defesa em profundidade, não fronteira de confiança. A mesma
+  release entrega `winmm.dll`, que o steam.exe carrega — se a release for hostil, a DLL vence muito antes
+  do Lua. Quem protege de fato é a pinagem de repositório e o digest fail-closed.
 
 ### Testes e ferramentas
 
-- 442 → **492 testes xUnit**. Novos: `DirectoryJunctionTests` (16), `DownloadReviewTests` (17),
-  `PluginArchiveScreeningTests` (16), persistência de `PluginAutoUpdate` (2).
+- 442 → **536 testes xUnit**. Novos: `DirectoryJunctionTests` (16), `DownloadReviewTests` (17),
+  `PluginArchiveScreeningTests` (22), `LuaCodeValidatorTests` (34), persistência de `PluginAutoUpdate` (2).
 - **17 testes para `scripts/check-i18n.py`** (`unittest` da stdlib, sem dependência nova). O CI passou a
   rodá-los **antes** da validação de RESX: um checker quebrado reporta run limpo.
 - Varredura confirmou zero literais de repositório fora do `AppConfig`.
