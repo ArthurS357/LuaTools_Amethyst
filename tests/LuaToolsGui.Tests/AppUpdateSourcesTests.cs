@@ -41,17 +41,33 @@ public class AppUpdateSourcesTests
     }
 
     [Fact]
-    public void CompiledInDefault_IsEmpty_SoAnUnconfiguredBuildContactsNothing()
+    public void CompiledInDefault_PointsAtThisForkAndIsAccepted()
     {
-        // Guards the actual shipped constant, not just the resolver: if someone re-adds a hardcoded
-        // upstream URL to AppConfig, this fails.
-        Assert.Empty(AppConfig.GithubReleasesRepos);
+        // Guards the actual shipped constant, not just the resolver. The default now points at the fork's
+        // own repository, so updates come from the same place the build did.
+        var result = AppUpdateSources.Resolve(AppConfig.GithubReleasesRepos);
+
+        Assert.False(result.IsDisabled);
+        Assert.Empty(result.Rejected);
+        Assert.Equal(["https://github.com/ArthurS357/LuaTools_Amethyst"], result.Repos);
     }
 
     [Fact]
-    public void CompiledInDefault_ResolvesToDisabled()
+    public void CompiledInDefault_IsNotAnUpstreamRepo()
     {
-        Assert.True(AppUpdateSources.Resolve(AppConfig.GithubReleasesRepos).IsDisabled);
+        // The failure this guards against is subtle: someone "restoring" the old feed, or a copy-paste
+        // that lands an official repo in the compiled default, where no settings.json would reveal it.
+        foreach (string repo in AppConfig.GithubReleasesRepos)
+            Assert.DoesNotContain(AppConfig.UpstreamReleaseRepos,
+                blocked => repo.Contains(blocked, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ExplicitlyEmptySetting_TurnsSelfUpdateOff()
+    {
+        // An empty array in settings.json is a real choice ("never update me"), distinct from the key
+        // being absent (which falls back to the compiled-in default).
+        Assert.True(AppUpdateSources.Resolve(Array.Empty<string>(), Blocked).IsDisabled);
     }
 
     // ── The upstream block: the reason this class exists ────────────────────

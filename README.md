@@ -2,19 +2,26 @@
   <img height="336" alt="luatools" src="https://github.com/user-attachments/assets/54702ada-93a8-439b-ab3e-5cd73747ed46" />
 </p>
 
-# LuaTools — privacy fork
+# LuaTools Amethyst
 
-**This is an unofficial fork of [LuaTools](https://lua.tools), not the official build.**
-It exists to remove the parts of the upstream client that sent data off the machine, and it is not
-affiliated with or endorsed by the upstream project.
+**An unofficial, privacy-focused fork of [LuaTools](https://lua.tools).** Not affiliated with or endorsed
+by the upstream project.
 
 A Windows desktop client for managing Steam manifest/lua configurations, built with WPF on .NET 8.
-LuaTools browses and installs manifest sources, edits `stplug-in` lua files (depot pinning, per-depot
+It browses and installs manifest sources, edits `stplug-in` lua files (depot pinning, per-depot
 enable/disable), manages unlocker modes, and injects a companion plugin into Steam's store pages. It
 ships translated in 29 languages and auto-updates via Velopack.
 
-Current version: **1.3.0**. The app identifies itself as `privacy fork` in the window title and in the
-navigation footer next to the version, so you can always tell which build you are running.
+Current version: **1.3.0** · Repository: <https://github.com/ArthurS357/LuaTools_Amethyst>
+
+### Checking which build you are running
+
+Open the **About** tab in the app. It shows the product name, the exact version, and the repository
+updates come from. The window title and the navigation footer show the name and version too.
+
+If the app ever warns that it "may not be LuaTools Amethyst", the binary that is running does not
+identify itself as this fork — most likely an official LuaTools installer was run over it, which brings
+back analytics and the Steam key upload. Reinstall from the repository above.
 
 ---
 
@@ -49,19 +56,23 @@ return as opt-in, default off. The full probe is recorded in
 
 ---
 
-## Auto-update: off by default
+## Updating
 
-**This fork does not update itself unless you configure it to.** There is no compiled-in update feed.
+Automatic updates are **on**, and point at this fork's own repository:
 
-Upstream's feed publishes the **official** build, so inheriting it meant the fork would eventually
-download and silently install a version with Umami telemetry and the DonateKeys key upload — undoing the
-whole point of the fork, in the background, without anyone choosing it. Rather than point the updater at
-a fork repo that may not exist yet, the default is *no feed at all*: an unconfigured build makes **no
-update request whatsoever**.
+```
+https://github.com/ArthurS357/LuaTools_Amethyst
+```
 
-### Enabling it for your own fork
+The app checks on launch and stages the update in the background; it is applied when you close the app.
+You can also check on demand from the **About** tab ("Check for updates"), which uses exactly the same
+update path as the automatic check.
 
-Publish Velopack releases to your own GitHub repo, then add to `settings.json`:
+To update **manually** instead, download the latest release from the repository and run the installer.
+
+### Changing or disabling the update source
+
+The compiled-in default can be overridden in `settings.json`:
 
 ```json
 { "AppUpdateRepos": ["https://github.com/you/YourFork"] }
@@ -69,6 +80,15 @@ Publish Velopack releases to your own GitHub repo, then add to `settings.json`:
 
 List more than one for fallback — they are tried in order, which covers a primary repo becoming
 unreachable (banned, DMCA'd, account removed) rather than merely being out of date.
+
+To turn self-update **off** entirely, set it to an empty array. The app then makes no update request at
+all:
+
+```json
+{ "AppUpdateRepos": [] }
+```
+
+The About tab always shows the feed that is actually in use, so you can confirm what took effect.
 
 Entries are validated before use ([`AppUpdateSources.cs`](src/LuaToolsGui/Services/AppUpdateSources.cs)):
 
@@ -80,13 +100,12 @@ Entries are validated before use ([`AppUpdateSources.cs`](src/LuaToolsGui/Servic
 - Rejected entries are logged to `plugin-backend.log` with the reason, so ignored config does not look
   like a broken app.
 
-If you would rather never think about it, leave `AppUpdateRepos` unset and update manually.
-
 ### Still: do not install official releases over this build
 
-The blocklist protects the *auto*-updater. It cannot stop you running an official installer by hand —
-that will restore telemetry and DonateKeys. Check the window title and footer: this build says
-`privacy fork`; the official one does not.
+The blocklist protects the *auto*-updater. It cannot stop you running an official LuaTools installer by
+hand — that restores telemetry and DonateKeys, in a program that still launches and looks the same.
+The app warns at startup if the binary no longer identifies as LuaTools Amethyst, and the **About** tab
+always shows what is actually running.
 
 > **Scope:** all of the above concerns the app updating **itself**. Plugin, unlocker, Steamless and
 > manifest downloads use entirely separate sources and are unaffected whether self-update is on or off.
@@ -154,6 +173,28 @@ rather than gated.
 
 ---
 
+## Downloaded fixes are screened before they touch your disk
+
+Fixes and manifests arrive as archives that end up either in Steam's folders or inside a game's install
+directory. Before anything is written, [`FixAnalyzer`](src/LuaToolsGui/Services/FixAnalyzer.cs) inspects
+the staged download and **refuses** it on:
+
+- **Path escapes (zip-slip)** — entries traversing out of the target folder with `..`, or using absolute
+  or UNC paths. This closed a real hole: the fix extractor previously joined entry paths straight onto
+  the game folder, so an entry named `C:\Windows\...` wrote there.
+- **Duplicate destinations** — two entries resolving to the same file, a known way to have a checker
+  inspect one payload while the extractor writes another.
+- **Absurd size or shape** — implausible entry counts, oversized entries, and decompression bombs
+  (measured by expansion ratio, and only above a size floor so ordinary compressible files are unaffected).
+- **Dangerous lua** — `os.execute`, `io.open`, `loadstring` and friends, screened by the same denylist
+  the installer uses, and screened a **second time** after de-obfuscation so `"os" .. ".execute"` or
+  `"\x6f\x73"` is caught too.
+- **Unreadable archives** — something that cannot be inspected is not extracted.
+
+Things that are **recorded but allowed**, because blocking them would break legitimate fixes: executables
+(a game fix is executables), nested archives, and lua lines that are not recognised manifest directives.
+Every decision is written to `plugin-backend.log`, and a refusal is shown as a toast explaining why.
+
 ## Configuration
 
 Settings live in `%AppData%\LuaToolsGui\settings.json`. Most are managed from the Settings page; the
@@ -190,13 +231,13 @@ content.
 |---|---|---|
 | `EnableSourceAvailabilityChecks` | `true` | `false` stops the cleartext lookup entirely (see above) |
 | `InsecureMetadataNotice` | `"once"` | `"always"` / `"off"` — how often the lookup is disclosed |
-| `AppUpdateRepos` | *(unset)* | Repos for the app's own updates. Unset = self-update off |
+| `AppUpdateRepos` | this fork's repo | Where the app updates itself from. `[]` disables self-update |
 
 A full example:
 
 ```json
 {
-  "AppUpdateRepos": ["https://github.com/you/YourFork"],
+  "AppUpdateRepos": ["https://github.com/ArthurS357/LuaTools_Amethyst"],
   "EnableSourceAvailabilityChecks": true,
   "InsecureMetadataNotice": "always",
   "GithubDownloadMirrors": []

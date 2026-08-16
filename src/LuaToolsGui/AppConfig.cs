@@ -137,25 +137,33 @@ public static class AppConfig
     // deliberately untouched by everything here.
 
     /// <summary>
-    /// Compiled-in default for the app's own update feed: DELIBERATELY EMPTY, which disables self-update.
+    /// Compiled-in default for the app's own update feed: this fork's OWN repository.
     ///
     /// <para>
-    /// This fork used to inherit upstream's list (madoiscool/LuaTools, mendy-tools/LuaTools). That is a
-    /// privacy hole disguised as a convenience: those repos publish the OFFICIAL build, so the updater
-    /// would eventually download and silently install a version that has Umami telemetry and DonateKeys —
-    /// the key upload that is ON BY DEFAULT upstream — putting back exactly what this fork exists to
-    /// remove, without the user ever choosing it.
+    /// It used to inherit upstream's list (madoiscool/LuaTools, mendy-tools/LuaTools), which is a privacy
+    /// hole disguised as a convenience: those repos publish the OFFICIAL build, so the updater would
+    /// eventually download and silently install a version with Umami telemetry and DonateKeys — the key
+    /// upload that is ON BY DEFAULT upstream — putting back exactly what this fork removes, without the
+    /// user ever choosing it. It was then emptied while the fork had no published home.
     /// </para>
     ///
     /// <para>
-    /// Rather than point it at a fork repo that does not exist yet, the default is "no feed at all":
-    /// <see cref="Services.UpdateService"/> no-ops on an empty list, so an unconfigured build makes NO
-    /// update request whatsoever. Whoever publishes this fork sets their own repo in settings.json
-    /// (<c>AppUpdateRepos</c>) — see <see cref="Services.AppUpdateSources"/>, which validates the entries
-    /// and refuses the upstream repos outright.
+    /// Now that LuaTools Amethyst is published, pointing at it is both safe and useful: updates ship from
+    /// the same source as the build the user installed. A user can still override or disable this
+    /// entirely with <c>AppUpdateRepos</c> in settings.json (an empty array turns self-update off, and
+    /// then no update request is made at all).
+    /// </para>
+    ///
+    /// <para>
+    /// Whatever the source, <see cref="Services.AppUpdateSources"/> validates it — https + github.com
+    /// only — and refuses <see cref="UpstreamReleaseRepos"/> outright, so no configuration can point the
+    /// updater back at an official build.
     /// </para>
     /// </summary>
-    public static readonly string[] GithubReleasesRepos = [];
+    public static readonly string[] GithubReleasesRepos =
+    [
+        "https://github.com/ArthurS357/LuaTools_Amethyst",
+    ];
 
     /// <summary>
     /// Repos known to publish the OFFICIAL build. <see cref="Services.AppUpdateSources"/> refuses to build

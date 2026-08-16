@@ -7,9 +7,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
+    <!-- AssemblyName is the app's TECHNICAL identity and is deliberately NOT renamed: the loader DLL
+         launches "LuaTools.exe" by name, Velopack keys its install on it, and %AppData%\LuaToolsGui,
+         the single-instance mutex and the luatools:// handler all match it. Renaming would orphan every
+         existing install. The DISPLAY identity below is what users see. -->
     <AssemblyName>LuaTools</AssemblyName>
-    <AssemblyTitle>LuaTools</AssemblyTitle>
-    <Product>LuaTools</Product>
+    <AssemblyTitle>LuaTools Amethyst</AssemblyTitle>
+    <Product>LuaTools Amethyst</Product>
     <!-- Single source of truth for the app version. It drives AssemblyVersion, AssemblyFileVersion and
          AssemblyInformationalVersion (the SDK generates all three from <Version>), and MainViewModel
          reads InformationalVersion back to render the "v1.3.0 · …" label in the nav pane footer. This had

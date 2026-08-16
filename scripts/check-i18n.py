@@ -55,10 +55,35 @@ PENDING_TRANSLATION: set[str] = {
     # Startup guard that fires when a WPF-UI upgrade silently breaks the Amethyst accent override.
     "Theme_Guard_Title",
     "Theme_Guard_Body",
-    # Fork identification shown in the nav footer / window title. Deliberately English everywhere:
-    # it is a project label, not prose, and translating it would weaken the "this is not the official
-    # build" signal it exists to carry.
-    "App_ForkTag",
+    # The product name. Deliberately English everywhere — a product name is not translated.
+    "App_DisplayName",
+    # Refusal message from the fix/manifest safety screen (FixAnalyzer).
+    "Fixes_Toast_Blocked",
+    "Fixes_Toast_Blocked_Body",
+    # Startup warning when the running binary is not an Amethyst build.
+    "Build_NotFork_Title",
+    "Build_NotFork_Body",
+    # The About page. English-only for now; translate once its wording settles.
+    "About_Nav",
+    "About_Title",
+    "About_What_Header",
+    "About_What_Body",
+    "About_Version_Header",
+    "About_Repo_Header",
+    "About_Updates_Header",
+    "About_Updates_Enabled",
+    "About_Updates_Disabled",
+    "About_Updates_Sources",
+    "About_Check_Button",
+    "About_Check_Checking",
+    "About_Check_UpToDate",
+    "About_Check_Found",
+    "About_Check_Failed",
+    "About_Check_Disabled",
+    "About_OpenRepo",
+    "About_OpenSettings",
+    "About_Config_Header",
+    "About_Config_Body",
 }
 
 

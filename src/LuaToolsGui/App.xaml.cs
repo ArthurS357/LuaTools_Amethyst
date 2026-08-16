@@ -133,6 +133,7 @@ public partial class App : Application
                 services.AddSingleton<ModeViewModel>();
                 services.AddSingleton<FixesViewModel>();
                 services.AddSingleton<PluginViewModel>();
+                services.AddSingleton<AboutViewModel>();
                 services.AddSingleton<OnboardingViewModel>();
                 services.AddSingleton<MainViewModel>();
                 // Pages resolved by NavigationView via the DI service provider.
@@ -143,6 +144,7 @@ public partial class App : Application
                 services.AddSingleton<ModeView>();
                 services.AddSingleton<FixesView>();
                 services.AddSingleton<PluginView>();
+                services.AddSingleton<AboutView>();
                 services.AddSingleton<SettingsView>();
                 services.AddSingleton<MainWindow>();
             })
@@ -404,6 +406,44 @@ public partial class App : Application
         catch { /* toast presenter not ready — the crash.log entry is the durable record */ }
     }
 
+    /// <summary>
+    /// Warn, non-blockingly, when the running binary does not identify itself as LuaTools Amethyst.
+    ///
+    /// <para>
+    /// The fork and the official build share an executable name, an install location and a settings
+    /// folder, so replacing one with the other leaves nothing visible to say it happened — while quietly
+    /// restoring telemetry and the DonateKeys upload. See <see cref="BuildIdentity"/> for why this is a
+    /// positive marker check rather than a hunt for upstream artefacts, and for its limits.
+    /// </para>
+    ///
+    /// <para>
+    /// TO TEST: build with <c>&lt;Product&gt;</c> changed to anything else in LuaToolsGui.csproj and
+    /// launch — the toast appears and a <c>BUILD:</c> line lands in crash.log. Restore it and the app is
+    /// silent again. On a normal Amethyst build this method does nothing at all.
+    /// </para>
+    /// </summary>
+    private static void VerifyBuildIdentity(ToastService toast)
+    {
+        if (BuildIdentity.Current() == BuildKind.Amethyst) return; // the normal path
+
+        try
+        {
+            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(CrashLogPath)!);
+            System.IO.File.AppendAllText(CrashLogPath,
+                $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] BUILD: this binary does not identify as " +
+                $"'{BuildIdentity.AmethystProductMarker}' — it may be an official LuaTools build, which " +
+                $"ships telemetry and the DonateKeys upload.{Environment.NewLine}");
+        }
+        catch { /* the toast below is the fallback */ }
+
+        try
+        {
+            toast.Show(LuaToolsGui.Resources.Strings.Build_NotFork_Title,
+                       LuaToolsGui.Resources.Strings.Build_NotFork_Body, error: true);
+        }
+        catch { /* presenter not ready — the crash.log line is the durable record */ }
+    }
+
     /// <summary>Record a theme problem in crash.log, the file users are already asked to send.</summary>
     private static void LogThemeProblem(string message)
     {
@@ -576,6 +616,9 @@ public partial class App : Application
         // Now that a toast can actually be shown, confirm the theme survived whatever version of WPF-UI
         // this build resolved against. Silent when everything is fine.
         VerifyAccentApplied();
+
+        // Same idea, different subject: confirm the BINARY is the fork. Silent on an Amethyst build.
+        VerifyBuildIdentity(toast);
 
         // Language changed → persistent toast offering an immediate relaunch.
         settingsVm.RequestRestartPrompt = () => Dispatcher.Invoke(() =>

@@ -497,6 +497,36 @@ public static class Strings
     public static string Theme_Guard_Title => Get(nameof(Theme_Guard_Title));
     public static string Theme_Guard_Body => Get(nameof(Theme_Guard_Body));
 
-    // ── Fork identification ──
-    public static string App_ForkTag => Get(nameof(App_ForkTag));
+    // ── Product identity ──
+    public static string App_DisplayName => Get(nameof(App_DisplayName));
+
+    // ── Build identity guard ──
+    public static string Build_NotFork_Title => Get(nameof(Build_NotFork_Title));
+    public static string Build_NotFork_Body => Get(nameof(Build_NotFork_Body));
+
+    // ── Fix/manifest safety screening (FixAnalyzer) ──
+    public static string Fixes_Toast_Blocked => Get(nameof(Fixes_Toast_Blocked));
+    public static string Fixes_Toast_Blocked_Body => Get(nameof(Fixes_Toast_Blocked_Body));
+
+    // ── About page ──
+    public static string About_Nav => Get(nameof(About_Nav));
+    public static string About_Title => Get(nameof(About_Title));
+    public static string About_What_Header => Get(nameof(About_What_Header));
+    public static string About_What_Body => Get(nameof(About_What_Body));
+    public static string About_Version_Header => Get(nameof(About_Version_Header));
+    public static string About_Repo_Header => Get(nameof(About_Repo_Header));
+    public static string About_Updates_Header => Get(nameof(About_Updates_Header));
+    public static string About_Updates_Enabled => Get(nameof(About_Updates_Enabled));
+    public static string About_Updates_Disabled => Get(nameof(About_Updates_Disabled));
+    public static string About_Updates_Sources => Get(nameof(About_Updates_Sources));
+    public static string About_Check_Button => Get(nameof(About_Check_Button));
+    public static string About_Check_Checking => Get(nameof(About_Check_Checking));
+    public static string About_Check_UpToDate => Get(nameof(About_Check_UpToDate));
+    public static string About_Check_Found => Get(nameof(About_Check_Found));
+    public static string About_Check_Failed => Get(nameof(About_Check_Failed));
+    public static string About_Check_Disabled => Get(nameof(About_Check_Disabled));
+    public static string About_OpenRepo => Get(nameof(About_OpenRepo));
+    public static string About_OpenSettings => Get(nameof(About_OpenSettings));
+    public static string About_Config_Header => Get(nameof(About_Config_Header));
+    public static string About_Config_Body => Get(nameof(About_Config_Body));
 }

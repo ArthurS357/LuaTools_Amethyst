@@ -34,22 +34,16 @@ public partial class MainViewModel : ObservableObject
 
     public bool IsRealUser => !IsGuest;
 
-    /// <summary>
-    /// Bottom-of-pane line: version, fork tag, then auth state. No username shown (privacy).
-    /// <para>
-    /// The fork tag is not decoration. This build differs from upstream in ways a user cannot see but
-    /// would care about — no telemetry, no key donation — and, critically, installing an official release
-    /// over it puts both back. Someone diagnosing behaviour (or being told "that's not what the official
-    /// build does") needs to be able to tell which one they are running without hunting through settings.
-    /// See the "Do not install official releases over this build" section of README.md.
-    /// </para>
-    /// </summary>
+    /// <summary>Bottom-of-pane line: version plus auth state. No username shown (privacy).</summary>
     public string FooterStatus =>
-        $"{VersionLabel} · {Resources.Strings.App_ForkTag} · " +
-        $"{(IsGuest ? Resources.Strings.Nav_Footer_Guest : Resources.Strings.Nav_Footer_LoggedIn)}";
+        $"{VersionLabel} · {(IsGuest ? Resources.Strings.Nav_Footer_Guest : Resources.Strings.Nav_Footer_LoggedIn)}";
 
-    /// <summary>Window/taskbar title, e.g. "LuaTools (privacy fork)" — same reasoning as the footer tag.</summary>
-    public string WindowTitle { get; } = $"LuaTools ({Resources.Strings.App_ForkTag})";
+    /// <summary>
+    /// Window/taskbar title. The product name now carries the distinction on its own — the temporary
+    /// "privacy fork" tag next to the version is gone, since "LuaTools Amethyst" is already unambiguous.
+    /// The About page states what the fork changes.
+    /// </summary>
+    public string WindowTitle { get; } = Resources.Strings.App_DisplayName;
 
     [ObservableProperty] private bool _isSigningIn;
     [ObservableProperty] private string? _signInError;

@@ -544,5 +544,29 @@ Enable it?</value></data>
   <data name="Privacy_HttpMetadata_Body" xml:space="preserve"><value>Source availability is checked over plain HTTP ({0}), because that server offers no working HTTPS. No account or key is sent, but anyone on your network path can see which Steam app you looked up. Set "WarnOnInsecureMetadata": false in settings.json to hide this.</value></data>
   <data name="Theme_Guard_Title" xml:space="preserve"><value>Theme not applied</value></data>
   <data name="Theme_Guard_Body" xml:space="preserve"><value>The Amethyst accent didn't take effect, which usually means the WPF-UI package changed its resource names. The app works normally but parts of it will look wrong. See docs/CHANGELOG.md.</value></data>
-  <data name="App_ForkTag" xml:space="preserve"><value>privacy fork</value></data>
+  <data name="App_DisplayName" xml:space="preserve"><value>LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Title" xml:space="preserve"><value>This may not be LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Body" xml:space="preserve"><value>This binary does not identify itself as LuaTools Amethyst. If you installed an official LuaTools release over it, analytics and the Steam key upload are active again. Reinstall from the Amethyst repository to get the privacy build back.</value></data>
+  <data name="Fixes_Toast_Blocked" xml:space="preserve"><value>Download refused</value></data>
+  <data name="Fixes_Toast_Blocked_Body" xml:space="preserve"><value>{0} was not installed because it failed a safety check — {1}</value></data>
+  <data name="About_Nav" xml:space="preserve"><value>About</value></data>
+  <data name="About_Title" xml:space="preserve"><value>About LuaTools Amethyst</value></data>
+  <data name="About_What_Header" xml:space="preserve"><value>What this is</value></data>
+  <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst is a community fork of LuaTools, focused on privacy. It removes the analytics ping and the key-donation upload that the original build performs, keeps every download over HTTPS, and ships the Amethyst purple theme.</value></data>
+  <data name="About_Version_Header" xml:space="preserve"><value>Version</value></data>
+  <data name="About_Repo_Header" xml:space="preserve"><value>Repository</value></data>
+  <data name="About_Updates_Header" xml:space="preserve"><value>Updates</value></data>
+  <data name="About_Updates_Enabled" xml:space="preserve"><value>Automatic updates are ON. LuaTools Amethyst checks the repository below on launch and installs updates in the background.</value></data>
+  <data name="About_Updates_Disabled" xml:space="preserve"><value>Automatic updates are OFF — no update request is made. Add "AppUpdateRepos" to settings.json to turn them on, or update manually from the repository below.</value></data>
+  <data name="About_Updates_Sources" xml:space="preserve"><value>Update source</value></data>
+  <data name="About_Check_Button" xml:space="preserve"><value>Check for updates</value></data>
+  <data name="About_Check_Checking" xml:space="preserve"><value>Checking…</value></data>
+  <data name="About_Check_UpToDate" xml:space="preserve"><value>You are on the latest version.</value></data>
+  <data name="About_Check_Found" xml:space="preserve"><value>An update was downloaded. It will be applied when you close LuaTools.</value></data>
+  <data name="About_Check_Failed" xml:space="preserve"><value>Could not check for updates. Check your connection and the configured repository.</value></data>
+  <data name="About_Check_Disabled" xml:space="preserve"><value>Automatic updates are disabled — configure "AppUpdateRepos" in settings.json first.</value></data>
+  <data name="About_OpenRepo" xml:space="preserve"><value>Open repository</value></data>
+  <data name="About_OpenSettings" xml:space="preserve"><value>Open settings.json folder</value></data>
+  <data name="About_Config_Header" xml:space="preserve"><value>Configuring updates manually</value></data>
+  <data name="About_Config_Body" xml:space="preserve"><value>Edit settings.json in the folder below and add the repository you want updates from. Only https://github.com/&lt;owner&gt;/&lt;repo&gt; is accepted, and the original LuaTools release repositories are refused so an official build can never replace this one.</value></data>
 </root>

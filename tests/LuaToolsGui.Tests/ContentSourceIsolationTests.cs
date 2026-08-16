@@ -26,10 +26,21 @@ public class ContentSourceIsolationTests
     }
 
     [Fact]
-    public void SelfUpdateBeingDisabled_DoesNotDisableContentSources()
+    public void SelfUpdateFeed_IsSeparateFromEveryContentSource()
     {
-        // The shipped self-update feed is empty by design...
-        Assert.True(AppUpdateSources.Resolve(AppConfig.GithubReleasesRepos).IsDisabled);
+        // The self-update feed is the fork's own repo...
+        var selfUpdate = AppUpdateSources.Resolve(AppConfig.GithubReleasesRepos);
+        Assert.False(selfUpdate.IsDisabled);
+
+        // ...and must not be any of the content sources: collapsing the two would mean a change to how
+        // the app updates itself could silently redirect where plugins come from.
+        string pluginRepo = $"{AppConfig.PluginReleasesOwner}/{AppConfig.PluginReleasesRepo}";
+        foreach (string feed in selfUpdate.Repos)
+        {
+            Assert.DoesNotContain(pluginRepo, feed, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain(AppConfig.SteamlessRepo, feed, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain(AppConfig.CloudRedirectRepo, feed, StringComparison.OrdinalIgnoreCase);
+        }
 
         // ...while every content source stays configured.
         Assert.False(string.IsNullOrWhiteSpace(AppConfig.PluginReleasesRepo));

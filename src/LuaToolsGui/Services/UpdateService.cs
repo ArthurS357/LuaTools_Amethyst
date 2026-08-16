@@ -35,9 +35,15 @@ public class UpdateService
     // not something that should change under a running check.
     private readonly UpdateManager[] _managers;
 
+    /// <summary>The feed this instance resolved, for the About page to display.</summary>
+    public UpdateSourceResolution Sources { get; }
+
     public UpdateService(SettingsService settings)
     {
-        var resolution = AppUpdateSources.Resolve(settings.AppUpdateRepos);
+        // settings.json wins when present; otherwise fall back to the compiled-in fork repo. An explicit
+        // empty array in settings therefore means "off", which is distinct from "not configured".
+        var resolution = AppUpdateSources.Resolve(settings.AppUpdateRepos ?? AppConfig.GithubReleasesRepos);
+        Sources = resolution;
 
         // Refusals are logged, never silently dropped — a user who pasted the upstream URL needs to know
         // the app deliberately ignored it, otherwise "updates don't work" looks like a bug.

@@ -1,0 +1,203 @@
+<UserControl
+    x:Class="LuaToolsGui.Views.AboutView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:res="clr-namespace:LuaToolsGui.Resources"
+    xmlns:vm="clr-namespace:LuaToolsGui.ViewModels"
+    d:DataContext="{d:DesignInstance Type=vm:AboutViewModel}"
+    TextElement.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    mc:Ignorable="d">
+
+    <!-- Layout, spacing and tokens deliberately mirror PluginView so this page reads as part of the same
+         app rather than a bolted-on panel. Every colour comes from Themes/Colors.xaml — no literals. -->
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel MaxWidth="760" Margin="8,16,16,24">
+
+                <!-- Header -->
+                <TextBlock
+                    FontSize="22"
+                    FontWeight="Bold"
+                    Text="{x:Static res:Strings.About_Title}" />
+
+                <!-- What this is -->
+                <Border
+                    Margin="0,18,0,0"
+                    Padding="18"
+                    Background="{StaticResource SurfaceCardBrush}"
+                    BorderBrush="{StaticResource BorderStrongBrush}"
+                    BorderThickness="1"
+                    CornerRadius="10">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon
+                                VerticalAlignment="Center"
+                                Foreground="{StaticResource AccentBrush}"
+                                Symbol="Info24" />
+                            <TextBlock
+                                Margin="10,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="SemiBold"
+                                Text="{x:Static res:Strings.About_What_Header}" />
+                        </StackPanel>
+                        <TextBlock
+                            Margin="0,10,0,0"
+                            FontSize="13"
+                            Foreground="{StaticResource TextSecondaryBrush}"
+                            Text="{x:Static res:Strings.About_What_Body}"
+                            TextWrapping="Wrap" />
+
+                        <!-- Version -->
+                        <TextBlock
+                            Margin="0,16,0,0"
+                            FontSize="11.5"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource TextDimBrush}"
+                            Text="{x:Static res:Strings.About_Version_Header}" />
+                        <TextBlock
+                            Margin="0,2,0,0"
+                            FontSize="15"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource AccentBrush}">
+                            <Run Text="{Binding ProductName, Mode=OneWay}" />
+                            <Run Text="{Binding Version, Mode=OneWay}" />
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <!-- Updates -->
+                <Border
+                    Margin="0,12,0,0"
+                    Padding="18"
+                    Background="{StaticResource SurfaceCardBrush}"
+                    BorderBrush="{StaticResource BorderStrongBrush}"
+                    BorderThickness="1"
+                    CornerRadius="10">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon
+                                VerticalAlignment="Center"
+                                Foreground="{StaticResource AccentBrush}"
+                                Symbol="ArrowSync24" />
+                            <TextBlock
+                                Margin="10,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="SemiBold"
+                                Text="{x:Static res:Strings.About_Updates_Header}" />
+                        </StackPanel>
+
+                        <TextBlock
+                            Margin="0,10,0,0"
+                            FontSize="13"
+                            Foreground="{StaticResource TextSecondaryBrush}"
+                            Text="{Binding UpdateStateText}"
+                            TextWrapping="Wrap" />
+
+                        <!-- Resolved feed: what the updater will ACTUALLY use, not what settings.json says -->
+                        <TextBlock
+                            Margin="0,14,0,0"
+                            FontSize="11.5"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource TextDimBrush}"
+                            Text="{x:Static res:Strings.About_Updates_Sources}" />
+                        <Border
+                            Margin="0,4,0,0"
+                            Padding="10,7"
+                            Background="{StaticResource SurfaceGhostBrush}"
+                            BorderBrush="{StaticResource BorderSubtleBrush}"
+                            BorderThickness="1"
+                            CornerRadius="6">
+                            <TextBlock
+                                FontFamily="Consolas"
+                                FontSize="12"
+                                Foreground="{StaticResource TextSecondaryBrush}"
+                                Text="{Binding UpdateSource}"
+                                TextWrapping="Wrap" />
+                        </Border>
+
+                        <StackPanel Margin="0,14,0,0" Orientation="Horizontal">
+                            <ui:Button
+                                Appearance="Primary"
+                                Command="{Binding CheckForUpdatesCommand}"
+                                Content="{x:Static res:Strings.About_Check_Button}"
+                                Icon="{ui:SymbolIcon ArrowSync24}"
+                                IsEnabled="{Binding IsIdle}" />
+                            <ui:Button
+                                Margin="8,0,0,0"
+                                Command="{Binding OpenRepositoryCommand}"
+                                Content="{x:Static res:Strings.About_OpenRepo}"
+                                Icon="{ui:SymbolIcon Open24}" />
+                        </StackPanel>
+
+                        <TextBlock
+                            Margin="0,10,0,0"
+                            FontSize="12.5"
+                            Foreground="{StaticResource TextMutedBrush}"
+                            Text="{Binding CheckResult}"
+                            TextWrapping="Wrap"
+                            Visibility="{Binding CheckResult, Converter={StaticResource NullToCollapsed}}" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Configuring updates by hand -->
+                <Border
+                    Margin="0,12,0,0"
+                    Padding="18"
+                    Background="{StaticResource SurfaceCardBrush}"
+                    BorderBrush="{StaticResource BorderStrongBrush}"
+                    BorderThickness="1"
+                    CornerRadius="10">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon
+                                VerticalAlignment="Center"
+                                Foreground="{StaticResource TextMutedBrush}"
+                                Symbol="Settings24" />
+                            <TextBlock
+                                Margin="10,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="SemiBold"
+                                Text="{x:Static res:Strings.About_Config_Header}" />
+                        </StackPanel>
+
+                        <TextBlock
+                            Margin="0,10,0,0"
+                            FontSize="13"
+                            Foreground="{StaticResource TextSecondaryBrush}"
+                            Text="{x:Static res:Strings.About_Config_Body}"
+                            TextWrapping="Wrap" />
+
+                        <Border
+                            Margin="0,10,0,0"
+                            Padding="10,7"
+                            Background="{StaticResource SurfaceGhostBrush}"
+                            BorderBrush="{StaticResource BorderSubtleBrush}"
+                            BorderThickness="1"
+                            CornerRadius="6">
+                            <TextBlock
+                                FontFamily="Consolas"
+                                FontSize="12"
+                                Foreground="{StaticResource TextSecondaryBrush}"
+                                Text="{Binding SettingsFolder}"
+                                TextWrapping="Wrap" />
+                        </Border>
+
+                        <ui:Button
+                            Margin="0,12,0,0"
+                            HorizontalAlignment="Left"
+                            Command="{Binding OpenSettingsFolderCommand}"
+                            Content="{x:Static res:Strings.About_OpenSettings}"
+                            Icon="{ui:SymbolIcon FolderOpen24}" />
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

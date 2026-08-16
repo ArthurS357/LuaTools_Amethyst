@@ -337,6 +337,12 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
     private void InstallManifest(DownloadedFile file, long appId, string gameName)
     {
         bool isZip = file.FileName.EndsWith(".zip", StringComparison.OrdinalIgnoreCase);
+
+        // Screen the staged download before it reaches Steam's folders. InstallZip flattens entries to
+        // fixed names (<appid>.lua / the manifest's own name) so it is not path-traversable — hence the
+        // null destination root — but size, shape and lua-content checks all still apply here.
+        if (!ScreenBeforeInstall(file, destinationRoot: null, isZip)) return;
+
         var result = isZip
             ? installer.InstallZip(file.FilePath, appId, forceLocked: true)
             : installer.InstallLuaFile(file.FilePath, appId, forceLocked: true);
@@ -366,15 +372,32 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
             return;
         }
 
+        // Screen the archive against the folder it would be extracted into, BEFORE anything is written.
+        if (!ScreenBeforeInstall(file, destinationRoot: installDir, isArchive: true)) return;
+
         try
         {
             // Extract into the game folder (overwrite existing files). Best-effort per entry.
             using var archive = ZipFile.OpenRead(file.FilePath);
             int failed = 0;
+            int refused = 0;
             foreach (var entry in archive.Entries)
             {
                 if (string.IsNullOrEmpty(entry.Name)) continue; // directory entry
-                string dest = Path.Combine(installDir, entry.FullName);
+
+                // Containment is re-checked per entry rather than trusted from the analysis above. This
+                // used to be `Path.Combine(installDir, entry.FullName)` with no check at all, which is
+                // zip-slip: Path.Combine returns the second argument outright when it is rooted, so an
+                // entry named "C:\Windows\System32\x.dll" wrote there, and "..\..\" traversed out of the
+                // game folder. Keeping the check HERE as well as in the analyzer means the write path is
+                // safe on its own, and cannot be re-opened by someone later calling it without screening.
+                if (!FixAnalyzer.IsContained(installDir, entry.FullName, out string dest))
+                {
+                    PluginLog.Log($"fix apply: refused entry outside the game folder — {entry.FullName}");
+                    refused++;
+                    continue;
+                }
+
                 try
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
@@ -382,6 +405,7 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
                 }
                 catch { failed++; }
             }
+            failed += refused;
 
             if (failed > 0)
                 toast.Show(Resources.Strings.Fixes_Toast_PartiallyApplied,
@@ -397,6 +421,53 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
         {
             DeleteStaged(file.FilePath); // archive is disposed by now — drop the temp staging copy
         }
+    }
+
+    /// <summary>
+    /// Run <see cref="FixAnalyzer"/> over a staged download and decide whether to proceed.
+    ///
+    /// <para>
+    /// This is the gate between "downloaded" and "written to disk". Fixes and manifests arrive from the
+    /// API as opaque archives that end up either in Steam's own folders or inside a game's install
+    /// directory, so this is the last point at which their shape and contents can be judged at all.
+    /// </para>
+    ///
+    /// <para>
+    /// On a block the staged file is deleted and the user is told why. Non-blocking findings are logged
+    /// and the install continues — a fix zip containing executables is entirely normal, and refusing
+    /// those would break the feature rather than protect it.
+    /// </para>
+    /// </summary>
+    /// <returns>True to continue with the install; false when it was refused.</returns>
+    private bool ScreenBeforeInstall(DownloadedFile file, string? destinationRoot, bool isArchive)
+    {
+        FixAnalysis analysis;
+        try
+        {
+            analysis = isArchive
+                ? FixAnalyzer.AnalyzeArchive(file.FilePath, destinationRoot)
+                : FixAnalyzer.AnalyzeLuaFile(file.FilePath);
+        }
+        catch (Exception ex)
+        {
+            // The analyzer itself failing must not become an install crash — but it also must not become
+            // an implicit "allow": refuse and say so.
+            PluginLog.Log($"fix screen: analyzer failed on {file.FileName} — {ex.Message}");
+            toast.Show(Resources.Strings.Fixes_Toast_Blocked,
+                string.Format(Resources.Strings.Fixes_Toast_Blocked_Body, file.FileName, ex.Message), error: true);
+            DeleteStaged(file.FilePath);
+            return false;
+        }
+
+        PluginLog.Log($"fix screen: {file.FileName} → {(analysis.Blocked ? "BLOCKED" : "ok")} ({analysis.Summary})");
+
+        if (!analysis.Blocked) return true;
+
+        toast.Show(Resources.Strings.Fixes_Toast_Blocked,
+            string.Format(Resources.Strings.Fixes_Toast_Blocked_Body, file.FileName, analysis.BlockReason),
+            error: true);
+        DeleteStaged(file.FilePath);
+        return false;
     }
 
     /// <summary>Best-effort delete of a staged download after it's been consumed by an install.</summary>
