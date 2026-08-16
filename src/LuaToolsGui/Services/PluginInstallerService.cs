@@ -38,7 +38,8 @@ public sealed record PluginStatus(
 /// "launch LuaTools.exe when Steam opens" — with no CDP hook, no load-timing race, and no dual-slot
 /// redundancy needed anymore.
 /// </summary>
-public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjectorService injector, CacheService cache)
+public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjectorService injector,
+    CacheService cache, SettingsService settings, DownloadNotice notice)
 {
     /// <summary>
     /// Asks the user whether LuaTools may enable Steam's remote-debugging bridge. Returns true to proceed.
@@ -113,70 +114,37 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
     // which DOES try to resolve the junction, fails since the target is nonexistent, and reports false —
     // so Millennium's removal code never even runs. A plain file does not survive that cleanup; the
     // junction does. Verified live this session on both Windows 10 and 11, including with a real
-    // Millennium instance loaded. `mklink /j` is shelled out to because directory junctions (unlike
-    // symlinks) have no native .NET creation API; `rmdir` (not Directory.Delete) is used to remove it,
-    // avoiding historical .NET/junction-deletion quirks that can recurse into a junction's target instead
-    // of just severing the link.
+    // Millennium instance loaded. Creating and removing it goes through DirectoryJunction, which drives
+    // the reparse point natively — see that type for why this must stay a junction rather than become a
+    // symlink, and for the command injection the previous cmd.exe form allowed.
     private const string CdpMarkerName = ".cef-enable-remote-debugging";
     private const string CdpMarkerJunctionTarget = @"C:\fuckass\folder\that\shall\never\exist\die\millennium";
     private const int CdpPort = 8080; // Steam's own fixed default — confirmed not configurable via the marker's content.
     private string? CdpMarkerPath => SteamDir is { } s ? Path.Combine(s, CdpMarkerName) : null;
 
-    /// <summary>True only if <paramref name="path"/> is already a real reparse point (junction/symlink) —
-    /// NOT just "something exists there". A bare Exists check used to treat a stale plain file (from before
-    /// this session's junction fix) or a leftover plain directory (e.g. a partially-failed rmdir) as
-    /// "already present" and permanently skip creating a real junction, silently leaving CDP broken for
-    /// that install forever (nothing else ever re-touches the marker once the plugin's up to date — see
-    /// CreateCdpMarkerJunction's own doc comment).</summary>
-    private static bool IsReparsePoint(string path)
-    {
-        try
-        {
-            return (Directory.Exists(path) || File.Exists(path))
-                && File.GetAttributes(path).HasFlag(FileAttributes.ReparsePoint);
-        }
-        catch { return false; }
-    }
-
     /// <summary>Idempotent, self-healing: safe to call on every status check, not just on install. If a
     /// REAL junction is already there, no-op. If something else is there — a stale plain marker file from
     /// before this session's junction fix, or any other leftover cruft that isn't actually a reparse
     /// point — it's cleared first, since a plain file at this path doesn't survive Millennium's cleanup and
-    /// silently breaks CDP forever otherwise.</summary>
+    /// silently breaks CDP forever otherwise. The reparse-point test is what distinguishes the two; a bare
+    /// Exists check would treat the cruft as "already present" and leave CDP broken for that install.</summary>
     private static void CreateCdpMarkerJunction(string path)
     {
-        if (IsReparsePoint(path)) return;
+        if (DirectoryJunction.Exists(path)) return;
         try
         {
             if (Directory.Exists(path)) Directory.Delete(path, recursive: true);
             else if (File.Exists(path)) File.Delete(path);
         }
-        catch { /* best effort — mklink below just no-ops/fails harmlessly if this didn't clear it */ }
-
-        var psi = new System.Diagnostics.ProcessStartInfo("cmd.exe", $"/c mklink /j \"{path}\" \"{CdpMarkerJunctionTarget}\"")
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException)
         {
-            UseShellExecute = false,
-            CreateNoWindow = true,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-        };
-        using var p = System.Diagnostics.Process.Start(psi);
-        p?.WaitForExit(5000);
+            // Best effort — Create below fails harmlessly if this didn't clear the way.
+        }
+
+        DirectoryJunction.Create(path, CdpMarkerJunctionTarget);
     }
 
-    private static void RemoveCdpMarkerJunction(string path)
-    {
-        if (!Directory.Exists(path)) return;
-        var psi = new System.Diagnostics.ProcessStartInfo("cmd.exe", $"/c rmdir \"{path}\"")
-        {
-            UseShellExecute = false,
-            CreateNoWindow = true,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-        };
-        using var p = System.Diagnostics.Process.Start(psi);
-        p?.WaitForExit(5000);
-    }
+    private static void RemoveCdpMarkerJunction(string path) => DirectoryJunction.Remove(path);
 
     private static readonly HttpClient PortProbeHttp = new() { Timeout = TimeSpan.FromMilliseconds(800) };
 
@@ -357,13 +325,18 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
         Dictionary<string, List<string>>? disabledMillenniumEntries = null;
         try
         {
+            // Pinned to the plugin repo, not merely to a GitHub host: the loader DLL below is copied into
+            // the Steam root and loaded by steam.exe, and the URL comes from release JSON an API mirror may
+            // have served. See GithubProxy.IsAssetUrlForRepo.
             string zipPath = Path.Combine(tmp, PluginZipAsset);
-            await gh.DownloadAsync(zipAsset.DownloadUrl, zipPath, progress, ct);
+            await gh.DownloadAssetAsync(zipAsset.DownloadUrl, AppConfig.PluginReleasesOwner,
+                AppConfig.PluginReleasesRepo, zipPath, progress, ct);
             var slotDlPaths = new Dictionary<LoaderSlot, string>();
             foreach (var (slot, asset) in slotAssets)
             {
                 string p = Path.Combine(tmp, slot.DllAsset);
-                await gh.DownloadAsync(asset.DownloadUrl, p, progress, ct);
+                await gh.DownloadAssetAsync(asset.DownloadUrl, AppConfig.PluginReleasesOwner,
+                    AppConfig.PluginReleasesRepo, p, progress, ct);
                 slotDlPaths[slot] = p;
             }
 
@@ -383,6 +356,18 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
                     return (false, string.Format(Resources.Strings.Plugin_Err_VerifyFailed, slot.DllAsset));
                 slotShas[slot] = AssetIntegrity.Sha256OfFile(p);
             }
+
+            if (ScreenPluginArchive(zipPath, FrontendDir) is { } rejection) return (false, rejection);
+
+            // Disclose what is about to be installed — the frontend zip plus one loader DLL per slot, the
+            // latter going into the Steam root. Cancelling here has cost nothing: not a byte has been
+            // written outside the temp folder yet.
+            if (!await notice.ReviewAsync(new DownloadReview(
+                    AppConfig.PluginReleasesOwner, AppConfig.PluginReleasesRepo, latest.TagName,
+                    PluginZipAsset, zipSha,
+                    FileCount: 1 + slotShas.Count,
+                    ArchiveScreened: true), ct))
+                return (false, Resources.Strings.Download_Notice_Cancelled);
 
             // 1) Frontend → %AppData%\LuaToolsGui\plugin (fresh).
             if (Directory.Exists(FrontendDir)) Directory.Delete(FrontendDir, recursive: true);
@@ -468,9 +453,18 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
 
     /// <summary>Silent auto-update: if an update is available for an already-installed plugin, apply it
     /// (frontend silently; DLL change stops/swaps/restarts Steam). Returns true if an update was applied.
-    /// Fire-and-forget safe — swallows offline/errors. Called from the app's Steam-open update flow.</summary>
+    /// Fire-and-forget safe — swallows offline/errors. Called from the app's Steam-open update flow.
+    ///
+    /// <para>
+    /// Gated on <c>PluginAutoUpdate</c>. This path runs unattended on every Steam open and can replace a
+    /// DLL in the Steam root and restart Steam, so it needs an off switch that is not a marker file in a
+    /// folder the app also writes to. The check lives HERE rather than at the call sites because there are
+    /// two of them (the Steam-open flow and the /check-updates HTTP handler) and a gate that has to be
+    /// remembered at each caller is a gate that gets missed by the third one.
+    /// </para></summary>
     public async Task<bool> AutoUpdateAsync(CancellationToken ct = default)
     {
+        if (!settings.PluginAutoUpdate) return false;
         try
         {
             var st = await GetStatusAsync(force: true, ct);
@@ -665,6 +659,31 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
             return;
         }
     }
+
+    /// <summary>
+    /// The plugin flow's archive gate: the same analyser the Fixes page runs, before anything is written.
+    /// Returns null to proceed, or the localized refusal to show the user.
+    ///
+    /// <para>
+    /// The digest proves the bytes are what the release published — it says nothing about what expanding
+    /// them does. <see cref="ZipFile.ExtractToDirectory(string, string)"/> already refuses path escapes on
+    /// its own, but nothing capped entry count or expansion, so a decompression bomb inside a legitimately
+    /// published release would fill the user's %AppData%. Screening here also means Plugin and Fixes share
+    /// one gate instead of one silently lacking a check the other has.
+    /// </para>
+    ///
+    /// <para>
+    /// Split out from <see cref="InstallAsync"/> so it can be tested without a network round-trip or a
+    /// Steam install. <paramref name="destinationRoot"/> is a parameter for the same reason, and passing it
+    /// is not optional in practice: <see cref="FixAnalyzer.AnalyzeArchive"/> skips the containment and
+    /// duplicate-destination checks entirely when it is null, so a null here would quietly turn zip-slip
+    /// screening off.
+    /// </para>
+    /// </summary>
+    internal static string? ScreenPluginArchive(string zipPath, string destinationRoot) =>
+        FixAnalyzer.AnalyzeArchive(zipPath, destinationRoot) is { Blocked: true } analysis
+            ? string.Format(Resources.Strings.Plugin_Err_ArchiveRejected, PluginZipAsset, analysis.BlockReason)
+            : null;
 
     // ── Helpers ──
     // Hashing/digest parsing live in AssetIntegrity (fail-closed by construction); see that type.

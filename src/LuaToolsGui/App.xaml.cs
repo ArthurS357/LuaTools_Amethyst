@@ -106,6 +106,7 @@ public partial class App : Application
                 services.AddSingleton<LuaInstaller>();
                 services.AddSingleton<SteamLibraryService>();
                 services.AddSingleton<GithubProxy>();
+                services.AddSingleton<DownloadNotice>();
                 services.AddSingleton<HardwareAppIdService>();
                 services.AddSingleton<SteamlessService>();
                 services.AddSingleton<CloudRedirectService>();
@@ -594,6 +595,23 @@ public partial class App : Application
                 LuaToolsGui.Resources.Strings.Cdp_Consent_Body,
                 LuaToolsGui.Resources.Strings.Cdp_Consent_Title,
                 MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) == MessageBoxResult.Yes);
+
+        // Disclose every Mode/Plugin artifact before it is applied, with a window to abort. Advisory, so it
+        // resolves to "proceed" when the grace period runs out — the checks that actually protect the user
+        // already ran and already refused anything they could not prove. See DownloadNotice.
+        var toasts = _host.Services.GetRequiredService<ToastService>();
+        _host.Services.GetRequiredService<DownloadNotice>().Present = (review, grace) =>
+        {
+            var decision = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+            Dispatcher.Invoke(() => toasts.ShowAction(
+                review.Title, review.Body, LuaToolsGui.Resources.Strings.Download_Notice_Cancel,
+                () => decision.TrySetResult(false)));
+
+            // Whichever happens first: the user cancels, or the window closes and the install continues.
+            _ = Task.Delay(grace).ContinueWith(_ => decision.TrySetResult(true), TaskScheduler.Default);
+            return decision.Task;
+        };
 
         // Settings' own "Sign in with Discord" button → browser OAuth (unchanged).
         settingsVm.RequestSignIn = () => main.SignInCommand.ExecuteAsync(null);

@@ -13,7 +13,8 @@ namespace LuaToolsGui.Services;
 /// into the Steam root (CloudRedirect runs a CLI that patches + deploys itself). Switching overwrites
 /// shared files but doesn't delete the previous mode's leftovers. The active mode persists in settings.
 /// </summary>
-public class UnlockerService(SteamService steam, SettingsService settings, CacheService cache, GithubProxy gh)
+public class UnlockerService(SteamService steam, SettingsService settings, CacheService cache, GithubProxy gh,
+    DownloadNotice notice)
 {
     private static readonly JsonSerializerOptions JsonOpts = new() { PropertyNameCaseInsensitive = true };
 
@@ -31,7 +32,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
         new(UnlockerMode.SteamTools, "SteamTools",
             Description: Resources.Strings.Mode_Desc_SteamTools,
             Kind: ModeKind.Loose,
-            Owner: "mendy-tools", Repo: "verynotsusdllsthataredefnotstrelated",
+            Owner: AppConfig.SteamToolsOwner, Repo: AppConfig.SteamToolsRepo,
             FixedTag: null,
             PlaceFiles: ["dwmapi.dll", "xinput1_4.dll"],
             ZipAssetPattern: null,
@@ -42,7 +43,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
         new(UnlockerMode.OpenSteamTools, "BetterSteamTools",
             Description: Resources.Strings.Mode_Desc_OpenSteamTools,
             Kind: ModeKind.Zip,
-            Owner: "OpenSteam001", Repo: "OpenSteamTool",
+            Owner: AppConfig.OpenSteamToolsOwner, Repo: AppConfig.OpenSteamToolsRepo,
             FixedTag: null,
             PlaceFiles: ["dwmapi.dll", "xinput1_4.dll", "OpenSteamTool.dll"],
             ZipAssetPattern: "OpenSteamTool-{version}-Release.zip",
@@ -54,7 +55,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
         new(UnlockerMode.OpenSteamToolsNightly, "BetterSteamTools Nightly",
             Description: Resources.Strings.Mode_Desc_OpenSteamToolsNightly,
             Kind: ModeKind.Zip,
-            Owner: "madoiscool", Repo: "OST-Nightly",
+            Owner: AppConfig.OstNightlyOwner, Repo: AppConfig.OstNightlyRepo,
             FixedTag: null,
             PlaceFiles: ["dwmapi.dll", "xinput1_4.dll", "OpenSteamTool.dll"],
             ZipAssetPattern: "OpenSteamTool-{version}-Release.zip",
@@ -63,7 +64,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
         new(UnlockerMode.CloudRedirect, "CloudRedirect (SteamTools Fix)",
             Description: Resources.Strings.Mode_Desc_CloudRedirect,
             Kind: ModeKind.Cli,
-            Owner: "Selectively11", Repo: "CloudRedirect",
+            Owner: AppConfig.CloudRedirectOwner, Repo: AppConfig.CloudRedirectRepoName,
             FixedTag: null,
             PlaceFiles: ["cloud_redirect.dll"],
             ZipAssetPattern: null,
@@ -166,9 +167,6 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
         return (anyMissingOrStale ? ModeStatus.UpdateAvailable : ModeStatus.UpToDate, latestTag);
     }
 
-    private const string MirrorRepoOwner = "mendy-tools";
-    private const string MirrorRepo = "verynotsusdllsthataredefnotstrelated";
-
     /// <summary>
     /// OpenSteamTools status via the mendy-tools "ost-" mirror (real per-DLL hashes). Hash the on-disk
     /// dwmapi.dll against the mirror: matches the LATEST ost- release (by published_at) → UpToDate;
@@ -180,7 +178,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
         string dwmapi = Path.Combine(root, "dwmapi.dll");
         if (!File.Exists(dwmapi)) return (ModeStatus.NotInstalled, null);
 
-        var releases = await FetchAllReleasesAsync(MirrorRepoOwner, MirrorRepo, null, ct);
+        var releases = await FetchAllReleasesAsync(AppConfig.SteamToolsOwner, AppConfig.SteamToolsRepo, null, ct);
         if (releases is null) return (ModeStatus.Unknown, null);
 
         var ost = releases.Where(r => r.TagName.StartsWith("ost-", StringComparison.OrdinalIgnoreCase))
@@ -244,13 +242,15 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
             // 1. Stage + verify into temp.
             Dictionary<string, string> staged; // filename → staged path
             string? zipDigest = null;
+            string? zipAssetName = null;
             if (def.Kind == ModeKind.Zip)
             {
                 var asset = FindZipAsset(def, release!);
                 if (asset is null) return ModeInstallResult.Fail("Release is missing the expected download.");
+                zipAssetName = asset.Name;
 
                 string zipPath = Path.Combine(staging, asset.Name);
-                await DownloadToFileAsync(asset.DownloadUrl, zipPath, progress, ct);
+                await DownloadToFileAsync(def, asset.DownloadUrl, zipPath, progress, ct);
 
                 zipDigest = AssetIntegrity.Sha256OfFile(zipPath);
                 if (!AssetIntegrity.Matches(zipPath, asset.Digest))
@@ -273,13 +273,27 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
                     if (asset is null) return ModeInstallResult.Fail($"Couldn't find {file} in any release.");
 
                     string dest = Path.Combine(staging, file);
-                    await DownloadToFileAsync(asset.DownloadUrl, dest, progress, ct);
+                    await DownloadToFileAsync(def, asset.DownloadUrl, dest, progress, ct);
 
                     if (!AssetIntegrity.Matches(dest, asset.Digest))
                         return ModeInstallResult.Fail($"{file} failed verification (sha256 mismatch or no published digest).");
                     staged[file] = dest;
                 }
             }
+
+            // 1b. Tell the user what is about to be written next to steam.exe, and give them a moment to
+            //     stop it. Everything above already refused anything unverifiable; this is disclosure.
+            //     For a zip the meaningful hash is the archive's — that is what the release published and
+            //     what the user can compare against; the extracted members have no digest of their own.
+            var review = zipAssetName is not null && zipDigest is not null
+                ? new DownloadReview(def.Owner, def.Repo, release?.TagName, zipAssetName, zipDigest,
+                    def.PlaceFiles.Length)
+                : new DownloadReview(def.Owner, def.Repo, release?.TagName ?? steamToolsTag,
+                    def.PlaceFiles[0], AssetIntegrity.Sha256OfFile(staged[def.PlaceFiles[0]]),
+                    def.PlaceFiles.Length);
+
+            if (!await notice.ReviewAsync(review, ct))
+                return ModeInstallResult.Fail(Resources.Strings.Download_Notice_Cancelled);
 
             // 2. Copy verified files into the Steam root (overwrite). Two very different failures land here
             //    and used to be reported identically: the file is LOCKED (Steam running) or we are DENIED
@@ -370,11 +384,17 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
 
             // 1. Download + verify the CLI tool.
             string cliPath = Path.Combine(staging, def.CliAssetName!);
-            await DownloadToFileAsync(cliAsset.DownloadUrl, cliPath, progress, ct);
+            await DownloadToFileAsync(def, cliAsset.DownloadUrl, cliPath, progress, ct);
             // This binary is EXECUTED below, and may have come from a third-party mirror — a missing digest
             // must stop the install, not wave it through.
             if (!AssetIntegrity.Matches(cliPath, cliAsset.Digest))
                 return ModeInstallResult.Fail($"{def.CliAssetName} failed verification (sha256 mismatch or no published digest).");
+
+            // 1b. This one is EXECUTED, not just placed, so disclose it before it runs.
+            if (!await notice.ReviewAsync(new DownloadReview(
+                    def.Owner, def.Repo, release.TagName, cliAsset.Name,
+                    AssetIntegrity.Sha256OfFile(cliPath)), ct))
+                return ModeInstallResult.Fail(Resources.Strings.Download_Notice_Cancelled);
 
             // 2. Run it. It closes Steam, patches SteamTools, and deploys the dll on its own.
             progress?.Report(null); // indeterminate — no progress signal from the external tool
@@ -462,7 +482,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
         string ostDll = Path.Combine(root, "OpenSteamTool.dll");
         if (File.Exists(ostDll))
         {
-            var nightly = await FetchAllReleasesAsync("madoiscool", "OST-Nightly", null, ct);
+            var nightly = await FetchAllReleasesAsync(AppConfig.OstNightlyOwner, AppConfig.OstNightlyRepo, null, ct);
             if (nightly is not null)
             {
                 string ostHash = AssetIntegrity.Sha256OfFile(ostDll);
@@ -471,12 +491,10 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
             }
         }
 
-        const string repo = "verynotsusdllsthataredefnotstrelated";
-
         // Single fetch — the same mendy-tools repo serves both the "ost-" mirror and the "st" releases.
         if (detected is null)
         {
-            var stRepoReleases = await FetchAllReleasesAsync("mendy-tools", repo, null, ct);
+            var stRepoReleases = await FetchAllReleasesAsync(AppConfig.SteamToolsOwner, AppConfig.SteamToolsRepo, null, ct);
             if (stRepoReleases is not null)
             {
                 if (BothDllsMatchPrefix(stRepoReleases, "ost-"))
@@ -491,7 +509,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
             string crDll = Path.Combine(root, "cloud_redirect.dll");
             if (File.Exists(crDll))
             {
-                var releases = await FetchAllReleasesAsync("Selectively11", "CloudRedirect", null, ct);
+                var releases = await FetchAllReleasesAsync(AppConfig.CloudRedirectOwner, AppConfig.CloudRedirectRepoName, null, ct);
                 string crHash = AssetIntegrity.Sha256OfFile(crDll);
                 if (releases is not null && releases.Any(r => AssetDigest(r, "cloud_redirect.dll") == crHash))
                     detected = UnlockerMode.CloudRedirect;
@@ -750,9 +768,15 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
         {
             Directory.CreateDirectory(staging);
             string tmp = Path.Combine(staging, CloudRedirectDll);
-            await DownloadToFileAsync(asset.DownloadUrl, tmp, progress, ct);
+            await gh.DownloadAssetAsync(asset.DownloadUrl, AppConfig.CloudRedirectOwner,
+                AppConfig.CloudRedirectRepoName, tmp, progress, ct);
             if (!AssetIntegrity.Matches(tmp, asset.Digest))
                 return ModeInstallResult.Fail($"{CloudRedirectDll} failed verification (sha256 mismatch or no published digest).");
+
+            if (!await notice.ReviewAsync(new DownloadReview(
+                    AppConfig.CloudRedirectOwner, AppConfig.CloudRedirectRepoName, release.TagName,
+                    CloudRedirectDll, AssetIntegrity.Sha256OfFile(tmp)), ct))
+                return ModeInstallResult.Fail(Resources.Strings.Download_Notice_Cancelled);
 
             try
             {
@@ -898,9 +922,13 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
         return result;
     }
 
-    // Asset download routed via GithubProxy: direct, then mirrors (for blocked/throttled regions).
-    private Task DownloadToFileAsync(string url, string destPath, IProgress<double?>? progress, CancellationToken ct) =>
-        gh.DownloadAsync(url, destPath, progress, ct);
+    // Asset download routed via GithubProxy: direct, then mirrors (for blocked/throttled regions), and
+    // PINNED to the repo the release metadata came from. Every file downloaded here is either loaded by
+    // steam.exe or executed, and the metadata carrying the URL can be served by a mirror — see
+    // GithubProxy.IsAssetUrlForRepo for why a host check alone is not enough.
+    private Task DownloadToFileAsync(ModeDefinition def, string url, string destPath,
+        IProgress<double?>? progress, CancellationToken ct) =>
+        gh.DownloadAssetAsync(url, def.Owner, def.Repo, destPath, progress, ct);
 
     // Hashing and digest parsing live in AssetIntegrity — see that type for why verification is
     // fail-closed and why four services having their own copies of it was itself the bug.

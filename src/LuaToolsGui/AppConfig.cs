@@ -65,9 +65,24 @@ public static class AppConfig
     public const string SteamlessPinnedSha256 =
         "e3e2d22e098ff3fb359b2876aa2bed9596f0501e6ff588cbffae90a76d2dc4f5";
 
+    // ── Mode (unlocker) sources ──────────────────────────────────────
+    // Every repository a Mode card downloads a Steam-root DLL or an executed CLI from. They live here, not
+    // inline in UnlockerService, because each one is now also the PIN that GithubProxy.IsAssetUrlForRepo
+    // checks a download URL against — a repo name that appears in two places is a repo name that can drift
+    // out of step with the thing verifying it. "verynotsusdllsthataredefnotstrelated" was written out three
+    // separate times before this.
+    public const string SteamToolsOwner = "mendy-tools";
+    public const string SteamToolsRepo = "verynotsusdllsthataredefnotstrelated";
+    public const string OpenSteamToolsOwner = "OpenSteam001";
+    public const string OpenSteamToolsRepo = "OpenSteamTool";
+    public const string OstNightlyOwner = "madoiscool";
+    public const string OstNightlyRepo = "OST-Nightly";
+
     // CloudRedirect (Selectively11) — the Mode page "Manage" button downloads the latest CloudRedirect.exe
     // GUI manager from here and launches it. (Separate from the CLI fixer used by the mode install flow.)
-    public const string CloudRedirectRepo = "Selectively11/CloudRedirect";
+    public const string CloudRedirectOwner = "Selectively11";
+    public const string CloudRedirectRepoName = "CloudRedirect";
+    public const string CloudRedirectRepo = CloudRedirectOwner + "/" + CloudRedirectRepoName;
     // ── Manifest backend: HTTP only, and it has to stay that way ─────
     // WARNING: this is plain HTTP to a bare IP. It is used by exactly one call —
     // LuaToolsApiClient.CheckSourcesAsync → GET /check_apis?appid=<id> — which carries NO credential and

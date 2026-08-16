@@ -61,6 +61,16 @@ public sealed class PersistenceTests : IDisposable
         settings.BuildsPageSize.Should().Be(10);
         settings.MinimizeToTray.Should().BeFalse();
         settings.FastFetch.Should().BeFalse();
+        settings.PluginAutoUpdate.Should().BeFalse(
+            "swapping a DLL next to steam.exe and restarting Steam, unattended and unprompted, is opt-in");
+    }
+
+    [Fact]
+    public void Plugin_auto_update_can_be_opted_into_and_survives_a_reload()
+    {
+        _ = new SettingsService(_dir) { PluginAutoUpdate = true };
+
+        new SettingsService(_dir).PluginAutoUpdate.Should().BeTrue();
     }
 
     [Fact]

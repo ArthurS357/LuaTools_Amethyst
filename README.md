@@ -12,7 +12,7 @@ It browses and installs manifest sources, edits `stplug-in` lua files (depot pin
 enable/disable), manages unlocker modes, and injects a companion plugin into Steam's store pages. It
 ships translated in 29 languages and auto-updates via Velopack.
 
-Current version: **1.3.0** · Repository: <https://github.com/ArthurS357/LuaTools_Amethyst>
+Current version: **1.4.0** · Repository: <https://github.com/ArthurS357/LuaTools_Amethyst>
 
 ### Checking which build you are running
 
@@ -195,6 +195,99 @@ Things that are **recorded but allowed**, because blocking them would break legi
 (a game fix is executables), nested archives, and lua lines that are not recognised manifest directives.
 Every decision is written to `plugin-backend.log`, and a refusal is shown as a toast explaining why.
 
+## Where Modes and the Plugin come from
+
+The Mode and Plugin pages are **managers, not bundlers**: nothing they install ships inside this app. Each
+one fetches a GitHub release, verifies it, and places the result. These are the sources:
+
+| Page | Source repository | What it places | Where |
+|---|---|---|---|
+| Mode — SteamTools | `mendy-tools/verynotsusdllsthataredefnotstrelated` | `dwmapi.dll`, `xinput1_4.dll` | Steam root |
+| Mode — BetterSteamTools | `OpenSteam001/OpenSteamTool` | the same two + `OpenSteamTool.dll` | Steam root |
+| Mode — BST Nightly | `madoiscool/OST-Nightly` | the same three | Steam root |
+| Mode — CloudRedirect | `Selectively11/CloudRedirect` | `CloudRedirectCLI.exe` (**executed**), `cloud_redirect.dll` | Steam root |
+| Plugin | `madoiscool/LTSP` | `plugin.zip`, `winmm.dll` | `%AppData%`, Steam root |
+| Manage — Remove Steam DRM | `atom0s/Steamless` | `Steamless.CLI.exe` (**executed**) | cache |
+
+Every one of them is verified as described under [GitHub mirrors](#github-mirrors) — HTTPS, GitHub host,
+**pinned to the owner/repo in this table**, and SHA-256 fail-closed — and `plugin.zip` additionally goes
+through the same [archive screen](#downloaded-fixes-are-screened-before-they-touch-your-disk) the Fixes
+page uses, so a decompression bomb inside a genuinely-published release is refused too.
+
+### You are told before anything is applied
+
+Verification used to be entirely silent: it worked, and you had no way to see that it had. Immediately
+before an artifact is written — after it is downloaded and verified, before it goes anywhere near your
+Steam folder — a notice shows what is about to happen:
+
+```
+Installing from madoiscool/LTSP
+plugin.zip · version v1.2 · 2 file(s)
+SHA-256 e3e2d22e098ff3fb
+Verified: repository pinned · SHA-256 matched · archive screened
+```
+
+It carries a **Cancel** button and waits a few seconds before continuing on its own. Cancelling costs
+nothing: at that point everything still lives in a temp folder and not a byte has been written to the
+Steam root.
+
+The notice is **advisory and deliberately fails open** — if it cannot be shown (a silent auto-update, the
+HTTP bridge, no window), the install proceeds. That is not a hole. The checks that actually protect you
+already ran and already refused anything they could not prove; making a UI fault block installs would
+create an outage without adding safety. The short hash is there so you can compare it against what the
+release publishes if you want to.
+
+### Honest limits of that
+
+**None of these are this fork's repositories, and this fork cannot make them so.** They are the upstream
+and community projects that actually build these binaries; there is nothing to mirror that would not just
+be a stale copy of someone else's work, re-signed by us and no more trustworthy for it. Two consequences
+are worth stating plainly rather than leaving implied:
+
+- **The pinning guarantees provenance, not intent.** It proves the bytes are the ones `madoiscool/LTSP`
+  published. It cannot tell you whether that release is benign. If one of these projects ships something
+  hostile, this app will faithfully verify it and install it.
+- **There is a deliberate asymmetry with the app's own updates.** `AppUpdateSources` refuses to let the
+  app update *itself* from `madoiscool/LuaTools`, because that repo publishes the official build with the
+  telemetry and key-upload this fork removed. That refusal does not, and cannot, extend to the loader DLL —
+  the plugin genuinely lives at `madoiscool/LTSP` and there is no fork of it to point at.
+
+What is available today to reduce exposure, in rough order of effect:
+
+1. **`PluginAutoUpdate` is off by default.** Nothing in the Steam root changes unless you press
+   Install/Update on the Plugin page. Set it to `true` only if you want silent updates back.
+2. **Read the pre-install notice** and press Cancel if the source or version is not what you expected.
+3. `"GithubDownloadMirrors": []` and `"GithubApiMirrors": []` — direct connections only, which removes the
+   mirror operator from the picture entirely and makes the repository pin belt-and-braces.
+4. Don't install the Plugin at all. Modes, downloads and the Fixes page work without it; the Plugin only
+   adds the "Add via LuaTools" button on Steam store pages.
+
+Running a curated mirror of these projects is the one real alternative, and it is a maintenance commitment
+(tracking five upstreams, re-publishing, and owning the delay when a fix lands upstream and not on the
+mirror) rather than a code change. It is not done here, and the code does not pretend otherwise.
+
+### If an install is refused
+
+A refusal is the app doing its job — it could not prove the bytes were what the project published, so it
+stopped. The message names which check failed. Do **not** work around it by disabling verification; there
+is deliberately no setting for that. Instead:
+
+1. **Try again.** The most common cause is a mirror serving a stale or truncated response. Retrying often
+   hits a different mirror, or GitHub directly.
+2. **Cut the mirrors out.** Set `"GithubDownloadMirrors": []` and `"GithubApiMirrors": []` in
+   `settings.json` and retry. If it now succeeds, a mirror was the problem.
+3. **Install by hand.** Go to the release page for the repository in the table above, download the asset
+   yourself over HTTPS, and compare its SHA-256 against the digest GitHub shows for that asset:
+   ```powershell
+   Get-FileHash .\winmm.dll -Algorithm SHA256
+   ```
+   Only if they match, place the file yourself: loader DLLs and Mode DLLs go in the Steam root (next to
+   `steam.exe`, with Steam fully closed); `plugin.zip` extracts to `%AppData%\LuaToolsGui\plugin`. You are
+   performing the verification the app would have performed — if the hashes differ, do not use the file.
+4. **A release with no published digest cannot be verified at all.** GitHub only began populating the
+   asset `digest` field in mid-2025, so older releases carry none. The app refuses those rather than
+   guessing, with one audited exception (`SteamlessPinnedSha256`, a hash compiled into this build).
+
 ## Configuration
 
 Settings live in `%AppData%\LuaToolsGui\settings.json`. Most are managed from the Settings page; the
@@ -221,9 +314,19 @@ your own, or disable them entirely.
 - The two lists are separate on purpose: public proxies serve downloads but `403` the REST API, and the
   API proxy `400`s downloads. Mixing them just wastes a round trip.
 
-Downloads stay integrity-checked regardless of which mirror serves them — assets are pinned to
-GitHub-owned HTTPS hosts and verified by SHA-256 before use, so a hostile mirror cannot substitute
-content.
+Downloads stay integrity-checked regardless of which mirror serves them. Any asset that gets executed, or
+placed where another program will load it, is pinned three ways before a byte is written:
+
+1. **HTTPS, GitHub-owned host** — a plaintext URL is modifiable in transit no matter what is checked later.
+2. **The publishing repository** — the URL must be that project's own
+   `github.com/<owner>/<repo>/releases/download/…`. This one matters more than it looks: the download URL
+   and the SHA-256 come from the *same* release JSON, and an API mirror can serve that JSON. Host pinning
+   alone left a hostile mirror free to name any *other* github.com repository and hand over that payload's
+   matching hash — both checks would pass and the file would still land next to `steam.exe`.
+3. **SHA-256, fail-closed** — a missing or malformed digest is a refusal, not a skipped check.
+
+A hostile mirror can therefore still lie, but only about *which release of the real project* you get — it
+cannot substitute a different project's content.
 
 ### Privacy and update keys
 
@@ -232,6 +335,16 @@ content.
 | `EnableSourceAvailabilityChecks` | `true` | `false` stops the cleartext lookup entirely (see above) |
 | `InsecureMetadataNotice` | `"once"` | `"always"` / `"off"` — how often the lookup is disclosed |
 | `AppUpdateRepos` | this fork's repo | Where the app updates itself from. `[]` disables self-update |
+| `PluginAutoUpdate` | `false` | `true` lets the store-page plugin update itself unattended |
+
+`PluginAutoUpdate` defaults to **off**, and that is a deliberate change from earlier builds. With it on,
+an out-of-date plugin is updated the moment you open Steam: the new release is downloaded, `winmm.dll` in
+the **Steam root** is replaced, and Steam is stopped and restarted — no prompt. That is the most powerful
+thing this app does, and it was previously happening without asking. `AppUpdateRepos` does **not** cover
+it; that key governs only the app updating itself.
+
+Left off, the plugin still updates — just when you press Install/Update on the Plugin page, which tells you
+an update is available. Turn it on with `"PluginAutoUpdate": true` if you prefer the old behaviour.
 
 A full example:
 
@@ -240,6 +353,7 @@ A full example:
   "AppUpdateRepos": ["https://github.com/ArthurS357/LuaTools_Amethyst"],
   "EnableSourceAvailabilityChecks": true,
   "InsecureMetadataNotice": "always",
+  "PluginAutoUpdate": true,
   "GithubDownloadMirrors": []
 }
 ```
@@ -264,8 +378,88 @@ py scripts/check-i18n.py
 ```
 
 All three must pass before a release. `check-i18n.py` validates the 29 translation files against the
-English baseline — key parity, valid XML, matching `{0}` placeholders, and that
-`Strings.Designer.cs` exposes every key.
+English baseline — key parity, no duplicate keys, valid XML, matching `{0}` placeholders, and that
+`Strings.Designer.cs` exposes every key. It resolves the repository from its own location, so it can be
+run from any working directory (`--root` overrides that).
+
+### Producing a release binary
+
+Use the script rather than pasting the `dotnet publish` line by hand — it resolves the repository root from
+its own location, so there is no drive letter to edit, and it prints the artifact path instead of leaving
+you to reconstruct it:
+
+```powershell
+.\scripts\build-release.ps1
+```
+
+It publishes a self-contained single-file `win-x64` build and writes
+`src/LuaToolsGui/bin/Release/<tfm>/win-x64/publish/LuaTools.exe` (~165 MB). `-RepoRoot`, `-Configuration`
+and `-Runtime` are accepted if you need to override any of them. A non-zero exit code means the publish
+failed; nothing downstream should run.
+
+This produces the **binary only**. Packaging it into an installer is a separate `vpk pack` step and is
+deliberately not part of the script.
+
+### Repository layout
+
+```
+src/LuaToolsGui/     the application (Models, Services, ViewModels, Views, Themes, Resources)
+tests/               xUnit suite
+scripts/             build-release.ps1, check-i18n.py
+docs/                CHANGELOG and the security audit
+.github/workflows/   build + test on Windows, i18n check on Linux
+```
+
+`LuaToolsGui.sln` and `Directory.Build.props` stay at the root because `dotnet`, the CI workflows and
+Velopack all resolve them from there.
+
+### Known: one remaining `cmd.exe` call
+
+Three places used to build a shell command by pasting a path into a string —
+`cmd.exe /c mklink /j "{path}"` and `cmd.exe /c rmdir "{path}"` — where the path came from
+`SteamPathOverride` in `settings.json`. A quote in it closed the literal and cmd ran whatever followed.
+All three now go through `DirectoryJunction`, which drives the NTFS reparse point through
+`DeviceIoControl` directly: no shell, no command string, nothing to escape.
+
+One call survives, in `App.RelaunchApp` (used after a language change):
+
+```csharp
+new ProcessStartInfo("cmd.exe", $"/c timeout /t 2 /nobreak >nul & start \"\" \"{exe}\"")
+```
+
+It is **not exploitable**, for a specific reason rather than by luck: `exe` is
+`Environment.ProcessPath`, supplied by the OS, and `"` is not a legal character in a Windows path — so the
+interpolated value cannot carry the quote the attack needs. It is not reachable from `settings.json`, the
+HTTP bridge, or any downloaded content.
+
+It stays because the shell is doing real work here: waiting for this process's single-instance mutex to
+release before launching the replacement. Rewriting it natively means redesigning the relaunch handshake,
+which is a behaviour change to a release-critical path and not worth making for a non-issue. Anyone
+touching it should keep `DirectoryJunction`'s approach in mind and not reintroduce a path-in-a-command-
+string anywhere it *is* reachable.
+
+### Known: `dotnet format --verify-no-changes` fails
+
+It exits **2**, reporting 8 whitespace violations. This is expected and is **not** a regression — do not
+"fix" it by reformatting.
+
+The repository has no `.editorconfig`, so `dotnet format` falls back to the SDK's built-in defaults, which
+this codebase never adopted. The violations are all pre-existing, in files untouched by recent work:
+
+```
+src/LuaToolsGui/AssemblyInfo.cs          src/LuaToolsGui/ViewModels/HomeViewModel.cs
+src/LuaToolsGui/Models/ApiModels.cs      src/LuaToolsGui/ViewModels/ManageViewModel.cs
+src/LuaToolsGui/Services/AppInfo/LaunchOptionsService.cs
+src/LuaToolsGui/Services/LuaEditor.cs    src/LuaToolsGui/ViewModels/PagedListViewModel.cs
+tests/LuaToolsGui.Tests/LaunchModStoreTests.cs
+```
+
+Running `dotnet format` to clear them would rewrite continuation-line indentation across those files and
+bury real changes under formatting noise in every future diff.
+
+**The fix, when someone takes it on:** add a versioned `.editorconfig` that encodes the style the codebase
+actually uses, then reformat, **in its own branch and its own commit**, touching nothing else. Only after
+that does `--verify-no-changes` belong in CI as a gate. Until then it is informational.
 
 ### A note on the WPF-UI dependency
 

@@ -13,12 +13,14 @@ on:
       - 'src/LuaToolsGui/Resources/Strings*.resx'
       - 'src/LuaToolsGui/Resources/Strings.Designer.cs'
       - 'scripts/check-i18n.py'
+      - 'scripts/tests/**'
   push:
     branches: [master, main]
     paths:
       - 'src/LuaToolsGui/Resources/Strings*.resx'
       - 'src/LuaToolsGui/Resources/Strings.Designer.cs'
       - 'scripts/check-i18n.py'
+      - 'scripts/tests/**'
 
 jobs:
   check:
@@ -31,6 +33,12 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
+
+      # The checker's own tests run first: a broken checker reports a clean run, so validating the RESX
+      # files with it proves nothing until it is known to still detect anything. stdlib unittest only —
+      # no pip install step, deliberately.
+      - name: Test the checker
+        run: python -m unittest discover -s scripts/tests
 
       - name: Validate translations
         run: python scripts/check-i18n.py

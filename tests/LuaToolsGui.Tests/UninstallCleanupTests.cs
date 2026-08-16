@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.IO;
 using LuaToolsGui.Services;
 using Xunit;
@@ -37,37 +36,16 @@ public class UninstallCleanupTests : IDisposable
 
     public void Dispose()
     {
-        // The junction, if a test made one, must be severed with rmdir rather than a recursive delete.
+        // The junction, if a test made one, must be severed rather than recursively deleted.
         string marker = Path.Combine(_steam, UninstallCleanup.CdpMarkerName);
-        if (Directory.Exists(marker)) TryRmdir(marker);
+        if (Directory.Exists(marker)) DirectoryJunction.Remove(marker);
         try { if (Directory.Exists(_tmp)) Directory.Delete(_tmp, recursive: true); } catch { }
         GC.SuppressFinalize(this);
     }
 
-    private static void TryRmdir(string path)
-    {
-        try
-        {
-            using var p = Process.Start(new ProcessStartInfo("cmd.exe", $"/c rmdir \"{path}\"")
-            { UseShellExecute = false, CreateNoWindow = true });
-            p?.WaitForExit(5000);
-        }
-        catch { }
-    }
-
     /// <summary>Create the marker the way the app does: an NTFS junction to a target that never exists.</summary>
-    private static bool TryCreateBrokenJunction(string path)
-    {
-        try
-        {
-            using var p = Process.Start(new ProcessStartInfo(
-                "cmd.exe", $"/c mklink /j \"{path}\" \"C:\\luatools\\target\\that\\never\\exists\"")
-            { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true });
-            p?.WaitForExit(5000);
-            return Directory.Exists(path);
-        }
-        catch { return false; }
-    }
+    private static bool TryCreateBrokenJunction(string path) =>
+        DirectoryJunction.Create(path, @"C:\luatools\target\that\never\exists");
 
     // ── The CDP marker: the security-relevant one ────────────────────────────
 

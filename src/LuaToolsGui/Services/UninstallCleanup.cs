@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.IO;
 using Microsoft.Win32;
 
@@ -106,10 +105,10 @@ public static class UninstallCleanup
     }
 
     /// <summary>
-    /// Delete the CDP marker. It is normally an NTFS junction pointing at a target chosen never to exist;
-    /// <c>rmdir</c> is used rather than <see cref="Directory.Delete(string, bool)"/> to sever the link
-    /// without any chance of recursing into a target. A plain file or directory left by an older build (or
-    /// a partially-failed removal) is handled too, so this cannot be defeated by leftover cruft.
+    /// Delete the CDP marker. It is normally an NTFS junction pointing at a target chosen never to exist,
+    /// so removal goes through <see cref="DirectoryJunction.Remove"/>, which severs the link without any
+    /// chance of recursing into a target. A plain file or directory left by an older build (or a
+    /// partially-failed removal) is handled too, so this cannot be defeated by leftover cruft.
     /// </summary>
     public static bool TryRemoveCdpMarker(string steamDir, List<string>? failures = null)
     {
@@ -120,7 +119,7 @@ public static class UninstallCleanup
             // so this check does catch the real-world case.
             if (Directory.Exists(path))
             {
-                RunCmd($"/c rmdir \"{path}\"");
+                DirectoryJunction.Remove(path);
                 if (Directory.Exists(path)) Directory.Delete(path, recursive: true); // non-junction leftover
                 return !Directory.Exists(path);
             }
@@ -223,16 +222,4 @@ public static class UninstallCleanup
         return null;
     }
 
-    private static void RunCmd(string arguments)
-    {
-        var psi = new ProcessStartInfo("cmd.exe", arguments)
-        {
-            UseShellExecute = false,
-            CreateNoWindow = true,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-        };
-        using var p = Process.Start(psi);
-        p?.WaitForExit(5000);
-    }
 }

@@ -91,6 +91,22 @@ public class AppSettings
     // sources and are unaffected either way.
     public string[]? AppUpdateRepos { get; set; }
 
+    // ── Store-page plugin auto-update (advanced; no UI, edit settings.json by hand) ──
+    // When true, an already-installed plugin is updated silently whenever Steam opens. That flow replaces
+    // a DLL in the Steam ROOT (steam.exe loads it) and stops/restarts Steam to do it, all unattended.
+    // AppUpdateRepos only governs the app updating ITSELF; before this key the only brake was a
+    // `.luatools-dll-update-disabled` marker file in the Steam folder, which covers only the DLL half and
+    // is documented in the code as a testing switch.
+    //
+    // DEFAULT OFF, which is a deliberate behaviour change from earlier builds. Placing an unreviewed
+    // binary next to steam.exe and restarting Steam is the most powerful thing this app does, and it was
+    // happening with no prompt and no way to decline. Opting in is a one-line edit; opting out after the
+    // fact is not, because by then the DLL is already swapped. Update still happens the moment the user
+    // presses Install/Update on the Plugin page, so nothing becomes unreachable — it stops being silent.
+    //
+    // Nullable so "never set" (→ default OFF) is distinguishable from an explicit choice.
+    public bool? PluginAutoUpdate { get; set; }
+
     // ── GitHub mirror overrides (advanced; no UI, edit settings.json by hand) ──
     // The defaults are public third-party proxies used only when github.com is unreachable. Set either
     // list to [] to disable mirrors entirely (direct connections only), or to your own https prefixes.
@@ -307,6 +323,17 @@ public sealed class SettingsService
     /// </summary>
     public string[]? AppUpdateRepos => _settings.AppUpdateRepos;
 
+    /// <summary>
+    /// Whether the store-page plugin may update itself unattended on Steam open (default OFF). See the
+    /// field comment on <see cref="AppSettings.PluginAutoUpdate"/> for why this is separate from
+    /// <see cref="AppUpdateRepos"/> and why the default is off.
+    /// </summary>
+    public bool PluginAutoUpdate
+    {
+        get => _settings.PluginAutoUpdate ?? false; // default OFF — silent DLL swaps require opt-in
+        set { _settings.PluginAutoUpdate = value; Save(); }
+    }
+
     private void Load()
     {
         // Prefer the primary file; fall back to the last-good .bak. Crucially, NEVER silently reset a
@@ -380,6 +407,7 @@ public sealed class SettingsService
             && _settings.InsecureMetadataNotice is null
             && _settings.WarnOnInsecureMetadata is null
             && _settings.AppUpdateRepos is null
+            && _settings.PluginAutoUpdate is null
             && _settings.GithubDownloadMirrors is null
             && _settings.GithubApiMirrors is null;
         if (empty)

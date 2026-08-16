@@ -30,14 +30,25 @@ tools/
 
 # Internal notes, server infrastructure config, and saved copies of third-party docs sites.
 # Kept locally; none of it belongs in the public repo.
-docs/
+# exceções em docs/
+!docs/
+!docs/CHANGELOG.md
+!docs/teste-manual-1.4.0.md
 
-# Maintainer-only release tooling
+# Maintainer-only release tooling. The pattern has no slash, so it matches at ANY depth — which also
+# caught scripts/build-release.ps1, the committed publish script the README tells contributors to run.
+# That one is machine-independent by construction (it resolves the repo root from its own location) and
+# has to ship; the un-negated rule still covers a maintainer's own copy at the repository root.
 build-release.ps1
+!scripts/build-release.ps1
 
 # Local code-review tooling artifact: a SQLite graph holding absolute paths and code-structure metadata
 # for this machine only. Nothing in the build reads it.
 .code-review-graph/
+
+# Python bytecode from scripts/tests
+__pycache__/
+*.pyc
 
 # Never commit
 *.lnk

@@ -391,6 +391,16 @@ public static class Strings
         public static string Plugin_Err_MissingAssets => Get(nameof(Plugin_Err_MissingAssets));
         public static string Plugin_Err_VerifyFailed => Get(nameof(Plugin_Err_VerifyFailed));
         public static string Plugin_Err_NoLuatoolsJs => Get(nameof(Plugin_Err_NoLuatoolsJs));
+        public static string Plugin_Err_ArchiveRejected => Get(nameof(Plugin_Err_ArchiveRejected));
+
+    // ── Pre-install download notice (Mode + Plugin) ──
+        public static string Download_Notice_Title => Get(nameof(Download_Notice_Title));
+        public static string Download_Notice_Body => Get(nameof(Download_Notice_Body));
+        public static string Download_Notice_Check_Pinned => Get(nameof(Download_Notice_Check_Pinned));
+        public static string Download_Notice_Check_Digest => Get(nameof(Download_Notice_Check_Digest));
+        public static string Download_Notice_Check_Archive => Get(nameof(Download_Notice_Check_Archive));
+        public static string Download_Notice_Cancel => Get(nameof(Download_Notice_Cancel));
+        public static string Download_Notice_Cancelled => Get(nameof(Download_Notice_Cancelled));
 
     // ── Builds page ──
     // NOT YET TRANSLATED — English-only for now (Get falls back to the English resx for any culture

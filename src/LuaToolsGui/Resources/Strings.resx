@@ -439,6 +439,16 @@ This deletes the .lua files from Steam\config\stplug-in. Restart Steam afterward
   <data name="Plugin_Err_MissingAssets" xml:space="preserve"><value>Release {0} is missing {1} or {2}.</value></data>
   <data name="Plugin_Err_VerifyFailed" xml:space="preserve"><value>{0} failed hash verification.</value></data>
   <data name="Plugin_Err_NoLuatoolsJs" xml:space="preserve"><value>plugin.zip did not contain public/luatools.js.</value></data>
+  <data name="Plugin_Err_ArchiveRejected" xml:space="preserve"><value>{0} was refused by the safety check: {1}</value></data>
+  <data name="Download_Notice_Title" xml:space="preserve"><value>Installing from {0}</value></data>
+  <data name="Download_Notice_Body" xml:space="preserve"><value>{0} · version {1} · {2} file(s)
+SHA-256 {3}
+Verified: {4}</value></data>
+  <data name="Download_Notice_Check_Pinned" xml:space="preserve"><value>repository pinned</value></data>
+  <data name="Download_Notice_Check_Digest" xml:space="preserve"><value>SHA-256 matched</value></data>
+  <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>archive screened</value></data>
+  <data name="Download_Notice_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Cancelled before anything was installed.</value></data>
   <data name="Plugin_About_Header" xml:space="preserve"><value>Notable Features</value></data>
   <data name="Plugin_Feature_StoreButton" xml:space="preserve"><value>Adds an “Add via LuaTools” button to Steam store pages</value></data>
   <data name="Plugin_Feature_AutoUpdate" xml:space="preserve"><value>Automatically keeps itself updated</value></data>
