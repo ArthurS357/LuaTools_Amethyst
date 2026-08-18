@@ -136,11 +136,26 @@ public sealed class SettingsService
 
     private AppSettings _settings = new();
 
+    /// <summary>Encrypts a blob with DPAPI. Indirected only so a test can simulate the profile where it
+    /// isn't available — the fallback that path takes is security-relevant and was previously silent.</summary>
+    private readonly Func<byte[], byte[]> _encrypt;
+
+    /// <summary>Where the DPAPI-unavailable warning goes. Defaults to <see cref="PluginLog"/>, which is
+    /// the app's only service-reachable file sink and already routes everything through
+    /// <see cref="LogSanitizer"/> — its name is narrower than its actual role.</summary>
+    private readonly Action<string> _log;
+
     public SettingsService() : this(DefaultDirectory) { }
 
-    /// <summary>Test seam: use an isolated directory instead of the user's roaming profile.</summary>
-    internal SettingsService(string directory)
+    /// <summary>Test seam: an isolated directory, and optionally a failing encryptor plus a capturing log
+    /// sink so the DPAPI fallback can be exercised on a machine where DPAPI works perfectly well.</summary>
+    internal SettingsService(
+        string directory, Func<byte[], byte[]>? encrypt = null, Action<string>? log = null)
     {
+        // Assigned before Load()/MigrateHubcapKey(), both of which can reach Protect().
+        _encrypt = encrypt ?? (data => ProtectedData.Protect(data, null, DataProtectionScope.CurrentUser));
+        _log = log ?? PluginLog.Log;
+
         _dir = directory;
         _filePath = Path.Combine(directory, "settings.json");
         _tmpPath = _filePath + ".tmp";
@@ -233,20 +248,33 @@ public sealed class SettingsService
     /// plaintext key, so it must never change.</summary>
     private const string ProtectedPrefix = "dpapi:";
 
-    private static string Protect(string plain)
+    private string Protect(string plain)
     {
         try
         {
-            byte[] enc = ProtectedData.Protect(
-                Encoding.UTF8.GetBytes(plain), null, DataProtectionScope.CurrentUser);
+            byte[] enc = _encrypt(Encoding.UTF8.GetBytes(plain));
             return ProtectedPrefix + Convert.ToBase64String(enc);
         }
-        catch
+        catch (Exception ex)
         {
             // DPAPI unavailable (unusual, but possible on a broken profile). Storing the key as-is keeps
             // the feature working; losing the user's key would not.
+            //
+            // That trade is defensible, but it was made SILENTLY: the key quietly downgraded to plain text
+            // in a world-readable file, and because Unprotect() reads a missing "dpapi:" prefix as a
+            // pre-migration plaintext key, the downgrade was permanent and left no trace anywhere. Now it
+            // says so. The message names the failure type only — never the value being protected — and the
+            // sink sanitizes on top of that.
+            SafeLog($"SettingsService: DPAPI unavailable ({ex.GetType().Name}). "
+                  + "The Hubcap API key is being stored UNENCRYPTED in settings.json.");
             return plain;
         }
+    }
+
+    /// <summary>Log without ever letting the logger become the thing that fails a settings write.</summary>
+    private void SafeLog(string message)
+    {
+        try { _log(LogSanitizer.Sanitize(message)); } catch { /* diagnostics are never worth a crash */ }
     }
 
     private static string? Unprotect(string? stored)
