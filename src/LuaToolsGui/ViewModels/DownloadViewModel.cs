@@ -84,6 +84,20 @@ public partial class DownloadViewModel : ObservableObject
     private CancellationTokenSource? _searchCts;
     private CancellationTokenSource? _detailsCts;
 
+    /// <summary>Scopes the source-availability fetch (Hubcap status + stats + lua.tools CheckSources).
+    /// Cancelled when a new fetch starts and whenever the selected app changes, so a slow check for the
+    /// game the user just left can't finish late and repopulate the list behind the game they're on now.
+    /// Downloads deliberately do NOT hang off this — an in-flight install must survive navigation.</summary>
+    private CancellationTokenSource? _fetchCts;
+
+    /// <summary>Abandon any in-flight source check. Called wherever <see cref="Details"/> is about to be
+    /// replaced — the same places that already reset <see cref="_detailsCts"/>.</summary>
+    private void CancelFetch()
+    {
+        _fetchCts?.Cancel();
+        _fetchCts = null;
+    }
+
     // Per-confirm steamcmd lookup: depot/DLC id → its real depot info (name/size/os/lang).
     private IReadOnlyDictionary<long, ContentDepot> _depotsById = new Dictionary<long, ContentDepot>();
 
@@ -398,6 +412,7 @@ public partial class DownloadViewModel : ObservableObject
     private async Task FetchDetailsDebouncedAsync(string appid)
     {
         _detailsCts?.Cancel();
+        CancelFetch(); // the source list belongs to the app being replaced
         var cts = _detailsCts = new CancellationTokenSource();
         try
         {
@@ -420,6 +435,7 @@ public partial class DownloadViewModel : ObservableObject
         ResetResults();
 
         _detailsCts?.Cancel();
+        CancelFetch(); // the source list belongs to the app being replaced
         var cts = _detailsCts = new CancellationTokenSource();
         try
         {
@@ -443,6 +459,7 @@ public partial class DownloadViewModel : ObservableObject
         ResetResults();
 
         _detailsCts?.Cancel();
+        CancelFetch(); // the source list belongs to the app being replaced
         var cts = _detailsCts = new CancellationTokenSource();
         try
         {
@@ -485,6 +502,9 @@ public partial class DownloadViewModel : ObservableObject
         if (Details.IsDlc && await PromptSignInIfGuestAsync(Resources.Strings.Add_SignIn_Dlc)) return;
         ResetResults();
         IsChecking = true;
+        _fetchCts?.Cancel();
+        var cts = _fetchCts = new CancellationTokenSource();
+        var ct = cts.Token;
         try
         {
             if (Details.IsDlc)
@@ -506,13 +526,13 @@ public partial class DownloadViewModel : ObservableObject
 
                 // The manifest backend no longer reports the Hubcap/Morrenus source — synthesize it
                 // ourselves from a direct Hubcap status check (or show it locked if no key is set).
-                await AddHubcapSourceAsync(statuses, Details.AppId.ToString());
+                await AddHubcapSourceAsync(statuses, Details.AppId.ToString(), ct);
 
                 // Premium (key-gated) sources first, like the website
                 foreach (var (name, status) in statuses.OrderByDescending(kv => SourceMeta.Get(kv.Key).RequiresUserKey ? 1 : 0))
                     Sources.Add(new SourceRowViewModel(this, name, status));
 
-                await ApplyHubcapStateAsync();
+                await ApplyHubcapStateAsync(ct);
 
                 if (FastFetch)
                 {
@@ -523,7 +543,7 @@ public partial class DownloadViewModel : ObservableObject
                         return;
                     }
                     _fastFetchSource = best.DisplayName;
-                    await DownloadFromSourceAsync(best);
+                    await DownloadFromSourceAsync(best, ct);
                 }
                 else
                 {
@@ -536,13 +556,25 @@ public partial class DownloadViewModel : ObservableObject
         {
             Error = ex.Message;
         }
+        catch (OperationCanceledException)
+        {
+            // Superseded by a newer fetch, or the user moved to another app. Not a failure — leave the
+            // error line alone so a stale check can't paint a message over the current selection.
+        }
         catch (Exception)
         {
             Error = Resources.Strings.Add_Err_Generic;
         }
         finally
         {
-            IsChecking = false;
+            // Only the CURRENT fetch owns these flags. A superseded one landing late here would clear
+            // IsChecking while the live fetch is still running, re-enabling the button mid-check.
+            if (ReferenceEquals(_fetchCts, cts))
+            {
+                IsChecking = false;
+                _fetchCts = null;
+            }
+            cts.Dispose();
         }
     }
 
@@ -554,7 +586,7 @@ public partial class DownloadViewModel : ObservableObject
     /// availability comes from a direct Hubcap status check using the user's own key. With no key we still
     /// surface the row (as "available") so it shows up locked with the "needs a key" hint.
     /// </summary>
-    private async Task AddHubcapSourceAsync(Dictionary<string, string> statuses, string appid)
+    private async Task AddHubcapSourceAsync(Dictionary<string, string> statuses, string appid, CancellationToken ct)
     {
         string? key = _settings.HubcapApiKey;
         if (string.IsNullOrEmpty(key))
@@ -565,11 +597,18 @@ public partial class DownloadViewModel : ObservableObject
             return;
         }
 
-        var status = await _hubcap.CheckStatusAsync(key, appid);
-        statuses[HubcapSourceName] = status?.ManifestFileExists == true ? "available" : "unavailable";
+        var status = await _hubcap.CheckStatusAsync(key, appid, ct);
+        statuses[HubcapSourceName] = status switch
+        {
+            HubcapResult<HubcapManifestStatus>.Ok { Value.ManifestFileExists: true } => "available",
+            HubcapResult<HubcapManifestStatus>.Ok or HubcapResult<HubcapManifestStatus>.NotFound => "unavailable",
+            // Hubcap didn't answer, or answered with a fault. "unavailable" would be a claim we can't
+            // support — it reads as "this game isn't on Hubcap", which is a different thing entirely.
+            _ => "unknown",
+        };
     }
 
-    private async Task ApplyHubcapStateAsync()
+    private async Task ApplyHubcapStateAsync(CancellationToken ct = default)
     {
         var keyRows = Sources.Where(s => s.NeedsKey).ToList();
         if (keyRows.Count == 0) return;
@@ -582,18 +621,29 @@ public partial class DownloadViewModel : ObservableObject
             return;
         }
 
-        var stats = await _hubcap.GetStatsAsync(key);
+        var result = await _hubcap.GetStatsAsync(key, ct);
         foreach (var row in keyRows)
         {
-            row.IsLocked = stats?.CanMakeRequests != true;
-            if (stats is not null)
-                row.StatsText = $"{stats.DailyUsage}/{stats.DailyLimit}";
+            // Lock only on a definite "no". A dropped connection used to lock the premium rows exactly as
+            // if the quota were spent, so a momentary network blip looked like a used-up key — and the
+            // user had no way to tell, or to retry past it. Now an unreachable Hubcap leaves the row
+            // enabled and the download itself reports what actually went wrong.
+            row.IsLocked = result switch
+            {
+                HubcapResult<HubcapStats>.Ok ok => !ok.Value.CanMakeRequests,
+                HubcapResult<HubcapStats>.Unauthorized or HubcapResult<HubcapStats>.RateLimited => true,
+                _ => false,
+            };
+            if (result is HubcapResult<HubcapStats>.Ok s)
+                row.StatsText = $"{s.Value.DailyUsage}/{s.Value.DailyLimit}";
         }
     }
 
     /// <summary>
     /// Refresh the standard "X/25" daily usage badge on every non-Hubcap source row (those count
-    /// toward the lua.tools daily limit; Hubcap sources show their own X/800 instead). Signed-in only.
+    /// toward the lua.tools daily limit; Hubcap sources show their own X/25 instead — that figure comes
+    /// from the key's own daily_limit, which the live API reports as 25, not the 800 this once claimed).
+    /// Signed-in only.
     /// </summary>
     public async Task RefreshStandardUsageAsync()
     {
@@ -621,7 +671,7 @@ public partial class DownloadViewModel : ObservableObject
     // ── Downloads ───────────────────────────────────────────────────
 
     /// <summary>Base-game manifest zip: download, then install (confirming first if a lua already exists).</summary>
-    public async Task DownloadFromSourceAsync(SourceRowViewModel source)
+    public async Task DownloadFromSourceAsync(SourceRowViewModel source, CancellationToken ct = default)
     {
         if (Details is null || Sources.Any(s => s.IsDownloading)) return;
 
@@ -647,8 +697,14 @@ public partial class DownloadViewModel : ObservableObject
             DownloadedFile download;
             if (source.NeedsKey)
             {
-                download = await _hubcap.DownloadManifestAsync(
-                    appId.ToString(), _settings.HubcapApiKey ?? "", progress);
+                var result = await _hubcap.DownloadManifestAsync(
+                    appId.ToString(), _settings.HubcapApiKey ?? "", progress, ct);
+                if (result is not HubcapResult<DownloadedFile>.Ok ok)
+                {
+                    Error = HubcapErrorText.Describe(result);
+                    return;
+                }
+                download = ok.Value;
             }
             else
             {
@@ -657,7 +713,7 @@ public partial class DownloadViewModel : ObservableObject
             }
             LastDownload = download;
 
-            if (source.NeedsKey) await ApplyHubcapStateAsync(); // refresh the key's X/Y usage badge
+            if (source.NeedsKey) await ApplyHubcapStateAsync(ct); // refresh the key's X/Y usage badge
             else await RefreshStandardUsageAsync(); // non-Hubcap usage just changed (counts toward 25/day)
 
             // If a lua for this game is already installed, confirm with a before/after diff first — unless
@@ -671,6 +727,11 @@ public partial class DownloadViewModel : ObservableObject
         catch (ApiException ex)
         {
             Error = ex.Message;
+        }
+        catch (OperationCanceledException)
+        {
+            // Only reachable from the FastFetch path, whose token dies with its fetch. A user-initiated
+            // download passes no token, so it can't land here.
         }
         catch (Exception)
         {

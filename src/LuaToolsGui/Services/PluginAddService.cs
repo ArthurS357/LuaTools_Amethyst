@@ -47,6 +47,11 @@ public class PluginAddService(
         public bool InstallFailed;
         public string? Error;
         public bool Busy; // a download+install is running
+
+        /// <summary>Scopes every network call this add makes. Cancelled when a newer Start supersedes it,
+        /// so an abandoned add stops holding a Hubcap request open. Not part of the JSON the plugin polls —
+        /// HandleAddStatus projects AddState field by field rather than serializing it.</summary>
+        public readonly CancellationTokenSource Cts = new();
     }
 
     private readonly ConcurrentDictionary<long, AddState> _states = new();
@@ -79,6 +84,12 @@ public class PluginAddService(
             // lua.tools /details round-trip. Null/blank → CheckAsync fetches it as a fallback.
             GameName = string.IsNullOrWhiteSpace(gameName) ? null : gameName.Trim(),
         };
+        // A re-Start for the same app supersedes the previous one — tear its network calls down rather
+        // than leaving them to finish into a state object nothing reads any more.
+        if (_states.TryGetValue(appId, out var previous))
+        {
+            try { previous.Cts.Cancel(); } catch (ObjectDisposedException) { /* already finished */ }
+        }
         _states[appId] = state;
         PluginLog.Log($"PluginAdd.Start appid={appId} fastFetch={state.FastFetch} guest={auth.IsGuest}");
         _ = Task.Run(() => CheckAsync(appId, state));
@@ -125,14 +136,14 @@ public class PluginAddService(
             bool hubcapAvailable = false;
             if (!string.IsNullOrEmpty(key))
             {
-                var hs = await hubcap.CheckStatusAsync(key, appId.ToString());
-                hubcapAvailable = hs?.ManifestFileExists == true;
+                var hs = await hubcap.CheckStatusAsync(key, appId.ToString(), state.Cts.Token);
+                hubcapAvailable = hs is HubcapResult<HubcapManifestStatus>.Ok { Value.ManifestFileExists: true };
             }
 
             if (state.FastFetch && hubcapAvailable)
             {
-                var stats = await hubcap.GetStatsAsync(key!);
-                if (stats?.CanMakeRequests == true)
+                var statsResult = await hubcap.GetStatsAsync(key!, state.Cts.Token);
+                if (statsResult is HubcapResult<HubcapStats>.Ok { Value: { CanMakeRequests: true } stats })
                 {
                     var hubMeta = SourceMeta.Get(HubcapSourceName);
                     var hubRow = new SourceRow
@@ -188,7 +199,7 @@ public class PluginAddService(
                 // picker, so resolve just the Hubcap lock that CanDownload needs (skip the cosmetic X/25
                 // badges), then pick the best remaining source.
                 if (keyRows.Count > 0 && !string.IsNullOrEmpty(key))
-                    await FillHubcapBadgeAsync(keyRows, key);
+                    await FillHubcapBadgeAsync(keyRows, key, state.Cts.Token);
                 PublishSources(state, rows, appId);
 
                 var best = rows.FirstOrDefault(r => r.CanDownload);
@@ -201,7 +212,13 @@ public class PluginAddService(
             // badges. The plugin polls state (~350ms), so the "12/25" / "X/Unlimited" counters and the real
             // Hubcap lock pop in on the next tick instead of blocking the whole list.
             PublishSources(state, rows, appId);
-            await FillBadgesAsync(rows, keyRows, key);
+            await FillBadgesAsync(rows, keyRows, key, state.Cts.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            // Superseded by a newer Start for this app. The state object was already replaced, so there is
+            // nothing to report to — reporting an error here would surface on the NEW add.
+            PluginLog.Log($"PluginAdd.Check appid={appId} cancelled (superseded)");
         }
         catch (Exception ex)
         {
@@ -228,25 +245,31 @@ public class PluginAddService(
     /// concurrently: the Hubcap "12/25" badge + real lock state, and the standard "X/25" badge. A failure
     /// leaves the affected rows without a badge — the picker stays fully usable. Row fields are mutated in
     /// place; the status poll re-serializes them, so the badges appear on the next tick.</summary>
-    private async Task FillBadgesAsync(List<SourceRow> rows, List<SourceRow> keyRows, string? key)
+    private async Task FillBadgesAsync(List<SourceRow> rows, List<SourceRow> keyRows, string? key, CancellationToken ct)
     {
         var hubcapTask = keyRows.Count > 0 && !string.IsNullOrEmpty(key)
-            ? FillHubcapBadgeAsync(keyRows, key!)
+            ? FillHubcapBadgeAsync(keyRows, key!, ct)
             : Task.CompletedTask;
         var standardTask = !auth.IsGuest ? FillStandardBadgeAsync(rows) : Task.CompletedTask;
         await Task.WhenAll(hubcapTask, standardTask);
     }
 
     /// <summary>Hubcap "12/25" usage badge + lock state on the key-gated rows.</summary>
-    private async Task FillHubcapBadgeAsync(List<SourceRow> keyRows, string key)
+    private async Task FillHubcapBadgeAsync(List<SourceRow> keyRows, string key, CancellationToken ct)
     {
         try
         {
-            var stats = await hubcap.GetStatsAsync(key);
+            var result = await hubcap.GetStatsAsync(key, ct);
             foreach (var r in keyRows)
             {
-                r.Locked = stats?.CanMakeRequests != true;
-                if (stats is not null) r.Stats = $"{stats.DailyUsage}/{stats.DailyLimit}";
+                // Same rule as the app's own source list: lock on a definite refusal, not on silence.
+                r.Locked = result switch
+                {
+                    HubcapResult<HubcapStats>.Ok ok => !ok.Value.CanMakeRequests,
+                    HubcapResult<HubcapStats>.Unauthorized or HubcapResult<HubcapStats>.RateLimited => true,
+                    _ => false,
+                };
+                if (result is HubcapResult<HubcapStats>.Ok s) r.Stats = $"{s.Value.DailyUsage}/{s.Value.DailyLimit}";
             }
         }
         catch { }
@@ -287,9 +310,24 @@ public class PluginAddService(
                 if (p is not null) row.Progress = p.Value * 100;
             });
 
-            DownloadedFile dl = row.NeedsKey
-                ? await hubcap.DownloadManifestAsync(appId.ToString(), settings.HubcapApiKey ?? "", progress)
-                : await api.DownloadManifestAsync(appId.ToString(), row.Name, state.GameName, progress);
+            DownloadedFile dl;
+            if (row.NeedsKey)
+            {
+                var fetched = await hubcap.DownloadManifestAsync(
+                    appId.ToString(), settings.HubcapApiKey ?? "", progress, state.Cts.Token);
+                if (fetched is not HubcapResult<DownloadedFile>.Ok ok)
+                {
+                    state.Error = HubcapErrorText.Describe(fetched);
+                    state.InstallFailed = true;
+                    PluginLog.Log($"PluginAdd.Download appid={appId} source='{row.Name}' FAILED: {state.Error}");
+                    return;
+                }
+                dl = ok.Value;
+            }
+            else
+            {
+                dl = await api.DownloadManifestAsync(appId.ToString(), row.Name, state.GameName, progress);
+            }
 
             // Some sources (e.g. Luie) return a BARE .lua, not a zip — sniff the bytes and install
             // accordingly (same as DownloadViewModel.InstallZipAndReport). Trusting the extension /
@@ -317,6 +355,11 @@ public class PluginAddService(
                 state.InstallStatus += " " + string.Format(Resources.Strings.Add_FastFetch_Via, row.Name);
                 PluginLog.Log($"PluginAdd.Download appid={appId} source='{row.Name}' OK: {state.InstallStatus}");
             }
+        }
+        catch (OperationCanceledException)
+        {
+            // Superseded add — no install happened, so this is not a failure to report.
+            PluginLog.Log($"PluginAdd.Download appid={appId} source='{row.Name}' cancelled (superseded)");
         }
         catch (Exception ex)
         {
