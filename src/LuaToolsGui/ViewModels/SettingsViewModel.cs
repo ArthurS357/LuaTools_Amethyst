@@ -364,7 +364,7 @@ public partial class SettingsViewModel : ObservableObject
 
     /// <summary>Re-fetch usage stats for the saved key. Silent no-op if no key is saved.</summary>
     [RelayCommand]
-    private async Task RefreshHubcapStatsAsync()
+    private async Task RefreshHubcapStatsAsync(CancellationToken ct)
     {
         string? key = _settings.HubcapApiKey;
         if (string.IsNullOrEmpty(key)) return;
@@ -372,7 +372,14 @@ public partial class SettingsViewModel : ObservableObject
         IsRefreshingHubcapStats = true;
         try
         {
-            HubcapStats = await _hubcap.GetStatsAsync(key);
+            // A refresh that fails leaves the previous numbers up rather than blanking the card: stale
+            // usage is more useful than none, and the card is the only content once a key is configured.
+            var result = await _hubcap.GetStatsAsync(key, ct);
+            if (result is HubcapResult<HubcapStats>.Ok ok) HubcapStats = ok.Value;
+        }
+        catch (OperationCanceledException)
+        {
+            // Command re-run or cancelled — keep whatever stats are on screen rather than blanking them.
         }
         catch
         {
@@ -386,7 +393,7 @@ public partial class SettingsViewModel : ObservableObject
 
     /// <summary>Validate the typed key (format first, then a live stats call) and, if good, save it.</summary>
     [RelayCommand]
-    private async Task ValidateAndSaveHubcapKeyAsync()
+    private async Task ValidateAndSaveHubcapKeyAsync(CancellationToken ct)
     {
         string key = HubcapKeyInput.Trim();
 
@@ -399,11 +406,12 @@ public partial class SettingsViewModel : ObservableObject
         IsValidatingHubcapKey = true;
         try
         {
-            var stats = await _hubcap.GetStatsAsync(key);
-            if (stats is null)
+            var result = await _hubcap.GetStatsAsync(key, ct);
+            if (result is not HubcapResult<HubcapStats>.Ok ok)
             {
-                // Could be a bad/expired key (401) or a network problem — both surface as null.
-                ShowHubcapStatus(Resources.Strings.Settings_HubcapKeyError, isError: true);
+                // The reason the result type exists. Saying "invalid key" for what was actually a dropped
+                // connection is what made users delete a working credential and go hunting for a new one.
+                ShowHubcapStatus(DescribeKeyFailure(result), isError: true);
                 return;
             }
 
@@ -411,7 +419,11 @@ public partial class SettingsViewModel : ObservableObject
             HubcapIsKeyConfigured = true;
             HubcapKeyInput = "";
             HubcapKeyStatus = null;
-            HubcapStats = stats;
+            HubcapStats = ok.Value;
+        }
+        catch (OperationCanceledException)
+        {
+            // Cancelled mid-validation — nothing was saved, so just drop back to the input with no message.
         }
         finally
         {
@@ -424,11 +436,26 @@ public partial class SettingsViewModel : ObservableObject
     private void ClearHubcapKey()
     {
         _settings.HubcapApiKey = null;
+        // Availability answers were given for the key being removed. Leaving them cached would let the
+        // next key — or no key at all — inherit the previous one's view of what's downloadable.
+        _hubcap.ClearStatusCache();
         HubcapIsKeyConfigured = false;
         HubcapKeyInput = "";
         HubcapKeyStatus = null;
         HubcapStats = null;
     }
+
+    /// <summary>Why a key check failed, in the user's language. Only reached for non-Ok results, so the
+    /// Ok arm is unreachable rather than merely unused — hence its throw.</summary>
+    private static string DescribeKeyFailure(HubcapResult<HubcapStats> result) => result switch
+    {
+        HubcapResult<HubcapStats>.Unauthorized => Resources.Strings.Settings_HubcapKeyRejected,
+        HubcapResult<HubcapStats>.Offline => Resources.Strings.Settings_HubcapKeyOffline,
+        HubcapResult<HubcapStats>.RateLimited => Resources.Strings.Settings_HubcapKeyRateLimited,
+        // NotFound and Failed both mean Hubcap answered but not with stats — the key itself is not
+        // implicated, so the wording stays the old non-committal one rather than blaming it.
+        _ => Resources.Strings.Settings_HubcapKeyError,
+    };
 
     private void ShowHubcapStatus(string text, bool isError)
     {

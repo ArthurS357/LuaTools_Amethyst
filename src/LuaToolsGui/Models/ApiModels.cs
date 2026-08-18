@@ -89,21 +89,55 @@ public class DlcInfo
     [JsonPropertyName("depots")] public List<DlcDepot> Depots { get; set; } = [];
 }
 
-/// <summary>Hubcap (hubcapmanifest.com) <c>/api/v1/user/stats</c> response — usage for the user's own key.</summary>
+/// <summary>
+/// Hubcap (hubcapmanifest.com) <c>/api/v1/user/stats</c> response — usage for the user's own key.
+///
+/// <para>
+/// The live response also carries <c>user_id</c> and <c>username</c>, which are the user's Discord
+/// identity. Both are deliberately NOT mapped: the app has never had a use for either, and binding them
+/// would park a durable identifier in a property of a view-model that lives for the whole process. Not
+/// mapping a field does not stop it arriving in the JSON, but it does stop the app retaining it.
+/// </para>
+/// </summary>
 public class HubcapStats
 {
-    [JsonPropertyName("user_id")] public string UserId { get; set; } = "";
     [JsonPropertyName("daily_usage")] public int DailyUsage { get; set; }
     [JsonPropertyName("daily_limit")] public int DailyLimit { get; set; }
     [JsonPropertyName("can_make_requests")] public bool CanMakeRequests { get; set; }
     [JsonPropertyName("api_key_expires_at")] public string? ApiKeyExpiresAt { get; set; }
 }
 
-/// <summary>Hubcap <c>/api/v1/status/{appid}</c> response — whether a manifest exists (free, no usage count).</summary>
+/// <summary>
+/// Hubcap <c>/api/v1/status/{appid}</c> response — whether a manifest exists (free, no usage count).
+///
+/// <para>
+/// Hubcap regenerates manifests on its own, so this endpoint reports more than mere existence: how big
+/// the file is, when it last changed, and whether Hubcap itself considers it stale. Those were being
+/// discarded, which is why the app could only ever say "available" and never "you have an older copy".
+/// </para>
+/// </summary>
 public class HubcapManifestStatus
 {
     [JsonPropertyName("status")] public string Status { get; set; } = "";
     [JsonPropertyName("manifest_file_exists")] public bool ManifestFileExists { get; set; }
+
+    /// <summary>Hubcap's own name for the app. Useful as a cross-check against the Steam-side name.</summary>
+    [JsonPropertyName("game_name")] public string? GameName { get; set; }
+
+    /// <summary>Size of the manifest zip in bytes. Lets a download show real progress from the first byte
+    /// instead of waiting on a Content-Length that may never arrive.</summary>
+    [JsonPropertyName("file_size")] public long? FileSize { get; set; }
+
+    /// <summary>When Hubcap last rebuilt this manifest. Kept as the raw string, matching
+    /// <see cref="HubcapStats.ApiKeyExpiresAt"/> — the API sends no timezone offset, so parsing it here
+    /// would silently reinterpret it in whatever zone the machine happens to be in.</summary>
+    [JsonPropertyName("file_modified")] public string? FileModified { get; set; }
+
+    /// <summary>Hubcap's own verdict on whether its copy is out of date.</summary>
+    [JsonPropertyName("needs_update")] public bool NeedsUpdate { get; set; }
+
+    /// <summary>Why <see cref="NeedsUpdate"/> reads as it does, e.g. "manifest_current".</summary>
+    [JsonPropertyName("update_reason")] public string? UpdateReason { get; set; }
 }
 
 public class ApiError

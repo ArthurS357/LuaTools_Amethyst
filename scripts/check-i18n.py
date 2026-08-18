@@ -80,6 +80,11 @@ PENDING_TRANSLATION: frozenset[str] = frozenset({
     # Startup warning when the running binary is not an Amethyst build.
     "Build_NotFork_Title",
     "Build_NotFork_Body",
+    # Hubcap key validation, split out of the single Settings_HubcapKeyError that used to cover a rejected
+    # key, a dead network and a rate limit alike — so an offline check no longer reads as "your key is bad".
+    "Settings_HubcapKeyRejected",
+    "Settings_HubcapKeyOffline",
+    "Settings_HubcapKeyRateLimited",
     # The About page. English-only for now; translate once its wording settles.
     "About_Nav",
     "About_Title",

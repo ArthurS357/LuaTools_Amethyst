@@ -105,6 +105,9 @@
   <data name="Settings_HubcapKeyOkExpiry" xml:space="preserve"><value>{0}/{1} today · expires {2}</value></data>
   <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>That doesn't look like a valid key (smm_…).</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>Couldn't verify the key — it may be invalid, expired, or Hubcap is unreachable.</value></data>
+  <data name="Settings_HubcapKeyRejected" xml:space="preserve"><value>Hubcap rejected that key. Check it was copied in full and hasn't expired.</value></data>
+  <data name="Settings_HubcapKeyOffline" xml:space="preserve"><value>Couldn't reach Hubcap. Check your connection and try again — the key was not changed.</value></data>
+  <data name="Settings_HubcapKeyRateLimited" xml:space="preserve"><value>Hubcap is rate-limiting this key right now. Try again shortly.</value></data>
   <data name="Settings_HubcapActive" xml:space="preserve"><value>Active</value></data>
   <data name="Settings_HubcapRefresh" xml:space="preserve"><value>Refresh</value></data>
   <data name="Settings_Language" xml:space="preserve"><value>Language</value></data>
