@@ -121,6 +121,17 @@ PENDING_TRANSLATION: frozenset[str] = frozenset({
     "Settings_Accent_Green",
     "Settings_Accent_Red",
     "Settings_Accent_Apply",
+    # Startup Steam flow: close Steam, run setup only when there is setup to do, offer Steam back.
+    # Replaces a launch that left Steam up and restarted it from inside whichever installer ran.
+    "Startup_Title",
+    "Startup_Steam_Closing",
+    "Startup_Steam_Closed",
+    "Startup_Steam_Stubborn_Title",
+    "Startup_Steam_Stubborn_Body",
+    "Startup_Steam_LeftRunning",
+    "Startup_Steam_Reopen_Body",
+    "Startup_Steam_Reopen_Action",
+    "Startup_Steam_ReopenFailed",
     # In-app changelog on the About page, added in 1.5.0. The entry TEXT is not localised at all — it
     # lives in Resources/Changelog.cs, like release notes generally do; only the chrome is a resource.
     "About_Changelog_Title",

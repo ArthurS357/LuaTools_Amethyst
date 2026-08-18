@@ -523,15 +523,24 @@ public partial class App : Application
     }
 
     /// <summary>Record a theme problem in crash.log, the file users are already asked to send.</summary>
-    private static void LogThemeProblem(string message)
+    private static void LogThemeProblem(string message) => AppendDiagnostic("THEME", message);
+
+    /// <summary>A startup step that failed without being fatal — the Steam open/close flow. Recorded so
+    /// "it did not close Steam" is diagnosable, but never surfaced as a crash.</summary>
+    private static void LogStartupProblem(string message) => AppendDiagnostic("STARTUP", message);
+
+    /// <summary>Append a tagged line to the crash log. Shared by the non-fatal diagnostics above so they
+    /// land in one file with one format; never throws, because a logger that can fail does so exactly
+    /// when something is already going wrong.</summary>
+    private static void AppendDiagnostic(string tag, string message)
     {
         try
         {
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(CrashLogPath)!);
             System.IO.File.AppendAllText(CrashLogPath,
-                $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] THEME: {message}{Environment.NewLine}");
+                $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {tag}: {message}{Environment.NewLine}");
         }
-        catch { /* logging a cosmetic problem must never itself break startup */ }
+        catch { /* logging a non-fatal problem must never itself break startup */ }
     }
 
     /// <summary>
@@ -602,6 +611,108 @@ public partial class App : Application
                 res[key] = merged[i][key];
                 break;
             }
+        }
+    }
+
+    /// <summary>
+    /// The launch sequence around Steam: close it, set up if there is setting up to do, offer it back.
+    ///
+    /// <para>
+    /// What this replaces was not a sequence at all. Steam was left running while the first-run overlay
+    /// appeared over it, and Steam was then stopped and restarted from inside whichever installer happened
+    /// to run — so a returning user with everything installed got prompts that led nowhere, and a new user
+    /// got a restart they were never told about. The order is now fixed and stated: stop, work, restart.
+    /// </para>
+    ///
+    /// <para>
+    /// Best-effort throughout. Every step here is about convenience, and none of it is worth taking the
+    /// app down for — a failure leaves Steam exactly where the user can deal with it themselves.
+    /// </para>
+    /// </summary>
+    private async Task RunStartupSteamFlowAsync(MainWindow window, MainViewModel main)
+    {
+        try
+        {
+            var cache = _host.Services.GetRequiredService<CacheService>();
+            var steam = _host.Services.GetRequiredService<SteamService>();
+            var toasts = _host.Services.GetRequiredService<ToastService>();
+            var unlocker = _host.Services.GetRequiredService<UnlockerService>();
+            var installer = _host.Services.GetRequiredService<PluginInstallerService>();
+
+            bool toolsInstalled =
+                unlocker.SelectedMode is (UnlockerMode.OpenSteamTools or UnlockerMode.OpenSteamToolsNightly)
+                && installer.IsInstalledLocally();
+
+            var plan = StartupPlan.Decide(
+                SteamService.IsSteamRunning(), cache.OnboardingComplete, toolsInstalled);
+
+            // Someone who is already set up has, in effect, been through setup. Recording that keeps it a
+            // one-time decision, so switching mode later never brings the overlay back.
+            if (!plan.ShowSetup) cache.OnboardingComplete = true;
+
+            if (plan.IsSilent) return;
+
+            if (plan.CloseSteam)
+            {
+                toasts.Show(LuaToolsGui.Resources.Strings.Startup_Title,
+                            LuaToolsGui.Resources.Strings.Startup_Steam_Closing);
+
+                // allowKill: false — ASK first. Terminating the user's Steam without saying so is what the
+                // app used to do on every path, and it is what costs them a clean client shutdown.
+                var outcome = await Task.Run(() => steam.StopSteamGraceful(allowKill: false));
+
+                if (outcome == SteamStopOutcome.StillRunning)
+                {
+                    bool force = Dispatcher.Invoke(() => MessageBox.Show(
+                        window,
+                        LuaToolsGui.Resources.Strings.Startup_Steam_Stubborn_Body,
+                        LuaToolsGui.Resources.Strings.Startup_Steam_Stubborn_Title,
+                        MessageBoxButton.YesNo, MessageBoxImage.Warning,
+                        MessageBoxResult.No) == MessageBoxResult.Yes);
+
+                    if (!force)
+                    {
+                        // Steam stays up, so nothing that installs into it is safe and there is nothing to
+                        // offer back. Setup still opens: the user can read it and act when they are ready.
+                        toasts.Show(LuaToolsGui.Resources.Strings.Startup_Title,
+                                    LuaToolsGui.Resources.Strings.Startup_Steam_LeftRunning, error: true);
+                        if (plan.ShowSetup) Dispatcher.Invoke(() => main.Onboarding.IsOpen = true);
+                        return;
+                    }
+
+                    outcome = await Task.Run(() => steam.StopSteamGraceful(allowKill: true));
+                }
+
+                if (outcome is SteamStopOutcome.ClosedGracefully or SteamStopOutcome.Killed)
+                    toasts.Show(LuaToolsGui.Resources.Strings.Startup_Title,
+                                LuaToolsGui.Resources.Strings.Startup_Steam_Closed);
+            }
+
+            if (plan.ShowSetup)
+            {
+                // The setup flow starts Steam itself once its installs finish, which is why the plan never
+                // pairs ShowSetup with OfferReopen — two things launching Steam produces the "Steam is
+                // already running" dialog.
+                Dispatcher.Invoke(() => main.Onboarding.IsOpen = true);
+                return;
+            }
+
+            if (plan.OfferReopen)
+                toasts.ShowAction(
+                    LuaToolsGui.Resources.Strings.Startup_Title,
+                    LuaToolsGui.Resources.Strings.Startup_Steam_Reopen_Body,
+                    LuaToolsGui.Resources.Strings.Startup_Steam_Reopen_Action,
+                    () => _ = Task.Run(() =>
+                    {
+                        if (!steam.StartSteam())
+                            toasts.Show(LuaToolsGui.Resources.Strings.Startup_Title,
+                                        LuaToolsGui.Resources.Strings.Startup_Steam_ReopenFailed, error: true);
+                    }));
+        }
+        catch (Exception ex)
+        {
+            // Convenience, not correctness. Log it and leave Steam to the user.
+            LogStartupProblem($"Steam flow failed: {LogSanitizer.Sanitize(ex)}");
         }
     }
 
@@ -845,21 +956,10 @@ public partial class App : Application
         {
             window.Show();
 
-            // First-run onboarding: show the welcome overlay on a fresh install. Skip it (and mark done)
-            // when the user is already set up — BetterSteamTools (or Nightly) selected AND the plugin
-            // installed — so existing users / dev machines aren't nagged. Marking done here is permanent,
-            // so switching mode later never re-triggers onboarding.
-            var cache = _host.Services.GetRequiredService<CacheService>();
-            if (!cache.OnboardingComplete)
-            {
-                var unlocker = _host.Services.GetRequiredService<UnlockerService>();
-                var installer = _host.Services.GetRequiredService<PluginInstallerService>();
-                bool configured =
-                    unlocker.SelectedMode is (UnlockerMode.OpenSteamTools or UnlockerMode.OpenSteamToolsNightly)
-                    && installer.IsInstalledLocally();
-                if (configured) cache.OnboardingComplete = true;
-                else main.Onboarding.IsOpen = true;
-            }
+            // Stop Steam, run setup if there is any, then offer Steam back. Deliberately NOT awaited: the
+            // stop has a ten-second grace period, and blocking startup on it would delay the protocol
+            // handler and the update flow below behind a window the user can already see and click.
+            _ = RunStartupSteamFlowAsync(window, main);
         }
 
         if (url is not null)

@@ -88,6 +88,15 @@ public static class Strings
     public static string Settings_Accent_Green => Get(nameof(Settings_Accent_Green));
     public static string Settings_Accent_Red => Get(nameof(Settings_Accent_Red));
     public static string Settings_Accent_Apply => Get(nameof(Settings_Accent_Apply));
+    public static string Startup_Title => Get(nameof(Startup_Title));
+    public static string Startup_Steam_Closing => Get(nameof(Startup_Steam_Closing));
+    public static string Startup_Steam_Closed => Get(nameof(Startup_Steam_Closed));
+    public static string Startup_Steam_Stubborn_Title => Get(nameof(Startup_Steam_Stubborn_Title));
+    public static string Startup_Steam_Stubborn_Body => Get(nameof(Startup_Steam_Stubborn_Body));
+    public static string Startup_Steam_LeftRunning => Get(nameof(Startup_Steam_LeftRunning));
+    public static string Startup_Steam_Reopen_Body => Get(nameof(Startup_Steam_Reopen_Body));
+    public static string Startup_Steam_Reopen_Action => Get(nameof(Startup_Steam_Reopen_Action));
+    public static string Startup_Steam_ReopenFailed => Get(nameof(Startup_Steam_ReopenFailed));
     public static string About_Changelog_Title => Get(nameof(About_Changelog_Title));
     public static string About_Changelog_Show => Get(nameof(About_Changelog_Show));
     public static string About_Changelog_Hide => Get(nameof(About_Changelog_Hide));

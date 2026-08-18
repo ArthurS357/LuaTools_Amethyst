@@ -7,6 +7,30 @@ remocao de jogos dos Depots e os follow-ups de UX/seguranca do HubCap.
 
 ### Correcoes
 
+- **Login com Discord nunca completava.** O app passava `&state=` para `/auth/v1/authorize` do Supabase.
+  Esse parametro nao e do chamador: o Supabase **cunha** o proprio `state` e usa esse valor como chave da
+  linha de flow-state, que e o que carrega o destino do redirect atraves da ida ao Discord e da volta.
+  Mandar o nosso sobrescrevia essa chave. Sondado contra o endpoint ao vivo:
+
+  ```
+  com    &state=probe  ->  discord.com/...&state=probe
+  sem    &state=       ->  discord.com/...&state=e4631a5c-2b82-4b95-8e5f-1729b53dbb65
+  ```
+
+  O Discord devolve ao Supabase apenas esse `state` e mais nada, entao sobrescreve-lo apaga o unico
+  identificador do flow pendente. O redirect de volta para `http://localhost:53789/callback` nunca
+  acontecia, o listener local esperava os 5 minutos inteiros e o usuario via "sign-in timed out" — o
+  "botao do Discord nao loga de verdade". Correcao: remover o parametro.
+
+  O nonce nao levava protecao junto. Quem liga o resgate a este cliente e o PKCE: um code injetado no
+  listener por outro processo foi emitido contra outro `code_challenge`, entao a troca apresenta o nosso
+  verifier e o Supabase recusa — no servidor, que e o lugar certo para recusar. O guard `StateMatches`
+  virou codigo morto e foi removido junto com seus testes; no lugar entrou um teste que exige a AUSENCIA
+  do parametro, porque reintroduzi-lo parece endurecimento e derruba o recurso inteiro.
+- **Mensagem de timeout do login** passou a nomear o caminho que funciona (`/login` no servidor, colar o
+  codigo em Configuracoes) em vez de deixar o usuario num beco sem saida.
+
+
 - **A troca de cor de destaque nao funcionava.** Dois defeitos independentes, ambos silenciosos: build
   limpo, nenhuma excecao, nenhum log.
 
@@ -25,6 +49,39 @@ remocao de jogos dos Depots e os follow-ups de UX/seguranca do HubCap.
      Os brushes nao precisam de promocao — `Colors.xaml` e o ultimo merge e ja vence a resolucao.
 
 ### Mudancas
+
+- **Fluxo de inicializacao virou sequencia declarada.** Antes nao havia sequencia: o Steam ficava aberto,
+  o overlay de primeira execucao aparecia por cima, e o Steam era parado e reiniciado la dentro de
+  qualquer instalador que rodasse. Quem ja tinha tudo instalado recebia prompts que nao levavam a lugar
+  nenhum. Agora: **fecha o Steam -> roda o setup so se houver setup -> oferece o Steam de volta**. A
+  decisao virou `StartupPlan.Decide`, testavel sem Application, sem instalador e sem Steam real.
+  - Setup so aparece quando ha o que instalar. Quem ja passou por ele, ou simplesmente ja tem as
+    ferramentas (reinstalacao, segunda maquina, maquina de dev), vai direto ao ponto.
+  - Login **nao** entra nessa decisao: navegar como convidado e suportado no resto do app, entao exigir
+    conta poria o instalador na frente de um convidado que ja tem tudo — o proprio incomodo removido.
+  - `ShowSetup` e `OfferReopen` nunca vem juntos: o setup ja inicia o Steam ao terminar, e dois caminhos
+    disputando o lancamento produzem o dialogo "Steam is already running".
+- **Steam e pedido antes de ser forcado.** `StopSteam` era `Kill(entireProcessTree: true)` direto, em
+  todo caminho — instalacao de plugin, troca de modo, onboarding. Terminar o cliente nega a ele a chance
+  de gravar a config, que e o que produz o "Steam did not shut down correctly" no lancamento seguinte.
+  Agora: `CloseMainWindow` com 10s de tolerancia, escalando so se autorizado. Na inicializacao a
+  escalada **nao** e automatica — se o Steam nao fechar, o usuario decide. Os instaladores continuam
+  com `allowKill: true`, porque para eles "o Steam esta parado" nao e negociavel.
+  - O resultado e um enum (`NotRunning`/`ClosedGracefully`/`Killed`/`StillRunning`) e reporta o que e
+    **verdade**, nao o que foi tentado: um kill pode falhar, e um chamador informado "Killed" iria
+    reescrever arquivos que o Steam ainda mantem abertos.
+
+### Desempenho
+
+- **Deteccao do caminho do Steam memoizada.** `AutoDetectedPath` reabria ate tres chaves de registro mais
+  um `File.Exists` a **cada leitura** — e `EffectivePath`/`StPlugInDir` sao lidos de 28 lugares, sendo os
+  que importam por jogo. Atualizar a lista de Depots resolvia o caminho uma vez por titulo, entao uma
+  biblioteca de 200 jogos fazia da ordem de 600 aberturas de registro para responder sempre a mesma
+  coisa. O cache e revalidado (so e reusado enquanto ainda aponta para um `steam.exe` real) e `null`
+  nunca e cacheado, para que uma instalacao que aparece depois seja notada.
+- Varredura de async nao encontrou nada a corrigir: zero `.Result`, `.Wait()` ou
+  `GetAwaiter().GetResult()` no codigo do app, `async void` so nos dois pontos ja documentados, e os
+  `HttpClient` ja sao de vida longa. Nada foi mexido a toa.
 
 - **Botao Aplicar para a cor de destaque.** Selecionar no combo passou a apenas *encenar* a escolha; nada
   e pintado nem gravado ate clicar em **Aplicar**. Se o usuario mudar de ideia e sair da tela, a cor
@@ -56,12 +113,20 @@ remocao de jogos dos Depots e os follow-ups de UX/seguranca do HubCap.
 
 ### Testes
 
-- Suite de **725 para 790**.
+- Suite de **725 para 815**.
 - `ThemeLiveSwitchTests` (novo): sobe uma `Application` real numa thread STA com os mesmos tres
   dicionarios do `App.xaml`. E o unico arranjo em que o congelamento existe — os testes antigos usavam
   dicionario avulso e por isso aprovavam um recurso inerte. Cobre: nenhum brush da paleta congelado,
   cores de status seguem congeladas, cada token repinta, **a segunda troca funciona como a primeira**,
   fundo da janela acompanha, e o slot de accent do WPF-UI acompanha.
+- `SteamShutdownTests` / `StartupPlanTests` (novos): fecha antes de forcar; sem permissao um processo
+  teimoso e **reportado**, nao forcado; kill que falha vira `StillRunning`; processo sem janela e
+  escalado; todos sao pedidos antes de qualquer espera (a tolerancia e do usuario, nao por processo);
+  e a matriz de decisao do launch, incluindo que setup e oferta-de-reabrir nunca coexistem.
+- `AuthStateTests` (reescrito): a URL de authorize **nao** pode conter `state=`; PKCE e o redirect local
+  continuam presentes; e a mensagem de timeout continua nomeando o caminho por codigo.
+- `SteamPathResolutionTests` (novo): o override nunca e sombreado pelo cache, troca de override e vista
+  na hora, limpar o override volta a deteccao, e leituras repetidas concordam.
 - `AccentApplyButtonTests` (novo): selecionar nao pinta e nao grava; Aplicar pinta e grava; escolha
   aplicada sobrevive ao restart; botao desabilitado sem alteracao pendente; reabilita ao divergir;
   desabilita de novo apos aplicar; voltar para a cor ativa nao conta como pendente; `CanExecuteChanged`

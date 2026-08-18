@@ -98,19 +98,27 @@ public class AuthService
         string verifier = CreateCodeVerifier();
         string challenge = Base64Url(SHA256.HashData(Encoding.ASCII.GetBytes(verifier)));
 
-        // Anti-forgery nonce. PKCE binds the CODE to this client, but it does NOT stop someone else from
-        // driving the callback: the listener below is a plain local HTTP endpoint, so any web page the user
-        // has open (or any local process) could hit http://localhost:53789/callback?code=<attacker's code>
-        // and get the app to exchange it — silently signing the user into an account that isn't theirs, and
-        // then syncing their activity to it. Round-tripping `state` and requiring an exact match means only
-        // a callback originating from the authorize request we just started is accepted.
-        string state = Base64Url(RandomNumberGenerator.GetBytes(32));
-
-        string authorizeUrl =
-            $"{AppConfig.SupabaseUrl}/auth/v1/authorize?provider=discord" +
-            $"&redirect_to={Uri.EscapeDataString(AppConfig.OAuthCallbackUrl)}" +
-            $"&state={Uri.EscapeDataString(state)}" +
-            $"&code_challenge={challenge}&code_challenge_method=s256";
+        // NO `state` PARAMETER. This is the fix for "the Discord button does not actually sign me in".
+        //
+        // A nonce used to be passed here as an anti-forgery guard, and it silently broke the whole flow.
+        // Supabase does not accept a caller-supplied state on /authorize — it MINTS one, and that value is
+        // the key its flow-state row is stored under, carrying the redirect target across the trip to
+        // Discord and back. Passing our own displaced it. Probed against the live endpoint:
+        //
+        //   with    &state=probe  ->  ...discord.com/...&state=probe                              (ours)
+        //   without &state=       ->  ...discord.com/...&state=e4631a5c-2b82-4b95-8e5f-1729b53dbb65 (its own)
+        //
+        // Discord echoes that state back to Supabase's callback and nothing else, so overwriting it is
+        // overwriting the only handle Supabase has on the pending flow. The redirect back to
+        // http://localhost:53789/callback never happens, the listener below waits out its full five
+        // minutes, and the user is told the sign-in "timed out" — which is why the button looked dead.
+        //
+        // Losing the nonce does not lose the protection it was reaching for. PKCE is what actually binds
+        // the exchange: a code injected into the local listener by another process was issued against a
+        // DIFFERENT code_challenge, so ExchangeCodeAsync below presents our verifier and Supabase refuses
+        // it. The attack fails on the server, which is the right place for it to fail. The listener also
+        // only exists while a sign-in the user started is in flight.
+        string authorizeUrl = BuildAuthorizeUrl(challenge);
 
         using var listener = new HttpListener();
         listener.Prefixes.Add($"http://localhost:{AppConfig.OAuthCallbackPort}/");
@@ -127,7 +135,7 @@ public class AuthService
         string code;
         try
         {
-            code = await WaitForCallbackAsync(listener, state, ct);
+            code = await WaitForCallbackAsync(listener, ct);
         }
         finally
         {
@@ -196,33 +204,23 @@ public class AuthService
     }
 
     /// <summary>
-    /// Whether an OAuth callback carries the anti-forgery nonce we generated for THIS sign-in attempt.
+    /// The Supabase authorize URL for a Discord sign-in.
     ///
     /// <para>
-    /// PKCE binds the authorization code to this client, but it does not stop a third party from driving
-    /// the callback: the redirect target is a plain local HTTP listener, so any web page the user has open
-    /// (or any local process) can hit <c>http://localhost:53789/callback?code=…</c> with an attacker's code
-    /// and get the app to exchange it — silently signing the user into an account that isn't theirs.
-    /// Requiring an exact <c>state</c> match means only a callback belonging to the authorize request we
-    /// just started is accepted.
-    /// </para>
-    ///
-    /// <para>
-    /// Compared in fixed time: <c>state</c> is a secret for the duration of the flow, and an
-    /// early-exit comparison leaks it a character at a time to a local attacker who can time the response.
-    /// A missing or empty <c>state</c> never matches. Internal for testing.
+    /// Extracted for one reason: what must be true of it is an ABSENCE, and an absence is only guarded if
+    /// something asserts it. This URL must carry no <c>state</c> parameter. Supabase mints its own and
+    /// keys the pending flow on it; supplying ours overwrote that key, so the redirect back to the local
+    /// listener never happened and every Discord sign-in died as a five-minute timeout. Re-adding a state
+    /// here looks like hardening and is a total outage of the feature — see the note at the call site.
     /// </para>
     /// </summary>
-    internal static bool StateMatches(string? received, string expected)
-    {
-        if (string.IsNullOrEmpty(received) || string.IsNullOrEmpty(expected)) return false;
-
-        return CryptographicOperations.FixedTimeEquals(
-            Encoding.UTF8.GetBytes(received), Encoding.UTF8.GetBytes(expected));
-    }
+    internal static string BuildAuthorizeUrl(string codeChallenge) =>
+        $"{AppConfig.SupabaseUrl}/auth/v1/authorize?provider=discord" +
+        $"&redirect_to={Uri.EscapeDataString(AppConfig.OAuthCallbackUrl)}" +
+        $"&code_challenge={codeChallenge}&code_challenge_method=s256";
 
     private static async Task<string> WaitForCallbackAsync(
-        HttpListener listener, string expectedState, CancellationToken ct)
+        HttpListener listener, CancellationToken ct)
     {
         // 5 minute window for the user to complete the browser flow
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(ct);
@@ -237,13 +235,15 @@ public class AuthService
             }
             catch (OperationCanceledException)
             {
+                // Browser sign-in can fail for reasons this app cannot see or fix — a provider outage, a
+                // redirect not allow-listed on the server. The Discord /login code path does not depend on
+                // any of that, so the message names it rather than leaving the user with a dead end.
                 throw new AuthException(Resources.Strings.Auth_Err_SignInTimedOut);
             }
 
             var query = HttpUtility.ParseQueryString(ctx.Request.Url?.Query ?? "");
             string? code = query.Get("code");
             string? error = query.Get("error_description");
-            string? state = query.Get("state");
 
             if (code is null && error is null)
             {
@@ -253,14 +253,10 @@ public class AuthService
                 continue;
             }
 
-            // A callback we didn't initiate. Treat it exactly like a stray request — keep waiting for the
-            // real one rather than aborting the user's genuine sign-in because someone poked the port.
-            if (code is not null && !StateMatches(state, expectedState))
-            {
-                ctx.Response.StatusCode = 400;
-                ctx.Response.Close();
-                continue;
-            }
+            // The `state` coming back is Supabase's own and cannot be checked here — we never saw the value
+            // it minted. It is not what secures this: an injected code was issued against another client's
+            // code_challenge, so the exchange in ExchangeCodeAsync fails on the server. See the note on the
+            // authorize URL for why validating a state of our own broke sign-in outright.
 
             bool ok = code is not null;
             byte[] page = Encoding.UTF8.GetBytes(ResultPage(ok, error));

@@ -127,6 +127,17 @@
   <data name="Settings_Accent_Green" xml:space="preserve"><value>Green</value></data>
   <data name="Settings_Accent_Red" xml:space="preserve"><value>Red</value></data>
   <data name="Settings_Accent_Apply" xml:space="preserve"><value>Apply</value></data>
+  <data name="Startup_Title" xml:space="preserve"><value>Startup</value></data>
+  <data name="Startup_Steam_Closing" xml:space="preserve"><value>Closing Steam so LuaTools can work on its files…</value></data>
+  <data name="Startup_Steam_Closed" xml:space="preserve"><value>Steam is closed.</value></data>
+  <data name="Startup_Steam_Stubborn_Title" xml:space="preserve"><value>Steam did not close</value></data>
+  <data name="Startup_Steam_Stubborn_Body" xml:space="preserve"><value>Steam was asked to close but is still running.
+
+Force it to close? Anything Steam has not saved yet may be lost. Choose No to leave it running — LuaTools cannot change Steam's files while it is up.</value></data>
+  <data name="Startup_Steam_LeftRunning" xml:space="preserve"><value>Steam is still running, so nothing was changed. Close Steam and restart LuaTools when you are ready.</value></data>
+  <data name="Startup_Steam_Reopen_Body" xml:space="preserve"><value>LuaTools is done. Open Steam again?</value></data>
+  <data name="Startup_Steam_Reopen_Action" xml:space="preserve"><value>Open Steam</value></data>
+  <data name="Startup_Steam_ReopenFailed" xml:space="preserve"><value>Couldn't start Steam — open it from its own shortcut.</value></data>
   <data name="About_Changelog_Title" xml:space="preserve"><value>What's new</value></data>
   <data name="About_Changelog_Show" xml:space="preserve"><value>Show changelog</value></data>
   <data name="About_Changelog_Hide" xml:space="preserve"><value>Hide changelog</value></data>
@@ -572,7 +583,7 @@ This deletes its lua file, any build luas beside it, and every stored build. It 
   <data name="Launch_Drift_Title" xml:space="preserve"><value>Launch options were reset</value></data>
   <data name="Launch_Drift_Body" xml:space="preserve"><value>Steam has overwritten your launch options for {0} game(s). Re-applying closes and reopens Steam.</value></data>
   <data name="Launch_Drift_Action" xml:space="preserve"><value>Re-apply</value></data>
-  <data name="Auth_Err_SignInTimedOut" xml:space="preserve"><value>Sign-in timed out — no response from the browser.</value></data>
+  <data name="Auth_Err_SignInTimedOut" xml:space="preserve"><value>Sign-in timed out — the browser never came back. You can also sign in with a code: run /login on the Discord server, then paste the code in Settings.</value></data>
   <data name="Auth_Err_CallbackPortBusy" xml:space="preserve"><value>Couldn't start sign-in: port 53789 is already in use. Close any other sign-in attempt and try again.</value></data>
   <data name="Protocol_SilentInstall_Title" xml:space="preserve"><value>Install request</value></data>
   <data name="Protocol_SilentInstall_Body" xml:space="preserve"><value>A link is asking LuaTools to install app {0} in the background. Continue only if you started this yourself.</value></data>
