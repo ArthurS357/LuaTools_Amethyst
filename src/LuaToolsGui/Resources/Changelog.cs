@@ -1,7 +1,7 @@
 namespace LuaToolsGui.Resources;
 
 /// <summary>One released version and what changed in it.</summary>
-/// <param name="Version">Bare version, e.g. "1.5.0" — matches <c>AppVersion.Current</c> for this build.</param>
+/// <param name="Version">Bare version, e.g. "1.5.1" — matches <c>AppVersion.Current</c> for this build.</param>
 /// <param name="Released">Release date, ISO-formatted for display.</param>
 /// <param name="Summary">One line on the theme of the release.</param>
 /// <param name="Highlights">The handful of changes worth surfacing in-app.</param>
@@ -29,6 +29,16 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.5.1", "2026-08-18",
+            "The accent switch is applied on demand — and now actually repaints.",
+            [
+                "Accent colour applies when you choose Apply, so brushing the picker no longer restyles the app.",
+                "Fixed the switch itself: every palette brush was frozen by WPF, so changing colour did nothing.",
+                "A colour now retints the whole app — window, cards, borders and text — not only the highlights.",
+                "Games can be removed from the Depots list, clearing their lua files and stored builds.",
+                "Hubcap: a warning before the key expires, a masked key field, and a looser key-format check.",
+            ]),
+
         new("1.5.0", "2026-08-18",
             "Hubcap integration follow-ups, plus a choice of accent colour.",
             [

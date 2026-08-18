@@ -1,6 +1,6 @@
 <!--
     ══════════════════════════════════════════════════════════════════════════════════════════
-    LuaTools — Amethyst dark theme (v1.5.0)
+    LuaTools — Amethyst dark theme (v1.5.1)
     ══════════════════════════════════════════════════════════════════════════════════════════
 
     Single source of truth for every colour in the app. Before this file the palette lived as
@@ -139,6 +139,41 @@
     <Color x:Key="Wine50Color">#FAEEF0</Color>
     <Color x:Key="WineTintColor">#FCE6EA</Color>
 
+    <!-- Seed colours for the translucent tokens.
+
+         These exist for one mechanical reason, and it is not documentation: a SolidColorBrush whose Colour
+         is a literal gets FROZEN by WPF the moment Application.Resources takes ownership of this
+         dictionary, and a frozen brush can never be repainted. Pointing the brush at a Color through
+         {DynamicResource} makes the Freezable non-freezable, which is the entire mechanism behind the live
+         accent switch — App.ApplyAccentPalette then mutates the brush directly.
+
+         So the VALUES here are only the Amethyst defaults the app parses with. Nothing reads them again
+         after startup; the palette computes each token from its own ramp. Change one and you change what
+         the app looks like for the first few milliseconds, nothing more. See Themes/ThemeRepaint.cs. -->
+    <Color x:Key="SurfaceGhostColor">#0AEDE9FE</Color>
+    <Color x:Key="SurfaceCardColor">#12EDE9FE</Color>
+    <Color x:Key="SurfaceCardHoverColor">#16EDE9FE</Color>
+    <Color x:Key="SurfaceElevatedColor">#20EDE9FE</Color>
+    <Color x:Key="SurfaceActiveColor">#2AEDE9FE</Color>
+    <Color x:Key="SurfacePressedColor">#30EDE9FE</Color>
+    <Color x:Key="SurfaceTintColor">#1AEDE9FE</Color>
+    <Color x:Key="SurfaceStrongColor">#26EDE9FE</Color>
+    <Color x:Key="BorderSubtleColor">#18EDE9FE</Color>
+    <Color x:Key="BorderDefaultColor">#1AEDE9FE</Color>
+    <Color x:Key="BorderStrongColor">#26EDE9FE</Color>
+    <Color x:Key="BorderProminentColor">#3DEDE9FE</Color>
+    <Color x:Key="AccentTintColor">#14A78BFA</Color>
+    <Color x:Key="AccentTintHoverColor">#1AA78BFA</Color>
+    <Color x:Key="AccentTintStrongColor">#26A78BFA</Color>
+    <Color x:Key="AccentTintActiveColor">#33A78BFA</Color>
+    <Color x:Key="AccentOutlineColor">#40A78BFA</Color>
+    <Color x:Key="AccentBadgeColor">#207C3AED</Color>
+    <Color x:Key="ScrimColor">#B20E0B14</Color>
+    <Color x:Key="ScrimSoftColor">#8C0E0B14</Color>
+    <Color x:Key="ScrimLightColor">#730E0B14</Color>
+    <Color x:Key="ScrimPanelColor">#CC17122A</Color>
+    <Color x:Key="CardBackgroundDisabledColor">#0BEDE9FE</Color>
+
     <!-- Status ramp. Deliberately kept on their own hues: colour-coding that means
          "this failed" must not be absorbed into the brand colour. -->
     <Color x:Key="Success500Color">#22C55E</Color>
@@ -155,32 +190,32 @@
          ═══════════════════════════════════════════════════════════════════════════ -->
 
     <!-- ── Surfaces ─────────────────────────────────────────────────────────────── -->
-    <SolidColorBrush x:Key="SurfaceBaseBrush" Color="{StaticResource Plum950Color}" />
-    <SolidColorBrush x:Key="SurfaceRaisedBrush" Color="{StaticResource Plum900Color}" />
-    <SolidColorBrush x:Key="SurfaceOverlayBrush" Color="{StaticResource Plum850Color}" />
-    <SolidColorBrush x:Key="SurfaceInsetBrush" Color="{StaticResource Plum800Color}" />
+    <SolidColorBrush x:Key="SurfaceBaseBrush" Color="{DynamicResource Plum950Color}" />
+    <SolidColorBrush x:Key="SurfaceRaisedBrush" Color="{DynamicResource Plum900Color}" />
+    <SolidColorBrush x:Key="SurfaceOverlayBrush" Color="{DynamicResource Plum850Color}" />
+    <SolidColorBrush x:Key="SurfaceInsetBrush" Color="{DynamicResource Plum800Color}" />
 
     <!-- Elevation overlays. Alpha over the violet-100 tint (#EDE9FE) rather than plain white, so a
          "lighter" surface drifts toward the brand hue instead of washing out to grey. The tint is
          written inline rather than as a primitive because WPF cannot compose an alpha channel onto a
          Color resource in markup — the whole #AARRGGBB literal has to be spelled out either way. -->
-    <SolidColorBrush x:Key="SurfaceGhostBrush" Color="#0AEDE9FE" />      <!-- was #08FFFFFF -->
-    <SolidColorBrush x:Key="SurfaceCardBrush" Color="#12EDE9FE" />       <!-- was #0DFFFFFF -->
-    <SolidColorBrush x:Key="SurfaceCardHoverBrush" Color="#16EDE9FE" />  <!-- was #10/#11FFFFFF -->
-    <SolidColorBrush x:Key="SurfaceElevatedBrush" Color="#20EDE9FE" />   <!-- was #18FFFFFF -->
-    <SolidColorBrush x:Key="SurfaceActiveBrush" Color="#2AEDE9FE" />     <!-- was #22FFFFFF -->
-    <SolidColorBrush x:Key="SurfacePressedBrush" Color="#30EDE9FE" />    <!-- was #28FFFFFF -->
+    <SolidColorBrush x:Key="SurfaceGhostBrush" Color="{DynamicResource SurfaceGhostColor}" />      <!-- was #08FFFFFF -->
+    <SolidColorBrush x:Key="SurfaceCardBrush" Color="{DynamicResource SurfaceCardColor}" />       <!-- was #0DFFFFFF -->
+    <SolidColorBrush x:Key="SurfaceCardHoverBrush" Color="{DynamicResource SurfaceCardHoverColor}" />  <!-- was #10/#11FFFFFF -->
+    <SolidColorBrush x:Key="SurfaceElevatedBrush" Color="{DynamicResource SurfaceElevatedColor}" />   <!-- was #18FFFFFF -->
+    <SolidColorBrush x:Key="SurfaceActiveBrush" Color="{DynamicResource SurfaceActiveColor}" />     <!-- was #22FFFFFF -->
+    <SolidColorBrush x:Key="SurfacePressedBrush" Color="{DynamicResource SurfacePressedColor}" />    <!-- was #28FFFFFF -->
     <!-- Same values as BorderDefault/BorderStrong below, exposed under fill names. A handful of chips and
          icon tiles use these weights as a BACKGROUND; pointing them at a Border* key would render
          identically but read as a mistake at every future call site. -->
-    <SolidColorBrush x:Key="SurfaceTintBrush" Color="#1AEDE9FE" />       <!-- was #14FFFFFF as a fill -->
-    <SolidColorBrush x:Key="SurfaceStrongBrush" Color="#26EDE9FE" />     <!-- was #1FFFFFFF as a fill -->
+    <SolidColorBrush x:Key="SurfaceTintBrush" Color="{DynamicResource SurfaceTintColor}" />       <!-- was #14FFFFFF as a fill -->
+    <SolidColorBrush x:Key="SurfaceStrongBrush" Color="{DynamicResource SurfaceStrongColor}" />     <!-- was #1FFFFFFF as a fill -->
 
     <!-- ── Borders ──────────────────────────────────────────────────────────────── -->
-    <SolidColorBrush x:Key="BorderSubtleBrush" Color="#18EDE9FE" />      <!-- hairline, decorative -->
-    <SolidColorBrush x:Key="BorderDefaultBrush" Color="#1AEDE9FE" />     <!-- card outlines -->
-    <SolidColorBrush x:Key="BorderStrongBrush" Color="#26EDE9FE" />      <!-- emphasised outlines -->
-    <SolidColorBrush x:Key="BorderProminentBrush" Color="#3DEDE9FE" />   <!-- dialog edges -->
+    <SolidColorBrush x:Key="BorderSubtleBrush" Color="{DynamicResource BorderSubtleColor}" />      <!-- hairline, decorative -->
+    <SolidColorBrush x:Key="BorderDefaultBrush" Color="{DynamicResource BorderDefaultColor}" />     <!-- card outlines -->
+    <SolidColorBrush x:Key="BorderStrongBrush" Color="{DynamicResource BorderStrongColor}" />      <!-- emphasised outlines -->
+    <SolidColorBrush x:Key="BorderProminentBrush" Color="{DynamicResource BorderProminentColor}" />   <!-- dialog edges -->
     <!-- NOTE: every border weight above is DECORATIVE, which is why they may sit under the 3:1 that
          WCAG 1.4.11 demands of non-text UI. If a border ever becomes the only thing marking an
          interactive control, it needs a colour that clears 3:1 on the surface behind it — #6E5AA3
@@ -188,11 +223,11 @@
          declared for it; add one at that point rather than carrying an unused key. -->
 
     <!-- ── Text ─────────────────────────────────────────────────────────────────── -->
-    <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource Plum50Color}" />
-    <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource Plum100Color}" />
-    <SolidColorBrush x:Key="TextMutedBrush" Color="{StaticResource Plum300Color}" />
-    <SolidColorBrush x:Key="TextDimBrush" Color="{StaticResource Plum400Color}" />
-    <SolidColorBrush x:Key="TextDisabledBrush" Color="{StaticResource Plum500Color}" />
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="{DynamicResource Plum50Color}" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="{DynamicResource Plum100Color}" />
+    <SolidColorBrush x:Key="TextMutedBrush" Color="{DynamicResource Plum300Color}" />
+    <SolidColorBrush x:Key="TextDimBrush" Color="{DynamicResource Plum400Color}" />
+    <SolidColorBrush x:Key="TextDisabledBrush" Color="{DynamicResource Plum500Color}" />
     <SolidColorBrush x:Key="TextOnAccentBrush" Color="{StaticResource PureWhiteColor}" />
 
     <!-- ── Accent ───────────────────────────────────────────────────────────────── -->
@@ -201,16 +236,16 @@
          WPF-UI's templates own those surfaces, and they get their colour from the Violet*Color
          primitives via App.ApplyAccentPalette(). Declaring unused brushes "for completeness" only
          creates a second place for the accent to drift out of sync. -->
-    <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource Violet400Color}" />
-    <SolidColorBrush x:Key="AccentSoftBrush" Color="{StaticResource Violet300Color}" />
+    <SolidColorBrush x:Key="AccentBrush" Color="{DynamicResource Violet400Color}" />
+    <SolidColorBrush x:Key="AccentSoftBrush" Color="{DynamicResource Violet300Color}" />
 
     <!-- Translucent accent washes: selected rows, badges, drop targets. -->
-    <SolidColorBrush x:Key="AccentTintBrush" Color="#14A78BFA" />
-    <SolidColorBrush x:Key="AccentTintHoverBrush" Color="#1AA78BFA" />
-    <SolidColorBrush x:Key="AccentTintStrongBrush" Color="#26A78BFA" />
-    <SolidColorBrush x:Key="AccentTintActiveBrush" Color="#33A78BFA" />
-    <SolidColorBrush x:Key="AccentOutlineBrush" Color="#40A78BFA" />
-    <SolidColorBrush x:Key="AccentBadgeBrush" Color="#207C3AED" />
+    <SolidColorBrush x:Key="AccentTintBrush" Color="{DynamicResource AccentTintColor}" />
+    <SolidColorBrush x:Key="AccentTintHoverBrush" Color="{DynamicResource AccentTintHoverColor}" />
+    <SolidColorBrush x:Key="AccentTintStrongBrush" Color="{DynamicResource AccentTintStrongColor}" />
+    <SolidColorBrush x:Key="AccentTintActiveBrush" Color="{DynamicResource AccentTintActiveColor}" />
+    <SolidColorBrush x:Key="AccentOutlineBrush" Color="{DynamicResource AccentOutlineColor}" />
+    <SolidColorBrush x:Key="AccentBadgeBrush" Color="{DynamicResource AccentBadgeColor}" />
 
     <!-- ── Status ───────────────────────────────────────────────────────────────── -->
     <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource Success500Color}" />
@@ -264,46 +299,46 @@
          stops applying and that surface returns to grey; re-dump the dictionary and re-map. -->
 
     <Color x:Key="ApplicationBackgroundColor">#0E0B14</Color>
-    <SolidColorBrush x:Key="ApplicationBackgroundBrush" Color="#0E0B14" />
+    <SolidColorBrush x:Key="ApplicationBackgroundBrush" Color="{DynamicResource ApplicationBackgroundColor}" />
 
     <Color x:Key="SolidBackgroundFillColorBase">#0E0B14</Color>
-    <SolidColorBrush x:Key="SolidBackgroundFillColorBaseBrush" Color="#0E0B14" />
+    <SolidColorBrush x:Key="SolidBackgroundFillColorBaseBrush" Color="{DynamicResource SolidBackgroundFillColorBase}" />
     <Color x:Key="SolidBackgroundFillColorBaseAlt">#07050C</Color>
-    <SolidColorBrush x:Key="SolidBackgroundFillColorBaseAltBrush" Color="#07050C" />
+    <SolidColorBrush x:Key="SolidBackgroundFillColorBaseAltBrush" Color="{DynamicResource SolidBackgroundFillColorBaseAlt}" />
     <Color x:Key="SolidBackgroundFillColorSecondary">#17122A</Color>
-    <SolidColorBrush x:Key="SolidBackgroundFillColorSecondaryBrush" Color="#17122A" />
+    <SolidColorBrush x:Key="SolidBackgroundFillColorSecondaryBrush" Color="{DynamicResource SolidBackgroundFillColorSecondary}" />
     <Color x:Key="SolidBackgroundFillColorTertiary">#1E1836</Color>
-    <SolidColorBrush x:Key="SolidBackgroundFillColorTertiaryBrush" Color="#1E1836" />
+    <SolidColorBrush x:Key="SolidBackgroundFillColorTertiaryBrush" Color="{DynamicResource SolidBackgroundFillColorTertiary}" />
     <Color x:Key="SolidBackgroundFillColorQuarternary">#2A2145</Color>
-    <SolidColorBrush x:Key="SolidBackgroundFillColorQuarternaryBrush" Color="#2A2145" />
+    <SolidColorBrush x:Key="SolidBackgroundFillColorQuarternaryBrush" Color="{DynamicResource SolidBackgroundFillColorQuarternary}" />
 
     <!-- Card / control / layer fills: same alpha weights as WPF-UI ships, tinted violet. -->
     <Color x:Key="CardBackgroundFillColorDefault">#12EDE9FE</Color>
-    <SolidColorBrush x:Key="CardBackgroundFillColorDefaultBrush" Color="#12EDE9FE" />
+    <SolidColorBrush x:Key="CardBackgroundFillColorDefaultBrush" Color="{DynamicResource CardBackgroundFillColorDefault}" />
     <Color x:Key="CardBackgroundFillColorSecondary">#0AEDE9FE</Color>
-    <SolidColorBrush x:Key="CardBackgroundFillColorSecondaryBrush" Color="#0AEDE9FE" />
-    <SolidColorBrush x:Key="CardBackground" Color="#12EDE9FE" />
-    <SolidColorBrush x:Key="CardBackgroundDisabled" Color="#0BEDE9FE" />
-    <SolidColorBrush x:Key="CardBackgroundPointerOver" Color="#1AEDE9FE" />
-    <SolidColorBrush x:Key="CardBackgroundPressed" Color="#0AEDE9FE" />
+    <SolidColorBrush x:Key="CardBackgroundFillColorSecondaryBrush" Color="{DynamicResource CardBackgroundFillColorSecondary}" />
+    <SolidColorBrush x:Key="CardBackground" Color="{DynamicResource CardBackgroundFillColorDefault}" />
+    <SolidColorBrush x:Key="CardBackgroundDisabled" Color="{DynamicResource CardBackgroundDisabledColor}" />
+    <SolidColorBrush x:Key="CardBackgroundPointerOver" Color="{DynamicResource SurfaceTintColor}" />
+    <SolidColorBrush x:Key="CardBackgroundPressed" Color="{DynamicResource CardBackgroundFillColorSecondary}" />
 
     <Color x:Key="ControlFillColorDefault">#14EDE9FE</Color>
-    <SolidColorBrush x:Key="ControlFillColorDefaultBrush" Color="#14EDE9FE" />
+    <SolidColorBrush x:Key="ControlFillColorDefaultBrush" Color="{DynamicResource ControlFillColorDefault}" />
     <Color x:Key="ControlStrokeColorDefault">#18EDE9FE</Color>
-    <SolidColorBrush x:Key="ControlStrokeColorDefaultBrush" Color="#18EDE9FE" />
+    <SolidColorBrush x:Key="ControlStrokeColorDefaultBrush" Color="{DynamicResource ControlStrokeColorDefault}" />
 
     <Color x:Key="LayerFillColorDefault">#4C2A2145</Color>
-    <SolidColorBrush x:Key="LayerFillColorDefaultBrush" Color="#4C2A2145" />
+    <SolidColorBrush x:Key="LayerFillColorDefaultBrush" Color="{DynamicResource LayerFillColorDefault}" />
     <Color x:Key="LayerFillColorAlt">#12EDE9FE</Color>
-    <SolidColorBrush x:Key="LayerFillColorAltBrush" Color="#12EDE9FE" />
+    <SolidColorBrush x:Key="LayerFillColorAltBrush" Color="{DynamicResource LayerFillColorAlt}" />
 
     <!-- ── Scrims and shadows ───────────────────────────────────────────────────── -->
     <!-- Modal backdrops are tinted with the window colour rather than pure black, so the blur
          behind a dialog reads as "the app dimmed" instead of a grey film over it. -->
-    <SolidColorBrush x:Key="ScrimBrush" Color="#B20E0B14" />        <!-- was #99000000 -->
-    <SolidColorBrush x:Key="ScrimSoftBrush" Color="#8C0E0B14" />    <!-- was #80000000 -->
-    <SolidColorBrush x:Key="ScrimLightBrush" Color="#730E0B14" />   <!-- was #66000000 -->
-    <SolidColorBrush x:Key="ScrimPanelBrush" Color="#CC17122A" />   <!-- was #cc14161c -->
+    <SolidColorBrush x:Key="ScrimBrush" Color="{DynamicResource ScrimColor}" />        <!-- was #99000000 -->
+    <SolidColorBrush x:Key="ScrimSoftBrush" Color="{DynamicResource ScrimSoftColor}" />    <!-- was #80000000 -->
+    <SolidColorBrush x:Key="ScrimLightBrush" Color="{DynamicResource ScrimLightColor}" />   <!-- was #66000000 -->
+    <SolidColorBrush x:Key="ScrimPanelBrush" Color="{DynamicResource ScrimPanelColor}" />   <!-- was #cc14161c -->
     <SolidColorBrush x:Key="ShadowBrush" Color="#1A000000" />       <!-- was #14000000 -->
 
 </ResourceDictionary>

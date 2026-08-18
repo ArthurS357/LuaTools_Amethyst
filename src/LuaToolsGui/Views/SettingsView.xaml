@@ -467,19 +467,34 @@
                         TextWrapping="Wrap" />
 
                     <!-- Accent colour. Unlike the language above this needs no relaunch: App mutates the
-                         Accent*Brush objects in place, so views holding them by StaticResource repaint. -->
+                         palette brush objects in place, so views holding them by StaticResource repaint.
+                         That only works because Themes/Colors.xaml declares each Colour through
+                         {DynamicResource} — a brush with a literal colour is frozen by WPF as soon as
+                         Application.Resources owns the dictionary, and a frozen brush never repaints.
+
+                         Picking does NOT apply. The button beside the box does, and it is disabled unless
+                         the picker differs from what is painted, so "already applied" reads off the
+                         control instead of being discovered by clicking and seeing nothing happen. -->
                     <TextBlock
                         Margin="0,18,0,0"
                         FontSize="13"
                         FontWeight="Medium"
                         Text="{x:Static res:Strings.Settings_Accent}" />
-                    <ComboBox
-                        Margin="0,8,0,0"
-                        MinWidth="220"
-                        HorizontalAlignment="Left"
-                        DisplayMemberPath="Display"
-                        ItemsSource="{Binding AccentOptions}"
-                        SelectedItem="{Binding SelectedAccent}" />
+                    <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
+                        <ComboBox
+                            MinWidth="220"
+                            DisplayMemberPath="Display"
+                            ItemsSource="{Binding AccentOptions}"
+                            SelectedItem="{Binding SelectedAccent}" />
+                        <!-- IsEnabled is not bound: a Button driven by a Command already disables itself
+                             from CanExecute, and binding it as well would give the same state two owners. -->
+                        <ui:Button
+                            Margin="8,0,0,0"
+                            Appearance="Primary"
+                            Command="{Binding ApplyAccentChangeCommand}"
+                            Content="{x:Static res:Strings.Settings_Accent_Apply}"
+                            Icon="{ui:SymbolIcon Checkmark24}" />
+                    </StackPanel>
                     <TextBlock
                         Margin="0,8,0,0"
                         FontSize="12"

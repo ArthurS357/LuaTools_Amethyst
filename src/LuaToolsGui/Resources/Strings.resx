@@ -122,10 +122,11 @@
   <data name="Hubcap_Wait_Minutes" xml:space="preserve"><value>{0} minutes</value></data>
   <data name="Hubcap_Wait_Hours" xml:space="preserve"><value>{0} hours</value></data>
   <data name="Settings_Accent" xml:space="preserve"><value>Accent colour</value></data>
-  <data name="Settings_Accent_Hint" xml:space="preserve"><value>Changes the app's highlight colour. Applies immediately.</value></data>
+  <data name="Settings_Accent_Hint" xml:space="preserve"><value>Retints the whole app — window, cards and text, not just the highlights. Pick a colour, then choose Apply.</value></data>
   <data name="Settings_Accent_Amethyst" xml:space="preserve"><value>Amethyst</value></data>
   <data name="Settings_Accent_Green" xml:space="preserve"><value>Green</value></data>
   <data name="Settings_Accent_Red" xml:space="preserve"><value>Red</value></data>
+  <data name="Settings_Accent_Apply" xml:space="preserve"><value>Apply</value></data>
   <data name="About_Changelog_Title" xml:space="preserve"><value>What's new</value></data>
   <data name="About_Changelog_Show" xml:space="preserve"><value>Show changelog</value></data>
   <data name="About_Changelog_Hide" xml:space="preserve"><value>Hide changelog</value></data>

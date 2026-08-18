@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.5.0");
+        AppVersion.Current.Should().Be("1.5.1");
     }
 
     [Fact]
@@ -42,13 +42,13 @@ public class ChangelogTests
     }
 
     [Fact]
-    public void The_1_5_0_entry_names_the_changes_the_release_was_about()
+    public void The_current_entry_names_the_changes_the_release_was_about()
     {
         string text = string.Join(" ", Changelog.Entries[0].Highlights);
 
         text.Should().ContainEquivalentOf("accent");
+        text.Should().ContainEquivalentOf("depots");
         text.Should().ContainEquivalentOf("hubcap");
-        text.Should().ContainEquivalentOf("changelog");
     }
 
     [Fact]

@@ -143,45 +143,51 @@ public class ThemeRepaintTests
             "the shadowed WPF-UI copy must not be touched");
     }
 
-    // ── End to end: a real palette switch ─────────────────────────────────────
+    // ── Why there is no end-to-end test here ──────────────────────────────────
 
     [Fact]
-    public void Switching_palettes_repaints_every_token_the_app_paints_with()
+    public void A_standalone_dictionary_cannot_stand_in_for_a_live_application()
     {
-        // The whole feature in one assertion: load the shipped dictionary, apply Green, and check the
-        // instances the views hold all moved — surfaces and body text included, not just accents.
+        // There USED to be an end-to-end test here: load the shipped Colors.xaml, apply Green, assert the
+        // brushes moved. It passed for weeks while the app could not change colour at all, and it is worth
+        // keeping the reason on record so nobody rebuilds it.
+        //
+        // A standalone dictionary is not the arrangement the app runs in, and the difference is exactly
+        // the bug. Attaching a dictionary to Application.Resources makes WPF FREEZE its brushes; loose,
+        // they stay mutable. So the loose version proved the one thing that was never in question.
+        //
+        // The shipped brushes now take their colour through {DynamicResource}, which is what keeps them
+        // unfrozen under an Application — and which, loose, does not resolve at all. That is what this
+        // asserts: an unresolved brush, i.e. proof that this arrangement tells you nothing about the real
+        // one. The real one is covered by ThemeLiveSwitchTests, which stands up an actual Application.
+        var loose = (ResourceDictionary)Application.LoadComponent(
+            new Uri("/LuaTools;component/Themes/Colors.xaml", UriKind.Relative));
+
+        var window = (SolidColorBrush)loose["SurfaceBaseBrush"];
+
+        window.IsFrozen.Should().BeFalse("loose brushes are always mutable — which is why this proves nothing");
+        window.Color.Should().Be(Colors.Transparent,
+            "the DynamicResource has no lookup chain here, so the brush kept SolidColorBrush's default");
+    }
+
+    [Theory]
+    [InlineData("Amethyst")]
+    [InlineData("Green")]
+    [InlineData("Red")]
+    public void A_palette_still_produces_a_full_set_of_colours_to_apply(string id)
+    {
+        // What CAN be checked without an Application: the arithmetic. Whether those colours reach the
+        // screen is ThemeLiveSwitchTests' job. Colour resources resolve fine loose — they are plain
+        // values, unlike the brushes above.
         var shipped = (ResourceDictionary)Application.LoadComponent(
             new Uri("/LuaTools;component/Themes/Colors.xaml", UriKind.Relative));
         var resolve = new DictionaryColors(shipped);
+        var palette = AccentPalette.FromId(id);
 
-        var window = (SolidColorBrush)shipped["SurfaceBaseBrush"];
-        var bodyText = (SolidColorBrush)shipped["TextPrimaryBrush"];
-        var card = (SolidColorBrush)shipped["SurfaceCardBrush"];
-        var accent = (SolidColorBrush)shipped["AccentBrush"];
+        int tokens = palette.BrushColors(resolve).Count
+                   + palette.SurfaceColors(resolve).Count
+                   + palette.ShellColors(resolve).Count;
 
-        var before = (window.Color, bodyText.Color, card.Color, accent.Color);
-
-        var green = AccentPalette.Green;
-        int applied = ThemeRepaint.Apply(shipped, green.BrushColors(resolve))
-                    + ThemeRepaint.Apply(shipped, green.SurfaceColors(resolve))
-                    + ThemeRepaint.Apply(shipped, green.ShellColors(resolve));
-
-        applied.Should().BeGreaterThan(50, "the switch covers the whole surface, not eight accent tokens");
-
-        window.Color.Should().NotBe(before.Item1);
-        bodyText.Color.Should().NotBe(before.Item2);
-        card.Color.Should().NotBe(before.Item3);
-        accent.Color.Should().NotBe(before.Item4);
-
-        window.Color.Should().Be(resolve.Color(green.Neutrals.SurfaceBaseKey));
-        bodyText.Color.Should().Be(resolve.Color(green.Neutrals.TextPrimaryKey));
-
-        // And back again with no reload in between — the switch has to be reversible, not one-way.
-        var amethyst = AccentPalette.Amethyst;
-        ThemeRepaint.Apply(shipped, amethyst.BrushColors(resolve));
-        ThemeRepaint.Apply(shipped, amethyst.SurfaceColors(resolve));
-        ThemeRepaint.Apply(shipped, amethyst.ShellColors(resolve));
-
-        (window.Color, bodyText.Color, card.Color, accent.Color).Should().Be(before);
+        tokens.Should().BeGreaterThan(50, "the switch covers the whole surface, not eight accent tokens");
     }
 }

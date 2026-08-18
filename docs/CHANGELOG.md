@@ -1,5 +1,72 @@
 # Changelog
 
+## 1.5.1 — 2026-08-18
+
+Correcao da troca de cor — que nunca chegou a funcionar — agora atras de um botao **Aplicar**, mais a
+remocao de jogos dos Depots e os follow-ups de UX/seguranca do HubCap.
+
+### Correcoes
+
+- **A troca de cor de destaque nao funcionava.** Dois defeitos independentes, ambos silenciosos: build
+  limpo, nenhuma excecao, nenhum log.
+
+  1. **Brushes congelados.** O WPF congela todo `Freezable` no momento em que o `ResourceDictionary` passa
+     a ser propriedade de `Application.Resources`. `App.RepaintAccentBrushes` e `ThemeRepaint.Apply`
+     mutam `brush.Color` e pulam o que estiver congelado (`!brush.IsFrozen`) — ou seja, pulavam
+     **tudo**. Medido: `SurfaceBaseBrush IsFrozen=True` com o dicionario anexado, `False` solto. Foi
+     exatamente essa diferenca que fez os testes anteriores passarem contra um dicionario avulso enquanto
+     o app nao trocava de cor. Correcao: em `Themes/Colors.xaml` cada brush da paleta declara a cor via
+     `Color="{DynamicResource ...}"`; uma referencia dinamica torna o `Freezable` nao-congelavel, e a
+     mutacao volta a valer. 49 brushes convertidos, com 23 chaves `Color` semente novas para os tokens
+     translucidos. As cores de status ficam de fora de proposito — nao seguem o accent.
+  2. **`PromoteSurfaceOverrides` recongelava.** Atribuir um `Freezable` dentro de `Application.Resources`
+     tambem congela. A funcao promovia Colors **e** Brushes, entao a primeira troca funcionava e todas as
+     seguintes nao mexiam mais nas superficies do WPF-UI. Correcao: promover **somente** chaves `Color`.
+     Os brushes nao precisam de promocao — `Colors.xaml` e o ultimo merge e ja vence a resolucao.
+
+### Mudancas
+
+- **Botao Aplicar para a cor de destaque.** Selecionar no combo passou a apenas *encenar* a escolha; nada
+  e pintado nem gravado ate clicar em **Aplicar**. Se o usuario mudar de ideia e sair da tela, a cor
+  anterior continua ativa e o `settings.json` fica intacto. O botao fica desabilitado quando o que esta
+  selecionado ja e o que esta pintado, entao "nada a aplicar" se le no controle em vez de ser descoberto
+  clicando. Evita a repintura acidental de encostar no dropdown.
+- **Paleta tonal.** Escolher uma cor retinge o app inteiro — janela, cartoes, dialogos, bordas, textos
+  auxiliares — e nao so os botoes. Cada paleta ganhou uma rampa neutra de 11 passos (`Plum`, `Moss`,
+  `Wine`). As rampas alternativas sao derivadas por **luminancia relativa**, nao por lightness HSL: cada
+  passo tem a mesma luminancia do passo Amethyst que substitui, entao todo contraste WCAG homologado
+  transfere sem recalculo. Rotacao por lightness igual foi testada e descartada — verde no mesmo L e
+  mais claro, e derrubava Danger sobre chip inset para 3,92:1 (reprova AA).
+- **Remocao de jogo dos Depots.** A lista e a uniao de tres fontes em disco (lua vivo em `stplug-in`,
+  build luas soltos, e a pasta do vault), e qualquer uma delas bastava para o jogo continuar aparecendo
+  — por isso apagar pela pagina Manage nao resolvia: o vault devolvia o jogo. `LuaVault.ForgetGame`
+  limpa as tres, com confirmacao modal e um icone discreto em cada linha (revelado no hover e tambem no
+  foco de teclado). Persistencia e o proprio sistema de arquivos, entao a remocao sobrevive ao restart.
+- **HubCap — aviso de expiracao da chave.** `api_key_expires_at` ja chegava e so aparecia como data no
+  fim da linha de uso; agora vira aviso proprio quando faltam 7 dias ou menos. Descoberto no caminho: o
+  campo vem **sem offset de fuso**, e era lido como hora local (ate 26h de erro entre usuarios). Passou a
+  ser lido como UTC nos dois pontos que o consomem.
+- **HubCap — campo da chave mascarado.** `ui:TextBox` trocado por `ui:PasswordBox`: a chave e uma
+  credencial bearer e era digitada/colada em texto claro na tela.
+- **HubCap — validacao de formato mais tolerante.** `^smm_[0-9a-f]{96}$` era uma aposta no formato atual
+  de uma credencial de terceiro; se o HubCap rotacionasse o prefixo, o app recusaria localmente uma chave
+  valida com uma mensagem indistinguivel de erro de digitacao. Agora aceita prefixo opcional e corpo hex
+  de 16 a 256 caracteres, ancorado com `\A`/`\z` (em .NET `$` casa antes de `\n` final). `LogSanitizer`
+  acompanhou o novo formato — chave que o app aceita enviar e chave que pode chegar num log.
+
+### Testes
+
+- Suite de **725 para 790**.
+- `ThemeLiveSwitchTests` (novo): sobe uma `Application` real numa thread STA com os mesmos tres
+  dicionarios do `App.xaml`. E o unico arranjo em que o congelamento existe — os testes antigos usavam
+  dicionario avulso e por isso aprovavam um recurso inerte. Cobre: nenhum brush da paleta congelado,
+  cores de status seguem congeladas, cada token repinta, **a segunda troca funciona como a primeira**,
+  fundo da janela acompanha, e o slot de accent do WPF-UI acompanha.
+- `AccentApplyButtonTests` (novo): selecionar nao pinta e nao grava; Aplicar pinta e grava; escolha
+  aplicada sobrevive ao restart; botao desabilitado sem alteracao pendente; reabilita ao divergir;
+  desabilita de novo apos aplicar; voltar para a cor ativa nao conta como pendente; `CanExecuteChanged`
+  dispara (sem isso o botao nao redesenha); duas aplicacoes seguidas pintam duas vezes.
+
 ## 1.5.0 — 2026-08-18
 
 Follow-ups da auditoria da integração HubCap, mais a primeira opção de personalização visual do fork.

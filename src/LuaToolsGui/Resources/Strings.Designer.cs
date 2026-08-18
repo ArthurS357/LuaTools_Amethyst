@@ -87,6 +87,7 @@ public static class Strings
     public static string Settings_Accent_Amethyst => Get(nameof(Settings_Accent_Amethyst));
     public static string Settings_Accent_Green => Get(nameof(Settings_Accent_Green));
     public static string Settings_Accent_Red => Get(nameof(Settings_Accent_Red));
+    public static string Settings_Accent_Apply => Get(nameof(Settings_Accent_Apply));
     public static string About_Changelog_Title => Get(nameof(About_Changelog_Title));
     public static string About_Changelog_Show => Get(nameof(About_Changelog_Show));
     public static string About_Changelog_Hide => Get(nameof(About_Changelog_Hide));

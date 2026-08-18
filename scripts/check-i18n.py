@@ -120,6 +120,7 @@ PENDING_TRANSLATION: frozenset[str] = frozenset({
     "Settings_Accent_Amethyst",
     "Settings_Accent_Green",
     "Settings_Accent_Red",
+    "Settings_Accent_Apply",
     # In-app changelog on the About page, added in 1.5.0. The entry TEXT is not localised at all — it
     # lives in Resources/Changelog.cs, like release notes generally do; only the chrome is a resource.
     "About_Changelog_Title",

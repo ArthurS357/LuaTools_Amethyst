@@ -168,19 +168,53 @@ public partial class SettingsViewModel : ObservableObject
         new(Resources.Strings.Settings_Accent_Red, Themes.AccentPalette.Red.Id),
     ];
 
-    [ObservableProperty] private AccentOption _selectedAccent = null!;
+    /// <summary>
+    /// What the picker is showing. Changing it repaints NOTHING on its own.
+    ///
+    /// <para>
+    /// Selecting used to apply and persist immediately, which made every accidental brush against the
+    /// dropdown a theme change with no way back except picking the old one again from memory. The choice
+    /// is now staged here and only takes effect through <see cref="ApplyAccentChangeCommand"/>, so a
+    /// selection the user does not confirm leaves the running theme — and settings.json — untouched, even
+    /// if they navigate away.
+    /// </para>
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasPendingAccentChange))]
+    [NotifyCanExecuteChangedFor(nameof(ApplyAccentChangeCommand))]
+    private AccentOption _selectedAccent = null!;
 
-    private bool _suppressAccentApply; // true during ctor init so binding doesn't re-save the saved value
+    /// <summary>The accent actually painted right now. Tracked separately from the picker because the gap
+    /// between the two IS the pending change, and the Apply button is driven by that gap.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasPendingAccentChange))]
+    [NotifyCanExecuteChangedFor(nameof(ApplyAccentChangeCommand))]
+    private string _appliedAccentId = Themes.AccentPalette.Amethyst.Id;
 
-    /// <summary>Applied through <see cref="ApplyAccent"/>, which App sets. Unlike the language picker this
-    /// needs no relaunch: the accent brushes are mutated in place, so live views repaint.</summary>
-    public Action<Themes.AccentPalette>? ApplyAccent { get; set; }
+    /// <summary>True when the picker shows something other than what is painted — the Apply button is
+    /// enabled exactly here, so "nothing to apply" is visible rather than something the user discovers by
+    /// clicking and seeing no effect.</summary>
+    public bool HasPendingAccentChange =>
+        SelectedAccent is { } option &&
+        !string.Equals(option.Id, AppliedAccentId, StringComparison.OrdinalIgnoreCase);
 
-    partial void OnSelectedAccentChanged(AccentOption value)
+    /// <summary>Set by App to the real repaint. Left null in tests, which is what lets the staging and
+    /// persistence logic below be exercised without a live Application.</summary>
+    public Action<Themes.AccentPalette>? ApplyAccentPalette { get; set; }
+
+    /// <summary>Paint the staged accent and remember it. Disabled while there is nothing staged.</summary>
+    [RelayCommand(CanExecute = nameof(HasPendingAccentChange))]
+    private void ApplyAccentChange()
     {
-        if (value is null || _suppressAccentApply) return;
-        _settings.AccentColor = value.Id;
-        ApplyAccent?.Invoke(Themes.AccentPalette.FromId(value.Id));
+        if (SelectedAccent is not { } option) return;
+
+        var palette = Themes.AccentPalette.FromId(option.Id);
+
+        // Persist BEFORE painting. If the repaint throws, the user has still chosen, and the next launch
+        // comes up in the colour they picked rather than silently reverting.
+        _settings.AccentColor = palette.Id;
+        AppliedAccentId = palette.Id;
+        ApplyAccentPalette?.Invoke(palette);
     }
 
     // ── Hubcap API key ──────────────────────────────────────────────
@@ -292,10 +326,12 @@ public partial class SettingsViewModel : ObservableObject
         _suppressLanguagePrompt = false;
 
         // Same shape: reflect the saved accent without writing it straight back out.
-        _suppressAccentApply = true;
+        // The saved accent is both what is painted and what the picker starts on, so there is no pending
+        // change at startup and Apply comes up disabled. No suppression flag is needed any more: selecting
+        // has no side effect to suppress.
         string activeAccent = Themes.AccentPalette.FromId(settings.AccentColor).Id;
         _selectedAccent = AccentOptions.First(o => o.Id == activeAccent);
-        _suppressAccentApply = false;
+        _appliedAccentId = activeAccent;
     }
 
     private void RefreshSteam()

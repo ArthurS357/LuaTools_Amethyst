@@ -547,6 +547,10 @@ public partial class App : Application
     /// (predicted #353536) and not WPF-UI's stock #0DFFFFFF (predicted #323232).
     /// </para>
     /// <para>
+    /// COLOURS ONLY — see the comment on the key list for why promoting a brush here would break every
+    /// theme switch after the first.
+    /// </para>
+    /// <para>
     /// It does NOT reach the window shell. ApplicationBackgroundBrush and the NavigationView background
     /// are painted through WPF-UI's own template path, which resolves them inside its dictionary scope at
     /// parse time; no app-level override touches them. Those two are handled by setting the property
@@ -558,23 +562,30 @@ public partial class App : Application
         var res = Current?.Resources;
         if (res is null) return;
 
-        // Keys that Themes/Colors.xaml deliberately redefines using WPF-UI's own names.
+        // COLOUR keys only. Brushes are deliberately NOT promoted, and that is load-bearing rather than an
+        // omission: assigning a Freezable into Application.Resources FREEZES it, and a frozen brush can
+        // never be repainted again. Promoting them used to cost nothing because every brush was frozen
+        // anyway; now that the palette repaints brushes in place, promoting one kills the second and every
+        // later theme switch — the first switch works, then the surface sticks. Measured, not theorised.
+        //
+        // Nothing is lost by leaving them out. Themes/Colors.xaml is merged LAST in App.xaml, and WPF
+        // searches merged dictionaries in reverse, so our brush already outranks WPF-UI's copy of the same
+        // key without any help. Colours are the only entries that genuinely need re-homing: they are value
+        // types, so a consumer resolving one later must find ours rather than the merged grey.
         string[] overriddenKeys =
         [
-            "ApplicationBackgroundColor", "ApplicationBackgroundBrush",
-            "SolidBackgroundFillColorBase", "SolidBackgroundFillColorBaseBrush",
-            "SolidBackgroundFillColorBaseAlt", "SolidBackgroundFillColorBaseAltBrush",
-            "SolidBackgroundFillColorSecondary", "SolidBackgroundFillColorSecondaryBrush",
-            "SolidBackgroundFillColorTertiary", "SolidBackgroundFillColorTertiaryBrush",
-            "SolidBackgroundFillColorQuarternary", "SolidBackgroundFillColorQuarternaryBrush",
-            "CardBackgroundFillColorDefault", "CardBackgroundFillColorDefaultBrush",
-            "CardBackgroundFillColorSecondary", "CardBackgroundFillColorSecondaryBrush",
-            "CardBackground", "CardBackgroundDisabled",
-            "CardBackgroundPointerOver", "CardBackgroundPressed",
-            "ControlFillColorDefault", "ControlFillColorDefaultBrush",
-            "ControlStrokeColorDefault", "ControlStrokeColorDefaultBrush",
-            "LayerFillColorDefault", "LayerFillColorDefaultBrush",
-            "LayerFillColorAlt", "LayerFillColorAltBrush",
+            "ApplicationBackgroundColor",
+            "SolidBackgroundFillColorBase",
+            "SolidBackgroundFillColorBaseAlt",
+            "SolidBackgroundFillColorSecondary",
+            "SolidBackgroundFillColorTertiary",
+            "SolidBackgroundFillColorQuarternary",
+            "CardBackgroundFillColorDefault",
+            "CardBackgroundFillColorSecondary",
+            "ControlFillColorDefault",
+            "ControlStrokeColorDefault",
+            "LayerFillColorDefault",
+            "LayerFillColorAlt",
         ];
 
         // Read the value out of our merged palette, then write it back as a top-level entry.
@@ -625,8 +636,9 @@ public partial class App : Application
         var main = _host.Services.GetRequiredService<MainViewModel>();
         var settingsVm = _host.Services.GetRequiredService<SettingsViewModel>();
 
-        // The accent, unlike the language, repaints live — no relaunch prompt.
-        settingsVm.ApplyAccent = ApplyAccentPalette;
+        // The accent, unlike the language, repaints live — no relaunch prompt. Fired by the Settings
+        // page's Apply button, not by the picker: selecting a colour stages it, applying paints it.
+        settingsVm.ApplyAccentPalette = ApplyAccentPalette;
 
         // Changing the language needs a relaunch (x:Static resources resolve at parse time).
         settingsVm.RequestRestart = RelaunchApp;
