@@ -96,6 +96,48 @@
     <Color x:Key="Plum100Color">#DED5F2</Color>  <!-- secondary text -->
     <Color x:Key="Plum50Color">#F3EFFB</Color>   <!-- primary text -->
     <Color x:Key="PureWhiteColor">#FFFFFF</Color><!-- text on filled accent only -->
+    <Color x:Key="Plum975Color">#07050C</Color>  <!-- deepest shell fill (WPF-UI BaseAlt) -->
+    <Color x:Key="PlumTintColor">#EDE9FE</Color>  <!-- elevation overlay tint -->
+
+    <!-- Tonal neutrals for the other two accents.
+
+         The accent ramps above only ever reached buttons, icons and thin strokes: everything the user
+         actually looks at — window, cards, dialogs, body text — was hardcoded on the plum axis, so picking
+         green repainted about six percent of the screen. These are what make the whole app change tone.
+
+         Derived, not eyeballed. Each step is the corresponding Plum step rotated onto the accent's own hue
+         (emerald 158.1 deg, rose 351.3 deg) at 85% of its saturation, then solved so its RELATIVE LUMINANCE
+         matches the Plum step it replaces — the property WCAG contrast is computed from.
+
+         That last part is the whole trick, and it is why an equal-lightness rotation was rejected. HSL
+         lightness is hue-blind: green at the same L is markedly brighter in luminance, which pushed the
+         inset-chip surface up until Danger text on it measured 3.92:1 and failed AA. Anchoring on
+         luminance instead means every contrast ratio in the app lands within 0.1 of the Amethyst value it
+         was signed off at, for every palette — so the accessibility work does not have to be redone per
+         accent, it transfers. AccentPaletteTests asserts exactly that, per palette and per step. -->
+    <Color x:Key="Moss975Color">#030705</Color>
+    <Color x:Key="Moss950Color">#080E0C</Color>  <!-- window background -->
+    <Color x:Key="Moss900Color">#0C1814</Color>  <!-- cards, panels -->
+    <Color x:Key="Moss850Color">#10201A</Color>  <!-- dialogs, flyouts, popups -->
+    <Color x:Key="Moss800Color">#172B23</Color>  <!-- inset chips / selected rows -->
+    <Color x:Key="Moss500Color">#4C6A5F</Color>  <!-- disabled text -->
+    <Color x:Key="Moss400Color">#679B88</Color>  <!-- dim text -->
+    <Color x:Key="Moss300Color">#6FA793</Color>  <!-- muted text -->
+    <Color x:Key="Moss100Color">#B6E3D2</Color>  <!-- secondary text -->
+    <Color x:Key="Moss50Color">#E1F5EE</Color>   <!-- primary text -->
+    <Color x:Key="MossTintColor">#C1F7E3</Color> <!-- elevation overlay tint -->
+
+    <Color x:Key="Wine975Color">#0A0506</Color>
+    <Color x:Key="Wine950Color">#120B0C</Color>
+    <Color x:Key="Wine900Color">#221113</Color>
+    <Color x:Key="Wine850Color">#2C1619</Color>
+    <Color x:Key="Wine800Color">#3A1F23</Color>
+    <Color x:Key="Wine500Color">#7F5B60</Color>
+    <Color x:Key="Wine400Color">#B0868C</Color>
+    <Color x:Key="Wine300Color">#BC9197</Color>
+    <Color x:Key="Wine100Color">#EED3D7</Color>
+    <Color x:Key="Wine50Color">#FAEEF0</Color>
+    <Color x:Key="WineTintColor">#FCE6EA</Color>
 
     <!-- Status ramp. Deliberately kept on their own hues: colour-coding that means
          "this failed" must not be absorbed into the brand colour. -->

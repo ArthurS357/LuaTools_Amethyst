@@ -181,6 +181,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Border
                     Width="46"
@@ -202,6 +203,50 @@
                         TextTrimming="CharacterEllipsis"
                         Visibility="{Binding VariantBadge, Converter={StaticResource NullToCollapsed}}" />
                 </StackPanel>
+
+                <!-- Remove-game affordance. Deliberately quiet: it deletes files, so it must not sit at
+                     the same visual weight as selecting a row, but it also cannot be hidden behind a
+                     right-click nobody discovers. Held at 0 opacity until the pointer is over the row,
+                     which keeps the list clean while making it obvious the moment you reach for it.
+
+                     Bound through the ListBox rather than the row: the command lives on the page's
+                     view-model, and the row's DataContext is the game — which is what it passes back
+                     as the parameter. -->
+                <ui:Button
+                    x:Name="RemoveGameButton"
+                    Grid.Column="2"
+                    Width="26"
+                    Height="26"
+                    Padding="0"
+                    VerticalAlignment="Center"
+                    Appearance="Transparent"
+                    Command="{Binding DataContext.RemoveGameCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                    CommandParameter="{Binding}"
+                    Icon="{ui:SymbolIcon Delete24}"
+                    ToolTip="{x:Static res:Strings.Builds_RemoveGame_Tip}">
+                    <ui:Button.Style>
+                        <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
+                            <!-- Opacity and Foreground are SETTERS, not attributes on the element. A local
+                                 value outranks a style trigger in WPF, so writing Opacity="0" inline would
+                                 pin the button invisible and the reveal triggers below would never win. -->
+                            <Setter Property="Opacity" Value="0" />
+                            <Setter Property="Foreground" Value="{StaticResource TextDimBrush}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                    <Setter Property="Opacity" Value="1" />
+                                </DataTrigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Foreground" Value="{StaticResource DangerBrush}" />
+                                </Trigger>
+                                <!-- Keyboard users never raise IsMouseOver, so focus has to reveal it too;
+                                     otherwise the control is reachable by Tab but invisible while focused. -->
+                                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                    <Setter Property="Opacity" Value="1" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ui:Button.Style>
+                </ui:Button>
             </Grid>
         </DataTemplate>
 

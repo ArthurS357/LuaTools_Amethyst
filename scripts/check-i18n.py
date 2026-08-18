@@ -91,6 +91,15 @@ PENDING_TRANSLATION: frozenset[str] = frozenset({
     "Settings_HubcapExpiryExpired",
     "Settings_HubcapExpiryToday",
     "Settings_HubcapExpirySoon",
+    # Removing a game from the Depots list. The list is the union of three on-disk sources, so nothing
+    # short of purging all three took an accidentally-added game back off it; these are that flow's copy.
+    "Builds_RemoveGame",
+    "Builds_RemoveGame_Tip",
+    "Builds_RemoveGame_Title",
+    "Builds_RemoveGame_Body",
+    "Builds_RemoveGame_Done",
+    "Builds_RemoveGame_Gone",
+    "Builds_RemoveGame_Failed",
     # Hubcap download failures, promoted out of hardcoded English literals in HubcapErrorText. The wait
     # units are separate keys so a language that inflects by count can translate them properly, rather
     # than having a number glued to a bare noun.

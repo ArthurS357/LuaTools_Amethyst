@@ -364,8 +364,50 @@ public partial class App : Application
             secondaryAccent: border.Value,   // borders, non-text UI
             tertiaryAccent: soft.Value);     // softest wash
 
-        RepaintAccentBrushes(palette);
+        // Promote FIRST, then repaint. PromoteSurfaceOverrides copies values UP out of the merged
+        // dictionaries into the top level; run after a repaint it would copy the XAML defaults back over
+        // the palette that was just applied, which is precisely how a switch ends up needing a restart to
+        // look right. Brushes are immune either way — promotion copies the object, and the repaint mutates
+        // it — but the Color entries are values, and those would have been silently reverted.
         PromoteSurfaceOverrides();
+        RepaintAccentBrushes(palette);
+        RepaintTonalResources(palette);
+    }
+
+    /// <summary>
+    /// Repaint everything the accent ramp does NOT cover: window, cards, dialogs, borders, body text, and
+    /// WPF-UI's own templated surfaces.
+    ///
+    /// <para>
+    /// Without this the setting only reached the eight <c>Accent*Brush</c> tokens — buttons, focus rings
+    /// and a few icons — while every surface and every line of text stayed on the violet axis. The change
+    /// was real but looked like it had not applied, which is the behaviour that got read as "needs a
+    /// restart".
+    /// </para>
+    ///
+    /// <para>
+    /// Live for the same reason the accent switch already was: these are brush OBJECTS held by views that
+    /// resolved them once, so mutating the object repaints its consumers. See
+    /// <see cref="Themes.ThemeRepaint"/> for the part of that which cannot be done live.
+    /// </para>
+    /// </summary>
+    private static void RepaintTonalResources(Themes.AccentPalette palette)
+    {
+        if (Current is null) return;
+
+        try
+        {
+            var resolve = new Themes.DictionaryColors(Current.Resources);
+            Themes.ThemeRepaint.Apply(Current.Resources, palette.SurfaceColors(resolve));
+            Themes.ThemeRepaint.Apply(Current.Resources, palette.ShellColors(resolve));
+        }
+        catch (KeyNotFoundException ex)
+        {
+            // A ramp primitive is missing from Colors.xaml. The accent half has already been applied, so
+            // the app is usable and in-brand; log the real cause rather than leaving a half-tinted UI
+            // unexplained.
+            LogThemeProblem($"tonal repaint for '{palette.Id}' incomplete: {ex.Message}");
+        }
     }
 
     /// <summary>Push the palette into the app's own accent brushes. Silent about a brush it cannot find:

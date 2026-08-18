@@ -458,6 +458,13 @@ public static class Strings
     public static string Builds_Delete_Title => Get(nameof(Builds_Delete_Title));
     public static string Builds_Delete_Body => Get(nameof(Builds_Delete_Body));
     public static string Builds_Delete_ActiveTip => Get(nameof(Builds_Delete_ActiveTip));
+    public static string Builds_RemoveGame => Get(nameof(Builds_RemoveGame));
+    public static string Builds_RemoveGame_Tip => Get(nameof(Builds_RemoveGame_Tip));
+    public static string Builds_RemoveGame_Title => Get(nameof(Builds_RemoveGame_Title));
+    public static string Builds_RemoveGame_Body => Get(nameof(Builds_RemoveGame_Body));
+    public static string Builds_RemoveGame_Done => Get(nameof(Builds_RemoveGame_Done));
+    public static string Builds_RemoveGame_Gone => Get(nameof(Builds_RemoveGame_Gone));
+    public static string Builds_RemoveGame_Failed => Get(nameof(Builds_RemoveGame_Failed));
     public static string Builds_Apply_Done => Get(nameof(Builds_Apply_Done));
     public static string Builds_Apply_Failed => Get(nameof(Builds_Apply_Failed));
     public static string Builds_Save_Done => Get(nameof(Builds_Save_Done));

@@ -590,6 +590,80 @@ public class LuaVault
         return true;
     }
 
+    /// <summary>
+    /// Remove a game from the Depots list entirely: the live lua Steam reads, any inert build luas sitting
+    /// beside it, and the whole vault of stored variants.
+    ///
+    /// <para>
+    /// This exists because no single existing delete could do it. The Manage page deletes the live
+    /// <c>&lt;appid&gt;.lua</c> and the Builds page deletes ONE variant, but the Depots list is built from
+    /// the union of three sources, so clearing any one of them leaves the game on screen. A user who added
+    /// a game by mistake had no way to take it back off the list.
+    /// </para>
+    ///
+    /// <para>
+    /// Persistence is the filesystem, not settings.json: these files ARE the state. Nothing has to be
+    /// recorded for the removal to survive a restart, and nothing is left behind to resurrect it — which
+    /// also means the removal is as permanent as deleting the files by hand, hence the caller's confirm.
+    /// </para>
+    ///
+    /// <para>
+    /// Not atomic, and deliberately not pretending to be. Steam can hold the live lua open, so a delete
+    /// can fail after the vault has already gone; <see cref="GameRemoval.Failed"/> carries what did get
+    /// removed so the UI can say so instead of implying nothing happened.
+    /// </para>
+    /// </summary>
+    public GameRemoval ForgetGame(long appId)
+    {
+        bool live = false;
+        int loose = 0;
+        bool vault = false;
+
+        GameRemoval.Removed? SoFar() =>
+            live || loose > 0 || vault ? new GameRemoval.Removed(live, loose, vault) : null;
+
+        try
+        {
+            if (LivePath(appId) is { } livePath && File.Exists(livePath))
+            {
+                File.Delete(livePath);
+                live = true;
+            }
+
+            // Materialised before deleting: EnumerateLooseBuildLuas walks the directory lazily, and
+            // deleting out from under an open enumeration is undefined on Windows.
+            foreach (var (id, _, path) in EnumerateLooseBuildLuas().ToList())
+            {
+                if (id != appId || !File.Exists(path)) continue;
+                File.Delete(path);
+                loose++;
+            }
+
+            // Under the same gate as every index read-modify-write, so a capture landing on a background
+            // thread cannot recreate index.json between the check and the delete.
+            lock (_gate)
+            {
+                string dir = AppDir(appId);
+                if (Directory.Exists(dir))
+                {
+                    Directory.Delete(dir, recursive: true);
+                    vault = true;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // Whatever did get deleted is still gone, so the page must refresh even on the failure path.
+            if (SoFar() is not null) VaultChanged?.Invoke(appId);
+            return new GameRemoval.Failed(ex.Message, SoFar());
+        }
+
+        if (SoFar() is not { } removed) return new GameRemoval.NothingToRemove();
+
+        VaultChanged?.Invoke(appId);
+        return removed;
+    }
+
     // ── Helpers ─────────────────────────────────────────────────────
 
     /// <summary>Read the lua to fill in the metadata the Builds page shows without re-parsing every file.</summary>

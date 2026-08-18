@@ -27,7 +27,6 @@ namespace LuaToolsGui.Tests;
 /// </summary>
 public class AccentPaletteTests
 {
-    private const string SurfaceBase = "#0E0B14";
     private const string White = "#FFFFFF";
 
     private static readonly ResourceDictionary Palette = LoadShippedPalette();
@@ -68,10 +67,13 @@ public class AccentPaletteTests
     public void Text_weights_clear_AA_against_the_base_surface(string id)
     {
         var p = AccentPalette.FromId(id);
+        var window = Get(p.Neutrals.SurfaceBaseKey);
 
-        // 300 and 400 carry text and icons, so they need the 4.5:1 text floor.
-        Contrast(Get(p.SoftKey), Hex(SurfaceBase)).Should().BeGreaterThanOrEqualTo(4.5);
-        Contrast(Get(p.PrimaryKey), Hex(SurfaceBase)).Should().BeGreaterThanOrEqualTo(4.5);
+        // Against the palette own window colour, not a fixed violet one. Each palette now brings its own
+        // neutral ramp, so measuring green accents on the plum background would be checking a combination
+        // that never appears on screen.
+        Contrast(Get(p.SoftKey), window).Should().BeGreaterThanOrEqualTo(4.5);
+        Contrast(Get(p.PrimaryKey), window).Should().BeGreaterThanOrEqualTo(4.5);
     }
 
     [Theory]
@@ -80,7 +82,150 @@ public class AccentPaletteTests
     {
         // WCAG 1.4.11: non-text UI (borders, focus rings) needs 3:1, not 4.5:1.
         var p = AccentPalette.FromId(id);
-        Contrast(Get(p.BorderKey), Hex(SurfaceBase)).Should().BeGreaterThanOrEqualTo(3.0);
+        Contrast(Get(p.BorderKey), Get(p.Neutrals.SurfaceBaseKey)).Should().BeGreaterThanOrEqualTo(3.0);
+    }
+
+    // -- Tonal neutrals ----------------------------------------------
+
+    [Theory]
+    [MemberData(nameof(EveryPalette))]
+    public void Every_neutral_step_exists_in_the_shipped_dictionary(string id)
+    {
+        // Read by name when the accent is applied, same as the accent primitives: a rename here leaves
+        // that step on the previous palette colour and nothing throws.
+        var n = AccentPalette.FromId(id).Neutrals;
+
+        foreach (string key in new[]
+                 { n.DeepKey, n.SurfaceBaseKey, n.SurfaceRaisedKey, n.SurfaceOverlayKey, n.SurfaceInsetKey,
+                   n.TextDisabledKey, n.TextDimKey, n.TextMutedKey, n.TextSecondaryKey, n.TextPrimaryKey,
+                   n.ElevationTintKey })
+            Palette.Contains(key).Should().BeTrue($"'{key}' is read by name when the accent is applied");
+    }
+
+    [Theory]
+    [MemberData(nameof(EveryPalette))]
+    public void Every_neutral_step_carries_the_same_luminance_as_the_amethyst_step_it_replaces(string id)
+    {
+        // THE load-bearing property of the tonal system. Contrast is computed from relative luminance, so
+        // holding luminance constant across palettes means every ratio signed off against Amethyst
+        // transfers to green and red unchanged - the accessibility work is done once, not three times.
+        // Derive the ramps any other way (equal HSL lightness is the obvious trap) and this fails: green
+        // at matched lightness is markedly brighter, which pushed Danger-on-inset down to 3.92:1.
+        var a = AccentPalette.Amethyst.Neutrals;
+        var n = AccentPalette.FromId(id).Neutrals;
+
+        var pairs = new[]
+        {
+            (a.DeepKey, n.DeepKey), (a.SurfaceBaseKey, n.SurfaceBaseKey),
+            (a.SurfaceRaisedKey, n.SurfaceRaisedKey), (a.SurfaceOverlayKey, n.SurfaceOverlayKey),
+            (a.SurfaceInsetKey, n.SurfaceInsetKey), (a.TextDisabledKey, n.TextDisabledKey),
+            (a.TextDimKey, n.TextDimKey), (a.TextMutedKey, n.TextMutedKey),
+            (a.TextSecondaryKey, n.TextSecondaryKey), (a.TextPrimaryKey, n.TextPrimaryKey),
+            (a.ElevationTintKey, n.ElevationTintKey),
+        };
+
+        foreach (var (reference, step) in pairs)
+            Luminance(Get(step)).Should().BeApproximately(Luminance(Get(reference)), 0.005,
+                $"'{step}' stands in for '{reference}' and must be equally bright");
+    }
+
+    [Theory]
+    [MemberData(nameof(EveryPalette))]
+    public void Body_text_clears_its_floors_on_the_palettes_own_surfaces(string id)
+    {
+        var n = AccentPalette.FromId(id).Neutrals;
+        var window = Get(n.SurfaceBaseKey);
+        var inset = Get(n.SurfaceInsetKey);   // lightest surface text is drawn on - the worst case
+
+        // Primary body text clears AAA; the rest clear AA on both the window and an inset chip.
+        Contrast(Get(n.TextPrimaryKey), window).Should().BeGreaterThanOrEqualTo(7.0);
+        foreach (string key in new[] { n.TextSecondaryKey, n.TextMutedKey, n.TextDimKey })
+        {
+            Contrast(Get(key), window).Should().BeGreaterThanOrEqualTo(4.5);
+            Contrast(Get(key), inset).Should().BeGreaterThanOrEqualTo(4.5);
+        }
+
+        // Disabled text is exempt from WCAG, but it still has to read as text.
+        Contrast(Get(n.TextDisabledKey), window).Should().BeGreaterThanOrEqualTo(3.0);
+    }
+
+    [Theory]
+    [MemberData(nameof(EveryPalette))]
+    public void Status_colours_stay_legible_on_every_palettes_surfaces(string id)
+    {
+        // Status hues deliberately do NOT follow the accent, so re-tinting the surfaces underneath them is
+        // exactly how a "this failed" colour could quietly stop being readable.
+        var n = AccentPalette.FromId(id).Neutrals;
+
+        foreach (string status in new[]
+                 { "Success500Color", "Success400Color", "Warning400Color", "Warning500Color",
+                   "Warning300Color", "Orange500Color", "Danger400Color", "Info300Color" })
+        {
+            Contrast(Get(status), Get(n.SurfaceBaseKey)).Should().BeGreaterThanOrEqualTo(4.5,
+                $"'{status}' is drawn on the window");
+            Contrast(Get(status), Get(n.SurfaceInsetKey)).Should().BeGreaterThanOrEqualTo(4.5,
+                $"'{status}' is drawn on inset chips");
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(EveryPalette))]
+    public void The_whole_visible_surface_is_covered_not_just_the_buttons(string id)
+    {
+        // The complaint this answers: picking a colour repainted the accent tokens and left every surface
+        // and every line of text alone. Naming the tokens explicitly is what stops a future refactor
+        // quietly narrowing the switch back to buttons.
+        var p = AccentPalette.FromId(id);
+        var surfaces = p.SurfaceColors(new DictionaryColors(Palette));
+
+        surfaces.Keys.Should().Contain(
+        [
+            "SurfaceBaseBrush", "SurfaceRaisedBrush", "SurfaceOverlayBrush", "SurfaceInsetBrush",
+            "SurfaceGhostBrush", "SurfaceCardBrush", "SurfaceCardHoverBrush", "SurfaceElevatedBrush",
+            "SurfaceActiveBrush", "SurfacePressedBrush", "SurfaceTintBrush", "SurfaceStrongBrush",
+            "BorderSubtleBrush", "BorderDefaultBrush", "BorderStrongBrush", "BorderProminentBrush",
+            "TextPrimaryBrush", "TextSecondaryBrush", "TextMutedBrush", "TextDimBrush", "TextDisabledBrush",
+            "ScrimBrush", "ScrimSoftBrush", "ScrimLightBrush", "ScrimPanelBrush",
+        ]);
+
+        // Every one must name a token the shipped dictionary defines, or that surface stays on the
+        // previous palette.
+        foreach (string key in surfaces.Keys)
+            Palette.Contains(key).Should().BeTrue($"'{key}' is repainted by name");
+    }
+
+    [Theory]
+    [MemberData(nameof(EveryPalette))]
+    public void The_wpf_ui_shell_keys_are_all_ones_the_palette_actually_overrides(string id)
+    {
+        // These are WPF-UI internals, not a public contract. A misspelling silently leaves that surface
+        // grey, which is the most common way this theme breaks.
+        var shell = AccentPalette.FromId(id).ShellColors(new DictionaryColors(Palette));
+
+        shell.Keys.Should().Contain(["ApplicationBackgroundBrush", "SolidBackgroundFillColorBaseBrush",
+                                     "CardBackgroundFillColorDefaultBrush", "LayerFillColorDefaultBrush"]);
+        shell.Should().NotContainKey("ApplicationBackgroundColorBrush", "that key does not exist in WPF-UI");
+
+        foreach (string key in shell.Keys)
+            Palette.Contains(key).Should().BeTrue(
+                $"'{key}' must be redefined in Themes/Colors.xaml, or the repaint has nothing to write to");
+    }
+
+    [Theory]
+    [MemberData(nameof(EveryPalette))]
+    public void Two_palettes_never_produce_the_same_surfaces(string id)
+    {
+        // A palette whose neutrals were left pointing at another ramp would look applied in the buttons
+        // and identical everywhere else - the exact bug, reintroduced.
+        var mine = AccentPalette.FromId(id).SurfaceColors(new DictionaryColors(Palette));
+
+        foreach (var other in AccentPalette.All.Where(o => o.Id != id))
+        {
+            var theirs = other.SurfaceColors(new DictionaryColors(Palette));
+            mine["SurfaceBaseBrush"].Should().NotBe(theirs["SurfaceBaseBrush"]);
+            mine["TextPrimaryBrush"].Should().NotBe(theirs["TextPrimaryBrush"]);
+            mine["SurfaceCardBrush"].Should().NotBe(theirs["SurfaceCardBrush"]);
+        }
     }
 
     [Theory]

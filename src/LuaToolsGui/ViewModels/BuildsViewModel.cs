@@ -326,6 +326,78 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
         SetFiltered(string.IsNullOrEmpty(q) ? _allGames : _allGames.Where(g => g.Matches(q)).ToList());
     }
 
+    /// <summary>
+    /// Confirm, then take a game off the Depots list for good.
+    ///
+    /// <para>
+    /// The list is the union of three on-disk sources (see <see cref="LuaVault.ForgetGame"/>), so there was
+    /// previously no way to undo an accidental add: deleting the live lua on the Manage page left the
+    /// vaulted variants behind, and the game came straight back. This removes all three.
+    /// </para>
+    ///
+    /// <para>
+    /// Confirmed with a modal rather than an undoable toast because the operation deletes files and cannot
+    /// be taken back — the same bar, and the same MessageBox, the Manage page's delete already uses.
+    /// </para>
+    /// </summary>
+    [RelayCommand]
+    private void RemoveGame(LuaTileViewModel? tile)
+    {
+        if (tile is null) return;
+
+        if (MessageBox.Show(
+                string.Format(Resources.Strings.Builds_RemoveGame_Body, tile.Name, tile.AppId),
+                Resources.Strings.Builds_RemoveGame_Title,
+                MessageBoxButton.OKCancel,
+                MessageBoxImage.Warning) != MessageBoxResult.OK) return;
+
+        // Dropped BEFORE the delete. ForgetGame raises VaultChanged, whose handler re-runs RefreshVariants
+        // for the active game — and that path calls SyncDefaultFromLive/AdoptLooseBuildLuas, which is the
+        // very code that would recreate the vault we are in the middle of removing.
+        if (ActiveGame?.AppId == tile.AppId)
+        {
+            ActiveGame = null;
+            SelectedGame = null;
+        }
+
+        var result = _vault.ForgetGame(tile.AppId);
+
+        // The list is rebuilt for every outcome, including a failure: a partial purge still changed what
+        // is on disk, and leaving the stale row up would misreport it.
+        _allGames = _allGames.Where(g => g.AppId != tile.AppId).ToList();
+        ApplyGameFilter();
+
+        switch (result)
+        {
+            case GameRemoval.Failed f:
+                // Re-scan rather than trusting the row we just dropped: on a partial failure the game may
+                // legitimately still belong on the list.
+                _ = ReloadAsync();
+                _toast.Show(Resources.Strings.Builds_Title,
+                    string.Format(Resources.Strings.Builds_RemoveGame_Failed, tile.Name, f.Reason),
+                    error: true);
+                break;
+
+            case GameRemoval.NothingToRemove:
+                // Its files were already gone; the row was stale. Dropping it is still the right outcome.
+                _toast.Show(Resources.Strings.Builds_Title,
+                    string.Format(Resources.Strings.Builds_RemoveGame_Gone, tile.Name));
+                break;
+
+            default:
+                _toast.Show(Resources.Strings.Builds_Title,
+                    string.Format(Resources.Strings.Builds_RemoveGame_Done, tile.Name));
+                break;
+        }
+    }
+
+    /// <summary>Force a fresh scan of stplug-in, discarding any in-flight load.</summary>
+    private Task ReloadAsync()
+    {
+        _loading = null;
+        return LoadAsync();
+    }
+
     /// <summary>Recompute every game's "currently running" badge off the UI thread (one file hash + index
     /// read per vaulted game — fine once per load, far too slow per keystroke).</summary>
     private async Task RefreshBadgesAsync()
