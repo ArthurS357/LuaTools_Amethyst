@@ -216,6 +216,8 @@ public partial class SettingsViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(HubcapStatsPending))]
     [NotifyPropertyChangedFor(nameof(HubcapUsagePercent))]
     [NotifyPropertyChangedFor(nameof(ShowHubcapStats))]
+    [NotifyPropertyChangedFor(nameof(HubcapExpiryWarning))]
+    [NotifyPropertyChangedFor(nameof(HubcapExpiryWarningColor))]
     private HubcapStats? _hubcapStats;
 
     /// <summary>"12 / 25 requests today" or "12 / 25 requests today · expires 2026-08-15".</summary>
@@ -236,6 +238,28 @@ public partial class SettingsViewModel : ObservableObject
 
     /// <summary>Placeholder text shown until real stats load.</summary>
     public string HubcapStatsText => HubcapStatsDisplay ?? Resources.Strings.Common_Loading;
+
+    /// <summary>
+    /// Expiry state of the saved key, or null when there is nothing to say.
+    ///
+    /// <para>
+    /// Null covers three distinct situations that all warrant the same silence: no key, a stats call that
+    /// has not landed (or failed, which leaves <see cref="HubcapStats"/> null), and a key Hubcap reports
+    /// no expiry for. A warning about a key that is actually fine is worse than no warning at all — it
+    /// teaches the user to ignore the one that matters — so anything short of a parsed date shows nothing.
+    /// </para>
+    /// </summary>
+    private HubcapKeyExpiry? Expiry =>
+        HubcapStats is { } stats ? HubcapKeyExpiry.Evaluate(stats.ApiKeyExpiresAt, DateTimeOffset.UtcNow) : null;
+
+    /// <summary>The unprompted expiry warning, or null to show nothing. Drives both the wording and, via
+    /// NullToCollapsed, whether the row is on screen at all — one property, so the two cannot disagree.</summary>
+    public string? HubcapExpiryWarning => Expiry is { IsWarning: true } e ? DescribeExpiry(e) : null;
+
+    /// <summary>Theme resource KEY for the warning row (resolved by ResourceKeyToBrushConverter, same as
+    /// <see cref="HubcapKeyStatusColor"/>). Red once the key is dead, amber while it still works.</summary>
+    public string HubcapExpiryWarningColor =>
+        Expiry is { HasExpired: true } ? "DangerBrush" : "WarningBrush";
 
     /// <summary>Set by App so the guest "Sign in" button can run the Discord flow.</summary>
     public Func<Task>? RequestSignIn { get; set; }
@@ -499,13 +523,28 @@ public partial class SettingsViewModel : ObservableObject
         HubcapKeyStatusColor = isError ? "DangerBrush" : "SuccessBrush";
     }
 
-    /// <summary>"4/10 today" — appends "· expires yyyy-MM-dd" when the key has an expiry.</summary>
-    private static string FormatHubcapStats(HubcapStats stats)
+    /// <summary>Wording for a key that is expired or nearly so. Only reached for <c>IsWarning</c> states,
+    /// so the "plenty of time left" case has no arm here rather than an unused one.</summary>
+    private static string DescribeExpiry(HubcapKeyExpiry expiry) => expiry switch
     {
-        string usage = string.Format(Resources.Strings.Settings_HubcapKeyOk, stats.DailyUsage, stats.DailyLimit);
-        if (DateTimeOffset.TryParse(stats.ApiKeyExpiresAt, out var expiry))
-            return string.Format(Resources.Strings.Settings_HubcapKeyOkExpiry, stats.DailyUsage, stats.DailyLimit,
-                expiry.ToString("yyyy-MM-dd"));
-        return usage;
-    }
+        { HasExpired: true } => string.Format(Resources.Strings.Settings_HubcapExpiryExpired, expiry.ExpiresOn),
+        // Under 24 hours left. "expires in 0 days" is what the plural arm would produce, which is why this
+        // is a separate string rather than a special case of it.
+        { DaysRemaining: 0 } => string.Format(Resources.Strings.Settings_HubcapExpiryToday, expiry.ExpiresOn),
+        _ => string.Format(Resources.Strings.Settings_HubcapExpirySoon, expiry.DaysRemaining, expiry.ExpiresOn),
+    };
+
+    /// <summary>"4/10 today" — appends "· expires yyyy-MM-dd" when the key has an expiry.
+    ///
+    /// <para>
+    /// Goes through <see cref="HubcapKeyExpiry"/> rather than parsing the timestamp itself. It used to call
+    /// <c>DateTimeOffset.TryParse</c> with default styles on a value Hubcap sends without an offset, so the
+    /// date rendered here could differ by a day from the date the warning row is reasoning about.
+    /// </para>
+    /// </summary>
+    private static string FormatHubcapStats(HubcapStats stats) =>
+        HubcapKeyExpiry.Evaluate(stats.ApiKeyExpiresAt, DateTimeOffset.UtcNow) is { } expiry
+            ? string.Format(Resources.Strings.Settings_HubcapKeyOkExpiry,
+                stats.DailyUsage, stats.DailyLimit, expiry.ExpiresOn)
+            : string.Format(Resources.Strings.Settings_HubcapKeyOk, stats.DailyUsage, stats.DailyLimit);
 }

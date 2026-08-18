@@ -58,6 +58,32 @@ public class LogSanitizerTests
         LogSanitizer.Sanitize("GET /api/v1/manifest/480?api_key=smm_0123456789abcdef0123456789abcdef")
             .Should().NotContain("smm_0123456789abcdef0123456789abcdef");
 
+    [Theory]
+    [InlineData("smm_0123456789abcdef0123456789abcdef")]  // today's prefix
+    [InlineData("hc_0123456789abcdef0123456789abcdef")]   // a prefix Hubcap has not used yet
+    [InlineData("smmv2_0123456789ABCDEF0123456789abcdef")]
+    public void Redacts_any_key_shape_the_validator_would_let_through(string key)
+    {
+        // The sanitiser and HubcapService.IsValidKeyFormat have to move together: a key the app is willing
+        // to send is a key that can reach a crash log. When the validator stopped requiring the literal
+        // "smm_" prefix, a pattern still pinned to it would have walked straight past a live credential.
+        string clean = LogSanitizer.Sanitize($"GET /api/v1/manifest/480 with {key}");
+
+        clean.Should().NotContain(key);
+        clean.Should().Contain(LogSanitizer.Redacted);
+    }
+
+    [Fact]
+    public void Leaves_a_bare_hash_alone()
+    {
+        // Deliberate asymmetry: the underscore is required. The app logs SHA-256 digests on every download
+        // review, and redacting every long hex run would gut exactly the diagnostics that exist to prove an
+        // artefact was the one that was verified.
+        const string digest = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
+
+        LogSanitizer.Sanitize($"digest {digest} matched the pin").Should().Contain(digest);
+    }
+
     [Fact]
     public void Redacts_an_authorization_header_entirely()
     {

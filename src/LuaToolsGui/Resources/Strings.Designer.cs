@@ -69,6 +69,9 @@ public static class Strings
     public static string Settings_HubcapKeyRejected => Get(nameof(Settings_HubcapKeyRejected));
     public static string Settings_HubcapKeyOffline => Get(nameof(Settings_HubcapKeyOffline));
     public static string Settings_HubcapKeyRateLimited => Get(nameof(Settings_HubcapKeyRateLimited));
+    public static string Settings_HubcapExpiryExpired => Get(nameof(Settings_HubcapExpiryExpired));
+    public static string Settings_HubcapExpiryToday => Get(nameof(Settings_HubcapExpiryToday));
+    public static string Settings_HubcapExpirySoon => Get(nameof(Settings_HubcapExpirySoon));
     public static string Hubcap_Err_KeyRejected => Get(nameof(Hubcap_Err_KeyRejected));
     public static string Hubcap_Err_DailyLimit => Get(nameof(Hubcap_Err_DailyLimit));
     public static string Hubcap_Err_DailyLimitRetry => Get(nameof(Hubcap_Err_DailyLimitRetry));

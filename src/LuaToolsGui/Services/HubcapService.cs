@@ -193,10 +193,43 @@ public partial class HubcapService
     private static readonly string InterimDownloadsFolder =
         Path.Combine(Path.GetTempPath(), "LuaToolsGui", "downloads");
 
-    [GeneratedRegex("^smm_[0-9a-f]{96}$")]
+    // Every key Hubcap issues today is "smm_" plus 96 lowercase hex characters, and the check used to
+    // require exactly that. Pinning a client-side gate to the current shape of someone else's credential
+    // is a bet that they never rotate the format — and when they do, the failure is the worst kind: the
+    // key is genuinely valid, Hubcap would accept it, and the app refuses it locally with "that doesn't
+    // look like a valid key". The user has no way to tell that from a typo and no way to override it, so
+    // they go hunting for a key that was never wrong.
+    //
+    // What this gate is actually for is narrower than validation: keep an obvious paste accident — a URL,
+    // a whole JSON blob, an empty box, a truncated fragment — from being sent to Hubcap as a credential.
+    // Deciding whether a well-formed key is real is Hubcap's job, and it does it on the very next line of
+    // ValidateAndSaveHubcapKeyAsync. So the shape below is loose in the ways that cost nothing and strict
+    // in the ways that catch the accident:
+    //
+    //   * The prefix is optional and generic (lowercase alnum, 2–16 chars, then "_"), so "smm_", a future
+    //     "hc_", and a bare key all pass. Requiring "smm_" specifically is the pin this is removing.
+    //   * The body is hex, at least 16 characters. Sixteen is far below the 96 in use — enough to reject
+    //     a fragment, low enough that a shortened future key still fits.
+    //   * Both cases of hex are accepted; a key that differs only by case is the same key.
+    //   * The upper bound is what keeps this a guard: 256 body characters, so a pasted document or a
+    //     megabyte of anything is refused before it becomes an HTTP request.
+    //
+    // Bounded quantifiers with no alternation and no nesting — the match is linear, so there is no
+    // backtracking blowup to protect against. Anchored with \A/\z, not ^/$: in .NET `$` also matches immediately before a trailing newline, so a
+    // pasted value with a second line hidden after it would pass a ^...$ pattern.
+    [GeneratedRegex(@"\A(?:[a-z0-9]{2,16}_)?[0-9a-fA-F]{16,256}\z")]
     private static partial Regex KeyFormatRegex();
 
-    /// <summary>Local format check — Hubcap keys are "smm_" followed by 96 lowercase hex chars.</summary>
+    /// <summary>
+    /// Local sanity check on a key before it is sent anywhere — an optional short prefix followed by a run
+    /// of at least 16 hex characters.
+    ///
+    /// <para>
+    /// Deliberately NOT an authority on whether a key is real; only Hubcap can say that. Passing here
+    /// means "worth one request", not "valid". See the comment above the pattern for why the exact
+    /// <c>smm_</c> + 96-hex shape is no longer required.
+    /// </para>
+    /// </summary>
     public static bool IsValidKeyFormat(string? key) => key is not null && KeyFormatRegex().IsMatch(key);
 
     /// <summary>

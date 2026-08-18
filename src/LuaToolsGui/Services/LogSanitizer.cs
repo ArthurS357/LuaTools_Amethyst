@@ -39,8 +39,24 @@ internal static partial class LogSanitizer
         RegexOptions.None, matchTimeoutMilliseconds: 250)]
     private static partial Regex JwtRegex();
 
-    /// <summary>Hubcap API keys: "smm_" followed by a long hex run.</summary>
-    [GeneratedRegex(@"\bsmm_[0-9a-fA-F]{16,}\b", RegexOptions.None, matchTimeoutMilliseconds: 250)]
+    /// <summary>
+    /// Hubcap API keys: a short prefix, an underscore, then a long hex run.
+    ///
+    /// <para>
+    /// Matches the shape <c>HubcapService.IsValidKeyFormat</c> accepts rather than the literal <c>smm_</c>
+    /// of today's keys. The two have to move together: a key the app is willing to send is a key that can
+    /// reach a log, so a prefix change on Hubcap's side that the validator now tolerates must not be one
+    /// this pattern walks straight past.
+    /// </para>
+    ///
+    /// <para>
+    /// The underscore is what keeps this from being reckless — a BARE hex run is deliberately NOT matched,
+    /// because the app logs SHA-256 digests routinely and redacting every one of them would gut the
+    /// download-integrity diagnostics for no gain. The cost runs the other way: an unrelated
+    /// <c>prefix_hex</c> token in a log gets redacted too. That is the correct direction to be wrong in.
+    /// </para>
+    /// </summary>
+    [GeneratedRegex(@"\b[a-z0-9]{2,16}_[0-9a-fA-F]{16,}\b", RegexOptions.IgnoreCase, matchTimeoutMilliseconds: 250)]
     private static partial Regex HubcapKeyRegex();
 
     /// <summary>An <c>Authorization: Bearer …</c> header value.</summary>

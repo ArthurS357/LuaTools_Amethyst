@@ -246,6 +246,42 @@
                 <StackPanel Margin="14,12">
                     <!-- Active key: stats card -->
                     <StackPanel Visibility="{Binding HubcapIsKeyConfigured, Converter={StaticResource BoolToVis}}">
+                        <!-- Key-expiry warning. Deliberately the FIRST thing in the configured block and
+                             not a tooltip or a hover state: the expiry date was already on the usage line
+                             below, and being present is exactly what it was not — a date among numbers is
+                             read as decoration. Collapsed unless HubcapExpiryWarning is non-null, which is
+                             also the only thing that decides the wording, so the row and its text cannot
+                             disagree. A failed stats call leaves it null, so a dropped connection never
+                             invents a warning about a healthy key. -->
+                        <Border
+                            Margin="0,0,0,10"
+                            Padding="10,8"
+                            Background="{StaticResource SurfaceGhostBrush}"
+                            BorderBrush="{Binding HubcapExpiryWarningColor, Converter={StaticResource ResourceKeyToBrush}}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            Visibility="{Binding HubcapExpiryWarning, Converter={StaticResource NullToCollapsed}}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <!-- Icon carries no information the text doesn't; it is there so the row
+                                     reads as an alert at a glance rather than as one more line of copy. -->
+                                <ui:SymbolIcon
+                                    Margin="0,0,8,0"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    Foreground="{Binding HubcapExpiryWarningColor, Converter={StaticResource ResourceKeyToBrush}}"
+                                    Symbol="Warning24" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    FontSize="12"
+                                    Foreground="{StaticResource TextSecondaryBrush}"
+                                    Text="{Binding HubcapExpiryWarning}"
+                                    TextWrapping="Wrap" />
+                            </Grid>
+                        </Border>
                         <!-- Active badge + Refresh -->
                         <Grid Margin="0,0,0,10">
                             <Grid.ColumnDefinitions>
@@ -304,10 +340,25 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <ui:TextBox
+                            <!-- PasswordBox, not TextBox. The key is a bearer credential: typed or pasted
+                                 in plain sight it is readable by anyone behind the user, by a screen share,
+                                 and by any screenshot of the Settings page. Masking costs nothing here
+                                 because the field is write-only in practice — a saved key is never read
+                                 back into it (HubcapKeyInput starts blank and is cleared on save), so this
+                                 box only ever holds what the user is entering right now.
+
+                                 RevealButtonEnabled stays on: a 100-character key pasted from a website is
+                                 exactly the case where a user needs to confirm it arrived intact, and the
+                                 reveal is a deliberate act on a value they are holding in the clipboard
+                                 anyway. Removing it would trade a real usability loss for no secrecy the
+                                 clipboard has not already given away.
+
+                                 Password is a plain DP with a change callback, so the binding needs an
+                                 explicit Mode=TwoWay — it does not default to one. -->
+                            <ui:PasswordBox
                                 FontFamily="Consolas"
-                                PlaceholderText="{x:Static res:Strings.Settings_HubcapKeyPlaceholder}"
-                                Text="{Binding HubcapKeyInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                Password="{Binding HubcapKeyInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                PlaceholderText="{x:Static res:Strings.Settings_HubcapKeyPlaceholder}" />
                             <ui:Button
                                 Grid.Column="1"
                                 Margin="8,0,0,0"

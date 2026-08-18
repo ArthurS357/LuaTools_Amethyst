@@ -85,6 +85,12 @@ PENDING_TRANSLATION: frozenset[str] = frozenset({
     "Settings_HubcapKeyRejected",
     "Settings_HubcapKeyOffline",
     "Settings_HubcapKeyRateLimited",
+    # Key-expiry warning surfaced on the Settings page. api_key_expires_at was already being
+    # rendered as a date on the usage line; these are the wording for raising it on its own once the key
+    # is within a week of dying.
+    "Settings_HubcapExpiryExpired",
+    "Settings_HubcapExpiryToday",
+    "Settings_HubcapExpirySoon",
     # Hubcap download failures, promoted out of hardcoded English literals in HubcapErrorText. The wait
     # units are separate keys so a language that inflects by count can translate them properly, rather
     # than having a number glued to a bare noun.

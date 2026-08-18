@@ -108,6 +108,9 @@
   <data name="Settings_HubcapKeyRejected" xml:space="preserve"><value>Hubcap rejected that key. Check it was copied in full and hasn't expired.</value></data>
   <data name="Settings_HubcapKeyOffline" xml:space="preserve"><value>Couldn't reach Hubcap. Check your connection and try again — the key was not changed.</value></data>
   <data name="Settings_HubcapKeyRateLimited" xml:space="preserve"><value>Hubcap is rate-limiting this key right now. Try again shortly.</value></data>
+  <data name="Settings_HubcapExpiryExpired" xml:space="preserve"><value>Your Hubcap key expired on {0}. Validate a new one to keep using Hubcap sources.</value></data>
+  <data name="Settings_HubcapExpiryToday" xml:space="preserve"><value>Your Hubcap key expires today ({0}). Get a new one before it stops working.</value></data>
+  <data name="Settings_HubcapExpirySoon" xml:space="preserve"><value>Your Hubcap key expires in {0} days ({1}). Get a new one before it stops working.</value></data>
   <data name="Hubcap_Err_KeyRejected" xml:space="preserve"><value>Your Hubcap key is invalid or expired.</value></data>
   <data name="Hubcap_Err_DailyLimit" xml:space="preserve"><value>Your Hubcap daily limit has been reached.</value></data>
   <data name="Hubcap_Err_DailyLimitRetry" xml:space="preserve"><value>Your Hubcap daily limit has been reached. Try again in about {0}.</value></data>
