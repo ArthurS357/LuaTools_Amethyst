@@ -1,4 +1,3 @@
-using System.Reflection;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -15,17 +14,7 @@ public partial class MainViewModel : ObservableObject
     public OnboardingViewModel Onboarding { get; }
 
     /// <summary>App version shown in the nav pane footer, e.g. "v1.0.1". Read from the assembly.</summary>
-    public string VersionLabel { get; } = $"v{ReadVersion()}";
-
-    private static string ReadVersion()
-    {
-        // InformationalVersion carries the csproj <Version> (may have a "+commit" suffix — trim it).
-        var info = Assembly.GetExecutingAssembly()
-            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-        var ver = info ?? Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "?";
-        int plus = ver.IndexOf('+');
-        return plus >= 0 ? ver[..plus] : ver;
-    }
+    public string VersionLabel { get; } = $"v{AppVersion.Current}";
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsRealUser))]

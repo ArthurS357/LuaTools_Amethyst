@@ -37,6 +37,11 @@ public class AppSettings
     // UI language as a BCP-47 tag ("en", "zh-Hans"). Null = follow the Windows display language.
     public string? Language { get; set; }
 
+    // Selected accent ramp id ("Amethyst" | "Green" | "Red"). Null = Amethyst, the app's identity colour.
+    // Stored as the id rather than a hex value so the palette itself stays defined in Themes/Colors.xaml
+    // and a future tweak to a ramp reaches everyone who picked it.
+    public string? AccentColor { get; set; }
+
     // The user's own Hubcap (hubcapmanifest.com) API key. Null = not configured; key-gated sources stay
     // locked until set. NOTE: this is the ON-DISK form — a DPAPI-protected blob prefixed "dpapi:", not the
     // raw "smm_…" key. Always go through SettingsService.HubcapApiKey, which handles protect/unprotect and
@@ -222,6 +227,14 @@ public sealed class SettingsService
     {
         get => _settings.Language;
         set { _settings.Language = string.IsNullOrWhiteSpace(value) ? null : value; Save(); }
+    }
+
+    /// <summary>Selected accent ramp id, or null to use the default. Unknown values are tolerated on read
+    /// (see <c>AccentPalette.FromId</c>) so a settings file written by a newer build still themes.</summary>
+    public string? AccentColor
+    {
+        get => _settings.AccentColor;
+        set { _settings.AccentColor = string.IsNullOrWhiteSpace(value) ? null : value; Save(); }
     }
 
     /// <summary>
@@ -427,6 +440,7 @@ public sealed class SettingsService
             && _settings.FixesPageSize is null
             && _settings.BuildsPageSize is null
             && _settings.Language is null
+            && _settings.AccentColor is null
             && _settings.HubcapApiKey is null
             && _settings.StartWithWindows is null
             && _settings.MinimizeToTray is null

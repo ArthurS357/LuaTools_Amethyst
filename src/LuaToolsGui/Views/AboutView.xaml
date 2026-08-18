@@ -197,6 +197,97 @@
                     </StackPanel>
                 </Border>
 
+                <!-- Changelog. Collapsed by default so it can't push "what this build is" below the fold.
+                     Entries come from Resources/Changelog.cs — compiled in, so this renders identically
+                     offline and cannot fail to load. -->
+                <Border
+                    Margin="0,18,0,0"
+                    Padding="18"
+                    Background="{StaticResource SurfaceCardBrush}"
+                    BorderBrush="{StaticResource BorderStrongBrush}"
+                    BorderThickness="1"
+                    CornerRadius="10">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon
+                                VerticalAlignment="Center"
+                                Foreground="{StaticResource AccentBrush}"
+                                Symbol="History24" />
+                            <TextBlock
+                                Margin="10,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="SemiBold"
+                                Text="{x:Static res:Strings.About_Changelog_Title}" />
+                        </StackPanel>
+
+                        <ui:Button
+                            Margin="0,12,0,0"
+                            HorizontalAlignment="Left"
+                            Command="{Binding ToggleChangelogCommand}"
+                            Content="{Binding ChangelogToggleText}"
+                            Icon="{ui:SymbolIcon ChevronDown24}" />
+
+                        <ItemsControl
+                            Margin="0,14,0,0"
+                            ItemsSource="{Binding Changelog}"
+                            Visibility="{Binding IsChangelogOpen, Converter={StaticResource BoolToVis}}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="0,0,0,16">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Border
+                                                Padding="8,2"
+                                                Background="{StaticResource AccentBadgeBrush}"
+                                                BorderBrush="{StaticResource AccentOutlineBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="4">
+                                                <TextBlock
+                                                    FontSize="12"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="{StaticResource AccentBrush}"
+                                                    Text="{Binding Version}" />
+                                            </Border>
+                                            <TextBlock
+                                                Margin="10,0,0,0"
+                                                VerticalAlignment="Center"
+                                                FontSize="12"
+                                                Foreground="{StaticResource TextDimBrush}"
+                                                Text="{Binding Released}" />
+                                        </StackPanel>
+
+                                        <TextBlock
+                                            Margin="0,8,0,0"
+                                            FontSize="13"
+                                            Foreground="{StaticResource TextSecondaryBrush}"
+                                            Text="{Binding Summary}"
+                                            TextWrapping="Wrap" />
+
+                                        <ItemsControl Margin="0,6,0,0" ItemsSource="{Binding Highlights}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
+                                                        <TextBlock
+                                                            Margin="0,0,8,0"
+                                                            Foreground="{StaticResource AccentSoftBrush}"
+                                                            Text="•" />
+                                                        <TextBlock
+                                                            MaxWidth="620"
+                                                            FontSize="12"
+                                                            Foreground="{StaticResource TextMutedBrush}"
+                                                            Text="{Binding}"
+                                                            TextWrapping="Wrap" />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
             </StackPanel>
         </ScrollViewer>
     </Grid>

@@ -1,6 +1,6 @@
 <!--
     ══════════════════════════════════════════════════════════════════════════════════════════
-    LuaTools — Amethyst dark theme (v1.4.0)
+    LuaTools — Amethyst dark theme (v1.5.0)
     ══════════════════════════════════════════════════════════════════════════════════════════
 
     Single source of truth for every colour in the app. Before this file the palette lived as
@@ -57,6 +57,32 @@
     <Color x:Key="Violet400Color">#A78BFA</Color>  <!-- accent icons/focus ring; WPF-UI PRIMARY slot -->
     <Color x:Key="Violet500Color">#8B5CF6</Color>  <!-- borders, non-text UI; WPF-UI secondary slot -->
     <Color x:Key="Violet600Color">#7C3AED</Color>  <!-- filled buttons (white text = 5.7:1); WPF-UI system slot -->
+
+    <!-- Alternative accent ramps, selectable in Settings (AccentColor in settings.json). Same four roles
+         as the violet ramp above and read the same way, by key name, from Themes/AccentPalette.cs.
+
+         Both were CHOSEN by measurement, not by eye, against the same floors the violet ramp meets:
+         300 and 400 need 4.5:1 on SurfaceBase (they carry text), 500 needs 3:1 (non-text UI, WCAG 1.4.11),
+         and 600 needs 4.5:1 against WHITE because that is the filled-button pairing.
+
+                        300/base  400/base  500/base  600/white
+             Emerald      15.2:1    10.2:1     7.7:1      5.5:1
+             Rose         10.3:1     7.3:1     5.3:1      6.3:1
+
+         The obvious picks failed. Green-600 #16A34A reaches only 3.3:1 against white — a filled button
+         in it would fail AA outright — hence the deeper #047857. And the brighter tailwind green/red
+         (#4ADE80 / #F87171) are the exact values SuccessTextBrush and DangerBrush already use, so an
+         accent in them would be indistinguishable from a status colour. Emerald and rose stay clear of
+         both. Red still reads closer to Danger than the other two do; that is inherent to the choice. -->
+    <Color x:Key="Emerald300Color">#A7F3D0</Color>
+    <Color x:Key="Emerald400Color">#34D399</Color>
+    <Color x:Key="Emerald500Color">#10B981</Color>
+    <Color x:Key="Emerald600Color">#047857</Color>
+
+    <Color x:Key="Rose300Color">#FDA4AF</Color>
+    <Color x:Key="Rose400Color">#FB7185</Color>
+    <Color x:Key="Rose500Color">#F43F5E</Color>
+    <Color x:Key="Rose600Color">#BE123C</Color>
 
     <!-- Purple-tinted neutrals. Same lightness steps as the greys they replace, hue rotated
          onto the violet axis so surfaces and body text belong to one family. -->

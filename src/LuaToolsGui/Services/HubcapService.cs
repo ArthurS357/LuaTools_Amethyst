@@ -91,8 +91,28 @@ public partial class HubcapService
         return viaQuery;
     }
 
+    /// <summary>
+    /// How long a pooled connection may be reused before it is retired.
+    ///
+    /// <para>
+    /// A long-lived <see cref="HttpClient"/> keeps its connections open indefinitely by default, and a
+    /// connection that is never reopened never re-resolves DNS. Hubcap sits behind Cloudflare, whose
+    /// addresses do move — and this app is a desktop process that a user leaves running for days, so
+    /// "eventually" is not hypothetical here. Retiring connections on a timer costs one handshake every
+    /// fifteen minutes of continuous use and nothing at all when idle.
+    /// </para>
+    /// </summary>
+    private static readonly TimeSpan PooledConnectionLifetime = TimeSpan.FromMinutes(15);
+
     /// <summary>Production constructor — the one the DI container resolves.</summary>
-    public HubcapService() : this(new HttpClientHandler(), DefaultMetadataTimeout) { }
+    public HubcapService() : this(CreateDefaultHandler(), DefaultMetadataTimeout) { }
+
+    /// <summary><see cref="SocketsHttpHandler"/> rather than <see cref="HttpClientHandler"/> because the
+    /// connection-lifetime knob lives on the former; the latter merely wraps it and hides that.</summary>
+    private static HttpMessageHandler CreateDefaultHandler() => new SocketsHttpHandler
+    {
+        PooledConnectionLifetime = PooledConnectionLifetime,
+    };
 
     /// <summary>
     /// Test seam. The handler was previously baked into a field initializer, so nothing about this class
@@ -107,6 +127,9 @@ public partial class HubcapService
             BaseAddress = new Uri(AppConfig.HubcapBaseUrl),
             Timeout = TimeSpan.FromMinutes(5),
         };
+        // Set here rather than on the production path alone, so tests exercise the same headers real
+        // requests carry. Untouched by the metadata deadline — that is a per-call linked token.
+        _http.DefaultRequestHeaders.UserAgent.ParseAdd(AppVersion.UserAgent);
         _metadataTimeout = metadataTimeout;
         _clock = clock ?? TimeProvider.System;
     }

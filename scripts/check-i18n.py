@@ -85,6 +85,31 @@ PENDING_TRANSLATION: frozenset[str] = frozenset({
     "Settings_HubcapKeyRejected",
     "Settings_HubcapKeyOffline",
     "Settings_HubcapKeyRateLimited",
+    # Hubcap download failures, promoted out of hardcoded English literals in HubcapErrorText. The wait
+    # units are separate keys so a language that inflects by count can translate them properly, rather
+    # than having a number glued to a bare noun.
+    "Hubcap_Err_KeyRejected",
+    "Hubcap_Err_DailyLimit",
+    "Hubcap_Err_DailyLimitRetry",
+    "Hubcap_Err_NoManifest",
+    "Hubcap_Err_Status",
+    "Hubcap_Err_Unreachable",
+    "Hubcap_Err_Generic",
+    "Hubcap_Wait_Seconds",
+    "Hubcap_Wait_Minutes",
+    "Hubcap_Wait_Hours",
+    # Accent-colour picker added in 1.5.0. "Amethyst" is a product name and stays English everywhere; the
+    # other four are ordinary UI copy awaiting translation.
+    "Settings_Accent",
+    "Settings_Accent_Hint",
+    "Settings_Accent_Amethyst",
+    "Settings_Accent_Green",
+    "Settings_Accent_Red",
+    # In-app changelog on the About page, added in 1.5.0. The entry TEXT is not localised at all — it
+    # lives in Resources/Changelog.cs, like release notes generally do; only the chrome is a resource.
+    "About_Changelog_Title",
+    "About_Changelog_Show",
+    "About_Changelog_Hide",
     # The About page. English-only for now; translate once its wording settles.
     "About_Nav",
     "About_Title",

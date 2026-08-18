@@ -12,6 +12,10 @@ namespace LuaToolsGui.ViewModels;
 /// "follow the system display language".</summary>
 public record LanguageOption(string Display, string? Tag);
 
+/// <summary>A selectable accent ramp. <see cref="Id"/> matches <c>Themes.AccentPalette.Id</c> and is what
+/// settings.json persists; <see cref="Display"/> is localised and must never be stored.</summary>
+public record AccentOption(string Display, string Id);
+
 public partial class SettingsViewModel : ObservableObject
 {
     private readonly SettingsService _settings;
@@ -153,6 +157,32 @@ public partial class SettingsViewModel : ObservableObject
         RequestRestartPrompt?.Invoke();
     }
 
+    // ── Accent colour ───────────────────────────────────────────────
+
+    /// <summary>Selectable accent ramps. <see cref="AccentOption.Id"/> is what settings.json stores;
+    /// the display name is localised, the id never is.</summary>
+    public ObservableCollection<AccentOption> AccentOptions { get; } =
+    [
+        new(Resources.Strings.Settings_Accent_Amethyst, Themes.AccentPalette.Amethyst.Id),
+        new(Resources.Strings.Settings_Accent_Green, Themes.AccentPalette.Green.Id),
+        new(Resources.Strings.Settings_Accent_Red, Themes.AccentPalette.Red.Id),
+    ];
+
+    [ObservableProperty] private AccentOption _selectedAccent = null!;
+
+    private bool _suppressAccentApply; // true during ctor init so binding doesn't re-save the saved value
+
+    /// <summary>Applied through <see cref="ApplyAccent"/>, which App sets. Unlike the language picker this
+    /// needs no relaunch: the accent brushes are mutated in place, so live views repaint.</summary>
+    public Action<Themes.AccentPalette>? ApplyAccent { get; set; }
+
+    partial void OnSelectedAccentChanged(AccentOption value)
+    {
+        if (value is null || _suppressAccentApply) return;
+        _settings.AccentColor = value.Id;
+        ApplyAccent?.Invoke(Themes.AccentPalette.FromId(value.Id));
+    }
+
     // ── Hubcap API key ──────────────────────────────────────────────
     /// <summary>The key the user is typing/pasting. Starts blank — the saved key is never shown back.</summary>
     [ObservableProperty] private string _hubcapKeyInput = "";
@@ -236,6 +266,12 @@ public partial class SettingsViewModel : ObservableObject
         _suppressLanguagePrompt = true;
         _selectedLanguage = LanguageOptions.FirstOrDefault(o => o.Tag == settings.Language) ?? LanguageOptions[0];
         _suppressLanguagePrompt = false;
+
+        // Same shape: reflect the saved accent without writing it straight back out.
+        _suppressAccentApply = true;
+        string activeAccent = Themes.AccentPalette.FromId(settings.AccentColor).Id;
+        _selectedAccent = AccentOptions.First(o => o.Id == activeAccent);
+        _suppressAccentApply = false;
     }
 
     private void RefreshSteam()

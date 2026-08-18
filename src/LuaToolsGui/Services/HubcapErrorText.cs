@@ -1,4 +1,5 @@
 using LuaToolsGui.Models;
+using LuaToolsGui.Resources;
 
 namespace LuaToolsGui.Services;
 
@@ -7,10 +8,10 @@ namespace LuaToolsGui.Services;
 /// plugin pipeline so the two can't drift apart.
 ///
 /// <para>
-/// These strings are English-only, which is not new: they were hardcoded literals inside
-/// <see cref="HubcapService"/> before the result type existed, and moving them here keeps that scope
-/// unchanged rather than quietly adding three keys across 29 translation files. Promoting them to real
-/// resource keys is a worthwhile follow-up, not part of this change.
+/// These began as hardcoded English literals inside <see cref="HubcapService"/> and are now real resource
+/// keys, so the one part of the Hubcap flow the user actually reads is translatable like the rest of the
+/// app. The wait phrasing is split into its own keys rather than composed from a number and a bare noun:
+/// languages that inflect the unit by count cannot be served by gluing "30" to "minutes".
 /// </para>
 /// </summary>
 internal static class HubcapErrorText
@@ -18,22 +19,22 @@ internal static class HubcapErrorText
     /// <summary>Wording for a non-Ok download result. Ok has no message, so it is not accepted here.</summary>
     public static string Describe<T>(HubcapResult<T> result) => result switch
     {
-        HubcapResult<T>.Unauthorized => "Your Hubcap key is invalid or expired.",
+        HubcapResult<T>.Unauthorized => Strings.Hubcap_Err_KeyRejected,
         HubcapResult<T>.RateLimited { RetryAfter: { } wait } =>
-            $"Your Hubcap daily limit has been reached. Try again in about {Humanize(wait)}.",
-        HubcapResult<T>.RateLimited => "Your Hubcap daily limit has been reached.",
-        HubcapResult<T>.NotFound => "No Hubcap manifest is available for this app.",
-        HubcapResult<T>.Failed f => $"Hubcap download failed ({(int)f.Status}).",
+            string.Format(Strings.Hubcap_Err_DailyLimitRetry, Humanize(wait)),
+        HubcapResult<T>.RateLimited => Strings.Hubcap_Err_DailyLimit,
+        HubcapResult<T>.NotFound => Strings.Hubcap_Err_NoManifest,
+        HubcapResult<T>.Failed f => string.Format(Strings.Hubcap_Err_Status, (int)f.Status),
         // Previously indistinguishable from the line above, which reported an HTTP status for something
         // that never got one.
-        HubcapResult<T>.Offline => "Couldn't reach Hubcap. Check your connection and try again.",
-        _ => "Hubcap download failed.",
+        HubcapResult<T>.Offline => Strings.Hubcap_Err_Unreachable,
+        _ => Strings.Hubcap_Err_Generic,
     };
 
     private static string Humanize(TimeSpan wait) => wait switch
     {
-        { TotalMinutes: < 1 } => $"{Math.Max(1, (int)wait.TotalSeconds)} seconds",
-        { TotalHours: < 1 } => $"{(int)wait.TotalMinutes} minutes",
-        _ => $"{(int)wait.TotalHours} hours",
+        { TotalMinutes: < 1 } => string.Format(Strings.Hubcap_Wait_Seconds, Math.Max(1, (int)wait.TotalSeconds)),
+        { TotalHours: < 1 } => string.Format(Strings.Hubcap_Wait_Minutes, (int)wait.TotalMinutes),
+        _ => string.Format(Strings.Hubcap_Wait_Hours, (int)wait.TotalHours),
     };
 }

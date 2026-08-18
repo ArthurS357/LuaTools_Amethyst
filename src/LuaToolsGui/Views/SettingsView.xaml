@@ -414,6 +414,27 @@
                         Foreground="{StaticResource TextDimBrush}"
                         Text="{x:Static res:Strings.Settings_Language_Hint}"
                         TextWrapping="Wrap" />
+
+                    <!-- Accent colour. Unlike the language above this needs no relaunch: App mutates the
+                         Accent*Brush objects in place, so views holding them by StaticResource repaint. -->
+                    <TextBlock
+                        Margin="0,18,0,0"
+                        FontSize="13"
+                        FontWeight="Medium"
+                        Text="{x:Static res:Strings.Settings_Accent}" />
+                    <ComboBox
+                        Margin="0,8,0,0"
+                        MinWidth="220"
+                        HorizontalAlignment="Left"
+                        DisplayMemberPath="Display"
+                        ItemsSource="{Binding AccentOptions}"
+                        SelectedItem="{Binding SelectedAccent}" />
+                    <TextBlock
+                        Margin="0,8,0,0"
+                        FontSize="12"
+                        Foreground="{StaticResource TextDimBrush}"
+                        Text="{x:Static res:Strings.Settings_Accent_Hint}"
+                        TextWrapping="Wrap" />
                 </StackPanel>
             </Border>
 

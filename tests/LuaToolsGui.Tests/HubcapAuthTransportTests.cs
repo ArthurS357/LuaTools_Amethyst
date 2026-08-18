@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http;
 using AwesomeAssertions;
+using LuaToolsGui;
 using LuaToolsGui.Models;
 using LuaToolsGui.Services;
 using Xunit;
@@ -28,7 +29,7 @@ public class HubcapAuthTransportTests
 {
     private const string Key = "smm_" + "0123456789abcdef";
 
-    private sealed record Attempt(bool HadBearer, bool HadApiKeyInQuery);
+    private sealed record Attempt(bool HadBearer, bool HadApiKeyInQuery, string? UserAgent);
 
     /// <summary>Records how each request authenticated, then answers per a scripted sequence.</summary>
     private sealed class RecordingHandler(params HttpStatusCode[] script) : HttpMessageHandler
@@ -40,7 +41,7 @@ public class HubcapAuthTransportTests
         {
             bool bearer = request.Headers.Authorization?.Scheme == "Bearer";
             bool inQuery = request.RequestUri?.Query.Contains("api_key=", StringComparison.Ordinal) == true;
-            Attempts.Add(new Attempt(bearer, inQuery));
+            Attempts.Add(new Attempt(bearer, inQuery, request.Headers.UserAgent.ToString()));
 
             var status = script[Math.Min(Attempts.Count - 1, script.Length - 1)];
             bool isManifest = request.RequestUri?.AbsolutePath.Contains("/manifest/", StringComparison.Ordinal) == true;
@@ -61,6 +62,40 @@ public class HubcapAuthTransportTests
         new(body, System.Text.Encoding.UTF8, "application/json");
 
     private static HubcapService With(HttpMessageHandler h) => new(h, TimeSpan.FromSeconds(5));
+
+    // ── Identification ───────────────────────────────────────────────
+
+    [Theory]
+    [InlineData("stats")]
+    [InlineData("status")]
+    [InlineData("manifest")]
+    public async Task Every_request_identifies_the_app_and_its_version(string call)
+    {
+        // A request with no User-Agent is indistinguishable from a scraper at the far end, and Hubcap sits
+        // behind Cloudflare. Naming the fork and version also ties a server-side problem to a build.
+        var handler = new RecordingHandler(HttpStatusCode.OK);
+        var svc = With(handler);
+
+        switch (call)
+        {
+            case "stats": await svc.GetStatsAsync(Key); break;
+            case "status": await svc.CheckStatusAsync(Key, "730"); break;
+            default: await svc.DownloadManifestAsync("730", Key, progress: null); break;
+        }
+
+        handler.Attempts.Should().NotBeEmpty();
+        handler.Attempts[0].UserAgent.Should().StartWith("LuaToolsAmethyst/");
+    }
+
+    [Fact]
+    public void The_user_agent_carries_the_assembly_version_rather_than_a_pasted_literal()
+    {
+        // The csproj <Version> is the single source of truth; it already drifted once, sitting at 1.1.3
+        // through the whole 1.2.8 release. A hardcoded UA string would be a second place to forget.
+        AppVersion.UserAgent.Should().Be($"LuaToolsAmethyst/{AppVersion.Current}");
+        AppVersion.Current.Should().MatchRegex(@"^\d+\.\d+\.\d+");
+        AppVersion.Current.Should().NotContain("+", "the commit suffix is trimmed");
+    }
 
     // ── Stats ────────────────────────────────────────────────────────
 

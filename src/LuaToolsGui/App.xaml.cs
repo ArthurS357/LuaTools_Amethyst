@@ -324,29 +324,62 @@ public partial class App : Application
     /// dictionary silently left WPF-UI's controls on the old accent.
     /// </para>
     /// </summary>
-    private static void ApplyAccentPalette()
+    /// <summary>The accent currently painted. Read by <see cref="VerifyAccentApplied"/>, which has to
+    /// check against whatever the user picked rather than against violet.</summary>
+    private static Themes.AccentPalette _activeAccent = Themes.AccentPalette.Amethyst;
+
+    /// <summary>
+    /// Paint an accent ramp across both halves of the UI: WPF-UI's templated controls, via its accent
+    /// manager, and the app's own <c>Accent*Brush</c> tokens, by mutating them in place.
+    ///
+    /// <para>
+    /// In-place mutation is what makes the switch live. Views bind these brushes with
+    /// <c>{StaticResource}</c>, which resolves once at load and never looks again — but it resolves to the
+    /// brush OBJECT, so changing that object's <c>Color</c> repaints every consumer. None of the accent
+    /// brushes are frozen, which is precisely what leaves this door open; freezing one would make it
+    /// silently stop following the setting.
+    /// </para>
+    /// </summary>
+    internal static void ApplyAccentPalette(Themes.AccentPalette palette)
     {
-        var violet600 = FindColor("Violet600Color");
-        var violet400 = FindColor("Violet400Color");
-        var violet500 = FindColor("Violet500Color");
-        var violet300 = FindColor("Violet300Color");
+        var soft = FindColor(palette.SoftKey);
+        var primary = FindColor(palette.PrimaryKey);
+        var border = FindColor(palette.BorderKey);
+        var fill = FindColor(palette.FillKey);
 
         // A missing key means the palette dictionary did not load at all. Applying half a ramp would look
         // worse than leaving WPF-UI's default alone, and VerifyAccentApplied() reports it either way.
-        if (violet600 is null || violet400 is null || violet500 is null || violet300 is null)
+        if (soft is null || primary is null || border is null || fill is null)
         {
-            LogThemeProblem("Themes/Colors.xaml did not provide the Violet*Color primitives — " +
+            LogThemeProblem($"Themes/Colors.xaml did not provide the '{palette.Id}' ramp primitives — " +
                             "accent not applied.");
             return;
         }
 
-        Wpf.Ui.Appearance.ApplicationAccentColorManager.Apply(
-            systemAccent: violet600.Value,     // filled accent surfaces
-            primaryAccent: violet400.Value,    // accent text/icons on dark
-            secondaryAccent: violet500.Value,  // borders, non-text UI
-            tertiaryAccent: violet300.Value);  // softest wash
+        _activeAccent = palette;
 
+        Wpf.Ui.Appearance.ApplicationAccentColorManager.Apply(
+            systemAccent: fill.Value,        // filled accent surfaces
+            primaryAccent: primary.Value,    // accent text/icons on dark
+            secondaryAccent: border.Value,   // borders, non-text UI
+            tertiaryAccent: soft.Value);     // softest wash
+
+        RepaintAccentBrushes(palette);
         PromoteSurfaceOverrides();
+    }
+
+    /// <summary>Push the palette into the app's own accent brushes. Silent about a brush it cannot find:
+    /// the ramp is already applied to WPF-UI by this point, and the theme guard reports the real
+    /// failure — a missing token here would only add noise to the same diagnosis.</summary>
+    private static void RepaintAccentBrushes(Themes.AccentPalette palette)
+    {
+        if (Current is null) return;
+
+        foreach (var (key, color) in palette.BrushColors(new Themes.DictionaryColors(Current.Resources)))
+        {
+            if (Current.TryFindResource(key) is System.Windows.Media.SolidColorBrush brush && !brush.IsFrozen)
+                brush.Color = color;
+        }
     }
 
     /// <summary>Look up a <see cref="System.Windows.Media.Color"/> resource, or null if absent/wrong type.</summary>
@@ -385,7 +418,9 @@ public partial class App : Application
         // theme, so it is the single most representative thing to assert.
         const string AccentKey = "SystemAccentColorPrimary";
 
-        var expected = FindColor("Violet400Color");
+        // Against the ACTIVE ramp, not violet: the accent is user-selectable, so hardcoding the identity
+        // colour here would make the guard cry wolf for every user who picked green or red.
+        var expected = FindColor(_activeAccent.PrimaryKey);
         var actual = FindColor(AccentKey);
 
         if (expected is not null && actual == expected) return; // theme intact — the normal path
@@ -521,7 +556,10 @@ public partial class App : Application
     /// <see cref="OnStartup"/> override so that its failures are actually catchable.</summary>
     private async Task StartupAsync()
     {
-        ApplyAccentPalette();
+        // Applied with the default ramp first, so a failure before the host is up still renders in-brand.
+        // Re-applied with the user's choice as soon as settings are readable, below — both run before any
+        // window exists, so nothing is ever seen in the wrong colour.
+        ApplyAccentPalette(Themes.AccentPalette.Amethyst);
 
         // Legacy cleanup: older builds staged downloads in ~/Downloads/LuaTools (they now stage in
         // %TEMP% and self-delete). Remove any leftovers from that user-visible folder, best-effort.
@@ -538,8 +576,15 @@ public partial class App : Application
 
         await _host.StartAsync();
 
+        // Now that settings are readable, switch to the accent the user actually chose.
+        ApplyAccentPalette(Themes.AccentPalette.FromId(
+            _host.Services.GetRequiredService<SettingsService>().AccentColor));
+
         var main = _host.Services.GetRequiredService<MainViewModel>();
         var settingsVm = _host.Services.GetRequiredService<SettingsViewModel>();
+
+        // The accent, unlike the language, repaints live — no relaunch prompt.
+        settingsVm.ApplyAccent = ApplyAccentPalette;
 
         // Changing the language needs a relaunch (x:Static resources resolve at parse time).
         settingsVm.RequestRestart = RelaunchApp;

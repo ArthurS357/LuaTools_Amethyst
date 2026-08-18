@@ -43,6 +43,25 @@ public partial class AboutViewModel(MainViewModel main, UpdateService updates, T
     /// <summary>Folder holding settings.json, shown so the user can find the file to edit.</summary>
     public string SettingsFolder => SettingsService.DefaultDirectory;
 
+    // ── Changelog ───────────────────────────────────────────────────
+
+    /// <summary>Recent releases, newest first. Compiled in — see <see cref="Resources.Changelog"/> for
+    /// why this is not read from docs/CHANGELOG.md or fetched.</summary>
+    public IReadOnlyList<Resources.ChangelogEntry> Changelog => Resources.Changelog.Entries;
+
+    /// <summary>Collapsed by default: the page's job is to say what this build is, and a version history
+    /// unrolled by default would push that below the fold.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ChangelogToggleText))]
+    private bool _isChangelogOpen;
+
+    public string ChangelogToggleText => IsChangelogOpen
+        ? Resources.Strings.About_Changelog_Hide
+        : Resources.Strings.About_Changelog_Show;
+
+    [RelayCommand]
+    private void ToggleChangelog() => IsChangelogOpen = !IsChangelogOpen;
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsIdle))]
     private bool _isChecking;

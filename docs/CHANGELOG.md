@@ -1,5 +1,32 @@
 # Changelog
 
+## 1.5.0 — 2026-08-18
+
+Follow-ups da auditoria da integração HubCap, mais a primeira opção de personalização visual do fork.
+
+### Novidades
+
+- **Cor de destaque selecionável** em Configurações: Amethyst (roxo, padrão), Verde e Vermelho.
+  A escolha é gravada em `settings.json` (`AccentColor`) e aplicada **sem reiniciar** — os brushes de
+  accent são mutados no lugar, então as telas abertas repintam. As três rampas foram escolhidas por
+  medição, não a olho: 300/400 acima de 4.5:1 sobre `SurfaceBase`, 500 acima de 3:1 (WCAG 1.4.11) e 600
+  acima de 4.5:1 contra texto branco. O verde "óbvio" (`#16A34A`) alcançava só 3.3:1 com branco e foi
+  descartado; o vermelho e o verde diretos colidiam com `SuccessText`/`Danger`, daí esmeralda e rosa.
+- **Changelog dentro do app**, na aba Sobre. Embutido no binário — não lê `docs/CHANGELOG.md` nem busca
+  na rede, então renderiza igual offline e não tem como falhar ao carregar.
+
+### Melhorias
+
+- **Mensagens de erro do HubCap traduzíveis.** As quatro strings que o usuário lê quando um download
+  falha eram literais em inglês dentro do serviço; agora são chaves de recurso. As unidades de espera
+  ("30 minutes") são chaves separadas, para idiomas que flexionam o substantivo por quantidade.
+- **`HttpClient` do HubCap** passou a usar `SocketsHttpHandler` com `PooledConnectionLifetime` de 15
+  minutos — uma conexão que nunca é reaberta nunca re-resolve DNS, e o HubCap fica atrás do Cloudflare.
+  Toda requisição agora também se identifica com `User-Agent: LuaToolsAmethyst/<versão>`, derivado do
+  assembly em vez de literal.
+- A guarda de tema no startup passou a validar a rampa **ativa** em vez de assumir violeta, senão
+  acusaria falha para quem escolhesse verde ou vermelho.
+
 ## 1.4.0 — 2026-08-16
 
 Endurecimento pós-auditoria. Nenhuma funcionalidade nova; o tema desta versão é remover superfícies de
