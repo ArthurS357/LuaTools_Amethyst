@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -101,7 +101,7 @@
   <data name="Settings_HubcapGetKey" xml:space="preserve"><value>Lấy khóa tại</value></data>
   <data name="Settings_HubcapKeyOk" xml:space="preserve"><value>{0}/{1} yêu cầu hôm nay</value></data>
   <data name="Settings_HubcapKeyOkExpiry" xml:space="preserve"><value>{0}/{1} hôm nay · hết hạn {2}</value></data>
-  <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>Đây có vẻ không phải là khóa hợp lệ (smm_…).</value></data>
+  <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>Đây có vẻ không phải là khóa hợp lệ.</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>Không thể xác minh khóa — có thể khóa không hợp lệ, đã hết hạn, hoặc không kết nối được Hubcap.</value></data>
   <data name="Settings_HubcapActive" xml:space="preserve"><value>Hoạt động</value></data>
   <data name="Settings_HubcapRefresh" xml:space="preserve"><value>Làm mới</value></data>

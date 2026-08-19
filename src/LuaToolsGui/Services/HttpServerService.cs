@@ -219,7 +219,7 @@ public class HttpServerService : IHostedService
             string? path = req.Url?.AbsolutePath.TrimEnd('/');
             // Log everything except the noisy status poll.
             if (path is not null && !path.StartsWith("/add-status/") && !path.StartsWith("/has/"))
-                PluginLog.Log($"HTTP {req.HttpMethod} {path}");
+                AppLog.Log($"HTTP {req.HttpMethod} {path}");
             (int status, string body) = path switch
             {
                 // Answer CORS preflight FIRST — otherwise it matches a POST route (the
@@ -381,7 +381,7 @@ public class HttpServerService : IHostedService
                 source = s.GetString() ?? "";
         }
         catch { }
-        PluginLog.Log($"/add-source/{appId} body='{body}' parsed source='{source}'");
+        AppLog.Log($"/add-source/{appId} body='{body}' parsed source='{source}'");
         if (string.IsNullOrWhiteSpace(source)) return (400, JsonErr("source is required"));
 
         _services.GetRequiredService<PluginAddService>().Pick(appId, source);
@@ -619,7 +619,7 @@ public class HttpServerService : IHostedService
     }
 
     /// <summary>Diagnostics sink for the store-page frontend (its "Logger" bridge method). Writes into the
-    /// same PluginLog the rest of the bridge uses. Truncated so a runaway logger can't fill the file.</summary>
+    /// same AppLog the rest of the bridge uses. Truncated so a runaway logger can't fill the file.</summary>
     private static async Task<(int, string)> HandleLog(HttpListenerRequest req)
     {
         string body;
@@ -636,7 +636,7 @@ public class HttpServerService : IHostedService
         catch { /* not JSON — log the raw body */ }
 
         if (message.Length > 2000) message = message[..2000] + "…";
-        PluginLog.Log("[plugin] " + message);
+        AppLog.Log("[plugin] " + message);
         return (200, Json(new { success = true }));
     }
 

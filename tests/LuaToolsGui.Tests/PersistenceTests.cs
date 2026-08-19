@@ -59,7 +59,10 @@ public sealed class PersistenceTests : IDisposable
         settings.AutoUpdateApps.Should().BeTrue("installs default to not pinning manifests");
         settings.ManagePageSize.Should().Be(24);
         settings.BuildsPageSize.Should().Be(10);
-        settings.MinimizeToTray.Should().BeFalse();
+        settings.MinimizeToTray.Should().BeTrue(
+            "closing the window must not take the Steam plugin's local bridge down with it");
+        settings.WantsResidentTrayApp.Should().BeFalse(
+            "nothing was ever chosen — a headless silent install still cleans up after itself");
         settings.FastFetch.Should().BeFalse();
         settings.PluginAutoUpdate.Should().BeFalse(
             "swapping a DLL next to steam.exe and restarting Steam, unattended and unprompted, is opt-in");

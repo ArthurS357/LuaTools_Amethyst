@@ -145,7 +145,7 @@ public sealed class SettingsService
     /// isn't available — the fallback that path takes is security-relevant and was previously silent.</summary>
     private readonly Func<byte[], byte[]> _encrypt;
 
-    /// <summary>Where the DPAPI-unavailable warning goes. Defaults to <see cref="PluginLog"/>, which is
+    /// <summary>Where the DPAPI-unavailable warning goes. Defaults to <see cref="AppLog"/>, which is
     /// the app's only service-reachable file sink and already routes everything through
     /// <see cref="LogSanitizer"/> — its name is narrower than its actual role.</summary>
     private readonly Action<string> _log;
@@ -159,7 +159,7 @@ public sealed class SettingsService
     {
         // Assigned before Load()/MigrateHubcapKey(), both of which can reach Protect().
         _encrypt = encrypt ?? (data => ProtectedData.Protect(data, null, DataProtectionScope.CurrentUser));
-        _log = log ?? PluginLog.Log;
+        _log = log ?? AppLog.Log;
 
         _dir = directory;
         _filePath = Path.Combine(directory, "settings.json");
@@ -328,12 +328,37 @@ public sealed class SettingsService
         set { _settings.StartWithWindows = value; Save(); }
     }
 
-    /// <summary>When true, minimizing hides the window to the system tray (default OFF).</summary>
+    /// <summary>
+    /// When true, closing the window hides it to the system tray instead of quitting (default ON).
+    ///
+    /// <para>
+    /// The default was OFF, which made the X button kill the app outright — and with it the local HTTP
+    /// bridge the Steam plugin talks to, so the store-page integration went dead the moment the user tidied
+    /// the window away. Closing to the tray is what a background helper is expected to do; quitting is
+    /// still one click away, in the tray's "Exit". Anyone who wants the old behaviour turns the setting off
+    /// and that choice is persisted, so this default only decides for users who never expressed one.
+    /// </para>
+    /// </summary>
     public bool MinimizeToTray
     {
-        get => _settings.MinimizeToTray ?? false; // default OFF
+        get => _settings.MinimizeToTray ?? true; // default ON — see the note above
         set { _settings.MinimizeToTray = value; Save(); }
     }
+
+    /// <summary>
+    /// True only when the user has DELIBERATELY asked for a tray-resident app — not when
+    /// <see cref="MinimizeToTray"/> merely reads true from its default.
+    ///
+    /// <para>
+    /// The distinction exists for one caller: a cold, headless <c>luatools://install/silent/&lt;id&gt;</c>
+    /// launch, which any web page can trigger. That launch exits once the install is reported, so it does
+    /// not leave a process and a tray icon behind that the user never asked to start. Keying that on the
+    /// effective <see cref="MinimizeToTray"/> would, now that it defaults ON, mean every such launch stayed
+    /// resident. Keying it on an explicit choice preserves both behaviours: opt in and the app stays, say
+    /// nothing and the silent install cleans up after itself.
+    /// </para>
+    /// </summary>
+    public bool WantsResidentTrayApp => _settings.MinimizeToTray is true;
 
     /// <summary>When true, FastFetch auto-picks the first available source and downloads immediately (default OFF).</summary>
     public bool FastFetch

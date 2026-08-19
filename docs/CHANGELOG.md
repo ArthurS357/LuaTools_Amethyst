@@ -3,7 +3,7 @@
 ## 1.5.1 — 2026-08-18
 
 Correcao da troca de cor — que nunca chegou a funcionar — agora atras de um botao **Aplicar**, mais a
-remocao de jogos dos Depots e os follow-ups de UX/seguranca do HubCap.
+remocao de jogos dos Depots, o fechar-para-bandeja como padrao e os follow-ups de UX/seguranca do HubCap.
 
 ### Correcoes
 
@@ -111,9 +111,81 @@ remocao de jogos dos Depots e os follow-ups de UX/seguranca do HubCap.
   de 16 a 256 caracteres, ancorado com `\A`/`\z` (em .NET `$` casa antes de `\n` final). `LogSanitizer`
   acompanhou o novo formato — chave que o app aceita enviar e chave que pode chegar num log.
 
+### Bandeja do sistema
+
+- **Fechar a janela nao encerra mais o app.** O X passa a esconder a janela na bandeja e o processo
+  continua vivo; a unica saida de verdade e o item **Sair** do menu da bandeja. Antes o comportamento
+  existia mas atras da opcao "Minimizar para a bandeja", **desligada por padrao** — ou seja, para quase
+  todo mundo o X matava o app e junto com ele o bridge HTTP local que o plugin da store consulta. A
+  integracao com a pagina da Steam simplesmente parava de responder, sem nada na tela dizendo por que.
+  O padrao virou LIGADO. Quem prefere o antigo desliga a opcao em Configuracoes e a escolha e persistida.
+- **Icone da bandeja com identidade propria.** Tooltip e titulo do balao passam a usar
+  `Strings.App_DisplayName` ("LuaTools Amethyst") em vez do literal "LuaTools", e o menu continua com
+  **Abrir** e **Sair** (ja traduzidos nos 29 idiomas). Duplo clique restaura a janela.
+- **A regra saiu do code-behind.** `TrayService` (novo) e dono do icone e da decisao fechar-vs-encerrar,
+  contra duas interfaces (`ITrayIcon`, `ITrayWindow`); `NotifyIconTray` e o unico adaptador WinForms e nao
+  guarda logica. `MainWindow` virou o `ITrayWindow` que o servico dirige. Antes eram tres condicoes
+  embutidas no handler `Closing`, alcancaveis so com uma janela real — a regra com mais chance de irritar
+  o usuario era a unica sem teste nenhum.
+- **`Dispose` do `NotifyIcon` garantido e idempotente.** Icone nao descartado fica morto na area de
+  notificacao ate o usuario passar o mouse por cima.
+- **Instalacao silenciosa continua se auto-encerrando.** `luatools://install/silent/<id>` e disparavel por
+  qualquer pagina web. Com o padrao invertido, a condicao antiga (`!MinimizeToTray`) nunca mais seria
+  verdadeira e cada instalacao dessas deixaria um processo residente que o usuario nunca pediu. Entrou
+  `SettingsService.WantsResidentTrayApp`, que pergunta o mais estreito: o usuario **escolheu** manter o app
+  na bandeja? Sem escolha registrada, a instalacao silenciosa limpa a propria sujeira.
+
+### Follow-ups executados
+
+- **`Settings_HubcapKeyBad` mencionava `(smm_…)` nos 30 arquivos de idioma.** A validacao ja tinha sido
+  afrouxada em 1.5.1 (prefixo opcional, corpo hex 16–256), mas a mensagem de recusa continuou anunciando um
+  formato que o codigo nao exige mais. Mensagem mais estrita que a checagem e pior que mensagem vaga: manda
+  o usuario cacar uma chave que nunca foi o problema. O parentese foi removido de todos os idiomas. O
+  **placeholder** do campo (`Settings_HubcapKeyPlaceholder`) mantem o `smm_…` de proposito: e dica sobre o
+  que colar num campo vazio, nao veredito sobre o que foi digitado.
+- **`PluginLog` → `AppLog`.** Ha muito tempo nao era so o log do bridge: resolvedor de auto-update, tela de
+  seguranca de fixes/manifestos, aviso de DPAPI indisponivel, aviso de privacidade do lookup em texto claro
+  e a checagem manual de update do About escrevem ali. O nome dizia "log do plugin", que e como um mantenedor
+  decide **nao** olhar nele atras de um problema de update. O **arquivo** continua `plugin-backend.log` de
+  proposito — e o que o README e as respostas de suporte mandam enviar, e o que a geracao rotacionada `.1`
+  ja se chama em disco.
+- **DTOs de API viraram `init`-only** (`ApiModels.cs`, `FixModels.cs`, `ModeModels.cs` — 96 propriedades).
+  Sao alvos de desserializacao: o `System.Text.Json` preenche uma vez e nada no app tem o que escrever
+  depois. A conversao nao quebrou **nenhum** call site, que e justamente o argumento — a propriedade estava
+  aberta a toa. `init` em `class`, deliberadamente **nao** `record`: `record` tambem trocaria igualdade de
+  referencia por estrutural, e esses tipos vivem em caches e colecoes que nunca pediram semantica de valor.
+
+### Follow-ups avaliados e nao implementados
+
+- **`file_modified` para detectar manifesto desatualizado.** `FileModified` e `NeedsUpdate` ja sao lidos e
+  guardados, e nada os consome — a pagina Manage ainda so sabe dizer "disponivel". A metade que falta e
+  **local**: o app nao registra data de instalacao nem versao de origem de um manifesto, entao nao ha com o
+  que comparar a data do HubCap. O `File.SetLastWriteTime` que o `LuaInstaller` carimba e a hora da
+  **escrita**, nao do manifesto que o HubCap gerou, e e reescrito por qualquer reinstalacao — comparar
+  aquilo reportaria "desatualizado" para copia atual e "atual" para copia velha. Fazer certo exige persistir
+  o `file_modified` da origem junto de cada manifesto instalado, mais uma decisao de fuso sobre um valor que
+  a API manda sem offset. E feature, nao limpeza; registrado no XML doc de `HubcapManifestStatus`.
+- **Traducao das chaves `PENDING_TRANSLATION`.** 84 chaves seguem so em ingles por decisao, e nao foram
+  traduzidas automaticamente. `check-i18n.py` continua listando todas a cada execucao.
+
 ### Testes
 
-- Suite de **725 para 815**.
+- Suite de **725 para 838** (815 na publicacao de 1.5.1; +23 nesta rodada).
+- `TrayServiceTests` (novo, 13): fechar comum esconde na bandeja e **nao** encerra; fechar encerra quando
+  nada mantem o app residente; a opcao e lida a cada fechamento, nao capturada no construtor (ela muda em
+  tempo de execucao, e `SessionTrayLock` chega por sinal de outra instancia); **Sair** encerra de verdade
+  mesmo com fechar-para-bandeja ligado; `Dispose` acontece uma vez e so no caminho de encerramento; duplo
+  clique e o item **Abrir** restauram pelo mesmo caminho; restaurar nao conta como pedido de saida; launch
+  silencioso mostra o icone sem tocar na janela; e a tabela de decisao completa (4 combinacoes).
+- `HubcapKeyMessageTests` (novo, 3): nenhum dos 30 RESX pode citar `smm` na recusa; todo idioma continua
+  com um texto de recusa nao vazio (apagar o valor faria o app exibir o **nome da chave** e o
+  `check-i18n.py`, que so compara conjuntos de chaves, ainda passaria); e o placeholder segue permitido.
+- `ApiModelImmutabilityTests` (novo, 3): varredura por reflexao no namespace `Models` — nenhuma propriedade
+  publica com `set` (distinguido de `init` pelo modificador `IsExternalInit`), a varredura de fato encontra
+  os DTOs (senao um rename de namespace vira teste que aprova para sempre), e `init` continua permitindo a
+  desserializacao.
+- `PersistenceTests`: o default de `MinimizeToTray` passou a ser `true`, com `WantsResidentTrayApp` ainda
+  `false` — quem nunca escolheu nada nao vira app residente numa instalacao silenciosa.
 - `ThemeLiveSwitchTests` (novo): sobe uma `Application` real numa thread STA com os mesmos tres
   dicionarios do `App.xaml`. E o unico arranjo em que o congelamento existe — os testes antigos usavam
   dicionario avulso e por isso aprovavam um recurso inerte. Cobre: nenhum brush da paleta congelado,

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -101,7 +101,7 @@
   <data name="Settings_HubcapGetKey" xml:space="preserve"><value>Dapatkan kunci di</value></data>
   <data name="Settings_HubcapKeyOk" xml:space="preserve"><value>{0}/{1} permintaan hari ini</value></data>
   <data name="Settings_HubcapKeyOkExpiry" xml:space="preserve"><value>{0}/{1} hari ini · kedaluwarsa {2}</value></data>
-  <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>Ini sepertinya bukan kunci yang valid (smm_…).</value></data>
+  <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>Ini sepertinya bukan kunci yang valid.</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>Tidak dapat memverifikasi kunci — mungkin tidak valid, kedaluwarsa, atau Hubcap tidak dapat dijangkau.</value></data>
   <data name="Settings_HubcapActive" xml:space="preserve"><value>Aktif</value></data>
   <data name="Settings_HubcapRefresh" xml:space="preserve"><value>Segarkan</value></data>

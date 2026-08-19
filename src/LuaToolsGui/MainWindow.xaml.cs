@@ -5,11 +5,10 @@ using LuaToolsGui.Views;
 
 namespace LuaToolsGui;
 
-public partial class MainWindow : Wpf.Ui.Controls.FluentWindow
+public partial class MainWindow : Wpf.Ui.Controls.FluentWindow, ITrayWindow
 {
     private readonly SettingsService _settings;
-    private System.Windows.Forms.NotifyIcon? _trayIcon;
-    private bool _reallyExiting; // true once the user picks tray "Exit" — lets the close go through
+    private readonly TrayService _tray;
 
     public MainWindow(MainViewModel viewModel, IServiceProvider services, SettingsService settings)
     {
@@ -20,7 +19,18 @@ public partial class MainWindow : Wpf.Ui.Controls.FluentWindow
         // NavigationView resolves page instances (DownloadView/SettingsView) from DI.
         RootNavigation.SetServiceProvider(services);
 
-        InitializeTrayIcon();
+        // The tray icon and the close-versus-quit rule live in TrayService; this window is only the
+        // ITrayWindow it drives. Everything the rule depends on is read at each close, not captured here —
+        // the setting is a toggle the user can flip while the app runs, and Program.SessionTrayLock is set
+        // by a signal from a --tray-locked relaunch after this constructor has long returned.
+        _tray = new TrayService(
+            new NotifyIconTray(
+                LuaToolsGui.Resources.Strings.App_DisplayName,
+                LuaToolsGui.Resources.Strings.Tray_Open,
+                LuaToolsGui.Resources.Strings.Tray_Exit),
+            this,
+            closeToTrayEnabled: () => _settings.MinimizeToTray || Program.SessionTrayLock);
+
         Closing += OnWindowClosing;
 
         Loaded += async (_, _) =>
@@ -32,61 +42,35 @@ public partial class MainWindow : Wpf.Ui.Controls.FluentWindow
     }
 
     // ── System tray ─────────────────────────────────────────────────
-    private void InitializeTrayIcon()
-    {
-        _trayIcon = new System.Windows.Forms.NotifyIcon { Text = "LuaTools", Visible = false };
-        try
-        {
-            using var stream = Application.GetResourceStream(new Uri("pack://application:,,,/icon.ico"))?.Stream;
-            if (stream is not null) _trayIcon.Icon = new System.Drawing.Icon(stream);
-        }
-        catch { /* fall back to no icon — tray menu still works */ }
-
-        _trayIcon.DoubleClick += (_, _) => RestoreFromTray();
-
-        var menu = new System.Windows.Forms.ContextMenuStrip();
-        menu.Items.Add(LuaToolsGui.Resources.Strings.Tray_Open, null, (_, _) => RestoreFromTray());
-        menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
-        menu.Items.Add(LuaToolsGui.Resources.Strings.Tray_Exit, null, (_, _) => ExitApp());
-        _trayIcon.ContextMenuStrip = menu;
-    }
 
     /// <summary>Clicking the window's close (X) button hides to the tray instead of quitting, when the
-    /// MinimizeToTray setting is on OR the app was launched with --tray-locked (the loader passes this to
-    /// keep the backend alive — session-only, doesn't touch the saved setting). Either way, only the tray
-    /// "Exit" item (which sets _reallyExiting) actually closes the app.</summary>
-    private void OnWindowClosing(object? sender, System.ComponentModel.CancelEventArgs e)
-    {
-        if (!_reallyExiting && (_settings.MinimizeToTray || Program.SessionTrayLock))
-        {
-            e.Cancel = true;
-            Hide();
-            if (_trayIcon is not null) _trayIcon.Visible = true;
-            return;
-        }
-        _trayIcon?.Dispose();
-
-        // ShutdownMode is OnExplicitShutdown (a silent/--minimized launch never shows a window, so
-        // OnLastWindowClose would otherwise tear the app down before it does anything) — so a real
-        // window close has to ask for shutdown itself instead of relying on the window count.
-        Application.Current.Shutdown();
-    }
-
-    /// <summary>Quit for real from the tray "Exit" item (bypasses close-to-tray).</summary>
-    private void ExitApp()
-    {
-        _reallyExiting = true;
-        if (_trayIcon is not null) _trayIcon.Visible = false;
-        Close();
-    }
+    /// MinimizeToTray setting is on (the default) OR the app was launched with --tray-locked (the loader
+    /// passes this to keep the backend alive — session-only, doesn't touch the saved setting). Either way,
+    /// only the tray "Exit" item actually closes the app. The rule itself is
+    /// <see cref="TrayService.Decide"/>.</summary>
+    private void OnWindowClosing(object? sender, System.ComponentModel.CancelEventArgs e) =>
+        e.Cancel = _tray.HandleCloseRequest() is WindowCloseAction.HideToTray;
 
     /// <summary>Bring the window back from the tray (tray double-click, "Open" menu, or Minimize-to-tray
     /// being turned off in Settings).</summary>
-    public void RestoreFromTray()
+    public void RestoreFromTray() => _tray.Restore();
+
+    /// <summary>Launch tray-only for a headless install (luatools://install/silent/&lt;id&gt;): show the tray
+    /// icon but never surface the window. The app sits in the background and reports via a balloon tip.</summary>
+    public void StartSilent() => _tray.ShowIconOnly();
+
+    /// <summary>Pop a Windows balloon from the tray icon — reports a silent install's outcome.</summary>
+    public void ShowInstallNotification(string message, bool error) =>
+        _tray.ShowBalloon(LuaToolsGui.Resources.Strings.App_DisplayName, message, error);
+
+    // ── ITrayWindow ─────────────────────────────────────────────────
+
+    void ITrayWindow.HideWindow() => Hide();
+
+    void ITrayWindow.RestoreWindow()
     {
         Show();
         WindowState = WindowState.Normal;
-        if (_trayIcon is not null) _trayIcon.Visible = false;
 
         // Activate() alone often loses to Windows' foreground rules when the request comes from another
         // process (a relaunch). Bouncing Topmost reliably pulls the window to the front.
@@ -96,24 +80,12 @@ public partial class MainWindow : Wpf.Ui.Controls.FluentWindow
         Focus();
     }
 
-    /// <summary>Launch tray-only for a headless install (luatools://install/silent/&lt;id&gt;): show the tray
-    /// icon but never surface the window. The app sits in the background and reports via a balloon tip.</summary>
-    public void StartSilent()
-    {
-        if (_trayIcon is not null) _trayIcon.Visible = true;
-    }
+    void ITrayWindow.CloseWindow() => Close();
 
-    /// <summary>Pop a Windows balloon from the tray icon — reports a silent install's outcome.</summary>
-    public void ShowInstallNotification(string message, bool error)
-    {
-        if (_trayIcon is null) return;
-        _trayIcon.Visible = true;
-        _trayIcon.ShowBalloonTip(
-            5000,
-            "LuaTools",
-            message,
-            error ? System.Windows.Forms.ToolTipIcon.Error : System.Windows.Forms.ToolTipIcon.Info);
-    }
+    // ShutdownMode is OnExplicitShutdown (a silent/--minimized launch never shows a window, so
+    // OnLastWindowClose would otherwise tear the app down before it does anything) — so a real window
+    // close has to ask for shutdown itself instead of relying on the window count.
+    void ITrayWindow.Shutdown() => Application.Current.Shutdown();
 
     /// <summary>Switch to the Add page (used by the Manage page's "Update" action).</summary>
     public void NavigateToAdd() => RootNavigation.Navigate(typeof(DownloadView));

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -101,7 +101,7 @@
   <data name="Settings_HubcapGetKey" xml:space="preserve"><value>Consigue una clave en</value></data>
   <data name="Settings_HubcapKeyOk" xml:space="preserve"><value>{0}/{1} solicitudes hoy</value></data>
   <data name="Settings_HubcapKeyOkExpiry" xml:space="preserve"><value>{0}/{1} hoy · vence {2}</value></data>
-  <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>Esto no parece una clave válida (smm_…).</value></data>
+  <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>Esto no parece una clave válida.</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>No se pudo verificar la clave: puede ser inválida, estar vencida o Hubcap no está disponible.</value></data>
   <data name="Settings_HubcapActive" xml:space="preserve"><value>Activo</value></data>
   <data name="Settings_HubcapRefresh" xml:space="preserve"><value>Actualizar</value></data>

@@ -2,9 +2,25 @@ using System.IO;
 
 namespace LuaToolsGui.Services;
 
-/// <summary>Tiny thread-safe file logger for the Steam-plugin HTTP backend, so we can diagnose the
-/// add flow without a console. Writes to %AppData%\LuaToolsGui\plugin-backend.log.</summary>
-public static class PluginLog
+/// <summary>
+/// Tiny thread-safe file logger, and the only diagnostic sink a shipped build has — there is no console.
+///
+/// <para>
+/// It was called <c>PluginLog</c>, from when the Steam-plugin HTTP bridge was the only thing writing to
+/// it. It has not been that for a long time: the app-update resolver, the fix/manifest safety screen, the
+/// DPAPI fallback warning, the privacy notice for the cleartext lookup and the About page's manual update
+/// check all log here. The old name said "this is the plugin's log", which is how a maintainer decides not
+/// to look in it for an update or a settings problem.
+/// </para>
+///
+/// <para>
+/// The FILE keeps its name (<c>%AppData%\LuaToolsGui\plugin-backend.log</c>) deliberately. It is what the
+/// README and the support answers tell people to send, and what the rotated <c>.1</c> generation on disk is
+/// already called; renaming it would orphan every existing log and every instruction that points at one,
+/// for no gain a user can see.
+/// </para>
+/// </summary>
+public static class AppLog
 {
     private static readonly object _lock = new();
 

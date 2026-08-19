@@ -98,7 +98,7 @@ public partial class AboutViewModel(MainViewModel main, UpdateService updates, T
         catch (Exception ex)
         {
             // Offline, repo gone, rate-limited — all the same to the user: it didn't work, and why.
-            PluginLog.Log($"about: manual update check failed — {ex.Message}");
+            AppLog.Log($"about: manual update check failed — {ex.Message}");
             CheckResult = Resources.Strings.About_Check_Failed;
         }
         finally

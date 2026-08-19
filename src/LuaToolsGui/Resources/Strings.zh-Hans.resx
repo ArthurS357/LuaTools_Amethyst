@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -103,7 +103,7 @@
   <data name="Settings_HubcapGetKey" xml:space="preserve"><value>获取密钥：</value></data>
   <data name="Settings_HubcapKeyOk" xml:space="preserve"><value>今日 {0}/{1} 次请求</value></data>
   <data name="Settings_HubcapKeyOkExpiry" xml:space="preserve"><value>今日 {0}/{1} · 到期 {2}</value></data>
-  <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>这看起来不是有效的密钥（smm_…）。</value></data>
+  <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>这看起来不是有效的密钥。</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>无法验证密钥 — 它可能无效、已过期，或无法连接 Hubcap。</value></data>
   <data name="Settings_HubcapActive" xml:space="preserve"><value>已激活</value></data>
   <data name="Settings_HubcapRefresh" xml:space="preserve"><value>刷新</value></data>

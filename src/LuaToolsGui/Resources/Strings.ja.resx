@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -101,7 +101,7 @@
   <data name="Settings_HubcapGetKey" xml:space="preserve"><value>キーの取得：</value></data>
   <data name="Settings_HubcapKeyOk" xml:space="preserve"><value>本日 {0}/{1} 回のリクエスト</value></data>
   <data name="Settings_HubcapKeyOkExpiry" xml:space="preserve"><value>本日 {0}/{1} · 有効期限 {2}</value></data>
-  <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>有効なキー（smm_…）ではないようです。</value></data>
+  <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>有効なキーではないようです。</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>キーを確認できませんでした — 無効・期限切れ、または Hubcap に接続できない可能性があります。</value></data>
   <data name="Settings_HubcapActive" xml:space="preserve"><value>有効</value></data>
   <data name="Settings_HubcapRefresh" xml:space="preserve"><value>更新</value></data>

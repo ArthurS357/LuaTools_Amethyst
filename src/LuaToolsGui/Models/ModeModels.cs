@@ -44,18 +44,18 @@ public sealed record ModeDefinition(
 // ── GitHub release API DTOs ─────────────────────────────────────────
 public sealed class GithubRelease
 {
-    [JsonPropertyName("tag_name")] public string TagName { get; set; } = "";
+    [JsonPropertyName("tag_name")] public string TagName { get; init; } = "";
     // published_at is reliable for ordering; the /releases list array itself sorts by created_at
     // (which can be identical across tags created at once), so sort by this to find the latest.
-    [JsonPropertyName("published_at")] public DateTimeOffset? PublishedAt { get; set; }
-    [JsonPropertyName("assets")] public List<GithubAsset> Assets { get; set; } = [];
+    [JsonPropertyName("published_at")] public DateTimeOffset? PublishedAt { get; init; }
+    [JsonPropertyName("assets")] public List<GithubAsset> Assets { get; init; } = [];
 }
 
 public sealed class GithubAsset
 {
-    [JsonPropertyName("name")] public string Name { get; set; } = "";
-    [JsonPropertyName("browser_download_url")] public string DownloadUrl { get; set; } = "";
-    [JsonPropertyName("digest")] public string? Digest { get; set; } // "sha256:<hex>"
+    [JsonPropertyName("name")] public string Name { get; init; } = "";
+    [JsonPropertyName("browser_download_url")] public string DownloadUrl { get; init; } = "";
+    [JsonPropertyName("digest")] public string? Digest { get; init; } // "sha256:<hex>"
 }
 
 /// <summary>Queried state for one mode — what a Mode-page card binds to.</summary>

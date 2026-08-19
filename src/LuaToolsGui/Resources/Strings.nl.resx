@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -101,7 +101,7 @@
   <data name="Settings_HubcapGetKey" xml:space="preserve"><value>Haal een sleutel op bij</value></data>
   <data name="Settings_HubcapKeyOk" xml:space="preserve"><value>{0}/{1} verzoeken vandaag</value></data>
   <data name="Settings_HubcapKeyOkExpiry" xml:space="preserve"><value>{0}/{1} vandaag · verloopt op {2}</value></data>
-  <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>Dit lijkt geen geldige sleutel (smm_…).</value></data>
+  <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>Dit lijkt geen geldige sleutel.</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>Kan de sleutel niet verifiëren — deze is mogelijk ongeldig, verlopen, of Hubcap is onbereikbaar.</value></data>
   <data name="Settings_HubcapActive" xml:space="preserve"><value>Actief</value></data>
   <data name="Settings_HubcapRefresh" xml:space="preserve"><value>Vernieuwen</value></data>

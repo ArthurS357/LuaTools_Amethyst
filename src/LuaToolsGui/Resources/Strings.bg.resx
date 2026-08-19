@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -101,7 +101,7 @@
   <data name="Settings_HubcapGetKey" xml:space="preserve"><value>Вземете ключ от</value></data>
   <data name="Settings_HubcapKeyOk" xml:space="preserve"><value>{0}/{1} заявки днес</value></data>
   <data name="Settings_HubcapKeyOkExpiry" xml:space="preserve"><value>{0}/{1} днес · изтича на {2}</value></data>
-  <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>Това не прилича на валиден ключ (smm_…).</value></data>
+  <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>Това не прилича на валиден ключ.</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>Ключът не можа да бъде проверен — може да е невалиден, изтекъл или Hubcap е недостъпен.</value></data>
   <data name="Settings_HubcapActive" xml:space="preserve"><value>Активен</value></data>
   <data name="Settings_HubcapRefresh" xml:space="preserve"><value>Обновяване</value></data>

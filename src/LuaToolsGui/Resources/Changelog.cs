@@ -39,6 +39,9 @@ public static class Changelog
                 "A colour retints the whole app — window, cards, borders and text — not only the highlights.",
                 "Games can be removed from the Depots list, clearing their lua files and stored builds.",
                 "Hubcap: a warning before the key expires, a masked key field, and a looser key-format check.",
+                "Closing the window now keeps LuaTools in the system tray, so the Steam plugin's local bridge stays up. Quit from the tray's Exit.",
+                "The tray icon names this build and offers Open and Exit; double-click restores the window.",
+                "Hubcap no longer refuses a key by naming a format it does not require.",
             ]),
 
         new("1.5.0", "2026-08-18",

@@ -393,7 +393,7 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
                 // safe on its own, and cannot be re-opened by someone later calling it without screening.
                 if (!FixAnalyzer.IsContained(installDir, entry.FullName, out string dest))
                 {
-                    PluginLog.Log($"fix apply: refused entry outside the game folder — {entry.FullName}");
+                    AppLog.Log($"fix apply: refused entry outside the game folder — {entry.FullName}");
                     refused++;
                     continue;
                 }
@@ -452,14 +452,14 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
         {
             // The analyzer itself failing must not become an install crash — but it also must not become
             // an implicit "allow": refuse and say so.
-            PluginLog.Log($"fix screen: analyzer failed on {file.FileName} — {ex.Message}");
+            AppLog.Log($"fix screen: analyzer failed on {file.FileName} — {ex.Message}");
             toast.Show(Resources.Strings.Fixes_Toast_Blocked,
                 string.Format(Resources.Strings.Fixes_Toast_Blocked_Body, file.FileName, ex.Message), error: true);
             DeleteStaged(file.FilePath);
             return false;
         }
 
-        PluginLog.Log($"fix screen: {file.FileName} → {(analysis.Blocked ? "BLOCKED" : "ok")} ({analysis.Summary})");
+        AppLog.Log($"fix screen: {file.FileName} → {(analysis.Blocked ? "BLOCKED" : "ok")} ({analysis.Summary})");
 
         if (!analysis.Blocked) return true;
 

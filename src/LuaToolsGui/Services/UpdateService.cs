@@ -48,11 +48,11 @@ public class UpdateService
         // Refusals are logged, never silently dropped — a user who pasted the upstream URL needs to know
         // the app deliberately ignored it, otherwise "updates don't work" looks like a bug.
         foreach (var bad in resolution.Rejected)
-            PluginLog.Log($"app-update: ignoring configured repo — {bad.Describe()}");
+            AppLog.Log($"app-update: ignoring configured repo — {bad.Describe()}");
 
         if (resolution.IsDisabled)
         {
-            PluginLog.Log("app-update: no usable repo configured — self-update is OFF (no request will be made)");
+            AppLog.Log("app-update: no usable repo configured — self-update is OFF (no request will be made)");
             _managers = [];
             return;
         }
@@ -63,7 +63,7 @@ public class UpdateService
                     downloader: new ProxiedFileDownloader())))
             .ToArray();
 
-        PluginLog.Log($"app-update: enabled against {string.Join(", ", resolution.Repos)}");
+        AppLog.Log($"app-update: enabled against {string.Join(", ", resolution.Repos)}");
     }
 
     // The manager whose repo actually produced the staged update — apply against this same one.

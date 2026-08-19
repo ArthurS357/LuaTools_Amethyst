@@ -125,7 +125,7 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
                 $"Refused to install {Path.GetFileName(dest)}: the lua {screen.Reason}.");
 
         if (screen.UnrecognizedLines > 0)
-            PluginLog.Log(
+            AppLog.Log(
                 $"lua screen: {Path.GetFileName(dest)} has {screen.UnrecognizedLines} unrecognized line(s) " +
                 "— installed anyway (not a known manifest directive)");
 

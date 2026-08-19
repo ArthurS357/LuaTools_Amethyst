@@ -194,6 +194,8 @@ the staged download and **refuses** it on:
 Things that are **recorded but allowed**, because blocking them would break legitimate fixes: executables
 (a game fix is executables), nested archives, and lua lines that are not recognised manifest directives.
 Every decision is written to `plugin-backend.log`, and a refusal is shown as a toast explaining why.
+(The file keeps that name for continuity — it is the app's only log, not just the plugin bridge's. The
+class behind it is `AppLog`.)
 
 ## Where Modes and the Plugin come from
 
@@ -287,6 +289,24 @@ is deliberately no setting for that. Instead:
 4. **A release with no published digest cannot be verified at all.** GitHub only began populating the
    asset `digest` field in mid-2025, so older releases carry none. The app refuses those rather than
    guessing, with one audited exception (`SteamlessPinnedSha256`, a hash compiled into this build).
+
+## Closing the window leaves LuaTools in the tray
+
+Clicking the window's **X** hides LuaTools to the system tray and leaves it running. The tray icon
+double-clicks to restore, and its right-click menu offers **Open** and **Exit** — **Exit** is the only
+thing that actually quits.
+
+That is the default because the window is not the whole app. LuaTools runs a local HTTP bridge on
+`127.0.0.1:6767` that the Steam store-page plugin talks to; quitting takes it down, and the store-page
+integration then stops answering with nothing on screen to say why. It used to quit, with close-to-tray
+available but switched off by default.
+
+Turn it off under **Settings → Startup → Minimize to System Tray** and the X button quits again. The
+choice is persisted, so this default only decides for anyone who has not expressed one.
+
+One deliberate exception: a headless `luatools://install/silent/<appid>` launch — which any web page can
+trigger — still exits once it has reported the result, unless you have explicitly asked for a tray-resident
+app. It does not leave behind a process you never started.
 
 ## Configuration
 

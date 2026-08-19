@@ -59,7 +59,7 @@ public sealed class InsecureTransportNotice(SettingsService settings, ToastServi
             bool firstTime = _alreadyWarned.TryAdd(host, 0);
             if (!ShouldNotify(settings.InsecureMetadataNotice, alreadyWarnedForKey: !firstTime)) return;
 
-            PluginLog.Log($"privacy: source-availability lookup uses plain HTTP ({host}); " +
+            AppLog.Log($"privacy: source-availability lookup uses plain HTTP ({host}); " +
                           "the requested appid is visible to the network path");
 
             toast.Show(

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -101,7 +101,7 @@
   <data name="Settings_HubcapGetKey" xml:space="preserve"><value>키 발급:</value></data>
   <data name="Settings_HubcapKeyOk" xml:space="preserve"><value>오늘 {0}/{1} 요청</value></data>
   <data name="Settings_HubcapKeyOkExpiry" xml:space="preserve"><value>오늘 {0}/{1} · 만료 {2}</value></data>
-  <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>유효한 키(smm_…)가 아닌 것 같습니다.</value></data>
+  <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>유효한 키가 아닌 것 같습니다.</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>키를 확인할 수 없습니다 — 유효하지 않거나 만료되었거나 Hubcap에 연결할 수 없습니다.</value></data>
   <data name="Settings_HubcapActive" xml:space="preserve"><value>활성</value></data>
   <data name="Settings_HubcapRefresh" xml:space="preserve"><value>새로고침</value></data>

@@ -943,9 +943,14 @@ public partial class App : Application
         // Auto-exit after a silent install only when this was a COLD launch for it (StartupUrl came on the
         // command line, not from an already-running second instance) AND the user doesn't keep a tray app
         // around. Otherwise the app was already living somewhere and must stay.
+        //
+        // WantsResidentTrayApp, not MinimizeToTray: close-to-tray now defaults ON, so the effective setting
+        // reads true for everyone and this condition would never fire again — every silent install a web
+        // page triggered would leave a process and a tray icon the user never asked to start. The explicit
+        // form asks the narrower question this actually needs: did the user CHOOSE to keep the app around.
         _exitAfterSilentInstall = silentStartup
             && Program.StartupUrl is not null
-            && !settingsVm.MinimizeToTray;
+            && !_host.Services.GetRequiredService<SettingsService>().WantsResidentTrayApp;
 
         if (silentStartup)
         {

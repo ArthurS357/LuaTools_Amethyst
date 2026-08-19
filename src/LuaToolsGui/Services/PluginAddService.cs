@@ -91,7 +91,7 @@ public class PluginAddService(
             try { previous.Cts.Cancel(); } catch (ObjectDisposedException) { /* already finished */ }
         }
         _states[appId] = state;
-        PluginLog.Log($"PluginAdd.Start appid={appId} fastFetch={state.FastFetch} guest={auth.IsGuest}");
+        AppLog.Log($"PluginAdd.Start appid={appId} fastFetch={state.FastFetch} guest={auth.IsGuest}");
         _ = Task.Run(() => CheckAsync(appId, state));
     }
 
@@ -100,12 +100,12 @@ public class PluginAddService(
     {
         if (!_states.TryGetValue(appId, out var state))
         {
-            PluginLog.Log($"PluginAdd.Pick appid={appId} source='{sourceName}' -> NO STATE (Start not called?)");
+            AppLog.Log($"PluginAdd.Pick appid={appId} source='{sourceName}' -> NO STATE (Start not called?)");
             return;
         }
         if (state.Busy)
         {
-            PluginLog.Log($"PluginAdd.Pick appid={appId} source='{sourceName}' -> BUSY, ignored");
+            AppLog.Log($"PluginAdd.Pick appid={appId} source='{sourceName}' -> BUSY, ignored");
             return;
         }
         var row = state.Sources.FirstOrDefault(r =>
@@ -113,10 +113,10 @@ public class PluginAddService(
             || string.Equals(r.DisplayName, sourceName, StringComparison.OrdinalIgnoreCase));
         if (row is null)
         {
-            PluginLog.Log($"PluginAdd.Pick appid={appId} source='{sourceName}' -> ROW NOT FOUND. have=[{string.Join(", ", state.Sources.Select(s => s.Name))}]");
+            AppLog.Log($"PluginAdd.Pick appid={appId} source='{sourceName}' -> ROW NOT FOUND. have=[{string.Join(", ", state.Sources.Select(s => s.Name))}]");
             return;
         }
-        PluginLog.Log($"PluginAdd.Pick appid={appId} source='{row.Name}' canDownload={row.CanDownload} needsKey={row.NeedsKey} -> downloading");
+        AppLog.Log($"PluginAdd.Pick appid={appId} source='{row.Name}' canDownload={row.CanDownload} needsKey={row.NeedsKey} -> downloading");
         _ = Task.Run(() => DownloadAsync(appId, state, row));
     }
 
@@ -203,7 +203,7 @@ public class PluginAddService(
                 PublishSources(state, rows, appId);
 
                 var best = rows.FirstOrDefault(r => r.CanDownload);
-                if (best is null) { state.Error = "No available source for this game."; PluginLog.Log($"PluginAdd.Check appid={appId} FastFetch: no downloadable source"); return; }
+                if (best is null) { state.Error = "No available source for this game."; AppLog.Log($"PluginAdd.Check appid={appId} FastFetch: no downloadable source"); return; }
                 await DownloadAsync(appId, state, best);
                 return;
             }
@@ -218,13 +218,13 @@ public class PluginAddService(
         {
             // Superseded by a newer Start for this app. The state object was already replaced, so there is
             // nothing to report to — reporting an error here would surface on the NEW add.
-            PluginLog.Log($"PluginAdd.Check appid={appId} cancelled (superseded)");
+            AppLog.Log($"PluginAdd.Check appid={appId} cancelled (superseded)");
         }
         catch (Exception ex)
         {
             state.Error = ex.Message;
             state.Checking = false;
-            PluginLog.Log($"PluginAdd.Check appid={appId} EXCEPTION: {ex}");
+            AppLog.Log($"PluginAdd.Check appid={appId} EXCEPTION: {ex}");
         }
     }
 
@@ -233,7 +233,7 @@ public class PluginAddService(
         state.Sources = rows;
         state.SourcesLoaded = true;
         state.Checking = false;
-        PluginLog.Log($"PluginAdd.Check appid={appId} sources=[{string.Join(", ", rows.Select(r => $"{r.Name}({r.Status},lock={r.Locked})"))}] fastFetch={state.FastFetch}");
+        AppLog.Log($"PluginAdd.Check appid={appId} sources=[{string.Join(", ", rows.Select(r => $"{r.Name}({r.Status},lock={r.Locked})"))}] fastFetch={state.FastFetch}");
     }
 
     private async Task<string?> SafeGetGameNameAsync(long appId)
@@ -319,7 +319,7 @@ public class PluginAddService(
                 {
                     state.Error = HubcapErrorText.Describe(fetched);
                     state.InstallFailed = true;
-                    PluginLog.Log($"PluginAdd.Download appid={appId} source='{row.Name}' FAILED: {state.Error}");
+                    AppLog.Log($"PluginAdd.Download appid={appId} source='{row.Name}' FAILED: {state.Error}");
                     return;
                 }
                 dl = ok.Value;
@@ -341,7 +341,7 @@ public class PluginAddService(
             {
                 state.Error = result.Error;
                 state.InstallFailed = true;
-                PluginLog.Log($"PluginAdd.Download appid={appId} source='{row.Name}' INSTALL ERROR: {result.Error}");
+                AppLog.Log($"PluginAdd.Download appid={appId} source='{row.Name}' INSTALL ERROR: {result.Error}");
             }
             else
             {
@@ -353,19 +353,19 @@ public class PluginAddService(
                     ? string.Format(Resources.Strings.Add_Status_AddedManifests, name, result.ManifestCount)
                     : string.Format(Resources.Strings.Add_Status_AddedFetch, name);
                 state.InstallStatus += " " + string.Format(Resources.Strings.Add_FastFetch_Via, row.Name);
-                PluginLog.Log($"PluginAdd.Download appid={appId} source='{row.Name}' OK: {state.InstallStatus}");
+                AppLog.Log($"PluginAdd.Download appid={appId} source='{row.Name}' OK: {state.InstallStatus}");
             }
         }
         catch (OperationCanceledException)
         {
             // Superseded add — no install happened, so this is not a failure to report.
-            PluginLog.Log($"PluginAdd.Download appid={appId} source='{row.Name}' cancelled (superseded)");
+            AppLog.Log($"PluginAdd.Download appid={appId} source='{row.Name}' cancelled (superseded)");
         }
         catch (Exception ex)
         {
             state.Error = ex.Message;
             state.InstallFailed = true;
-            PluginLog.Log($"PluginAdd.Download appid={appId} source='{row.Name}' EXCEPTION: {ex}");
+            AppLog.Log($"PluginAdd.Download appid={appId} source='{row.Name}' EXCEPTION: {ex}");
         }
         finally
         {
