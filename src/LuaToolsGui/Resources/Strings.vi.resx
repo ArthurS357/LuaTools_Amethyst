@@ -123,7 +123,7 @@
   <data name="Lang_Changed_Title" xml:space="preserve"><value>Đã thay đổi ngôn ngữ</value></data>
   <data name="Lang_Changed_Body" xml:space="preserve"><value>Khởi động lại ứng dụng để áp dụng ngôn ngữ mới.</value></data>
   <data name="Lang_Changed_Restart" xml:space="preserve"><value>Khởi động lại ngay</value></data>
-  <data name="Home_Welcome" xml:space="preserve"><value>Chào mừng đến với LuaTools</value></data>
+  <data name="Home_Welcome" xml:space="preserve"><value>Chào mừng đến với LuaTools Amethyst</value></data>
   <data name="Home_LuasOnBoard" xml:space="preserve"><value>Lua đã có</value></data>
   <data name="Home_LastAdded" xml:space="preserve"><value>THÊM GẦN NHẤT</value></data>
   <data name="Home_PluginStatus" xml:space="preserve"><value>Trạng thái plugin</value></data>

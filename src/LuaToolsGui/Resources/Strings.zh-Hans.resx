@@ -129,7 +129,7 @@
   <data name="Lang_Changed_Restart" xml:space="preserve"><value>立即重启</value></data>
 
   <!-- ── 主页 ── -->
-  <data name="Home_Welcome" xml:space="preserve"><value>欢迎使用 LuaTools</value></data>
+  <data name="Home_Welcome" xml:space="preserve"><value>欢迎使用 LuaTools Amethyst</value></data>
   <data name="Home_LuasOnBoard" xml:space="preserve"><value>已添加的 Lua</value></data>
   <data name="Home_LastAdded" xml:space="preserve"><value>最近添加</value></data>
   <data name="Home_PluginStatus" xml:space="preserve"><value>插件状态</value></data>

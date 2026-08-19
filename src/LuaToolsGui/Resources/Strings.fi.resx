@@ -123,7 +123,7 @@
   <data name="Lang_Changed_Title" xml:space="preserve"><value>Kieli vaihdettu</value></data>
   <data name="Lang_Changed_Body" xml:space="preserve"><value>Käynnistä sovellus uudelleen ottaaksesi uuden kielen käyttöön.</value></data>
   <data name="Lang_Changed_Restart" xml:space="preserve"><value>Käynnistä nyt uudelleen</value></data>
-  <data name="Home_Welcome" xml:space="preserve"><value>Tervetuloa LuaToolsiin</value></data>
+  <data name="Home_Welcome" xml:space="preserve"><value>Tervetuloa LuaTools Amethystiin</value></data>
   <data name="Home_LuasOnBoard" xml:space="preserve"><value>Lua-tiedostoja</value></data>
   <data name="Home_LastAdded" xml:space="preserve"><value>VIIMEKSI LISÄTTY</value></data>
   <data name="Home_PluginStatus" xml:space="preserve"><value>Laajennuksen tila</value></data>

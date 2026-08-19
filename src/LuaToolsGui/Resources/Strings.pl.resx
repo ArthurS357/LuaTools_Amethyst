@@ -123,7 +123,7 @@
   <data name="Lang_Changed_Title" xml:space="preserve"><value>Zmieniono język</value></data>
   <data name="Lang_Changed_Body" xml:space="preserve"><value>Uruchom ponownie aplikację, aby zastosować nowy język.</value></data>
   <data name="Lang_Changed_Restart" xml:space="preserve"><value>Uruchom ponownie teraz</value></data>
-  <data name="Home_Welcome" xml:space="preserve"><value>Witamy w LuaTools</value></data>
+  <data name="Home_Welcome" xml:space="preserve"><value>Witamy w LuaTools Amethyst</value></data>
   <data name="Home_LuasOnBoard" xml:space="preserve"><value>Lua na pokładzie</value></data>
   <data name="Home_LastAdded" xml:space="preserve"><value>OSTATNIO DODANE</value></data>
   <data name="Home_PluginStatus" xml:space="preserve"><value>Stan wtyczki</value></data>

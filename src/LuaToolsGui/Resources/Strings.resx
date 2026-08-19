@@ -67,6 +67,7 @@
   <data name="Nav_Fixes" xml:space="preserve"><value>Fixes</value></data>
   <data name="Nav_RestartSteam" xml:space="preserve"><value>Restart Steam</value></data>
   <data name="Nav_Settings" xml:space="preserve"><value>Settings</value></data>
+  <data name="Nav_Plugin" xml:space="preserve"><value>Plugin</value></data>
   <data name="Nav_SignInDiscord" xml:space="preserve"><value>Sign in with Discord</value></data>
   <data name="Nav_WaitingForBrowser" xml:space="preserve"><value>Waiting for browser…</value></data>
   <data name="Nav_Footer_Guest" xml:space="preserve"><value>Browsing as Guest</value></data>
@@ -172,7 +173,7 @@ Force it to close? Anything Steam has not saved yet may be lost. Choose No to le
   <data name="Lang_Changed_Restart" xml:space="preserve"><value>Restart now</value></data>
 
   <!-- ── Home ── -->
-  <data name="Home_Welcome" xml:space="preserve"><value>Welcome to LuaTools</value></data>
+  <data name="Home_Welcome" xml:space="preserve"><value>Welcome to LuaTools Amethyst</value></data>
   <data name="Home_LuasOnBoard" xml:space="preserve"><value>Luas on board</value></data>
   <data name="Home_LastAdded" xml:space="preserve"><value>LAST ADDED</value></data>
   <data name="Home_PluginStatus" xml:space="preserve"><value>Plugin Status</value></data>

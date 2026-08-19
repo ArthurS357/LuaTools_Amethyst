@@ -64,6 +64,10 @@ PENDING_TRANSLATION: frozenset[str] = frozenset({
     "Theme_Guard_Body",
     # The product name. Deliberately English everywhere — a product name is not translated.
     "App_DisplayName",
+    # The nav rail's Plugin entry. It was a hardcoded English literal in MainWindow.xaml while every
+    # other rail item read from a resource — so a translated UI had exactly one English word in the
+    # first thing the user looks at. It is a key now; the value is still English pending translation.
+    "Nav_Plugin",
     # Refusal message from the fix/manifest safety screen (FixAnalyzer).
     "Fixes_Toast_Blocked",
     "Fixes_Toast_Blocked_Body",

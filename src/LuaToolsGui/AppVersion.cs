@@ -16,10 +16,10 @@ namespace LuaToolsGui;
 /// </summary>
 internal static class AppVersion
 {
-    /// <summary>e.g. <c>"1.5.1"</c>. The <c>+commit</c> suffix the SDK appends is trimmed.</summary>
+    /// <summary>e.g. <c>"1.5.2"</c>. The <c>+commit</c> suffix the SDK appends is trimmed.</summary>
     public static string Current { get; } = Read();
 
-    /// <summary>What outbound HTTP identifies this app as, e.g. <c>"LuaToolsAmethyst/1.5.1"</c>.
+    /// <summary>What outbound HTTP identifies this app as, e.g. <c>"LuaToolsAmethyst/1.5.2"</c>.
     /// A request with no User-Agent is indistinguishable from a scraper at the far end; naming the fork
     /// and its version also means a server-side problem can be tied to a specific build.</summary>
     public static string UserAgent { get; } = $"LuaToolsAmethyst/{Current}";

@@ -28,6 +28,7 @@ public static class Strings
     public static string Nav_Fixes => Get(nameof(Nav_Fixes));
     public static string Nav_RestartSteam => Get(nameof(Nav_RestartSteam));
     public static string Nav_Settings => Get(nameof(Nav_Settings));
+    public static string Nav_Plugin => Get(nameof(Nav_Plugin));
     public static string Nav_SignInDiscord => Get(nameof(Nav_SignInDiscord));
     public static string Nav_WaitingForBrowser => Get(nameof(Nav_WaitingForBrowser));
     public static string Nav_Footer_Guest => Get(nameof(Nav_Footer_Guest));

@@ -129,7 +129,7 @@
   <data name="Lang_Changed_Restart" xml:space="preserve"><value>أعد التشغيل الآن</value></data>
 
   <!-- ── Home ── -->
-  <data name="Home_Welcome" xml:space="preserve"><value>مرحبًا بك في LuaTools</value></data>
+  <data name="Home_Welcome" xml:space="preserve"><value>مرحبًا بك في LuaTools Amethyst</value></data>
   <data name="Home_LuasOnBoard" xml:space="preserve"><value>ملفات Lua المتوفرة</value></data>
   <data name="Home_LastAdded" xml:space="preserve"><value>آخر ما أُضيف</value></data>
   <data name="Home_PluginStatus" xml:space="preserve"><value>حالة الإضافة</value></data>

@@ -123,7 +123,7 @@
   <data name="Lang_Changed_Title" xml:space="preserve"><value>Nyelv megváltozott</value></data>
   <data name="Lang_Changed_Body" xml:space="preserve"><value>Indítsd újra az alkalmazást az új nyelv alkalmazásához.</value></data>
   <data name="Lang_Changed_Restart" xml:space="preserve"><value>Újraindítás most</value></data>
-  <data name="Home_Welcome" xml:space="preserve"><value>Üdvözöl a LuaTools</value></data>
+  <data name="Home_Welcome" xml:space="preserve"><value>Üdvözöl a LuaTools Amethyst</value></data>
   <data name="Home_LuasOnBoard" xml:space="preserve"><value>Hozzáadott Luák</value></data>
   <data name="Home_LastAdded" xml:space="preserve"><value>UTOLJÁRA HOZZÁADVA</value></data>
   <data name="Home_PluginStatus" xml:space="preserve"><value>Bővítmény állapota</value></data>

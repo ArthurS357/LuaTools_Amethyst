@@ -1,7 +1,7 @@
 namespace LuaToolsGui.Resources;
 
 /// <summary>One released version and what changed in it.</summary>
-/// <param name="Version">Bare version, e.g. "1.5.1" — matches <c>AppVersion.Current</c> for this build.</param>
+/// <param name="Version">Bare version, e.g. "1.5.2" — matches <c>AppVersion.Current</c> for this build.</param>
 /// <param name="Released">Release date, ISO-formatted for display.</param>
 /// <param name="Summary">One line on the theme of the release.</param>
 /// <param name="Highlights">The handful of changes worth surfacing in-app.</param>
@@ -29,6 +29,17 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.5.2", "2026-08-19",
+            "Closing the window sends LuaTools to the tray instead of killing it, plus the follow-ups that were outstanding.",
+            [
+                "The window's X now hides LuaTools in the system tray and leaves it running — the Steam plugin's local bridge no longer dies with the window.",
+                "Quit from the tray icon's Exit; double-click or Open restores the window. Turn the whole behaviour off under Settings → Startup.",
+                "A silent install triggered by a web page still exits when it is done, so it leaves no process behind you never started.",
+                "Hubcap no longer refuses a key by naming a key format it does not actually require.",
+                "The Home greeting and the navigation rail now name this build correctly and read every label from the translations.",
+                "Internal: the tray rule moved out of the window into a tested service, and API models are immutable once parsed.",
+            ]),
+
         new("1.5.1", "2026-08-18",
             "A launch sequence that explains itself, a working Discord sign-in, and an accent switch that repaints.",
             [
@@ -39,9 +50,6 @@ public static class Changelog
                 "A colour retints the whole app — window, cards, borders and text — not only the highlights.",
                 "Games can be removed from the Depots list, clearing their lua files and stored builds.",
                 "Hubcap: a warning before the key expires, a masked key field, and a looser key-format check.",
-                "Closing the window now keeps LuaTools in the system tray, so the Steam plugin's local bridge stays up. Quit from the tray's Exit.",
-                "The tray icon names this build and offers Open and Exit; double-click restores the window.",
-                "Hubcap no longer refuses a key by naming a format it does not require.",
             ]),
 
         new("1.5.0", "2026-08-18",

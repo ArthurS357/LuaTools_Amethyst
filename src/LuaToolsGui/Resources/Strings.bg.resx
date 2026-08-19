@@ -123,7 +123,7 @@
   <data name="Lang_Changed_Title" xml:space="preserve"><value>Езикът е променен</value></data>
   <data name="Lang_Changed_Body" xml:space="preserve"><value>Рестартирайте приложението, за да приложите новия език.</value></data>
   <data name="Lang_Changed_Restart" xml:space="preserve"><value>Рестартиране сега</value></data>
-  <data name="Home_Welcome" xml:space="preserve"><value>Добре дошли в LuaTools</value></data>
+  <data name="Home_Welcome" xml:space="preserve"><value>Добре дошли в LuaTools Amethyst</value></data>
   <data name="Home_LuasOnBoard" xml:space="preserve"><value>Lua на борда</value></data>
   <data name="Home_LastAdded" xml:space="preserve"><value>ПОСЛЕДНО ДОБАВЕНО</value></data>
   <data name="Home_PluginStatus" xml:space="preserve"><value>Състояние на плъгина</value></data>
