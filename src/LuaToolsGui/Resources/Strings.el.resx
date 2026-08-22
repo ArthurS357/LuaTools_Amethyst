@@ -495,4 +495,8 @@
   <data name="Launch_Drift_Title" xml:space="preserve"><value>Οι επιλογές εκκίνησης επαναφέρθηκαν</value></data>
   <data name="Launch_Drift_Body" xml:space="preserve"><value>Το Steam αντικατέστησε τις επιλογές εκκίνησης για {0} παιχνίδι(α). Η εκ νέου εφαρμογή κλείνει και ανοίγει ξανά το Steam.</value></data>
   <data name="Launch_Drift_Action" xml:space="preserve"><value>Εφαρμογή ξανά</value></data>
+  <data name="Settings_Accent" xml:space="preserve"><value>Χρώμα έμφασης</value></data>
+  <data name="Settings_Accent_Green" xml:space="preserve"><value>Πράσινο</value></data>
+  <data name="Settings_Accent_Red" xml:space="preserve"><value>Κόκκινο</value></data>
+  <data name="Settings_Accent_Apply" xml:space="preserve"><value>Εφαρμογή</value></data>
 </root>

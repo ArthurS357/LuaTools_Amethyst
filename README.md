@@ -420,6 +420,31 @@ failed; nothing downstream should run.
 This produces the **binary only**. Packaging it into an installer is a separate `vpk pack` step and is
 deliberately not part of the script.
 
+### Code signing (optional)
+
+`build-release.ps1` signs `LuaTools.exe` with `signtool.exe` when a certificate is configured, and skips
+signing with a warning when it isn't — releases build unsigned by default, exactly as before this existed.
+
+Set both environment variables before running the script; neither is a script parameter, so a value never
+lands in shell history or a CI job's recorded command line:
+
+```powershell
+$env:CERTIFICATE_PATH = 'C:\path\to\certificate.pfx'
+$env:CERTIFICATE_PASSWORD = 'the PFX password'
+.\scripts\build-release.ps1
+```
+
+Requires `signtool.exe` (from the Windows SDK) on `PATH`, or installed at its default location under
+`C:\Program Files (x86)\Windows Kits\10\bin`. If a certificate is configured but `signtool.exe` cannot be
+found, the script **fails** rather than shipping an unsigned binary silently — a certificate being set is
+read as "this build must be signed."
+
+The certificate itself is never committed, logged, or read from a repository file — CI should supply both
+variables from its own secret store (e.g. a GitHub Actions encrypted secret), scoped to the release job
+only. `signtool sign` takes the PFX password on its own command line; that is the one place the secret is
+visible, for the duration of that single call, and is a limitation of `signtool` itself rather than
+something this script adds.
+
 ### Repository layout
 
 ```

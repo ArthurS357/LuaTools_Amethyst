@@ -301,6 +301,22 @@
     <Color x:Key="ApplicationBackgroundColor">#0E0B14</Color>
     <SolidColorBrush x:Key="ApplicationBackgroundBrush" Color="{DynamicResource ApplicationBackgroundColor}" />
 
+    <!-- NavigationView paints its OWN content-area background from this key — NOT from
+         ApplicationBackgroundBrush above, despite both governing "the window". WPF-UI ships it as a
+         translucent grey wash (#4C3A3A3A) with no Color counterpart (brush-only, like CardBackground
+         below), so it sat untouched by every override in this file and by RepaintTonalResources, and the
+         nav content area stayed grey while the rest of the shell went violet. Opaque, matching the window
+         background exactly, rather than a translucent tint over it — one continuous surface, no seam
+         where the pane's own fill meets the root Grid's SurfaceBaseBrush around it. Same WCAG floor as
+         TextPrimaryBrush-on-SurfaceBase applies here (see the accessibility table at the top of this
+         file): 17.2:1 AAA, since the underlying colour is identical.
+         Also brush-only, no Color counterpart: the nav item label/icon colour. WPF-UI ships pure white
+         (#FFFFFFFF) here — off the token system even though its contrast is fine — so it does not move
+         when the accent's neutral ramp does (e.g. picking Emerald left the nav rail's own text white
+         while every other TextPrimary went to Moss50). -->
+    <SolidColorBrush x:Key="NavigationViewContentBackground" Color="{DynamicResource ApplicationBackgroundColor}" />
+    <SolidColorBrush x:Key="NavigationViewItemForeground" Color="{DynamicResource Plum50Color}" />
+
     <Color x:Key="SolidBackgroundFillColorBase">#0E0B14</Color>
     <SolidColorBrush x:Key="SolidBackgroundFillColorBaseBrush" Color="{DynamicResource SolidBackgroundFillColorBase}" />
     <Color x:Key="SolidBackgroundFillColorBaseAlt">#07050C</Color>

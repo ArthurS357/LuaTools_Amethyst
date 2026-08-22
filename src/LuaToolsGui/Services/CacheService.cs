@@ -37,6 +37,11 @@ public class CacheData
     // True once the user has been told what enabling Steam's remote-debugging bridge means and agreed to
     // it. Null/false = never asked or declined; the marker junction is not created in that case.
     public bool? CdpConsentGranted { get; set; }
+
+    // ── Hubcap manifest freshness tracking ───────────────────────────
+    // appid (string) → the source's `file_modified` marker at the time we last downloaded that appid's
+    // manifest via Hubcap. An opaque change token, not a parsed date — see ManifestFreshnessPolicy for why.
+    public Dictionary<string, string> InstalledManifestFileModified { get; set; } = [];
 }
 
 /// <summary>
@@ -182,6 +187,25 @@ public sealed class CacheService
         set { _cache.CdpConsentGranted = value; Save(); }
     }
 
+    // ── Hubcap manifest freshness tracking ───────────────────────────
+
+    /// <summary>The `file_modified` token recorded for this appid's last Hubcap download, or null if
+    /// nothing is on record. Feeds <see cref="ManifestFreshnessPolicy.IsStale"/>.</summary>
+    public string? GetInstalledManifestFileModified(string appid)
+    {
+        lock (SaveLock) return _cache.InstalledManifestFileModified.GetValueOrDefault(appid);
+    }
+
+    /// <summary>Record the `file_modified` token describing what was just downloaded for this appid.</summary>
+    public void SaveInstalledManifestFileModified(string appid, string fileModified)
+    {
+        lock (SaveLock)
+        {
+            _cache.InstalledManifestFileModified[appid] = fileModified;
+            SaveCore();
+        }
+    }
+
     private void Load()
     {
         try
@@ -218,7 +242,8 @@ public sealed class CacheService
             && _cache.HardwareAppIdsFetchedAtMs == 0
             && _cache.LoadedAppIds.Count == 0
             && !_cache.OnboardingComplete
-            && _cache.CdpConsentGranted is null;
+            && _cache.CdpConsentGranted is null
+            && _cache.InstalledManifestFileModified.Count == 0;
         if (empty)
         {
             foreach (string p in new[] { _filePath, _tmpPath })

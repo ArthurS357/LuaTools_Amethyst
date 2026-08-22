@@ -495,4 +495,8 @@
   <data name="Launch_Drift_Title" xml:space="preserve"><value>Опциите за стартиране бяха нулирани</value></data>
   <data name="Launch_Drift_Body" xml:space="preserve"><value>Steam е презаписал опциите ви за стартиране за {0} игри. Повторното прилагане затваря и отваря отново Steam.</value></data>
   <data name="Launch_Drift_Action" xml:space="preserve"><value>Приложи отново</value></data>
+  <data name="Settings_Accent" xml:space="preserve"><value>Цвят на акцента</value></data>
+  <data name="Settings_Accent_Green" xml:space="preserve"><value>Зелено</value></data>
+  <data name="Settings_Accent_Red" xml:space="preserve"><value>Червено</value></data>
+  <data name="Settings_Accent_Apply" xml:space="preserve"><value>Приложи</value></data>
 </root>

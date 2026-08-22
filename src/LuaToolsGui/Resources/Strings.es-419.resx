@@ -495,4 +495,8 @@ Esto borra los archivos .lua de Steam\config\stplug-in. Reinicia Steam después 
   <data name="Launch_Drift_Title" xml:space="preserve"><value>Se restablecieron las opciones de inicio</value></data>
   <data name="Launch_Drift_Body" xml:space="preserve"><value>Steam sobrescribió tus opciones de inicio de {0} juego(s). Volver a aplicarlas cierra y reabre Steam.</value></data>
   <data name="Launch_Drift_Action" xml:space="preserve"><value>Volver a aplicar</value></data>
+  <data name="Settings_Accent" xml:space="preserve"><value>Color de acento</value></data>
+  <data name="Settings_Accent_Green" xml:space="preserve"><value>Verde</value></data>
+  <data name="Settings_Accent_Red" xml:space="preserve"><value>Rojo</value></data>
+  <data name="Settings_Accent_Apply" xml:space="preserve"><value>Aplicar</value></data>
 </root>

@@ -269,6 +269,35 @@ public sealed class PersistenceTests : IDisposable
     }
 
     [Fact]
+    public void Installed_manifest_file_modified_survives_a_reload()
+    {
+        var cache = new CacheService(_dir);
+        cache.SaveInstalledManifestFileModified("730", "2026-08-12T19:50:56.089457");
+
+        new CacheService(_dir).GetInstalledManifestFileModified("730")
+            .Should().Be("2026-08-12T19:50:56.089457");
+    }
+
+    [Fact]
+    public void Installed_manifest_file_modified_is_null_when_never_recorded()
+    {
+        var cache = new CacheService(_dir);
+
+        cache.GetInstalledManifestFileModified("730").Should().BeNull();
+    }
+
+    [Fact]
+    public void Installed_manifest_file_modified_tracks_multiple_appids_independently()
+    {
+        var cache = new CacheService(_dir);
+        cache.SaveInstalledManifestFileModified("730", "2026-08-12T19:50:56.089457");
+        cache.SaveInstalledManifestFileModified("386940", "2026-08-01T00:00:00.000000");
+
+        cache.GetInstalledManifestFileModified("730").Should().Be("2026-08-12T19:50:56.089457");
+        cache.GetInstalledManifestFileModified("386940").Should().Be("2026-08-01T00:00:00.000000");
+    }
+
+    [Fact]
     public void Settings_and_cache_do_not_share_a_file()
     {
         var settings = new SettingsService(_dir) { SelectedMode = "SteamTools" };

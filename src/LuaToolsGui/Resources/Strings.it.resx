@@ -495,4 +495,8 @@ Questo elimina i file .lua da Steam\config\stplug-in. Riavvia Steam in seguito a
   <data name="Launch_Drift_Title" xml:space="preserve"><value>Le opzioni di avvio sono state reimpostate</value></data>
   <data name="Launch_Drift_Body" xml:space="preserve"><value>Steam ha sovrascritto le tue opzioni di avvio per {0} gioco/giochi. Riapplicarle chiude e riapre Steam.</value></data>
   <data name="Launch_Drift_Action" xml:space="preserve"><value>Riapplica</value></data>
+  <data name="Settings_Accent" xml:space="preserve"><value>Colore accento</value></data>
+  <data name="Settings_Accent_Green" xml:space="preserve"><value>Verde</value></data>
+  <data name="Settings_Accent_Red" xml:space="preserve"><value>Rosso</value></data>
+  <data name="Settings_Accent_Apply" xml:space="preserve"><value>Applica</value></data>
 </root>

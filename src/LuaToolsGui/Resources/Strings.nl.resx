@@ -495,4 +495,8 @@ Dit verwijdert de .lua-bestanden uit Steam\config\stplug-in. Herstart Steam daar
   <data name="Launch_Drift_Title" xml:space="preserve"><value>Opstartopties zijn teruggezet</value></data>
   <data name="Launch_Drift_Body" xml:space="preserve"><value>Steam heeft je opstartopties voor {0} game(s) overschreven. Opnieuw toepassen sluit Steam af en opent het weer.</value></data>
   <data name="Launch_Drift_Action" xml:space="preserve"><value>Opnieuw toepassen</value></data>
+  <data name="Settings_Accent" xml:space="preserve"><value>Accentkleur</value></data>
+  <data name="Settings_Accent_Green" xml:space="preserve"><value>Groen</value></data>
+  <data name="Settings_Accent_Red" xml:space="preserve"><value>Rood</value></data>
+  <data name="Settings_Accent_Apply" xml:space="preserve"><value>Toepassen</value></data>
 </root>

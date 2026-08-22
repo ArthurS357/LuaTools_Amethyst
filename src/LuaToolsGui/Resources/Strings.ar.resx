@@ -521,4 +521,8 @@
   <data name="Launch_Drift_Title" xml:space="preserve"><value>أُعيد ضبط خيارات التشغيل</value></data>
   <data name="Launch_Drift_Body" xml:space="preserve"><value>استبدل Steam خيارات التشغيل الخاصة بك لـ {0} لعبة. إعادة التطبيق تُغلق Steam ثم تعيد فتحه.</value></data>
   <data name="Launch_Drift_Action" xml:space="preserve"><value>إعادة التطبيق</value></data>
+  <data name="Settings_Accent" xml:space="preserve"><value>لون التمييز</value></data>
+  <data name="Settings_Accent_Green" xml:space="preserve"><value>أخضر</value></data>
+  <data name="Settings_Accent_Red" xml:space="preserve"><value>أحمر</value></data>
+  <data name="Settings_Accent_Apply" xml:space="preserve"><value>تطبيق</value></data>
 </root>

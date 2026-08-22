@@ -495,4 +495,8 @@ Tím se smažou soubory .lua ze Steam\config\stplug-in. Poté restartujte Steam,
   <data name="Launch_Drift_Title" xml:space="preserve"><value>Možnosti spuštění byly resetovány</value></data>
   <data name="Launch_Drift_Body" xml:space="preserve"><value>Steam přepsal vaše možnosti spuštění u {0} her. Opětovné použití zavře a znovu otevře Steam.</value></data>
   <data name="Launch_Drift_Action" xml:space="preserve"><value>Použít znovu</value></data>
+  <data name="Settings_Accent" xml:space="preserve"><value>Barva zvýraznění</value></data>
+  <data name="Settings_Accent_Green" xml:space="preserve"><value>Zelená</value></data>
+  <data name="Settings_Accent_Red" xml:space="preserve"><value>Červená</value></data>
+  <data name="Settings_Accent_Apply" xml:space="preserve"><value>Použít</value></data>
 </root>

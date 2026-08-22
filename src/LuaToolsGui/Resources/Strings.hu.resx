@@ -495,4 +495,8 @@ Ez törli a .lua fájlokat a Steam\config\stplug-in mappából. Ezután indítsd
   <data name="Launch_Drift_Title" xml:space="preserve"><value>Az indítási beállítások visszaálltak</value></data>
   <data name="Launch_Drift_Body" xml:space="preserve"><value>A Steam felülírta az indítási beállításaidat {0} játéknál. Az ismételt alkalmazás bezárja és újra megnyitja a Steamet.</value></data>
   <data name="Launch_Drift_Action" xml:space="preserve"><value>Alkalmazás újra</value></data>
+  <data name="Settings_Accent" xml:space="preserve"><value>Kiemelő szín</value></data>
+  <data name="Settings_Accent_Green" xml:space="preserve"><value>Zöld</value></data>
+  <data name="Settings_Accent_Red" xml:space="preserve"><value>Piros</value></data>
+  <data name="Settings_Accent_Apply" xml:space="preserve"><value>Alkalmazás</value></data>
 </root>

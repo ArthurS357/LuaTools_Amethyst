@@ -99,4 +99,62 @@ Write-Host 'Publish succeeded.' -ForegroundColor Green
 Write-Host "Artifact : $artifact"
 Write-Host "Size     : $sizeMb MB"
 Write-Host "Folder   : $publishDir"
+
+# ── Optional code signing ────────────────────────────────────────────────
+# Reads the certificate from environment variables rather than a parameter, so a value never ends up in
+# shell history or a CI job's recorded invocation. Signing is OPT-IN: leave either variable unset and this
+# produces the same unsigned artifact the script always has, with a warning saying so rather than a
+# silent skip — see README, "Code signing", for how to configure both.
+$certPath = $env:CERTIFICATE_PATH
+$certPassword = $env:CERTIFICATE_PASSWORD
+
+if ([string]::IsNullOrEmpty($certPath) -or [string]::IsNullOrEmpty($certPassword)) {
+    Write-Warning ('CERTIFICATE_PATH / CERTIFICATE_PASSWORD not set - publishing UNSIGNED. ' +
+        'See README, "Code signing", to sign this artifact before packaging it with Velopack.')
+} else {
+    if (-not (Test-Path -LiteralPath $certPath -PathType Leaf)) {
+        Fail "CERTIFICATE_PATH is set but does not point at a file: $certPath"
+    }
+
+    $signtool = Get-Command signtool.exe -ErrorAction SilentlyContinue
+    if (-not $signtool) {
+        # Not on PATH by default even with the Windows SDK installed - check the usual install location
+        # before giving up, since most machines that can sign at all have it there.
+        $sdkBinRoot = 'C:\Program Files (x86)\Windows Kits\10\bin'
+        if (Test-Path -LiteralPath $sdkBinRoot) {
+            $found = Get-ChildItem -LiteralPath $sdkBinRoot -Directory -ErrorAction SilentlyContinue |
+                Sort-Object Name -Descending |
+                ForEach-Object { Join-Path $_.FullName 'x64\signtool.exe' } |
+                Where-Object { Test-Path -LiteralPath $_ -PathType Leaf } |
+                Select-Object -First 1
+            if ($found) { $signtool = Get-Item -LiteralPath $found }
+        }
+    }
+
+    if (-not $signtool) {
+        # A certificate was explicitly configured, so the caller asked for a signed build. Falling back to
+        # an unsigned artifact here would silently hand out exactly what setting the certificate exists to
+        # prevent - this has to stop the release, not warn and continue.
+        Fail ('CERTIFICATE_PATH is set but signtool.exe was not found (not on PATH, not under the ' +
+            'Windows 10 SDK default install location). Install the Windows SDK, or add signtool.exe to PATH.')
+    }
+
+    Write-Host ''
+    Write-Host "Signing  : $artifact"
+    # /p takes the password on signtool's own command line - there is no PFX-password alternative to that
+    # in signtool itself, so this is the one channel the secret is visible through, and only for the
+    # duration of this call. Never echoed, logged, or otherwise persisted by this script.
+    & $signtool.Source sign /f $certPath /p $certPassword /fd sha256 /tr http://timestamp.digicert.com /td sha256 $artifact
+    if ($LASTEXITCODE -ne 0) {
+        Fail "signtool sign failed with exit code $LASTEXITCODE."
+    }
+
+    & $signtool.Source verify /pa $artifact
+    if ($LASTEXITCODE -ne 0) {
+        Fail "Signed, but signtool could not verify the signature afterward (exit code $LASTEXITCODE)."
+    }
+
+    Write-Host 'Signed and verified.' -ForegroundColor Green
+}
+
 exit 0

@@ -495,4 +495,8 @@ Bu işlem, .lua dosyalarını Steam\config\stplug-in konumundan siler. Değişik
   <data name="Launch_Drift_Title" xml:space="preserve"><value>Başlatma seçenekleri sıfırlandı</value></data>
   <data name="Launch_Drift_Body" xml:space="preserve"><value>Steam, {0} oyun için başlatma seçeneklerinizin üzerine yazdı. Yeniden uygulamak Steam'i kapatıp açar.</value></data>
   <data name="Launch_Drift_Action" xml:space="preserve"><value>Yeniden uygula</value></data>
+  <data name="Settings_Accent" xml:space="preserve"><value>Vurgu rengi</value></data>
+  <data name="Settings_Accent_Green" xml:space="preserve"><value>Yeşil</value></data>
+  <data name="Settings_Accent_Red" xml:space="preserve"><value>Kırmızı</value></data>
+  <data name="Settings_Accent_Apply" xml:space="preserve"><value>Uygula</value></data>
 </root>

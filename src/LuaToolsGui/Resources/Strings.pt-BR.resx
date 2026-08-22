@@ -495,4 +495,8 @@ Isso exclui os arquivos .lua de Steam\config\stplug-in. Reinicie o Steam depois 
   <data name="Launch_Drift_Title" xml:space="preserve"><value>As opções de inicialização foram redefinidas</value></data>
   <data name="Launch_Drift_Body" xml:space="preserve"><value>O Steam sobrescreveu suas opções de inicialização de {0} jogo(s). Aplicar de novo fecha e reabre o Steam.</value></data>
   <data name="Launch_Drift_Action" xml:space="preserve"><value>Aplicar de novo</value></data>
+  <data name="Settings_Accent" xml:space="preserve"><value>Cor de destaque</value></data>
+  <data name="Settings_Accent_Green" xml:space="preserve"><value>Verde</value></data>
+  <data name="Settings_Accent_Red" xml:space="preserve"><value>Vermelho</value></data>
+  <data name="Settings_Accent_Apply" xml:space="preserve"><value>Aplicar</value></data>
 </root>

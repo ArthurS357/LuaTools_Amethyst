@@ -117,14 +117,16 @@ PENDING_TRANSLATION: frozenset[str] = frozenset({
     "Hubcap_Wait_Seconds",
     "Hubcap_Wait_Minutes",
     "Hubcap_Wait_Hours",
-    # Accent-colour picker added in 1.5.0. "Amethyst" is a product name and stays English everywhere; the
-    # other four are ordinary UI copy awaiting translation.
-    "Settings_Accent",
-    "Settings_Accent_Hint",
+    # Accent-colour picker added in 1.5.0. "Amethyst" is a product name and stays English everywhere.
+    # The label, "Green"/"Red" and "Apply" were translated in the 1.5.2 follow-up pass — short,
+    # unambiguous UI copy, each derived from the app's OWN existing translation of the same verb/colour
+    # elsewhere in that language file (e.g. "Apply" from Launch_Drift_Action), not invented from scratch.
     "Settings_Accent_Amethyst",
-    "Settings_Accent_Green",
-    "Settings_Accent_Red",
-    "Settings_Accent_Apply",
+    # NOT translated in that pass, deliberately: this is a full explanatory sentence ("Retints the whole
+    # app — window, cards and text, not just the highlights..."), not a short label, and idiomatic
+    # phrasing like that is exactly where a translation done without native review is most likely to read
+    # as wrong. Leave it pending until a native speaker (or a dedicated localisation pass) can check it.
+    "Settings_Accent_Hint",
     # Startup Steam flow: close Steam, run setup only when there is setup to do, offer Steam back.
     # Replaces a launch that left Steam up and restarted it from inside whichever installer ran.
     "Startup_Title",

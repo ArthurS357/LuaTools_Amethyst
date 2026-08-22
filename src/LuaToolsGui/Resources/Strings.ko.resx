@@ -495,4 +495,8 @@
   <data name="Launch_Drift_Title" xml:space="preserve"><value>실행 옵션이 초기화되었습니다</value></data>
   <data name="Launch_Drift_Body" xml:space="preserve"><value>Steam이 게임 {0}개의 실행 옵션을 덮어썼습니다. 다시 적용하면 Steam이 종료된 뒤 다시 열립니다.</value></data>
   <data name="Launch_Drift_Action" xml:space="preserve"><value>다시 적용</value></data>
+  <data name="Settings_Accent" xml:space="preserve"><value>강조 색상</value></data>
+  <data name="Settings_Accent_Green" xml:space="preserve"><value>초록</value></data>
+  <data name="Settings_Accent_Red" xml:space="preserve"><value>빨강</value></data>
+  <data name="Settings_Accent_Apply" xml:space="preserve"><value>적용</value></data>
 </root>

@@ -247,6 +247,12 @@ public sealed record AccentPalette(
         map.Remove("ApplicationBackgroundColorBrush");
         map["ApplicationBackgroundBrush"] = surfaceBase;
 
+        // NavigationView's own content background — a distinct key from ApplicationBackgroundBrush above
+        // (see the comment on it in Colors.xaml). Without this an accent switch reached every surface
+        // except the one behind the nav rail and pages, which stayed on whichever accent applied first.
+        map["NavigationViewContentBackground"] = surfaceBase;
+        map["NavigationViewItemForeground"] = resolve.Color(Neutrals.TextPrimaryKey);
+
         return map;
     }
 

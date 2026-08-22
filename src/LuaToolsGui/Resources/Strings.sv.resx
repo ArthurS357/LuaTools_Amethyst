@@ -495,4 +495,8 @@ Detta tar bort .lua-filerna från Steam\config\stplug-in. Starta om Steam efter�
   <data name="Launch_Drift_Title" xml:space="preserve"><value>Startalternativen återställdes</value></data>
   <data name="Launch_Drift_Body" xml:space="preserve"><value>Steam har skrivit över dina startalternativ för {0} spel. Att tillämpa dem igen stänger och öppnar Steam.</value></data>
   <data name="Launch_Drift_Action" xml:space="preserve"><value>Tillämpa igen</value></data>
+  <data name="Settings_Accent" xml:space="preserve"><value>Accentfärg</value></data>
+  <data name="Settings_Accent_Green" xml:space="preserve"><value>Grön</value></data>
+  <data name="Settings_Accent_Red" xml:space="preserve"><value>Röd</value></data>
+  <data name="Settings_Accent_Apply" xml:space="preserve"><value>Tillämpa</value></data>
 </root>

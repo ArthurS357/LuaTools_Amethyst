@@ -20,7 +20,9 @@ public partial class SourceRowViewModel : ObservableObject
     public string? DiscordUrl { get; }
     public bool NeedsKey { get; }
 
-    public bool IsAvailable => Status == "available";
+    /// <summary>"outdated" is a Hubcap manifest that exists but was rebuilt since ours was downloaded —
+    /// still downloadable (that's the point of flagging it), just not "current".</summary>
+    public bool IsAvailable => Status is "available" or "outdated";
     public string StatusLabel => Status.ToUpperInvariant();
 
     /// <summary>Hide the status badge when availability is unknown (e.g. a Hubcap row with no key set —
@@ -81,6 +83,7 @@ public partial class DownloadViewModel : ObservableObject
     private readonly SteamAppInfoCache _appInfo;
     private readonly SteamDepotInfo _depotInfo;
     private readonly HardwareAppIdService _hardware;
+    private readonly CacheService _cache;
     private CancellationTokenSource? _searchCts;
     private CancellationTokenSource? _detailsCts;
 
@@ -309,7 +312,7 @@ public partial class DownloadViewModel : ObservableObject
     public DownloadViewModel(LuaToolsApiClient api, HubcapService hubcap, SettingsService settings,
         AuthService auth, ToastService toast, LuaInstaller installer,
         SteamAppListCache appList, SteamAppInfoCache appInfo, SteamDepotInfo depotInfo,
-        HardwareAppIdService hardware, DropInstallViewModel drop)
+        HardwareAppIdService hardware, DropInstallViewModel drop, CacheService cache)
     {
         _api = api;
         _hubcap = hubcap;
@@ -322,6 +325,7 @@ public partial class DownloadViewModel : ObservableObject
         _depotInfo = depotInfo;
         _hardware = hardware;
         Drop = drop;
+        _cache = cache;
         _fastFetch = settings.FastFetch;
     }
 
@@ -600,6 +604,8 @@ public partial class DownloadViewModel : ObservableObject
         var status = await _hubcap.CheckStatusAsync(key, appid, ct);
         statuses[HubcapSourceName] = status switch
         {
+            HubcapResult<HubcapManifestStatus>.Ok { Value.ManifestFileExists: true } ok when
+                ManifestFreshnessPolicy.IsStale(_cache.GetInstalledManifestFileModified(appid), ok.Value) => "outdated",
             HubcapResult<HubcapManifestStatus>.Ok { Value.ManifestFileExists: true } => "available",
             HubcapResult<HubcapManifestStatus>.Ok or HubcapResult<HubcapManifestStatus>.NotFound => "unavailable",
             // Hubcap didn't answer, or answered with a fault. "unavailable" would be a claim we can't
@@ -697,14 +703,22 @@ public partial class DownloadViewModel : ObservableObject
             DownloadedFile download;
             if (source.NeedsKey)
             {
+                string appidStr = appId.ToString();
+                // Peek BEFORE downloading: a successful download invalidates this entry (HubcapService),
+                // and this is our only chance to record what "current" meant at download time.
+                string? fileModified = _hubcap.PeekCachedFileModified(appidStr);
                 var result = await _hubcap.DownloadManifestAsync(
-                    appId.ToString(), _settings.HubcapApiKey ?? "", progress, ct);
+                    appidStr, _settings.HubcapApiKey ?? "", progress, ct);
                 if (result is not HubcapResult<DownloadedFile>.Ok ok)
                 {
                     Error = HubcapErrorText.Describe(result);
                     return;
                 }
                 download = ok.Value;
+                // Only record a real marker — leaving no record (rather than an unknown/null one) keeps
+                // ManifestFreshnessPolicy from guessing at staleness until the next status check confirms it.
+                if (fileModified is not null)
+                    _cache.SaveInstalledManifestFileModified(appidStr, fileModified);
             }
             else
             {

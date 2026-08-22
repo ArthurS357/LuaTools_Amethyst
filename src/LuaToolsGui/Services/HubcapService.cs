@@ -296,6 +296,15 @@ public partial class HubcapService
     /// available to callers that have other reason to believe the answer moved.</summary>
     public void InvalidateStatus(string appid) => _statusCache.TryRemove(appid, out _);
 
+    /// <summary>The <c>file_modified</c> marker from the most recent cached availability answer for this
+    /// app, or null if nothing is cached (expired, never checked, or the checked answer had none). A peek
+    /// — does not touch the cache's TTL or contents. Callers read this BEFORE starting a download, since a
+    /// successful download invalidates the entry (see <see cref="SendManifestAsync"/>).</summary>
+    public string? PeekCachedFileModified(string appid) =>
+        _statusCache.TryGetValue(appid, out var entry) && entry.Result is HubcapResult<HubcapManifestStatus>.Ok ok
+            ? ok.Value.FileModified
+            : null;
+
     /// <summary>Drop every cached availability answer. Use when the key changes or is cleared.</summary>
     public void ClearStatusCache()
     {

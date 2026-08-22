@@ -495,4 +495,8 @@
   <data name="Launch_Drift_Title" xml:space="preserve"><value>ตัวเลือกการเปิดเกมถูกรีเซ็ต</value></data>
   <data name="Launch_Drift_Body" xml:space="preserve"><value>Steam เขียนทับตัวเลือกการเปิดเกมของคุณสำหรับ {0} เกม การใช้ใหม่จะปิดแล้วเปิด Steam ใหม่</value></data>
   <data name="Launch_Drift_Action" xml:space="preserve"><value>ใช้อีกครั้ง</value></data>
+  <data name="Settings_Accent" xml:space="preserve"><value>สีเน้น</value></data>
+  <data name="Settings_Accent_Green" xml:space="preserve"><value>เขียว</value></data>
+  <data name="Settings_Accent_Red" xml:space="preserve"><value>แดง</value></data>
+  <data name="Settings_Accent_Apply" xml:space="preserve"><value>นำไปใช้</value></data>
 </root>

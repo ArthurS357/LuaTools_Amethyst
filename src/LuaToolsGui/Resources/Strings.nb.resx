@@ -495,4 +495,8 @@ Dette sletter .lua-filene fra Steam\config\stplug-in. Start Steam på nytt etter
   <data name="Launch_Drift_Title" xml:space="preserve"><value>Oppstartsvalgene ble tilbakestilt</value></data>
   <data name="Launch_Drift_Body" xml:space="preserve"><value>Steam har overskrevet oppstartsvalgene dine for {0} spill. Å ta dem i bruk på nytt lukker og åpner Steam.</value></data>
   <data name="Launch_Drift_Action" xml:space="preserve"><value>Ta i bruk på nytt</value></data>
+  <data name="Settings_Accent" xml:space="preserve"><value>Aksentfarge</value></data>
+  <data name="Settings_Accent_Green" xml:space="preserve"><value>Grønn</value></data>
+  <data name="Settings_Accent_Red" xml:space="preserve"><value>Rød</value></data>
+  <data name="Settings_Accent_Apply" xml:space="preserve"><value>Ta i bruk</value></data>
 </root>

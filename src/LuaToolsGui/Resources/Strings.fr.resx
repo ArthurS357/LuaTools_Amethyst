@@ -495,4 +495,8 @@ Cela supprime les fichiers .lua de Steam\config\stplug-in. Redémarrez Steam ens
   <data name="Launch_Drift_Title" xml:space="preserve"><value>Les options de lancement ont été réinitialisées</value></data>
   <data name="Launch_Drift_Body" xml:space="preserve"><value>Steam a écrasé vos options de lancement pour {0} jeu(x). Les réappliquer ferme et rouvre Steam.</value></data>
   <data name="Launch_Drift_Action" xml:space="preserve"><value>Réappliquer</value></data>
+  <data name="Settings_Accent" xml:space="preserve"><value>Couleur d'accent</value></data>
+  <data name="Settings_Accent_Green" xml:space="preserve"><value>Vert</value></data>
+  <data name="Settings_Accent_Red" xml:space="preserve"><value>Rouge</value></data>
+  <data name="Settings_Accent_Apply" xml:space="preserve"><value>Appliquer</value></data>
 </root>

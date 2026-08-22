@@ -495,4 +495,8 @@ Dadurch werden die .lua-Dateien aus Steam\config\stplug-in gelöscht. Starte Ste
   <data name="Launch_Drift_Title" xml:space="preserve"><value>Startoptionen wurden zurückgesetzt</value></data>
   <data name="Launch_Drift_Body" xml:space="preserve"><value>Steam hat deine Startoptionen für {0} Spiel(e) überschrieben. Beim erneuten Anwenden wird Steam geschlossen und wieder geöffnet.</value></data>
   <data name="Launch_Drift_Action" xml:space="preserve"><value>Erneut anwenden</value></data>
+  <data name="Settings_Accent" xml:space="preserve"><value>Akzentfarbe</value></data>
+  <data name="Settings_Accent_Green" xml:space="preserve"><value>Grün</value></data>
+  <data name="Settings_Accent_Red" xml:space="preserve"><value>Rot</value></data>
+  <data name="Settings_Accent_Apply" xml:space="preserve"><value>Anwenden</value></data>
 </root>

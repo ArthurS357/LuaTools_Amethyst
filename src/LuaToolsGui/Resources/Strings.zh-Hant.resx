@@ -495,4 +495,8 @@
   <data name="Launch_Drift_Title" xml:space="preserve"><value>啟動選項已被重設</value></data>
   <data name="Launch_Drift_Body" xml:space="preserve"><value>Steam 覆寫了你為 {0} 款遊戲設定的啟動選項。重新套用會關閉並重新開啟 Steam。</value></data>
   <data name="Launch_Drift_Action" xml:space="preserve"><value>重新套用</value></data>
+  <data name="Settings_Accent" xml:space="preserve"><value>強調色</value></data>
+  <data name="Settings_Accent_Green" xml:space="preserve"><value>綠色</value></data>
+  <data name="Settings_Accent_Red" xml:space="preserve"><value>紅色</value></data>
+  <data name="Settings_Accent_Apply" xml:space="preserve"><value>套用</value></data>
 </root>

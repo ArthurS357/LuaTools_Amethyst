@@ -495,4 +495,8 @@
   <data name="Launch_Drift_Title" xml:space="preserve"><value>Параметри запуску було скинуто</value></data>
   <data name="Launch_Drift_Body" xml:space="preserve"><value>Steam перезаписав ваші параметри запуску для {0} гри(ігор). Повторне застосування закриє та знову відкриє Steam.</value></data>
   <data name="Launch_Drift_Action" xml:space="preserve"><value>Застосувати знову</value></data>
+  <data name="Settings_Accent" xml:space="preserve"><value>Акцентний колір</value></data>
+  <data name="Settings_Accent_Green" xml:space="preserve"><value>Зелений</value></data>
+  <data name="Settings_Accent_Red" xml:space="preserve"><value>Червоний</value></data>
+  <data name="Settings_Accent_Apply" xml:space="preserve"><value>Застосувати</value></data>
 </root>

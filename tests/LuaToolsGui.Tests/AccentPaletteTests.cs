@@ -213,6 +213,27 @@ public class AccentPaletteTests
 
     [Theory]
     [MemberData(nameof(EveryPalette))]
+    public void NavigationView_is_repainted_and_stays_AA_on_every_palette(string id)
+    {
+        // NavigationViewContentBackground and NavigationViewItemForeground are WPF-UI's OWN keys for the
+        // nav rail's content-area fill and item text — distinct from ApplicationBackgroundBrush/
+        // TextPrimaryBrush, which is exactly why they went unpainted (see the comment on them in
+        // Colors.xaml). This is the regression test for that gap: both must be in the live repaint set,
+        // and the text must still clear AAA against the fill an accent switch just gave it.
+        var p = AccentPalette.FromId(id);
+        var shell = p.ShellColors(new DictionaryColors(Palette));
+
+        shell.Should().ContainKey("NavigationViewContentBackground");
+        shell.Should().ContainKey("NavigationViewItemForeground");
+        shell["NavigationViewContentBackground"].Should().Be(Get(p.Neutrals.SurfaceBaseKey));
+        shell["NavigationViewItemForeground"].Should().Be(Get(p.Neutrals.TextPrimaryKey));
+
+        Contrast(shell["NavigationViewItemForeground"], shell["NavigationViewContentBackground"])
+            .Should().BeGreaterThanOrEqualTo(7.0, "nav item text is primary body text, same AAA floor");
+    }
+
+    [Theory]
+    [MemberData(nameof(EveryPalette))]
     public void Two_palettes_never_produce_the_same_surfaces(string id)
     {
         // A palette whose neutrals were left pointing at another ramp would look applied in the buttons
