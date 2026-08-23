@@ -499,4 +499,11 @@ Spowoduje to usunięcie plików .lua z Steam\config\stplug-in. Następnie urucho
   <data name="Settings_Accent_Green" xml:space="preserve"><value>Zielony</value></data>
   <data name="Settings_Accent_Red" xml:space="preserve"><value>Czerwony</value></data>
   <data name="Settings_Accent_Apply" xml:space="preserve"><value>Zastosuj</value></data>
+  <data name="Manage_Action_Play" xml:space="preserve"><value>Graj</value></data>
+  <data name="Manage_Action_Install" xml:space="preserve"><value>Zainstaluj</value></data>
+  <data name="Manage_Play_Installing_Title" xml:space="preserve"><value>Instalowanie</value></data>
+  <data name="Manage_Play_Installing_Body" xml:space="preserve"><value>Steam pobiera {0}.</value></data>
+  <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Nie można uruchomić gry</value></data>
+  <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam odmówił otwarcia tej gry. Sprawdź, czy Steam jest poprawnie zainstalowany.</value></data>
+  <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Nie można uruchomić Steam. Ustaw jego lokalizację w Ustawieniach i spróbuj ponownie.</value></data>
 </root>

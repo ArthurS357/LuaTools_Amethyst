@@ -499,4 +499,11 @@
   <data name="Settings_Accent_Green" xml:space="preserve"><value>Πράσινο</value></data>
   <data name="Settings_Accent_Red" xml:space="preserve"><value>Κόκκινο</value></data>
   <data name="Settings_Accent_Apply" xml:space="preserve"><value>Εφαρμογή</value></data>
+  <data name="Manage_Action_Play" xml:space="preserve"><value>Παίξε</value></data>
+  <data name="Manage_Action_Install" xml:space="preserve"><value>Εγκατάσταση</value></data>
+  <data name="Manage_Play_Installing_Title" xml:space="preserve"><value>Γίνεται εγκατάσταση</value></data>
+  <data name="Manage_Play_Installing_Body" xml:space="preserve"><value>Το Steam κατεβάζει το {0}.</value></data>
+  <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Δεν ήταν δυνατή η εκκίνηση του παιχνιδιού</value></data>
+  <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Το Steam αρνήθηκε να ανοίξει αυτό το παιχνίδι. Ελέγξτε ότι το Steam είναι σωστά εγκατεστημένο.</value></data>
+  <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Δεν ήταν δυνατή η εκκίνηση του Steam. Ορίστε τη θέση του στις Ρυθμίσεις και δοκιμάστε ξανά.</value></data>
 </root>

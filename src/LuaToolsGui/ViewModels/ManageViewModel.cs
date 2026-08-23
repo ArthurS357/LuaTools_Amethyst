@@ -46,6 +46,21 @@ public partial class LuaTileViewModel : ObservableObject
     /// on the Builds page's game list. Null on the Manage page, which doesn't display it.</summary>
     [ObservableProperty] private string? _variantBadge;
 
+    /// <summary>Whether Steam has this game's files. Starts Unknown and is filled in by
+    /// <see cref="ManageViewModel.RefreshInstallStatesAsync"/>; Unknown is a usable state, not a broken one
+    /// (see <see cref="SteamLaunchPolicy"/>), so the Play button works before it resolves.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PlayLabel))]
+    private SteamGameInstallState _installState = SteamGameInstallState.Unknown;
+
+    /// <summary>"Play" or "Install", whichever the button is actually going to do. Read from
+    /// <see cref="SteamLaunchPolicy.IntentFor"/> rather than restated here, so the label cannot promise one
+    /// verb while the command performs the other.</summary>
+    public string PlayLabel =>
+        SteamLaunchPolicy.IntentFor(InstallState) == SteamLaunchIntent.Install
+            ? Resources.Strings.Manage_Action_Install
+            : Resources.Strings.Manage_Action_Play;
+
     /// <summary>Populate <see cref="ReleaseLabel"/> from cached app-details (no-op until they exist).
     /// Shows Steam's own date string ("Released 24 Feb, 2022"); blank for unreleased/unknown.</summary>
     public void UpdateReleaseLabel(SteamAppInfoCache appInfo)
@@ -184,6 +199,8 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
     private readonly ToastService _toast;
     private readonly SettingsService _settings;
     private readonly SteamlessService _steamless;
+    private readonly SteamGameLauncher _launcher;
+    private readonly SteamLibraryService _library;
 
     private List<LuaTileViewModel> _all = [];
     private CancellationTokenSource? _prefetchCts;
@@ -275,7 +292,7 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
 
     public ManageViewModel(SteamService steam, SteamAppListCache appList, SteamAppInfoCache appInfo,
         CoverCache covers, ToastService toast, SettingsService settings,
-        SteamlessService steamless)
+        SteamlessService steamless, SteamGameLauncher launcher, SteamLibraryService library)
     {
         _steam = steam;
         _appList = appList;
@@ -284,6 +301,8 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
         _toast = toast;
         _settings = settings;
         _steamless = steamless;
+        _launcher = launcher;
+        _library = library;
         InitPageSize(settings.ManagePageSize);
     }
 
@@ -340,6 +359,67 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
     {
         SelectedTile = null;
         Overview = null;
+    }
+
+    /// <summary>
+    /// Run the game through Steam, or put it in to download when Steam does not have it yet — starting
+    /// Steam first if it is not up. Which of those happens is <see cref="SteamLaunchPolicy"/>'s decision;
+    /// this only reports the result.
+    /// </summary>
+    [RelayCommand]
+    private async Task PlayAsync(LuaTileViewModel? tile, CancellationToken ct)
+    {
+        if (tile is null) return;
+
+        SteamLaunchOutcome outcome;
+        try
+        {
+            outcome = await _launcher.LaunchAsync(tile.AppId, ct);
+        }
+        catch (OperationCanceledException)
+        {
+            return; // navigated away mid-launch — the user is no longer waiting on this
+        }
+
+        switch (outcome)
+        {
+            case SteamLaunchOutcome.Installing:
+                tile.InstallState = SteamGameInstallState.Installed; // Steam now has a manifest for it
+                _toast.Show(Resources.Strings.Manage_Play_Installing_Title,
+                            string.Format(Resources.Strings.Manage_Play_Installing_Body, tile.Name));
+                break;
+
+            case SteamLaunchOutcome.SteamUnavailable:
+                _toast.Show(Resources.Strings.Manage_Play_Failed_Title,
+                            Resources.Strings.Manage_Play_SteamUnavailable_Body, error: true);
+                break;
+
+            case SteamLaunchOutcome.InvalidAppId:
+            case SteamLaunchOutcome.Failed:
+                _toast.Show(Resources.Strings.Manage_Play_Failed_Title,
+                            Resources.Strings.Manage_Play_Failed_Body, error: true);
+                break;
+
+            case SteamLaunchOutcome.Launched:
+                break; // Steam takes over the screen — a toast on top of it is noise
+        }
+    }
+
+    /// <summary>
+    /// Fill in every tile's <see cref="LuaTileViewModel.InstallState"/> from one scan of Steam's library
+    /// manifests. Best-effort and non-blocking: a tile left Unknown still has a working Play button.
+    /// </summary>
+    public async Task RefreshInstallStatesAsync()
+    {
+        var tiles = _all;
+        if (tiles.Count == 0) return;
+
+        var installed = await Task.Run(_library.GetInstalledAppIds);
+
+        foreach (var tile in tiles)
+            tile.InstallState = installed.Contains(tile.AppId)
+                ? SteamGameInstallState.Installed
+                : SteamGameInstallState.NotInstalled;
     }
 
     /// <summary>Open this game on the Builds page (switch build, inspect depots/manifests, edit).</summary>
@@ -593,6 +673,7 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
             if (_all.Count == 0) SetEmpty(Resources.Strings.Manage_Empty_NoLuas);
 
             StartCoverPrefetch(_all);
+            _ = RefreshInstallStatesAsync(); // fills the Play/Install labels; never blocks the list
         }
         finally
         {

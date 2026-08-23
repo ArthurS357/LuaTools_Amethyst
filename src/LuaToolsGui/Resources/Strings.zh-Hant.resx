@@ -499,4 +499,11 @@
   <data name="Settings_Accent_Green" xml:space="preserve"><value>綠色</value></data>
   <data name="Settings_Accent_Red" xml:space="preserve"><value>紅色</value></data>
   <data name="Settings_Accent_Apply" xml:space="preserve"><value>套用</value></data>
+  <data name="Manage_Action_Play" xml:space="preserve"><value>開始遊戲</value></data>
+  <data name="Manage_Action_Install" xml:space="preserve"><value>安裝</value></data>
+  <data name="Manage_Play_Installing_Title" xml:space="preserve"><value>正在安裝</value></data>
+  <data name="Manage_Play_Installing_Body" xml:space="preserve"><value>Steam 正在下載 {0}。</value></data>
+  <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>無法啟動遊戲</value></data>
+  <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam 拒絕開啟此遊戲。請檢查 Steam 是否正確安裝。</value></data>
+  <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>無法啟動 Steam。請在設定中指定其位置後重試。</value></data>
 </root>

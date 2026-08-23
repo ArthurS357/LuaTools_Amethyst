@@ -2,7 +2,7 @@ name: build
 
 # The repo previously had no build or test workflow at all — only the i18n RESX check — so nothing
 # verified that a PR compiled, and the xUnit suite never ran outside a maintainer's machine.
-# WPF (net8.0-windows) needs a Windows runner; there is no Linux path for this project.
+# WPF (net10.0-windows) needs a Windows runner; there is no Linux path for this project.
 on:
   pull_request:
   push:
@@ -20,10 +20,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up .NET 8
+      - name: Set up .NET 10
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '10.0.x'
 
       # Restore separately so a dependency failure is distinguishable from a compile failure.
       - name: Restore

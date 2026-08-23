@@ -20,7 +20,7 @@ dotnet test
 ### Releases
 
 Official builds are packaged and signed by the maintainers, so the release tooling isn't part of
-this repo. Released builds are framework-dependent (~10 MB) and the setup auto-installs the .NET 8
+this repo. Released builds are framework-dependent (~10 MB) and the setup auto-installs the .NET 10
 Desktop Runtime on a clean machine; the app then self-updates through Velopack.
 
 To produce a local build for testing, `dotnet publish -c Release` is enough.

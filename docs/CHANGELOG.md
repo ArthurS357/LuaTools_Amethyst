@@ -1,5 +1,114 @@
 # Changelog
 
+## 1.5.4 — 2026-08-22
+
+Duas coisas nesta versao: um botao **Jogar** na aba Gerenciar, e a base do app migrada de **.NET 8 para
+.NET 10 LTS**. Nao houve release 1.5.3 — a numeracao pula de 1.5.2 para 1.5.4.
+
+### Jogar / Instalar
+
+- **Cada jogo na aba Gerenciar ganhou um botao de acao.** Ate aqui o app configurava manifests e lua para
+  um jogo e depois deixava o usuario ir procurar esse mesmo jogo na Steam para abri-lo. O botao fecha esse
+  vao: o jogo configurado e o jogo iniciado passam a ser a mesma linha da tela.
+- **O rotulo diz o que vai acontecer.** Com os arquivos em disco le **Jogar** e dispara
+  `steam://rungameid/<appid>`; sem os arquivos le **Instalar** e dispara `steam://install/<appid>`, que
+  abre o download na Steam. Rotulo e acao saem da MESMA regra (`SteamLaunchPolicy.IntentFor`) de proposito
+  — uma ViewModel que re-derivasse "diga Instalar quando nao instalado" por conta propria fica a uma
+  edicao de prometer uma coisa e fazer outra.
+- **Terceiro estado explicito: `Unknown`.** Quando a Steam nao e localizada, a biblioteca esta ILEGIVEL, e
+  isso nao e sinonimo de "li e o jogo nao esta la". `Unknown` resolve para **Jogar**, nao para uma recusa:
+  `steam://rungameid/` se autocorrige — a propria Steam responde com o prompt de instalacao se o jogo e
+  possuido e ausente, e com a pagina da loja se nao e possuido. Recusar deixaria o usuario preso atras de
+  um botao morto exatamente no caso em que quem esta em duvida e o app.
+- **A Steam e iniciada antes, quando nao esta de pe.** Uma URL `steam://` enviada a um cliente morto e
+  descartada em silencio, o que chega ao usuario como "o botao nao fez nada". O adaptador espera o processo
+  aparecer (timeout de 45s, poll de 500ms) e ainda aguarda 3s de acomodacao: o processo existir nao e o
+  mesmo que o cliente conseguir atender a URL, porque steam.exe registra o endpoint de IPC alguns segundos
+  depois de subir. A espera so e paga quando a Steam precisou ser iniciada.
+- **Politica pura separada do adaptador.** `SteamLaunchPolicy` decide (`SteamLaunchPlan`) sem tocar em
+  processo, disco ou registro; `SteamGameLauncher` reune os dois fatos e executa. A decisao inteira e
+  testavel sem Steam, sem WPF e sem I/O — e o que os testes novos de `SteamLaunchPolicyTests` cobrem.
+- **`SteamProtocolUri` e a fronteira de seguranca do botao.** A URL chega em `Process.Start` com
+  `UseShellExecute = true`, ou seja, o shell do Windows resolve o que estiver nela. Por isso o appid e
+  validado como `long` numa faixa fechada (`0 < id < 2_000_000_000`) em vez de passar adiante como string:
+  um `long` validado so consegue se renderizar como digitos, entao o resultado interpolado e comprovadamente
+  uma URL `steam://` bem formada — nao existe string que sobreviva ao parse para numero e ainda carregue
+  aspas, espaco, troca de esquema ou um segundo argumento. Appid invalido devolve `null`, e `null` significa
+  **nao iniciar processo nenhum**; nunca ha fallback para string crua. O teto de 2 bilhoes casa com o guarda
+  do `SteamLinkParser` e exclui os valores compostos de 64 bits que `rungameid` usa para atalhos non-Steam.
+- **Falhas sao casos distintos, nao um bool.** `SteamLaunchOutcome` separa `SteamUnavailable`,
+  `InvalidAppId` e `Failed`, porque "a Steam nao foi encontrada" e "esse id de jogo nao e valido" sao
+  problemas diferentes com solucoes diferentes. Sete chaves novas em `Strings` cobrem os rotulos e avisos,
+  presentes nos 30 arquivos de idioma.
+
+### Migracao para .NET 10 LTS
+
+- **TFM de `net8.0-windows` para `net10.0-windows`**, no app e no projeto de testes (o teste referencia o
+  WinExe WPF, entao o TFM precisa casar). Motivo e suporte: o .NET 8 sai de suporte em **novembro de 2026**
+  e para de receber correcao de seguranca; o .NET 10 e LTS ate **novembro de 2028**. Adiar a troca so
+  encurta a janela em que ela pode ser feita com calma.
+- **`System.Security.Cryptography.ProtectedData` saiu do csproj.** Sob `net10.0-windows` o tipo ja vem com
+  o framework, e o NuGet levanta **NU1510** para a referencia redundante — que o `TreatWarningsAsErrors` do
+  `Directory.Build.props` transforma em restore quebrado. Foi a unica alteracao que a migracao EXIGIU.
+  O DPAPI (`AuthService`, `SettingsService`) nao muda: verificado que o tipo carrega de
+  `shared\Microsoft.WindowsDesktop.App\10.0.11\` e que o round-trip funciona, e o blob continua no formato
+  Win32 `CryptProtectData` padrao — ou seja, chave Hubcap e tokens gravados pelo build .NET 8 seguem
+  legiveis, sem migracao de dado.
+  **O detalhe que importa:** ele vem do framework do WINDOWS DESKTOP, nao do base. Um projeto
+  `net10.0-windows` sem `UseWPF`/`UseWindowsForms` nem compila contra ele (CS1069, tipo encaminhado). Logo,
+  tirar `UseWPF` ou `UseWindowsForms` deste projeto quebraria o armazenamento de credencial, e nao so a UI.
+  Ficou registrado no comentario do csproj.
+- **`Microsoft.Extensions.Hosting` 10.0.9 para 10.0.11**, alinhando com o runtime 10.0.11. Foi a UNICA
+  subida de versao de pacote da migracao. `WPF-UI` continua pinado exato em `[4.3.0]` — o tema Amethyst
+  depende de chaves internas de recurso dessa versao — e `Velopack 1.2.0` nao foi tocado para nao mexer no
+  auto-update. `VirtualizingWrapPanel`, `xunit`, `AwesomeAssertions` e `Microsoft.NET.Test.Sdk` tem versoes
+  mais novas disponiveis e foram deixados como estao: nenhum deles bloqueia o .NET 10, e um salto de major
+  no meio de uma migracao de runtime junta duas causas de falha numa mudanca so.
+- **`LangVersion` continua sem ser declarado, de proposito.** Nao existia antes e continua nao existindo: o
+  default segue o TFM, entao a migracao ja levou o compilador de **C# 12 para C# 14** sem nenhuma linha
+  nova. Declarar `14.0` explicitamente seria um pin sem beneficio hoje e uma trava a mais para remover na
+  proxima migracao.
+- **Zero mudanca de codigo exigida pela migracao.** Fora a remocao do `PackageReference`, nada precisou ser
+  adaptado. O build passa com `TreatWarningsAsErrors=true` e **0 avisos**, e os testes existentes passam sem
+  alteracao — inclusive os que pinam as invariantes de seguranca (`LocalApiAccessPolicy`, `AssetIntegrity`,
+  `AuthService.StateMatches`, `GithubProxy`, `LuaManifestValidator`). `BinaryFormatter`, removido no
+  .NET 9, nao era usado em lugar nenhum.
+- **`RollForward=LatestMajor` mantido no projeto de testes** pelo mesmo motivo de sempre: nao custa nada e
+  impede que um runtime ausente na maquina seja a razao pela qual a suite nem roda.
+- **CI e script de release acompanharam.** `build.yml` instala `10.0.x`; o fallback de TFM em
+  `build-release.ps1` e a mensagem de erro que aponta o download do SDK foram atualizados. O caminho de
+  publicacao nao precisou de nada: o script ja lia `TargetFramework` do projeto em vez de fixar o valor.
+  Nem o `packId` do Velopack nem o instalador publicado foram tocados.
+- **PENDENTE, fora deste repo: o `vpk pack`.** O passo de empacotamento e manual e nao esta versionado
+  aqui, entao nada nesta mudanca o atualiza. Um build Velopack framework-dependent nomeia o runtime que o
+  setup provisiona numa maquina limpa, e esse argumento precisa ir do desktop runtime do .NET 8 para o do
+  .NET 10 (`--framework net10.0-x64-desktop`) — caso contrario o instalador entrega um runtime em que o
+  binario 1.5.4 nao sobe. O `packId` continua o mesmo: ele e a chave de toda instalacao existente.
+- **`xunit` 2.9.2 aparece como preterido** (`Legacy`, alternativa `xunit.v3`) no `dotnet list package
+  --deprecated`. Nao foi migrado aqui de proposito: xunit v3 muda o modelo de execucao da suite inteira e
+  nao tem relacao com o .NET 10 — a suite roda nele sem alteracao. Fica registrado como trabalho proprio.
+
+### Formatacao e assinatura de codigo
+
+- **`.editorconfig` (novo) e `dotnet format --verify-no-changes` como portao.** O arquivo e deliberadamente
+  minimo: toda regra nele ja casava com 100% da base antes de ser escrita, entao adiciona-lo nao gerou uma
+  unica violacao nova. `end_of_line` NAO e definido de proposito — o repo tem uma divisao real por arquivo
+  (CRLF na maioria dos `.cs`, LF nos `Resources/*.resx` e numa minoria de `.cs`), e forcar uma convencao
+  marcaria como violacao todo arquivo do outro lado. O comportamento padrao do `dotnet format`, detectar e
+  preservar o final de linha de cada arquivo, e o que ja deixa os dois coexistirem.
+- **Quatro correcoes de formatacao** para deixar o verificador verde: espaco em `[assembly: ThemeInfo(`,
+  `[JsonIgnore]` em linha propria em `ApiModels.cs`, alinhamento manual desfeito em `HomeViewModel.cs` e um
+  inicializador de objeto quebrado por linha em `LaunchModStoreTests.cs`. Nenhuma delas muda comportamento.
+- **Assinatura de codigo documentada e ligada.** `build-release.ps1` assina `LuaTools.exe` com `signtool`
+  quando `CERTIFICATE_PATH`/`CERTIFICATE_PASSWORD` estao definidos, e avisa em vez de pular em silencio
+  quando nao estao — releases continuam saindo sem assinatura por padrao, exatamente como antes. O
+  certificado vem de variavel de ambiente e nao de parametro para que o valor nunca caia no historico do
+  shell nem na invocacao registrada de um job de CI. Se o certificado ESTA configurado mas o `signtool` nao
+  e encontrado, o script FALHA em vez de produzir um binario sem assinatura: cair para o artefato nao
+  assinado entregaria em silencio exatamente aquilo que configurar o certificado existe para evitar. O
+  README ganhou a secao "Code signing" com os requisitos reais — por que um certificado self-signed ou DV
+  nao resolve o SmartScreen, e por que o fluxo `/f`+`/p` deste script nao cobre EV com token de hardware.
+
 ## 1.5.2 — 2026-08-19
 
 Fechar a janela deixa de matar o app: o X manda para a bandeja e o bridge local do plugin continua

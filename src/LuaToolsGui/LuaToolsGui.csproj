@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
@@ -16,10 +16,10 @@
     <Product>LuaTools Amethyst</Product>
     <!-- Single source of truth for the app version. It drives AssemblyVersion, AssemblyFileVersion and
          AssemblyInformationalVersion (the SDK generates all three from <Version>), and MainViewModel
-         reads InformationalVersion back to render the "v1.5.2 · …" label in the nav pane footer. This had
+         reads InformationalVersion back to render the "v1.5.4 · …" label in the nav pane footer. This had
          drifted to 1.1.3 while 1.2.8 was shipping, so the footer told every user the wrong version — keep
          it bumped with each release, in step with the version passed to `vpk pack`. See docs/CHANGELOG.md. -->
-    <Version>1.5.2</Version>
+    <Version>1.5.4</Version>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <!-- Explicit asInvoker. Same effective privilege level as before (no manifest defaulted to this), now
          stated on purpose so elevation can't be acquired by accident. See app.manifest. -->
@@ -69,8 +69,19 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageReference Include="Markdig.Wpf" Version="0.5.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.9" />
-    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.11" />
+    <!-- System.Security.Cryptography.ProtectedData is NOT referenced here on purpose. Under net10.0-windows
+         it arrives with the framework, and NuGet raises NU1510 for the now-redundant reference — which
+         TreatWarningsAsErrors turns into a failed restore. DPAPI (AuthService, SettingsService) is
+         unaffected: the same type resolves from Microsoft.WindowsDesktop.App instead of the package
+         (verified: it loads from shared\Microsoft.WindowsDesktop.App\10.0.11\, and blobs stay standard
+         Win32 CryptProtectData, so anything the net8 build wrote still unprotects).
+
+         The dependency worth knowing: it comes from the WINDOWS DESKTOP framework, not the base one — a
+         plain net10.0-windows project without UseWPF/UseWindowsForms fails to compile against it (CS1069,
+         "type forwarded to System.Security.Cryptography.ProtectedData"). So dropping UseWPF or
+         UseWindowsForms from this project would break the credential store, not just the UI. Re-add the
+         PackageReference in that case; do not re-add it while both are on. -->
     <PackageReference Include="Velopack" Version="1.2.0" />
     <PackageReference Include="VirtualizingWrapPanel" Version="2.5.1" />
     <!-- PINNED EXACTLY ([4.3.0], not 4.3.0). The Amethyst theme depends on WPF-UI's INTERNAL resource key

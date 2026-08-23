@@ -499,4 +499,11 @@ Dit verwijdert de .lua-bestanden uit Steam\config\stplug-in. Herstart Steam daar
   <data name="Settings_Accent_Green" xml:space="preserve"><value>Groen</value></data>
   <data name="Settings_Accent_Red" xml:space="preserve"><value>Rood</value></data>
   <data name="Settings_Accent_Apply" xml:space="preserve"><value>Toepassen</value></data>
+  <data name="Manage_Action_Play" xml:space="preserve"><value>Spelen</value></data>
+  <data name="Manage_Action_Install" xml:space="preserve"><value>Installeren</value></data>
+  <data name="Manage_Play_Installing_Title" xml:space="preserve"><value>Bezig met installeren</value></data>
+  <data name="Manage_Play_Installing_Body" xml:space="preserve"><value>Steam downloadt {0}.</value></data>
+  <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Kan het spel niet starten</value></data>
+  <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam weigerde dit spel te openen. Controleer of Steam correct is geïnstalleerd.</value></data>
+  <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam kon niet worden gestart. Stel de locatie in bij Instellingen en probeer het opnieuw.</value></data>
 </root>

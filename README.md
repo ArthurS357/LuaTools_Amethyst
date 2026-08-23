@@ -7,12 +7,12 @@
 **An unofficial, privacy-focused fork of [LuaTools](https://lua.tools).** Not affiliated with or endorsed
 by the upstream project.
 
-A Windows desktop client for managing Steam manifest/lua configurations, built with WPF on .NET 8.
+A Windows desktop client for managing Steam manifest/lua configurations, built with WPF on .NET 10.
 It browses and installs manifest sources, edits `stplug-in` lua files (depot pinning, per-depot
-enable/disable), manages unlocker modes, and injects a companion plugin into Steam's store pages. It
-ships translated in 29 languages and auto-updates via Velopack.
+enable/disable), manages unlocker modes, launches games through Steam, and injects a companion plugin
+into Steam's store pages. It ships translated in 29 languages and auto-updates via Velopack.
 
-Current version: **1.5.2** · Repository: <https://github.com/ArthurS357/LuaTools_Amethyst>
+Current version: **1.5.4** · Repository: <https://github.com/ArthurS357/LuaTools_Amethyst>
 
 ### Checking which build you are running
 
@@ -308,6 +308,33 @@ One deliberate exception: a headless `luatools://install/silent/<appid>` launch 
 trigger — still exits once it has reported the result, unless you have explicitly asked for a tray-resident
 app. It does not leave behind a process you never started.
 
+## Playing a game from the Manage tab
+
+Each game in **Manage** has a primary action button, and the same action is on the card's right-click
+menu. The label follows the game's state on disk:
+
+| Files on disk | Button says | What it fires |
+|---|---|---|
+| Yes | **Play** | `steam://rungameid/<appid>` |
+| No | **Install** | `steam://install/<appid>` — Steam's download dialog |
+| Steam not located | **Play** | `steam://rungameid/<appid>` |
+
+The third row is not a bug. When Steam cannot be located the library is *unreadable*, which is a
+different answer from "read it, the game is not there" — so the app does not claim to know. `rungameid`
+is self-correcting in that case: Steam answers it with its own install prompt for a game you own but do
+not have, and with the store page for one you do not own. Refusing instead would strand you behind a dead
+button in exactly the case where the app is the one that is unsure.
+
+If Steam is not running it is started first, and the URL is held back until the client can actually accept
+it — `steam://` sent at a Steam that is still booting is dropped silently, which reads as "the button did
+nothing". Steam gets 45 seconds to come up. Nothing blocks the window while that happens.
+
+Only a numeric appid in a closed range reaches the shell. The URL is handed to `Process.Start` with
+`UseShellExecute = true`, so a validated `long` — never a passed-through string — is what makes the result
+provably a well-formed `steam://` URL. An appid that fails validation starts no process at all; there is
+no raw-string fallback. See `SteamLaunchPolicy` (the decision, pure and tested) and `SteamGameLauncher`
+(the I/O).
+
 ## Configuration
 
 Settings live in `%AppData%\LuaToolsGui\settings.json`. Most are managed from the Settings page; the
@@ -382,8 +409,13 @@ A full example:
 
 ## Building
 
-Needs the [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) (the released installer only
-needs the .NET 8 **Desktop Runtime**).
+Needs the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) (the released installer only
+needs the .NET 10 **Desktop Runtime**).
+
+Both projects target `net10.0-windows` as of 1.5.4. The move off `net8.0-windows` is a support deadline,
+not a feature: .NET 8 stops receiving security fixes in November 2026, and .NET 10 is LTS until November
+2028. `LangVersion` is deliberately not declared anywhere — it follows the TFM, so this is also what puts
+the compiler on C# 14.
 
 ```bash
 dotnet build LuaToolsGui.sln -c Release
@@ -397,10 +429,15 @@ dotnet test LuaToolsGui.sln -c Release
 py scripts/check-i18n.py
 ```
 
-All three must pass before a release. `check-i18n.py` validates the 29 translation files against the
+```bash
+dotnet format LuaToolsGui.sln --verify-no-changes
+```
+
+All four must pass before a release. `check-i18n.py` validates the 29 translation files against the
 English baseline — key parity, no duplicate keys, valid XML, matching `{0}` placeholders, and that
 `Strings.Designer.cs` exposes every key. It resolves the repository from its own location, so it can be
-run from any working directory (`--root` overrides that).
+run from any working directory (`--root` overrides that). `dotnet format` reads its rules from
+[`.editorconfig`](.editorconfig).
 
 ### Producing a release binary
 
@@ -417,16 +454,42 @@ It publishes a self-contained single-file `win-x64` build and writes
 and `-Runtime` are accepted if you need to override any of them. A non-zero exit code means the publish
 failed; nothing downstream should run.
 
+It resolves `<tfm>` by reading `TargetFramework` out of the project rather than hardcoding it, so the
+1.5.4 move to `net10.0-windows` needed no change to the published path.
+
 This produces the **binary only**. Packaging it into an installer is a separate `vpk pack` step and is
 deliberately not part of the script.
+
+> **Carry the TFM move into `vpk pack`.** That step is manual and lives outside this repo, so nothing here
+> updates it for you. A framework-dependent Velopack build names the runtime its setup bootstraps on a
+> clean machine — that argument has to go from the .NET 8 desktop runtime to the .NET 10 one
+> (`--framework net10.0-x64-desktop`), or the installer provisions a runtime the 1.5.4 binary will not
+> start on. The `packId` does **not** change: it keys every existing install and renaming it orphans them.
 
 ### Code signing (optional)
 
 `build-release.ps1` signs `LuaTools.exe` with `signtool.exe` when a certificate is configured, and skips
 signing with a warning when it isn't — releases build unsigned by default, exactly as before this existed.
+**An unsigned `LuaTools.exe` is expected to trigger Windows SmartScreen** ("Windows protected your PC") on
+a machine that has never run it before; signing with a certificate that has built up reputation is what
+suppresses that.
 
-Set both environment variables before running the script; neither is a script parameter, so a value never
-lands in shell history or a CI job's recorded command line:
+**Requirements:**
+
+- [Windows SDK](https://developer.microsoft.com/windows/downloads/windows-sdk/) for `signtool.exe`
+  (installed by default under `C:\Program Files (x86)\Windows Kits\10\bin`; the script also checks `PATH`).
+- A code-signing certificate. **OV (Organization Validation) or EV (Extended Validation)** — a plain
+  self-signed or DV certificate will not clear SmartScreen's reputation check regardless of signing, so it
+  is not worth configuring here. Purchased from a CA (DigiCert, Sectigo, SSL.com, etc.); EV additionally
+  requires the private key live on a hardware token (USB HSM) rather than a plain file, which this
+  file-based `/f`+`/p` flow does not support — an EV setup needs `signtool`'s `/csp`+`/kc` token form
+  instead of `CERTIFICATE_PATH`/`CERTIFICATE_PASSWORD`, and is out of scope for this script as written.
+- The certificate exported as a **`.pfx`** (PKCS#12) file, password-protected. From the Windows certificate
+  store: `certmgr.msc` → find the cert → All Tasks → Export → **Yes, export the private key** → `.pfx`,
+  set a password on export. From the CA directly: most issue the `.pfx` (or a `.p12`, same format) at
+  enrollment.
+
+**Configuring it:**
 
 ```powershell
 $env:CERTIFICATE_PATH = 'C:\path\to\certificate.pfx'
@@ -434,16 +497,32 @@ $env:CERTIFICATE_PASSWORD = 'the PFX password'
 .\scripts\build-release.ps1
 ```
 
-Requires `signtool.exe` (from the Windows SDK) on `PATH`, or installed at its default location under
-`C:\Program Files (x86)\Windows Kits\10\bin`. If a certificate is configured but `signtool.exe` cannot be
-found, the script **fails** rather than shipping an unsigned binary silently — a certificate being set is
-read as "this build must be signed."
+Neither is a script parameter, specifically so a value never lands in a CI job's recorded command line.
+**Locally**, prefer setting them from a file you `Get-Content` rather than typing the password directly at
+an interactive prompt — PowerShell's PSReadLine module persists interactive command history to
+`$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt` in **plain text** by
+default, and a literal `$env:CERTIFICATE_PASSWORD = '...'` typed at the prompt lands in it. Running it from
+a `.ps1` file (this script, or a local untracked wrapper) is not affected — PSReadLine only records what is
+typed interactively.
 
-The certificate itself is never committed, logged, or read from a repository file — CI should supply both
-variables from its own secret store (e.g. a GitHub Actions encrypted secret), scoped to the release job
-only. `signtool sign` takes the PFX password on its own command line; that is the one place the secret is
-visible, for the duration of that single call, and is a limitation of `signtool` itself rather than
-something this script adds.
+If a certificate is configured but `signtool.exe` cannot be found, the script **fails** rather than
+shipping an unsigned binary silently — a certificate being set is read as "this build must be signed."
+
+**Never commit the `.pfx`** — `.gitignore` already excludes `*.pfx`, `*.p12`, and `*.pem` repository-wide,
+but a certificate placed inside the repo tree is one `git add -A` away from being staged regardless; keep
+it outside the working copy (e.g. a machine-local secrets folder) as a second line of defense. **In CI**,
+supply both variables from the platform's own secret store — for GitHub Actions, repository or
+environment **encrypted secrets** (`Settings → Secrets and variables → Actions`) injected via
+`env: CERTIFICATE_PATH: ${{ secrets.CERTIFICATE_PATH }}` (with the `.pfx` itself uploaded as a separate
+secret or artifact, decoded to a temp path at job start) — never a plaintext value in the workflow YAML,
+and scope the secret to the release job/environment only, not every workflow in the repository.
+
+The certificate itself is never committed, logged, or read from a repository file by this script.
+`signtool sign` takes the PFX password on its own command line; that is the one place the secret is
+visible — to any process on the same machine that inspects `signtool.exe`'s command line during that
+single call — and is a limitation of `signtool` itself rather than something this script adds. On a
+single-tenant, ephemeral CI runner (e.g. a fresh GitHub-hosted runner) this is a low, generally-accepted
+risk; on a shared or long-lived build machine, prefer a dedicated, access-controlled signing host.
 
 ### Repository layout
 
@@ -483,28 +562,30 @@ which is a behaviour change to a release-critical path and not worth making for 
 touching it should keep `DirectoryJunction`'s approach in mind and not reintroduce a path-in-a-command-
 string anywhere it *is* reachable.
 
-### Known: `dotnet format --verify-no-changes` fails
+### `dotnet format --verify-no-changes` is a CI gate
 
-It exits **2**, reporting 8 whitespace violations. This is expected and is **not** a regression — do not
-"fix" it by reformatting.
+It passes clean. It used to fail with 8 whitespace violations, which turned out — checked byte-for-byte,
+before vs. after, rather than assumed — to be two unrelated things, not a style the tooling didn't
+understand:
 
-The repository has no `.editorconfig`, so `dotnet format` falls back to the SDK's built-in defaults, which
-this codebase never adopted. The violations are all pre-existing, in files untouched by recent work:
+- **4 files** (`LaunchOptionsService.cs`, `LuaEditor.cs`, `ManageViewModel.cs`, `PagedListViewModel.cs`)
+  had a lone `\n` on specific lines inside an otherwise `\r\n` file — invisible in an editor, and not a
+  content change at all once normalized: the fixed file is byte-identical to the original except for that
+  one character per line.
+- **4 files** had a real, narrow formatting slip each: a missing space after `[assembly:` in the WPF
+  template boilerplate (`AssemblyInfo.cs`), an attribute that belongs on its own line above a block-bodied
+  property, not inline (`ApiModels.cs`), a couple of stray alignment spaces that didn't actually line up
+  with anything (`HomeViewModel.cs`), and a compact one-line object initializer where every sibling of the
+  same shape elsewhere in the test suite (`LaunchOptionsServiceTests.cs`, `AppInfoCodecTests.cs`) already
+  puts each property on its own line (`LaunchModStoreTests.cs`).
 
-```
-src/LuaToolsGui/AssemblyInfo.cs          src/LuaToolsGui/ViewModels/HomeViewModel.cs
-src/LuaToolsGui/Models/ApiModels.cs      src/LuaToolsGui/ViewModels/ManageViewModel.cs
-src/LuaToolsGui/Services/AppInfo/LaunchOptionsService.cs
-src/LuaToolsGui/Services/LuaEditor.cs    src/LuaToolsGui/ViewModels/PagedListViewModel.cs
-tests/LuaToolsGui.Tests/LaunchModStoreTests.cs
-```
-
-Running `dotnet format` to clear them would rewrite continuation-line indentation across those files and
-bury real changes under formatting noise in every future diff.
-
-**The fix, when someone takes it on:** add a versioned `.editorconfig` that encodes the style the codebase
-actually uses, then reformat, **in its own branch and its own commit**, touching nothing else. Only after
-that does `--verify-no-changes` belong in CI as a gate. Until then it is informational.
+None of it was a deliberate style the formatter was fighting — it was accidental drift. `.editorconfig`
+now exists, but deliberately encodes only what already matches 100% of the codebase (charset, indent
+style/size, final newline, trailing whitespace) — verified with `--verify-no-changes` before and after
+adding it, zero new violations. It does **not** set `end_of_line`: the repo has a genuine per-file split
+(CRLF in most `.cs` files, LF in `Resources/*.resx` and a minority of `.cs` files), and forcing one would
+flag every file on the losing side. `dotnet format`'s default — detect and preserve each file's own line
+ending — is what already lets both conventions coexist, and stays that way.
 
 ### A note on the WPF-UI dependency
 

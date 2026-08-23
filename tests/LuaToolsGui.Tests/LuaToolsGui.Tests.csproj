@@ -1,20 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Must match the app's TFM (net8.0-windows) to reference the WPF WinExe assembly. The tests
+  <!-- Must match the app's TFM (net10.0-windows) to reference the WPF WinExe assembly. The tests
        themselves only touch System.Globalization logic (Program.MatchOsLanguage), no WPF. -->
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
 
-    <!-- Let the test host run on a newer major runtime when the exact 8.0.x one isn't installed. The
-         default rollForward (Minor) refuses to start on a machine that only has 9.x/10.x, which blocks the
-         suite on any dev box without the .NET 8 runtime specifically. This affects ONLY how these tests are
-         executed; the shipped app still targets net8.0-windows with default roll-forward, and in CI (where
-         setup-dotnet installs 8.0.x) this is a no-op. -->
+    <!-- Let the test host run on a newer major runtime when the exact 10.0.x one isn't installed. The
+         default rollForward (Minor) refuses to start on a machine that only has a later major, which would
+         block the suite on any dev box without the .NET 10 runtime specifically. This affects ONLY how
+         these tests are executed; the shipped app still targets net10.0-windows with default roll-forward,
+         and in CI (where setup-dotnet installs 10.0.x) this is a no-op. Kept through the .NET 8 → 10 move
+         for the same reason it was added: it costs nothing and it is what stops a runtime the box happens
+         not to have from being the reason the suite cannot run at all. -->
     <RollForward>LatestMajor</RollForward>
   </PropertyGroup>
 

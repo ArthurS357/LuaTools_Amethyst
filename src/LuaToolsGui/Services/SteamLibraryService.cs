@@ -48,6 +48,48 @@ public partial class SteamLibraryService(SteamService steam)
         return null;
     }
 
+    /// <summary>
+    /// Every appid Steam has an <c>appmanifest_&lt;appid&gt;.acf</c> for, across all libraries.
+    ///
+    /// <para>
+    /// One directory listing per library, rather than <see cref="GetInstallDir"/>'s re-read of
+    /// libraryfolders.vdf per game — the Manage page asks this for a whole page of tiles at once, which the
+    /// per-game path turns into hundreds of redundant file reads.
+    /// </para>
+    ///
+    /// <para>
+    /// Presence of the manifest, deliberately, rather than <see cref="GetInstallDir"/>'s stricter "and the
+    /// common\ folder exists" check. A manifest also exists while a game is still DOWNLOADING, and for the
+    /// Play button that is the answer wanted: a game mid-download must not be offered an Install button
+    /// that would only re-open a dialog for something Steam is already fetching.
+    /// </para>
+    /// </summary>
+    public HashSet<long> GetInstalledAppIds()
+    {
+        var ids = new HashSet<long>();
+        const string prefix = "appmanifest_";
+        try
+        {
+            if (steam.EffectivePath is not { } steamRoot) return ids;
+
+            foreach (string library in GetLibraryRoots(steamRoot))
+            {
+                string steamapps = Path.Combine(library, "steamapps");
+                if (!Directory.Exists(steamapps)) continue;
+
+                foreach (string acf in Directory.EnumerateFiles(steamapps, $"{prefix}*.acf"))
+                {
+                    string name = Path.GetFileNameWithoutExtension(acf);
+                    if (name.Length > prefix.Length
+                        && long.TryParse(name.AsSpan(prefix.Length), out long appId))
+                        ids.Add(appId);
+                }
+            }
+        }
+        catch { /* unreadable library or odd path — report what was collected, not a failure */ }
+        return ids;
+    }
+
     /// <summary>Every Steam library root (the main install plus any added libraries).</summary>
     private static IEnumerable<string> GetLibraryRoots(string steamRoot)
     {

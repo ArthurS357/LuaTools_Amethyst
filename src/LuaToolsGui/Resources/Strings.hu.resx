@@ -499,4 +499,11 @@ Ez törli a .lua fájlokat a Steam\config\stplug-in mappából. Ezután indítsd
   <data name="Settings_Accent_Green" xml:space="preserve"><value>Zöld</value></data>
   <data name="Settings_Accent_Red" xml:space="preserve"><value>Piros</value></data>
   <data name="Settings_Accent_Apply" xml:space="preserve"><value>Alkalmazás</value></data>
+  <data name="Manage_Action_Play" xml:space="preserve"><value>Játék</value></data>
+  <data name="Manage_Action_Install" xml:space="preserve"><value>Telepítés</value></data>
+  <data name="Manage_Play_Installing_Title" xml:space="preserve"><value>Telepítés folyamatban</value></data>
+  <data name="Manage_Play_Installing_Body" xml:space="preserve"><value>A Steam letölti a következőt: {0}.</value></data>
+  <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>A játék nem indítható el</value></data>
+  <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>A Steam nem nyitotta meg ezt a játékot. Ellenőrizze, hogy a Steam megfelelően van telepítve.</value></data>
+  <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>A Steam nem indítható el. Adja meg a helyét a Beállításokban, majd próbálja újra.</value></data>
 </root>

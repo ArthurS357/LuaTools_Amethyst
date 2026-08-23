@@ -525,4 +525,11 @@
   <data name="Settings_Accent_Green" xml:space="preserve"><value>أخضر</value></data>
   <data name="Settings_Accent_Red" xml:space="preserve"><value>أحمر</value></data>
   <data name="Settings_Accent_Apply" xml:space="preserve"><value>تطبيق</value></data>
+  <data name="Manage_Action_Play" xml:space="preserve"><value>تشغيل</value></data>
+  <data name="Manage_Action_Install" xml:space="preserve"><value>تثبيت</value></data>
+  <data name="Manage_Play_Installing_Title" xml:space="preserve"><value>جارٍ التثبيت</value></data>
+  <data name="Manage_Play_Installing_Body" xml:space="preserve"><value>يقوم Steam بتنزيل {0}.</value></data>
+  <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>تعذّر تشغيل اللعبة</value></data>
+  <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>رفض Steam فتح هذه اللعبة. تأكد من تثبيت Steam بشكل صحيح.</value></data>
+  <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>تعذّر تشغيل Steam. حدّد موقعه في الإعدادات وحاول مرة أخرى.</value></data>
 </root>

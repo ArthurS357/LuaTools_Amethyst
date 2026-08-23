@@ -499,4 +499,11 @@ Ini menghapus file .lua dari Steam\config\stplug-in. Mulai ulang Steam setelahny
   <data name="Settings_Accent_Green" xml:space="preserve"><value>Hijau</value></data>
   <data name="Settings_Accent_Red" xml:space="preserve"><value>Merah</value></data>
   <data name="Settings_Accent_Apply" xml:space="preserve"><value>Terapkan</value></data>
+  <data name="Manage_Action_Play" xml:space="preserve"><value>Mainkan</value></data>
+  <data name="Manage_Action_Install" xml:space="preserve"><value>Instal</value></data>
+  <data name="Manage_Play_Installing_Title" xml:space="preserve"><value>Menginstal</value></data>
+  <data name="Manage_Play_Installing_Body" xml:space="preserve"><value>Steam sedang mengunduh {0}.</value></data>
+  <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Tidak dapat memulai game</value></data>
+  <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam menolak membuka game ini. Pastikan Steam terpasang dengan benar.</value></data>
+  <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam tidak dapat dijalankan. Tentukan lokasinya di Pengaturan lalu coba lagi.</value></data>
 </root>

@@ -499,4 +499,11 @@ Dette sletter .lua-filerne fra Steam\config\stplug-in. Genstart Steam bagefter, 
   <data name="Settings_Accent_Green" xml:space="preserve"><value>Grøn</value></data>
   <data name="Settings_Accent_Red" xml:space="preserve"><value>Rød</value></data>
   <data name="Settings_Accent_Apply" xml:space="preserve"><value>Anvend</value></data>
+  <data name="Manage_Action_Play" xml:space="preserve"><value>Spil</value></data>
+  <data name="Manage_Action_Install" xml:space="preserve"><value>Installer</value></data>
+  <data name="Manage_Play_Installing_Title" xml:space="preserve"><value>Installerer</value></data>
+  <data name="Manage_Play_Installing_Body" xml:space="preserve"><value>Steam downloader {0}.</value></data>
+  <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Spillet kunne ikke startes</value></data>
+  <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam afviste at åbne dette spil. Kontrollér, at Steam er installeret korrekt.</value></data>
+  <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam kunne ikke startes. Angiv placeringen i Indstillinger, og prøv igen.</value></data>
 </root>

@@ -499,4 +499,11 @@
   <data name="Settings_Accent_Green" xml:space="preserve"><value>Зелено</value></data>
   <data name="Settings_Accent_Red" xml:space="preserve"><value>Червено</value></data>
   <data name="Settings_Accent_Apply" xml:space="preserve"><value>Приложи</value></data>
+  <data name="Manage_Action_Play" xml:space="preserve"><value>Играй</value></data>
+  <data name="Manage_Action_Install" xml:space="preserve"><value>Инсталирай</value></data>
+  <data name="Manage_Play_Installing_Title" xml:space="preserve"><value>Инсталиране</value></data>
+  <data name="Manage_Play_Installing_Body" xml:space="preserve"><value>Steam изтегля {0}.</value></data>
+  <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Играта не можа да бъде стартирана</value></data>
+  <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam отказа да отвори тази игра. Проверете дали Steam е инсталиран правилно.</value></data>
+  <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam не можа да бъде стартиран. Задайте местоположението му в Настройки и опитайте отново.</value></data>
 </root>

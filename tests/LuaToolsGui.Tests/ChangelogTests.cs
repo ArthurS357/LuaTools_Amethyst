@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.5.2");
+        AppVersion.Current.Should().Be("1.5.4");
     }
 
     [Fact]
@@ -35,7 +35,7 @@ public class ChangelogTests
     {
         var current = Changelog.Entries[0];
 
-        current.Released.Should().Be("2026-08-19");
+        current.Released.Should().Be("2026-08-22");
         current.Summary.Should().NotBeNullOrWhiteSpace();
         current.Highlights.Should().HaveCountGreaterThanOrEqualTo(3);
         current.Highlights.Should().AllSatisfy(h => h.Should().NotBeNullOrWhiteSpace());
@@ -46,9 +46,9 @@ public class ChangelogTests
     {
         string text = string.Join(" ", Changelog.Entries[0].Highlights);
 
-        text.Should().ContainEquivalentOf("tray");
-        text.Should().ContainEquivalentOf("silent install");
-        text.Should().ContainEquivalentOf("hubcap");
+        text.Should().ContainEquivalentOf("Play button");
+        text.Should().ContainEquivalentOf("Steam's download");
+        text.Should().ContainEquivalentOf(".NET 10");
     }
 
     [Fact]

@@ -499,4 +499,11 @@
   <data name="Settings_Accent_Green" xml:space="preserve"><value>緑</value></data>
   <data name="Settings_Accent_Red" xml:space="preserve"><value>赤</value></data>
   <data name="Settings_Accent_Apply" xml:space="preserve"><value>適用</value></data>
+  <data name="Manage_Action_Play" xml:space="preserve"><value>プレイ</value></data>
+  <data name="Manage_Action_Install" xml:space="preserve"><value>インストール</value></data>
+  <data name="Manage_Play_Installing_Title" xml:space="preserve"><value>インストール中</value></data>
+  <data name="Manage_Play_Installing_Body" xml:space="preserve"><value>Steam が {0} をダウンロードしています。</value></data>
+  <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>ゲームを起動できませんでした</value></data>
+  <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam がこのゲームを開けませんでした。Steam が正しくインストールされているか確認してください。</value></data>
+  <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam を起動できませんでした。設定でその場所を指定して、もう一度お試しください。</value></data>
 </root>

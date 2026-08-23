@@ -182,6 +182,12 @@
                         <Border.ContextMenu>
                             <ContextMenu>
                                 <MenuItem
+                                    Command="{Binding PlacementTarget.Tag.PlayCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                    CommandParameter="{Binding}"
+                                    Header="{Binding PlayLabel}"
+                                    Icon="{ui:SymbolIcon Play24}" />
+                                <Separator />
+                                <MenuItem
                                     Command="{Binding PlacementTarget.Tag.OpenDetailCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                                     CommandParameter="{Binding}"
                                     Header="{x:Static res:Strings.Manage_Action_ViewDetails}"
@@ -717,9 +723,18 @@
                             Value="{Binding DataContext.Progress, ElementName=Root}"
                             Visibility="{Binding DataContext.IsBusy, ElementName=Root, Converter={StaticResource BoolToVis}}" />
 
+                        <!-- Play/Install: the label follows the game's install state (SteamLaunchPolicy
+                             decides which verb), so the button says what it is about to do. -->
                         <ui:Button
                             HorizontalAlignment="Stretch"
                             Appearance="Primary"
+                            Command="{Binding DataContext.PlayCommand, ElementName=Root}"
+                            CommandParameter="{Binding}"
+                            Content="{Binding PlayLabel}"
+                            Icon="{ui:SymbolIcon Play24}" />
+                        <ui:Button
+                            Margin="0,8,0,0"
+                            HorizontalAlignment="Stretch"
                             Command="{Binding DataContext.ManageBuildCommand, ElementName=Root}"
                             CommandParameter="{Binding}"
                             Content="{x:Static res:Strings.Manage_Action_ManageBuild}"

@@ -499,4 +499,11 @@
   <data name="Settings_Accent_Green" xml:space="preserve"><value>Зелёный</value></data>
   <data name="Settings_Accent_Red" xml:space="preserve"><value>Красный</value></data>
   <data name="Settings_Accent_Apply" xml:space="preserve"><value>Применить</value></data>
+  <data name="Manage_Action_Play" xml:space="preserve"><value>Играть</value></data>
+  <data name="Manage_Action_Install" xml:space="preserve"><value>Установить</value></data>
+  <data name="Manage_Play_Installing_Title" xml:space="preserve"><value>Установка</value></data>
+  <data name="Manage_Play_Installing_Body" xml:space="preserve"><value>Steam загружает {0}.</value></data>
+  <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Не удалось запустить игру</value></data>
+  <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam не смог открыть эту игру. Убедитесь, что Steam установлен правильно.</value></data>
+  <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Не удалось запустить Steam. Укажите его расположение в настройках и попробуйте снова.</value></data>
 </root>

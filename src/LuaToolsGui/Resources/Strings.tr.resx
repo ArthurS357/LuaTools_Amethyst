@@ -499,4 +499,11 @@ Bu işlem, .lua dosyalarını Steam\config\stplug-in konumundan siler. Değişik
   <data name="Settings_Accent_Green" xml:space="preserve"><value>Yeşil</value></data>
   <data name="Settings_Accent_Red" xml:space="preserve"><value>Kırmızı</value></data>
   <data name="Settings_Accent_Apply" xml:space="preserve"><value>Uygula</value></data>
+  <data name="Manage_Action_Play" xml:space="preserve"><value>Oyna</value></data>
+  <data name="Manage_Action_Install" xml:space="preserve"><value>Yükle</value></data>
+  <data name="Manage_Play_Installing_Title" xml:space="preserve"><value>Yükleniyor</value></data>
+  <data name="Manage_Play_Installing_Body" xml:space="preserve"><value>Steam {0} oyununu indiriyor.</value></data>
+  <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Oyun başlatılamadı</value></data>
+  <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam bu oyunu açmayı reddetti. Steam'in doğru yüklendiğinden emin olun.</value></data>
+  <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam başlatılamadı. Konumunu Ayarlar'da belirtip tekrar deneyin.</value></data>
 </root>

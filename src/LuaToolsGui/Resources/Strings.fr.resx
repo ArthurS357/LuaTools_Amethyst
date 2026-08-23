@@ -499,4 +499,11 @@ Cela supprime les fichiers .lua de Steam\config\stplug-in. Redémarrez Steam ens
   <data name="Settings_Accent_Green" xml:space="preserve"><value>Vert</value></data>
   <data name="Settings_Accent_Red" xml:space="preserve"><value>Rouge</value></data>
   <data name="Settings_Accent_Apply" xml:space="preserve"><value>Appliquer</value></data>
+  <data name="Manage_Action_Play" xml:space="preserve"><value>Jouer</value></data>
+  <data name="Manage_Action_Install" xml:space="preserve"><value>Installer</value></data>
+  <data name="Manage_Play_Installing_Title" xml:space="preserve"><value>Installation</value></data>
+  <data name="Manage_Play_Installing_Body" xml:space="preserve"><value>Steam télécharge {0}.</value></data>
+  <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Impossible de lancer le jeu</value></data>
+  <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam a refusé d'ouvrir ce jeu. Vérifiez que Steam est correctement installé.</value></data>
+  <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Impossible de démarrer Steam. Définissez son emplacement dans les Paramètres et réessayez.</value></data>
 </root>

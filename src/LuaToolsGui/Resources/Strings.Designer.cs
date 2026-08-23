@@ -250,6 +250,13 @@ public static class Strings
     public static string Manage_Action_CopyAppId => Get(nameof(Manage_Action_CopyAppId));
     public static string Manage_Action_RemoveDrm => Get(nameof(Manage_Action_RemoveDrm));
     public static string Manage_Action_ManageBuild => Get(nameof(Manage_Action_ManageBuild));
+    public static string Manage_Action_Play => Get(nameof(Manage_Action_Play));
+    public static string Manage_Action_Install => Get(nameof(Manage_Action_Install));
+    public static string Manage_Play_Installing_Title => Get(nameof(Manage_Play_Installing_Title));
+    public static string Manage_Play_Installing_Body => Get(nameof(Manage_Play_Installing_Body));
+    public static string Manage_Play_Failed_Title => Get(nameof(Manage_Play_Failed_Title));
+    public static string Manage_Play_Failed_Body => Get(nameof(Manage_Play_Failed_Body));
+    public static string Manage_Play_SteamUnavailable_Body => Get(nameof(Manage_Play_SteamUnavailable_Body));
     public static string Manage_AboutHeader => Get(nameof(Manage_AboutHeader));
     public static string Manage_Info_Developer => Get(nameof(Manage_Info_Developer));
     public static string Manage_Info_Publisher => Get(nameof(Manage_Info_Publisher));

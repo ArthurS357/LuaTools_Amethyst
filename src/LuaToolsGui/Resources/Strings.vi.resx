@@ -499,4 +499,11 @@ Thao tác này sẽ xóa các tệp .lua khỏi Steam\config\stplug-in. Sau đó
   <data name="Settings_Accent_Green" xml:space="preserve"><value>Xanh lá</value></data>
   <data name="Settings_Accent_Red" xml:space="preserve"><value>Đỏ</value></data>
   <data name="Settings_Accent_Apply" xml:space="preserve"><value>Áp dụng</value></data>
+  <data name="Manage_Action_Play" xml:space="preserve"><value>Chơi</value></data>
+  <data name="Manage_Action_Install" xml:space="preserve"><value>Cài đặt</value></data>
+  <data name="Manage_Play_Installing_Title" xml:space="preserve"><value>Đang cài đặt</value></data>
+  <data name="Manage_Play_Installing_Body" xml:space="preserve"><value>Steam đang tải xuống {0}.</value></data>
+  <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Không thể khởi động trò chơi</value></data>
+  <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam đã từ chối mở trò chơi này. Hãy kiểm tra xem Steam đã được cài đặt đúng chưa.</value></data>
+  <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Không thể khởi động Steam. Hãy đặt vị trí của Steam trong Cài đặt rồi thử lại.</value></data>
 </root>

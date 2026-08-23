@@ -499,4 +499,11 @@ Tím se smažou soubory .lua ze Steam\config\stplug-in. Poté restartujte Steam,
   <data name="Settings_Accent_Green" xml:space="preserve"><value>Zelená</value></data>
   <data name="Settings_Accent_Red" xml:space="preserve"><value>Červená</value></data>
   <data name="Settings_Accent_Apply" xml:space="preserve"><value>Použít</value></data>
+  <data name="Manage_Action_Play" xml:space="preserve"><value>Hrát</value></data>
+  <data name="Manage_Action_Install" xml:space="preserve"><value>Instalovat</value></data>
+  <data name="Manage_Play_Installing_Title" xml:space="preserve"><value>Instaluje se</value></data>
+  <data name="Manage_Play_Installing_Body" xml:space="preserve"><value>Steam stahuje {0}.</value></data>
+  <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Hru se nepodařilo spustit</value></data>
+  <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam odmítl tuto hru otevřít. Zkontrolujte, zda je Steam správně nainstalován.</value></data>
+  <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam se nepodařilo spustit. Nastavte jeho umístění v Nastavení a zkuste to znovu.</value></data>
 </root>

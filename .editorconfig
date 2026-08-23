@@ -1,0 +1,20 @@
+root = true
+
+# Minimal and conservative on purpose: every rule below already matches 100% of the codebase (verified
+# with `dotnet format --verify-no-changes` before and after adding this file — zero new violations).
+# `end_of_line` is deliberately NOT set: the repo has a real per-file split (CRLF in most .cs files, LF
+# in Resources/*.resx and a minority of .cs files), and forcing one convention here would flag every file
+# on the other side as a violation. `dotnet format`'s default behavior — detect and preserve each file's
+# own line ending — is what already lets both coexist, and this file does not change that.
+
+[*]
+charset = utf-8
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.cs]
+indent_size = 4
+
+[*.{resx,xaml,csproj,sln}]
+indent_size = 2

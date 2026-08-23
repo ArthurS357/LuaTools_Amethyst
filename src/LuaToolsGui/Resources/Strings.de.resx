@@ -499,4 +499,11 @@ Dadurch werden die .lua-Dateien aus Steam\config\stplug-in gelöscht. Starte Ste
   <data name="Settings_Accent_Green" xml:space="preserve"><value>Grün</value></data>
   <data name="Settings_Accent_Red" xml:space="preserve"><value>Rot</value></data>
   <data name="Settings_Accent_Apply" xml:space="preserve"><value>Anwenden</value></data>
+  <data name="Manage_Action_Play" xml:space="preserve"><value>Spielen</value></data>
+  <data name="Manage_Action_Install" xml:space="preserve"><value>Installieren</value></data>
+  <data name="Manage_Play_Installing_Title" xml:space="preserve"><value>Wird installiert</value></data>
+  <data name="Manage_Play_Installing_Body" xml:space="preserve"><value>Steam lädt {0} herunter.</value></data>
+  <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Spiel konnte nicht gestartet werden</value></data>
+  <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam hat das Öffnen dieses Spiels abgelehnt. Prüfen Sie, ob Steam korrekt installiert ist.</value></data>
+  <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam konnte nicht gestartet werden. Legen Sie den Pfad in den Einstellungen fest und versuchen Sie es erneut.</value></data>
 </root>

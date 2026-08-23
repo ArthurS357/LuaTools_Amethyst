@@ -1,7 +1,7 @@
 namespace LuaToolsGui.Resources;
 
 /// <summary>One released version and what changed in it.</summary>
-/// <param name="Version">Bare version, e.g. "1.5.2" — matches <c>AppVersion.Current</c> for this build.</param>
+/// <param name="Version">Bare version, e.g. "1.5.4" — matches <c>AppVersion.Current</c> for this build.</param>
 /// <param name="Released">Release date, ISO-formatted for display.</param>
 /// <param name="Summary">One line on the theme of the release.</param>
 /// <param name="Highlights">The handful of changes worth surfacing in-app.</param>
@@ -29,6 +29,15 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.5.4", "2026-08-22",
+            "Play a game straight from Manage, and the whole app moves to .NET 10 LTS.",
+            [
+                "Every game in Manage now has a Play button. If the game is not on disk it says Install and opens Steam's download for it instead.",
+                "Steam is started for you when it is not already up, and the game is only handed over once it can accept it.",
+                "Moved to .NET 10 LTS, supported until November 2028 — .NET 8 stops getting security fixes in November 2026.",
+                "Internal: the whole solution is checked by `dotnet format` in CI, and code signing for releases is documented and wired up.",
+            ]),
+
         new("1.5.2", "2026-08-19",
             "Closing the window sends LuaTools to the tray instead of killing it, plus the follow-ups that were outstanding.",
             [

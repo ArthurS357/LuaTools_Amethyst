@@ -148,7 +148,7 @@ public partial class HomeViewModel : ObservableObject
             bool installed = st.FrontendInstalled && st.DllInstalled;
             ShowPluginInstall = !installed;
             (PluginStatusText, PluginStatusColor) =
-                !installed         ? (Resources.Strings.Plugin_Status_NotInstalled,   "TextMutedBrush")
+                !installed ? (Resources.Strings.Plugin_Status_NotInstalled, "TextMutedBrush")
                 : st.UpdateAvailable ? (Resources.Strings.Plugin_Badge_UpdateAvailable, "WarningBrush")
                 : (st.InstalledTag is { } tag
                       ? $"{Resources.Strings.Plugin_Status_Installed} · {tag}"

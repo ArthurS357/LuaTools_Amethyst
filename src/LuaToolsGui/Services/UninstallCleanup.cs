@@ -115,8 +115,8 @@ public static class UninstallCleanup
         string path = Path.Combine(steamDir, CdpMarkerName);
         try
         {
-            // A junction with a missing target still reports Directory.Exists == true on .NET 8 (verified),
-            // so this check does catch the real-world case.
+            // A junction with a missing target still reports Directory.Exists == true (verified on .NET 8,
+            // re-verified on .NET 10 for the TFM move), so this check does catch the real-world case.
             if (Directory.Exists(path))
             {
                 DirectoryJunction.Remove(path);

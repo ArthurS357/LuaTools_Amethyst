@@ -29,7 +29,10 @@ public class LaunchModStoreTests : IDisposable
     private static List<LaunchOption> Options(params string[] executables) =>
         executables.Select((exe, i) => new LaunchOption
         {
-            Index = i.ToString(), Executable = exe, Type = "default", OsList = "windows",
+            Index = i.ToString(),
+            Executable = exe,
+            Type = "default",
+            OsList = "windows",
         }).ToList();
 
     [Fact]

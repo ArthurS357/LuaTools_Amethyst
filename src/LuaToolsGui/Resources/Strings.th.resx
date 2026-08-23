@@ -499,4 +499,11 @@
   <data name="Settings_Accent_Green" xml:space="preserve"><value>เขียว</value></data>
   <data name="Settings_Accent_Red" xml:space="preserve"><value>แดง</value></data>
   <data name="Settings_Accent_Apply" xml:space="preserve"><value>นำไปใช้</value></data>
+  <data name="Manage_Action_Play" xml:space="preserve"><value>เล่น</value></data>
+  <data name="Manage_Action_Install" xml:space="preserve"><value>ติดตั้ง</value></data>
+  <data name="Manage_Play_Installing_Title" xml:space="preserve"><value>กำลังติดตั้ง</value></data>
+  <data name="Manage_Play_Installing_Body" xml:space="preserve"><value>Steam กำลังดาวน์โหลด {0}</value></data>
+  <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>ไม่สามารถเริ่มเกมได้</value></data>
+  <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam ปฏิเสธที่จะเปิดเกมนี้ ตรวจสอบว่าติดตั้ง Steam อย่างถูกต้องแล้ว</value></data>
+  <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>ไม่สามารถเริ่ม Steam ได้ กำหนดตำแหน่งในการตั้งค่าแล้วลองอีกครั้ง</value></data>
 </root>

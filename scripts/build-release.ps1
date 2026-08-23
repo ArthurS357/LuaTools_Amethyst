@@ -52,12 +52,12 @@ if (-not (Test-Path -LiteralPath $project -PathType Leaf)) {
 }
 
 if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
-    Fail 'The .NET SDK is not on PATH. Install the .NET 8 SDK: https://dotnet.microsoft.com/download/dotnet/8.0'
+    Fail 'The .NET SDK is not on PATH. Install the .NET 10 SDK: https://dotnet.microsoft.com/download/dotnet/10.0'
 }
 
 # Read the TFM out of the project rather than hardcoding it, so the published path stays correct if the
 # target framework is ever moved. Falls back to a literal only if the property cannot be read.
-$targetFramework = 'net8.0-windows'
+$targetFramework = 'net10.0-windows'
 try {
     $projectXml = [xml](Get-Content -LiteralPath $project -Raw)
     $declared = $projectXml.Project.PropertyGroup.TargetFramework | Where-Object { $_ } | Select-Object -First 1

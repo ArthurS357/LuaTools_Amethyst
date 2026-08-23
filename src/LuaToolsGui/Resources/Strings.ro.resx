@@ -499,4 +499,11 @@ Aceasta șterge fișierele .lua din Steam\config\stplug-in. Repornește Steam du
   <data name="Settings_Accent_Green" xml:space="preserve"><value>Verde</value></data>
   <data name="Settings_Accent_Red" xml:space="preserve"><value>Roșu</value></data>
   <data name="Settings_Accent_Apply" xml:space="preserve"><value>Aplică</value></data>
+  <data name="Manage_Action_Play" xml:space="preserve"><value>Joacă</value></data>
+  <data name="Manage_Action_Install" xml:space="preserve"><value>Instalează</value></data>
+  <data name="Manage_Play_Installing_Title" xml:space="preserve"><value>Se instalează</value></data>
+  <data name="Manage_Play_Installing_Body" xml:space="preserve"><value>Steam descarcă {0}.</value></data>
+  <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Jocul nu a putut fi pornit</value></data>
+  <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam a refuzat să deschidă acest joc. Verifică dacă Steam este instalat corect.</value></data>
+  <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam nu a putut fi pornit. Setează locația în Setări și încearcă din nou.</value></data>
 </root>
