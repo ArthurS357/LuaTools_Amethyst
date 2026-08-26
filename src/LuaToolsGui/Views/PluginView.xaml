@@ -196,6 +196,186 @@
                     </StackPanel>
                 </Border>
 
+                <!-- AmethystTool: a SEPARATE, natively-injected plugin. Same card language as above so
+                     the page reads as one surface, but its own state (own source, own install target). -->
+                <Border
+                    Margin="0,16,0,0"
+                    Padding="18"
+                    Background="{StaticResource SurfaceCardBrush}"
+                    BorderBrush="{StaticResource BorderStrongBrush}"
+                    BorderThickness="1"
+                    CornerRadius="10"
+                    DataContext="{Binding Amethyst}"
+                    KeyboardNavigation.TabNavigation="Local">
+                    <StackPanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon
+                                VerticalAlignment="Center"
+                                Foreground="{StaticResource AccentBrush}"
+                                Symbol="PlugConnected24" />
+                            <TextBlock
+                                Margin="10,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="SemiBold"
+                                Text="{x:Static res:Strings.Amethyst_CardTitle}" />
+                            <Border
+                                Margin="10,0,0,0"
+                                Padding="7,2"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource AccentBadgeBrush}"
+                                CornerRadius="4"
+                                Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
+                                <TextBlock
+                                    FontSize="10.5"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource AccentSoftBrush}"
+                                    Text="{x:Static res:Strings.Plugin_Status_Installed}" />
+                            </Border>
+                            <Border
+                                Margin="6,0,0,0"
+                                Padding="7,2"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource WarningTintBrush}"
+                                CornerRadius="4"
+                                Visibility="{Binding UpdateAvailable, Converter={StaticResource BoolToVis}}">
+                                <TextBlock
+                                    FontSize="10.5"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource WarningBrush}"
+                                    Text="{x:Static res:Strings.Plugin_Badge_UpdateAvailable}" />
+                            </Border>
+                        </StackPanel>
+
+                        <TextBlock
+                            Margin="0,10,0,0"
+                            FontSize="12.5"
+                            Foreground="{StaticResource TextSecondaryBrush}"
+                            Text="{x:Static res:Strings.Amethyst_Description}"
+                            TextWrapping="Wrap" />
+
+                        <Grid Margin="0,14,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="26" />
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!-- Version -->
+                            <ui:SymbolIcon Grid.Row="0" Grid.Column="0" Margin="0,4" VerticalAlignment="Center" FontSize="16" Foreground="{StaticResource TextDimBrush}" Symbol="Tag24" />
+                            <TextBlock Grid.Row="0" Grid.Column="1" Margin="0,4" VerticalAlignment="Center" FontSize="12.5" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Plugin_Row_InstalledVersion}" />
+                            <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,4" VerticalAlignment="Center" Orientation="Horizontal">
+                                <TextBlock FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" Text="{Binding InstalledVersion}" />
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding UpdateAvailable, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock Margin="7,0,7,0" FontSize="12.5" Foreground="{StaticResource TextDimBrush}" Text="&#x2192;" />
+                                    <TextBlock FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource WarningBrush}" Text="{Binding LatestVersion}" />
+                                </StackPanel>
+                                <Border Margin="8,0,0,0" Padding="6,1" Background="{StaticResource SuccessTintBrush}" CornerRadius="4"
+                                        Visibility="{Binding ShowUpToDate, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock FontSize="10.5" FontWeight="SemiBold" Foreground="{StaticResource SuccessTextBrush}" Text="{x:Static res:Strings.Plugin_Status_UpToDate}" />
+                                </Border>
+                            </StackPanel>
+
+                            <!-- Payload (the four files placed in the Steam root) -->
+                            <Grid Grid.Row="1" Grid.Column="0" Margin="0,4" VerticalAlignment="Center">
+                                <ui:SymbolIcon FontSize="16" Foreground="{StaticResource SuccessTextBrush}" Symbol="CheckmarkCircle24" Visibility="{Binding StatusOk, Converter={StaticResource BoolToVis}}" />
+                                <ui:SymbolIcon FontSize="16" Foreground="{StaticResource WarningBrush}" Symbol="Warning24" Visibility="{Binding StatusOutOfDate, Converter={StaticResource BoolToVis}}" />
+                                <ui:SymbolIcon FontSize="16" Foreground="{StaticResource TextDimBrush}" Symbol="DismissCircle24" Visibility="{Binding StatusNotInstalled, Converter={StaticResource BoolToVis}}" />
+                            </Grid>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Margin="0,4" VerticalAlignment="Center" FontSize="12.5" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Amethyst_Row_Payload}" />
+                            <TextBlock Grid.Row="1" Grid.Column="2" Margin="0,4" VerticalAlignment="Center" FontSize="12.5" Foreground="{StaticResource TextPrimaryBrush}" Text="{Binding Status}" />
+                        </Grid>
+
+                        <!-- Buttons -->
+                        <StackPanel Margin="0,16,0,0" Orientation="Horizontal">
+                            <ui:Button
+                                MinWidth="120"
+                                HorizontalContentAlignment="Center"
+                                AutomationProperties.Name="{Binding InstallButtonText}"
+                                Command="{Binding InstallCommand}"
+                                Content="{Binding InstallButtonText}"
+                                IsEnabled="{Binding NotBusy}">
+                                <ui:Button.Style>
+                                    <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
+                                        <Setter Property="Appearance" Value="Secondary" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding InstallIsPrimary}" Value="True">
+                                                <Setter Property="Appearance" Value="Primary" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ui:Button.Style>
+                            </ui:Button>
+                            <ui:Button
+                                Margin="10,0,0,0"
+                                MinWidth="110"
+                                HorizontalContentAlignment="Center"
+                                Command="{Binding UninstallCommand}"
+                                Content="{x:Static res:Strings.Plugin_Btn_Uninstall}"
+                                IsEnabled="{Binding CanUninstall}"
+                                Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}" />
+                            <ui:Button
+                                Margin="10,0,0,0"
+                                HorizontalContentAlignment="Center"
+                                Command="{Binding CheckForUpdatesCommand}"
+                                Content="{x:Static res:Strings.Plugin_Btn_CheckForUpdates}"
+                                IsEnabled="{Binding NotBusy}" />
+                        </StackPanel>
+
+                        <!-- Installed, but placed before install records existed: say why Uninstall is
+                             unavailable instead of leaving a button that does nothing. -->
+                        <Border
+                            Margin="0,12,0,0"
+                            Padding="10,8"
+                            Background="{StaticResource WarningTintBrush}"
+                            CornerRadius="6"
+                            Visibility="{Binding ShowNoRecordHint, Converter={StaticResource BoolToVis}}">
+                            <TextBlock
+                                FontSize="11.5"
+                                Foreground="{StaticResource WarningBrush}"
+                                Text="{x:Static res:Strings.Removal_NoRecord_Hint}"
+                                TextWrapping="Wrap" />
+                        </Border>
+
+                        <ProgressBar
+                            Height="6"
+                            Margin="0,14,0,0"
+                            IsIndeterminate="{Binding IsProgressIndeterminate}"
+                            Maximum="100"
+                            Value="{Binding Progress}"
+                            Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}" />
+
+                        <!-- Offline / rate-limit line -->
+                        <TextBlock
+                            Margin="0,10,0,0"
+                            FontSize="12"
+                            Foreground="{StaticResource WarningStrongBrush}"
+                            Text="{Binding StatusLine}"
+                            TextWrapping="Wrap"
+                            Visibility="{Binding StatusLine, Converter={StaticResource NullToCollapsed}}" />
+
+                        <!-- Where the files this install displaced were kept. -->
+                        <Border
+                            Margin="0,12,0,0"
+                            Padding="10,8"
+                            Background="{StaticResource InfoTintBrush}"
+                            CornerRadius="6"
+                            Visibility="{Binding BackupLine, Converter={StaticResource NullToCollapsed}}">
+                            <TextBlock
+                                FontSize="11.5"
+                                Foreground="{StaticResource InfoBrush}"
+                                Text="{Binding BackupLine}"
+                                TextWrapping="Wrap" />
+                        </Border>
+
+                    </StackPanel>
+                </Border>
+
                 <!-- "What this does" — fills the page and explains the plugin at a glance. -->
                 <TextBlock
                     Margin="2,26,0,0"

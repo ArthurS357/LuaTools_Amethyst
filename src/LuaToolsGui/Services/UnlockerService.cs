@@ -12,9 +12,16 @@ namespace LuaToolsGui.Services;
 /// is active at a time. Each fetches its own GitHub release, verifies files by sha256, and installs
 /// into the Steam root (CloudRedirect runs a CLI that patches + deploys itself). Switching overwrites
 /// shared files but doesn't delete the previous mode's leftovers. The active mode persists in settings.
+///
+/// <para>
+/// Every install also writes an <see cref="InstallManifest"/> entry naming the files it placed, which is
+/// what makes the Mode page's Uninstall button possible at all — see <see cref="RecordModeInstall"/> and
+/// <see cref="ModeRemovalService"/>. Auto-detection deliberately does NOT write one: it recognises files by
+/// hash, which proves what they are and not who put them there.
+/// </para>
 /// </summary>
 public class UnlockerService(SteamService steam, SettingsService settings, CacheService cache, GithubProxy gh,
-    DownloadNotice notice)
+    DownloadNotice notice, InstallManifestService manifests)
 {
     private static readonly JsonSerializerOptions JsonOpts = new() { PropertyNameCaseInsensitive = true };
 
@@ -323,6 +330,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
 
             // 3. This mode is now the active one. (No cleanup of other modes' files — just overwrite.)
             settings.SelectedMode = mode.ToString();
+            RecordModeInstall(def, root, release?.TagName ?? steamToolsTag, failed);
 
             // Record the installed OST zip digest/version (kept for reference; the up-to-date check now
             // uses the mendy-tools "ost-" mirror's per-DLL hashes). Point its config at stplug-in too.
@@ -410,6 +418,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
                 return ModeInstallResult.Fail($"{def.VerifyFile} is not the expected version — the update didn't apply.");
 
             settings.SelectedMode = def.Mode.ToString(); // CloudRedirect is now the active mode
+            RecordModeInstall(def, root, release.TagName, []);
             return ModeInstallResult.Ok();
         }
         catch (OperationCanceledException) { return ModeInstallResult.Fail("Cancelled."); }
@@ -518,6 +527,81 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
 
         if (detected is { } m) settings.SelectedMode = m.ToString();
         return detected;
+    }
+
+    // ── Install record ───────────────────────────────────────────────
+
+    /// <summary>
+    /// Drop the active-mode selection — "no mode", the state a fresh install starts in. Called after a
+    /// Mode's files have actually left the Steam root, never before.
+    /// </summary>
+    /// <remarks>
+    /// <c>SelectedMode</c> has always been a nullable string whose null means "never chosen", and
+    /// <see cref="SettingsService"/> already normalises blank to null and persists it. Nothing about the
+    /// <c>settings.json</c> shape changes here, so no migration is involved.
+    /// </remarks>
+    public void ClearSelectedMode() => settings.SelectedMode = null;
+
+    /// <summary>
+    /// Record which files this Mode just placed in the Steam root, so uninstalling it later is a fact
+    /// rather than a guess.
+    ///
+    /// <para>
+    /// <b>Only one Mode entry exists at a time.</b> Modes are mutually exclusive and overwrite each other's
+    /// shared names, so a leftover entry for the mode that was replaced would go on claiming
+    /// <c>dwmapi.dll</c> — and a claim by "another install" is exactly what stops a file being removed.
+    /// The previous entries would therefore make both the new Mode AND AmethystTool permanently
+    /// un-uninstallable.
+    /// </para>
+    ///
+    /// <para>
+    /// <b>The previous Mode's leftovers are carried forward, not dropped.</b> Switching from BetterSteamTools
+    /// to SteamTools overwrites two of the three files and abandons <c>OpenSteamTool.dll</c>; folding the
+    /// names that are still on disk into the new entry is what lets one uninstall clean up after the whole
+    /// chain, instead of stranding a file nothing admits to owning.
+    /// </para>
+    /// </summary>
+    /// <param name="failed">Files the copy could not write — locked or denied. Not ours, so not recorded.</param>
+    private void RecordModeInstall(
+        ModeDefinition def, string root, string? tag, IReadOnlyCollection<string> failed)
+    {
+        string id = PluginIds.ForMode(def.Mode);
+        var manifest = manifests.Load();
+
+        var names = new List<string>(def.PlaceFiles.Length);
+        foreach (string file in def.PlaceFiles)
+            if (!failed.Contains(file)) names.Add(file);
+
+        var superseded = manifest.Plugins.Keys
+            .Where(other => PluginIds.IsMode(other) && !other.Equals(id, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        foreach (string other in superseded)
+            foreach (var file in manifest.Plugins[other].Files)
+                // The shape check comes BEFORE the path is built. These names are read back out of a file
+                // a user can edit, and one that is really a path would otherwise be probed, hashed and
+                // written into the current record — outside the Steam root and behind removal's own gate.
+                if (PluginRemoval.IsPlainFileName(file.Name)
+                    && !names.Contains(file.Name, StringComparer.OrdinalIgnoreCase)
+                    && File.Exists(Path.Combine(root, file.Name)))
+                    names.Add(file.Name);
+
+        // Nothing was written and nothing survives from before: leave the previous record alone rather
+        // than replacing it with an empty one that would disable Uninstall for files still in place.
+        if (names.Count == 0) return;
+
+        manifests.Record(new InstalledPlugin(id, tag, DateTimeOffset.Now,
+            [.. names.Select(name => new InstalledFile(name, TryHash(Path.Combine(root, name))))]));
+
+        foreach (string other in superseded) manifests.Forget(other);
+    }
+
+    /// <summary>SHA-256 of a just-placed file, or null if it cannot be read. Recorded for diagnosis only,
+    /// so an unreadable file costs a field rather than the whole record.</summary>
+    private static string? TryHash(string path)
+    {
+        try { return AssetIntegrity.Sha256OfFile(path); }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException) { return null; }
     }
 
     /// <summary>Digest (hex, no prefix) of a release's same-named asset, or null if absent.</summary>

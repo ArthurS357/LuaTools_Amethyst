@@ -209,12 +209,96 @@ one fetches a GitHub release, verifies it, and places the result. These are the 
 | Mode — BST Nightly | `madoiscool/OST-Nightly` | the same three | Steam root |
 | Mode — CloudRedirect | `Selectively11/CloudRedirect` | `CloudRedirectCLI.exe` (**executed**), `cloud_redirect.dll` | Steam root |
 | Plugin | `madoiscool/LTSP` | `plugin.zip`, `winmm.dll` | `%AppData%`, Steam root |
+| Plugin — AmethystTool | `ArthurS357/BetterSteamTools-Amethyst` | `AmethystTool.dll`, `amethysttool.toml`, `dwmapi.dll`, `xinput1_4.dll` | Steam root |
 | Manage — Remove Steam DRM | `atom0s/Steamless` | `Steamless.CLI.exe` (**executed**) | cache |
 
 Every one of them is verified as described under [GitHub mirrors](#github-mirrors) — HTTPS, GitHub host,
-**pinned to the owner/repo in this table**, and SHA-256 fail-closed — and `plugin.zip` additionally goes
-through the same [archive screen](#downloaded-fixes-are-screened-before-they-touch-your-disk) the Fixes
-page uses, so a decompression bomb inside a genuinely-published release is refused too.
+**pinned to the owner/repo in this table**, and SHA-256 fail-closed — and `plugin.zip` and
+`AmethystTool-*.zip` additionally go through the same
+[archive screen](#downloaded-fixes-are-screened-before-they-touch-your-disk) the Fixes page uses, so a
+decompression bomb inside a genuinely-published release is refused too.
+
+### AmethystTool
+
+`AmethystTool` is a fork of BetterSteamTools maintained alongside this app. It is a **native injection
+plugin**: `dwmapi.dll` and `xinput1_4.dll` are proxy DLLs that `steam.exe` loads by name and that forward
+into `AmethystTool.dll`, all of it sitting in the Steam install root next to `steam.exe`. Install it from
+the **Install** button on the Plugin page; Steam is stopped for the copy and relaunched afterwards, because
+those DLLs are locked while it runs.
+
+Three things about it are worth knowing before you press it:
+
+- **Exactly four files are ever written.** The release archive also carries `INSTALL.txt`, `README.md`,
+  `RELEASE_NOTES.md` and `TESTING.md`; those are documentation and never reach your Steam folder. The list
+  is an allow-list, so a file a future release adds is ignored rather than installed by default.
+- **Nothing is overwritten without a copy first.** If `dwmapi.dll` or `xinput1_4.dll` is already there —
+  because another tool owns it, or because you are reinstalling — the existing file is moved into
+  `AmethystTool-backup-<timestamp>\` inside your Steam folder *before* the replacement is written. The
+  Plugin page tells you which folder. That includes `amethysttool.toml`: reinstalling replaces the config,
+  and your previous one is in that folder.
+- **An unverifiable release is refused, not installed.** The SHA-256 GitHub publishes for the asset is
+  required; if it is missing or does not match, the install stops. There is no pinned-hash fallback here
+  (unlike Steamless) and no setting to turn the check off.
+
+### Uninstalling a plugin
+
+Both cards on the Plugin page have an **Uninstall** button. It works from an **install record**, not from a
+list of file names — and that distinction is the whole reason it is safe to press.
+
+LuaTools keeps that record in `%AppData%\LuaToolsGui\install-manifest.json`: which plugin placed which
+files in your Steam folder, when, and what each one hashed to. Uninstall removes exactly those, and:
+
+- **A file another install still needs is kept.** `dwmapi.dll` and `xinput1_4.dll` are placed by
+  AmethystTool *and* by three of the Mode page's unlockers. If a Mode is active, uninstalling AmethystTool
+  leaves those two alone and tells you it did — only the record goes. Removing them would have left Steam
+  loading a proxy whose partner had vanished.
+- **Nothing is deleted, it is moved.** Everything removed goes to `Removal-backup-<timestamp>\<plugin>\`
+  inside your Steam folder. Changed your mind, or something else needed that file? Move it back.
+- **Steam is closed and is not reopened for you.** The files are locked while it runs, so it has to go
+  down; bringing it back up unasked — onto a client that was loading a DLL a moment ago and now is not —
+  is not the uninstaller's call. Reopen it when you are ready.
+- **No record, no removal.** If the button is disabled, LuaTools cannot prove which files next to
+  `steam.exe` are its own — most likely you placed them by hand. It will not guess. Reinstall through the
+  app to create a record, or remove the files yourself.
+
+To remove AmethystTool by hand instead: close Steam, delete `AmethystTool.dll`, `amethysttool.toml`,
+`dwmapi.dll` and `xinput1_4.dll` from the Steam root (leave the last two if a Mode is active), and — if you
+want the files it displaced back — move them out of the newest `AmethystTool-backup-*` folder.
+
+### Uninstalling a Mode
+
+The active Mode's card gains an **Uninstall** button, and it runs the same machinery as the Plugin page —
+same install record, same shared-file rule, same backup folder, same "Steam stays closed" decision.
+
+A Mode only becomes uninstallable once LuaTools has installed it. Installing or switching a Mode now writes
+an `install-manifest.json` entry naming the files it placed; only one Mode entry exists at a time, and
+switching folds any file the previous Mode abandoned (`OpenSteamTool.dll`, typically) into the new entry, so
+one uninstall clears the whole chain instead of stranding a file nothing admits to owning.
+
+Two consequences worth knowing:
+
+- **A Mode that was auto-detected cannot be uninstalled from the app.** On first run with no Mode selected,
+  LuaTools hashes the DLLs next to `steam.exe` against published releases and adopts a match as the active
+  Mode. That proves what those files *are*, and nothing about who put them there — so no record is written,
+  and the card shows a short explanation instead of a button you would not want enabled. Reinstall the Mode
+  through the app to create a record, or remove the files yourself.
+- **A file AmethystTool still claims is left alone**, exactly as a Mode's files are left alone when
+  AmethystTool is uninstalled. You are told which names stayed.
+
+After a successful uninstall the Mode selection returns to "none" and the Mode page goes back to offering
+each Mode as something to install. `settings.json` is unaffected beyond that one field, which has always
+been allowed to be absent.
+
+### Steam is closed and is not reopened, on purpose
+
+This is true of **every** uninstall path — the store-page plugin, AmethystTool, and now Modes — and it is a
+deliberate difference from install, which does relaunch Steam.
+
+The files being removed are proxy DLLs that `steam.exe` loads by name, so they cannot be moved while it is
+running: the uninstall asks Steam to close, and forces it only if it refuses. Bringing it back up
+afterwards would put a client on screen that was loading a DLL a moment ago and now is not — an unasked-for
+restart into a state the user has not yet had a chance to look at. That call is yours. Every uninstall toast
+says Steam was closed, and the **Restart Steam** item in the sidebar reopens it when you are ready.
 
 ### You are told before anything is applied
 

@@ -185,6 +185,11 @@
   <data name="Mode_Btn_Update" xml:space="preserve"><value>Opdater</value></data>
   <data name="Mode_Btn_Install" xml:space="preserve"><value>Installer</value></data>
   <data name="Mode_Btn_Switch" xml:space="preserve"><value>Skift til denne</value></data>
+  <data name="Mode_Btn_Uninstall" xml:space="preserve"><value>Afinstaller</value></data>
+  <data name="Mode_Confirm_Uninstall" xml:space="preserve"><value>Fjern {0}?</value></data>
+  <data name="Mode_Confirm_Uninstall_Body" xml:space="preserve"><value>De filer, denne tilstand lagde ved siden af steam.exe, flyttes til en sikkerhedskopimappe i din Steam-mappe — de slettes ikke. En fil, som en anden installation stadig bruger, får lov at blive. Steam lukkes og åbnes ikke igen for dig — åbn det, når du er klar.</value></data>
+  <data name="Mode_Uninstall_NoRecord" xml:space="preserve"><value>LuaTools har ingen installationsregistrering for denne tilstand og kan derfor ikke bevise, hvilke filer ved siden af steam.exe der er dens egne. Geninstaller via appen for at oprette en, eller fjern filerne selv.</value></data>
+  <data name="Mode_Toast_Uninstalled" xml:space="preserve"><value>Tilstand fjernet</value></data>
   <data name="Mode_Confirm_Reinstall" xml:space="preserve"><value>Geninstaller {0}?</value></data>
   <data name="Mode_Confirm_Switch" xml:space="preserve"><value>Skift til {0}?</value></data>
   <data name="Mode_Toast_Updated" xml:space="preserve"><value>Tilstand opdateret</value></data>
@@ -399,7 +404,6 @@ Dette sletter .lua-filerne fra Steam\config\stplug-in. Genstart Steam bagefter, 
   <data name="Plugin_Toast_Title" xml:space="preserve"><value>Plugin</value></data>
   <data name="Plugin_Toast_Installed" xml:space="preserve"><value>Plugin installeret. Steam genstarter for at indlæse det.</value></data>
   <data name="Plugin_Toast_InstallFailed" xml:space="preserve"><value>Installation mislykkedes: {0}</value></data>
-  <data name="Plugin_Toast_Removed" xml:space="preserve"><value>Plugin fjernet. Steam genstarter.</value></data>
   <data name="Plugin_Toast_UninstallFailed" xml:space="preserve"><value>Afinstallation mislykkedes: {0}</value></data>
   <data name="Plugin_Toast_UpdateAvailable" xml:space="preserve"><value>Der er en opdatering tilgængelig.</value></data>
   <data name="Plugin_Toast_UpToDate" xml:space="preserve"><value>Du er opdateret.</value></data>
@@ -506,4 +510,22 @@ Dette sletter .lua-filerne fra Steam\config\stplug-in. Genstart Steam bagefter, 
   <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Spillet kunne ikke startes</value></data>
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam afviste at åbne dette spil. Kontrollér, at Steam er installeret korrekt.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam kunne ikke startes. Angiv placeringen i Indstillinger, og prøv igen.</value></data>
+  <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Et indbygget Steam-plugin (en fork af BetterSteamTools). Installationen lægger fire filer i din Steam-mappe; det, der allerede er der, gemmes først i en sikkerhedskopimappe. Steam genstartes, så plugin’et indlæses.</value></data>
+  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam-filer</value></data>
+  <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool blev installeret. Steam blev genstartet, så det indlæses.</value></data>
+  <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Installation af AmethystTool mislykkedes: {0}</value></data>
+  <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Den nyeste AmethystTool-udgivelse udgiver ikke {0}.</value></data>
+  <data name="Amethyst_Err_Archive" xml:space="preserve"><value>AmethystTool-arkivet blev afvist: {0}</value></data>
+  <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Filer, der allerede lå i din Steam-mappe, er gemt i {0}</value></data>
+  <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Vil du afinstallere dette plugin?</value></data>
+  <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam lukkes, så filerne kan fjernes, og bliver IKKE åbnet igen for dig. Alt det fjernede gemmes i en sikkerhedskopimappe inde i din Steam-mappe.</value></data>
+  <data name="Removal_Toast_Removed" xml:space="preserve"><value>Fjernet. Filerne blev gemt i en sikkerhedskopimappe inde i din Steam-mappe.</value></data>
+  <data name="Removal_Toast_RemovedSteamStopped" xml:space="preserve"><value>Fjernet. Steam blev lukket — åbn det igen, når du er klar. Filerne blev gemt i en sikkerhedskopimappe inde i din Steam-mappe.</value></data>
+  <data name="Removal_Toast_NothingToDo" xml:space="preserve"><value>Intet at fjerne — de filer er der allerede ikke mere.</value></data>
+  <data name="Removal_Toast_NoRecord" xml:space="preserve"><value>Der er ingen installationsregistrering for dette plugin, så der blev ikke fjernet noget.</value></data>
+  <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} blev beholdt: et andet installeret værktøj bruger den stadig. Kun installationsregistreringen blev fjernet.</value></data>
+  <data name="Removal_Toast_Failed" xml:space="preserve"><value>Afinstallation mislykkedes: {0}</value></data>
+  <data name="Removal_Err_Record" xml:space="preserve"><value>Installationsregistreringen kunne ikke bruges: {0}</value></data>
+  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Denne kopi blev installeret, før LuaTools førte installationsregistreringer, så den kan ikke bevise, hvilke filer der er dens egne. Geninstaller den for at oprette en registrering, hvorefter afinstallation bliver tilgængelig.</value></data>
 </root>

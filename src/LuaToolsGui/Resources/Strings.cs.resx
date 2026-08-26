@@ -185,6 +185,11 @@
   <data name="Mode_Btn_Update" xml:space="preserve"><value>Aktualizovat</value></data>
   <data name="Mode_Btn_Install" xml:space="preserve"><value>Nainstalovat</value></data>
   <data name="Mode_Btn_Switch" xml:space="preserve"><value>Přepnout na tento</value></data>
+  <data name="Mode_Btn_Uninstall" xml:space="preserve"><value>Odinstalovat</value></data>
+  <data name="Mode_Confirm_Uninstall" xml:space="preserve"><value>Odebrat {0}?</value></data>
+  <data name="Mode_Confirm_Uninstall_Body" xml:space="preserve"><value>Soubory, které tento režim umístil vedle steam.exe, se přesunou do záložní složky uvnitř složky Steamu, nemažou se. Soubor, který stále potřebuje jiná instalace, zůstane na místě. Steam se zavře a znovu se za vás neotevře — otevřete jej, až budete připraveni.</value></data>
+  <data name="Mode_Uninstall_NoRecord" xml:space="preserve"><value>LuaTools nemá pro tento režim žádný záznam o instalaci, takže nemůže prokázat, které soubory vedle steam.exe patří jemu. Přeinstalujte jej v aplikaci, aby záznam vznikl, nebo soubory odstraňte ručně.</value></data>
+  <data name="Mode_Toast_Uninstalled" xml:space="preserve"><value>Režim odebrán</value></data>
   <data name="Mode_Confirm_Reinstall" xml:space="preserve"><value>Přeinstalovat {0}?</value></data>
   <data name="Mode_Confirm_Switch" xml:space="preserve"><value>Přepnout na {0}?</value></data>
   <data name="Mode_Toast_Updated" xml:space="preserve"><value>Režim aktualizován</value></data>
@@ -399,7 +404,6 @@ Tím se smažou soubory .lua ze Steam\config\stplug-in. Poté restartujte Steam,
   <data name="Plugin_Toast_Title" xml:space="preserve"><value>Plugin</value></data>
   <data name="Plugin_Toast_Installed" xml:space="preserve"><value>Plugin nainstalován. Steam se restartuje, aby jej načetl.</value></data>
   <data name="Plugin_Toast_InstallFailed" xml:space="preserve"><value>Instalace selhala: {0}</value></data>
-  <data name="Plugin_Toast_Removed" xml:space="preserve"><value>Plugin odebrán. Steam se restartuje.</value></data>
   <data name="Plugin_Toast_UninstallFailed" xml:space="preserve"><value>Odinstalace selhala: {0}</value></data>
   <data name="Plugin_Toast_UpdateAvailable" xml:space="preserve"><value>Je dostupná aktualizace.</value></data>
   <data name="Plugin_Toast_UpToDate" xml:space="preserve"><value>Máte nejnovější verzi.</value></data>
@@ -506,4 +510,22 @@ Tím se smažou soubory .lua ze Steam\config\stplug-in. Poté restartujte Steam,
   <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Hru se nepodařilo spustit</value></data>
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam odmítl tuto hru otevřít. Zkontrolujte, zda je Steam správně nainstalován.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam se nepodařilo spustit. Nastavte jeho umístění v Nastavení a zkuste to znovu.</value></data>
+  <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Nativní plugin pro Steam (fork BetterSteamTools). Instalace umístí do složky Steamu čtyři soubory; to, co tam už je, se nejdřív uloží do složky se zálohou. Steam se restartuje, aby se plugin načetl.</value></data>
+  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Soubory Steamu</value></data>
+  <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool byl nainstalován. Steam byl restartován, aby se načetl.</value></data>
+  <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Instalace AmethystTool selhala: {0}</value></data>
+  <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Nejnovější verze AmethystTool nepublikuje {0}.</value></data>
+  <data name="Amethyst_Err_Archive" xml:space="preserve"><value>Archiv AmethystTool byl odmítnut: {0}</value></data>
+  <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Soubory, které už ve složce Steamu byly, jsou uloženy v {0}</value></data>
+  <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Odinstalovat tento plugin?</value></data>
+  <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam bude zavřen, aby šlo jeho soubory odstranit, a NEBUDE za vás znovu otevřen. Vše odstraněné zůstane ve složce se zálohou uvnitř složky Steamu.</value></data>
+  <data name="Removal_Toast_Removed" xml:space="preserve"><value>Odstraněno. Soubory zůstaly ve složce se zálohou uvnitř složky Steamu.</value></data>
+  <data name="Removal_Toast_RemovedSteamStopped" xml:space="preserve"><value>Odstraněno. Steam byl zavřen — otevřete jej, až budete chtít. Soubory zůstaly ve složce se zálohou uvnitř složky Steamu.</value></data>
+  <data name="Removal_Toast_NothingToDo" xml:space="preserve"><value>Není co odstranit — tyto soubory už tam nejsou.</value></data>
+  <data name="Removal_Toast_NoRecord" xml:space="preserve"><value>Pro tento plugin neexistuje záznam o instalaci, takže nebylo nic odstraněno.</value></data>
+  <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} byl ponechán: jiný nainstalovaný nástroj jej stále používá. Odstraněn byl jen záznam o instalaci.</value></data>
+  <data name="Removal_Toast_Failed" xml:space="preserve"><value>Odinstalace selhala: {0}</value></data>
+  <data name="Removal_Err_Record" xml:space="preserve"><value>Záznam o instalaci nebylo možné použít: {0}</value></data>
+  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Tato kopie byla nainstalována dříve, než LuaTools začal vést záznamy o instalaci, takže nedokáže prokázat, které soubory jsou jeho. Přeinstalujte jej, aby vznikl záznam — poté bude odinstalace dostupná.</value></data>
 </root>

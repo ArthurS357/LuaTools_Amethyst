@@ -185,6 +185,11 @@
   <data name="Mode_Btn_Update" xml:space="preserve"><value>Bijwerken</value></data>
   <data name="Mode_Btn_Install" xml:space="preserve"><value>Installeren</value></data>
   <data name="Mode_Btn_Switch" xml:space="preserve"><value>Hiernaar overschakelen</value></data>
+  <data name="Mode_Btn_Uninstall" xml:space="preserve"><value>Verwijderen</value></data>
+  <data name="Mode_Confirm_Uninstall" xml:space="preserve"><value>{0} verwijderen?</value></data>
+  <data name="Mode_Confirm_Uninstall_Body" xml:space="preserve"><value>De bestanden die deze modus naast steam.exe heeft gezet, worden naar een back-upmap in je Steam-map verplaatst en niet verwijderd. Een bestand dat een andere installatie nog nodig heeft, blijft staan. Steam wordt gesloten en niet voor je heropend — start het wanneer je er klaar voor bent.</value></data>
+  <data name="Mode_Uninstall_NoRecord" xml:space="preserve"><value>LuaTools heeft geen installatieregistratie voor deze modus en kan dus niet aantonen welke bestanden naast steam.exe van hem zijn. Installeer opnieuw via de app om er een te maken, of verwijder de bestanden zelf.</value></data>
+  <data name="Mode_Toast_Uninstalled" xml:space="preserve"><value>Modus verwijderd</value></data>
   <data name="Mode_Confirm_Reinstall" xml:space="preserve"><value>{0} opnieuw installeren?</value></data>
   <data name="Mode_Confirm_Switch" xml:space="preserve"><value>Overschakelen naar {0}?</value></data>
   <data name="Mode_Toast_Updated" xml:space="preserve"><value>Modus bijgewerkt</value></data>
@@ -399,7 +404,6 @@ Dit verwijdert de .lua-bestanden uit Steam\config\stplug-in. Herstart Steam daar
   <data name="Plugin_Toast_Title" xml:space="preserve"><value>Plug-in</value></data>
   <data name="Plugin_Toast_Installed" xml:space="preserve"><value>Plug-in geïnstalleerd. Steam wordt opnieuw gestart om deze te laden.</value></data>
   <data name="Plugin_Toast_InstallFailed" xml:space="preserve"><value>Installatie mislukt: {0}</value></data>
-  <data name="Plugin_Toast_Removed" xml:space="preserve"><value>Plug-in verwijderd. Steam wordt opnieuw gestart.</value></data>
   <data name="Plugin_Toast_UninstallFailed" xml:space="preserve"><value>Verwijderen mislukt: {0}</value></data>
   <data name="Plugin_Toast_UpdateAvailable" xml:space="preserve"><value>Er is een update beschikbaar.</value></data>
   <data name="Plugin_Toast_UpToDate" xml:space="preserve"><value>Je bent up-to-date.</value></data>
@@ -506,4 +510,22 @@ Dit verwijdert de .lua-bestanden uit Steam\config\stplug-in. Herstart Steam daar
   <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Kan het spel niet starten</value></data>
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam weigerde dit spel te openen. Controleer of Steam correct is geïnstalleerd.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam kon niet worden gestart. Stel de locatie in bij Instellingen en probeer het opnieuw.</value></data>
+  <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Een native Steam-plug-in (een fork van BetterSteamTools). Bij installatie worden vier bestanden in je Steam-map geplaatst; wat er al staat wordt eerst in een back-upmap bewaard. Steam wordt opnieuw gestart zodat de plug-in wordt geladen.</value></data>
+  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam-bestanden</value></data>
+  <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool is geïnstalleerd. Steam is opnieuw gestart zodat het wordt geladen.</value></data>
+  <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Installatie van AmethystTool mislukt: {0}</value></data>
+  <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>De nieuwste AmethystTool-release publiceert {0} niet.</value></data>
+  <data name="Amethyst_Err_Archive" xml:space="preserve"><value>Het AmethystTool-archief is geweigerd: {0}</value></data>
+  <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Bestanden die al in je Steam-map stonden zijn bewaard in {0}</value></data>
+  <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Deze plug-in verwijderen?</value></data>
+  <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam wordt afgesloten zodat de bestanden verwijderd kunnen worden, en wordt NIET automatisch heropend. Alles wat verwijderd wordt, blijft bewaard in een back-upmap in je Steam-map.</value></data>
+  <data name="Removal_Toast_Removed" xml:space="preserve"><value>Verwijderd. De bestanden zijn bewaard in een back-upmap in je Steam-map.</value></data>
+  <data name="Removal_Toast_RemovedSteamStopped" xml:space="preserve"><value>Verwijderd. Steam is afgesloten — open het weer wanneer je wilt. De bestanden zijn bewaard in een back-upmap in je Steam-map.</value></data>
+  <data name="Removal_Toast_NothingToDo" xml:space="preserve"><value>Niets te verwijderen — die bestanden zijn er al niet meer.</value></data>
+  <data name="Removal_Toast_NoRecord" xml:space="preserve"><value>Er is geen installatieregistratie voor deze plug-in, dus er is niets verwijderd.</value></data>
+  <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} is behouden: een andere geïnstalleerde tool gebruikt het nog. Alleen de installatieregistratie is verwijderd.</value></data>
+  <data name="Removal_Toast_Failed" xml:space="preserve"><value>Verwijderen mislukt: {0}</value></data>
+  <data name="Removal_Err_Record" xml:space="preserve"><value>De installatieregistratie kon niet worden gebruikt: {0}</value></data>
+  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Deze kopie is geïnstalleerd voordat LuaTools installatieregistraties bijhield, dus kan niet worden aangetoond welke bestanden van hem zijn. Installeer opnieuw om een registratie te maken; daarna is verwijderen beschikbaar.</value></data>
 </root>

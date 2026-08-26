@@ -185,6 +185,11 @@
   <data name="Mode_Btn_Update" xml:space="preserve"><value>Frissítés</value></data>
   <data name="Mode_Btn_Install" xml:space="preserve"><value>Telepítés</value></data>
   <data name="Mode_Btn_Switch" xml:space="preserve"><value>Váltás erre</value></data>
+  <data name="Mode_Btn_Uninstall" xml:space="preserve"><value>Eltávolítás</value></data>
+  <data name="Mode_Confirm_Uninstall" xml:space="preserve"><value>Eltávolítod: {0}?</value></data>
+  <data name="Mode_Confirm_Uninstall_Body" xml:space="preserve"><value>A mód által a steam.exe mellé helyezett fájlok a Steam mappán belüli biztonsági mentés mappába kerülnek, nem törlődnek. Az a fájl, amelyre egy másik telepítés még szüksége van, a helyén marad. A Steam bezárul, és nem nyílik meg újra helyetted — nyisd meg, amikor készen állsz.</value></data>
+  <data name="Mode_Uninstall_NoRecord" xml:space="preserve"><value>A LuaTools nem rendelkezik telepítési bejegyzéssel ehhez a módhoz, ezért nem tudja bizonyítani, mely steam.exe melletti fájlok a sajátjai. Telepítsd újra az alkalmazásból a bejegyzés létrehozásához, vagy távolítsd el a fájlokat kézzel.</value></data>
+  <data name="Mode_Toast_Uninstalled" xml:space="preserve"><value>Mód eltávolítva</value></data>
   <data name="Mode_Confirm_Reinstall" xml:space="preserve"><value>Újratelepíted a következőt: {0}?</value></data>
   <data name="Mode_Confirm_Switch" xml:space="preserve"><value>Váltasz erre: {0}?</value></data>
   <data name="Mode_Toast_Updated" xml:space="preserve"><value>Mód frissítve</value></data>
@@ -399,7 +404,6 @@ Ez törli a .lua fájlokat a Steam\config\stplug-in mappából. Ezután indítsd
   <data name="Plugin_Toast_Title" xml:space="preserve"><value>Bővítmény</value></data>
   <data name="Plugin_Toast_Installed" xml:space="preserve"><value>A bővítmény telepítve. A Steam újraindul a betöltéséhez.</value></data>
   <data name="Plugin_Toast_InstallFailed" xml:space="preserve"><value>A telepítés sikertelen: {0}</value></data>
-  <data name="Plugin_Toast_Removed" xml:space="preserve"><value>A bővítmény eltávolítva. A Steam újraindul.</value></data>
   <data name="Plugin_Toast_UninstallFailed" xml:space="preserve"><value>Az eltávolítás sikertelen: {0}</value></data>
   <data name="Plugin_Toast_UpdateAvailable" xml:space="preserve"><value>Elérhető egy frissítés.</value></data>
   <data name="Plugin_Toast_UpToDate" xml:space="preserve"><value>Naprakész vagy.</value></data>
@@ -506,4 +510,22 @@ Ez törli a .lua fájlokat a Steam\config\stplug-in mappából. Ezután indítsd
   <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>A játék nem indítható el</value></data>
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>A Steam nem nyitotta meg ezt a játékot. Ellenőrizze, hogy a Steam megfelelően van telepítve.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>A Steam nem indítható el. Adja meg a helyét a Beállításokban, majd próbálja újra.</value></data>
+  <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Natív Steam-bővítmény (a BetterSteamTools forkja). A telepítés négy fájlt helyez a Steam mappájába; ami már ott van, azt előbb egy biztonsági mentési mappába teszi. A Steam újraindul, hogy betöltse a bővítményt.</value></data>
+  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam-fájlok</value></data>
+  <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>Az AmethystTool telepítve. A Steam újraindult, hogy betöltse.</value></data>
+  <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Az AmethystTool telepítése nem sikerült: {0}</value></data>
+  <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>A legfrissebb AmethystTool kiadás nem tesz közzé {0} fájlt.</value></data>
+  <data name="Amethyst_Err_Archive" xml:space="preserve"><value>Az AmethystTool archívumot elutasítottuk: {0}</value></data>
+  <data name="Amethyst_Backup_Line" xml:space="preserve"><value>A Steam mappájában már meglévő fájlok itt maradtak meg: {0}</value></data>
+  <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Eltávolítja ezt a bővítményt?</value></data>
+  <data name="Removal_Confirm_Body" xml:space="preserve"><value>A Steam bezárul, hogy a fájljai eltávolíthatók legyenek, és NEM nyílik meg újra automatikusan. Minden eltávolított elem a Steam mappán belüli biztonsági mentési mappába kerül.</value></data>
+  <data name="Removal_Toast_Removed" xml:space="preserve"><value>Eltávolítva. A fájlok a Steam mappán belüli biztonsági mentési mappában maradtak.</value></data>
+  <data name="Removal_Toast_RemovedSteamStopped" xml:space="preserve"><value>Eltávolítva. A Steam bezárult — nyissa meg újra, amikor készen áll. A fájlok a Steam mappán belüli biztonsági mentési mappában maradtak.</value></data>
+  <data name="Removal_Toast_NothingToDo" xml:space="preserve"><value>Nincs mit eltávolítani — azok a fájlok már nincsenek ott.</value></data>
+  <data name="Removal_Toast_NoRecord" xml:space="preserve"><value>Ehhez a bővítményhez nincs telepítési bejegyzés, így semmi sem lett eltávolítva.</value></data>
+  <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} megmaradt: egy másik telepített eszköz még használja. Csak a telepítési bejegyzés lett eltávolítva.</value></data>
+  <data name="Removal_Toast_Failed" xml:space="preserve"><value>Az eltávolítás nem sikerült: {0}</value></data>
+  <data name="Removal_Err_Record" xml:space="preserve"><value>A telepítési bejegyzés nem volt használható: {0}</value></data>
+  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Ezt a példányt még az előtt telepítették, hogy a LuaTools telepítési bejegyzéseket vezetett volna, így nem tudja bizonyítani, mely fájlok a sajátjai. Telepítse újra a bejegyzés létrehozásához, utána az eltávolítás elérhetővé válik.</value></data>
 </root>

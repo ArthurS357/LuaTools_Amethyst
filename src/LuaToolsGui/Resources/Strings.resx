@@ -239,6 +239,11 @@ Force it to close? Anything Steam has not saved yet may be lost. Choose No to le
   <data name="Mode_Btn_Update" xml:space="preserve"><value>Update</value></data>
   <data name="Mode_Btn_Install" xml:space="preserve"><value>Install</value></data>
   <data name="Mode_Btn_Switch" xml:space="preserve"><value>Switch to this</value></data>
+  <data name="Mode_Btn_Uninstall" xml:space="preserve"><value>Uninstall</value></data>
+  <data name="Mode_Confirm_Uninstall" xml:space="preserve"><value>Remove {0}?</value></data>
+  <data name="Mode_Confirm_Uninstall_Body" xml:space="preserve"><value>The files this mode placed next to steam.exe are moved to a backup folder inside your Steam folder, not deleted. A file another install still needs is left alone. Steam is closed and is not reopened for you — reopen it when you are ready.</value></data>
+  <data name="Mode_Uninstall_NoRecord" xml:space="preserve"><value>LuaTools has no install record for this mode, so it cannot prove which files next to steam.exe are its own. Reinstall it through the app to create one, or remove the files yourself.</value></data>
+  <data name="Mode_Toast_Uninstalled" xml:space="preserve"><value>Mode removed</value></data>
   <data name="Mode_Confirm_Reinstall" xml:space="preserve"><value>Reinstall {0}?</value></data>
   <data name="Mode_Confirm_Switch" xml:space="preserve"><value>Switch to {0}?</value></data>
   <data name="Mode_Toast_Updated" xml:space="preserve"><value>Mode updated</value></data>
@@ -474,7 +479,6 @@ This deletes the .lua files from Steam\config\stplug-in. Restart Steam afterward
   <data name="Plugin_Toast_Title" xml:space="preserve"><value>Plugin</value></data>
   <data name="Plugin_Toast_Installed" xml:space="preserve"><value>Plugin installed. Steam is restarting to load it.</value></data>
   <data name="Plugin_Toast_InstallFailed" xml:space="preserve"><value>Install failed: {0}</value></data>
-  <data name="Plugin_Toast_Removed" xml:space="preserve"><value>Plugin removed. Steam is restarting.</value></data>
   <data name="Plugin_Toast_UninstallFailed" xml:space="preserve"><value>Uninstall failed: {0}</value></data>
   <data name="Plugin_Toast_UpdateAvailable" xml:space="preserve"><value>An update is available.</value></data>
   <data name="Plugin_Toast_UpToDate" xml:space="preserve"><value>You're up to date.</value></data>
@@ -632,4 +636,22 @@ Enable it?</value></data>
   <data name="About_OpenSettings" xml:space="preserve"><value>Open settings.json folder</value></data>
   <data name="About_Config_Header" xml:space="preserve"><value>Configuring updates manually</value></data>
   <data name="About_Config_Body" xml:space="preserve"><value>Edit settings.json in the folder below and add the repository you want updates from. Only https://github.com/&lt;owner&gt;/&lt;repo&gt; is accepted, and the original LuaTools release repositories are refused so an official build can never replace this one.</value></data>
+  <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>A native Steam plugin (a fork of BetterSteamTools). Installing places four files in your Steam folder; anything already there is kept in a backup folder first. Steam is restarted so the plugin loads.</value></data>
+  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam files</value></data>
+  <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool was installed. Steam was restarted so it loads.</value></data>
+  <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>AmethystTool install failed: {0}</value></data>
+  <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>The latest AmethystTool release does not publish {0}.</value></data>
+  <data name="Amethyst_Err_Archive" xml:space="preserve"><value>The AmethystTool archive was rejected: {0}</value></data>
+  <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Files that were already in your Steam folder were kept in {0}</value></data>
+  <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Uninstall this plugin?</value></data>
+  <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam will be closed so its files can be removed, and will NOT be reopened for you. Everything removed is kept in a backup folder inside your Steam folder.</value></data>
+  <data name="Removal_Toast_Removed" xml:space="preserve"><value>Removed. The files were kept in a backup folder inside your Steam folder.</value></data>
+  <data name="Removal_Toast_RemovedSteamStopped" xml:space="preserve"><value>Removed. Steam was closed — reopen it when you are ready. The files were kept in a backup folder inside your Steam folder.</value></data>
+  <data name="Removal_Toast_NothingToDo" xml:space="preserve"><value>Nothing to remove — those files are already gone.</value></data>
+  <data name="Removal_Toast_NoRecord" xml:space="preserve"><value>There is no install record for this plugin, so nothing was removed.</value></data>
+  <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>Kept {0}: another installed tool still uses it. Only the install record was removed.</value></data>
+  <data name="Removal_Toast_Failed" xml:space="preserve"><value>Uninstall failed: {0}</value></data>
+  <data name="Removal_Err_Record" xml:space="preserve"><value>The install record could not be used: {0}</value></data>
+  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>This copy was installed before LuaTools kept install records, so it cannot prove which files are its own. Reinstall it to create a record, and Uninstall becomes available.</value></data>
 </root>

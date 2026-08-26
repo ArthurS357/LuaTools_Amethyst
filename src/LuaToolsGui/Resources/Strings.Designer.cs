@@ -196,6 +196,11 @@ public static class Strings
     public static string Mode_Btn_Update => Get(nameof(Mode_Btn_Update));
     public static string Mode_Btn_Install => Get(nameof(Mode_Btn_Install));
     public static string Mode_Btn_Switch => Get(nameof(Mode_Btn_Switch));
+    public static string Mode_Btn_Uninstall => Get(nameof(Mode_Btn_Uninstall));
+    public static string Mode_Confirm_Uninstall => Get(nameof(Mode_Confirm_Uninstall));
+    public static string Mode_Confirm_Uninstall_Body => Get(nameof(Mode_Confirm_Uninstall_Body));
+    public static string Mode_Uninstall_NoRecord => Get(nameof(Mode_Uninstall_NoRecord));
+    public static string Mode_Toast_Uninstalled => Get(nameof(Mode_Toast_Uninstalled));
     public static string Mode_Confirm_Reinstall => Get(nameof(Mode_Confirm_Reinstall));
     public static string Mode_Confirm_Switch => Get(nameof(Mode_Confirm_Switch));
     public static string Mode_Toast_Updated => Get(nameof(Mode_Toast_Updated));
@@ -424,7 +429,6 @@ public static class Strings
         public static string Plugin_Toast_Title => Get(nameof(Plugin_Toast_Title));
         public static string Plugin_Toast_Installed => Get(nameof(Plugin_Toast_Installed));
         public static string Plugin_Toast_InstallFailed => Get(nameof(Plugin_Toast_InstallFailed));
-        public static string Plugin_Toast_Removed => Get(nameof(Plugin_Toast_Removed));
         public static string Plugin_Toast_UninstallFailed => Get(nameof(Plugin_Toast_UninstallFailed));
         public static string Plugin_Toast_UpdateAvailable => Get(nameof(Plugin_Toast_UpdateAvailable));
         public static string Plugin_Toast_UpToDate => Get(nameof(Plugin_Toast_UpToDate));
@@ -588,4 +592,26 @@ public static class Strings
     public static string About_OpenSettings => Get(nameof(About_OpenSettings));
     public static string About_Config_Header => Get(nameof(About_Config_Header));
     public static string About_Config_Body => Get(nameof(About_Config_Body));
+
+    // ── AmethystTool card (Plugin page) ──
+    public static string Amethyst_CardTitle => Get(nameof(Amethyst_CardTitle));
+    public static string Amethyst_Description => Get(nameof(Amethyst_Description));
+    public static string Amethyst_Row_Payload => Get(nameof(Amethyst_Row_Payload));
+    public static string Amethyst_Toast_Installed => Get(nameof(Amethyst_Toast_Installed));
+    public static string Amethyst_Toast_Failed => Get(nameof(Amethyst_Toast_Failed));
+    public static string Amethyst_Err_MissingAsset => Get(nameof(Amethyst_Err_MissingAsset));
+    public static string Amethyst_Err_Archive => Get(nameof(Amethyst_Err_Archive));
+    public static string Amethyst_Backup_Line => Get(nameof(Amethyst_Backup_Line));
+
+    // ── Plugin removal (uninstall) ──
+    public static string Removal_Confirm_Caption => Get(nameof(Removal_Confirm_Caption));
+    public static string Removal_Confirm_Body => Get(nameof(Removal_Confirm_Body));
+    public static string Removal_Toast_Removed => Get(nameof(Removal_Toast_Removed));
+    public static string Removal_Toast_RemovedSteamStopped => Get(nameof(Removal_Toast_RemovedSteamStopped));
+    public static string Removal_Toast_NothingToDo => Get(nameof(Removal_Toast_NothingToDo));
+    public static string Removal_Toast_NoRecord => Get(nameof(Removal_Toast_NoRecord));
+    public static string Removal_Toast_SharedKept => Get(nameof(Removal_Toast_SharedKept));
+    public static string Removal_Toast_Failed => Get(nameof(Removal_Toast_Failed));
+    public static string Removal_Err_Record => Get(nameof(Removal_Err_Record));
+    public static string Removal_NoRecord_Hint => Get(nameof(Removal_NoRecord_Hint));
 }

@@ -185,6 +185,11 @@
   <data name="Mode_Btn_Update" xml:space="preserve"><value>업데이트</value></data>
   <data name="Mode_Btn_Install" xml:space="preserve"><value>설치</value></data>
   <data name="Mode_Btn_Switch" xml:space="preserve"><value>이것으로 전환</value></data>
+  <data name="Mode_Btn_Uninstall" xml:space="preserve"><value>제거</value></data>
+  <data name="Mode_Confirm_Uninstall" xml:space="preserve"><value>{0}을(를) 제거할까요?</value></data>
+  <data name="Mode_Confirm_Uninstall_Body" xml:space="preserve"><value>이 모드가 steam.exe 옆에 놓은 파일은 삭제되지 않고 Steam 폴더 안의 백업 폴더로 이동합니다. 다른 설치가 아직 필요로 하는 파일은 그대로 둡니다. Steam은 종료되며 자동으로 다시 열지 않습니다 — 준비되면 직접 실행하세요.</value></data>
+  <data name="Mode_Uninstall_NoRecord" xml:space="preserve"><value>LuaTools에 이 모드의 설치 기록이 없어 steam.exe 옆의 어떤 파일이 자기 것인지 증명할 수 없습니다. 앱에서 다시 설치해 기록을 만들거나 파일을 직접 지우세요.</value></data>
+  <data name="Mode_Toast_Uninstalled" xml:space="preserve"><value>모드가 제거됨</value></data>
   <data name="Mode_Confirm_Reinstall" xml:space="preserve"><value>{0} 을(를) 재설치할까요?</value></data>
   <data name="Mode_Confirm_Switch" xml:space="preserve"><value>{0} (으)로 전환할까요?</value></data>
   <data name="Mode_Toast_Updated" xml:space="preserve"><value>모드 업데이트됨</value></data>
@@ -399,7 +404,6 @@
   <data name="Plugin_Toast_Title" xml:space="preserve"><value>플러그인</value></data>
   <data name="Plugin_Toast_Installed" xml:space="preserve"><value>플러그인이 설치되었습니다. 로드를 위해 Steam을 다시 시작합니다.</value></data>
   <data name="Plugin_Toast_InstallFailed" xml:space="preserve"><value>설치 실패: {0}</value></data>
-  <data name="Plugin_Toast_Removed" xml:space="preserve"><value>플러그인이 제거되었습니다. Steam을 다시 시작합니다.</value></data>
   <data name="Plugin_Toast_UninstallFailed" xml:space="preserve"><value>제거 실패: {0}</value></data>
   <data name="Plugin_Toast_UpdateAvailable" xml:space="preserve"><value>업데이트가 있습니다.</value></data>
   <data name="Plugin_Toast_UpToDate" xml:space="preserve"><value>최신 상태입니다.</value></data>
@@ -506,4 +510,22 @@
   <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>게임을 시작할 수 없습니다</value></data>
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam이 이 게임을 열지 못했습니다. Steam이 올바르게 설치되어 있는지 확인하세요.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam을 시작할 수 없습니다. 설정에서 위치를 지정한 후 다시 시도하세요.</value></data>
+  <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>네이티브 Steam 플러그인(BetterSteamTools 포크)입니다. 설치하면 Steam 폴더에 파일 4개가 놓이며, 이미 있던 파일은 먼저 백업 폴더에 보관됩니다. 플러그인을 불러오기 위해 Steam이 다시 시작됩니다.</value></data>
+  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam 파일</value></data>
+  <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool을 설치했습니다. 불러오기 위해 Steam을 다시 시작했습니다.</value></data>
+  <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>AmethystTool 설치 실패: {0}</value></data>
+  <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>최신 AmethystTool 릴리스에는 {0}이(가) 없습니다.</value></data>
+  <data name="Amethyst_Err_Archive" xml:space="preserve"><value>AmethystTool 아카이브가 거부되었습니다: {0}</value></data>
+  <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Steam 폴더에 이미 있던 파일은 {0}에 보관했습니다</value></data>
+  <data name="Removal_Confirm_Caption" xml:space="preserve"><value>이 플러그인을 제거할까요?</value></data>
+  <data name="Removal_Confirm_Body" xml:space="preserve"><value>파일을 제거할 수 있도록 Steam을 종료하며, 자동으로 다시 열지 않습니다. 제거된 항목은 모두 Steam 폴더 안의 백업 폴더에 보관됩니다.</value></data>
+  <data name="Removal_Toast_Removed" xml:space="preserve"><value>제거했습니다. 파일은 Steam 폴더 안의 백업 폴더에 보관했습니다.</value></data>
+  <data name="Removal_Toast_RemovedSteamStopped" xml:space="preserve"><value>제거했습니다. Steam을 종료했습니다 — 준비되면 다시 여세요. 파일은 Steam 폴더 안의 백업 폴더에 보관했습니다.</value></data>
+  <data name="Removal_Toast_NothingToDo" xml:space="preserve"><value>제거할 것이 없습니다 — 해당 파일은 이미 없습니다.</value></data>
+  <data name="Removal_Toast_NoRecord" xml:space="preserve"><value>이 플러그인의 설치 기록이 없어 아무것도 제거하지 않았습니다.</value></data>
+  <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0}은(는) 남겼습니다: 설치된 다른 도구가 아직 사용 중입니다. 설치 기록만 제거했습니다.</value></data>
+  <data name="Removal_Toast_Failed" xml:space="preserve"><value>제거 실패: {0}</value></data>
+  <data name="Removal_Err_Record" xml:space="preserve"><value>설치 기록을 사용할 수 없습니다: {0}</value></data>
+  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>이 사본은 LuaTools가 설치 기록을 남기기 전에 설치되어 어떤 파일이 자기 것인지 증명할 수 없습니다. 다시 설치하면 기록이 만들어지고 제거를 사용할 수 있습니다.</value></data>
 </root>

@@ -185,6 +185,11 @@
   <data name="Mode_Btn_Update" xml:space="preserve"><value>Обновить</value></data>
   <data name="Mode_Btn_Install" xml:space="preserve"><value>Установить</value></data>
   <data name="Mode_Btn_Switch" xml:space="preserve"><value>Переключиться на этот</value></data>
+  <data name="Mode_Btn_Uninstall" xml:space="preserve"><value>Удалить</value></data>
+  <data name="Mode_Confirm_Uninstall" xml:space="preserve"><value>Удалить {0}?</value></data>
+  <data name="Mode_Confirm_Uninstall_Body" xml:space="preserve"><value>Файлы, которые этот режим положил рядом со steam.exe, перемещаются в папку резервной копии внутри папки Steam, а не удаляются. Файл, который всё ещё нужен другой установке, остаётся на месте. Steam закрывается и не запускается заново за вас — откройте его, когда будете готовы.</value></data>
+  <data name="Mode_Uninstall_NoRecord" xml:space="preserve"><value>У LuaTools нет записи об установке этого режима, поэтому он не может доказать, какие файлы рядом со steam.exe принадлежат ему. Переустановите режим через приложение, чтобы создать запись, или удалите файлы вручную.</value></data>
+  <data name="Mode_Toast_Uninstalled" xml:space="preserve"><value>Режим удалён</value></data>
   <data name="Mode_Confirm_Reinstall" xml:space="preserve"><value>Переустановить {0}?</value></data>
   <data name="Mode_Confirm_Switch" xml:space="preserve"><value>Переключиться на {0}?</value></data>
   <data name="Mode_Toast_Updated" xml:space="preserve"><value>Режим обновлён</value></data>
@@ -399,7 +404,6 @@
   <data name="Plugin_Toast_Title" xml:space="preserve"><value>Плагин</value></data>
   <data name="Plugin_Toast_Installed" xml:space="preserve"><value>Плагин установлен. Steam перезапускается для его загрузки.</value></data>
   <data name="Plugin_Toast_InstallFailed" xml:space="preserve"><value>Ошибка установки: {0}</value></data>
-  <data name="Plugin_Toast_Removed" xml:space="preserve"><value>Плагин удалён. Steam перезапускается.</value></data>
   <data name="Plugin_Toast_UninstallFailed" xml:space="preserve"><value>Ошибка удаления: {0}</value></data>
   <data name="Plugin_Toast_UpdateAvailable" xml:space="preserve"><value>Доступно обновление.</value></data>
   <data name="Plugin_Toast_UpToDate" xml:space="preserve"><value>У вас последняя версия.</value></data>
@@ -506,4 +510,22 @@
   <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Не удалось запустить игру</value></data>
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam не смог открыть эту игру. Убедитесь, что Steam установлен правильно.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Не удалось запустить Steam. Укажите его расположение в настройках и попробуйте снова.</value></data>
+  <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Нативный плагин Steam (форк BetterSteamTools). При установке в папку Steam помещаются четыре файла; то, что там уже есть, сначала сохраняется в папку резервной копии. Steam перезапускается, чтобы плагин загрузился.</value></data>
+  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Файлы Steam</value></data>
+  <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool установлен. Steam перезапущен, чтобы он загрузился.</value></data>
+  <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Не удалось установить AmethystTool: {0}</value></data>
+  <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>В последнем выпуске AmethystTool нет {0}.</value></data>
+  <data name="Amethyst_Err_Archive" xml:space="preserve"><value>Архив AmethystTool отклонён: {0}</value></data>
+  <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Файлы, которые уже были в папке Steam, сохранены в {0}</value></data>
+  <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Удалить этот плагин?</value></data>
+  <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam будет закрыт, чтобы можно было убрать его файлы, и НЕ будет открыт снова автоматически. Всё удалённое сохраняется в папке резервной копии внутри папки Steam.</value></data>
+  <data name="Removal_Toast_Removed" xml:space="preserve"><value>Удалено. Файлы сохранены в папке резервной копии внутри папки Steam.</value></data>
+  <data name="Removal_Toast_RemovedSteamStopped" xml:space="preserve"><value>Удалено. Steam закрыт — откройте его, когда будете готовы. Файлы сохранены в папке резервной копии внутри папки Steam.</value></data>
+  <data name="Removal_Toast_NothingToDo" xml:space="preserve"><value>Удалять нечего — этих файлов уже нет.</value></data>
+  <data name="Removal_Toast_NoRecord" xml:space="preserve"><value>Для этого плагина нет записи об установке, поэтому ничего не удалено.</value></data>
+  <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} сохранён: его всё ещё использует другой установленный инструмент. Удалена только запись об установке.</value></data>
+  <data name="Removal_Toast_Failed" xml:space="preserve"><value>Не удалось удалить: {0}</value></data>
+  <data name="Removal_Err_Record" xml:space="preserve"><value>Не удалось использовать запись об установке: {0}</value></data>
+  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Эта копия была установлена до того, как LuaTools стал вести записи об установке, поэтому он не может доказать, какие файлы его. Переустановите, чтобы создать запись — тогда удаление станет доступным.</value></data>
 </root>

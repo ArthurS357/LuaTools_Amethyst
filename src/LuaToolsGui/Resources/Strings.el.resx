@@ -185,6 +185,11 @@
   <data name="Mode_Btn_Update" xml:space="preserve"><value>Ενημέρωση</value></data>
   <data name="Mode_Btn_Install" xml:space="preserve"><value>Εγκατάσταση</value></data>
   <data name="Mode_Btn_Switch" xml:space="preserve"><value>Εναλλαγή σε αυτό</value></data>
+  <data name="Mode_Btn_Uninstall" xml:space="preserve"><value>Κατάργηση εγκατάστασης</value></data>
+  <data name="Mode_Confirm_Uninstall" xml:space="preserve"><value>Κατάργηση του {0};</value></data>
+  <data name="Mode_Confirm_Uninstall_Body" xml:space="preserve"><value>Τα αρχεία που τοποθέτησε αυτή η λειτουργία δίπλα στο steam.exe μετακινούνται σε φάκελο αντιγράφων ασφαλείας μέσα στον φάκελο του Steam, δεν διαγράφονται. Ένα αρχείο που χρειάζεται ακόμη άλλη εγκατάσταση παραμένει. Το Steam κλείνει και δεν ανοίγει ξανά αυτόματα — ανοίξτε το όταν είστε έτοιμοι.</value></data>
+  <data name="Mode_Uninstall_NoRecord" xml:space="preserve"><value>Το LuaTools δεν έχει εγγραφή εγκατάστασης για αυτή τη λειτουργία, οπότε δεν μπορεί να αποδείξει ποια αρχεία δίπλα στο steam.exe είναι δικά του. Εγκαταστήστε το ξανά μέσω της εφαρμογής για να δημιουργηθεί εγγραφή ή αφαιρέστε τα αρχεία μόνοι σας.</value></data>
+  <data name="Mode_Toast_Uninstalled" xml:space="preserve"><value>Η λειτουργία αφαιρέθηκε</value></data>
   <data name="Mode_Confirm_Reinstall" xml:space="preserve"><value>Επανεγκατάσταση του {0};</value></data>
   <data name="Mode_Confirm_Switch" xml:space="preserve"><value>Εναλλαγή στο {0};</value></data>
   <data name="Mode_Toast_Updated" xml:space="preserve"><value>Η λειτουργία ενημερώθηκε</value></data>
@@ -399,7 +404,6 @@
   <data name="Plugin_Toast_Title" xml:space="preserve"><value>Πρόσθετο</value></data>
   <data name="Plugin_Toast_Installed" xml:space="preserve"><value>Το πρόσθετο εγκαταστάθηκε. Το Steam επανεκκινείται για να το φορτώσει.</value></data>
   <data name="Plugin_Toast_InstallFailed" xml:space="preserve"><value>Η εγκατάσταση απέτυχε: {0}</value></data>
-  <data name="Plugin_Toast_Removed" xml:space="preserve"><value>Το πρόσθετο αφαιρέθηκε. Το Steam επανεκκινείται.</value></data>
   <data name="Plugin_Toast_UninstallFailed" xml:space="preserve"><value>Η απεγκατάσταση απέτυχε: {0}</value></data>
   <data name="Plugin_Toast_UpdateAvailable" xml:space="preserve"><value>Υπάρχει διαθέσιμη ενημέρωση.</value></data>
   <data name="Plugin_Toast_UpToDate" xml:space="preserve"><value>Είστε ενημερωμένοι.</value></data>
@@ -506,4 +510,22 @@
   <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Δεν ήταν δυνατή η εκκίνηση του παιχνιδιού</value></data>
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Το Steam αρνήθηκε να ανοίξει αυτό το παιχνίδι. Ελέγξτε ότι το Steam είναι σωστά εγκατεστημένο.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Δεν ήταν δυνατή η εκκίνηση του Steam. Ορίστε τη θέση του στις Ρυθμίσεις και δοκιμάστε ξανά.</value></data>
+  <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Εγγενές πρόσθετο του Steam (fork του BetterSteamTools). Η εγκατάσταση τοποθετεί τέσσερα αρχεία στον φάκελο του Steam· ό,τι υπάρχει ήδη φυλάσσεται πρώτα σε φάκελο αντιγράφου ασφαλείας. Το Steam επανεκκινείται για να φορτωθεί το πρόσθετο.</value></data>
+  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Αρχεία Steam</value></data>
+  <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>Το AmethystTool εγκαταστάθηκε. Το Steam επανεκκινήθηκε για να φορτωθεί.</value></data>
+  <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Η εγκατάσταση του AmethystTool απέτυχε: {0}</value></data>
+  <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Η τελευταία έκδοση του AmethystTool δεν δημοσιεύει {0}.</value></data>
+  <data name="Amethyst_Err_Archive" xml:space="preserve"><value>Το αρχείο του AmethystTool απορρίφθηκε: {0}</value></data>
+  <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Τα αρχεία που υπήρχαν ήδη στον φάκελο του Steam φυλάχθηκαν στο {0}</value></data>
+  <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Να γίνει απεγκατάσταση αυτού του πρόσθετου;</value></data>
+  <data name="Removal_Confirm_Body" xml:space="preserve"><value>Το Steam θα κλείσει ώστε να μπορούν να αφαιρεθούν τα αρχεία του και ΔΕΝ θα ανοίξει ξανά αυτόματα. Ό,τι αφαιρεθεί φυλάσσεται σε φάκελο αντιγράφου ασφαλείας μέσα στον φάκελο του Steam.</value></data>
+  <data name="Removal_Toast_Removed" xml:space="preserve"><value>Αφαιρέθηκε. Τα αρχεία φυλάχτηκαν σε φάκελο αντιγράφου ασφαλείας μέσα στον φάκελο του Steam.</value></data>
+  <data name="Removal_Toast_RemovedSteamStopped" xml:space="preserve"><value>Αφαιρέθηκε. Το Steam έκλεισε — άνοιξέ το ξανά όποτε θέλεις. Τα αρχεία φυλάχτηκαν σε φάκελο αντιγράφου ασφαλείας μέσα στον φάκελο του Steam.</value></data>
+  <data name="Removal_Toast_NothingToDo" xml:space="preserve"><value>Δεν υπάρχει κάτι να αφαιρεθεί — αυτά τα αρχεία δεν υπάρχουν πια.</value></data>
+  <data name="Removal_Toast_NoRecord" xml:space="preserve"><value>Δεν υπάρχει εγγραφή εγκατάστασης για αυτό το πρόσθετο, οπότε δεν αφαιρέθηκε τίποτα.</value></data>
+  <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>Το {0} διατηρήθηκε: άλλο εγκατεστημένο εργαλείο το χρησιμοποιεί ακόμη. Αφαιρέθηκε μόνο η εγγραφή εγκατάστασης.</value></data>
+  <data name="Removal_Toast_Failed" xml:space="preserve"><value>Η απεγκατάσταση απέτυχε: {0}</value></data>
+  <data name="Removal_Err_Record" xml:space="preserve"><value>Δεν ήταν δυνατή η χρήση της εγγραφής εγκατάστασης: {0}</value></data>
+  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Αυτό το αντίγραφο εγκαταστάθηκε πριν το LuaTools κρατάει εγγραφές εγκατάστασης, οπότε δεν μπορεί να αποδείξει ποια αρχεία είναι δικά του. Εγκατέστησέ το ξανά για να δημιουργηθεί εγγραφή και η απεγκατάσταση θα γίνει διαθέσιμη.</value></data>
 </root>

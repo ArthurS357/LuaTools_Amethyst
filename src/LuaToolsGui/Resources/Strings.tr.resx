@@ -185,6 +185,11 @@
   <data name="Mode_Btn_Update" xml:space="preserve"><value>Güncelle</value></data>
   <data name="Mode_Btn_Install" xml:space="preserve"><value>Kur</value></data>
   <data name="Mode_Btn_Switch" xml:space="preserve"><value>Buna geç</value></data>
+  <data name="Mode_Btn_Uninstall" xml:space="preserve"><value>Kaldır</value></data>
+  <data name="Mode_Confirm_Uninstall" xml:space="preserve"><value>{0} kaldırılsın mı?</value></data>
+  <data name="Mode_Confirm_Uninstall_Body" xml:space="preserve"><value>Bu modun steam.exe yanına koyduğu dosyalar silinmez; Steam klasörünüzdeki bir yedek klasörüne taşınır. Başka bir kurulumun hâlâ ihtiyaç duyduğu dosya yerinde bırakılır. Steam kapatılır ve sizin için yeniden açılmaz — hazır olduğunuzda kendiniz açın.</value></data>
+  <data name="Mode_Uninstall_NoRecord" xml:space="preserve"><value>LuaTools bu mod için bir kurulum kaydına sahip değil, bu yüzden steam.exe yanındaki hangi dosyaların kendisine ait olduğunu kanıtlayamaz. Kayıt oluşturmak için uygulamadan yeniden kurun ya da dosyaları kendiniz silin.</value></data>
+  <data name="Mode_Toast_Uninstalled" xml:space="preserve"><value>Mod kaldırıldı</value></data>
   <data name="Mode_Confirm_Reinstall" xml:space="preserve"><value>{0} yeniden kurulsun mu?</value></data>
   <data name="Mode_Confirm_Switch" xml:space="preserve"><value>{0} moduna geçilsin mi?</value></data>
   <data name="Mode_Toast_Updated" xml:space="preserve"><value>Mod güncellendi</value></data>
@@ -399,7 +404,6 @@ Bu işlem, .lua dosyalarını Steam\config\stplug-in konumundan siler. Değişik
   <data name="Plugin_Toast_Title" xml:space="preserve"><value>Eklenti</value></data>
   <data name="Plugin_Toast_Installed" xml:space="preserve"><value>Eklenti kuruldu. Yüklemek için Steam yeniden başlatılıyor.</value></data>
   <data name="Plugin_Toast_InstallFailed" xml:space="preserve"><value>Kurulum başarısız: {0}</value></data>
-  <data name="Plugin_Toast_Removed" xml:space="preserve"><value>Eklenti kaldırıldı. Steam yeniden başlatılıyor.</value></data>
   <data name="Plugin_Toast_UninstallFailed" xml:space="preserve"><value>Kaldırma başarısız: {0}</value></data>
   <data name="Plugin_Toast_UpdateAvailable" xml:space="preserve"><value>Bir güncelleme mevcut.</value></data>
   <data name="Plugin_Toast_UpToDate" xml:space="preserve"><value>Güncelsiniz.</value></data>
@@ -506,4 +510,22 @@ Bu işlem, .lua dosyalarını Steam\config\stplug-in konumundan siler. Değişik
   <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Oyun başlatılamadı</value></data>
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam bu oyunu açmayı reddetti. Steam'in doğru yüklendiğinden emin olun.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam başlatılamadı. Konumunu Ayarlar'da belirtip tekrar deneyin.</value></data>
+  <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Yerel bir Steam eklentisi (BetterSteamTools’un bir fork’u). Kurulum, Steam klasörünüze dört dosya koyar; orada zaten bulunanlar önce bir yedek klasörde saklanır. Eklentinin yüklenmesi için Steam yeniden başlatılır.</value></data>
+  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam dosyaları</value></data>
+  <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool kuruldu. Yüklenmesi için Steam yeniden başlatıldı.</value></data>
+  <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>AmethystTool kurulumu başarısız: {0}</value></data>
+  <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>En son AmethystTool sürümü {0} yayımlamıyor.</value></data>
+  <data name="Amethyst_Err_Archive" xml:space="preserve"><value>AmethystTool arşivi reddedildi: {0}</value></data>
+  <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Steam klasörünüzde zaten bulunan dosyalar {0} içinde saklandı</value></data>
+  <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Bu eklenti kaldırılsın mı?</value></data>
+  <data name="Removal_Confirm_Body" xml:space="preserve"><value>Dosyalarının kaldırılabilmesi için Steam kapatılacak ve sizin yerinize yeniden AÇILMAYACAK. Kaldırılan her şey Steam klasörünüzdeki bir yedek klasöründe saklanır.</value></data>
+  <data name="Removal_Toast_Removed" xml:space="preserve"><value>Kaldırıldı. Dosyalar Steam klasörünüzdeki bir yedek klasöründe saklandı.</value></data>
+  <data name="Removal_Toast_RemovedSteamStopped" xml:space="preserve"><value>Kaldırıldı. Steam kapatıldı — hazır olduğunuzda yeniden açın. Dosyalar Steam klasörünüzdeki bir yedek klasöründe saklandı.</value></data>
+  <data name="Removal_Toast_NothingToDo" xml:space="preserve"><value>Kaldırılacak bir şey yok — o dosyalar zaten yok.</value></data>
+  <data name="Removal_Toast_NoRecord" xml:space="preserve"><value>Bu eklenti için kurulum kaydı yok, bu yüzden hiçbir şey kaldırılmadı.</value></data>
+  <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} korundu: kurulu başka bir araç hâlâ kullanıyor. Yalnızca kurulum kaydı kaldırıldı.</value></data>
+  <data name="Removal_Toast_Failed" xml:space="preserve"><value>Kaldırma başarısız: {0}</value></data>
+  <data name="Removal_Err_Record" xml:space="preserve"><value>Kurulum kaydı kullanılamadı: {0}</value></data>
+  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Bu kopya, LuaTools kurulum kayıtları tutmaya başlamadan önce kuruldu; bu yüzden hangi dosyaların kendisine ait olduğunu kanıtlayamıyor. Bir kayıt oluşturmak için yeniden kurun, ardından kaldırma kullanılabilir olur.</value></data>
 </root>

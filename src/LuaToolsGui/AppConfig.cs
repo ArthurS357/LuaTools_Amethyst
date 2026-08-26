@@ -204,6 +204,23 @@ public static class AppConfig
     public const string PluginReleasesOwner = "madoiscool";
     public const string PluginReleasesRepo = "LTSP";
 
+    // ── AmethystTool (BetterSteamTools fork) ──────────────────────────────────────
+    // A NATIVE injection plugin: its release archive carries AmethystTool.dll plus two proxy DLLs
+    // (dwmapi/xinput1_4) that steam.exe loads by name, and all of it goes into the Steam ROOT. That is the
+    // most consequential place this app writes, so the owner/repo below are not merely where the download
+    // starts — they are the PIN that GithubProxy.IsAssetUrlForRepo checks the asset URL against, which is
+    // what stops a hostile API mirror from naming some other github.com repository's payload (and its
+    // matching digest) and having every later check pass. Compiled in on purpose: NOT settings-driven, so
+    // no configuration file can redirect an install that lands next to steam.exe.
+    //
+    // The asset is matched by prefix + ".zip" (e.g. "AmethystTool-v1.0.0.zip") rather than by an exact
+    // name, so a new release installs without an app rebuild while still refusing every other asset in the
+    // release. Verification stays fail-closed either way: the release's published sha256 digest is
+    // required, and v1.0.0 carries one (unlike Steamless above, no pinned hash is needed here).
+    public const string AmethystToolOwner = "ArthurS357";
+    public const string AmethystToolRepo = "BetterSteamTools-Amethyst";
+    public const string AmethystToolAssetPrefix = "AmethystTool-";
+
     // ── GitHub proxy mirrors (for blocked/throttled regions, e.g. China) ──────────────
     // github.com / api.github.com are often unreachable in some countries. Any GitHub request is tried
     // DIRECT first, then prefixed onto the MATCHING mirrors ("<mirror>https://<github-url>") until one works.

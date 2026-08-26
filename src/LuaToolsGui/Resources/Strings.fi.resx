@@ -185,6 +185,11 @@
   <data name="Mode_Btn_Update" xml:space="preserve"><value>Päivitä</value></data>
   <data name="Mode_Btn_Install" xml:space="preserve"><value>Asenna</value></data>
   <data name="Mode_Btn_Switch" xml:space="preserve"><value>Vaihda tähän</value></data>
+  <data name="Mode_Btn_Uninstall" xml:space="preserve"><value>Poista asennus</value></data>
+  <data name="Mode_Confirm_Uninstall" xml:space="preserve"><value>Poistetaanko {0}?</value></data>
+  <data name="Mode_Confirm_Uninstall_Body" xml:space="preserve"><value>Tämän tilan steam.exe:n viereen asettamat tiedostot siirretään varmuuskopiokansioon Steam-kansiosi sisällä, niitä ei poisteta. Tiedosto, jota toinen asennus yhä tarvitsee, jätetään paikalleen. Steam suljetaan eikä sitä avata uudelleen puolestasi — avaa se, kun olet valmis.</value></data>
+  <data name="Mode_Uninstall_NoRecord" xml:space="preserve"><value>LuaToolsilla ei ole asennusmerkintää tälle tilalle, joten se ei voi todistaa, mitkä steam.exe:n vieressä olevat tiedostot ovat sen omia. Asenna se uudelleen sovelluksen kautta merkinnän luomiseksi tai poista tiedostot itse.</value></data>
+  <data name="Mode_Toast_Uninstalled" xml:space="preserve"><value>Tila poistettu</value></data>
   <data name="Mode_Confirm_Reinstall" xml:space="preserve"><value>Asennetaanko {0} uudelleen?</value></data>
   <data name="Mode_Confirm_Switch" xml:space="preserve"><value>Vaihdetaanko tilaan {0}?</value></data>
   <data name="Mode_Toast_Updated" xml:space="preserve"><value>Tila päivitetty</value></data>
@@ -399,7 +404,6 @@ Tämä poistaa .lua-tiedostot sijainnista Steam\config\stplug-in. Käynnistä St
   <data name="Plugin_Toast_Title" xml:space="preserve"><value>Laajennus</value></data>
   <data name="Plugin_Toast_Installed" xml:space="preserve"><value>Laajennus asennettu. Steam käynnistyy uudelleen ladatakseen sen.</value></data>
   <data name="Plugin_Toast_InstallFailed" xml:space="preserve"><value>Asennus epäonnistui: {0}</value></data>
-  <data name="Plugin_Toast_Removed" xml:space="preserve"><value>Laajennus poistettu. Steam käynnistyy uudelleen.</value></data>
   <data name="Plugin_Toast_UninstallFailed" xml:space="preserve"><value>Asennuksen poisto epäonnistui: {0}</value></data>
   <data name="Plugin_Toast_UpdateAvailable" xml:space="preserve"><value>Päivitys on saatavilla.</value></data>
   <data name="Plugin_Toast_UpToDate" xml:space="preserve"><value>Olet ajan tasalla.</value></data>
@@ -506,4 +510,22 @@ Tämä poistaa .lua-tiedostot sijainnista Steam\config\stplug-in. Käynnistä St
   <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Peliä ei voitu käynnistää</value></data>
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam kieltäytyi avaamasta tätä peliä. Tarkista, että Steam on asennettu oikein.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steamiä ei voitu käynnistää. Määritä sen sijainti Asetuksissa ja yritä uudelleen.</value></data>
+  <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Steamin natiivi laajennus (BetterSteamToolsin haara). Asennus lisää neljä tiedostoa Steam-kansioon; jo olemassa olevat säilytetään ensin varmuuskopiokansiossa. Steam käynnistetään uudelleen, jotta laajennus latautuu.</value></data>
+  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam-tiedostot</value></data>
+  <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool asennettiin. Steam käynnistettiin uudelleen sen lataamiseksi.</value></data>
+  <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>AmethystToolin asennus epäonnistui: {0}</value></data>
+  <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Uusin AmethystTool-julkaisu ei julkaise tiedostoa {0}.</value></data>
+  <data name="Amethyst_Err_Archive" xml:space="preserve"><value>AmethystTool-arkisto hylättiin: {0}</value></data>
+  <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Steam-kansiossa jo olleet tiedostot säilytettiin kansiossa {0}</value></data>
+  <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Poistetaanko tämä laajennus?</value></data>
+  <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam suljetaan, jotta sen tiedostot voidaan poistaa, EIKÄ sitä avata uudelleen puolestasi. Kaikki poistettu säilytetään varmuuskopiokansiossa Steam-kansiossasi.</value></data>
+  <data name="Removal_Toast_Removed" xml:space="preserve"><value>Poistettu. Tiedostot säilytettiin varmuuskopiokansiossa Steam-kansiossasi.</value></data>
+  <data name="Removal_Toast_RemovedSteamStopped" xml:space="preserve"><value>Poistettu. Steam suljettiin — avaa se uudelleen, kun olet valmis. Tiedostot säilytettiin varmuuskopiokansiossa Steam-kansiossasi.</value></data>
+  <data name="Removal_Toast_NothingToDo" xml:space="preserve"><value>Ei mitään poistettavaa — ne tiedostot ovat jo poissa.</value></data>
+  <data name="Removal_Toast_NoRecord" xml:space="preserve"><value>Tälle laajennukselle ei ole asennusmerkintää, joten mitään ei poistettu.</value></data>
+  <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} säilytettiin: toinen asennettu työkalu käyttää sitä yhä. Vain asennusmerkintä poistettiin.</value></data>
+  <data name="Removal_Toast_Failed" xml:space="preserve"><value>Poisto epäonnistui: {0}</value></data>
+  <data name="Removal_Err_Record" xml:space="preserve"><value>Asennusmerkintää ei voitu käyttää: {0}</value></data>
+  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Tämä kopio asennettiin ennen kuin LuaTools piti asennusmerkintöjä, joten se ei voi todistaa mitkä tiedostot ovat sen omia. Asenna se uudelleen luodaksesi merkinnän, jolloin poisto tulee käytettäväksi.</value></data>
 </root>

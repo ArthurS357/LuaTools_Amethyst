@@ -39,7 +39,8 @@ public sealed record PluginStatus(
 /// redundancy needed anymore.
 /// </summary>
 public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjectorService injector,
-    CacheService cache, SettingsService settings, DownloadNotice notice)
+    CacheService cache, SettingsService settings, DownloadNotice notice,
+    InstallManifestService manifests, PluginRemovalService removal)
 {
     /// <summary>
     /// Asks the user whether LuaTools may enable Steam's remote-debugging bridge. Returns true to proceed.
@@ -323,6 +324,10 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
         string tmp = Path.Combine(Path.GetTempPath(), "luatools-plugin-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(tmp);
         Dictionary<string, List<string>>? disabledMillenniumEntries = null;
+        // Handles held open across verify → screen → extract/copy for the archive AND for each loader
+        // DLL, released in the finally below before the staging folder is deleted. See
+        // AssetIntegrity.OpenPinned for what this actually prevents.
+        var pinned = new List<FileStream>();
         try
         {
             // Pinned to the plugin repo, not merely to a GitHub host: the loader DLL below is copied into
@@ -331,12 +336,14 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
             string zipPath = Path.Combine(tmp, PluginZipAsset);
             await gh.DownloadAssetAsync(zipAsset.DownloadUrl, AppConfig.PluginReleasesOwner,
                 AppConfig.PluginReleasesRepo, zipPath, progress, ct);
+            pinned.Add(AssetIntegrity.OpenPinned(zipPath));
             var slotDlPaths = new Dictionary<LoaderSlot, string>();
             foreach (var (slot, asset) in slotAssets)
             {
                 string p = Path.Combine(tmp, slot.DllAsset);
                 await gh.DownloadAssetAsync(asset.DownloadUrl, AppConfig.PluginReleasesOwner,
                     AppConfig.PluginReleasesRepo, p, progress, ct);
+                pinned.Add(AssetIntegrity.OpenPinned(p));
                 slotDlPaths[slot] = p;
             }
 
@@ -445,11 +452,23 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
                 ZipSha = zipSha,
                 DisabledMillenniumEntries = disabledMillenniumEntries,
             });
+
+            // Record WHICH FILES are in the Steam root, which the manifest above never did — it holds tags
+            // and hashes, and uninstall needs paths. Only files that are actually there are recorded: with
+            // the DllUpdateDisabled marker set, or after a partial copy, claiming a file we did not place
+            // would make uninstall remove someone else's.
+            RecordSteamRootFiles(steamDir, latest.TagName);
+
             return (true, null);
         }
         catch (Exception ex) { return (false, ex.Message); }
-        finally { try { Directory.Delete(tmp, recursive: true); } catch { /* temp cleanup */ } }
+        finally
+        {
+            foreach (var handle in pinned) handle.Dispose();
+            try { Directory.Delete(tmp, recursive: true); } catch { /* temp cleanup */ }
+        }
     }
+
 
     /// <summary>Silent auto-update: if an update is available for an already-installed plugin, apply it
     /// (frontend silently; DLL change stops/swaps/restarts Steam). Returns true if an update was applied.
@@ -486,15 +505,18 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
                 // enabledPlugins entries we stripped from Millennium's config at install time.
                 var manifest = ReadManifest();
 
-                bool wasRunning = Process.GetProcessesByName("steam").Length > 0;
                 steam.StopSteam();
                 await Task.Delay(1200, ct);
 
-                foreach (var slot in Slots)
-                {
-                    if (SlotPath(slot) is { } bp && File.Exists(bp)) File.Delete(bp);
-                    if (SlotRealPath(slot) is { } br && File.Exists(br)) File.Delete(br);
-                }
+                // Steam-root files go through the shared removal policy, not File.Delete: it works from
+                // the install record (so nothing this app did not place is touched), refuses any name
+                // another live install still claims, and MOVES rather than deletes, so a mistaken
+                // uninstall is recoverable. Steam is already stopped here, hence stopSteam: false.
+                BackfillRecordIfMissing();
+                await removal.RemoveAsync(PluginIds.StorePage, stopSteam: false, ct);
+
+                // Legacy slots predate the install record, so there is nothing recorded to remove them by.
+                // They are this app's own obsolete loaders under fixed names and are cleaned up directly.
                 foreach (var legacy in LegacyDllPaths)
                     if (File.Exists(legacy)) File.Delete(legacy);
                 if (CdpMarkerPath is { } markerPath) RemoveCdpMarkerJunction(markerPath);
@@ -508,7 +530,10 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
                 // Stop injecting the now-deleted content immediately, same reasoning as InstallAsync.
                 await injector.ReloadPluginFilesAsync();
 
-                if (wasRunning) steam.StartSteam();
+                // Deliberately NOT relaunched. Install restarts Steam because the point is to get the new
+                // loader running; uninstall has just removed the DLL Steam was loading, and bringing the
+                // client back up unasked — possibly onto a half-removed state — is not this flow's call.
+                // The UI says Steam was stopped so the user reopens it when ready.
                 return (true, (string?)null);
             }
             catch (Exception ex) { return (false, (string?)ex.Message); }
@@ -700,4 +725,48 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
 
     private static GithubAsset? FindAsset(GithubRelease r, string name) =>
         r.Assets.FirstOrDefault(a => a.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>
+    /// Record the loader files this install left in the Steam root, so uninstall can work from fact rather
+    /// than from the compiled-in <see cref="Slots"/> list. Best-effort: the install already succeeded, and
+    /// failing it over a bookkeeping write would be the wrong trade.
+    /// </summary>
+    private void RecordSteamRootFiles(string steamDir, string? tag)
+    {
+        var files = new List<InstalledFile>();
+        foreach (var slot in Slots)
+            foreach (string name in new[] { slot.DllAsset, slot.RealName })
+            {
+                string path = Path.Combine(steamDir, name);
+                if (!File.Exists(path)) continue;
+                string? sha = null;
+                try { sha = AssetIntegrity.Sha256OfFile(path); }
+                catch (Exception e) when (e is IOException or UnauthorizedAccessException) { /* diagnostic only */ }
+                files.Add(new InstalledFile(name, sha));
+            }
+
+        if (files.Count > 0)
+            manifests.Record(new InstalledPlugin(PluginIds.StorePage, tag, DateTimeOffset.Now, files));
+    }
+
+    /// <summary>
+    /// Write an install record for a plugin that was installed before records existed, so Uninstall keeps
+    /// working for it.
+    ///
+    /// <para>
+    /// Removal is deliberately record-driven, which on its own would have silently broken uninstall for
+    /// every existing user: their winmm.dll predates this bookkeeping, so there would be nothing to remove
+    /// it by. The back-fill is narrow enough not to reintroduce the problem the record solves — it claims
+    /// only <see cref="Slots"/>' own names, which no Mode and nothing else in this app ever places, and
+    /// only files that are actually on disk. Uninstall for this plugin has always removed these by name;
+    /// this keeps that true while routing it through the backup and shared-file checks.
+    /// </para>
+    /// </summary>
+    private void BackfillRecordIfMissing()
+    {
+        if (SteamDir is not { } steamDir) return;
+        if (manifests.Load().Get(PluginIds.StorePage) is { Files.Count: > 0 }) return;
+
+        RecordSteamRootFiles(steamDir, ReadManifest()?.Tag);
+    }
 }

@@ -111,8 +111,15 @@ public partial class App : Application
                 services.AddSingleton<HardwareAppIdService>();
                 services.AddSingleton<SteamlessService>();
                 services.AddSingleton<CloudRedirectService>();
+                // Install record + removal: registered before everything that takes them as deps.
+                services.AddSingleton<InstallManifestService>();
                 services.AddSingleton<UnlockerService>();
+                services.AddSingleton<PluginRemovalService>();
+                // Mode uninstall is its own type so UnlockerService and PluginRemovalService stay acyclic —
+                // the second already depends on the first. See ModeRemovalService.
+                services.AddSingleton<ModeRemovalService>();
                 services.AddSingleton<PluginInstallerService>();
+                services.AddSingleton<AmethystToolService>();
                 services.AddTransient<DropInstallViewModel>(); // one per page (Home, Add)
                 services.AddSingleton<AuthService>();
                 services.AddSingleton<LuaToolsApiClient>();
@@ -134,6 +141,7 @@ public partial class App : Application
                 services.AddSingleton<HomeViewModel>();
                 services.AddSingleton<ModeViewModel>();
                 services.AddSingleton<FixesViewModel>();
+                services.AddSingleton<AmethystToolViewModel>();
                 services.AddSingleton<PluginViewModel>();
                 services.AddSingleton<AboutViewModel>();
                 services.AddSingleton<OnboardingViewModel>();

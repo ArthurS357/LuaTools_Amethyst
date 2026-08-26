@@ -185,6 +185,11 @@
   <data name="Mode_Btn_Update" xml:space="preserve"><value>อัปเดต</value></data>
   <data name="Mode_Btn_Install" xml:space="preserve"><value>ติดตั้ง</value></data>
   <data name="Mode_Btn_Switch" xml:space="preserve"><value>สลับไปใช้อันนี้</value></data>
+  <data name="Mode_Btn_Uninstall" xml:space="preserve"><value>ถอนการติดตั้ง</value></data>
+  <data name="Mode_Confirm_Uninstall" xml:space="preserve"><value>นำ {0} ออกหรือไม่</value></data>
+  <data name="Mode_Confirm_Uninstall_Body" xml:space="preserve"><value>ไฟล์ที่โหมดนี้วางไว้ข้าง steam.exe จะถูกย้ายไปยังโฟลเดอร์สำรองภายในโฟลเดอร์ Steam ของคุณ ไม่ได้ถูกลบ ไฟล์ที่การติดตั้งอื่นยังต้องใช้จะถูกปล่อยไว้ Steam จะถูกปิดและจะไม่เปิดใหม่ให้คุณ — เปิดเองเมื่อพร้อม</value></data>
+  <data name="Mode_Uninstall_NoRecord" xml:space="preserve"><value>LuaTools ไม่มีบันทึกการติดตั้งของโหมดนี้ จึงพิสูจน์ไม่ได้ว่าไฟล์ใดข้าง steam.exe เป็นของตน ติดตั้งใหม่ผ่านแอปเพื่อสร้างบันทึก หรือลบไฟล์ด้วยตัวเอง</value></data>
+  <data name="Mode_Toast_Uninstalled" xml:space="preserve"><value>ลบโหมดแล้ว</value></data>
   <data name="Mode_Confirm_Reinstall" xml:space="preserve"><value>ติดตั้ง {0} ใหม่หรือไม่?</value></data>
   <data name="Mode_Confirm_Switch" xml:space="preserve"><value>สลับไปใช้ {0} หรือไม่?</value></data>
   <data name="Mode_Toast_Updated" xml:space="preserve"><value>อัปเดตโหมดแล้ว</value></data>
@@ -399,7 +404,6 @@
   <data name="Plugin_Toast_Title" xml:space="preserve"><value>ปลั๊กอิน</value></data>
   <data name="Plugin_Toast_Installed" xml:space="preserve"><value>ติดตั้งปลั๊กอินแล้ว Steam กำลังรีสตาร์ทเพื่อโหลด</value></data>
   <data name="Plugin_Toast_InstallFailed" xml:space="preserve"><value>การติดตั้งล้มเหลว: {0}</value></data>
-  <data name="Plugin_Toast_Removed" xml:space="preserve"><value>ลบปลั๊กอินแล้ว Steam กำลังรีสตาร์ท</value></data>
   <data name="Plugin_Toast_UninstallFailed" xml:space="preserve"><value>การถอนการติดตั้งล้มเหลว: {0}</value></data>
   <data name="Plugin_Toast_UpdateAvailable" xml:space="preserve"><value>มีอัปเดตพร้อมใช้งาน</value></data>
   <data name="Plugin_Toast_UpToDate" xml:space="preserve"><value>คุณใช้เวอร์ชันล่าสุดอยู่แล้ว</value></data>
@@ -506,4 +510,22 @@
   <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>ไม่สามารถเริ่มเกมได้</value></data>
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam ปฏิเสธที่จะเปิดเกมนี้ ตรวจสอบว่าติดตั้ง Steam อย่างถูกต้องแล้ว</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>ไม่สามารถเริ่ม Steam ได้ กำหนดตำแหน่งในการตั้งค่าแล้วลองอีกครั้ง</value></data>
+  <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>ปลั๊กอินเนทีฟของ Steam (ฟอร์กของ BetterSteamTools) การติดตั้งจะวางไฟล์สี่ไฟล์ในโฟลเดอร์ Steam ของคุณ ส่วนไฟล์ที่มีอยู่แล้วจะถูกเก็บไว้ในโฟลเดอร์สำรองก่อน แล้ว Steam จะรีสตาร์ตเพื่อโหลดปลั๊กอิน</value></data>
+  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>ไฟล์ของ Steam</value></data>
+  <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>ติดตั้ง AmethystTool แล้ว รีสตาร์ต Steam เพื่อโหลดแล้ว</value></data>
+  <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>ติดตั้ง AmethystTool ไม่สำเร็จ: {0}</value></data>
+  <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>รุ่นล่าสุดของ AmethystTool ไม่ได้เผยแพร่ {0}</value></data>
+  <data name="Amethyst_Err_Archive" xml:space="preserve"><value>ไฟล์บีบอัดของ AmethystTool ถูกปฏิเสธ: {0}</value></data>
+  <data name="Amethyst_Backup_Line" xml:space="preserve"><value>ไฟล์ที่มีอยู่แล้วในโฟลเดอร์ Steam ถูกเก็บไว้ที่ {0}</value></data>
+  <data name="Removal_Confirm_Caption" xml:space="preserve"><value>ต้องการถอนการติดตั้งปลั๊กอินนี้หรือไม่</value></data>
+  <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam จะถูกปิดเพื่อให้ลบไฟล์ได้ และจะไม่เปิดขึ้นใหม่ให้อัตโนมัติ ทุกอย่างที่ถูกลบจะถูกเก็บไว้ในโฟลเดอร์สำรองภายในโฟลเดอร์ Steam ของคุณ</value></data>
+  <data name="Removal_Toast_Removed" xml:space="preserve"><value>ลบแล้ว ไฟล์ถูกเก็บไว้ในโฟลเดอร์สำรองภายในโฟลเดอร์ Steam ของคุณ</value></data>
+  <data name="Removal_Toast_RemovedSteamStopped" xml:space="preserve"><value>ลบแล้ว Steam ถูกปิด — เปิดใหม่เมื่อคุณพร้อม ไฟล์ถูกเก็บไว้ในโฟลเดอร์สำรองภายในโฟลเดอร์ Steam ของคุณ</value></data>
+  <data name="Removal_Toast_NothingToDo" xml:space="preserve"><value>ไม่มีอะไรให้ลบ — ไฟล์เหล่านั้นหายไปแล้ว</value></data>
+  <data name="Removal_Toast_NoRecord" xml:space="preserve"><value>ไม่มีบันทึกการติดตั้งสำหรับปลั๊กอินนี้ จึงไม่ได้ลบอะไรเลย</value></data>
+  <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>เก็บ {0} ไว้: เครื่องมืออื่นที่ติดตั้งไว้ยังใช้อยู่ ลบเฉพาะบันทึกการติดตั้งเท่านั้น</value></data>
+  <data name="Removal_Toast_Failed" xml:space="preserve"><value>ถอนการติดตั้งไม่สำเร็จ: {0}</value></data>
+  <data name="Removal_Err_Record" xml:space="preserve"><value>ไม่สามารถใช้บันทึกการติดตั้งได้: {0}</value></data>
+  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>สำเนานี้ถูกติดตั้งก่อนที่ LuaTools จะเก็บบันทึกการติดตั้ง จึงพิสูจน์ไม่ได้ว่าไฟล์ใดเป็นของตน ติดตั้งใหม่เพื่อสร้างบันทึก แล้วการถอนการติดตั้งจะใช้งานได้</value></data>
 </root>

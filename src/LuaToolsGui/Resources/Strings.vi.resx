@@ -185,6 +185,11 @@
   <data name="Mode_Btn_Update" xml:space="preserve"><value>Cập nhật</value></data>
   <data name="Mode_Btn_Install" xml:space="preserve"><value>Cài đặt</value></data>
   <data name="Mode_Btn_Switch" xml:space="preserve"><value>Chuyển sang cái này</value></data>
+  <data name="Mode_Btn_Uninstall" xml:space="preserve"><value>Gỡ cài đặt</value></data>
+  <data name="Mode_Confirm_Uninstall" xml:space="preserve"><value>Gỡ {0}?</value></data>
+  <data name="Mode_Confirm_Uninstall_Body" xml:space="preserve"><value>Các tệp mà chế độ này đặt cạnh steam.exe sẽ được chuyển vào thư mục sao lưu bên trong thư mục Steam của bạn, không bị xóa. Tệp mà một bản cài đặt khác vẫn cần sẽ được giữ nguyên. Steam bị đóng và không được mở lại giúp bạn — hãy mở khi bạn sẵn sàng.</value></data>
+  <data name="Mode_Uninstall_NoRecord" xml:space="preserve"><value>LuaTools không có bản ghi cài đặt cho chế độ này nên không thể chứng minh tệp nào cạnh steam.exe là của nó. Hãy cài lại qua ứng dụng để tạo bản ghi, hoặc tự xóa các tệp.</value></data>
+  <data name="Mode_Toast_Uninstalled" xml:space="preserve"><value>Đã gỡ chế độ</value></data>
   <data name="Mode_Confirm_Reinstall" xml:space="preserve"><value>Cài đặt lại {0}?</value></data>
   <data name="Mode_Confirm_Switch" xml:space="preserve"><value>Chuyển sang {0}?</value></data>
   <data name="Mode_Toast_Updated" xml:space="preserve"><value>Đã cập nhật chế độ</value></data>
@@ -399,7 +404,6 @@ Thao tác này sẽ xóa các tệp .lua khỏi Steam\config\stplug-in. Sau đó
   <data name="Plugin_Toast_Title" xml:space="preserve"><value>Plugin</value></data>
   <data name="Plugin_Toast_Installed" xml:space="preserve"><value>Đã cài plugin. Steam đang khởi động lại để tải nó.</value></data>
   <data name="Plugin_Toast_InstallFailed" xml:space="preserve"><value>Cài đặt thất bại: {0}</value></data>
-  <data name="Plugin_Toast_Removed" xml:space="preserve"><value>Đã gỡ plugin. Steam đang khởi động lại.</value></data>
   <data name="Plugin_Toast_UninstallFailed" xml:space="preserve"><value>Gỡ cài đặt thất bại: {0}</value></data>
   <data name="Plugin_Toast_UpdateAvailable" xml:space="preserve"><value>Đã có bản cập nhật.</value></data>
   <data name="Plugin_Toast_UpToDate" xml:space="preserve"><value>Bạn đang dùng phiên bản mới nhất.</value></data>
@@ -506,4 +510,22 @@ Thao tác này sẽ xóa các tệp .lua khỏi Steam\config\stplug-in. Sau đó
   <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Không thể khởi động trò chơi</value></data>
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam đã từ chối mở trò chơi này. Hãy kiểm tra xem Steam đã được cài đặt đúng chưa.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Không thể khởi động Steam. Hãy đặt vị trí của Steam trong Cài đặt rồi thử lại.</value></data>
+  <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Plugin gốc của Steam (một bản fork của BetterSteamTools). Việc cài đặt đặt bốn tệp vào thư mục Steam; những gì đã có sẽ được giữ trước trong một thư mục sao lưu. Steam được khởi động lại để nạp plugin.</value></data>
+  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Tệp Steam</value></data>
+  <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>Đã cài đặt AmethystTool. Steam đã khởi động lại để nạp nó.</value></data>
+  <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Cài đặt AmethystTool thất bại: {0}</value></data>
+  <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Bản phát hành AmethystTool mới nhất không công bố {0}.</value></data>
+  <data name="Amethyst_Err_Archive" xml:space="preserve"><value>Kho lưu trữ AmethystTool đã bị từ chối: {0}</value></data>
+  <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Các tệp đã có sẵn trong thư mục Steam được giữ tại {0}</value></data>
+  <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Gỡ cài đặt plugin này?</value></data>
+  <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam sẽ được đóng để có thể gỡ các tệp của nó, và sẽ KHÔNG tự mở lại. Mọi thứ bị gỡ đều được giữ trong một thư mục sao lưu bên trong thư mục Steam của bạn.</value></data>
+  <data name="Removal_Toast_Removed" xml:space="preserve"><value>Đã gỡ. Các tệp được giữ trong một thư mục sao lưu bên trong thư mục Steam của bạn.</value></data>
+  <data name="Removal_Toast_RemovedSteamStopped" xml:space="preserve"><value>Đã gỡ. Steam đã đóng — hãy mở lại khi bạn sẵn sàng. Các tệp được giữ trong một thư mục sao lưu bên trong thư mục Steam của bạn.</value></data>
+  <data name="Removal_Toast_NothingToDo" xml:space="preserve"><value>Không có gì để gỡ — những tệp đó không còn nữa.</value></data>
+  <data name="Removal_Toast_NoRecord" xml:space="preserve"><value>Không có bản ghi cài đặt cho plugin này, nên không có gì bị gỡ.</value></data>
+  <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>Đã giữ {0}: một công cụ đã cài khác vẫn đang dùng nó. Chỉ bản ghi cài đặt bị gỡ.</value></data>
+  <data name="Removal_Toast_Failed" xml:space="preserve"><value>Gỡ cài đặt thất bại: {0}</value></data>
+  <data name="Removal_Err_Record" xml:space="preserve"><value>Không thể dùng bản ghi cài đặt: {0}</value></data>
+  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Bản sao này được cài trước khi LuaTools lưu bản ghi cài đặt, nên không thể chứng minh tệp nào là của nó. Cài lại để tạo bản ghi, sau đó gỡ cài đặt sẽ khả dụng.</value></data>
 </root>

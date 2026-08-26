@@ -185,6 +185,11 @@
   <data name="Mode_Btn_Update" xml:space="preserve"><value>Обновяване</value></data>
   <data name="Mode_Btn_Install" xml:space="preserve"><value>Инсталиране</value></data>
   <data name="Mode_Btn_Switch" xml:space="preserve"><value>Превключване към този</value></data>
+  <data name="Mode_Btn_Uninstall" xml:space="preserve"><value>Деинсталиране</value></data>
+  <data name="Mode_Confirm_Uninstall" xml:space="preserve"><value>Да се премахне ли {0}?</value></data>
+  <data name="Mode_Confirm_Uninstall_Body" xml:space="preserve"><value>Файловете, поставени от този режим до steam.exe, се преместват в папка с резервно копие в папката на Steam, а не се изтриват. Файл, който друга инсталация още използва, остава на място. Steam се затваря и не се отваря повторно вместо вас — отворете го, когато сте готови.</value></data>
+  <data name="Mode_Uninstall_NoRecord" xml:space="preserve"><value>LuaTools няма запис за инсталация на този режим, затова не може да докаже кои файлове до steam.exe са негови. Инсталирайте го отново през приложението, за да се създаде запис, или премахнете файловете сами.</value></data>
+  <data name="Mode_Toast_Uninstalled" xml:space="preserve"><value>Режимът е премахнат</value></data>
   <data name="Mode_Confirm_Reinstall" xml:space="preserve"><value>Преинсталиране на {0}?</value></data>
   <data name="Mode_Confirm_Switch" xml:space="preserve"><value>Превключване към {0}?</value></data>
   <data name="Mode_Toast_Updated" xml:space="preserve"><value>Режимът е обновен</value></data>
@@ -399,7 +404,6 @@
   <data name="Plugin_Toast_Title" xml:space="preserve"><value>Плъгин</value></data>
   <data name="Plugin_Toast_Installed" xml:space="preserve"><value>Плъгинът е инсталиран. Steam се рестартира, за да го зареди.</value></data>
   <data name="Plugin_Toast_InstallFailed" xml:space="preserve"><value>Инсталирането е неуспешно: {0}</value></data>
-  <data name="Plugin_Toast_Removed" xml:space="preserve"><value>Плъгинът е премахнат. Steam се рестартира.</value></data>
   <data name="Plugin_Toast_UninstallFailed" xml:space="preserve"><value>Деинсталирането е неуспешно: {0}</value></data>
   <data name="Plugin_Toast_UpdateAvailable" xml:space="preserve"><value>Налично е обновление.</value></data>
   <data name="Plugin_Toast_UpToDate" xml:space="preserve"><value>Използвате най-новата версия.</value></data>
@@ -506,4 +510,22 @@
   <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Играта не можа да бъде стартирана</value></data>
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam отказа да отвори тази игра. Проверете дали Steam е инсталиран правилно.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam не можа да бъде стартиран. Задайте местоположението му в Настройки и опитайте отново.</value></data>
+  <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Собствена приставка за Steam (форк на BetterSteamTools). Инсталацията поставя четири файла в папката на Steam; вече наличното се запазва първо в папка с резервно копие. Steam се рестартира, за да зареди приставката.</value></data>
+  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Файлове на Steam</value></data>
+  <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool е инсталиран. Steam беше рестартиран, за да го зареди.</value></data>
+  <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Инсталирането на AmethystTool се провали: {0}</value></data>
+  <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Най-новото издание на AmethystTool не публикува {0}.</value></data>
+  <data name="Amethyst_Err_Archive" xml:space="preserve"><value>Архивът на AmethystTool беше отхвърлен: {0}</value></data>
+  <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Файловете, които вече бяха в папката на Steam, са запазени в {0}</value></data>
+  <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Да се премахне ли тази приставка?</value></data>
+  <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam ще бъде затворен, за да могат да бъдат премахнати файловете му, и НЯМА да бъде отворен отново автоматично. Всичко премахнато се запазва в папка с резервно копие в папката на Steam.</value></data>
+  <data name="Removal_Toast_Removed" xml:space="preserve"><value>Премахнато. Файловете са запазени в папка с резервно копие в папката на Steam.</value></data>
+  <data name="Removal_Toast_RemovedSteamStopped" xml:space="preserve"><value>Премахнато. Steam беше затворен — отворете го, когато сте готови. Файловете са запазени в папка с резервно копие в папката на Steam.</value></data>
+  <data name="Removal_Toast_NothingToDo" xml:space="preserve"><value>Няма какво да се премахне — тези файлове вече ги няма.</value></data>
+  <data name="Removal_Toast_NoRecord" xml:space="preserve"><value>Няма запис за инсталация на тази приставка, затова нищо не беше премахнато.</value></data>
+  <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} е запазен: друг инсталиран инструмент все още го ползва. Премахнат е само записът за инсталация.</value></data>
+  <data name="Removal_Toast_Failed" xml:space="preserve"><value>Премахването не успя: {0}</value></data>
+  <data name="Removal_Err_Record" xml:space="preserve"><value>Записът за инсталация не може да бъде използван: {0}</value></data>
+  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Това копие е инсталирано, преди LuaTools да води записи за инсталация, затова не може да докаже кои файлове са негови. Преинсталирайте, за да се създаде запис, и премахването ще стане достъпно.</value></data>
 </root>

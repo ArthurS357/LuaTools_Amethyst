@@ -19,7 +19,25 @@ public partial class ModeCardViewModel(UnlockerMode mode, string title, string d
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowManage))]
+    [NotifyPropertyChangedFor(nameof(ShowUninstall))]
+    [NotifyPropertyChangedFor(nameof(ShowNoRecordHint))]
     private bool _isActive;
+
+    /// <summary>
+    /// Whether this app can prove which files next to steam.exe belong to this mode. Mirrored from the page
+    /// (<see cref="ModeViewModel.ModeHasRecord"/>) because only the card knows whether it is the active
+    /// one, and the hint must not appear on the cards that are not.
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowNoRecordHint))]
+    private bool _hasInstallRecord;
+
+    /// <summary>Uninstall belongs to the mode that is actually installed, so it shows on that card only.</summary>
+    public bool ShowUninstall => IsActive;
+
+    /// <summary>Active but with nothing recorded — explain why Uninstall is unavailable rather than showing
+    /// a dead button with no reason attached.</summary>
+    public bool ShowNoRecordHint => IsActive && !HasInstallRecord;
 
     /// <summary>The CloudRedirect "Manage" button shows only on the CloudRedirect card while it's active.</summary>
     public bool IsCloudRedirect => Mode == UnlockerMode.CloudRedirect;
@@ -44,30 +62,48 @@ public partial class ModeViewModel : ObservableObject
     private readonly ToastService _toast;
     private readonly SteamService _steam;
     private readonly CloudRedirectService _cloudRedirect;
+    private readonly ModeRemovalService _modeRemoval;
 
     public ObservableCollection<ModeCardViewModel> Cards { get; } = [];
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(NotBusy))]
     [NotifyPropertyChangedFor(nameof(CanUseCloudRedirect))]
+    [NotifyPropertyChangedFor(nameof(CanUninstallMode))]
     private bool _isBusy;
     public bool NotBusy => !IsBusy;
+
+    /// <summary>True when the active mode has an install record to remove — see
+    /// <see cref="ModeRemovalService.CanUninstall"/> for why the record, and not the files, is the gate.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanUninstallMode))]
+    private bool _modeHasRecord;
+
+    public bool CanUninstallMode => ModeHasRecord && !IsBusy;
 
     [ObservableProperty] private double _progress;
     [ObservableProperty] private bool _isProgressIndeterminate;
 
     // ── Steam-shutdown confirmation overlay ──────────────────────────
+    //
+    // One overlay serves install and uninstall. Both ask for the same permission — to close Steam — and a
+    // second scrim with its own copy of the buttons would drift out of step with this one.
+    private enum PendingAction { Install, Uninstall }
+
     [ObservableProperty] private bool _isConfirming;
     [ObservableProperty] private string _confirmTitle = "";
+    [ObservableProperty] private string _confirmBody = Resources.Strings.Mode_Confirm_Body;
     private ModeCardViewModel? _pendingCard;
+    private PendingAction _pending;
 
     public ModeViewModel(UnlockerService unlocker, ToastService toast, SteamService steam,
-        CloudRedirectService cloudRedirect)
+        CloudRedirectService cloudRedirect, ModeRemovalService modeRemoval)
     {
         _unlocker = unlocker;
         _toast = toast;
         _steam = steam;
         _cloudRedirect = cloudRedirect;
+        _modeRemoval = modeRemoval;
     }
 
     /// <summary>CloudRedirect "Manage": download (cache) the CloudRedirect GUI and launch it.</summary>
@@ -272,8 +308,10 @@ public partial class ModeViewModel : ObservableObject
         SyncCards();
 
         var active = _unlocker.SelectedMode;
+        ModeHasRecord = _modeRemoval.CanUninstall;
         foreach (var card in Cards)
         {
+            card.HasInstallRecord = ModeHasRecord;
             if (card.Mode == active)
             {
                 card.StatusText = Resources.Strings.Mode_Checking;
@@ -336,10 +374,27 @@ public partial class ModeViewModel : ObservableObject
     private void Install(ModeCardViewModel card)
     {
         if (IsBusy) return;
+        _pending = PendingAction.Install;
         _pendingCard = card;
         ConfirmTitle = card.IsActive
             ? string.Format(Resources.Strings.Mode_Confirm_Reinstall, card.Title)
             : string.Format(Resources.Strings.Mode_Confirm_Switch, card.Title);
+        ConfirmBody = Resources.Strings.Mode_Confirm_Body;
+        IsConfirming = true;
+    }
+
+    /// <summary>
+    /// Uninstall button → confirm first. The body says what an uninstall does that an install does not:
+    /// the files are moved to a backup folder, and Steam stays closed afterwards.
+    /// </summary>
+    [RelayCommand]
+    private void UninstallMode(ModeCardViewModel card)
+    {
+        if (IsBusy || !CanUninstallMode) return;
+        _pending = PendingAction.Uninstall;
+        _pendingCard = card;
+        ConfirmTitle = string.Format(Resources.Strings.Mode_Confirm_Uninstall, card.Title);
+        ConfirmBody = Resources.Strings.Mode_Confirm_Uninstall_Body;
         IsConfirming = true;
     }
 
@@ -350,15 +405,47 @@ public partial class ModeViewModel : ObservableObject
         _pendingCard = null;
     }
 
+    /// <summary>The overlay's primary button. Which action it runs was fixed when the overlay opened.</summary>
     [RelayCommand]
-    private async Task ConfirmInstall()
+    private async Task Confirm()
     {
         IsConfirming = false;
         var card = _pendingCard;
         _pendingCard = null;
         if (card is null) return;
 
-        await RunInstall(card.Mode);
+        if (_pending == PendingAction.Uninstall) await RunUninstall();
+        else await RunInstall(card.Mode);
+    }
+
+    /// <summary>
+    /// Take the active mode's recorded files back out of the Steam root and deselect it.
+    ///
+    /// <para>
+    /// Steam is stopped by the removal and deliberately <b>not</b> restarted — unlike an install, which
+    /// relaunches it. Putting a client back up onto proxy DLLs that were there a moment ago and now are not
+    /// is the user's decision, not the uninstaller's, and the toast says Steam was closed.
+    /// </para>
+    /// </summary>
+    private async Task RunUninstall()
+    {
+        if (IsBusy) return;
+        IsBusy = true;
+        IsProgressIndeterminate = true;
+        Progress = 0;
+        try
+        {
+            var outcome = await _modeRemoval.UninstallActiveModeAsync();
+            _toast.Show(Resources.Strings.Mode_Toast_Uninstalled, RemovalMessage.Describe(outcome),
+                error: outcome.Failed);
+
+            await LoadAsync();
+        }
+        finally
+        {
+            IsBusy = false;
+            IsProgressIndeterminate = false;
+        }
     }
 
     private async Task RunInstall(UnlockerMode mode)

@@ -185,6 +185,11 @@
   <data name="Mode_Btn_Update" xml:space="preserve"><value>Atualizar</value></data>
   <data name="Mode_Btn_Install" xml:space="preserve"><value>Instalar</value></data>
   <data name="Mode_Btn_Switch" xml:space="preserve"><value>Mudar para este</value></data>
+  <data name="Mode_Btn_Uninstall" xml:space="preserve"><value>Desinstalar</value></data>
+  <data name="Mode_Confirm_Uninstall" xml:space="preserve"><value>Remover {0}?</value></data>
+  <data name="Mode_Confirm_Uninstall_Body" xml:space="preserve"><value>Os arquivos que este modo colocou ao lado do steam.exe são movidos para uma pasta de backup dentro da sua pasta da Steam, não apagados. Um arquivo que outra instalação ainda usa fica onde está. A Steam é fechada e não é reaberta para você — abra quando estiver pronto.</value></data>
+  <data name="Mode_Uninstall_NoRecord" xml:space="preserve"><value>O LuaTools não tem registro de instalação deste modo, então não consegue provar quais arquivos ao lado do steam.exe são dele. Reinstale pelo app para criar um registro, ou remova os arquivos você mesmo.</value></data>
+  <data name="Mode_Toast_Uninstalled" xml:space="preserve"><value>Modo removido</value></data>
   <data name="Mode_Confirm_Reinstall" xml:space="preserve"><value>Reinstalar {0}?</value></data>
   <data name="Mode_Confirm_Switch" xml:space="preserve"><value>Mudar para {0}?</value></data>
   <data name="Mode_Toast_Updated" xml:space="preserve"><value>Modo atualizado</value></data>
@@ -399,7 +404,6 @@ Isso exclui os arquivos .lua de Steam\config\stplug-in. Reinicie o Steam depois 
   <data name="Plugin_Toast_Title" xml:space="preserve"><value>Plugin</value></data>
   <data name="Plugin_Toast_Installed" xml:space="preserve"><value>Plugin instalado. A Steam está reiniciando para carregá-lo.</value></data>
   <data name="Plugin_Toast_InstallFailed" xml:space="preserve"><value>Falha na instalação: {0}</value></data>
-  <data name="Plugin_Toast_Removed" xml:space="preserve"><value>Plugin removido. A Steam está reiniciando.</value></data>
   <data name="Plugin_Toast_UninstallFailed" xml:space="preserve"><value>Falha ao desinstalar: {0}</value></data>
   <data name="Plugin_Toast_UpdateAvailable" xml:space="preserve"><value>Há uma atualização disponível.</value></data>
   <data name="Plugin_Toast_UpToDate" xml:space="preserve"><value>Você está atualizado.</value></data>
@@ -506,4 +510,22 @@ Isso exclui os arquivos .lua de Steam\config\stplug-in. Reinicie o Steam depois 
   <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Não foi possível iniciar o jogo</value></data>
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>O Steam recusou abrir este jogo. Verifique se o Steam está instalado corretamente.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Não foi possível iniciar o Steam. Defina o local dele em Configurações e tente novamente.</value></data>
+  <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Plugin nativo da Steam (um fork do BetterSteamTools). A instalação coloca quatro arquivos na pasta da Steam; o que já estiver lá é guardado antes em uma pasta de backup. A Steam é reiniciada para carregar o plugin.</value></data>
+  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Arquivos da Steam</value></data>
+  <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool instalado. A Steam foi reiniciada para carregá-lo.</value></data>
+  <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Falha ao instalar o AmethystTool: {0}</value></data>
+  <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>A versão mais recente do AmethystTool não publica {0}.</value></data>
+  <data name="Amethyst_Err_Archive" xml:space="preserve"><value>O arquivo do AmethystTool foi recusado: {0}</value></data>
+  <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Os arquivos que já estavam na pasta da Steam foram guardados em {0}</value></data>
+  <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Desinstalar este plugin?</value></data>
+  <data name="Removal_Confirm_Body" xml:space="preserve"><value>A Steam sera fechada para que os arquivos possam ser removidos, e NAO sera reaberta automaticamente. Tudo o que for removido fica guardado em uma pasta de backup dentro da pasta da Steam.</value></data>
+  <data name="Removal_Toast_Removed" xml:space="preserve"><value>Removido. Os arquivos ficaram guardados em uma pasta de backup dentro da pasta da Steam.</value></data>
+  <data name="Removal_Toast_RemovedSteamStopped" xml:space="preserve"><value>Removido. A Steam foi fechada — reabra quando quiser. Os arquivos ficaram guardados em uma pasta de backup dentro da pasta da Steam.</value></data>
+  <data name="Removal_Toast_NothingToDo" xml:space="preserve"><value>Nada a remover — esses arquivos ja nao estao mais la.</value></data>
+  <data name="Removal_Toast_NoRecord" xml:space="preserve"><value>Nao ha registro de instalacao para este plugin, entao nada foi removido.</value></data>
+  <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} foi mantido: outra ferramenta instalada ainda usa esse arquivo. Só o registro de instalacao foi removido.</value></data>
+  <data name="Removal_Toast_Failed" xml:space="preserve"><value>Falha ao desinstalar: {0}</value></data>
+  <data name="Removal_Err_Record" xml:space="preserve"><value>Nao foi possivel usar o registro de instalacao: {0}</value></data>
+  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Esta copia foi instalada antes de o LuaTools manter registros de instalacao, entao ele nao consegue provar quais arquivos sao dele. Reinstale para criar um registro e a desinstalacao fica disponivel.</value></data>
 </root>

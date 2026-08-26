@@ -142,6 +142,14 @@
                                             Foreground="{StaticResource TextMutedBrush}"
                                             Text="{Binding StatusText}"
                                             TextWrapping="Wrap" />
+                                        <!-- Active, but nothing recorded: say why Uninstall is disabled. -->
+                                        <TextBlock
+                                            Margin="0,6,0,0"
+                                            FontSize="11.5"
+                                            Foreground="{StaticResource TextDimBrush}"
+                                            Text="{x:Static res:Strings.Mode_Uninstall_NoRecord}"
+                                            TextWrapping="Wrap"
+                                            Visibility="{Binding ShowNoRecordHint, Converter={StaticResource BoolToVis}}" />
                                     </StackPanel>
                                     <StackPanel
                                         Grid.Column="1"
@@ -153,6 +161,17 @@
                                             CommandParameter="{Binding}"
                                             Content="{Binding ButtonText}"
                                             IsEnabled="{Binding DataContext.NotBusy, ElementName=Root}" />
+                                        <!-- Active mode only: takes the files it recorded back out. -->
+                                        <ui:Button
+                                            Margin="0,8,0,0"
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Center"
+                                            Command="{Binding DataContext.UninstallModeCommand, ElementName=Root}"
+                                            CommandParameter="{Binding}"
+                                            Content="{x:Static res:Strings.Mode_Btn_Uninstall}"
+                                            Icon="{ui:SymbolIcon Delete24}"
+                                            IsEnabled="{Binding DataContext.CanUninstallMode, ElementName=Root}"
+                                            Visibility="{Binding ShowUninstall, Converter={StaticResource BoolToVis}}" />
                                         <!-- CloudRedirect-only: opens its GUI manager (active mode only). -->
                                         <ui:Button
                                             Margin="0,8,0,0"
@@ -295,7 +314,7 @@
                         Margin="0,8,0,0"
                         FontSize="12.5"
                         Foreground="{StaticResource TextMutedBrush}"
-                        Text="{x:Static res:Strings.Mode_Confirm_Body}"
+                        Text="{Binding ConfirmBody}"
                         TextWrapping="Wrap" />
                     <StackPanel
                         Margin="0,16,0,0"
@@ -307,7 +326,7 @@
                             Content="{x:Static res:Strings.Mode_Cancel}" />
                         <ui:Button
                             Appearance="Primary"
-                            Command="{Binding ConfirmInstallCommand}"
+                            Command="{Binding ConfirmCommand}"
                             Content="{x:Static res:Strings.Mode_CloseSteamContinue}"
                             Icon="{ui:SymbolIcon Power24}" />
                     </StackPanel>

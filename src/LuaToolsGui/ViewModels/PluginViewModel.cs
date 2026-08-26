@@ -16,11 +16,20 @@ public partial class PluginViewModel : ObservableObject
     private readonly PluginInstallerService _installer;
     private readonly ToastService _toast;
 
-    public PluginViewModel(PluginInstallerService installer, ToastService toast)
+    public PluginViewModel(PluginInstallerService installer, ToastService toast,
+        AmethystToolViewModel amethyst)
     {
         _installer = installer;
         _toast = toast;
+        Amethyst = amethyst;
     }
+
+    /// <summary>
+    /// The AmethystTool card, hosted on this page as a separate section. It is a different product from a
+    /// different source with a different install target (the Steam root, natively injected), so it keeps
+    /// its own state rather than sharing this view model's flags — see <see cref="AmethystToolViewModel"/>.
+    /// </summary>
+    public AmethystToolViewModel Amethyst { get; }
 
     [ObservableProperty] private string _installedVersion = "—";
     [ObservableProperty] private string _latestVersion = "—";
@@ -74,7 +83,11 @@ public partial class PluginViewModel : ObservableObject
         ? Resources.Strings.Plugin_Btn_Install
         : UpdateAvailable ? Resources.Strings.Plugin_Btn_Update : Resources.Strings.Plugin_Btn_Reinstall;
 
-    public async Task LoadAsync() => await RefreshAsync(force: false);
+    public async Task LoadAsync()
+    {
+        await RefreshAsync(force: false);
+        await Amethyst.LoadAsync();
+    }
 
     private async Task RefreshAsync(bool force)
     {
@@ -98,6 +111,13 @@ public partial class PluginViewModel : ObservableObject
             : st.Port8080Busy ? Resources.Strings.Plugin_Status_Port8080Busy
             : null;
     }
+
+    private static bool ConfirmUninstall() =>
+        System.Windows.MessageBox.Show(
+            Resources.Strings.Removal_Confirm_Body,
+            Resources.Strings.Removal_Confirm_Caption,
+            System.Windows.MessageBoxButton.OKCancel,
+            System.Windows.MessageBoxImage.Warning) == System.Windows.MessageBoxResult.OK;
 
     private bool ConfirmSteamRestart()
     {
@@ -142,15 +162,19 @@ public partial class PluginViewModel : ObservableObject
     private async Task Uninstall()
     {
         if (IsBusy || !IsInstalled) return;
-        if (!ConfirmSteamRestart()) return;
+        // Its own prompt, not the install one: uninstall stops Steam and — unlike install — does not bring
+        // it back, so a message promising a restart would be wrong.
+        if (!ConfirmUninstall()) return;
 
         IsBusy = true;
         IsProgressIndeterminate = true;
         try
         {
             var (ok, error) = await _installer.UninstallAsync();
+            // Success says Steam was stopped: a user whose client vanished without explanation reads that
+            // as the app having broken something.
             _toast.Show(Resources.Strings.Plugin_Toast_Title, ok
-                ? Resources.Strings.Plugin_Toast_Removed
+                ? Resources.Strings.Removal_Toast_RemovedSteamStopped
                 : string.Format(Resources.Strings.Plugin_Toast_UninstallFailed, error), error: !ok);
         }
         finally

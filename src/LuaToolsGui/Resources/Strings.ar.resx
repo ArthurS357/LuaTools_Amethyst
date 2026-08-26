@@ -194,6 +194,11 @@
   <data name="Mode_Btn_Update" xml:space="preserve"><value>تحديث</value></data>
   <data name="Mode_Btn_Install" xml:space="preserve"><value>تثبيت</value></data>
   <data name="Mode_Btn_Switch" xml:space="preserve"><value>التبديل إلى هذا</value></data>
+  <data name="Mode_Btn_Uninstall" xml:space="preserve"><value>إلغاء التثبيت</value></data>
+  <data name="Mode_Confirm_Uninstall" xml:space="preserve"><value>إزالة {0}؟</value></data>
+  <data name="Mode_Confirm_Uninstall_Body" xml:space="preserve"><value>يتم نقل الملفات التي وضعها هذا الوضع بجوار steam.exe إلى مجلد نسخ احتياطي داخل مجلد Steam، ولا يتم حذفها. أي ملف ما زال تثبيت آخر بحاجة إليه يُترك كما هو. يتم إغلاق Steam ولا يُعاد فتحه تلقائيًا — افتحه عندما تكون مستعدًا.</value></data>
+  <data name="Mode_Uninstall_NoRecord" xml:space="preserve"><value>لا يملك LuaTools سجل تثبيت لهذا الوضع، لذا لا يمكنه إثبات أي الملفات بجوار steam.exe تخصه. أعد تثبيته عبر التطبيق لإنشاء سجل، أو احذف الملفات بنفسك.</value></data>
+  <data name="Mode_Toast_Uninstalled" xml:space="preserve"><value>تمت إزالة الوضع</value></data>
   <data name="Mode_Confirm_Reinstall" xml:space="preserve"><value>إعادة تثبيت {0}؟</value></data>
   <data name="Mode_Confirm_Switch" xml:space="preserve"><value>التبديل إلى {0}؟</value></data>
   <data name="Mode_Toast_Updated" xml:space="preserve"><value>تم تحديث الوضع</value></data>
@@ -425,7 +430,6 @@
   <data name="Plugin_Toast_Title" xml:space="preserve"><value>الإضافة</value></data>
   <data name="Plugin_Toast_Installed" xml:space="preserve"><value>تم تثبيت الإضافة. تتم إعادة تشغيل Steam لتحميلها.</value></data>
   <data name="Plugin_Toast_InstallFailed" xml:space="preserve"><value>فشل التثبيت: {0}</value></data>
-  <data name="Plugin_Toast_Removed" xml:space="preserve"><value>تمت إزالة الإضافة. تتم إعادة تشغيل Steam.</value></data>
   <data name="Plugin_Toast_UninstallFailed" xml:space="preserve"><value>فشل إلغاء التثبيت: {0}</value></data>
   <data name="Plugin_Toast_UpdateAvailable" xml:space="preserve"><value>يتوفّر تحديث.</value></data>
   <data name="Plugin_Toast_UpToDate" xml:space="preserve"><value>أنت على أحدث إصدار.</value></data>
@@ -532,4 +536,22 @@
   <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>تعذّر تشغيل اللعبة</value></data>
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>رفض Steam فتح هذه اللعبة. تأكد من تثبيت Steam بشكل صحيح.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>تعذّر تشغيل Steam. حدّد موقعه في الإعدادات وحاول مرة أخرى.</value></data>
+  <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>إضافة أصلية لـ Steam (نسخة معدّلة من BetterSteamTools). يضع التثبيت أربعة ملفات في مجلد Steam؛ وما هو موجود مسبقًا يُحفَظ أولًا في مجلد نسخ احتياطي. يُعاد تشغيل Steam لتحميل الإضافة.</value></data>
+  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>ملفات Steam</value></data>
+  <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>تم تثبيت AmethystTool. أُعيد تشغيل Steam لتحميله.</value></data>
+  <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>فشل تثبيت AmethystTool: {0}</value></data>
+  <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>أحدث إصدار من AmethystTool لا ينشر {0}.</value></data>
+  <data name="Amethyst_Err_Archive" xml:space="preserve"><value>تم رفض أرشيف AmethystTool: {0}</value></data>
+  <data name="Amethyst_Backup_Line" xml:space="preserve"><value>الملفات التي كانت موجودة في مجلد Steam حُفظت في {0}</value></data>
+  <data name="Removal_Confirm_Caption" xml:space="preserve"><value>هل تريد إلغاء تثبيت هذه الإضافة؟</value></data>
+  <data name="Removal_Confirm_Body" xml:space="preserve"><value>سيُغلق Steam حتى يمكن إزالة ملفاته، ولن يُعاد فتحه تلقائيًا. كل ما يُزال يُحفظ في مجلد نسخ احتياطي داخل مجلد Steam.</value></data>
+  <data name="Removal_Toast_Removed" xml:space="preserve"><value>تمت الإزالة. حُفظت الملفات في مجلد نسخ احتياطي داخل مجلد Steam.</value></data>
+  <data name="Removal_Toast_RemovedSteamStopped" xml:space="preserve"><value>تمت الإزالة. أُغلق Steam — أعد فتحه عندما تشاء. حُفظت الملفات في مجلد نسخ احتياطي داخل مجلد Steam.</value></data>
+  <data name="Removal_Toast_NothingToDo" xml:space="preserve"><value>لا شيء لإزالته — تلك الملفات لم تعد موجودة.</value></data>
+  <data name="Removal_Toast_NoRecord" xml:space="preserve"><value>لا يوجد سجل تثبيت لهذه الإضافة، لذا لم تتم إزالة أي شيء.</value></data>
+  <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>أُبقي على {0}: أداة أخرى مثبّتة ما زالت تستخدمه. أُزيل سجل التثبيت فقط.</value></data>
+  <data name="Removal_Toast_Failed" xml:space="preserve"><value>فشل إلغاء التثبيت: {0}</value></data>
+  <data name="Removal_Err_Record" xml:space="preserve"><value>تعذّر استخدام سجل التثبيت: {0}</value></data>
+  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>ثُبّتت هذه النسخة قبل أن يحتفظ LuaTools بسجلات التثبيت، لذا لا يمكنه إثبات أي الملفات ملكه. أعد التثبيت لإنشاء سجل، وعندها يصبح إلغاء التثبيت متاحًا.</value></data>
 </root>

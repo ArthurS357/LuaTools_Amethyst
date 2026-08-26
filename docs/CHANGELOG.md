@@ -1,5 +1,128 @@
 # Changelog
 
+## Nao publicado
+
+### Desinstalacao de Modes
+
+- **O cartao do Mode ativo ganhou botao Desinstalar.** A aba Modo so sabia sobrescrever: os arquivos de um
+  Mode iam para a raiz da Steam e o unico vestigio era `settings.SelectedMode`. Agora instalar ou trocar de
+  Mode grava uma entrada no `install-manifest.json` com os arquivos colocados, e desinstalar usa o MESMO
+  registro, a MESMA politica de remocao e a MESMA pasta de backup que a aba Plugin.
+- **Uma entrada de Mode por vez, com os restos carregados adiante.** Modes sao mutuamente exclusivos e
+  sobrescrevem os nomes que compartilham. Uma entrada antiga sobrevivente continuaria reivindicando
+  `dwmapi.dll` — e reivindicacao de "outra instalacao" e exatamente o que impede um arquivo de ser removido,
+  o que deixaria tanto o Mode novo quanto o AmethystTool permanentemente indesinstalaveis. Ao instalar, as
+  entradas de outros Modes sao dobradas na nova: os nomes que sobreviveram em disco (`OpenSteamTool.dll`,
+  tipicamente) entram no registro do Mode atual, entao um desinstalar limpa a cadeia inteira em vez de
+  abandonar um arquivo que ninguem assume.
+- **O Mode ativo nao reivindica contra si mesmo.** `ClaimedByOthers` sempre somava os `PlaceFiles` do Mode
+  ativo. Apontado para o proprio Mode ativo, isso marcaria cada arquivo dele como "ainda necessario a outra
+  instalacao", removeria zero arquivos e reportaria sucesso — a falha que a regra de compartilhamento existe
+  para evitar, virada para o alvo errado. A decisao virou funcao pura, `PluginRemoval.CombineClaims`.
+- **Deteccao automatica nao grava registro.** Na primeira execucao sem Mode selecionado o app compara os
+  hashes das DLLs com os releases publicados e adota o que casar. Isso prova o que os arquivos SAO, e nada
+  sobre quem os colocou ali — entao nao ha registro, o botao fica desabilitado e o cartao explica o porque,
+  em vez de remover por adivinhacao. Mesma doutrina do AmethystTool.
+- **Tipo proprio para nao criar ciclo de DI.** `PluginRemovalService` ja depende de `UnlockerService` (para
+  nao apagar as proxies do Mode ativo). Por isso a desinstalacao de Mode vive em `ModeRemovalService`, um
+  orquestrador fino sobre os dois — o container rejeitaria o ciclo em `ValidateOnBuild`.
+- **`SelectedMode` volta a "nenhum" so depois de os arquivos sairem.** Limpar antes deixaria um desinstalar
+  falho reportando "sem Mode" com as DLLs ainda sendo carregadas pela `steam.exe`, e o registro que diz
+  quais arquivos sao esses fora do alcance da UI. Nada muda no formato do `settings.json`: o campo sempre
+  foi anulavel e o `null` sempre significou "nunca escolhido" — sem migracao.
+
+### Escrita atomica do registro de instalacao
+
+- **`File.WriteAllText` trocado por gravar-e-trocar.** O registro vai para um temporario IRMAO (mesmo
+  volume, porque mover entre volumes e copia, e copia nao e atomica) e so entao entra no lugar via
+  `File.Replace` — ou `File.Move` na primeira gravacao, quando nao ha o que substituir. `WriteAllText`
+  trunca antes e preenche depois: uma queda nessa janela deixa um arquivo que le como vazio, e "nada esta
+  registrado" e justamente o que faz o Desinstalar se recusar a tocar em arquivos que continuam na raiz da
+  Steam. A escrita atomica impede que um crash desarme o recurso em silencio.
+- **Falha nao destroi o registro anterior** e nao deixa temporario para tras; o retorno continua sendo
+  `false` em vez de excecao, porque a instalacao ja aconteceu quando isso roda.
+- **Nome de temporario unico por chamada** — o lock e por instancia, o arquivo nao.
+- **`InstallManifestService` ganhou seam de diretorio** (ctor `internal`, padrao do `SettingsService`), para
+  o caminho de escrita ser testavel sem sujar o registro de quem roda os testes.
+
+### Correcoes e limpeza
+
+- **Desinstalar do AmethystTool passava por fora do proprio servico.** A view model chamava
+  `PluginRemovalService.RemoveAsync` direto, entao nem o back-fill de registro (instalacoes anteriores ao
+  manifest) nem a limpeza do manifest de versao rodavam — o botao ficava habilitado para esses usuarios e
+  respondia "sem registro". Agora vai por `AmethystToolService.UninstallAsync`.
+- **`DescribeRemoval` saiu da view model para `RemovalMessage`**, compartilhado entre a aba Plugin e a aba
+  Modo. Duas descricoes escritas a mao para um mesmo desfecho e como "removido" e "mantido porque outra
+  coisa precisa" acabam com texto diferente dependendo do botao apertado.
+- **Chave i18n `Plugin_Toast_Removed` removida** dos 30 `.resx` e do `Strings.Designer.cs`. Ficou orfa
+  quando o texto foi trocado pela variante que menciona a Steam; um accessor sem chave faz o `Strings.Get`
+  devolver o NOME da chave e a UI exibir "Plugin_Toast_Removed".
+- **Documentado que a Steam nao e reaberta apos desinstalar** — README ganhou secao propria explicando que
+  isso vale para os tres caminhos de desinstalacao e por que difere do instalar. Comportamento inalterado.
+
+### Desinstalacao de plugins, e registro de instalacao
+
+- **Botao Desinstalar no cartao do AmethystTool, e remocao segura para os dois plugins.** A remocao trabalha
+  a partir de um REGISTRO DE INSTALACAO, nao de uma lista de nomes compilada. O registro novo fica em
+  `%AppData%\LuaToolsGui\install-manifest.json` e guarda, por plugin: versao, data e quais arquivos foram
+  colocados na raiz da Steam (com hash). Nao mexe em `settings.json`.
+- **Arquivo que outra instalacao ainda usa NAO e removido.** Esse e o motivo de todo o mecanismo:
+  `dwmapi.dll` e `xinput1_4.dll` sao colocados pelo AmethystTool E por tres dos unlockers da aba Modo. Com
+  um Modo ativo, desinstalar o AmethystTool deixa esses dois no lugar e avisa; so o registro sai. Remover
+  deixaria a Steam carregando um proxy cujo par sumiu. As reivindicacoes vem do manifest E do
+  `SelectedMode` — Modes nao mantem manifest proprio, entao so o manifest nao bastaria.
+- **Nada e apagado, e movido.** Tudo removido vai para `Removal-backup-<timestamp>\<plugin>\` dentro da
+  pasta da Steam. Um desinstalar do qual o usuario se arrepende vira mover arquivo de volta.
+- **Sem registro, sem remocao.** Se nao ha o que provar, o botao fica desabilitado com texto explicando —
+  nunca remocao por adivinhacao. Instalacoes anteriores ao registro continuam funcionando: ha um
+  back-fill estreito, permitido so quando o app tem evidencia propria de que instalou (os nomes dos slots
+  do plugin de store-page, que nada mais neste app coloca; ou o manifest local do AmethystTool).
+- **A Steam e parada e NAO e reaberta.** Os arquivos ficam travados com ela rodando, entao precisa cair;
+  reabrir sozinha um cliente que ha um instante carregava uma DLL que agora nao existe mais nao e decisao
+  do desinstalador. Muda o comportamento do desinstalar do plugin de store-page, que antes reabria — o
+  toast agora diz que a Steam foi fechada.
+
+### TOCTOU no PluginInstallerService
+
+- **Retroportado o endurecimento que so o AmethystTool tinha.** Verificar, triar e usar eram tres aberturas
+  separadas do mesmo caminho; em cada intervalo outro processo rodando como o mesmo usuario podia trocar o
+  arquivo, e os bytes que a `steam.exe` carrega nao seriam os bytes cujo digest foi conferido. Agora um
+  handle e mantido aberto sobre toda a sequencia — para o zip E para cada DLL de slot, que tinha a mesma
+  janela entre verificar e copiar para a raiz da Steam.
+- **`FileShare.Read`, e a omissao importa mais que a inclusao.** Concede outros LEITORES (AssetIntegrity,
+  FixAnalyzer e ZipFile abrem por caminho) e nega escrita e — por nao ter `FileShare.Delete` — exclusao e
+  rename. O arquivo nao pode ser substituido, truncado nem movido por baixo do handle.
+- **Centralizado em `AssetIntegrity.OpenPinned`**, usado pelos dois instaladores, com testes de regressao
+  sobre o mecanismo em si.
+
+
+### Instalacao automatica do AmethystTool
+
+- **A aba Plugin ganhou um segundo cartao: AmethystTool.** E o fork do BetterSteamTools mantido junto
+  deste app, e um plugin de injecao NATIVO — `dwmapi.dll` e `xinput1_4.dll` sao proxies que a `steam.exe`
+  carrega pelo nome e que encaminham para `AmethystTool.dll`. Tudo vai para a RAIZ da Steam. O botao baixa
+  o release, verifica, extrai e instala; a Steam e parada para a copia e reaberta depois, porque essas DLLs
+  ficam travadas enquanto ela roda.
+- **Quatro arquivos, nunca mais que isso.** O zip do release tambem traz `INSTALL.txt`, `README.md`,
+  `RELEASE_NOTES.md` e `TESTING.md`. A lista instalada e uma ALLOW-LIST (`AmethystToolPlan.PayloadFiles`),
+  entao documentacao nao chega na pasta da Steam e um arquivo que um release futuro venha a adicionar e
+  ignorado por padrao, em vez de instalado por padrao.
+- **Nada e sobrescrito sem copia antes.** Se `dwmapi.dll` ou `xinput1_4.dll` ja existir — outro tool e dono
+  dele, ou e reinstalacao — o arquivo atual e MOVIDO para `AmethystTool-backup-<timestamp>\` dentro da
+  pasta da Steam ANTES de a substituicao ser escrita, e o cartao diz para onde foi. Vale para o
+  `amethysttool.toml` tambem: reinstalar troca a config, e a anterior fica na pasta de backup. Uma DLL
+  proxy sobrescrita as cegas quebra a Steam de um jeito que o usuario nao desfaz.
+- **Verificacao fail-closed, sem valvula de escape.** O SHA-256 que o GitHub publica para o asset e
+  obrigatorio; digest ausente, malformado ou divergente PARA a instalacao. Diferente do Steamless, aqui nao
+  ha hash pinado de fallback — o release ja publica digest, e um fallback so criaria um caminho em volta da
+  checagem. A URL do asset e pinada em `ArthurS357/BetterSteamTools-Amethyst` via
+  `GithubProxy.IsAssetUrlForRepo`, entao um mirror hostil da API nao pode apontar para o payload de outro
+  repositorio e entregar o hash correspondente.
+- **A decisao ficou separada da escrita.** `AmethystToolPlan` e politica pura sobre strings — o que copiar,
+  para onde, o que precisa de backup — e `AmethystToolService` so executa. E o que torna as tres garantias
+  acima testaveis com uma pasta temporaria, sem Steam e sem rede.
+
+
 ## 1.5.4 — 2026-08-22
 
 Duas coisas nesta versao: um botao **Jogar** na aba Gerenciar, e a base do app migrada de **.NET 8 para

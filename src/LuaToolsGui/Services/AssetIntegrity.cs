@@ -48,6 +48,29 @@ internal static class AssetIntegrity
         return IsSha256Hex(hex) ? hex.ToLowerInvariant() : null;
     }
 
+    /// <summary>
+    /// Open a staged download and HOLD it, so that what was verified is what gets used.
+    ///
+    /// <para>
+    /// Verification and use are separate opens of the same path: an archive is hashed, screened, then
+    /// extracted; a DLL is hashed, then copied into the Steam root. In each of those gaps another process
+    /// running as this user can substitute the file, and the bytes that steam.exe ends up loading are not
+    /// the bytes whose digest was checked. Keeping this handle open for the whole sequence closes that.
+    /// </para>
+    ///
+    /// <para>
+    /// <c>FileShare.Read</c> is the entire mechanism, and the omission matters more than the inclusion: it
+    /// grants other READERS (this codebase opens staged files by path from three places) while withholding
+    /// write and — because <c>FileShare.Delete</c> is absent — delete/rename sharing. The file therefore
+    /// cannot be replaced, truncated or moved out from under the handle. Pair it with an unguessable
+    /// staging path; neither half is sufficient alone.
+    /// </para>
+    ///
+    /// <para>Caller owns the handle and must dispose it before deleting the staging folder.</para>
+    /// </summary>
+    public static FileStream OpenPinned(string path) =>
+        new(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+
     /// <summary>SHA-256 of a file as lowercase hex.</summary>
     public static string Sha256OfFile(string path)
     {

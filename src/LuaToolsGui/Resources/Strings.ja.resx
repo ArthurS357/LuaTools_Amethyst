@@ -185,6 +185,11 @@
   <data name="Mode_Btn_Update" xml:space="preserve"><value>更新</value></data>
   <data name="Mode_Btn_Install" xml:space="preserve"><value>インストール</value></data>
   <data name="Mode_Btn_Switch" xml:space="preserve"><value>これに切り替える</value></data>
+  <data name="Mode_Btn_Uninstall" xml:space="preserve"><value>アンインストール</value></data>
+  <data name="Mode_Confirm_Uninstall" xml:space="preserve"><value>{0} を削除しますか？</value></data>
+  <data name="Mode_Confirm_Uninstall_Body" xml:space="preserve"><value>このモードが steam.exe の隣に置いたファイルは、削除ではなく Steam フォルダー内のバックアップフォルダーへ移動されます。他のインストールがまだ必要としているファイルはそのまま残します。Steam は終了され、自動では再起動しません。準備ができたら開いてください。</value></data>
+  <data name="Mode_Uninstall_NoRecord" xml:space="preserve"><value>LuaTools にはこのモードのインストール記録がないため、steam.exe の隣のどのファイルが自分のものか証明できません。アプリから再インストールして記録を作るか、ファイルを手動で削除してください。</value></data>
+  <data name="Mode_Toast_Uninstalled" xml:space="preserve"><value>モードを削除しました</value></data>
   <data name="Mode_Confirm_Reinstall" xml:space="preserve"><value>{0} を再インストールしますか？</value></data>
   <data name="Mode_Confirm_Switch" xml:space="preserve"><value>{0} に切り替えますか？</value></data>
   <data name="Mode_Toast_Updated" xml:space="preserve"><value>モードを更新しました</value></data>
@@ -399,7 +404,6 @@
   <data name="Plugin_Toast_Title" xml:space="preserve"><value>プラグイン</value></data>
   <data name="Plugin_Toast_Installed" xml:space="preserve"><value>プラグインをインストールしました。読み込むため Steam を再起動しています。</value></data>
   <data name="Plugin_Toast_InstallFailed" xml:space="preserve"><value>インストールに失敗しました: {0}</value></data>
-  <data name="Plugin_Toast_Removed" xml:space="preserve"><value>プラグインを削除しました。Steam を再起動しています。</value></data>
   <data name="Plugin_Toast_UninstallFailed" xml:space="preserve"><value>アンインストールに失敗しました: {0}</value></data>
   <data name="Plugin_Toast_UpdateAvailable" xml:space="preserve"><value>更新があります。</value></data>
   <data name="Plugin_Toast_UpToDate" xml:space="preserve"><value>最新の状態です。</value></data>
@@ -506,4 +510,22 @@
   <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>ゲームを起動できませんでした</value></data>
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam がこのゲームを開けませんでした。Steam が正しくインストールされているか確認してください。</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam を起動できませんでした。設定でその場所を指定して、もう一度お試しください。</value></data>
+  <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>ネイティブの Steam プラグイン（BetterSteamTools のフォーク）です。インストールすると Steam フォルダーに 4 つのファイルが置かれます。既にあるファイルは先にバックアップ フォルダーへ保管されます。プラグインを読み込むため Steam を再起動します。</value></data>
+  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam のファイル</value></data>
+  <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool をインストールしました。読み込むため Steam を再起動しました。</value></data>
+  <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>AmethystTool のインストールに失敗しました: {0}</value></data>
+  <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>最新の AmethystTool リリースは {0} を公開していません。</value></data>
+  <data name="Amethyst_Err_Archive" xml:space="preserve"><value>AmethystTool のアーカイブは拒否されました: {0}</value></data>
+  <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Steam フォルダーに既にあったファイルは {0} に保管しました</value></data>
+  <data name="Removal_Confirm_Caption" xml:space="preserve"><value>このプラグインをアンインストールしますか？</value></data>
+  <data name="Removal_Confirm_Body" xml:space="preserve"><value>ファイルを削除できるように Steam を終了します。自動では再起動しません。削除したものはすべて Steam フォルダー内のバックアップ フォルダーに保管されます。</value></data>
+  <data name="Removal_Toast_Removed" xml:space="preserve"><value>削除しました。ファイルは Steam フォルダー内のバックアップ フォルダーに保管しました。</value></data>
+  <data name="Removal_Toast_RemovedSteamStopped" xml:space="preserve"><value>削除しました。Steam を終了しました — 準備ができたら開き直してください。ファイルは Steam フォルダー内のバックアップ フォルダーに保管しました。</value></data>
+  <data name="Removal_Toast_NothingToDo" xml:space="preserve"><value>削除するものはありません — それらのファイルは既にありません。</value></data>
+  <data name="Removal_Toast_NoRecord" xml:space="preserve"><value>このプラグインのインストール記録がないため、何も削除しませんでした。</value></data>
+  <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} は残しました: インストール済みの別のツールがまだ使用しています。インストール記録のみ削除しました。</value></data>
+  <data name="Removal_Toast_Failed" xml:space="preserve"><value>アンインストールに失敗しました: {0}</value></data>
+  <data name="Removal_Err_Record" xml:space="preserve"><value>インストール記録を使用できませんでした: {0}</value></data>
+  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>このコピーは LuaTools がインストール記録を保持する前に導入されたため、どのファイルが自分のものか証明できません。再インストールすると記録が作成され、アンインストールが使えるようになります。</value></data>
 </root>

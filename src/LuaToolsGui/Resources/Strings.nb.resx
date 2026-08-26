@@ -185,6 +185,11 @@
   <data name="Mode_Btn_Update" xml:space="preserve"><value>Oppdater</value></data>
   <data name="Mode_Btn_Install" xml:space="preserve"><value>Installer</value></data>
   <data name="Mode_Btn_Switch" xml:space="preserve"><value>Bytt til denne</value></data>
+  <data name="Mode_Btn_Uninstall" xml:space="preserve"><value>Avinstaller</value></data>
+  <data name="Mode_Confirm_Uninstall" xml:space="preserve"><value>Fjerne {0}?</value></data>
+  <data name="Mode_Confirm_Uninstall_Body" xml:space="preserve"><value>Filene denne modusen la ved siden av steam.exe flyttes til en sikkerhetskopimappe inne i Steam-mappen din — de slettes ikke. En fil som en annen installasjon fortsatt trenger, blir liggende. Steam lukkes og åpnes ikke igjen for deg — åpne det når du er klar.</value></data>
+  <data name="Mode_Uninstall_NoRecord" xml:space="preserve"><value>LuaTools har ingen installasjonsoppføring for denne modusen og kan derfor ikke bevise hvilke filer ved siden av steam.exe som er dens egne. Installer den på nytt via appen for å lage en, eller fjern filene selv.</value></data>
+  <data name="Mode_Toast_Uninstalled" xml:space="preserve"><value>Modus fjernet</value></data>
   <data name="Mode_Confirm_Reinstall" xml:space="preserve"><value>Installere {0} på nytt?</value></data>
   <data name="Mode_Confirm_Switch" xml:space="preserve"><value>Bytte til {0}?</value></data>
   <data name="Mode_Toast_Updated" xml:space="preserve"><value>Modus oppdatert</value></data>
@@ -399,7 +404,6 @@ Dette sletter .lua-filene fra Steam\config\stplug-in. Start Steam på nytt etter
   <data name="Plugin_Toast_Title" xml:space="preserve"><value>Programtillegg</value></data>
   <data name="Plugin_Toast_Installed" xml:space="preserve"><value>Programtillegg installert. Steam starter på nytt for å laste det.</value></data>
   <data name="Plugin_Toast_InstallFailed" xml:space="preserve"><value>Installasjonen mislyktes: {0}</value></data>
-  <data name="Plugin_Toast_Removed" xml:space="preserve"><value>Programtillegg fjernet. Steam starter på nytt.</value></data>
   <data name="Plugin_Toast_UninstallFailed" xml:space="preserve"><value>Avinstallasjonen mislyktes: {0}</value></data>
   <data name="Plugin_Toast_UpdateAvailable" xml:space="preserve"><value>En oppdatering er tilgjengelig.</value></data>
   <data name="Plugin_Toast_UpToDate" xml:space="preserve"><value>Du er oppdatert.</value></data>
@@ -506,4 +510,22 @@ Dette sletter .lua-filene fra Steam\config\stplug-in. Start Steam på nytt etter
   <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Kunne ikke starte spillet</value></data>
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam nektet å åpne dette spillet. Kontroller at Steam er riktig installert.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam kunne ikke startes. Angi plasseringen i Innstillinger og prøv igjen.</value></data>
+  <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Et innebygd Steam-programtillegg (en fork av BetterSteamTools). Installasjonen legger fire filer i Steam-mappen; det som allerede ligger der, tas først vare på i en sikkerhetskopimappe. Steam startes på nytt slik at tillegget lastes.</value></data>
+  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam-filer</value></data>
+  <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool ble installert. Steam ble startet på nytt slik at det lastes.</value></data>
+  <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Installasjon av AmethystTool mislyktes: {0}</value></data>
+  <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Den nyeste AmethystTool-utgivelsen publiserer ikke {0}.</value></data>
+  <data name="Amethyst_Err_Archive" xml:space="preserve"><value>AmethystTool-arkivet ble avvist: {0}</value></data>
+  <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Filer som allerede lå i Steam-mappen, ble tatt vare på i {0}</value></data>
+  <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Vil du avinstallere dette programtillegget?</value></data>
+  <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam blir lukket slik at filene kan fjernes, og blir IKKE åpnet igjen for deg. Alt som fjernes tas vare på i en sikkerhetskopimappe inne i Steam-mappen din.</value></data>
+  <data name="Removal_Toast_Removed" xml:space="preserve"><value>Fjernet. Filene ble tatt vare på i en sikkerhetskopimappe inne i Steam-mappen din.</value></data>
+  <data name="Removal_Toast_RemovedSteamStopped" xml:space="preserve"><value>Fjernet. Steam ble lukket — åpne det igjen når du er klar. Filene ble tatt vare på i en sikkerhetskopimappe inne i Steam-mappen din.</value></data>
+  <data name="Removal_Toast_NothingToDo" xml:space="preserve"><value>Ingenting å fjerne — de filene er allerede borte.</value></data>
+  <data name="Removal_Toast_NoRecord" xml:space="preserve"><value>Det finnes ingen installasjonsoppføring for dette tillegget, så ingenting ble fjernet.</value></data>
+  <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} ble beholdt: et annet installert verktøy bruker den fortsatt. Bare installasjonsoppføringen ble fjernet.</value></data>
+  <data name="Removal_Toast_Failed" xml:space="preserve"><value>Avinstallering mislyktes: {0}</value></data>
+  <data name="Removal_Err_Record" xml:space="preserve"><value>Installasjonsoppføringen kunne ikke brukes: {0}</value></data>
+  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Denne kopien ble installert før LuaTools førte installasjonsoppføringer, så den kan ikke bevise hvilke filer som er dens egne. Installer den på nytt for å opprette en oppføring, så blir avinstallering tilgjengelig.</value></data>
 </root>

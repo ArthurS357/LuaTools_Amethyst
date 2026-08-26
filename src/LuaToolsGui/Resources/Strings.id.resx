@@ -185,6 +185,11 @@
   <data name="Mode_Btn_Update" xml:space="preserve"><value>Perbarui</value></data>
   <data name="Mode_Btn_Install" xml:space="preserve"><value>Pasang</value></data>
   <data name="Mode_Btn_Switch" xml:space="preserve"><value>Beralih ke ini</value></data>
+  <data name="Mode_Btn_Uninstall" xml:space="preserve"><value>Copot pemasangan</value></data>
+  <data name="Mode_Confirm_Uninstall" xml:space="preserve"><value>Hapus {0}?</value></data>
+  <data name="Mode_Confirm_Uninstall_Body" xml:space="preserve"><value>Berkas yang ditempatkan mode ini di samping steam.exe dipindahkan ke folder cadangan di dalam folder Steam Anda, bukan dihapus. Berkas yang masih dibutuhkan pemasangan lain dibiarkan. Steam ditutup dan tidak dibuka kembali untuk Anda — buka lagi saat Anda siap.</value></data>
+  <data name="Mode_Uninstall_NoRecord" xml:space="preserve"><value>LuaTools tidak punya catatan pemasangan untuk mode ini, jadi tidak bisa membuktikan berkas mana di samping steam.exe yang miliknya. Pasang ulang lewat aplikasi untuk membuat catatan, atau hapus berkasnya sendiri.</value></data>
+  <data name="Mode_Toast_Uninstalled" xml:space="preserve"><value>Mode dihapus</value></data>
   <data name="Mode_Confirm_Reinstall" xml:space="preserve"><value>Pasang ulang {0}?</value></data>
   <data name="Mode_Confirm_Switch" xml:space="preserve"><value>Beralih ke {0}?</value></data>
   <data name="Mode_Toast_Updated" xml:space="preserve"><value>Mode diperbarui</value></data>
@@ -399,7 +404,6 @@ Ini menghapus file .lua dari Steam\config\stplug-in. Mulai ulang Steam setelahny
   <data name="Plugin_Toast_Title" xml:space="preserve"><value>Plugin</value></data>
   <data name="Plugin_Toast_Installed" xml:space="preserve"><value>Plugin terpasang. Steam sedang dimulai ulang untuk memuatnya.</value></data>
   <data name="Plugin_Toast_InstallFailed" xml:space="preserve"><value>Pemasangan gagal: {0}</value></data>
-  <data name="Plugin_Toast_Removed" xml:space="preserve"><value>Plugin dihapus. Steam sedang dimulai ulang.</value></data>
   <data name="Plugin_Toast_UninstallFailed" xml:space="preserve"><value>Pencopotan gagal: {0}</value></data>
   <data name="Plugin_Toast_UpdateAvailable" xml:space="preserve"><value>Pembaruan tersedia.</value></data>
   <data name="Plugin_Toast_UpToDate" xml:space="preserve"><value>Anda sudah menggunakan versi terbaru.</value></data>
@@ -506,4 +510,22 @@ Ini menghapus file .lua dari Steam\config\stplug-in. Mulai ulang Steam setelahny
   <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Tidak dapat memulai game</value></data>
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam menolak membuka game ini. Pastikan Steam terpasang dengan benar.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam tidak dapat dijalankan. Tentukan lokasinya di Pengaturan lalu coba lagi.</value></data>
+  <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Plugin Steam native (fork dari BetterSteamTools). Pemasangan menaruh empat berkas di folder Steam; yang sudah ada disimpan dulu di folder cadangan. Steam dimulai ulang agar plugin dimuat.</value></data>
+  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Berkas Steam</value></data>
+  <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool terpasang. Steam dimulai ulang agar dimuat.</value></data>
+  <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Pemasangan AmethystTool gagal: {0}</value></data>
+  <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Rilis AmethystTool terbaru tidak menerbitkan {0}.</value></data>
+  <data name="Amethyst_Err_Archive" xml:space="preserve"><value>Arsip AmethystTool ditolak: {0}</value></data>
+  <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Berkas yang sudah ada di folder Steam disimpan di {0}</value></data>
+  <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Copot pemasangan plugin ini?</value></data>
+  <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam akan ditutup agar berkasnya bisa dihapus, dan TIDAK akan dibuka lagi secara otomatis. Semua yang dihapus disimpan di folder cadangan di dalam folder Steam Anda.</value></data>
+  <data name="Removal_Toast_Removed" xml:space="preserve"><value>Dihapus. Berkas disimpan di folder cadangan di dalam folder Steam Anda.</value></data>
+  <data name="Removal_Toast_RemovedSteamStopped" xml:space="preserve"><value>Dihapus. Steam ditutup — buka lagi saat Anda siap. Berkas disimpan di folder cadangan di dalam folder Steam Anda.</value></data>
+  <data name="Removal_Toast_NothingToDo" xml:space="preserve"><value>Tidak ada yang perlu dihapus — berkas itu sudah tidak ada.</value></data>
+  <data name="Removal_Toast_NoRecord" xml:space="preserve"><value>Tidak ada catatan pemasangan untuk plugin ini, jadi tidak ada yang dihapus.</value></data>
+  <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} dipertahankan: alat lain yang terpasang masih memakainya. Hanya catatan pemasangan yang dihapus.</value></data>
+  <data name="Removal_Toast_Failed" xml:space="preserve"><value>Pencopotan gagal: {0}</value></data>
+  <data name="Removal_Err_Record" xml:space="preserve"><value>Catatan pemasangan tidak dapat dipakai: {0}</value></data>
+  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Salinan ini dipasang sebelum LuaTools menyimpan catatan pemasangan, jadi tidak bisa membuktikan berkas mana miliknya. Pasang ulang untuk membuat catatan, lalu pencopotan menjadi tersedia.</value></data>
 </root>

@@ -193,6 +193,11 @@
   <data name="Mode_Btn_Update" xml:space="preserve"><value>更新</value></data>
   <data name="Mode_Btn_Install" xml:space="preserve"><value>安装</value></data>
   <data name="Mode_Btn_Switch" xml:space="preserve"><value>切换到此项</value></data>
+  <data name="Mode_Btn_Uninstall" xml:space="preserve"><value>卸载</value></data>
+  <data name="Mode_Confirm_Uninstall" xml:space="preserve"><value>移除 {0}？</value></data>
+  <data name="Mode_Confirm_Uninstall_Body" xml:space="preserve"><value>该模式放在 steam.exe 旁边的文件会被移动到 Steam 文件夹内的备份文件夹，而不是删除。仍被其他安装需要的文件会保留原处。Steam 会被关闭且不会自动重新打开——准备好后请自行启动。</value></data>
+  <data name="Mode_Uninstall_NoRecord" xml:space="preserve"><value>LuaTools 没有该模式的安装记录，无法证明 steam.exe 旁边哪些文件属于它。请通过应用重新安装以生成记录，或自行删除这些文件。</value></data>
+  <data name="Mode_Toast_Uninstalled" xml:space="preserve"><value>模式已移除</value></data>
   <data name="Mode_Confirm_Reinstall" xml:space="preserve"><value>重新安装 {0}？</value></data>
   <data name="Mode_Confirm_Switch" xml:space="preserve"><value>切换到 {0}？</value></data>
   <data name="Mode_Toast_Updated" xml:space="preserve"><value>模式已更新</value></data>
@@ -419,7 +424,6 @@
   <data name="Plugin_Toast_Title" xml:space="preserve"><value>插件</value></data>
   <data name="Plugin_Toast_Installed" xml:space="preserve"><value>插件已安装。Steam 正在重启以加载它。</value></data>
   <data name="Plugin_Toast_InstallFailed" xml:space="preserve"><value>安装失败：{0}</value></data>
-  <data name="Plugin_Toast_Removed" xml:space="preserve"><value>插件已移除。Steam 正在重启。</value></data>
   <data name="Plugin_Toast_UninstallFailed" xml:space="preserve"><value>卸载失败：{0}</value></data>
   <data name="Plugin_Toast_UpdateAvailable" xml:space="preserve"><value>有可用更新。</value></data>
   <data name="Plugin_Toast_UpToDate" xml:space="preserve"><value>你已是最新版本。</value></data>
@@ -526,4 +530,22 @@
   <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>无法启动游戏</value></data>
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam 拒绝打开此游戏。请检查 Steam 是否正确安装。</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>无法启动 Steam。请在设置中指定其位置后重试。</value></data>
+  <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>原生 Steam 插件（BetterSteamTools 的分支）。安装会向 Steam 文件夹放入四个文件；已存在的文件会先保存到备份文件夹。Steam 将重启以加载该插件。</value></data>
+  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam 文件</value></data>
+  <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool 已安装。已重启 Steam 以加载它。</value></data>
+  <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>AmethystTool 安装失败：{0}</value></data>
+  <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>最新的 AmethystTool 版本未发布 {0}。</value></data>
+  <data name="Amethyst_Err_Archive" xml:space="preserve"><value>AmethystTool 压缩包已被拒绝：{0}</value></data>
+  <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Steam 文件夹中原有的文件已保存到 {0}</value></data>
+  <data name="Removal_Confirm_Caption" xml:space="preserve"><value>要卸载此插件吗？</value></data>
+  <data name="Removal_Confirm_Body" xml:space="preserve"><value>将关闭 Steam 以便移除其文件，并且不会自动重新打开。移除的内容都会保存到 Steam 文件夹内的备份文件夹中。</value></data>
+  <data name="Removal_Toast_Removed" xml:space="preserve"><value>已移除。文件已保存到 Steam 文件夹内的备份文件夹中。</value></data>
+  <data name="Removal_Toast_RemovedSteamStopped" xml:space="preserve"><value>已移除。Steam 已关闭 — 你可以在方便时重新打开。文件已保存到 Steam 文件夹内的备份文件夹中。</value></data>
+  <data name="Removal_Toast_NothingToDo" xml:space="preserve"><value>没有要移除的内容 — 这些文件已经不在了。</value></data>
+  <data name="Removal_Toast_NoRecord" xml:space="preserve"><value>此插件没有安装记录，因此未移除任何内容。</value></data>
+  <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>已保留 {0}：另一个已安装的工具仍在使用它。仅移除了安装记录。</value></data>
+  <data name="Removal_Toast_Failed" xml:space="preserve"><value>卸载失败：{0}</value></data>
+  <data name="Removal_Err_Record" xml:space="preserve"><value>无法使用安装记录：{0}</value></data>
+  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>此副本是在 LuaTools 开始保留安装记录之前安装的，因此无法证明哪些文件属于它。重新安装以创建记录，之后即可使用卸载。</value></data>
 </root>

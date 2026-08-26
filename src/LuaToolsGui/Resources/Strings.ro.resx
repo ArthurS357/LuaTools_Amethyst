@@ -185,6 +185,11 @@
   <data name="Mode_Btn_Update" xml:space="preserve"><value>Actualizează</value></data>
   <data name="Mode_Btn_Install" xml:space="preserve"><value>Instalează</value></data>
   <data name="Mode_Btn_Switch" xml:space="preserve"><value>Comută la acesta</value></data>
+  <data name="Mode_Btn_Uninstall" xml:space="preserve"><value>Dezinstalează</value></data>
+  <data name="Mode_Confirm_Uninstall" xml:space="preserve"><value>Elimini {0}?</value></data>
+  <data name="Mode_Confirm_Uninstall_Body" xml:space="preserve"><value>Fișierele puse de acest mod lângă steam.exe sunt mutate într-un folder de rezervă din folderul Steam, nu șterse. Un fișier de care altă instalare încă are nevoie rămâne pe loc. Steam este închis și nu este redeschis în locul tău — deschide-l când ești pregătit.</value></data>
+  <data name="Mode_Uninstall_NoRecord" xml:space="preserve"><value>LuaTools nu are nicio înregistrare de instalare pentru acest mod, deci nu poate dovedi care fișiere de lângă steam.exe îi aparțin. Reinstalează-l din aplicație pentru a crea una sau șterge fișierele manual.</value></data>
+  <data name="Mode_Toast_Uninstalled" xml:space="preserve"><value>Mod eliminat</value></data>
   <data name="Mode_Confirm_Reinstall" xml:space="preserve"><value>Reinstalezi {0}?</value></data>
   <data name="Mode_Confirm_Switch" xml:space="preserve"><value>Comuți la {0}?</value></data>
   <data name="Mode_Toast_Updated" xml:space="preserve"><value>Mod actualizat</value></data>
@@ -399,7 +404,6 @@ Aceasta șterge fișierele .lua din Steam\config\stplug-in. Repornește Steam du
   <data name="Plugin_Toast_Title" xml:space="preserve"><value>Plugin</value></data>
   <data name="Plugin_Toast_Installed" xml:space="preserve"><value>Plugin instalat. Steam repornește pentru a-l încărca.</value></data>
   <data name="Plugin_Toast_InstallFailed" xml:space="preserve"><value>Instalarea a eșuat: {0}</value></data>
-  <data name="Plugin_Toast_Removed" xml:space="preserve"><value>Plugin eliminat. Steam repornește.</value></data>
   <data name="Plugin_Toast_UninstallFailed" xml:space="preserve"><value>Dezinstalarea a eșuat: {0}</value></data>
   <data name="Plugin_Toast_UpdateAvailable" xml:space="preserve"><value>Este disponibilă o actualizare.</value></data>
   <data name="Plugin_Toast_UpToDate" xml:space="preserve"><value>Ești la zi.</value></data>
@@ -506,4 +510,22 @@ Aceasta șterge fișierele .lua din Steam\config\stplug-in. Repornește Steam du
   <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Jocul nu a putut fi pornit</value></data>
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam a refuzat să deschidă acest joc. Verifică dacă Steam este instalat corect.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam nu a putut fi pornit. Setează locația în Setări și încearcă din nou.</value></data>
+  <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Un plugin nativ pentru Steam (un fork al BetterSteamTools). Instalarea pune patru fișiere în folderul Steam; ce există deja este păstrat mai întâi într-un folder de rezervă. Steam este repornit pentru a încărca pluginul.</value></data>
+  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Fișiere Steam</value></data>
+  <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool a fost instalat. Steam a fost repornit ca să îl încarce.</value></data>
+  <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Instalarea AmethystTool a eșuat: {0}</value></data>
+  <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Cea mai recentă versiune AmethystTool nu publică {0}.</value></data>
+  <data name="Amethyst_Err_Archive" xml:space="preserve"><value>Arhiva AmethystTool a fost respinsă: {0}</value></data>
+  <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Fișierele care erau deja în folderul Steam au fost păstrate în {0}</value></data>
+  <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Dezinstalați acest plugin?</value></data>
+  <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam va fi închis pentru ca fișierele să poată fi eliminate și NU va fi redeschis automat. Tot ce se elimină este păstrat într-un folder de rezervă din folderul Steam.</value></data>
+  <data name="Removal_Toast_Removed" xml:space="preserve"><value>Eliminat. Fișierele au fost păstrate într-un folder de rezervă din folderul Steam.</value></data>
+  <data name="Removal_Toast_RemovedSteamStopped" xml:space="preserve"><value>Eliminat. Steam a fost închis — redeschideți-l când doriți. Fișierele au fost păstrate într-un folder de rezervă din folderul Steam.</value></data>
+  <data name="Removal_Toast_NothingToDo" xml:space="preserve"><value>Nimic de eliminat — acele fișiere nu mai sunt acolo.</value></data>
+  <data name="Removal_Toast_NoRecord" xml:space="preserve"><value>Nu există nicio înregistrare de instalare pentru acest plugin, deci nu a fost eliminat nimic.</value></data>
+  <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} a fost păstrat: alt instrument instalat îl folosește încă. A fost eliminată doar înregistrarea de instalare.</value></data>
+  <data name="Removal_Toast_Failed" xml:space="preserve"><value>Dezinstalarea a eșuat: {0}</value></data>
+  <data name="Removal_Err_Record" xml:space="preserve"><value>Înregistrarea de instalare nu a putut fi folosită: {0}</value></data>
+  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Această copie a fost instalată înainte ca LuaTools să păstreze înregistrări de instalare, deci nu poate dovedi care fișiere îi aparțin. Reinstalați-o pentru a crea o înregistrare, iar dezinstalarea devine disponibilă.</value></data>
 </root>

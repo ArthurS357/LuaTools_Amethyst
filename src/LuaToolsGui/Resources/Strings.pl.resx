@@ -185,6 +185,11 @@
   <data name="Mode_Btn_Update" xml:space="preserve"><value>Aktualizuj</value></data>
   <data name="Mode_Btn_Install" xml:space="preserve"><value>Zainstaluj</value></data>
   <data name="Mode_Btn_Switch" xml:space="preserve"><value>Przełącz na ten</value></data>
+  <data name="Mode_Btn_Uninstall" xml:space="preserve"><value>Odinstaluj</value></data>
+  <data name="Mode_Confirm_Uninstall" xml:space="preserve"><value>Usunąć {0}?</value></data>
+  <data name="Mode_Confirm_Uninstall_Body" xml:space="preserve"><value>Pliki, które ten tryb umieścił obok steam.exe, są przenoszone do folderu kopii zapasowej wewnątrz folderu Steam, a nie usuwane. Plik, którego wciąż potrzebuje inna instalacja, zostaje na miejscu. Steam jest zamykany i nie zostanie ponownie otwarty za Ciebie — uruchom go, gdy będziesz gotowy.</value></data>
+  <data name="Mode_Uninstall_NoRecord" xml:space="preserve"><value>LuaTools nie ma wpisu instalacji dla tego trybu, więc nie może udowodnić, które pliki obok steam.exe należą do niego. Zainstaluj go ponownie przez aplikację, aby utworzyć wpis, albo usuń pliki samodzielnie.</value></data>
+  <data name="Mode_Toast_Uninstalled" xml:space="preserve"><value>Tryb usunięty</value></data>
   <data name="Mode_Confirm_Reinstall" xml:space="preserve"><value>Zainstalować ponownie {0}?</value></data>
   <data name="Mode_Confirm_Switch" xml:space="preserve"><value>Przełączyć na {0}?</value></data>
   <data name="Mode_Toast_Updated" xml:space="preserve"><value>Zaktualizowano tryb</value></data>
@@ -399,7 +404,6 @@ Spowoduje to usunięcie plików .lua z Steam\config\stplug-in. Następnie urucho
   <data name="Plugin_Toast_Title" xml:space="preserve"><value>Wtyczka</value></data>
   <data name="Plugin_Toast_Installed" xml:space="preserve"><value>Wtyczka zainstalowana. Steam jest uruchamiany ponownie, aby ją wczytać.</value></data>
   <data name="Plugin_Toast_InstallFailed" xml:space="preserve"><value>Instalacja nie powiodła się: {0}</value></data>
-  <data name="Plugin_Toast_Removed" xml:space="preserve"><value>Wtyczka usunięta. Steam jest uruchamiany ponownie.</value></data>
   <data name="Plugin_Toast_UninstallFailed" xml:space="preserve"><value>Odinstalowanie nie powiodło się: {0}</value></data>
   <data name="Plugin_Toast_UpdateAvailable" xml:space="preserve"><value>Dostępna jest aktualizacja.</value></data>
   <data name="Plugin_Toast_UpToDate" xml:space="preserve"><value>Masz najnowszą wersję.</value></data>
@@ -506,4 +510,22 @@ Spowoduje to usunięcie plików .lua z Steam\config\stplug-in. Następnie urucho
   <data name="Manage_Play_Failed_Title" xml:space="preserve"><value>Nie można uruchomić gry</value></data>
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam odmówił otwarcia tej gry. Sprawdź, czy Steam jest poprawnie zainstalowany.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Nie można uruchomić Steam. Ustaw jego lokalizację w Ustawieniach i spróbuj ponownie.</value></data>
+  <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Natywna wtyczka Steam (fork BetterSteamTools). Instalacja umieszcza cztery pliki w folderze Steam; to, co już tam jest, zostaje najpierw zachowane w folderze kopii zapasowej. Steam jest ponownie uruchamiany, aby wczytać wtyczkę.</value></data>
+  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Pliki Steam</value></data>
+  <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>Zainstalowano AmethystTool. Steam został ponownie uruchomiony, aby go wczytać.</value></data>
+  <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Instalacja AmethystTool nie powiodła się: {0}</value></data>
+  <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Najnowsze wydanie AmethystTool nie publikuje {0}.</value></data>
+  <data name="Amethyst_Err_Archive" xml:space="preserve"><value>Archiwum AmethystTool zostało odrzucone: {0}</value></data>
+  <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Pliki, które już były w folderze Steam, zachowano w {0}</value></data>
+  <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Odinstalować tę wtyczkę?</value></data>
+  <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam zostanie zamknięty, aby można było usunąć jego pliki, i NIE zostanie otwarty ponownie automatycznie. Wszystko, co usunięto, pozostaje w folderze kopii zapasowej w folderze Steam.</value></data>
+  <data name="Removal_Toast_Removed" xml:space="preserve"><value>Usunięto. Pliki pozostały w folderze kopii zapasowej w folderze Steam.</value></data>
+  <data name="Removal_Toast_RemovedSteamStopped" xml:space="preserve"><value>Usunięto. Steam został zamknięty — otwórz go, kiedy zechcesz. Pliki pozostały w folderze kopii zapasowej w folderze Steam.</value></data>
+  <data name="Removal_Toast_NothingToDo" xml:space="preserve"><value>Nie ma czego usuwać — tych plików już nie ma.</value></data>
+  <data name="Removal_Toast_NoRecord" xml:space="preserve"><value>Nie ma zapisu instalacji dla tej wtyczki, więc nic nie zostało usunięte.</value></data>
+  <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>Zachowano {0}: inne zainstalowane narzędzie nadal go używa. Usunięto tylko zapis instalacji.</value></data>
+  <data name="Removal_Toast_Failed" xml:space="preserve"><value>Odinstalowanie nie powiodło się: {0}</value></data>
+  <data name="Removal_Err_Record" xml:space="preserve"><value>Nie udało się użyć zapisu instalacji: {0}</value></data>
+  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Ta kopia została zainstalowana, zanim LuaTools prowadził zapisy instalacji, więc nie może wykazać, które pliki są jego. Zainstaluj ponownie, aby utworzyć zapis — wtedy odinstalowanie stanie się dostępne.</value></data>
 </root>
