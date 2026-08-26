@@ -511,7 +511,7 @@ Tím se smažou soubory .lua ze Steam\config\stplug-in. Poté restartujte Steam,
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam odmítl tuto hru otevřít. Zkontrolujte, zda je Steam správně nainstalován.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam se nepodařilo spustit. Nastavte jeho umístění v Nastavení a zkuste to znovu.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
-  <data name="Amethyst_Description" xml:space="preserve"><value>Nativní plugin pro Steam (fork BetterSteamTools). Instalace umístí do složky Steamu čtyři soubory; to, co tam už je, se nejdřív uloží do složky se zálohou. Steam se restartuje, aby se plugin načetl.</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
   <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Soubory Steamu</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool byl nainstalován. Steam byl restartován, aby se načetl.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Instalace AmethystTool selhala: {0}</value></data>
@@ -527,5 +527,4 @@ Tím se smažou soubory .lua ze Steam\config\stplug-in. Poté restartujte Steam,
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} byl ponechán: jiný nainstalovaný nástroj jej stále používá. Odstraněn byl jen záznam o instalaci.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Odinstalace selhala: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Záznam o instalaci nebylo možné použít: {0}</value></data>
-  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Tato kopie byla nainstalována dříve, než LuaTools začal vést záznamy o instalaci, takže nedokáže prokázat, které soubory jsou jeho. Přeinstalujte jej, aby vznikl záznam — poté bude odinstalace dostupná.</value></data>
 </root>

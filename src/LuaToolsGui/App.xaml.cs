@@ -139,9 +139,10 @@ public partial class App : Application
                 services.AddSingleton<BuildsViewModel>();
                 services.AddTransient<LaunchOptionsViewModel>(); // one per dialog
                 services.AddSingleton<HomeViewModel>();
+                // Registered before ModeViewModel, which now hosts the AmethystTool card.
+                services.AddSingleton<AmethystToolViewModel>();
                 services.AddSingleton<ModeViewModel>();
                 services.AddSingleton<FixesViewModel>();
-                services.AddSingleton<AmethystToolViewModel>();
                 services.AddSingleton<PluginViewModel>();
                 services.AddSingleton<AboutViewModel>();
                 services.AddSingleton<OnboardingViewModel>();
@@ -648,8 +649,12 @@ public partial class App : Application
             var unlocker = _host.Services.GetRequiredService<UnlockerService>();
             var installer = _host.Services.GetRequiredService<PluginInstallerService>();
 
+            // AmethystTool counts here too: it is a Mode by the test that matters (it holds the same proxy
+            // DLLs), and it is NOT an UnlockerMode, so SelectedMode reads null while it is active. Without
+            // this branch a set-up AmethystTool user would be sent back through onboarding.
             bool toolsInstalled =
-                unlocker.SelectedMode is (UnlockerMode.OpenSteamTools or UnlockerMode.OpenSteamToolsNightly)
+                (unlocker.SelectedMode is (UnlockerMode.OpenSteamTools or UnlockerMode.OpenSteamToolsNightly)
+                 || unlocker.ActiveBackend == ActiveBackend.AmethystTool)
                 && installer.IsInstalledLocally();
 
             var plan = StartupPlan.Decide(

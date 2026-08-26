@@ -1,6 +1,82 @@
 # Changelog
 
-## Nao publicado
+## 1.6.0 — 2026-08-26
+
+### Um modo ativo por vez, AmethystTool no topo, SteamTools aposentado
+
+- **AmethystTool e um Mode nao aparecem mais os dois como ATIVO.** Os cartoes de Mode liam o estado ativo
+  de `settings.SelectedMode`; o cartao do AmethystTool lia da simples presenca dos seus quatro arquivos na
+  pasta da Steam. Como instalar o AmethystTool nunca mexia em `SelectedMode`, instalar o BetterSteamTools e
+  depois o AmethystTool acendia o selo ATIVO nos dois. O contrario tambem falhava: instalar um Mode
+  sobrescreve `dwmapi.dll` e `xinput1_4.dll` mas deixa `AmethystTool.dll` e `amethysttool.toml` no lugar,
+  entao o cartao continuava se dizendo ativo. Agora existe **um unico slot**: quem ocupa os proxies e um
+  valor so (`ActiveBackendPolicy`), entao instalar um demove o outro sem que nada precise percorrer a lista
+  apagando selo. Dois nao podem estar ligados porque um nao pode estar ligado duas vezes.
+- **O selo ATIVO do AmethystTool tambem exige evidencia em disco.** Ele agora pede selecao *e* payload
+  presente, entao apagar os arquivos por fora do app nao deixa um cartao afirmando algo que nao e verdade.
+- **Formato do `settings.json` inalterado.** O campo `SelectedMode` sempre foi uma string livre lida como
+  nome de enum, e um valor que nao e membro sempre significou "nenhum Mode ativo". O AmethystTool grava
+  nesse mesmo campo, com um token que nenhum Mode usa. Um arquivo escrito por uma versao anterior mantem o
+  significado, e um escrito por esta e lido por uma anterior como "nenhum Mode" — nunca como o Mode errado.
+- **A deteccao automatica nao rouba mais o slot.** O AmethystTool e um fork, entao seus proxies podem
+  bater com o hash do BetterSteamTools. A deteccao agora nao roda quando o AmethystTool esta ativo — do
+  contrario ela readotaria o Mode e o duplo ATIVO voltaria por outro caminho.
+
+- **O cartao do AmethystTool passou a ser o primeiro da pagina Modo.** Ele lidera a lista, acima do
+  BetterSteamTools e do BST Nightly.
+
+- **A descricao do AmethystTool agora diz o que ele e.** Antes era "um plugin nativo da Steam (um fork do
+  BetterSteamTools)". Agora: fork independente do BetterSteamTools voltado a privacidade, com auto-update
+  desativado e sem telemetria, injetando nativamente pela pasta da Steam. O texto ingles foi aplicado nos
+  29 idiomas: a frase faz afirmacoes factuais sobre privacidade, e uma traducao velha dizendo outra coisa
+  seria pior que ingles.
+
+- **Instalar o AmethystTool absorve o registro de Mode que ficou obsoleto.** Antes desta correcao, um
+  registro `mode-*` que ja tinha instalado `dwmapi.dll`/`xinput1_4.dll` continuava reivindicando os dois
+  depois que o AmethystTool os sobrescrevia — a desinstalacao do AmethystTool relatava `SharedKept` para
+  arquivos que, na pratica, ja eram dele, "guardados" por um registro que nao correspondia mais aos bytes
+  em disco. Agora, ao terminar a instalacao, o AmethystTool remove essas duas reivindicacoes especificas do
+  registro do Mode antigo (`InstallManifest.AbsorbFiles`, politica pura + `InstallManifestService` para a
+  escrita). **So os nomes que o AmethystTool de fato acabou de gravar saem do registro antigo** — se aquele
+  registro ainda listar um arquivo que o AmethystTool nunca toca (ex.: `OpenSteamTool.dll` do
+  BetterSteamTools), ele fica exatamente como estava. Um registro que so tinha os dois proxies e removido
+  por inteiro; um que tem mais alguma coisa e apenas reduzido. Idempotente: rodar a instalacao de novo nao
+  muda nada na segunda vez, porque na primeira ja nao sobrou nada para absorver.
+
+- **SteamTools saiu da pagina Modo.** O upstream parou de publicar atualizacoes, entao oferece-lo mandava
+  o usuario para um backend que nao vai ser consertado. O cartao nao e mais mostrado e `InstallAsync`
+  recusa o modo. **A definicao continua no app de proposito**: o membro do enum e uma chave persistida —
+  nomeia o registro `mode-steamtools` que diz quais arquivos ele colocou na pasta da Steam, e e o que
+  `PluginRemovalService.ClaimedByOthers` consulta para nao apagar os proxies de uma instalacao que ainda
+  esta la. Apagar a definicao deixaria os dois orfaos. Quem ainda tiver SteamTools como Mode ativo continua
+  vendo o cartao, porque ele e o unico caminho ate o botao Desinstalar; escolhe-lo de novo e impossivel.
+
+### AmethystTool passou da aba Plugin para a aba Modo
+
+- **O cartao do AmethystTool agora fica na aba Modo, junto aos outros modos.** Ele estava na aba Plugin,
+  ao lado do plugin de store-page, com quem nao compartilha nada: fonte diferente, payload diferente,
+  destino diferente. O que ele compartilha e com os Modes — dois dos quatro arquivos que instala,
+  `dwmapi.dll` e `xinput1_4.dll`, sao exatamente os proxies que SteamTools, BetterSteamTools e BST Nightly
+  colocam. Ter AmethystTool instalado e ter um Mode instalado e o mesmo slot, entao os dois passam a
+  aparecer na mesma lista. A aba Plugin voltou a ser so o plugin de store-page.
+- **Instalar e desinstalar passaram a usar o overlay da propria pagina.** O cartao levantava dois
+  `MessageBox` proprios enquanto vivia na aba Plugin; os cartoes de Mode ja confirmavam pelo scrim in-page.
+  Agora e um so, com o mesmo texto ("fechar Steam e continuar" na instalacao, "os arquivos vao para uma
+  pasta de backup e a Steam fica fechada" na remocao).
+- **Uma instalacao de Mode e uma do AmethystTool nao rodam mais ao mesmo tempo.** Nas duas paginas
+  separadas, nada impedia iniciar as duas — e as duas param a Steam e escrevem os mesmos dois proxies. O
+  botao do AmethystTool agora e regido pelo mesmo `IsBusy` da pagina que rege os cartoes de Mode, entao
+  qualquer uma das operacoes desabilita a outra enquanto roda. O progresso vai para a barra unica no rodape
+  da pagina, em vez de uma segunda barra dentro do cartao.
+- **A terminologia da UI acompanhou.** Status, botoes, badge e o aviso de "sem registro de instalacao" do
+  cartao passaram a usar a familia de recursos `Mode_*` — que ja existia, ja estava traduzida nos 30 idiomas
+  e ja dizia "modo" em vez de "plugin". Nenhuma chave nova foi criada; `Removal_NoRecord_Hint`, que dizia
+  "this plugin" e ficou sem uso, foi removida.
+- **Nada mudou na instalacao, na remocao ou na verificacao.** `AmethystToolService`, `AmethystToolPlan`,
+  `PluginRemovalService` e `InstallManifest` nao foram tocados: hash fail-closed, recusa de zip-slip, o
+  handle pinado contra TOCTOU e a protecao de compartilhamento via `ClaimedByOthers` continuam iguais. O id
+  de registro (`amethysttool`) tambem continua igual, entao instalacoes existentes seguem desinstalaveis.
+
 
 ### Desinstalacao de Modes
 

@@ -5,18 +5,33 @@ using LuaToolsGui.Services;
 namespace LuaToolsGui.ViewModels;
 
 /// <summary>
-/// The AmethystTool card on the Plugin page. AmethystTool is a NATIVE injection plugin (a fork of
-/// BetterSteamTools) whose files go into the Steam install root, so this is a sibling of — not part of —
-/// the store-page plugin the rest of that page manages: different source, different payload, different
-/// install target. Kept as its own view model rather than more flags on <see cref="PluginViewModel"/> so
-/// neither one's state can be read as the other's.
+/// The AmethystTool card on the <b>Mode</b> page. AmethystTool is a fork of BetterSteamTools that injects
+/// natively from the Steam install root, and two of the four files it places there — <c>dwmapi.dll</c> and
+/// <c>xinput1_4.dll</c> — are the same proxy DLLs every other Mode writes. It is therefore a Mode in the
+/// only sense that matters: mutually exclusive with them on disk. It was on the Plugin page, next to the
+/// store-page frontend it shares nothing with.
+///
+/// <para>
+/// Kept as its own view model rather than as a <see cref="ModeCardViewModel"/>: the Mode cards carry a
+/// status line and one button, while this carries versions, a backup location and an install record. It is
+/// not a <see cref="ModeViewModel"/> field either, so neither one's busy/installed state can be read as
+/// the other's.
+/// </para>
+///
+/// <para>
+/// <b>Install and uninstall take no confirmation of their own.</b> <see cref="ModeViewModel"/> owns the
+/// Steam-shutdown overlay that the Mode cards already use, and drives this card through the same one — so
+/// the page asks for permission to close Steam in exactly one voice. That is also what serialises the two:
+/// the page's busy flag is held for the whole operation, which is what stops an AmethystTool install and a
+/// Mode install from writing the same proxy DLLs at once.
+/// </para>
 /// </summary>
 public sealed partial class AmethystToolViewModel(AmethystToolService installer, ToastService toast)
     : ObservableObject
 {
     [ObservableProperty] private string _installedVersion = "—";
     [ObservableProperty] private string _latestVersion = "—";
-    [ObservableProperty] private string _status = Resources.Strings.Plugin_Checking;
+    [ObservableProperty] private string _status = Resources.Strings.Mode_Checking;
 
     /// <summary>Drives the leading status glyph: green check / amber warning / grey dismiss.</summary>
     [ObservableProperty] private bool _statusOk;
@@ -29,25 +44,35 @@ public sealed partial class AmethystToolViewModel(AmethystToolService installer,
     [NotifyPropertyChangedFor(nameof(ShowUpToDate))]
     private bool _isInstalled;
 
+    /// <summary>
+    /// Whether the ACTIVE badge is shown — AmethystTool holds the proxy-DLL slot right now.
+    ///
+    /// <para>
+    /// Separate from <see cref="IsInstalled"/>, and the badge is bound to THIS one. Installing a Mode
+    /// overwrites the two proxy DLLs but leaves <c>AmethystTool.dll</c> and <c>amethysttool.toml</c> where
+    /// they are, so the files stay "installed" while the slot has moved on; binding the badge to file
+    /// presence is what used to leave this card and a Mode card both claiming to be active. See
+    /// <see cref="Services.AmethystToolService.IsActive"/>.
+    /// </para>
+    /// </summary>
+    [ObservableProperty] private bool _isActive;
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(InstallButtonText))]
     [NotifyPropertyChangedFor(nameof(InstallIsPrimary))]
     [NotifyPropertyChangedFor(nameof(ShowUpToDate))]
     private bool _updateAvailable;
 
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(NotBusy))]
-    [NotifyPropertyChangedFor(nameof(CanUninstall))]
-    private bool _isBusy;
+    [ObservableProperty] private bool _isBusy;
 
     /// <summary>
-    /// True when Uninstall has something provable to work from. Gated on EVIDENCE, not on the files being
-    /// present: without it there is nothing this app can show it placed, and removing by name would take
+    /// True when Uninstall has something provable to work from — read by
+    /// <see cref="ModeViewModel.CanUninstallAmethyst"/>, which is what the button is actually bound to.
+    /// Gated on EVIDENCE, not on the files being present: without it there is nothing this app can show it placed, and removing by name would take
     /// out a proxy DLL some other tool owns. A copy installed by hand shows the hint below instead of an
     /// enabled button.
     /// </summary>
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(CanUninstall))]
     [NotifyPropertyChangedFor(nameof(ShowNoRecordHint))]
     private bool _hasInstallRecord;
 
@@ -60,30 +85,31 @@ public sealed partial class AmethystToolViewModel(AmethystToolService installer,
     /// <summary>Non-null after an install that displaced existing files — says where they went.</summary>
     [ObservableProperty] private string? _backupLine;
 
-    public bool NotBusy => !IsBusy;
-    public bool CanUninstall => HasInstallRecord && !IsBusy;
-
     /// <summary>Installed, but before install records existed — explain why Uninstall is unavailable
     /// rather than showing a dead button.</summary>
     public bool ShowNoRecordHint => IsInstalled && !HasInstallRecord;
 
     /// <summary>Loud primary CTA only when there is something to do; a healthy "Reinstall" stays
-    /// secondary, matching the store-page plugin card above it.</summary>
+    /// secondary.</summary>
     public bool InstallIsPrimary => !IsInstalled || UpdateAvailable;
 
     public bool ShowUpToDate => IsInstalled && !UpdateAvailable;
 
     public string InstallButtonText => !IsInstalled
-        ? Resources.Strings.Plugin_Btn_Install
-        : UpdateAvailable ? Resources.Strings.Plugin_Btn_Update : Resources.Strings.Plugin_Btn_Reinstall;
+        ? Resources.Strings.Mode_Btn_Install
+        : UpdateAvailable ? Resources.Strings.Mode_Btn_Update : Resources.Strings.Mode_Btn_Reinstall;
 
-    public Task LoadAsync(CancellationToken ct = default) => RefreshAsync(force: false, ct);
+    /// <summary>Page open, or the page's "Check for updates". <paramref name="forceRefresh"/> is what
+    /// decides whether GitHub is asked again or the cached release is reused.</summary>
+    public Task LoadAsync(bool forceRefresh = false, CancellationToken ct = default) =>
+        RefreshAsync(forceRefresh, ct);
 
     private async Task RefreshAsync(bool force, CancellationToken ct)
     {
         var st = await installer.GetStatusAsync(force, ct);
 
         IsInstalled = st.Installed;
+        IsActive = installer.IsActive;
         UpdateAvailable = st.UpdateAvailable;
         InstalledVersion = st.InstalledTag
             ?? (st.Installed ? Resources.Strings.Plugin_Version_Unknown : "—");
@@ -93,9 +119,9 @@ public sealed partial class AmethystToolViewModel(AmethystToolService installer,
         StatusOutOfDate = st.Installed && st.UpdateAvailable;
         StatusNotInstalled = !st.Installed;
         Status = !st.Installed
-            ? Resources.Strings.Plugin_Status_NotInstalled
-            : st.UpdateAvailable ? Resources.Strings.Plugin_Status_OutOfDate
-                                 : Resources.Strings.Plugin_Status_UpToDate;
+            ? Resources.Strings.Mode_NotInstalled
+            : st.UpdateAvailable ? Resources.Strings.Mode_UpdateAvailable
+                                 : Resources.Strings.Mode_UpToDate;
 
         HasInstallRecord = installer.CanUninstall;
         StatusLine = st.Offline ? Resources.Strings.Plugin_Status_OfflineCheck : null;
@@ -110,20 +136,13 @@ public sealed partial class AmethystToolViewModel(AmethystToolService installer,
         else { IsProgressIndeterminate = false; Progress = p.Value * 100; }
     });
 
-    /// <summary>Steam has to go down for the proxy DLLs to be replaceable, so say so before starting —
-    /// same prompt the store-page plugin uses for the same reason.</summary>
-    private static bool ConfirmSteamRestart() =>
-        System.Windows.MessageBox.Show(
-            Resources.Strings.Plugin_Confirm_RestartBody,
-            Resources.Strings.Plugin_Confirm_RestartCaption,
-            System.Windows.MessageBoxButton.OKCancel,
-            System.Windows.MessageBoxImage.Warning) == System.Windows.MessageBoxResult.OK;
-
-    [RelayCommand]
-    private async Task Install(CancellationToken ct)
+    /// <summary>
+    /// Run the install. The caller has already confirmed closing Steam — see the class remarks for why the
+    /// prompt lives on <see cref="ModeViewModel"/> and not here.
+    /// </summary>
+    public async Task InstallConfirmedAsync(CancellationToken ct = default)
     {
         if (IsBusy) return;
-        if (!ConfirmSteamRestart()) return;
 
         IsBusy = true;
         IsProgressIndeterminate = true;
@@ -143,38 +162,14 @@ public sealed partial class AmethystToolViewModel(AmethystToolService installer,
         }
     }
 
-    [RelayCommand]
-    private async Task CheckForUpdates(CancellationToken ct)
-    {
-        if (IsBusy) return;
-        IsBusy = true;
-        IsProgressIndeterminate = true;
-        try
-        {
-            await RefreshAsync(force: true, ct);
-            if (StatusLine is null)
-                toast.Show(Resources.Strings.Amethyst_CardTitle,
-                    UpdateAvailable
-                        ? Resources.Strings.Plugin_Toast_UpdateAvailable
-                        : Resources.Strings.Plugin_Toast_UpToDate);
-        }
-        catch (OperationCanceledException) { /* page navigated away mid-check */ }
-        finally { IsBusy = false; }
-    }
-
-    /// <summary>Uninstall asks for confirmation because it stops Steam and does not bring it back.</summary>
-    private static bool ConfirmUninstall() =>
-        System.Windows.MessageBox.Show(
-            Resources.Strings.Removal_Confirm_Body,
-            Resources.Strings.Removal_Confirm_Caption,
-            System.Windows.MessageBoxButton.OKCancel,
-            System.Windows.MessageBoxImage.Warning) == System.Windows.MessageBoxResult.OK;
-
-    [RelayCommand]
-    private async Task Uninstall(CancellationToken ct)
+    /// <summary>
+    /// Remove what the install recorded. Already confirmed by the caller. Still gated on
+    /// <see cref="HasInstallRecord"/>: the button is only one of the two ways in, and removing without a
+    /// record would mean deleting a proxy DLL by name that some other tool may own.
+    /// </summary>
+    public async Task UninstallConfirmedAsync(CancellationToken ct = default)
     {
         if (IsBusy || !HasInstallRecord) return;
-        if (!ConfirmUninstall()) return;
 
         IsBusy = true;
         IsProgressIndeterminate = true;

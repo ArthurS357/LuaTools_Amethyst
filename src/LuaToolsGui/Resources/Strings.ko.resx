@@ -511,7 +511,7 @@
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam이 이 게임을 열지 못했습니다. Steam이 올바르게 설치되어 있는지 확인하세요.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam을 시작할 수 없습니다. 설정에서 위치를 지정한 후 다시 시도하세요.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
-  <data name="Amethyst_Description" xml:space="preserve"><value>네이티브 Steam 플러그인(BetterSteamTools 포크)입니다. 설치하면 Steam 폴더에 파일 4개가 놓이며, 이미 있던 파일은 먼저 백업 폴더에 보관됩니다. 플러그인을 불러오기 위해 Steam이 다시 시작됩니다.</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
   <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam 파일</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool을 설치했습니다. 불러오기 위해 Steam을 다시 시작했습니다.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>AmethystTool 설치 실패: {0}</value></data>
@@ -527,5 +527,4 @@
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0}은(는) 남겼습니다: 설치된 다른 도구가 아직 사용 중입니다. 설치 기록만 제거했습니다.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>제거 실패: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>설치 기록을 사용할 수 없습니다: {0}</value></data>
-  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>이 사본은 LuaTools가 설치 기록을 남기기 전에 설치되어 어떤 파일이 자기 것인지 증명할 수 없습니다. 다시 설치하면 기록이 만들어지고 제거를 사용할 수 있습니다.</value></data>
 </root>

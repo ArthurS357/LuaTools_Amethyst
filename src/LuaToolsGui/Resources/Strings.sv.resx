@@ -511,7 +511,7 @@ Detta tar bort .lua-filerna från Steam\config\stplug-in. Starta om Steam efter�
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam vägrade att öppna det här spelet. Kontrollera att Steam är korrekt installerat.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam kunde inte startas. Ange dess plats i Inställningar och försök igen.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
-  <data name="Amethyst_Description" xml:space="preserve"><value>Ett inbyggt Steam-tillägg (en fork av BetterSteamTools). Installationen lägger fyra filer i din Steam-mapp; det som redan finns där sparas först i en säkerhetskopiemapp. Steam startas om så att tillägget läses in.</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
   <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam-filer</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool installerades. Steam startades om så att det läses in.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Installationen av AmethystTool misslyckades: {0}</value></data>
@@ -527,5 +527,4 @@ Detta tar bort .lua-filerna från Steam\config\stplug-in. Starta om Steam efter�
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} behölls: ett annat installerat verktyg använder den fortfarande. Endast installationsposten togs bort.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Avinstallationen misslyckades: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Installationsposten kunde inte användas: {0}</value></data>
-  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Den här kopian installerades innan LuaTools förde installationsposter, så den kan inte bevisa vilka filer som är dess egna. Installera om den för att skapa en post, sedan blir avinstallation tillgänglig.</value></data>
 </root>

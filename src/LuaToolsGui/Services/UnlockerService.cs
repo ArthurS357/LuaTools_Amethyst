@@ -31,7 +31,12 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
     private static readonly TimeSpan CacheTtl = TimeSpan.FromMinutes(5);
     private readonly Dictionary<UnlockerMode, (GithubRelease release, DateTime fetchedAt)> _releaseCache = new();
 
-    public IReadOnlyList<ModeDefinition> Modes { get; } =
+    /// <summary>
+    /// Every known mode definition. Static because it depends on nothing this service is constructed with,
+    /// and because "which modes exist, and which are retired" is a question worth answering without
+    /// standing up Steam, settings and a GitHub proxy first — see <see cref="ModeCatalog"/>.
+    /// </summary>
+    public static IReadOnlyList<ModeDefinition> AllModes { get; } =
     [
         // SteamTools now publishes each DLL on its OWN dynamically-tagged release (st-<timestamp>) —
         // one tag per release, DLLs not released together — so there's no fixed tag. Status/install
@@ -43,7 +48,10 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
             FixedTag: null,
             PlaceFiles: ["dwmapi.dll", "xinput1_4.dll"],
             ZipAssetPattern: null,
-            CliAssetName: null, CliArgs: null, VerifyFile: null),
+            CliAssetName: null, CliArgs: null, VerifyFile: null,
+            // Retired: upstream stopped publishing updates, so offering it steers users onto a backend that
+            // will not be fixed. See ModeDefinition.Retired for why the definition stays behind.
+            Retired: true),
 
         // DisplayName "BetterSteamTools" is the user-facing brand; the repo/dll/zip identifiers below stay
         // the upstream "OpenSteamTool" names (real download targets — renaming them breaks install).
@@ -78,11 +86,30 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
             CliAssetName: "CloudRedirectCLI.exe", CliArgs: "/stfixer", VerifyFile: "cloud_redirect.dll"),
     ];
 
-    private ModeDefinition Def(UnlockerMode mode) => Modes.First(m => m.Mode == mode);
+    /// <inheritdoc cref="AllModes"/>
+    public IReadOnlyList<ModeDefinition> Modes => AllModes;
 
-    /// <summary>The currently-active mode (the last one installed/selected), or null if none yet.</summary>
-    public UnlockerMode? SelectedMode =>
-        Enum.TryParse(settings.SelectedMode, out UnlockerMode m) ? m : null;
+    private static ModeDefinition Def(UnlockerMode mode) => AllModes.First(m => m.Mode == mode);
+
+    /// <summary>
+    /// The currently-active mode (the last one installed/selected), or null if none is.
+    ///
+    /// <para>
+    /// Null also when AmethystTool holds the proxy-DLL slot: it is not an <see cref="UnlockerMode"/>, and
+    /// the two cannot both be active. See <see cref="ActiveBackendPolicy"/>.
+    /// </para>
+    /// </summary>
+    public UnlockerMode? SelectedMode => ActiveBackendPolicy.ActiveMode(settings.SelectedMode);
+
+    /// <summary>Which backend owns the proxy DLLs next to steam.exe — at most one, ever.</summary>
+    public ActiveBackend ActiveBackend => ActiveBackendPolicy.Resolve(settings.SelectedMode);
+
+    /// <summary>
+    /// Hand the slot to AmethystTool. Called by <see cref="AmethystToolService"/> after a successful
+    /// install: its payload overwrites the proxy DLLs whichever mode was active had placed, so that mode
+    /// stops being active at the same moment — one assignment, not two flags to keep in step.
+    /// </summary>
+    public void SelectAmethystTool() => settings.SelectedMode = ActiveBackendPolicy.AmethystToolToken;
 
     /// <summary>Short display name of the active mode for status UI; null if none selected/detected yet.</summary>
     public string? SelectedModeDisplayName =>
@@ -208,6 +235,13 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
         UnlockerMode mode, IProgress<double?>? progress = null, CancellationToken ct = default)
     {
         var def = Def(mode);
+
+        // A retired mode has no card, so nothing in the UI can reach this. The guard is here because the
+        // definition is still in Modes (see ModeDefinition.Retired) and a caller could still name it —
+        // installing a backend that upstream no longer updates is exactly what retiring it prevents.
+        if (def.Retired)
+            return ModeInstallResult.Fail($"{def.DisplayName} is no longer available.");
+
         string? root = steam.EffectivePath;
         if (root is null || !steam.IsValid)
             return ModeInstallResult.Fail("Steam location not found — set it in Settings.");
@@ -459,6 +493,12 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
     /// </summary>
     public async Task<UnlockerMode?> DetectActiveModeAsync(CancellationToken ct = default)
     {
+        // AmethystTool already owns the slot, and detection must not take it back. It is a fork, so its
+        // proxy DLLs can hash-match the mode it forked from — adopting that match would put a mode back on
+        // the ACTIVE badge next to an AmethystTool card that is equally certain it is the active one, which
+        // is the exact duplicate this single slot exists to prevent.
+        if (ActiveBackend == ActiveBackend.AmethystTool) return null;
+
         string? root = steam.EffectivePath;
         if (root is null || !steam.IsValid) return null;
 

@@ -511,7 +511,7 @@
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam 拒絕開啟此遊戲。請檢查 Steam 是否正確安裝。</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>無法啟動 Steam。請在設定中指定其位置後重試。</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
-  <data name="Amethyst_Description" xml:space="preserve"><value>原生 Steam 外掛（BetterSteamTools 的分支）。安裝會在 Steam 資料夾放入四個檔案；已存在的檔案會先保存到備份資料夾。Steam 將重新啟動以載入該外掛。</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
   <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam 檔案</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool 已安裝。已重新啟動 Steam 以載入它。</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>AmethystTool 安裝失敗：{0}</value></data>
@@ -527,5 +527,4 @@
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>已保留 {0}：另一個已安裝的工具仍在使用它。僅移除了安裝記錄。</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>解除安裝失敗：{0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>無法使用安裝記錄：{0}</value></data>
-  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>此副本是在 LuaTools 開始保留安裝記錄之前安裝的，因此無法證明哪些檔案屬於它。重新安裝以建立記錄，之後即可使用解除安裝。</value></data>
 </root>

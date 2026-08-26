@@ -511,7 +511,7 @@ Dadurch werden die .lua-Dateien aus Steam\config\stplug-in gelöscht. Starte Ste
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam hat das Öffnen dieses Spiels abgelehnt. Prüfen Sie, ob Steam korrekt installiert ist.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam konnte nicht gestartet werden. Legen Sie den Pfad in den Einstellungen fest und versuchen Sie es erneut.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
-  <data name="Amethyst_Description" xml:space="preserve"><value>Ein natives Steam-Plugin (ein Fork von BetterSteamTools). Die Installation legt vier Dateien in den Steam-Ordner; bereits vorhandene Dateien werden vorher in einem Sicherungsordner abgelegt. Steam wird neu gestartet, damit das Plugin geladen wird.</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
   <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam-Dateien</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool wurde installiert. Steam wurde neu gestartet, damit es geladen wird.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Installation von AmethystTool fehlgeschlagen: {0}</value></data>
@@ -527,5 +527,4 @@ Dadurch werden die .lua-Dateien aus Steam\config\stplug-in gelöscht. Starte Ste
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} wurde behalten: ein anderes installiertes Tool nutzt die Datei noch. Nur der Installationseintrag wurde entfernt.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Deinstallation fehlgeschlagen: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Der Installationseintrag konnte nicht verwendet werden: {0}</value></data>
-  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Diese Kopie wurde installiert, bevor LuaTools Installationseinträge führte, und kann daher nicht belegen, welche Dateien ihre eigenen sind. Installiere sie neu, um einen Eintrag zu erzeugen — danach ist Deinstallieren verfügbar.</value></data>
 </root>

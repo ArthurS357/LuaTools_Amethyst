@@ -42,7 +42,7 @@ public sealed record AmethystToolStatus(
 /// </para>
 /// </summary>
 public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNotice notice,
-    InstallManifestService manifests, PluginRemovalService removal)
+    InstallManifestService manifests, PluginRemovalService removal, UnlockerService unlocker)
 {
     private static readonly JsonSerializerOptions JsonOpts = new() { PropertyNameCaseInsensitive = true };
 
@@ -110,6 +110,18 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
 
     /// <summary>Network-free check: every payload file is present in the Steam root.</summary>
     public bool IsInstalledLocally() => AmethystToolPlan.IsInstalled(SteamRootFiles());
+
+    /// <summary>
+    /// Whether AmethystTool currently owns the proxy-DLL slot — what the card's ACTIVE badge means.
+    ///
+    /// <para>
+    /// Two conditions, and both are needed. The SELECTION is what makes it exclusive: it lives in the one
+    /// string a Mode install also writes, so handing the slot to a Mode demotes this without anything
+    /// having to notice. The FILES are what make it evidence rather than a claim: a payload deleted outside
+    /// this app leaves a selection pointing at nothing, and a badge saying otherwise would be a guess.
+    /// </para>
+    /// </summary>
+    public bool IsActive => unlocker.ActiveBackend == ActiveBackend.AmethystTool && IsInstalledLocally();
 
     /// <summary>Where the last install put the files it displaced, or null if it displaced none.</summary>
     public string? LastBackupDirectory => ReadManifest()?.BackupDirectory;
@@ -260,6 +272,18 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
                 [.. plan.Steps.Select(step => new InstalledFile(
                     step.FileName, TryHash(step.DestinationPath)))]));
 
+            // A Mode's manifest entry can still list dwmapi.dll/xinput1_4.dll from before this install
+            // overwrote them — the bytes on disk are AmethystTool's now, so that entry's claim on those two
+            // names is stale. Trims it (or drops the entry if nothing else is left in it); a name the entry
+            // lists that AmethystTool never touches, e.g. OpenSteamTool.dll, is left exactly as it was. See
+            // InstallManifest.AbsorbFiles for why this trims instead of folding the whole entry in.
+            manifests.AbsorbFiles([.. plan.Steps.Select(step => step.FileName)], PluginIds.AmethystTool);
+
+            // Take the proxy-DLL slot. The payload just overwrote dwmapi.dll and xinput1_4.dll, so whichever
+            // Mode was active no longer owns what it placed — one assignment demotes it, which is what stops
+            // the page showing two backends as ACTIVE at once. Deliberately AFTER the copy succeeded.
+            unlocker.SelectAmethystTool();
+
             return (true, null);
         }
         catch (OperationCanceledException) { throw; }
@@ -340,7 +364,15 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
 
         // Drop the version record too, so the page stops reporting a tag for something no longer there.
         // Only on a real removal: a failure leaves the files in place, and the record must keep matching.
-        if (!outcome.Failed && !outcome.NothingRecorded) ClearManifest();
+        if (!outcome.Failed && !outcome.NothingRecorded)
+        {
+            ClearManifest();
+
+            // Release the slot, mirroring ModeRemovalService: leaving it held would show an ACTIVE badge
+            // for an install that is gone. Guarded because a Mode may have taken the slot since — clearing
+            // it then would deselect a Mode this removal never touched.
+            if (unlocker.ActiveBackend == ActiveBackend.AmethystTool) unlocker.ClearSelectedMode();
+        }
 
         return outcome;
     }

@@ -511,7 +511,7 @@
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam отказа да отвори тази игра. Проверете дали Steam е инсталиран правилно.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam не можа да бъде стартиран. Задайте местоположението му в Настройки и опитайте отново.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
-  <data name="Amethyst_Description" xml:space="preserve"><value>Собствена приставка за Steam (форк на BetterSteamTools). Инсталацията поставя четири файла в папката на Steam; вече наличното се запазва първо в папка с резервно копие. Steam се рестартира, за да зареди приставката.</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
   <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Файлове на Steam</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool е инсталиран. Steam беше рестартиран, за да го зареди.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Инсталирането на AmethystTool се провали: {0}</value></data>
@@ -527,5 +527,4 @@
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} е запазен: друг инсталиран инструмент все още го ползва. Премахнат е само записът за инсталация.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Премахването не успя: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Записът за инсталация не може да бъде използван: {0}</value></data>
-  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Това копие е инсталирано, преди LuaTools да води записи за инсталация, затова не може да докаже кои файлове са негови. Преинсталирайте, за да се създаде запис, и премахването ще стане достъпно.</value></data>
 </root>

@@ -593,7 +593,7 @@ public static class Strings
     public static string About_Config_Header => Get(nameof(About_Config_Header));
     public static string About_Config_Body => Get(nameof(About_Config_Body));
 
-    // ── AmethystTool card (Plugin page) ──
+    // ── AmethystTool card (Mode page) ──
     public static string Amethyst_CardTitle => Get(nameof(Amethyst_CardTitle));
     public static string Amethyst_Description => Get(nameof(Amethyst_Description));
     public static string Amethyst_Row_Payload => Get(nameof(Amethyst_Row_Payload));
@@ -613,5 +613,4 @@ public static class Strings
     public static string Removal_Toast_SharedKept => Get(nameof(Removal_Toast_SharedKept));
     public static string Removal_Toast_Failed => Get(nameof(Removal_Toast_Failed));
     public static string Removal_Err_Record => Get(nameof(Removal_Err_Record));
-    public static string Removal_NoRecord_Hint => Get(nameof(Removal_NoRecord_Hint));
 }

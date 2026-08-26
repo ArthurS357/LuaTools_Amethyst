@@ -511,7 +511,7 @@ Aceasta șterge fișierele .lua din Steam\config\stplug-in. Repornește Steam du
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam a refuzat să deschidă acest joc. Verifică dacă Steam este instalat corect.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam nu a putut fi pornit. Setează locația în Setări și încearcă din nou.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
-  <data name="Amethyst_Description" xml:space="preserve"><value>Un plugin nativ pentru Steam (un fork al BetterSteamTools). Instalarea pune patru fișiere în folderul Steam; ce există deja este păstrat mai întâi într-un folder de rezervă. Steam este repornit pentru a încărca pluginul.</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
   <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Fișiere Steam</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool a fost instalat. Steam a fost repornit ca să îl încarce.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Instalarea AmethystTool a eșuat: {0}</value></data>
@@ -527,5 +527,4 @@ Aceasta șterge fișierele .lua din Steam\config\stplug-in. Repornește Steam du
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} a fost păstrat: alt instrument instalat îl folosește încă. A fost eliminată doar înregistrarea de instalare.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Dezinstalarea a eșuat: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Înregistrarea de instalare nu a putut fi folosită: {0}</value></data>
-  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Această copie a fost instalată înainte ca LuaTools să păstreze înregistrări de instalare, deci nu poate dovedi care fișiere îi aparțin. Reinstalați-o pentru a crea o înregistrare, iar dezinstalarea devine disponibilă.</value></data>
 </root>

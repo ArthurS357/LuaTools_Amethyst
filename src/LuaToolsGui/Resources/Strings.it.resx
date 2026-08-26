@@ -511,7 +511,7 @@ Questo elimina i file .lua da Steam\config\stplug-in. Riavvia Steam in seguito a
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam ha rifiutato di aprire questo gioco. Verifica che Steam sia installato correttamente.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Impossibile avviare Steam. Imposta il suo percorso nelle Impostazioni e riprova.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
-  <data name="Amethyst_Description" xml:space="preserve"><value>Plugin nativo di Steam (un fork di BetterSteamTools). L’installazione mette quattro file nella cartella di Steam; ciò che è già presente viene prima conservato in una cartella di backup. Steam viene riavviato per caricare il plugin.</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
   <data name="Amethyst_Row_Payload" xml:space="preserve"><value>File di Steam</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool installato. Steam è stato riavviato per caricarlo.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Installazione di AmethystTool non riuscita: {0}</value></data>
@@ -527,5 +527,4 @@ Questo elimina i file .lua da Steam\config\stplug-in. Riavvia Steam in seguito a
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} è stato mantenuto: un altro strumento installato lo usa ancora. È stato rimosso solo il record di installazione.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Disinstallazione non riuscita: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Non è stato possibile usare il record di installazione: {0}</value></data>
-  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Questa copia è stata installata prima che LuaTools tenesse i record di installazione, quindi non può dimostrare quali file siano suoi. Reinstallalo per creare un record e la disinstallazione diventerà disponibile.</value></data>
 </root>

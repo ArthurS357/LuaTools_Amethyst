@@ -511,7 +511,7 @@ Dit verwijdert de .lua-bestanden uit Steam\config\stplug-in. Herstart Steam daar
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam weigerde dit spel te openen. Controleer of Steam correct is geïnstalleerd.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam kon niet worden gestart. Stel de locatie in bij Instellingen en probeer het opnieuw.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
-  <data name="Amethyst_Description" xml:space="preserve"><value>Een native Steam-plug-in (een fork van BetterSteamTools). Bij installatie worden vier bestanden in je Steam-map geplaatst; wat er al staat wordt eerst in een back-upmap bewaard. Steam wordt opnieuw gestart zodat de plug-in wordt geladen.</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
   <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam-bestanden</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool is geïnstalleerd. Steam is opnieuw gestart zodat het wordt geladen.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Installatie van AmethystTool mislukt: {0}</value></data>
@@ -527,5 +527,4 @@ Dit verwijdert de .lua-bestanden uit Steam\config\stplug-in. Herstart Steam daar
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} is behouden: een andere geïnstalleerde tool gebruikt het nog. Alleen de installatieregistratie is verwijderd.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Verwijderen mislukt: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>De installatieregistratie kon niet worden gebruikt: {0}</value></data>
-  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Deze kopie is geïnstalleerd voordat LuaTools installatieregistraties bijhield, dus kan niet worden aangetoond welke bestanden van hem zijn. Installeer opnieuw om een registratie te maken; daarna is verwijderen beschikbaar.</value></data>
 </root>

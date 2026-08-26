@@ -39,7 +39,25 @@ public sealed record ModeDefinition(
     string? CliAssetName,    // Kind == Cli: the tool to download (e.g. "CloudRedirectCLI.exe")
     string? CliArgs,         // Kind == Cli: args to run it with (e.g. "/stfixer")
     string? VerifyFile,      // Kind == Cli: the file whose digest confirms success (e.g. "cloud_redirect.dll")
-    string? HiddenUnlessFile = null); // if set, the card is hidden unless this file exists in the Steam root (or the mode is active)
+    string? HiddenUnlessFile = null, // if set, the card is hidden unless this file exists in the Steam root (or the mode is active)
+
+    /// <summary>
+    /// No longer offered: the card is not shown and <c>UnlockerService.InstallAsync</c> refuses it.
+    ///
+    /// <para>
+    /// The definition itself stays, and that is the point of a flag rather than a deletion. The enum member
+    /// is a persisted key — it names the manifest record (<c>PluginIds.ForMode</c>) that says which files
+    /// this mode put in the Steam root, and it is what <c>PluginRemovalService.ClaimedByOthers</c> consults
+    /// so a still-installed mode's proxy DLLs are not deleted out from under it. Dropping it would strand
+    /// both.
+    /// </para>
+    ///
+    /// <para>
+    /// A retired mode that is still the ACTIVE one keeps its card, because that card is the only way to
+    /// uninstall what is already on disk. It can never be selected again.
+    /// </para>
+    /// </summary>
+    bool Retired = false);
 
 // ── GitHub release API DTOs ─────────────────────────────────────────
 public sealed class GithubRelease

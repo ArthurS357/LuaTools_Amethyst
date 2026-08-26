@@ -108,6 +108,46 @@ public sealed record InstallManifest(int SchemaVersion, IReadOnlyDictionary<stri
         next.Remove(pluginId);
         return this with { SchemaVersion = CurrentSchemaVersion, Plugins = next };
     }
+
+    /// <summary>
+    /// Strip <paramref name="fileNames"/> out of every OTHER plugin's claim, for a new install that just
+    /// verified and wrote those exact names itself. An entry left with no files is dropped; an entry that
+    /// still names files the new install did NOT touch keeps those, unreduced.
+    ///
+    /// <para>
+    /// Trims rather than folding the whole entry in, unlike <c>UnlockerService.RecordModeInstall</c>'s
+    /// Mode-to-Mode handoff. That difference is deliberate: AmethystTool's payload is a fixed four names,
+    /// never <c>OpenSteamTool.dll</c> or <c>cloud_redirect.dll</c>, so absorbing an entire superseded Mode
+    /// entry would hand AmethystTool's manifest row a file it never placed and cannot verify. Only the
+    /// names actually just overwritten stop being that entry's to claim.
+    /// </para>
+    /// </summary>
+    /// <param name="fileNames">Names the new install just placed — <see cref="AmethystInstallStep.FileName"/>.</param>
+    /// <param name="newOwnerPluginId">The id those files now belong to; its own entry is left untouched.</param>
+    public InstallManifest AbsorbFiles(IReadOnlyCollection<string> fileNames, string newOwnerPluginId)
+    {
+        ArgumentNullException.ThrowIfNull(fileNames);
+        ArgumentException.ThrowIfNullOrWhiteSpace(newOwnerPluginId);
+        if (fileNames.Count == 0) return this;
+
+        var taken = new HashSet<string>(fileNames, StringComparer.OrdinalIgnoreCase);
+        var next = new Dictionary<string, InstalledPlugin>(Plugins, StringComparer.OrdinalIgnoreCase);
+        bool changed = false;
+
+        foreach (var (id, entry) in Plugins)
+        {
+            if (id.Equals(newOwnerPluginId, StringComparison.OrdinalIgnoreCase)) continue;
+
+            var kept = entry.Files.Where(f => !taken.Contains(f.Name)).ToList();
+            if (kept.Count == entry.Files.Count) continue; // nothing of this entry overlapped
+
+            changed = true;
+            if (kept.Count == 0) next.Remove(id);
+            else next[id] = entry with { Files = kept };
+        }
+
+        return changed ? this with { SchemaVersion = CurrentSchemaVersion, Plugins = next } : this;
+    }
 }
 
 /// <summary>
@@ -215,6 +255,22 @@ public sealed class InstallManifestService
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(pluginId);
         lock (_gate) return SaveUnlocked(LoadUnlocked().Without(pluginId));
+    }
+
+    /// <summary>
+    /// Apply <see cref="InstallManifest.AbsorbFiles"/> under the same read-modify-write lock as every other
+    /// write here, so an absorb racing a install/uninstall never loses the other's change. A no-op when
+    /// nothing overlapped skips the write entirely — same reasoning as <see cref="Record"/> never writing
+    /// an unchanged file.
+    /// </summary>
+    public bool AbsorbFiles(IReadOnlyCollection<string> fileNames, string newOwnerPluginId)
+    {
+        lock (_gate)
+        {
+            var before = LoadUnlocked();
+            var after = before.AbsorbFiles(fileNames, newOwnerPluginId);
+            return ReferenceEquals(before, after) || SaveUnlocked(after);
+        }
     }
 
     /// <summary>

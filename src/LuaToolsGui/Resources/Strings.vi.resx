@@ -511,7 +511,7 @@ Thao tác này sẽ xóa các tệp .lua khỏi Steam\config\stplug-in. Sau đó
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam đã từ chối mở trò chơi này. Hãy kiểm tra xem Steam đã được cài đặt đúng chưa.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Không thể khởi động Steam. Hãy đặt vị trí của Steam trong Cài đặt rồi thử lại.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
-  <data name="Amethyst_Description" xml:space="preserve"><value>Plugin gốc của Steam (một bản fork của BetterSteamTools). Việc cài đặt đặt bốn tệp vào thư mục Steam; những gì đã có sẽ được giữ trước trong một thư mục sao lưu. Steam được khởi động lại để nạp plugin.</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
   <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Tệp Steam</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>Đã cài đặt AmethystTool. Steam đã khởi động lại để nạp nó.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Cài đặt AmethystTool thất bại: {0}</value></data>
@@ -527,5 +527,4 @@ Thao tác này sẽ xóa các tệp .lua khỏi Steam\config\stplug-in. Sau đó
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>Đã giữ {0}: một công cụ đã cài khác vẫn đang dùng nó. Chỉ bản ghi cài đặt bị gỡ.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Gỡ cài đặt thất bại: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Không thể dùng bản ghi cài đặt: {0}</value></data>
-  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Bản sao này được cài trước khi LuaTools lưu bản ghi cài đặt, nên không thể chứng minh tệp nào là của nó. Cài lại để tạo bản ghi, sau đó gỡ cài đặt sẽ khả dụng.</value></data>
 </root>

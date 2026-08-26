@@ -29,6 +29,15 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.6.0", "2026-08-26",
+            "One backend can be active at a time, AmethystTool leads the Mode list, and SteamTools is retired.",
+            [
+                "Fixed AmethystTool and a Mode both showing ACTIVE at once — installing one now always demotes the other, from a single stored slot instead of two flags that could disagree.",
+                "AmethystTool is now the first card on the Mode page, with a description explaining what the fork actually does: auto-update off, nothing reported back.",
+                "SteamTools is retired from the Mode page — upstream stopped updating it. Anyone still running it keeps their card and their Uninstall button.",
+                "Installing AmethystTool over an old Mode now cleans up that Mode's stale claim on the shared proxy DLLs, so uninstalling AmethystTool no longer reports files as \"still needed\" when they are not.",
+            ]),
+
         new("1.5.4", "2026-08-22",
             "Play a game straight from Manage, and the whole app moves to .NET 10 LTS.",
             [

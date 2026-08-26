@@ -511,7 +511,7 @@
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam не смог открыть эту игру. Убедитесь, что Steam установлен правильно.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Не удалось запустить Steam. Укажите его расположение в настройках и попробуйте снова.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
-  <data name="Amethyst_Description" xml:space="preserve"><value>Нативный плагин Steam (форк BetterSteamTools). При установке в папку Steam помещаются четыре файла; то, что там уже есть, сначала сохраняется в папку резервной копии. Steam перезапускается, чтобы плагин загрузился.</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
   <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Файлы Steam</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool установлен. Steam перезапущен, чтобы он загрузился.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Не удалось установить AmethystTool: {0}</value></data>
@@ -527,5 +527,4 @@
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} сохранён: его всё ещё использует другой установленный инструмент. Удалена только запись об установке.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Не удалось удалить: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Не удалось использовать запись об установке: {0}</value></data>
-  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Эта копия была установлена до того, как LuaTools стал вести записи об установке, поэтому он не может доказать, какие файлы его. Переустановите, чтобы создать запись — тогда удаление станет доступным.</value></data>
 </root>

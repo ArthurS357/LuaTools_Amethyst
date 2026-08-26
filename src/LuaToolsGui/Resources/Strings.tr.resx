@@ -511,7 +511,7 @@ Bu işlem, .lua dosyalarını Steam\config\stplug-in konumundan siler. Değişik
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam bu oyunu açmayı reddetti. Steam'in doğru yüklendiğinden emin olun.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam başlatılamadı. Konumunu Ayarlar'da belirtip tekrar deneyin.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
-  <data name="Amethyst_Description" xml:space="preserve"><value>Yerel bir Steam eklentisi (BetterSteamTools’un bir fork’u). Kurulum, Steam klasörünüze dört dosya koyar; orada zaten bulunanlar önce bir yedek klasörde saklanır. Eklentinin yüklenmesi için Steam yeniden başlatılır.</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
   <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam dosyaları</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool kuruldu. Yüklenmesi için Steam yeniden başlatıldı.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>AmethystTool kurulumu başarısız: {0}</value></data>
@@ -527,5 +527,4 @@ Bu işlem, .lua dosyalarını Steam\config\stplug-in konumundan siler. Değişik
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} korundu: kurulu başka bir araç hâlâ kullanıyor. Yalnızca kurulum kaydı kaldırıldı.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Kaldırma başarısız: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Kurulum kaydı kullanılamadı: {0}</value></data>
-  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Bu kopya, LuaTools kurulum kayıtları tutmaya başlamadan önce kuruldu; bu yüzden hangi dosyaların kendisine ait olduğunu kanıtlayamıyor. Bir kayıt oluşturmak için yeniden kurun, ardından kaldırma kullanılabilir olur.</value></data>
 </root>

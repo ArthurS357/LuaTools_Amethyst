@@ -511,7 +511,7 @@
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Το Steam αρνήθηκε να ανοίξει αυτό το παιχνίδι. Ελέγξτε ότι το Steam είναι σωστά εγκατεστημένο.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Δεν ήταν δυνατή η εκκίνηση του Steam. Ορίστε τη θέση του στις Ρυθμίσεις και δοκιμάστε ξανά.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
-  <data name="Amethyst_Description" xml:space="preserve"><value>Εγγενές πρόσθετο του Steam (fork του BetterSteamTools). Η εγκατάσταση τοποθετεί τέσσερα αρχεία στον φάκελο του Steam· ό,τι υπάρχει ήδη φυλάσσεται πρώτα σε φάκελο αντιγράφου ασφαλείας. Το Steam επανεκκινείται για να φορτωθεί το πρόσθετο.</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
   <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Αρχεία Steam</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>Το AmethystTool εγκαταστάθηκε. Το Steam επανεκκινήθηκε για να φορτωθεί.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Η εγκατάσταση του AmethystTool απέτυχε: {0}</value></data>
@@ -527,5 +527,4 @@
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>Το {0} διατηρήθηκε: άλλο εγκατεστημένο εργαλείο το χρησιμοποιεί ακόμη. Αφαιρέθηκε μόνο η εγγραφή εγκατάστασης.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Η απεγκατάσταση απέτυχε: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Δεν ήταν δυνατή η χρήση της εγγραφής εγκατάστασης: {0}</value></data>
-  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Αυτό το αντίγραφο εγκαταστάθηκε πριν το LuaTools κρατάει εγγραφές εγκατάστασης, οπότε δεν μπορεί να αποδείξει ποια αρχεία είναι δικά του. Εγκατέστησέ το ξανά για να δημιουργηθεί εγγραφή και η απεγκατάσταση θα γίνει διαθέσιμη.</value></data>
 </root>

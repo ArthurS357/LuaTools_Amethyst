@@ -637,7 +637,7 @@ Enable it?</value></data>
   <data name="About_Config_Header" xml:space="preserve"><value>Configuring updates manually</value></data>
   <data name="About_Config_Body" xml:space="preserve"><value>Edit settings.json in the folder below and add the repository you want updates from. Only https://github.com/&lt;owner&gt;/&lt;repo&gt; is accepted, and the original LuaTools release repositories are refused so an official build can never replace this one.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
-  <data name="Amethyst_Description" xml:space="preserve"><value>A native Steam plugin (a fork of BetterSteamTools). Installing places four files in your Steam folder; anything already there is kept in a backup folder first. Steam is restarted so the plugin loads.</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
   <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam files</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool was installed. Steam was restarted so it loads.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>AmethystTool install failed: {0}</value></data>
@@ -653,5 +653,4 @@ Enable it?</value></data>
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>Kept {0}: another installed tool still uses it. Only the install record was removed.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Uninstall failed: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>The install record could not be used: {0}</value></data>
-  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>This copy was installed before LuaTools kept install records, so it cannot prove which files are its own. Reinstall it to create a record, and Uninstall becomes available.</value></data>
 </root>

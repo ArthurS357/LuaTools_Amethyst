@@ -4,10 +4,10 @@ namespace LuaToolsGui.Services;
 /// Turns a <see cref="PluginRemovalOutcome"/> into the one sentence a user is shown.
 ///
 /// <para>
-/// Shared rather than duplicated per page: the Plugin page's AmethystTool card and the Mode page's
-/// Uninstall button run the same removal through the same policy, and two hand-written descriptions of
-/// one outcome is how "removed" and "kept, because something else needs it" end up worded differently
-/// depending on which button was pressed.
+/// Shared rather than duplicated per card: the Mode page's Uninstall button and its AmethystTool card run
+/// the same removal through the same policy, and two hand-written descriptions of one outcome is how
+/// "removed" and "kept, because something else needs it" end up worded differently depending on which
+/// button was pressed.
 /// </para>
 /// </summary>
 public static class RemovalMessage

@@ -511,7 +511,7 @@
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam がこのゲームを開けませんでした。Steam が正しくインストールされているか確認してください。</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam を起動できませんでした。設定でその場所を指定して、もう一度お試しください。</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
-  <data name="Amethyst_Description" xml:space="preserve"><value>ネイティブの Steam プラグイン（BetterSteamTools のフォーク）です。インストールすると Steam フォルダーに 4 つのファイルが置かれます。既にあるファイルは先にバックアップ フォルダーへ保管されます。プラグインを読み込むため Steam を再起動します。</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
   <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam のファイル</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool をインストールしました。読み込むため Steam を再起動しました。</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>AmethystTool のインストールに失敗しました: {0}</value></data>
@@ -527,5 +527,4 @@
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} は残しました: インストール済みの別のツールがまだ使用しています。インストール記録のみ削除しました。</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>アンインストールに失敗しました: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>インストール記録を使用できませんでした: {0}</value></data>
-  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>このコピーは LuaTools がインストール記録を保持する前に導入されたため、どのファイルが自分のものか証明できません。再インストールすると記録が作成され、アンインストールが使えるようになります。</value></data>
 </root>

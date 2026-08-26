@@ -12,7 +12,7 @@ It browses and installs manifest sources, edits `stplug-in` lua files (depot pin
 enable/disable), manages unlocker modes, launches games through Steam, and injects a companion plugin
 into Steam's store pages. It ships translated in 29 languages and auto-updates via Velopack.
 
-Current version: **1.5.4** · Repository: <https://github.com/ArthurS357/LuaTools_Amethyst>
+Current version: **1.6.0** · Repository: <https://github.com/ArthurS357/LuaTools_Amethyst>
 
 ### Checking which build you are running
 
@@ -204,13 +204,18 @@ one fetches a GitHub release, verifies it, and places the result. These are the 
 
 | Page | Source repository | What it places | Where |
 |---|---|---|---|
-| Mode — SteamTools | `mendy-tools/verynotsusdllsthataredefnotstrelated` | `dwmapi.dll`, `xinput1_4.dll` | Steam root |
-| Mode — BetterSteamTools | `OpenSteam001/OpenSteamTool` | the same two + `OpenSteamTool.dll` | Steam root |
+| Mode — AmethystTool | `ArthurS357/BetterSteamTools-Amethyst` | `AmethystTool.dll`, `amethysttool.toml`, `dwmapi.dll`, `xinput1_4.dll` | Steam root |
+| Mode — BetterSteamTools | `OpenSteam001/OpenSteamTool` | `dwmapi.dll`, `xinput1_4.dll`, `OpenSteamTool.dll` | Steam root |
 | Mode — BST Nightly | `madoiscool/OST-Nightly` | the same three | Steam root |
-| Mode — CloudRedirect | `Selectively11/CloudRedirect` | `CloudRedirectCLI.exe` (**executed**), `cloud_redirect.dll` | Steam root |
 | Plugin | `madoiscool/LTSP` | `plugin.zip`, `winmm.dll` | `%AppData%`, Steam root |
-| Plugin — AmethystTool | `ArthurS357/BetterSteamTools-Amethyst` | `AmethystTool.dll`, `amethysttool.toml`, `dwmapi.dll`, `xinput1_4.dll` | Steam root |
 | Manage — Remove Steam DRM | `atom0s/Steamless` | `Steamless.CLI.exe` (**executed**) | cache |
+
+Two Modes are no longer offered on the page. **SteamTools** (`mendy-tools/verynotsusdllsthataredefnotstrelated`,
+`dwmapi.dll` + `xinput1_4.dll`) is retired: upstream stopped publishing updates for it, so LuaTools will not
+install it any more. **CloudRedirect** (`Selectively11/CloudRedirect`) is hidden while the mode is broken.
+Both definitions stay in the app so that an existing install of either keeps its uninstall record and keeps
+its proxy DLLs protected from being removed by something else — and if SteamTools is still your active Mode,
+its card stays on the page so you can uninstall it.
 
 Every one of them is verified as described under [GitHub mirrors](#github-mirrors) — HTTPS, GitHub host,
 **pinned to the owner/repo in this table**, and SHA-256 fail-closed — and `plugin.zip` and
@@ -220,11 +225,21 @@ decompression bomb inside a genuinely-published release is refused too.
 
 ### AmethystTool
 
-`AmethystTool` is a fork of BetterSteamTools maintained alongside this app. It is a **native injection
-plugin**: `dwmapi.dll` and `xinput1_4.dll` are proxy DLLs that `steam.exe` loads by name and that forward
-into `AmethystTool.dll`, all of it sitting in the Steam install root next to `steam.exe`. Install it from
-the **Install** button on the Plugin page; Steam is stopped for the copy and relaunched afterwards, because
-those DLLs are locked while it runs.
+`AmethystTool` is an independent fork of BetterSteamTools maintained alongside this app, focused on
+privacy: **auto-update is disabled and it reports nothing back**. Its card is **first** on the **Mode**
+page, above the other unlockers. It belongs there rather than with the store-page plugin because it is the
+same kind of thing they are: `dwmapi.dll` and `xinput1_4.dll` are proxy DLLs that `steam.exe` loads by name
+and that forward into `AmethystTool.dll`, all of it sitting in the Steam install root next to `steam.exe` —
+and those first two are the very files BetterSteamTools and BST Nightly place. Having AmethystTool
+installed and having a Mode installed are the same slot, so LuaTools shows them in the same list, and a
+Mode install and an AmethystTool install cannot run at the same time. Install it from the **Install**
+button on the Mode page; Steam is stopped for the copy and relaunched afterwards, because those DLLs are
+locked while it runs.
+
+**Exactly one backend shows as ACTIVE.** Which one holds the proxy-DLL slot is a single stored value, not a
+flag per card, so installing AmethystTool demotes whichever Mode was active and installing a Mode demotes
+AmethystTool. The badge also needs the payload to still be on disk, so deleting the files by hand outside
+the app does not leave a card claiming to be active.
 
 Three things about it are worth knowing before you press it:
 
@@ -234,24 +249,26 @@ Three things about it are worth knowing before you press it:
 - **Nothing is overwritten without a copy first.** If `dwmapi.dll` or `xinput1_4.dll` is already there —
   because another tool owns it, or because you are reinstalling — the existing file is moved into
   `AmethystTool-backup-<timestamp>\` inside your Steam folder *before* the replacement is written. The
-  Plugin page tells you which folder. That includes `amethysttool.toml`: reinstalling replaces the config,
+  Mode page tells you which folder. That includes `amethysttool.toml`: reinstalling replaces the config,
   and your previous one is in that folder.
 - **An unverifiable release is refused, not installed.** The SHA-256 GitHub publishes for the asset is
   required; if it is missing or does not match, the install stops. There is no pinned-hash fallback here
   (unlike Steamless) and no setting to turn the check off.
 
-### Uninstalling a plugin
+### Uninstalling a plugin or a Mode
 
-Both cards on the Plugin page have an **Uninstall** button. It works from an **install record**, not from a
-list of file names — and that distinction is the whole reason it is safe to press.
+The Plugin page's card, and every card on the Mode page, have an **Uninstall** button. It works from an
+**install record**, not from a list of file names — and that distinction is the whole reason it is safe to press.
 
 LuaTools keeps that record in `%AppData%\LuaToolsGui\install-manifest.json`: which plugin placed which
 files in your Steam folder, when, and what each one hashed to. Uninstall removes exactly those, and:
 
 - **A file another install still needs is kept.** `dwmapi.dll` and `xinput1_4.dll` are placed by
-  AmethystTool *and* by three of the Mode page's unlockers. If a Mode is active, uninstalling AmethystTool
-  leaves those two alone and tells you it did — only the record goes. Removing them would have left Steam
-  loading a proxy whose partner had vanished.
+  AmethystTool *and* by every one of the Mode page's unlockers, and only one of them ever holds the slot at
+  once (see above) — so removing them out from under the other is the one thing that must never happen.
+  Installing AmethystTool over an old Mode now also cleans up that Mode's manifest entry so it stops
+  claiming the two proxies it no longer owns; a stale claim left over from before that cleanup existed still
+  keeps the files in place and says so, rather than guessing them safe to delete.
 - **Nothing is deleted, it is moved.** Everything removed goes to `Removal-backup-<timestamp>\<plugin>\`
   inside your Steam folder. Changed your mind, or something else needed that file? Move it back.
 - **Steam is closed and is not reopened for you.** The files are locked while it runs, so it has to go

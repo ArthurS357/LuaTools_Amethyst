@@ -511,7 +511,7 @@ Ini menghapus file .lua dari Steam\config\stplug-in. Mulai ulang Steam setelahny
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam menolak membuka game ini. Pastikan Steam terpasang dengan benar.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam tidak dapat dijalankan. Tentukan lokasinya di Pengaturan lalu coba lagi.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
-  <data name="Amethyst_Description" xml:space="preserve"><value>Plugin Steam native (fork dari BetterSteamTools). Pemasangan menaruh empat berkas di folder Steam; yang sudah ada disimpan dulu di folder cadangan. Steam dimulai ulang agar plugin dimuat.</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
   <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Berkas Steam</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool terpasang. Steam dimulai ulang agar dimuat.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Pemasangan AmethystTool gagal: {0}</value></data>
@@ -527,5 +527,4 @@ Ini menghapus file .lua dari Steam\config\stplug-in. Mulai ulang Steam setelahny
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} dipertahankan: alat lain yang terpasang masih memakainya. Hanya catatan pemasangan yang dihapus.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Pencopotan gagal: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Catatan pemasangan tidak dapat dipakai: {0}</value></data>
-  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Salinan ini dipasang sebelum LuaTools menyimpan catatan pemasangan, jadi tidak bisa membuktikan berkas mana miliknya. Pasang ulang untuk membuat catatan, lalu pencopotan menjadi tersedia.</value></data>
 </root>

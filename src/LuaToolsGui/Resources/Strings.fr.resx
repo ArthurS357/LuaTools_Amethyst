@@ -511,7 +511,7 @@ Cela supprime les fichiers .lua de Steam\config\stplug-in. Redémarrez Steam ens
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam a refusé d'ouvrir ce jeu. Vérifiez que Steam est correctement installé.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Impossible de démarrer Steam. Définissez son emplacement dans les Paramètres et réessayez.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
-  <data name="Amethyst_Description" xml:space="preserve"><value>Plugin natif de Steam (un fork de BetterSteamTools). L’installation place quatre fichiers dans le dossier Steam ; ce qui s’y trouve déjà est d’abord conservé dans un dossier de sauvegarde. Steam est redémarré pour charger le plugin.</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
   <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Fichiers Steam</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool installé. Steam a été redémarré pour le charger.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Échec de l’installation d’AmethystTool : {0}</value></data>
@@ -527,5 +527,4 @@ Cela supprime les fichiers .lua de Steam\config\stplug-in. Redémarrez Steam ens
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} a été conservé : un autre outil installé l’utilise encore. Seul l’enregistrement d’installation a été retiré.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Échec de la désinstallation : {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Impossible d’utiliser l’enregistrement d’installation : {0}</value></data>
-  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Cette copie a été installée avant que LuaTools ne tienne des enregistrements d’installation, il ne peut donc pas prouver quels fichiers sont les siens. Réinstallez-le pour créer un enregistrement et la désinstallation deviendra disponible.</value></data>
 </root>

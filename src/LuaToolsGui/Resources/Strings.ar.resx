@@ -537,7 +537,7 @@
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>رفض Steam فتح هذه اللعبة. تأكد من تثبيت Steam بشكل صحيح.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>تعذّر تشغيل Steam. حدّد موقعه في الإعدادات وحاول مرة أخرى.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
-  <data name="Amethyst_Description" xml:space="preserve"><value>إضافة أصلية لـ Steam (نسخة معدّلة من BetterSteamTools). يضع التثبيت أربعة ملفات في مجلد Steam؛ وما هو موجود مسبقًا يُحفَظ أولًا في مجلد نسخ احتياطي. يُعاد تشغيل Steam لتحميل الإضافة.</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
   <data name="Amethyst_Row_Payload" xml:space="preserve"><value>ملفات Steam</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>تم تثبيت AmethystTool. أُعيد تشغيل Steam لتحميله.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>فشل تثبيت AmethystTool: {0}</value></data>
@@ -553,5 +553,4 @@
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>أُبقي على {0}: أداة أخرى مثبّتة ما زالت تستخدمه. أُزيل سجل التثبيت فقط.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>فشل إلغاء التثبيت: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>تعذّر استخدام سجل التثبيت: {0}</value></data>
-  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>ثُبّتت هذه النسخة قبل أن يحتفظ LuaTools بسجلات التثبيت، لذا لا يمكنه إثبات أي الملفات ملكه. أعد التثبيت لإنشاء سجل، وعندها يصبح إلغاء التثبيت متاحًا.</value></data>
 </root>

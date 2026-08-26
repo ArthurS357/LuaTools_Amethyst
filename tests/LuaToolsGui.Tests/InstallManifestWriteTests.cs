@@ -1,6 +1,7 @@
 using System.IO;
 using System.Text.Json;
 using AwesomeAssertions;
+using LuaToolsGui.Models;
 using LuaToolsGui.Services;
 using Xunit;
 
@@ -110,6 +111,28 @@ public class InstallManifestWriteTests : IDisposable
         var reloaded = new InstallManifestService(_dir).Load();
         reloaded.Get(PluginIds.AmethystTool).Should().BeNull();
         reloaded.Get(PluginIds.StorePage).Should().NotBeNull();
+        LooseFiles().Should().ContainSingle();
+    }
+
+    [Fact]
+    public void Absorbing_a_shared_file_is_persisted()
+    {
+        _service.Record(Entry(PluginIds.ForMode(UnlockerMode.OpenSteamTools), "dwmapi.dll", "xinput1_4.dll"));
+
+        _service.AbsorbFiles(["dwmapi.dll", "xinput1_4.dll"], PluginIds.AmethystTool).Should().BeTrue();
+
+        new InstallManifestService(_dir).Load().Get(PluginIds.ForMode(UnlockerMode.OpenSteamTools))
+            .Should().BeNull();
+    }
+
+    [Fact]
+    public void Absorbing_nothing_that_overlaps_skips_the_write()
+    {
+        _service.Record(Entry(PluginIds.StorePage, "winmm.dll"));
+
+        _service.AbsorbFiles(["dwmapi.dll"], PluginIds.AmethystTool).Should().BeTrue();
+
+        // No write happened — LooseFiles would show a stray temp file if SaveUnlocked had run and left one.
         LooseFiles().Should().ContainSingle();
     }
 

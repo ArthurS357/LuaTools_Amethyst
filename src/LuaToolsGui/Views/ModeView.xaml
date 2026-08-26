@@ -46,8 +46,179 @@
                         IsEnabled="{Binding NotBusy}" />
                 </Grid>
 
+                <!-- AmethystTool, first on the page. A Mode, not a plugin: it writes the same dwmapi.dll /
+                     xinput1_4.dll next to steam.exe that every card below does, so it competes for the same
+                     slot. It is not in the ItemsControl because the ordering is fixed (it leads) and because
+                     it reports versions, a backup folder and an install record,
+                     which a ModeCardViewModel has nowhere to put — hence its own template and its own view
+                     model, bound through Amethyst. Progress goes to the page's docked bar, not to a bar of
+                     its own; confirmation goes through the page's overlay, not a MessageBox. -->
+                <Border
+                    Margin="0,18,0,12"
+                    Padding="18"
+                    Background="{StaticResource SurfaceCardBrush}"
+                    BorderBrush="{StaticResource BorderStrongBrush}"
+                    BorderThickness="1"
+                    CornerRadius="10"
+                    DataContext="{Binding Amethyst}"
+                    KeyboardNavigation.TabNavigation="Local">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon
+                                    VerticalAlignment="Center"
+                                    Foreground="{StaticResource AccentBrush}"
+                                    Symbol="Wrench24" />
+                                <TextBlock
+                                    Margin="10,0,0,0"
+                                    VerticalAlignment="Center"
+                                    FontSize="15"
+                                    FontWeight="SemiBold"
+                                    Text="{x:Static res:Strings.Amethyst_CardTitle}" />
+                                <!-- IsActive, NOT IsInstalled: installing a Mode overwrites the two proxy
+                                     DLLs but leaves AmethystTool.dll and amethysttool.toml in place, so the
+                                     files stay present after the slot has moved on. Binding this badge to
+                                     file presence is what used to light ACTIVE here and on a Mode card at
+                                     the same time. -->
+                                <Border
+                                    Margin="10,0,0,0"
+                                    Padding="7,2"
+                                    VerticalAlignment="Center"
+                                    Background="{StaticResource AccentBadgeBrush}"
+                                    CornerRadius="4"
+                                    Visibility="{Binding IsActive, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock
+                                        FontSize="10.5"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource AccentSoftBrush}"
+                                        Text="{x:Static res:Strings.Mode_Active}" />
+                                </Border>
+                                <Border
+                                    Margin="6,0,0,0"
+                                    Padding="7,2"
+                                    VerticalAlignment="Center"
+                                    Background="{StaticResource WarningTintBrush}"
+                                    CornerRadius="4"
+                                    Visibility="{Binding UpdateAvailable, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock
+                                        FontSize="10.5"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource WarningBrush}"
+                                        Text="{x:Static res:Strings.Mode_UpdateAvailable}" />
+                                </Border>
+                            </StackPanel>
+
+                            <TextBlock
+                                Margin="0,6,0,0"
+                                FontSize="12"
+                                Foreground="{StaticResource TextDimBrush}"
+                                Text="{x:Static res:Strings.Amethyst_Description}"
+                                TextWrapping="Wrap" />
+
+                            <!-- Status line, worded like the cards above it. -->
+                            <TextBlock
+                                Margin="0,6,0,0"
+                                FontSize="12.5"
+                                Foreground="{StaticResource TextMutedBrush}"
+                                Text="{Binding Status}"
+                                TextWrapping="Wrap" />
+
+                            <!-- Installed version, and where it is going if an update is pending. -->
+                            <StackPanel Margin="0,6,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    FontSize="12.5"
+                                    Foreground="{StaticResource TextDimBrush}"
+                                    Text="{x:Static res:Strings.Plugin_Row_InstalledVersion}" />
+                                <TextBlock
+                                    Margin="8,0,0,0"
+                                    FontSize="12.5"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource TextPrimaryBrush}"
+                                    Text="{Binding InstalledVersion}" />
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding UpdateAvailable, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock
+                                        Margin="7,0,7,0"
+                                        FontSize="12.5"
+                                        Foreground="{StaticResource TextDimBrush}"
+                                        Text="&#x2192;" />
+                                    <TextBlock
+                                        FontSize="12.5"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource WarningBrush}"
+                                        Text="{Binding LatestVersion}" />
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- Installed, but placed before install records existed: say why Uninstall is
+                                 unavailable instead of leaving a button that does nothing. -->
+                            <TextBlock
+                                Margin="0,6,0,0"
+                                FontSize="11.5"
+                                Foreground="{StaticResource TextDimBrush}"
+                                Text="{x:Static res:Strings.Mode_Uninstall_NoRecord}"
+                                TextWrapping="Wrap"
+                                Visibility="{Binding ShowNoRecordHint, Converter={StaticResource BoolToVis}}" />
+
+                            <!-- Offline / rate-limit line. -->
+                            <TextBlock
+                                Margin="0,6,0,0"
+                                FontSize="12"
+                                Foreground="{StaticResource WarningStrongBrush}"
+                                Text="{Binding StatusLine}"
+                                TextWrapping="Wrap"
+                                Visibility="{Binding StatusLine, Converter={StaticResource NullToCollapsed}}" />
+
+                            <!-- Where the files this install displaced were kept. -->
+                            <TextBlock
+                                Margin="0,6,0,0"
+                                FontSize="11.5"
+                                Foreground="{StaticResource InfoBrush}"
+                                Text="{Binding BackupLine}"
+                                TextWrapping="Wrap"
+                                Visibility="{Binding BackupLine, Converter={StaticResource NullToCollapsed}}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <ui:Button
+                                MinWidth="120"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center"
+                                AutomationProperties.Name="{Binding InstallButtonText}"
+                                Command="{Binding DataContext.InstallAmethystCommand, ElementName=Root}"
+                                Content="{Binding InstallButtonText}"
+                                IsEnabled="{Binding DataContext.NotBusy, ElementName=Root}">
+                                <ui:Button.Style>
+                                    <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
+                                        <Setter Property="Appearance" Value="Secondary" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding InstallIsPrimary}" Value="True">
+                                                <Setter Property="Appearance" Value="Primary" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ui:Button.Style>
+                            </ui:Button>
+                            <ui:Button
+                                Margin="0,8,0,0"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center"
+                                AutomationProperties.Name="{x:Static res:Strings.Mode_Btn_Uninstall}"
+                                Command="{Binding DataContext.UninstallAmethystCommand, ElementName=Root}"
+                                Content="{x:Static res:Strings.Mode_Btn_Uninstall}"
+                                Icon="{ui:SymbolIcon Delete24}"
+                                IsEnabled="{Binding DataContext.CanUninstallAmethyst, ElementName=Root}"
+                                Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
                 <!-- Mode cards -->
-                <ItemsControl Margin="0,18,0,0" ItemsSource="{Binding Cards}">
+                <ItemsControl Margin="0,0,0,0" ItemsSource="{Binding Cards}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Border

@@ -16,20 +16,11 @@ public partial class PluginViewModel : ObservableObject
     private readonly PluginInstallerService _installer;
     private readonly ToastService _toast;
 
-    public PluginViewModel(PluginInstallerService installer, ToastService toast,
-        AmethystToolViewModel amethyst)
+    public PluginViewModel(PluginInstallerService installer, ToastService toast)
     {
         _installer = installer;
         _toast = toast;
-        Amethyst = amethyst;
     }
-
-    /// <summary>
-    /// The AmethystTool card, hosted on this page as a separate section. It is a different product from a
-    /// different source with a different install target (the Steam root, natively injected), so it keeps
-    /// its own state rather than sharing this view model's flags — see <see cref="AmethystToolViewModel"/>.
-    /// </summary>
-    public AmethystToolViewModel Amethyst { get; }
 
     [ObservableProperty] private string _installedVersion = "—";
     [ObservableProperty] private string _latestVersion = "—";
@@ -83,11 +74,7 @@ public partial class PluginViewModel : ObservableObject
         ? Resources.Strings.Plugin_Btn_Install
         : UpdateAvailable ? Resources.Strings.Plugin_Btn_Update : Resources.Strings.Plugin_Btn_Reinstall;
 
-    public async Task LoadAsync()
-    {
-        await RefreshAsync(force: false);
-        await Amethyst.LoadAsync();
-    }
+    public Task LoadAsync() => RefreshAsync(force: false);
 
     private async Task RefreshAsync(bool force)
     {

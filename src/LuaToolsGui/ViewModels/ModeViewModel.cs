@@ -52,9 +52,16 @@ public partial class ModeCardViewModel(UnlockerMode mode, string title, string d
 }
 
 /// <summary>
-/// "Mode" page: SteamTools / OpenSteamTools / CloudRedirect — mutually exclusive, one active at a time.
+/// "Mode" page: AmethystTool and the OpenSteamTools builds — mutually exclusive, one active at a time.
 /// Checks status on page open; each card installs/switches after a Steam-shutdown confirmation, then
 /// relaunches Steam so the new mode takes effect.
+///
+/// <para>
+/// <b>Exclusivity is a property of the data, not of this page.</b> Every backend here — the cards and
+/// AmethystTool alike — reads its active state from the one slot <see cref="ActiveBackendPolicy"/> owns,
+/// so refreshing after an install is enough to demote whatever held it before. Nothing walks the list
+/// turning other cards off, because nothing can be on twice.
+/// </para>
 /// </summary>
 public partial class ModeViewModel : ObservableObject
 {
@@ -70,6 +77,7 @@ public partial class ModeViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(NotBusy))]
     [NotifyPropertyChangedFor(nameof(CanUseCloudRedirect))]
     [NotifyPropertyChangedFor(nameof(CanUninstallMode))]
+    [NotifyPropertyChangedFor(nameof(CanUninstallAmethyst))]
     private bool _isBusy;
     public bool NotBusy => !IsBusy;
 
@@ -86,9 +94,11 @@ public partial class ModeViewModel : ObservableObject
 
     // ── Steam-shutdown confirmation overlay ──────────────────────────
     //
-    // One overlay serves install and uninstall. Both ask for the same permission — to close Steam — and a
-    // second scrim with its own copy of the buttons would drift out of step with this one.
-    private enum PendingAction { Install, Uninstall }
+    // One overlay serves install and uninstall, for the Mode cards and for AmethystTool alike. All four ask
+    // for the same permission — to close Steam — and a second scrim with its own copy of the buttons would
+    // drift out of step with this one. It replaced a pair of MessageBox prompts the AmethystTool card used
+    // to raise while it lived on the Plugin page.
+    private enum PendingAction { Install, Uninstall, AmethystInstall, AmethystUninstall }
 
     [ObservableProperty] private bool _isConfirming;
     [ObservableProperty] private string _confirmTitle = "";
@@ -97,14 +107,55 @@ public partial class ModeViewModel : ObservableObject
     private PendingAction _pending;
 
     public ModeViewModel(UnlockerService unlocker, ToastService toast, SteamService steam,
-        CloudRedirectService cloudRedirect, ModeRemovalService modeRemoval)
+        CloudRedirectService cloudRedirect, ModeRemovalService modeRemoval,
+        AmethystToolViewModel amethyst)
     {
         _unlocker = unlocker;
         _toast = toast;
         _steam = steam;
         _cloudRedirect = cloudRedirect;
         _modeRemoval = modeRemoval;
+        Amethyst = amethyst;
+
+        // The Uninstall gate reads a flag the card owns and refreshes on its own (after an install, after a
+        // removal). Without this the button keeps whatever enabled state it had when the page last loaded.
+        // Both objects are singletons with the app's lifetime, so there is nothing to unsubscribe.
+        Amethyst.PropertyChanged += (_, e) =>
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(AmethystToolViewModel.HasInstallRecord):
+                    OnPropertyChanged(nameof(CanUninstallAmethyst));
+                    break;
+
+                // The card draws no progress bar of its own. This page has one, docked at the bottom and
+                // shared by every Mode, and an AmethystTool install is a Mode install — it should move the
+                // same bar rather than growing a second one halfway up the page.
+                case nameof(AmethystToolViewModel.Progress):
+                    Progress = Amethyst.Progress;
+                    break;
+                case nameof(AmethystToolViewModel.IsProgressIndeterminate):
+                    IsProgressIndeterminate = Amethyst.IsProgressIndeterminate;
+                    break;
+            }
+        };
     }
+
+    /// <summary>
+    /// The AmethystTool card. A Mode by the only test that matters — it writes the same <c>dwmapi.dll</c> and
+    /// <c>xinput1_4.dll</c> next to <c>steam.exe</c> that every other Mode does, so having it installed and a
+    /// Mode installed are the same slot. Held as its own view model rather than folded into
+    /// <see cref="Cards"/>: it reports versions, a backup folder and an install record, none of which a
+    /// <see cref="ModeCardViewModel"/> has anywhere to put.
+    /// </summary>
+    public AmethystToolViewModel Amethyst { get; }
+
+    /// <summary>
+    /// Whether AmethystTool's Uninstall button is live. Page-level, like
+    /// <see cref="CanUninstallMode"/>: it takes the page's busy flag into account, so a Mode install in
+    /// progress disables it too. Those two operations write the same files.
+    /// </summary>
+    public bool CanUninstallAmethyst => Amethyst.HasInstallRecord && !IsBusy;
 
     /// <summary>CloudRedirect "Manage": download (cache) the CloudRedirect GUI and launch it.</summary>
     [RelayCommand]
@@ -264,11 +315,10 @@ public partial class ModeViewModel : ObservableObject
     /// existing cards so their bound state isn't reset; adds/removes as visibility changes.</summary>
     private void SyncCards()
     {
-        // CloudRedirect is temporarily hidden (mode currently broken). The enum member, its
-        // ModeDefinition, and install/auto-detect logic stay intact so persisted CloudRedirect
-        // settings still resolve — remove this filter to re-enable the card.
-        var visible = _unlocker.Modes
-            .Where(d => d.Mode != UnlockerMode.CloudRedirect)
+        // Which modes are offered at all is ModeCatalog's decision, not this page's — see there for why
+        // CloudRedirect and a retired mode are hidden on different terms. IsModeVisible is the separate,
+        // per-install question of whether a reveal-file is present.
+        var visible = ModeCatalog.Offered(_unlocker.Modes, _unlocker.SelectedMode)
             .Where(IsModeVisible)
             .ToList();
 
@@ -323,6 +373,10 @@ public partial class ModeViewModel : ObservableObject
                 Apply(card, new ModeState(card.Mode, ModeStatus.NotInstalled, IsActive: false, null));
             }
         }
+
+        // AmethystTool sits with the Mode cards and refreshes with them.
+        await Amethyst.LoadAsync(forceRefresh);
+        OnPropertyChanged(nameof(CanUninstallAmethyst));
 
         // Bottom CloudRedirect add-on panel (locked unless Nightly BST is the active mode).
         await RefreshCloudRedirectAsync(forceRefresh);
@@ -412,10 +466,100 @@ public partial class ModeViewModel : ObservableObject
         IsConfirming = false;
         var card = _pendingCard;
         _pendingCard = null;
-        if (card is null) return;
 
-        if (_pending == PendingAction.Uninstall) await RunUninstall();
-        else await RunInstall(card.Mode);
+        // The AmethystTool actions carry no card — it is not one of Cards — so the card is checked per
+        // branch rather than up front.
+        switch (_pending)
+        {
+            case PendingAction.AmethystInstall: await RunAmethystInstall(); break;
+            case PendingAction.AmethystUninstall: await RunAmethystUninstall(); break;
+            case PendingAction.Uninstall when card is not null: await RunUninstall(); break;
+            case PendingAction.Install when card is not null: await RunInstall(card.Mode); break;
+        }
+    }
+
+    // ── AmethystTool ──────────────────────────────────────────
+
+    /// <summary>
+    /// AmethystTool's install/reinstall button → the same confirmation the Mode cards raise. The wording is
+    /// theirs too: installing it takes the proxy-DLL slot the active Mode is using, which is what "switch"
+    /// means on this page.
+    /// </summary>
+    [RelayCommand]
+    private void InstallAmethyst()
+    {
+        if (IsBusy) return;
+        _pending = PendingAction.AmethystInstall;
+        _pendingCard = null;
+        ConfirmTitle = string.Format(
+            Amethyst.IsInstalled ? Resources.Strings.Mode_Confirm_Reinstall : Resources.Strings.Mode_Confirm_Switch,
+            Resources.Strings.Amethyst_CardTitle);
+        ConfirmBody = Resources.Strings.Mode_Confirm_Body;
+        IsConfirming = true;
+    }
+
+    /// <summary>AmethystTool's Uninstall button → confirm, with the body that says the files are moved to a
+    /// backup folder and Steam is left closed.</summary>
+    [RelayCommand]
+    private void UninstallAmethyst()
+    {
+        if (!CanUninstallAmethyst) return;
+        _pending = PendingAction.AmethystUninstall;
+        _pendingCard = null;
+        ConfirmTitle = string.Format(Resources.Strings.Mode_Confirm_Uninstall, Resources.Strings.Amethyst_CardTitle);
+        ConfirmBody = Resources.Strings.Mode_Confirm_Uninstall_Body;
+        IsConfirming = true;
+    }
+
+    /// <summary>
+    /// Hand off to <see cref="AmethystToolViewModel"/>, which owns the install and reports its own toast.
+    ///
+    /// <para>
+    /// The page's busy flag is held for the whole call, and that is the point of routing it through here:
+    /// AmethystTool and the Mode cards write the same two proxy DLLs next to <c>steam.exe</c>, and before
+    /// this card moved onto this page nothing stopped a user from starting both. Steam itself is stopped and
+    /// restarted inside the service, as it is for a Mode.
+    /// </para>
+    /// </summary>
+    private async Task RunAmethystInstall()
+    {
+        if (IsBusy) return;
+        IsBusy = true;
+        IsProgressIndeterminate = true;
+        Progress = 0;
+        try
+        {
+            await Amethyst.InstallConfirmedAsync();
+            await LoadAsync();
+        }
+        finally
+        {
+            IsBusy = false;
+            IsProgressIndeterminate = false;
+        }
+    }
+
+    /// <summary>
+    /// Remove AmethystTool through its own service, which back-fills a record for a copy installed before
+    /// records existed and clears the version manifest afterwards. It keeps any proxy DLL the active Mode
+    /// still claims — see <see cref="PluginRemovalService.ClaimedByOthers"/> — and says so in the toast.
+    /// </summary>
+    private async Task RunAmethystUninstall()
+    {
+        if (IsBusy) return;
+        IsBusy = true;
+        IsProgressIndeterminate = true;
+        Progress = 0;
+        try
+        {
+            await Amethyst.UninstallConfirmedAsync();
+            await LoadAsync();
+        }
+        finally
+        {
+            IsBusy = false;
+            IsProgressIndeterminate = false;
+        }
     }
 
     /// <summary>

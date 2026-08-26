@@ -511,7 +511,7 @@
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam ปฏิเสธที่จะเปิดเกมนี้ ตรวจสอบว่าติดตั้ง Steam อย่างถูกต้องแล้ว</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>ไม่สามารถเริ่ม Steam ได้ กำหนดตำแหน่งในการตั้งค่าแล้วลองอีกครั้ง</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
-  <data name="Amethyst_Description" xml:space="preserve"><value>ปลั๊กอินเนทีฟของ Steam (ฟอร์กของ BetterSteamTools) การติดตั้งจะวางไฟล์สี่ไฟล์ในโฟลเดอร์ Steam ของคุณ ส่วนไฟล์ที่มีอยู่แล้วจะถูกเก็บไว้ในโฟลเดอร์สำรองก่อน แล้ว Steam จะรีสตาร์ตเพื่อโหลดปลั๊กอิน</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
   <data name="Amethyst_Row_Payload" xml:space="preserve"><value>ไฟล์ของ Steam</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>ติดตั้ง AmethystTool แล้ว รีสตาร์ต Steam เพื่อโหลดแล้ว</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>ติดตั้ง AmethystTool ไม่สำเร็จ: {0}</value></data>
@@ -527,5 +527,4 @@
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>เก็บ {0} ไว้: เครื่องมืออื่นที่ติดตั้งไว้ยังใช้อยู่ ลบเฉพาะบันทึกการติดตั้งเท่านั้น</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>ถอนการติดตั้งไม่สำเร็จ: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>ไม่สามารถใช้บันทึกการติดตั้งได้: {0}</value></data>
-  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>สำเนานี้ถูกติดตั้งก่อนที่ LuaTools จะเก็บบันทึกการติดตั้ง จึงพิสูจน์ไม่ได้ว่าไฟล์ใดเป็นของตน ติดตั้งใหม่เพื่อสร้างบันทึก แล้วการถอนการติดตั้งจะใช้งานได้</value></data>
 </root>

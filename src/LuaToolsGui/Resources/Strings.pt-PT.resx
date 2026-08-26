@@ -511,7 +511,7 @@ Isto elimina os ficheiros .lua de Steam\config\stplug-in. Reinicie o Steam depoi
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>O Steam recusou abrir este jogo. Verifique se o Steam está instalado corretamente.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Não foi possível iniciar o Steam. Defina a localização em Definições e tente novamente.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
-  <data name="Amethyst_Description" xml:space="preserve"><value>Plugin nativo do Steam (um fork do BetterSteamTools). A instalação coloca quatro ficheiros na pasta do Steam; o que já lá estiver é guardado antes numa pasta de cópia de segurança. O Steam é reiniciado para carregar o plugin.</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
   <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Ficheiros do Steam</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool instalado. O Steam foi reiniciado para o carregar.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Falha ao instalar o AmethystTool: {0}</value></data>
@@ -527,5 +527,4 @@ Isto elimina os ficheiros .lua de Steam\config\stplug-in. Reinicie o Steam depoi
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} foi mantido: outra ferramenta instalada ainda usa esse ficheiro. Só o registo de instalacao foi removido.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Falha ao desinstalar: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Nao foi possivel usar o registo de instalacao: {0}</value></data>
-  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Esta copia foi instalada antes de o LuaTools manter registos de instalacao, por isso nao consegue provar quais ficheiros sao seus. Reinstale para criar um registo e a desinstalacao fica disponivel.</value></data>
 </root>

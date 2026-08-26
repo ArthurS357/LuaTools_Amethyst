@@ -511,7 +511,7 @@
   <data name="Manage_Play_Failed_Body" xml:space="preserve"><value>Steam відмовився відкрити цю гру. Переконайтеся, що Steam встановлено правильно.</value></data>
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Не вдалося запустити Steam. Укажіть його розташування в Налаштуваннях і спробуйте ще раз.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
-  <data name="Amethyst_Description" xml:space="preserve"><value>Нативний плагін Steam (форк BetterSteamTools). Під час встановлення в теку Steam потрапляють чотири файли; те, що вже там є, спершу зберігається в теці резервної копії. Steam перезапускається, щоб плагін завантажився.</value></data>
+  <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
   <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Файли Steam</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool встановлено. Steam перезапущено, щоб він завантажився.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Не вдалося встановити AmethystTool: {0}</value></data>
@@ -527,5 +527,4 @@
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} збережено: його ще використовує інший встановлений інструмент. Видалено лише запис про встановлення.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Не вдалося видалити: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Не вдалося скористатися записом про встановлення: {0}</value></data>
-  <data name="Removal_NoRecord_Hint" xml:space="preserve"><value>Цю копію встановлено до того, як LuaTools почав вести записи про встановлення, тому він не може довести, які файли його. Перевстановіть, щоб створити запис — тоді видалення стане доступним.</value></data>
 </root>
