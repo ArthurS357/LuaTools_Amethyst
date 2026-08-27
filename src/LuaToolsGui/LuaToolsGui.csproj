@@ -19,7 +19,7 @@
          reads InformationalVersion back to render the "v1.5.4 · …" label in the nav pane footer. This had
          drifted to 1.1.3 while 1.2.8 was shipping, so the footer told every user the wrong version — keep
          it bumped with each release, in step with the version passed to `vpk pack`. See docs/CHANGELOG.md. -->
-    <Version>1.6.0</Version>
+    <Version>1.6.1</Version>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <!-- Explicit asInvoker. Same effective privilege level as before (no manifest defaulted to this), now
          stated on purpose so elevation can't be acquired by accident. See app.manifest. -->

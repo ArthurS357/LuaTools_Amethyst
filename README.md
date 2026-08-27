@@ -12,7 +12,7 @@ It browses and installs manifest sources, edits `stplug-in` lua files (depot pin
 enable/disable), manages unlocker modes, launches games through Steam, and injects a companion plugin
 into Steam's store pages. It ships translated in 29 languages and auto-updates via Velopack.
 
-Current version: **1.6.0** · Repository: <https://github.com/ArthurS357/LuaTools_Amethyst>
+Current version: **1.6.1** · Repository: <https://github.com/ArthurS357/LuaTools_Amethyst>
 
 ### Checking which build you are running
 
@@ -266,9 +266,17 @@ files in your Steam folder, when, and what each one hashed to. Uninstall removes
 - **A file another install still needs is kept.** `dwmapi.dll` and `xinput1_4.dll` are placed by
   AmethystTool *and* by every one of the Mode page's unlockers, and only one of them ever holds the slot at
   once (see above) — so removing them out from under the other is the one thing that must never happen.
-  Installing AmethystTool over an old Mode now also cleans up that Mode's manifest entry so it stops
-  claiming the two proxies it no longer owns; a stale claim left over from before that cleanup existed still
-  keeps the files in place and says so, rather than guessing them safe to delete.
+- **Whichever one you install last takes those two names off the other's record — in both directions.**
+  Installing AmethystTool over a Mode, or a Mode over AmethystTool, ends with exactly one install claiming
+  the proxies: the one whose bytes are actually on disk. This matters more than "leftover clutter" would
+  suggest, because a name claimed by *two* records is a name **neither** can remove — each reads the other's
+  claim as "still needed by another install", and both Uninstall buttons then report the files as kept.
+  Only the names the new install genuinely overwrote are taken over: `AmethystTool.dll` and
+  `amethysttool.toml` are never touched by a Mode, so they stay AmethystTool's, and its record survives
+  reduced to them. A file the install could not write (Steam had it locked, or the folder needs
+  administrator rights) stays claimed by whoever did place it.
+- **A stale claim is still honoured.** One left over from before this cleanup existed keeps the files in
+  place and says so, rather than guessing them safe to delete.
 - **Nothing is deleted, it is moved.** Everything removed goes to `Removal-backup-<timestamp>\<plugin>\`
   inside your Steam folder. Changed your mind, or something else needed that file? Move it back.
 - **Steam is closed and is not reopened for you.** The files are locked while it runs, so it has to go
@@ -291,6 +299,15 @@ A Mode only becomes uninstallable once LuaTools has installed it. Installing or 
 an `install-manifest.json` entry naming the files it placed; only one Mode entry exists at a time, and
 switching folds any file the previous Mode abandoned (`OpenSteamTool.dll`, typically) into the new entry, so
 one uninstall clears the whole chain instead of stranding a file nothing admits to owning.
+
+AmethystTool's entry is handled differently, and deliberately: it is **trimmed**, not folded in. It is not a
+Mode, so it is not part of that chain, and it names two files (`AmethystTool.dll`, `amethysttool.toml`) that
+no Mode places and no Mode may claim. Installing a Mode takes only the proxies off it.
+
+The store-page plugin records through the same call, and nothing about it changes: it claims `winmm.dll` and
+`winmm_real.dll`, which no Mode and no AmethystTool payload ever places, so there is never anything to take
+off anyone. It goes through that call so all three installers write the record the same way — a new loader
+slot cannot quietly bring the two-claims-one-file deadlock back by being wired up the old way.
 
 Two consequences worth knowing:
 
@@ -390,6 +407,31 @@ is deliberately no setting for that. Instead:
 4. **A release with no published digest cannot be verified at all.** GitHub only began populating the
    asset `digest` field in mid-2025, so older releases carry none. The app refuses those rather than
    guessing, with one audited exception (`SteamlessPinnedSha256`, a hash compiled into this build).
+
+## The Home page says what state everything is in
+
+The Home page is a dashboard, not a splash screen: it answers the questions the other pages own, without
+you having to open them.
+
+- **Steam — where it is, and whether it is running right now.** Those are separate facts, and the second is
+  the one that decides whether an install can write to your Steam folder at all. It is stated in words, not
+  only by colour.
+- **Which backend holds the proxy DLLs**: a Mode, AmethystTool, or nothing. There is one slot, so there is
+  one answer. AmethystTool counts as active only when it is *selected* **and** its files are still on disk,
+  so a payload deleted outside the app is not reported as running.
+- **The store-page plugin's status**, with an inline Install when it is not there.
+- **Which build you are running**, read from the same place as the nav footer and the User-Agent — so the
+  three cannot disagree about it.
+- **Whether self-update is off.** That is the property this fork exists for, so it is stated on the first
+  page rather than left for you to find under About. It reads the updater's live resolution, not the raw
+  `settings.json` — what the page says is what the app actually does.
+
+A **Refresh** button re-reads all of it. Steam can be opened or closed, and a Mode installed, entirely
+outside LuaTools; without that the dashboard would go stale and keep asserting the old state.
+
+Nothing on the page makes a network call while it loads. The only path that can reach the network is the
+plugin tile's version check, which does not hold the page up, and the **Updates** shortcut — which just
+opens the About page, where the manual check already lives. Home holds no second route to the updater.
 
 ## Closing the window leaves LuaTools in the tray
 

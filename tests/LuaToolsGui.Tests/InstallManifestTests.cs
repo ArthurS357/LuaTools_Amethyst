@@ -221,6 +221,175 @@ public class InstallManifestTests
         manifest.Get(untouchedMode)!.Files.Select(f => f.Name).Should().BeEquivalentTo("cloud_redirect.dll");
     }
 
+    // ── Recording exclusively: the two competing backends, in BOTH directions ─
+    //
+    // AbsorbFiles was only ever CALLED from the AmethystTool install. Installing a Mode over an active
+    // AmethystTool recorded the Mode and left AmethystTool's entry still claiming dwmapi.dll/xinput1_4.dll,
+    // so both entries claimed the same two names — and a name two entries claim is one NEITHER can remove:
+    // each reads the other's claim as "still needed by another install". RecordExclusive is the single
+    // transformation that makes that state unreachable, whichever backend just won the slot.
+
+    private static readonly string[] AmethystPayload =
+        ["AmethystTool.dll", "amethysttool.toml", "dwmapi.dll", "xinput1_4.dll"];
+
+    private static InstalledPlugin ModeEntry(UnlockerMode mode, params string[] files) =>
+        Entry(PluginIds.ForMode(mode), files);
+
+    [Fact]
+    public void A_mode_recorded_over_AmethystTool_takes_the_proxies_off_its_claim()
+    {
+        var manifest = InstallManifest.Empty
+            .With(Entry(PluginIds.AmethystTool, AmethystPayload))
+            .RecordExclusive(ModeEntry(UnlockerMode.OpenSteamTools,
+                "dwmapi.dll", "xinput1_4.dll", "OpenSteamTool.dll"));
+
+        manifest.Get(PluginIds.AmethystTool)!.Files.Select(f => f.Name)
+            .Should().NotContain(["dwmapi.dll", "xinput1_4.dll"]);
+    }
+
+    [Fact]
+    public void A_mode_recorded_over_AmethystTool_leaves_the_files_no_mode_ever_places()
+    {
+        // The invariant that stops this becoming a fold: a Mode's install writes neither of these two, so
+        // absorbing them would hand the Mode's row files it never placed and cannot verify — and would
+        // strip AmethystTool of the only names by which its own uninstall could find them.
+        var manifest = InstallManifest.Empty
+            .With(Entry(PluginIds.AmethystTool, AmethystPayload))
+            .RecordExclusive(ModeEntry(UnlockerMode.OpenSteamTools,
+                "dwmapi.dll", "xinput1_4.dll", "OpenSteamTool.dll"));
+
+        manifest.Get(PluginIds.AmethystTool)!.Files.Select(f => f.Name)
+            .Should().BeEquivalentTo("AmethystTool.dll", "amethysttool.toml");
+    }
+
+    [Fact]
+    public void An_AmethystTool_entry_left_with_nothing_is_dropped_rather_than_kept_empty()
+    {
+        // A pre-1.6 record, or one whose payload files were pruned: nothing survives the trim, so the entry
+        // itself must go. An empty entry would still count as "an install exists" on the Plugin page.
+        var manifest = InstallManifest.Empty
+            .With(Entry(PluginIds.AmethystTool, "dwmapi.dll", "xinput1_4.dll"))
+            .RecordExclusive(ModeEntry(UnlockerMode.OpenSteamTools, "dwmapi.dll", "xinput1_4.dll"));
+
+        manifest.Get(PluginIds.AmethystTool).Should().BeNull();
+    }
+
+    [Fact]
+    public void Recording_a_mode_exclusively_twice_changes_nothing_the_second_time()
+    {
+        var entry = ModeEntry(UnlockerMode.OpenSteamTools, "dwmapi.dll", "xinput1_4.dll", "OpenSteamTool.dll");
+        var once = InstallManifest.Empty
+            .With(Entry(PluginIds.AmethystTool, AmethystPayload))
+            .RecordExclusive(entry);
+
+        var twice = once.RecordExclusive(entry);
+
+        twice.Get(PluginIds.AmethystTool)!.Files.Select(f => f.Name)
+            .Should().BeEquivalentTo("AmethystTool.dll", "amethysttool.toml");
+        twice.Get(entry.PluginId)!.Files.Select(f => f.Name)
+            .Should().BeEquivalentTo("dwmapi.dll", "xinput1_4.dll", "OpenSteamTool.dll");
+    }
+
+    [Fact]
+    public void Recording_a_mode_exclusively_leaves_an_unrelated_plugin_alone()
+    {
+        // store-page claims winmm.dll/winmm_real.dll, which no Mode and no AmethystTool payload names.
+        var manifest = InstallManifest.Empty
+            .With(Entry(PluginIds.StorePage, "winmm.dll", "winmm_real.dll"))
+            .With(Entry(PluginIds.AmethystTool, AmethystPayload))
+            .RecordExclusive(ModeEntry(UnlockerMode.OpenSteamTools, "dwmapi.dll", "xinput1_4.dll"));
+
+        manifest.Get(PluginIds.StorePage)!.Files.Select(f => f.Name)
+            .Should().BeEquivalentTo("winmm.dll", "winmm_real.dll");
+    }
+
+    [Fact]
+    public void A_file_a_mode_could_not_write_stays_claimed_by_whoever_did_place_it()
+    {
+        // Locked or access-denied files are left out of the recorded name set by RecordModeInstall, so the
+        // bytes on disk are still AmethystTool's. Absorbing that name anyway would hand the Mode a claim on
+        // a file it demonstrably failed to place.
+        var manifest = InstallManifest.Empty
+            .With(Entry(PluginIds.AmethystTool, AmethystPayload))
+            .RecordExclusive(ModeEntry(UnlockerMode.OpenSteamTools, "dwmapi.dll", "OpenSteamTool.dll"));
+
+        manifest.Get(PluginIds.AmethystTool)!.Files.Select(f => f.Name)
+            .Should().Contain("xinput1_4.dll");
+    }
+
+    [Fact]
+    public void AmethystTool_recorded_over_a_mode_trims_that_mode_the_same_way()
+    {
+        // The direction that already worked, now going through the same call — the symmetry is the point.
+        string mode = PluginIds.ForMode(UnlockerMode.OpenSteamTools);
+        var manifest = InstallManifest.Empty
+            .With(Entry(mode, "dwmapi.dll", "xinput1_4.dll", "OpenSteamTool.dll"))
+            .RecordExclusive(Entry(PluginIds.AmethystTool, AmethystPayload));
+
+        manifest.Get(mode)!.Files.Select(f => f.Name).Should().BeEquivalentTo("OpenSteamTool.dll");
+        manifest.Get(PluginIds.AmethystTool)!.Files.Select(f => f.Name).Should().BeEquivalentTo(AmethystPayload);
+    }
+
+    [Fact]
+    public void Recording_exclusively_into_an_empty_manifest_is_just_a_record()
+    {
+        var manifest = InstallManifest.Empty
+            .RecordExclusive(Entry(PluginIds.AmethystTool, AmethystPayload));
+
+        manifest.Get(PluginIds.AmethystTool)!.Files.Select(f => f.Name).Should().BeEquivalentTo(AmethystPayload);
+        manifest.Plugins.Should().ContainSingle();
+    }
+
+    [Fact]
+    public void No_file_is_left_claimed_by_two_entries_after_an_exclusive_record()
+    {
+        // The invariant itself, stated once: this is what "kept — still needed by another install" was
+        // wrongly reporting, in both directions at the same time.
+        var manifest = InstallManifest.Empty
+            .With(Entry(PluginIds.AmethystTool, AmethystPayload))
+            .RecordExclusive(ModeEntry(UnlockerMode.OpenSteamTools, "dwmapi.dll", "xinput1_4.dll"));
+
+        var claimed = manifest.Plugins.SelectMany(p => p.Value.Files.Select(f => f.Name.ToLowerInvariant()));
+        claimed.Should().OnlyHaveUniqueItems();
+    }
+
+    // ── The store page through the same call ─────────────────────────────────
+    //
+    // The store-page install went on calling Record after the Mode and AmethystTool sites moved to
+    // RecordExclusive. Its slot names collide with no backend's payload, so the two calls agree today —
+    // these pin THAT they agree, which is what makes routing it through the same call a uniformity change
+    // and not a behaviour change, and what would fail first if a future slot did start colliding.
+
+    private static readonly string[] StorePagePayload = ["winmm.dll", "winmm_real.dll"];
+
+    private static IEnumerable<(string Plugin, string File)> Claims(InstallManifest manifest) =>
+        manifest.Plugins.SelectMany(p => p.Value.Files.Select(f => (p.Key, f.Name)));
+
+    [Fact]
+    public void Recording_the_store_page_exclusively_takes_nothing_off_either_backend()
+    {
+        string mode = PluginIds.ForMode(UnlockerMode.CloudRedirect);
+        var manifest = InstallManifest.Empty
+            .With(Entry(mode, "cloud_redirect.dll"))
+            .RecordExclusive(Entry(PluginIds.AmethystTool, AmethystPayload))
+            .RecordExclusive(Entry(PluginIds.StorePage, StorePagePayload));
+
+        manifest.Get(mode)!.Files.Select(f => f.Name).Should().BeEquivalentTo("cloud_redirect.dll");
+        manifest.Get(PluginIds.AmethystTool)!.Files.Select(f => f.Name).Should().BeEquivalentTo(AmethystPayload);
+        manifest.Get(PluginIds.StorePage)!.Files.Select(f => f.Name).Should().BeEquivalentTo(StorePagePayload);
+    }
+
+    [Fact]
+    public void Recording_the_store_page_exclusively_is_indistinguishable_from_recording_it_plainly()
+    {
+        var before = InstallManifest.Empty
+            .With(Entry(PluginIds.ForMode(UnlockerMode.CloudRedirect), "cloud_redirect.dll"))
+            .RecordExclusive(Entry(PluginIds.AmethystTool, AmethystPayload));
+        var entry = Entry(PluginIds.StorePage, StorePagePayload);
+
+        Claims(before.RecordExclusive(entry)).Should().BeEquivalentTo(Claims(before.With(entry)));
+    }
+
     // ── Reading a file that is not there, or is nonsense ──────────────────────
 
     [Fact]

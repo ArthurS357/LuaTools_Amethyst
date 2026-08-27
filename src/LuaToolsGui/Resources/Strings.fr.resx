@@ -137,6 +137,18 @@
   <data name="Home_SignedInAs" xml:space="preserve"><value>Connecté en tant que {0}</value></data>
   <data name="Home_NoModeSelected" xml:space="preserve"><value>Aucun mode sélectionné</value></data>
   <data name="Home_ModeIs" xml:space="preserve"><value>Mode · {0}</value></data>
+  <data name="Home_SteamRunning" xml:space="preserve"><value>Steam en cours d’exécution</value></data>
+  <data name="Home_SteamClosed" xml:space="preserve"><value>Steam fermé</value></data>
+  <data name="Home_AmethystActive" xml:space="preserve"><value>AmethystTool · actif</value></data>
+  <data name="Home_Refresh" xml:space="preserve"><value>Actualiser</value></data>
+  <data name="Home_RefreshTip" xml:space="preserve"><value>Revérifier Steam, le backend actif et l’extension</value></data>
+  <data name="Home_Version" xml:space="preserve"><value>Version</value></data>
+  <data name="Home_Privacy" xml:space="preserve"><value>Confidentialité</value></data>
+  <data name="Home_QuickActions" xml:space="preserve"><value>Actions rapides</value></data>
+  <data name="Home_Action_Mode" xml:space="preserve"><value>Modes</value></data>
+  <data name="Home_Action_Updates" xml:space="preserve"><value>Mises à jour</value></data>
+  <data name="Home_SteamState" xml:space="preserve"><value>État de Steam</value></data>
+  <data name="Home_Backend" xml:space="preserve"><value>Backend actif</value></data>
   <data name="Mode_Title" xml:space="preserve"><value>Mode</value></data>
   <data name="Mode_Subtitle" xml:space="preserve"><value>Changez le backend utilisé pour débloquer les jeux ajoutés avec LuaTools — un seul actif à la fois.</value></data>
   <data name="Mode_CheckForUpdates" xml:space="preserve"><value>Rechercher des mises à jour</value></data>

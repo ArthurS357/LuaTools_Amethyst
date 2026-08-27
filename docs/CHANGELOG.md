@@ -1,5 +1,106 @@
 # Changelog
 
+## 1.6.1 — 2026-08-27
+
+### Absorcao de registro de instalacao agora e simetrica
+
+- **Instalar um Mode sobre o AmethystTool deixava `dwmapi.dll` e `xinput1_4.dll` reivindicados pelos
+  dois.** `UnlockerService.RecordModeInstall` so absorvia entradas com prefixo `mode-`: o registro
+  `amethysttool` nao e um Mode, entao o fold nunca o alcancava e ele seguia reivindicando os dois proxies
+  que o Mode acabara de sobrescrever. O sentido inverso ja estava certo desde 1.6.0
+  (`AmethystToolService.InstallAsync` chama `AbsorbFiles`), entao o defeito era so a chamada que faltava
+  de um lado.
+- **A consequencia era pior do que "residuo".** Um nome reivindicado por duas entradas e um nome que
+  **nenhuma** das duas consegue remover: cada uma le a reivindicacao da outra como "ainda usado por outra
+  instalacao" (`FilesClaimedByOthers` -> `PluginRemovalPlan.SharedKept`). Depois de instalar um Mode sobre
+  o AmethystTool, desinstalar qualquer um dos dois reportava os proxies como mantidos e os deixava na pasta
+  da Steam.
+- **`InstallManifest.RecordExclusive` e a operacao que faltava.** Gravar a entrada e tirar aqueles nomes
+  das outras entradas passou a ser **uma** transformacao, nao duas chamadas em cada ponto de uso — o estado
+  intermediario (gravado mas ainda nao absorvido) deixa de ser alcancavel, inclusive se a escrita falhar
+  entre as duas metades. `InstallManifestService.RecordExclusive` aplica isso sob o mesmo `lock` e a mesma
+  escrita atomica que o resto do arquivo.
+- **Continua sendo trim, nunca fusao.** So os nomes que a instalacao realmente colocou saem da outra
+  entrada. `AmethystTool.dll` e `amethysttool.toml` nao constam do `PlaceFiles` de nenhum Mode e nao podem
+  entrar na cadeia de fold (que so le entradas `mode-`), entao nunca sao absorvidos; se sobrarem sozinhos,
+  a entrada `amethysttool` e mantida reduzida a eles. Se nao sobrar nada, a entrada e removida em vez de
+  ficar vazia. Um arquivo que a copia **nao** conseguiu escrever (bloqueado ou sem permissao) ja ficava de
+  fora do conjunto gravado, entao a reivindicacao de quem o colocou sobrevive.
+- **`store-page` passou pela mesma chamada, sem mudar de comportamento.** Ele reivindica apenas
+  `winmm.dll` e `winmm_real.dll`, que nenhum Mode e nenhum payload do AmethystTool coloca — a absorcao nao
+  encontra sobreposicao e a escrita sai identica. O ponto de uso (`PluginInstallerService.RecordSteamRootFiles`)
+  foi migrado mesmo assim: os tres backends que escrevem na pasta da Steam passam a gravar pela mesma
+  operacao, e acrescentar um slot novo deixa de poder reintroduzir o impasse por esquecimento.
+- **Idempotente.** `AbsorbFiles` devolve a mesma instancia quando nada se sobrepoe, e o servico pula a
+  escrita nesse caso. Repetir a operacao nao muda nada.
+- Os dois fluxos (`UnlockerService.RecordModeInstall` e `AmethystToolService.InstallAsync`) passaram a usar
+  a mesma chamada. `Record` e `AbsorbFiles` continuam publicos e inalterados.
+
+### Pagina inicial
+
+- **A pagina dizia "No mode selected" para quem estava com o AmethystTool ativo.** A linha de status lia
+  `SelectedModeDisplayName`, que e `null` justamente quando o AmethystTool ocupa o slot dos proxies. Ha um
+  slot so, entao ha uma pergunta so: a linha agora consulta o backend ativo e tem tres estados distintos —
+  um Mode, AmethystTool, ou nenhum. O icone acende so quando alguem ocupa o slot.
+- **O status do AmethystTool exige evidencia em disco**, pela mesma razao que o selo do cartao: usa
+  `AmethystToolService.IsActive` (selecao **e** payload presente), nao a selecao sozinha.
+- **A Steam agora aparece como aberta ou fechada**, nao so "detectada em tal caminho". E a informacao que
+  decide se uma instalacao consegue escrever na pasta da Steam. O estado e dito em **texto**, nao apenas
+  por cor.
+- **A versao do build aparece na propria pagina**, lida por `AppVersion` — a mesma fonte do rodape da nav e
+  do User-Agent, entao os tres nao podem divergir.
+- **A postura do fork esta declarada na pagina**, nao so no Sobre: se o auto-update esta desligado, a
+  pagina diz isso. Lido da resolucao **viva** do `UpdateService`, nao re-derivado do `settings.json`.
+- **Botao Atualizar.** A Steam pode ser aberta ou fechada, e um Mode instalado, inteiramente fora do app;
+  sem isso o painel envelhecia e continuava afirmando o estado antigo. Recarrega todos os status sob
+  demanda; o comando gerado ja se desabilita enquanto roda.
+- **Atalhos rapidos** para Modos, Plugin e Sobre. "Verificar atualizacoes" navega ate o Sobre, que ja e
+  dono desse botao, em vez de abrir um segundo caminho ate o atualizador a partir da pagina inicial.
+- **Foco de teclado visivel.** Os dois `ControlTemplate` proprios da pagina substituem o chrome que
+  mostraria o foco, e o adorno pontilhado do WPF e quase invisivel nessas superficies; ambos ganharam
+  gatilho de `IsKeyboardFocused`. Os botoes de status ganharam `AutomationProperties.Name`, ja que o
+  conteudo deles e um `Grid` e nao um texto de onde o nome pudesse ser derivado.
+- **A pagina continua leve**: nada nela faz rede ou I/O pesado no carregamento. O unico caminho que pode
+  sair para a rede e o tile do plugin, que ja era disparado sem espera.
+
+### Testes e ferramentas
+
+- `InstallManifestTests` cobre a absorcao nos **dois** sentidos: trim dos proxies, preservacao de
+  `AmethystTool.dll`/`amethysttool.toml`, remocao da entrada que ficou vazia, arquivo que falhou ao ser
+  escrito, ausencia de efeito sobre `store-page`, idempotencia, e o invariante geral (nenhum arquivo
+  reivindicado por duas entradas depois da operacao).
+- Dois testes novos fixam que gravar o `store-page` de forma exclusiva **nao tira nada** de nenhum dos dois
+  backends, e que o resultado e indistinguivel de um `Record` simples — e isso que torna a migracao do ponto
+  de uso uma uniformizacao e nao uma mudanca de comportamento, e e o que falha primeiro se algum slot futuro
+  passar a colidir. `InstallManifestWriteTests` cobre a mesma garantia no nivel do arquivo.
+- `HomeDashboardBindingTests` (novo) checa a pagina pelos dois lados — todo `{Binding}` simples do XAML
+  resolve num membro do view model, os comandos existem, nenhum texto visivel esta escrito direto na
+  marcacao (`Text`/`Content`/`ToolTip`), os dois templates mostram foco de teclado, e os tres estados da
+  linha de backend tem redacao distinta.
+- `ViewParseTests` passou a validar **nomes de icone**. A propria classe documentava essa lacuna: um
+  `Symbol="Foo24"` ou `{ui:SymbolIcon Foo24}` inexistente compila e so estoura quando a pagina e exibida —
+  o mesmo modo de falha do token de tema que ela ja pegava. O filtro de tokens tambem passou a cobrir as
+  cores de estado (`Success`/`Warning`/`Danger`/`Info`/`Alert`), que a pagina inicial usa.
+- **Doze das dezoito chaves novas da pagina inicial foram traduzidas nos 29 idiomas** e saidas de
+  `PENDING_TRANSLATION`, pelo mesmo metodo da passada de 1.5.2: cada valor foi derivado de uma traducao que o
+  **proprio arquivo daquele idioma** ja usa para aquela palavra — "backend" do `Mode_Subtitle` dele, "Refresh"
+  do `Settings_HubcapRefresh`, "Actions" do `Manage_ActionsHeader`, "plugin" do `Plugin_Title`, "active" do
+  `Settings_HubcapActive` — em vez de inventada. Nenhuma das doze tem placeholder, entao nao havia
+  interpolacao a preservar. O `check-i18n.py` agora exige paridade completa nelas: 559 chaves em cada um dos
+  29 arquivos, e a lista de pendencias caiu de 99 para 87.
+- **Seis ficaram pendentes, cada uma com o motivo registrado na propria lista.** `Home_Privacy_UpdatesOff`
+  e `Home_Privacy_UpdatesOn` sao frases explicativas na voz editorial do app, o mesmo caso ja documentado
+  para `Settings_Accent_Hint`. `Home_Action_Mode_Tip` e `Home_Action_Plugin_Tip` dependem de "proxy DLLs" e
+  "store-page plugin", que nao aparecem em **nenhuma** string ja traduzida dos 29 arquivos — nao havia de
+  onde derivar o termo. `Home_Action_Updates_Tip` cita a pagina Sobre, que e inglesa por decisao.
+  `Home_Action_Plugin` vale "Plugin", gemea de `Nav_Plugin`: traduzir o atalho e nao o item da barra de
+  navegacao para o qual ele aponta separaria um rotulo so em duas palavras.
+- **`Settings_HubcapRefresh` estava sem diacriticos em `pl` e `ro`** ("Odswiez", "Reimprospatare"),
+  ao contrario do resto dos mesmos dois arquivos. Corrigido para "Odswiez" -> "Odśwież" e
+  "Reimprospatare" -> "Reîmprospătare"; o `Home_Refresh` novo de `ro` usa exatamente a mesma forma,
+  ja que foi derivado dessa chave. Achado ao derivar as traduçoes acima, nao por varredura: uma folding
+  ASCII so e distinguivel de uma palavra que naturalmente nao tem acento por revisao nativa.
+
 ## 1.6.0 — 2026-08-26
 
 ### Um modo ativo por vez, AmethystTool no topo, SteamTools aposentado

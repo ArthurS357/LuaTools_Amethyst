@@ -115,6 +115,25 @@ public class InstallManifestWriteTests : IDisposable
     }
 
     [Fact]
+    public void Recording_the_store_page_exclusively_persists_and_leaves_the_active_mode_intact()
+    {
+        // The write-level half of the same guarantee: RecordSteamRootFiles now goes through
+        // RecordExclusive, and winmm.dll/winmm_real.dll overlap nothing, so the Mode entry must survive
+        // the install untouched rather than being trimmed or dropped.
+        string mode = PluginIds.ForMode(UnlockerMode.OpenSteamTools);
+        _service.Record(Entry(mode, "dwmapi.dll", "xinput1_4.dll"));
+
+        _service.RecordExclusive(Entry(PluginIds.StorePage, "winmm.dll", "winmm_real.dll"))
+            .Should().BeTrue();
+
+        var reloaded = new InstallManifestService(_dir).Load();
+        reloaded.Get(PluginIds.StorePage)!.Files.Select(f => f.Name)
+            .Should().BeEquivalentTo("winmm.dll", "winmm_real.dll");
+        reloaded.Get(mode)!.Files.Select(f => f.Name)
+            .Should().BeEquivalentTo("dwmapi.dll", "xinput1_4.dll");
+    }
+
+    [Fact]
     public void Absorbing_a_shared_file_is_persisted()
     {
         _service.Record(Entry(PluginIds.ForMode(UnlockerMode.OpenSteamTools), "dwmapi.dll", "xinput1_4.dll"));

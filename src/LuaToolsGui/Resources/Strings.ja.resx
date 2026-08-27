@@ -137,6 +137,18 @@
   <data name="Home_SignedInAs" xml:space="preserve"><value>{0} としてログイン中</value></data>
   <data name="Home_NoModeSelected" xml:space="preserve"><value>モードが選択されていません</value></data>
   <data name="Home_ModeIs" xml:space="preserve"><value>モード · {0}</value></data>
+  <data name="Home_SteamRunning" xml:space="preserve"><value>Steam 実行中</value></data>
+  <data name="Home_SteamClosed" xml:space="preserve"><value>Steam 未起動</value></data>
+  <data name="Home_AmethystActive" xml:space="preserve"><value>AmethystTool · 有効</value></data>
+  <data name="Home_Refresh" xml:space="preserve"><value>更新</value></data>
+  <data name="Home_RefreshTip" xml:space="preserve"><value>Steam、有効なバックエンド、プラグインを再確認します</value></data>
+  <data name="Home_Version" xml:space="preserve"><value>バージョン</value></data>
+  <data name="Home_Privacy" xml:space="preserve"><value>プライバシー</value></data>
+  <data name="Home_QuickActions" xml:space="preserve"><value>クイック操作</value></data>
+  <data name="Home_Action_Mode" xml:space="preserve"><value>モード</value></data>
+  <data name="Home_Action_Updates" xml:space="preserve"><value>アップデート</value></data>
+  <data name="Home_SteamState" xml:space="preserve"><value>Steam の状態</value></data>
+  <data name="Home_Backend" xml:space="preserve"><value>有効なバックエンド</value></data>
   <data name="Mode_Title" xml:space="preserve"><value>モード</value></data>
   <data name="Mode_Subtitle" xml:space="preserve"><value>LuaToolsで追加したゲームのアンロックに使うバックエンドを切り替えます — 同時に有効なのは1つだけです。</value></data>
   <data name="Mode_CheckForUpdates" xml:space="preserve"><value>更新を確認</value></data>

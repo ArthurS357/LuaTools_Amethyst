@@ -600,6 +600,13 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
     /// names that are still on disk into the new entry is what lets one uninstall clean up after the whole
     /// chain, instead of stranding a file nothing admits to owning.
     /// </para>
+    ///
+    /// <para>
+    /// <b>AmethystTool's entry is trimmed, not folded.</b> It competes for the same two proxy DLLs but is
+    /// not a Mode, so the fold above cannot see it — and it also names files (<c>AmethystTool.dll</c>,
+    /// <c>amethysttool.toml</c>) that no Mode places and no Mode may claim. Only the names this install
+    /// actually took over stop being that entry's to claim; see <see cref="InstallManifest.RecordExclusive"/>.
+    /// </para>
     /// </summary>
     /// <param name="failed">Files the copy could not write — locked or denied. Not ours, so not recorded.</param>
     private void RecordModeInstall(
@@ -630,7 +637,13 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
         // than replacing it with an empty one that would disable Uninstall for files still in place.
         if (names.Count == 0) return;
 
-        manifests.Record(new InstalledPlugin(id, tag, DateTimeOffset.Now,
+        // RecordExclusive, not Record: AmethystTool's entry can still list dwmapi.dll/xinput1_4.dll from
+        // before this install overwrote them, and it is NOT a mode- id, so the fold above never reaches it.
+        // Left standing, that stale claim makes those two names un-removable by BOTH backends — each reads
+        // the other's claim as "still needed by another install". This trims it (dropping the entry if
+        // nothing else is left in it) and leaves AmethystTool.dll/amethysttool.toml alone, since no Mode
+        // places those. The mirror of what AmethystToolService.InstallAsync does in the other direction.
+        manifests.RecordExclusive(new InstalledPlugin(id, tag, DateTimeOffset.Now,
             [.. names.Select(name => new InstalledFile(name, TryHash(Path.Combine(root, name))))]));
 
         foreach (string other in superseded) manifests.Forget(other);

@@ -146,6 +146,24 @@ public static class Strings
     public static string Home_SignedInAs => Get(nameof(Home_SignedInAs));
     public static string Home_NoModeSelected => Get(nameof(Home_NoModeSelected));
     public static string Home_ModeIs => Get(nameof(Home_ModeIs));
+    public static string Home_SteamRunning => Get(nameof(Home_SteamRunning));
+    public static string Home_SteamClosed => Get(nameof(Home_SteamClosed));
+    public static string Home_AmethystActive => Get(nameof(Home_AmethystActive));
+    public static string Home_Refresh => Get(nameof(Home_Refresh));
+    public static string Home_RefreshTip => Get(nameof(Home_RefreshTip));
+    public static string Home_Version => Get(nameof(Home_Version));
+    public static string Home_Privacy => Get(nameof(Home_Privacy));
+    public static string Home_Privacy_UpdatesOff => Get(nameof(Home_Privacy_UpdatesOff));
+    public static string Home_Privacy_UpdatesOn => Get(nameof(Home_Privacy_UpdatesOn));
+    public static string Home_QuickActions => Get(nameof(Home_QuickActions));
+    public static string Home_Action_Mode => Get(nameof(Home_Action_Mode));
+    public static string Home_Action_Mode_Tip => Get(nameof(Home_Action_Mode_Tip));
+    public static string Home_Action_Plugin => Get(nameof(Home_Action_Plugin));
+    public static string Home_Action_Plugin_Tip => Get(nameof(Home_Action_Plugin_Tip));
+    public static string Home_Action_Updates => Get(nameof(Home_Action_Updates));
+    public static string Home_Action_Updates_Tip => Get(nameof(Home_Action_Updates_Tip));
+    public static string Home_SteamState => Get(nameof(Home_SteamState));
+    public static string Home_Backend => Get(nameof(Home_Backend));
 
     // ── Mode ──
     public static string Mode_Title => Get(nameof(Mode_Title));

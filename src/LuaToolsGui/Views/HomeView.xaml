@@ -29,6 +29,14 @@
                                 <Setter TargetName="B" Property="Background" Value="{StaticResource SurfaceElevatedBrush}" />
                                 <Setter TargetName="B" Property="BorderBrush" Value="{StaticResource BorderProminentBrush}" />
                             </Trigger>
+                            <!-- A custom template drops the chrome that would otherwise show focus, and WPF's
+                                 dotted adorner is close to invisible on these surfaces. Tab order is useless
+                                 if the user cannot see where they are. -->
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="B" Property="Background" Value="{StaticResource SurfaceElevatedBrush}" />
+                                <Setter TargetName="B" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                                <Setter TargetName="B" Property="BorderThickness" Value="2" />
+                            </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -41,12 +49,22 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="B" Padding="6,5" Background="Transparent" CornerRadius="6">
+                        <Border
+                            x:Name="B"
+                            Padding="6,5"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="1"
+                            CornerRadius="6">
                             <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="B" Property="Background" Value="{StaticResource SurfaceTintBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="B" Property="Background" Value="{StaticResource SurfaceTintBrush}" />
+                                <Setter TargetName="B" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -59,11 +77,49 @@
     <ScrollViewer x:Name="Root" VerticalScrollBarVisibility="Auto">
         <StackPanel MaxWidth="760" Margin="8,16,16,24">
 
-            <!-- Greeting -->
-            <TextBlock
-                FontSize="22"
-                FontWeight="Bold"
-                Text="{x:Static res:Strings.Home_Welcome}" />
+            <!-- Greeting · which build this is · re-read every status on demand -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontSize="22"
+                    FontWeight="Bold"
+                    Text="{x:Static res:Strings.Home_Welcome}"
+                    TextTrimming="CharacterEllipsis" />
+
+                <Border
+                    Grid.Column="1"
+                    Margin="12,0,8,0"
+                    Padding="8,3"
+                    VerticalAlignment="Center"
+                    Background="{StaticResource AccentTintBrush}"
+                    BorderBrush="{StaticResource AccentOutlineBrush}"
+                    BorderThickness="1"
+                    CornerRadius="6"
+                    ToolTip="{x:Static res:Strings.Home_Version}">
+                    <TextBlock
+                        AutomationProperties.Name="{x:Static res:Strings.Home_Version}"
+                        FontSize="11.5"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource AccentBrush}"
+                        Text="{Binding VersionLabel, Mode=OneTime}" />
+                </Border>
+
+                <ui:Button
+                    Grid.Column="2"
+                    Padding="10,5"
+                    VerticalAlignment="Center"
+                    AutomationProperties.Name="{x:Static res:Strings.Home_Refresh}"
+                    Command="{Binding RefreshStatusCommand}"
+                    Content="{x:Static res:Strings.Home_Refresh}"
+                    Icon="{ui:SymbolIcon ArrowClockwise24}"
+                    ToolTip="{x:Static res:Strings.Home_RefreshTip}" />
+            </Grid>
 
             <!-- Stat tiles (clickable) -->
             <UniformGrid Margin="0,18,0,0" Columns="2" Rows="1">
@@ -117,12 +173,16 @@
                 BorderThickness="1"
                 CornerRadius="10">
                 <StackPanel>
-                    <!-- Steam → Settings -->
-                    <Button Command="{Binding OpenSettingsCommand}" Style="{StaticResource StatusRowButton}">
+                    <!-- Steam: where it is, and whether it is up right now → Settings -->
+                    <Button
+                        AutomationProperties.Name="{x:Static res:Strings.Home_SteamState}"
+                        Command="{Binding OpenSettingsCommand}"
+                        Style="{StaticResource StatusRowButton}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="22" />
                                 <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <ui:SymbolIcon
                                 Margin="0,1,0,0"
@@ -148,6 +208,39 @@
                                 Foreground="{StaticResource TextSecondaryBrush}"
                                 Text="{Binding SteamStatus}"
                                 TextTrimming="CharacterEllipsis" />
+                            <!-- Running/closed is a separate fact from "installed here", and it is the one
+                                 that decides whether an install can write to the Steam folder at all. The
+                                 word carries it, not the colour alone. -->
+                            <Border
+                                Grid.Column="2"
+                                Margin="8,0,0,0"
+                                Padding="7,2"
+                                VerticalAlignment="Center"
+                                CornerRadius="5"
+                                Visibility="{Binding SteamFound, Converter={StaticResource BoolToVis}}">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="{StaticResource SurfaceTintBrush}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SteamRunning}" Value="True">
+                                                <Setter Property="Background" Value="{StaticResource SuccessTintBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <TextBlock FontSize="11" Text="{Binding SteamRunningText}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SteamRunning}" Value="True">
+                                                    <Setter Property="Foreground" Value="{StaticResource SuccessTextBrush}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Border>
                         </Grid>
                     </Button>
 
@@ -178,8 +271,11 @@
 
                     <Separator Margin="0,10" Background="{StaticResource SurfaceTintBrush}" />
 
-                    <!-- Active mode → Mode -->
-                    <Button Command="{Binding OpenModeCommand}" Style="{StaticResource StatusRowButton}">
+                    <!-- Whichever backend owns the proxy DLLs — a Mode OR AmethystTool → Mode -->
+                    <Button
+                        AutomationProperties.Name="{x:Static res:Strings.Home_Backend}"
+                        Command="{Binding OpenModeCommand}"
+                        Style="{StaticResource StatusRowButton}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="22" />
@@ -189,8 +285,18 @@
                                 Margin="0,1,0,0"
                                 VerticalAlignment="Center"
                                 FontSize="16"
-                                Foreground="{StaticResource AccentBrush}"
-                                Symbol="Options24" />
+                                Symbol="Options24">
+                                <ui:SymbolIcon.Style>
+                                    <Style TargetType="ui:SymbolIcon">
+                                        <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding HasActiveBackend}" Value="True">
+                                                <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ui:SymbolIcon.Style>
+                            </ui:SymbolIcon>
                             <TextBlock
                                 Grid.Column="1"
                                 Margin="10,0,0,0"
@@ -201,8 +307,86 @@
                                 TextTrimming="CharacterEllipsis" />
                         </Grid>
                     </Button>
+
+                    <Separator Margin="0,10" Background="{StaticResource SurfaceTintBrush}" />
+
+                    <!-- What this fork does NOT do. Stated here rather than only on About: it is the
+                         reason the fork exists, and a user should not have to go looking. → About -->
+                    <Button
+                        AutomationProperties.Name="{x:Static res:Strings.Home_Privacy}"
+                        Command="{Binding OpenAboutCommand}"
+                        Style="{StaticResource StatusRowButton}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="22" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <ui:SymbolIcon
+                                Margin="0,1,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                Symbol="ShieldCheckmark24">
+                                <ui:SymbolIcon.Style>
+                                    <Style TargetType="ui:SymbolIcon">
+                                        <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelfUpdateDisabled}" Value="True">
+                                                <Setter Property="Foreground" Value="{StaticResource SuccessTextBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ui:SymbolIcon.Style>
+                            </ui:SymbolIcon>
+                            <TextBlock
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="12.5"
+                                Foreground="{StaticResource TextSecondaryBrush}"
+                                Text="{Binding PrivacyText}"
+                                TextTrimming="CharacterEllipsis" />
+                        </Grid>
+                    </Button>
                 </StackPanel>
             </Border>
+
+            <!-- Quick actions: the three pages reached from Home most often. Plain buttons, not cards —
+                 they are verbs, and giving them tile weight would compete with the stats above. -->
+            <TextBlock
+                Margin="2,18,0,0"
+                FontSize="12"
+                FontWeight="SemiBold"
+                Foreground="{StaticResource TextDimBrush}"
+                Text="{x:Static res:Strings.Home_QuickActions}" />
+            <UniformGrid Margin="0,8,0,0" Columns="3" Rows="1">
+                <ui:Button
+                    Margin="0,0,4,0"
+                    Padding="10,7"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    Command="{Binding OpenModeCommand}"
+                    Content="{x:Static res:Strings.Home_Action_Mode}"
+                    Icon="{ui:SymbolIcon Options24}"
+                    ToolTip="{x:Static res:Strings.Home_Action_Mode_Tip}" />
+                <ui:Button
+                    Margin="4,0"
+                    Padding="10,7"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    Command="{Binding OpenPluginCommand}"
+                    Content="{x:Static res:Strings.Home_Action_Plugin}"
+                    Icon="{ui:SymbolIcon PuzzlePiece24}"
+                    ToolTip="{x:Static res:Strings.Home_Action_Plugin_Tip}" />
+                <ui:Button
+                    Margin="4,0,0,0"
+                    Padding="10,7"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    Command="{Binding OpenAboutCommand}"
+                    Content="{x:Static res:Strings.Home_Action_Updates}"
+                    Icon="{ui:SymbolIcon ArrowDownload24}"
+                    ToolTip="{x:Static res:Strings.Home_Action_Updates_Tip}" />
+            </UniformGrid>
 
             <!-- Drag-and-drop install -->
             <views:DropZone Margin="0,12,0,0" DataContext="{Binding Drop}" />

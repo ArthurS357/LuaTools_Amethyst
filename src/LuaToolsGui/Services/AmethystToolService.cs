@@ -267,17 +267,17 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
             // Record WHICH FILES were placed, not just which version. The private manifest above answers
             // "is there an update?"; only this one answers "what may be removed?", and uninstall works
             // from it rather than from the compiled-in name list — see PluginRemoval.
-            manifests.Record(new InstalledPlugin(
+            //
+            // RecordExclusive rather than Record: a Mode's entry can still list dwmapi.dll/xinput1_4.dll
+            // from before this install overwrote them, and the bytes on disk are AmethystTool's now, so
+            // that claim is stale. Recording and trimming in ONE write is what stops a failure between the
+            // two halves from persisting a name both entries claim — which neither could then remove. A
+            // name the Mode entry lists that AmethystTool never touches, e.g. OpenSteamTool.dll, is left
+            // exactly as it was; see InstallManifest.AbsorbFiles for why this trims instead of folding.
+            manifests.RecordExclusive(new InstalledPlugin(
                 PluginIds.AmethystTool, latest.TagName, DateTimeOffset.Now,
                 [.. plan.Steps.Select(step => new InstalledFile(
                     step.FileName, TryHash(step.DestinationPath)))]));
-
-            // A Mode's manifest entry can still list dwmapi.dll/xinput1_4.dll from before this install
-            // overwrote them — the bytes on disk are AmethystTool's now, so that entry's claim on those two
-            // names is stale. Trims it (or drops the entry if nothing else is left in it); a name the entry
-            // lists that AmethystTool never touches, e.g. OpenSteamTool.dll, is left exactly as it was. See
-            // InstallManifest.AbsorbFiles for why this trims instead of folding the whole entry in.
-            manifests.AbsorbFiles([.. plan.Steps.Select(step => step.FileName)], PluginIds.AmethystTool);
 
             // Take the proxy-DLL slot. The payload just overwrote dwmapi.dll and xinput1_4.dll, so whichever
             // Mode was active no longer owns what it placed — one assignment demotes it, which is what stops
@@ -400,6 +400,12 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
             .Select(name => new InstalledFile(name, TryHash(Path.Combine(steamDir, name))))
             .ToList();
 
+        // Record, NOT RecordExclusive — the one write in this app that must stay non-exclusive, so nobody
+        // "uniformises" it later. Every other site records files it just wrote itself, which is what makes
+        // its claim on them exclusive by construction. This one records files it merely FOUND, on evidence
+        // (this service's own manifest) that says an install happened here, not that these exact bytes are
+        // still AmethystTool's. A Mode installed over it afterwards owns dwmapi.dll/xinput1_4.dll, and
+        // absorbing would strip the entry that can actually verify them.
         if (files.Count > 0)
             manifests.Record(new InstalledPlugin(
                 PluginIds.AmethystTool, local.Tag, DateTimeOffset.Now, files));

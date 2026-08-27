@@ -148,6 +148,29 @@ public sealed record InstallManifest(int SchemaVersion, IReadOnlyDictionary<stri
 
         return changed ? this with { SchemaVersion = CurrentSchemaVersion, Plugins = next } : this;
     }
+
+    /// <summary>
+    /// Record <paramref name="entry"/> and make its claim on those names exclusive in one step:
+    /// <see cref="With"/> followed by <see cref="AbsorbFiles"/> over the entry's own file names.
+    ///
+    /// <para>
+    /// This is the shape every backend competing for the proxy DLLs next to <c>steam.exe</c> needs, and the
+    /// reason it is one transformation rather than two calls at each site: a backend that has recorded
+    /// itself but not yet absorbed leaves BOTH entries claiming <c>dwmapi.dll</c>, and a name two entries
+    /// claim is a name NEITHER can remove — each reads the other's claim as "still needed by another
+    /// install". Done in one step, that state is never reachable.
+    /// </para>
+    ///
+    /// <para>
+    /// Trims, never folds: an entry that also names a file <paramref name="entry"/> did not place keeps it.
+    /// See <see cref="AbsorbFiles"/>.
+    /// </para>
+    /// </summary>
+    public InstallManifest RecordExclusive(InstalledPlugin entry)
+    {
+        ArgumentNullException.ThrowIfNull(entry);
+        return With(entry).AbsorbFiles([.. entry.Files.Select(f => f.Name)], entry.PluginId);
+    }
 }
 
 /// <summary>
@@ -248,6 +271,18 @@ public sealed class InstallManifestService
     {
         ArgumentNullException.ThrowIfNull(entry);
         lock (_gate) return SaveUnlocked(LoadUnlocked().With(entry));
+    }
+
+    /// <summary>
+    /// Record what a plugin installed AND drop every other entry's claim on those same names, as a single
+    /// read-modify-write. See <see cref="InstallManifest.RecordExclusive"/> for why the two halves must not
+    /// be separate writes. Returns false if it could not be persisted — the install itself already
+    /// happened, so callers report this rather than failing the install.
+    /// </summary>
+    public bool RecordExclusive(InstalledPlugin entry)
+    {
+        ArgumentNullException.ThrowIfNull(entry);
+        lock (_gate) return SaveUnlocked(LoadUnlocked().RecordExclusive(entry));
     }
 
     /// <summary>Forget a plugin — called after its files are gone.</summary>

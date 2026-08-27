@@ -187,6 +187,24 @@ Force it to close? Anything Steam has not saved yet may be lost. Choose No to le
   <data name="Home_SignedInAs" xml:space="preserve"><value>Signed in as {0}</value></data>
   <data name="Home_NoModeSelected" xml:space="preserve"><value>No mode selected</value></data>
   <data name="Home_ModeIs" xml:space="preserve"><value>Mode · {0}</value></data>
+  <data name="Home_SteamRunning" xml:space="preserve"><value>Steam is running</value></data>
+  <data name="Home_SteamClosed" xml:space="preserve"><value>Steam is closed</value></data>
+  <data name="Home_AmethystActive" xml:space="preserve"><value>AmethystTool · active</value></data>
+  <data name="Home_Refresh" xml:space="preserve"><value>Refresh</value></data>
+  <data name="Home_RefreshTip" xml:space="preserve"><value>Re-check Steam, the active backend and the plugin</value></data>
+  <data name="Home_Version" xml:space="preserve"><value>Version</value></data>
+  <data name="Home_Privacy" xml:space="preserve"><value>Privacy</value></data>
+  <data name="Home_Privacy_UpdatesOff" xml:space="preserve"><value>Self-update off — this build fetches nothing on its own</value></data>
+  <data name="Home_Privacy_UpdatesOn" xml:space="preserve"><value>Self-update on — releases are checked on start</value></data>
+  <data name="Home_QuickActions" xml:space="preserve"><value>Quick actions</value></data>
+  <data name="Home_Action_Mode" xml:space="preserve"><value>Modes</value></data>
+  <data name="Home_Action_Mode_Tip" xml:space="preserve"><value>Choose which backend owns the Steam proxy DLLs</value></data>
+  <data name="Home_Action_Plugin" xml:space="preserve"><value>Plugin</value></data>
+  <data name="Home_Action_Plugin_Tip" xml:space="preserve"><value>Install or update the store-page plugin</value></data>
+  <data name="Home_Action_Updates" xml:space="preserve"><value>Updates</value></data>
+  <data name="Home_Action_Updates_Tip" xml:space="preserve"><value>Open About to check for a new version</value></data>
+  <data name="Home_SteamState" xml:space="preserve"><value>Steam state</value></data>
+  <data name="Home_Backend" xml:space="preserve"><value>Active backend</value></data>
 
   <!-- ── Mode ── -->
   <data name="Mode_Title" xml:space="preserve"><value>Mode</value></data>

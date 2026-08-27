@@ -137,6 +137,18 @@
   <data name="Home_SignedInAs" xml:space="preserve"><value>{0} olarak giriş yapıldı</value></data>
   <data name="Home_NoModeSelected" xml:space="preserve"><value>Hiçbir mod seçilmedi</value></data>
   <data name="Home_ModeIs" xml:space="preserve"><value>Mod · {0}</value></data>
+  <data name="Home_SteamRunning" xml:space="preserve"><value>Steam çalışıyor</value></data>
+  <data name="Home_SteamClosed" xml:space="preserve"><value>Steam kapalı</value></data>
+  <data name="Home_AmethystActive" xml:space="preserve"><value>AmethystTool · aktif</value></data>
+  <data name="Home_Refresh" xml:space="preserve"><value>Yenile</value></data>
+  <data name="Home_RefreshTip" xml:space="preserve"><value>Steam’i, aktif arka ucu ve eklentiyi yeniden denetle</value></data>
+  <data name="Home_Version" xml:space="preserve"><value>Sürüm</value></data>
+  <data name="Home_Privacy" xml:space="preserve"><value>Gizlilik</value></data>
+  <data name="Home_QuickActions" xml:space="preserve"><value>Hızlı eylemler</value></data>
+  <data name="Home_Action_Mode" xml:space="preserve"><value>Modlar</value></data>
+  <data name="Home_Action_Updates" xml:space="preserve"><value>Güncellemeler</value></data>
+  <data name="Home_SteamState" xml:space="preserve"><value>Steam durumu</value></data>
+  <data name="Home_Backend" xml:space="preserve"><value>Aktif arka uç</value></data>
   <data name="Mode_Title" xml:space="preserve"><value>Mod</value></data>
   <data name="Mode_Subtitle" xml:space="preserve"><value>LuaTools ile eklenen oyunların kilidini açmak için kullanılan arka ucu değiştirin — aynı anda yalnızca biri etkin.</value></data>
   <data name="Mode_CheckForUpdates" xml:space="preserve"><value>Güncellemeleri denetle</value></data>

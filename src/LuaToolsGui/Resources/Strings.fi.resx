@@ -137,6 +137,18 @@
   <data name="Home_SignedInAs" xml:space="preserve"><value>Kirjautunut nimellä {0}</value></data>
   <data name="Home_NoModeSelected" xml:space="preserve"><value>Tilaa ei ole valittu</value></data>
   <data name="Home_ModeIs" xml:space="preserve"><value>Tila · {0}</value></data>
+  <data name="Home_SteamRunning" xml:space="preserve"><value>Steam on käynnissä</value></data>
+  <data name="Home_SteamClosed" xml:space="preserve"><value>Steam on suljettu</value></data>
+  <data name="Home_AmethystActive" xml:space="preserve"><value>AmethystTool · aktiivinen</value></data>
+  <data name="Home_Refresh" xml:space="preserve"><value>Päivitä</value></data>
+  <data name="Home_RefreshTip" xml:space="preserve"><value>Tarkista Steam, aktiivinen taustajärjestelmä ja laajennus uudelleen</value></data>
+  <data name="Home_Version" xml:space="preserve"><value>Versio</value></data>
+  <data name="Home_Privacy" xml:space="preserve"><value>Yksityisyys</value></data>
+  <data name="Home_QuickActions" xml:space="preserve"><value>Pikatoiminnot</value></data>
+  <data name="Home_Action_Mode" xml:space="preserve"><value>Tilat</value></data>
+  <data name="Home_Action_Updates" xml:space="preserve"><value>Päivitykset</value></data>
+  <data name="Home_SteamState" xml:space="preserve"><value>Steamin tila</value></data>
+  <data name="Home_Backend" xml:space="preserve"><value>Aktiivinen taustajärjestelmä</value></data>
   <data name="Mode_Title" xml:space="preserve"><value>Tila</value></data>
   <data name="Mode_Subtitle" xml:space="preserve"><value>Vaihda taustajärjestelmää, jota käytetään LuaToolsilla lisättyjen pelien avaamiseen — vain yksi aktiivinen kerrallaan.</value></data>
   <data name="Mode_CheckForUpdates" xml:space="preserve"><value>Tarkista päivitykset</value></data>

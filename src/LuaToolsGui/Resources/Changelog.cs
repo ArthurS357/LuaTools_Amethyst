@@ -29,6 +29,15 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.6.1", "2026-08-27",
+            "A fix for a manifest deadlock between backends, a Home page that finally shows what state everything is in, and more translations.",
+            [
+                "Fixed a case where AmethystTool and a Mode could each end up claiming the same proxy DLLs in the install record, which made Uninstall refuse to remove them from either. Recording an install now always takes those names off whichever entry held them before.",
+                "Home now shows whether Steam is open or closed, which backend actually holds the proxy DLLs (including AmethystTool, which used to read as \"no mode selected\"), this build's version, and whether self-update is on — with a Refresh button and quick actions to Mode, Plugin and About.",
+                "The store-page plugin's install record now goes through the same exclusive-claim write as the other two backends, for consistency; its files never overlapped so nothing about it actually changes.",
+                "12 more strings translated across all 29 languages, plus two diacritics fixed in Polish and Romanian.",
+            ]),
+
         new("1.6.0", "2026-08-26",
             "One backend can be active at a time, AmethystTool leads the Mode list, and SteamTools is retired.",
             [

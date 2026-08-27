@@ -104,7 +104,7 @@
   <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>To nie wygląda na prawidłowy klucz.</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>Nie udało się zweryfikować klucza — może być nieprawidłowy, wygasły lub Hubcap jest nieosiągalny.</value></data>
   <data name="Settings_HubcapActive" xml:space="preserve"><value>Aktywny</value></data>
-  <data name="Settings_HubcapRefresh" xml:space="preserve"><value>Odswiez</value></data>
+  <data name="Settings_HubcapRefresh" xml:space="preserve"><value>Odśwież</value></data>
   <data name="Settings_Language" xml:space="preserve"><value>Język</value></data>
   <data name="Settings_Language_Hint" xml:space="preserve"><value>Wybierz język wyświetlania aplikacji. Stosowane po ponownym uruchomieniu.</value></data>
   <data name="Settings_Language_SystemDefault" xml:space="preserve"><value>Domyślny systemu</value></data>
@@ -137,6 +137,18 @@
   <data name="Home_SignedInAs" xml:space="preserve"><value>Zalogowano jako {0}</value></data>
   <data name="Home_NoModeSelected" xml:space="preserve"><value>Nie wybrano trybu</value></data>
   <data name="Home_ModeIs" xml:space="preserve"><value>Tryb · {0}</value></data>
+  <data name="Home_SteamRunning" xml:space="preserve"><value>Steam działa</value></data>
+  <data name="Home_SteamClosed" xml:space="preserve"><value>Steam jest zamknięty</value></data>
+  <data name="Home_AmethystActive" xml:space="preserve"><value>AmethystTool · aktywny</value></data>
+  <data name="Home_Refresh" xml:space="preserve"><value>Odśwież</value></data>
+  <data name="Home_RefreshTip" xml:space="preserve"><value>Ponownie sprawdź Steam, aktywny backend i wtyczkę</value></data>
+  <data name="Home_Version" xml:space="preserve"><value>Wersja</value></data>
+  <data name="Home_Privacy" xml:space="preserve"><value>Prywatność</value></data>
+  <data name="Home_QuickActions" xml:space="preserve"><value>Szybkie akcje</value></data>
+  <data name="Home_Action_Mode" xml:space="preserve"><value>Tryby</value></data>
+  <data name="Home_Action_Updates" xml:space="preserve"><value>Aktualizacje</value></data>
+  <data name="Home_SteamState" xml:space="preserve"><value>Stan Steam</value></data>
+  <data name="Home_Backend" xml:space="preserve"><value>Aktywny backend</value></data>
   <data name="Mode_Title" xml:space="preserve"><value>Tryb</value></data>
   <data name="Mode_Subtitle" xml:space="preserve"><value>Przełącz backend używany do odblokowywania gier dodanych za pomocą LuaTools — tylko jeden aktywny naraz.</value></data>
   <data name="Mode_CheckForUpdates" xml:space="preserve"><value>Sprawdź aktualizacje</value></data>

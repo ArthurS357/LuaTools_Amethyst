@@ -143,6 +143,18 @@
   <data name="Home_SignedInAs" xml:space="preserve"><value>已登录：{0}</value></data>
   <data name="Home_NoModeSelected" xml:space="preserve"><value>未选择模式</value></data>
   <data name="Home_ModeIs" xml:space="preserve"><value>模式 · {0}</value></data>
+  <data name="Home_SteamRunning" xml:space="preserve"><value>Steam 运行中</value></data>
+  <data name="Home_SteamClosed" xml:space="preserve"><value>Steam 已关闭</value></data>
+  <data name="Home_AmethystActive" xml:space="preserve"><value>AmethystTool · 已激活</value></data>
+  <data name="Home_Refresh" xml:space="preserve"><value>刷新</value></data>
+  <data name="Home_RefreshTip" xml:space="preserve"><value>重新检查 Steam、当前后端和插件</value></data>
+  <data name="Home_Version" xml:space="preserve"><value>版本</value></data>
+  <data name="Home_Privacy" xml:space="preserve"><value>隐私</value></data>
+  <data name="Home_QuickActions" xml:space="preserve"><value>快捷操作</value></data>
+  <data name="Home_Action_Mode" xml:space="preserve"><value>模式</value></data>
+  <data name="Home_Action_Updates" xml:space="preserve"><value>更新</value></data>
+  <data name="Home_SteamState" xml:space="preserve"><value>Steam 状态</value></data>
+  <data name="Home_Backend" xml:space="preserve"><value>当前后端</value></data>
 
   <!-- ── 模式 ── -->
   <data name="Mode_Title" xml:space="preserve"><value>模式</value></data>

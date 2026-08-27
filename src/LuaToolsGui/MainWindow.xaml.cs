@@ -108,6 +108,10 @@ public partial class MainWindow : Wpf.Ui.Controls.FluentWindow, ITrayWindow
     /// <summary>Switch to Mode (used by Home's mode status row).</summary>
     public void NavigateToMode() => RootNavigation.Navigate(typeof(ModeView));
 
+    /// <summary>Switch to About (used by Home's privacy row and its "Updates" quick action). About owns
+    /// the manual update check, so Home links to it instead of holding a second path to the updater.</summary>
+    public void NavigateToAbout() => RootNavigation.Navigate(typeof(AboutView));
+
     // "Restart Steam" is an action, not a page — run the command, don't leave it selected.
     private void RestartSteam_Click(object sender, RoutedEventArgs e)
     {

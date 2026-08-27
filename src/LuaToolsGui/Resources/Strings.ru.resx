@@ -137,6 +137,18 @@
   <data name="Home_SignedInAs" xml:space="preserve"><value>Выполнен вход как {0}</value></data>
   <data name="Home_NoModeSelected" xml:space="preserve"><value>Режим не выбран</value></data>
   <data name="Home_ModeIs" xml:space="preserve"><value>Режим · {0}</value></data>
+  <data name="Home_SteamRunning" xml:space="preserve"><value>Steam запущен</value></data>
+  <data name="Home_SteamClosed" xml:space="preserve"><value>Steam закрыт</value></data>
+  <data name="Home_AmethystActive" xml:space="preserve"><value>AmethystTool · активен</value></data>
+  <data name="Home_Refresh" xml:space="preserve"><value>Обновить</value></data>
+  <data name="Home_RefreshTip" xml:space="preserve"><value>Повторно проверить Steam, активный бэкенд и плагин</value></data>
+  <data name="Home_Version" xml:space="preserve"><value>Версия</value></data>
+  <data name="Home_Privacy" xml:space="preserve"><value>Конфиденциальность</value></data>
+  <data name="Home_QuickActions" xml:space="preserve"><value>Быстрые действия</value></data>
+  <data name="Home_Action_Mode" xml:space="preserve"><value>Режимы</value></data>
+  <data name="Home_Action_Updates" xml:space="preserve"><value>Обновления</value></data>
+  <data name="Home_SteamState" xml:space="preserve"><value>Состояние Steam</value></data>
+  <data name="Home_Backend" xml:space="preserve"><value>Активный бэкенд</value></data>
   <data name="Mode_Title" xml:space="preserve"><value>Режим</value></data>
   <data name="Mode_Subtitle" xml:space="preserve"><value>Переключите бэкенд, используемый для разблокировки игр, добавленных через LuaTools — активен только один за раз.</value></data>
   <data name="Mode_CheckForUpdates" xml:space="preserve"><value>Проверить обновления</value></data>

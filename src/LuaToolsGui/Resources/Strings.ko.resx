@@ -137,6 +137,18 @@
   <data name="Home_SignedInAs" xml:space="preserve"><value>{0} 으로 로그인됨</value></data>
   <data name="Home_NoModeSelected" xml:space="preserve"><value>선택된 모드 없음</value></data>
   <data name="Home_ModeIs" xml:space="preserve"><value>모드 · {0}</value></data>
+  <data name="Home_SteamRunning" xml:space="preserve"><value>Steam 실행 중</value></data>
+  <data name="Home_SteamClosed" xml:space="preserve"><value>Steam 종료됨</value></data>
+  <data name="Home_AmethystActive" xml:space="preserve"><value>AmethystTool · 활성</value></data>
+  <data name="Home_Refresh" xml:space="preserve"><value>새로고침</value></data>
+  <data name="Home_RefreshTip" xml:space="preserve"><value>Steam, 활성 백엔드, 플러그인을 다시 확인합니다</value></data>
+  <data name="Home_Version" xml:space="preserve"><value>버전</value></data>
+  <data name="Home_Privacy" xml:space="preserve"><value>개인 정보</value></data>
+  <data name="Home_QuickActions" xml:space="preserve"><value>빠른 작업</value></data>
+  <data name="Home_Action_Mode" xml:space="preserve"><value>모드</value></data>
+  <data name="Home_Action_Updates" xml:space="preserve"><value>업데이트</value></data>
+  <data name="Home_SteamState" xml:space="preserve"><value>Steam 상태</value></data>
+  <data name="Home_Backend" xml:space="preserve"><value>활성 백엔드</value></data>
   <data name="Mode_Title" xml:space="preserve"><value>모드</value></data>
   <data name="Mode_Subtitle" xml:space="preserve"><value>LuaTools로 추가한 게임의 잠금 해제에 사용되는 백엔드를 전환합니다 — 한 번에 하나만 활성화됩니다.</value></data>
   <data name="Mode_CheckForUpdates" xml:space="preserve"><value>업데이트 확인</value></data>

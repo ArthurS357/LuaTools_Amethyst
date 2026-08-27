@@ -923,6 +923,7 @@ public partial class App : Application
         home.NavigateToManage = () => Dispatcher.Invoke(window.NavigateToManage);
         home.NavigateToSettings = () => Dispatcher.Invoke(window.NavigateToSettings);
         home.NavigateToMode = () => Dispatcher.Invoke(window.NavigateToMode);
+        home.NavigateToAbout = () => Dispatcher.Invoke(window.NavigateToAbout);
 
         // Onboarding finished applying its actions → refresh the Home dashboard tiles (mode + plugin status).
         main.Onboarding.RefreshHome = () => Dispatcher.Invoke(() => home.LoadAsync());

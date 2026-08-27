@@ -137,6 +137,18 @@
   <data name="Home_SignedInAs" xml:space="preserve"><value>Συνδεδεμένος ως {0}</value></data>
   <data name="Home_NoModeSelected" xml:space="preserve"><value>Δεν έχει επιλεγεί λειτουργία</value></data>
   <data name="Home_ModeIs" xml:space="preserve"><value>Λειτουργία · {0}</value></data>
+  <data name="Home_SteamRunning" xml:space="preserve"><value>Το Steam εκτελείται</value></data>
+  <data name="Home_SteamClosed" xml:space="preserve"><value>Το Steam είναι κλειστό</value></data>
+  <data name="Home_AmethystActive" xml:space="preserve"><value>AmethystTool · ενεργό</value></data>
+  <data name="Home_Refresh" xml:space="preserve"><value>Ανανέωση</value></data>
+  <data name="Home_RefreshTip" xml:space="preserve"><value>Επανέλεγχος του Steam, του ενεργού backend και του πρόσθετου</value></data>
+  <data name="Home_Version" xml:space="preserve"><value>Έκδοση</value></data>
+  <data name="Home_Privacy" xml:space="preserve"><value>Απόρρητο</value></data>
+  <data name="Home_QuickActions" xml:space="preserve"><value>Γρήγορες ενέργειες</value></data>
+  <data name="Home_Action_Mode" xml:space="preserve"><value>Λειτουργίες</value></data>
+  <data name="Home_Action_Updates" xml:space="preserve"><value>Ενημερώσεις</value></data>
+  <data name="Home_SteamState" xml:space="preserve"><value>Κατάσταση Steam</value></data>
+  <data name="Home_Backend" xml:space="preserve"><value>Ενεργό backend</value></data>
   <data name="Mode_Title" xml:space="preserve"><value>Λειτουργία</value></data>
   <data name="Mode_Subtitle" xml:space="preserve"><value>Αλλάξτε το backend που χρησιμοποιείται για το ξεκλείδωμα παιχνιδιών που προστέθηκαν με το LuaTools — μόνο ένα ενεργό κάθε φορά.</value></data>
   <data name="Mode_CheckForUpdates" xml:space="preserve"><value>Έλεγχος για ενημερώσεις</value></data>

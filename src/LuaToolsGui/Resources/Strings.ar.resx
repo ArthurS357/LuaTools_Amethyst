@@ -143,6 +143,18 @@
   <data name="Home_SignedInAs" xml:space="preserve"><value>تم تسجيل الدخول باسم {0}</value></data>
   <data name="Home_NoModeSelected" xml:space="preserve"><value>لم يُحدَّد أي وضع</value></data>
   <data name="Home_ModeIs" xml:space="preserve"><value>الوضع · {0}</value></data>
+  <data name="Home_SteamRunning" xml:space="preserve"><value>Steam قيد التشغيل</value></data>
+  <data name="Home_SteamClosed" xml:space="preserve"><value>Steam مغلق</value></data>
+  <data name="Home_AmethystActive" xml:space="preserve"><value>AmethystTool · نشط</value></data>
+  <data name="Home_Refresh" xml:space="preserve"><value>تحديث</value></data>
+  <data name="Home_RefreshTip" xml:space="preserve"><value>إعادة فحص Steam والواجهة الخلفية النشطة والإضافة</value></data>
+  <data name="Home_Version" xml:space="preserve"><value>الإصدار</value></data>
+  <data name="Home_Privacy" xml:space="preserve"><value>الخصوصية</value></data>
+  <data name="Home_QuickActions" xml:space="preserve"><value>إجراءات سريعة</value></data>
+  <data name="Home_Action_Mode" xml:space="preserve"><value>الأوضاع</value></data>
+  <data name="Home_Action_Updates" xml:space="preserve"><value>التحديثات</value></data>
+  <data name="Home_SteamState" xml:space="preserve"><value>حالة Steam</value></data>
+  <data name="Home_Backend" xml:space="preserve"><value>الواجهة الخلفية النشطة</value></data>
 
   <!-- ── Mode ── -->
   <data name="Mode_Title" xml:space="preserve"><value>الوضع</value></data>

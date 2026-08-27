@@ -137,6 +137,18 @@
   <data name="Home_SignedInAs" xml:space="preserve"><value>Bejelentkezve mint {0}</value></data>
   <data name="Home_NoModeSelected" xml:space="preserve"><value>Nincs kiválasztott mód</value></data>
   <data name="Home_ModeIs" xml:space="preserve"><value>Mód · {0}</value></data>
+  <data name="Home_SteamRunning" xml:space="preserve"><value>A Steam fut</value></data>
+  <data name="Home_SteamClosed" xml:space="preserve"><value>A Steam be van zárva</value></data>
+  <data name="Home_AmethystActive" xml:space="preserve"><value>AmethystTool · aktív</value></data>
+  <data name="Home_Refresh" xml:space="preserve"><value>Frissítés</value></data>
+  <data name="Home_RefreshTip" xml:space="preserve"><value>A Steam, az aktív háttérrendszer és a bővítmény újraellenőrzése</value></data>
+  <data name="Home_Version" xml:space="preserve"><value>Verzió</value></data>
+  <data name="Home_Privacy" xml:space="preserve"><value>Adatvédelem</value></data>
+  <data name="Home_QuickActions" xml:space="preserve"><value>Gyors műveletek</value></data>
+  <data name="Home_Action_Mode" xml:space="preserve"><value>Módok</value></data>
+  <data name="Home_Action_Updates" xml:space="preserve"><value>Frissítések</value></data>
+  <data name="Home_SteamState" xml:space="preserve"><value>A Steam állapota</value></data>
+  <data name="Home_Backend" xml:space="preserve"><value>Aktív háttérrendszer</value></data>
   <data name="Mode_Title" xml:space="preserve"><value>Mód</value></data>
   <data name="Mode_Subtitle" xml:space="preserve"><value>Váltsd át a LuaTools-szal hozzáadott játékok feloldásához használt háttérrendszert — egyszerre csak egy aktív.</value></data>
   <data name="Mode_CheckForUpdates" xml:space="preserve"><value>Frissítések keresése</value></data>

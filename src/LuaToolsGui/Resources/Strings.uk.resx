@@ -137,6 +137,18 @@
   <data name="Home_SignedInAs" xml:space="preserve"><value>Виконано вхід як {0}</value></data>
   <data name="Home_NoModeSelected" xml:space="preserve"><value>Режим не вибрано</value></data>
   <data name="Home_ModeIs" xml:space="preserve"><value>Режим · {0}</value></data>
+  <data name="Home_SteamRunning" xml:space="preserve"><value>Steam запущено</value></data>
+  <data name="Home_SteamClosed" xml:space="preserve"><value>Steam закрито</value></data>
+  <data name="Home_AmethystActive" xml:space="preserve"><value>AmethystTool · активний</value></data>
+  <data name="Home_Refresh" xml:space="preserve"><value>Оновити</value></data>
+  <data name="Home_RefreshTip" xml:space="preserve"><value>Повторно перевірити Steam, активний бекенд і плагін</value></data>
+  <data name="Home_Version" xml:space="preserve"><value>Версія</value></data>
+  <data name="Home_Privacy" xml:space="preserve"><value>Конфіденційність</value></data>
+  <data name="Home_QuickActions" xml:space="preserve"><value>Швидкі дії</value></data>
+  <data name="Home_Action_Mode" xml:space="preserve"><value>Режими</value></data>
+  <data name="Home_Action_Updates" xml:space="preserve"><value>Оновлення</value></data>
+  <data name="Home_SteamState" xml:space="preserve"><value>Стан Steam</value></data>
+  <data name="Home_Backend" xml:space="preserve"><value>Активний бекенд</value></data>
   <data name="Mode_Title" xml:space="preserve"><value>Режим</value></data>
   <data name="Mode_Subtitle" xml:space="preserve"><value>Перемкніть бекенд, який використовується для розблокування ігор, доданих через LuaTools — активний лише один за раз.</value></data>
   <data name="Mode_CheckForUpdates" xml:space="preserve"><value>Перевірити оновлення</value></data>

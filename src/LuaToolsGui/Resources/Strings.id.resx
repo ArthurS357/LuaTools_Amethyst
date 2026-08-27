@@ -137,6 +137,18 @@
   <data name="Home_SignedInAs" xml:space="preserve"><value>Masuk sebagai {0}</value></data>
   <data name="Home_NoModeSelected" xml:space="preserve"><value>Tidak ada mode yang dipilih</value></data>
   <data name="Home_ModeIs" xml:space="preserve"><value>Mode · {0}</value></data>
+  <data name="Home_SteamRunning" xml:space="preserve"><value>Steam berjalan</value></data>
+  <data name="Home_SteamClosed" xml:space="preserve"><value>Steam tertutup</value></data>
+  <data name="Home_AmethystActive" xml:space="preserve"><value>AmethystTool · aktif</value></data>
+  <data name="Home_Refresh" xml:space="preserve"><value>Segarkan</value></data>
+  <data name="Home_RefreshTip" xml:space="preserve"><value>Periksa ulang Steam, backend aktif, dan plugin</value></data>
+  <data name="Home_Version" xml:space="preserve"><value>Versi</value></data>
+  <data name="Home_Privacy" xml:space="preserve"><value>Privasi</value></data>
+  <data name="Home_QuickActions" xml:space="preserve"><value>Tindakan cepat</value></data>
+  <data name="Home_Action_Mode" xml:space="preserve"><value>Mode</value></data>
+  <data name="Home_Action_Updates" xml:space="preserve"><value>Pembaruan</value></data>
+  <data name="Home_SteamState" xml:space="preserve"><value>Status Steam</value></data>
+  <data name="Home_Backend" xml:space="preserve"><value>Backend aktif</value></data>
   <data name="Mode_Title" xml:space="preserve"><value>Mode</value></data>
   <data name="Mode_Subtitle" xml:space="preserve"><value>Alihkan backend yang digunakan untuk membuka kunci gim yang ditambahkan dengan LuaTools — hanya satu yang aktif pada satu waktu.</value></data>
   <data name="Mode_CheckForUpdates" xml:space="preserve"><value>Periksa pembaruan</value></data>

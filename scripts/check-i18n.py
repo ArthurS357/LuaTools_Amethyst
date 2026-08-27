@@ -164,6 +164,27 @@ PENDING_TRANSLATION: frozenset[str] = frozenset({
     "About_OpenSettings",
     "About_Config_Header",
     "About_Config_Body",
+    # Home dashboard pass. Twelve of its eighteen keys were translated across all 29 files the same way the
+    # 1.5.2 accent pass was done — every value derived from a rendering the SAME language file already uses
+    # for that word (backend from its Mode_Subtitle, Refresh from Settings_HubcapRefresh, Actions from
+    # Manage_ActionsHeader, plugin from Plugin_Title, active from Settings_HubcapActive), never invented.
+    # The six below are what that method could NOT reach, each for a stated reason:
+    #
+    # Full explanatory sentences in the app's own editorial voice, not labels — the Settings_Accent_Hint
+    # case exactly. Leave until a native speaker can check them.
+    "Home_Privacy_UpdatesOff",
+    "Home_Privacy_UpdatesOn",
+    # "proxy DLLs" and "store-page plugin" appear in no TRANSLATED string anywhere in the 29 files
+    # (store-page's only other use, Cdp_Consent_Body, is itself pending), so there is nothing to derive
+    # the term from and translating it would be inventing the project's vocabulary in 29 languages at once.
+    "Home_Action_Mode_Tip",
+    "Home_Action_Plugin_Tip",
+    # Names the About page, which is English-only by decision (About_Nav, below). A translated sentence
+    # wrapped around an untranslated page name reads as a bug, so this follows About, not the Home batch.
+    "Home_Action_Updates_Tip",
+    # Value is "Plugin", the twin of Nav_Plugin. Translating the shortcut but not the nav entry it points
+    # at would split one label into two words; these two move together or not at all.
+    "Home_Action_Plugin",
 })
 
 

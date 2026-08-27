@@ -104,7 +104,7 @@
   <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>Aceasta nu pare o cheie validă.</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>Cheia nu a putut fi verificată — poate fi invalidă, expirată sau Hubcap este indisponibil.</value></data>
   <data name="Settings_HubcapActive" xml:space="preserve"><value>Activ</value></data>
-  <data name="Settings_HubcapRefresh" xml:space="preserve"><value>Reimprospatare</value></data>
+  <data name="Settings_HubcapRefresh" xml:space="preserve"><value>Reîmprospătare</value></data>
   <data name="Settings_Language" xml:space="preserve"><value>Limbă</value></data>
   <data name="Settings_Language_Hint" xml:space="preserve"><value>Alege limba de afișare a aplicației. Se aplică după repornire.</value></data>
   <data name="Settings_Language_SystemDefault" xml:space="preserve"><value>Implicit din sistem</value></data>
@@ -137,6 +137,18 @@
   <data name="Home_SignedInAs" xml:space="preserve"><value>Conectat ca {0}</value></data>
   <data name="Home_NoModeSelected" xml:space="preserve"><value>Niciun mod selectat</value></data>
   <data name="Home_ModeIs" xml:space="preserve"><value>Mod · {0}</value></data>
+  <data name="Home_SteamRunning" xml:space="preserve"><value>Steam rulează</value></data>
+  <data name="Home_SteamClosed" xml:space="preserve"><value>Steam este închis</value></data>
+  <data name="Home_AmethystActive" xml:space="preserve"><value>AmethystTool · activ</value></data>
+  <data name="Home_Refresh" xml:space="preserve"><value>Reîmprospătare</value></data>
+  <data name="Home_RefreshTip" xml:space="preserve"><value>Verifică din nou Steam, backendul activ și pluginul</value></data>
+  <data name="Home_Version" xml:space="preserve"><value>Versiune</value></data>
+  <data name="Home_Privacy" xml:space="preserve"><value>Confidențialitate</value></data>
+  <data name="Home_QuickActions" xml:space="preserve"><value>Acțiuni rapide</value></data>
+  <data name="Home_Action_Mode" xml:space="preserve"><value>Moduri</value></data>
+  <data name="Home_Action_Updates" xml:space="preserve"><value>Actualizări</value></data>
+  <data name="Home_SteamState" xml:space="preserve"><value>Starea Steam</value></data>
+  <data name="Home_Backend" xml:space="preserve"><value>Backend activ</value></data>
   <data name="Mode_Title" xml:space="preserve"><value>Mod</value></data>
   <data name="Mode_Subtitle" xml:space="preserve"><value>Schimbă backendul folosit pentru deblocarea jocurilor adăugate cu LuaTools — doar unul activ la un moment dat.</value></data>
   <data name="Mode_CheckForUpdates" xml:space="preserve"><value>Caută actualizări</value></data>

@@ -137,6 +137,18 @@
   <data name="Home_SignedInAs" xml:space="preserve"><value>Logget inn som {0}</value></data>
   <data name="Home_NoModeSelected" xml:space="preserve"><value>Ingen modus valgt</value></data>
   <data name="Home_ModeIs" xml:space="preserve"><value>Modus · {0}</value></data>
+  <data name="Home_SteamRunning" xml:space="preserve"><value>Steam kjører</value></data>
+  <data name="Home_SteamClosed" xml:space="preserve"><value>Steam er lukket</value></data>
+  <data name="Home_AmethystActive" xml:space="preserve"><value>AmethystTool · aktiv</value></data>
+  <data name="Home_Refresh" xml:space="preserve"><value>Oppdater</value></data>
+  <data name="Home_RefreshTip" xml:space="preserve"><value>Sjekk Steam, den aktive backenden og programtillegget på nytt</value></data>
+  <data name="Home_Version" xml:space="preserve"><value>Versjon</value></data>
+  <data name="Home_Privacy" xml:space="preserve"><value>Personvern</value></data>
+  <data name="Home_QuickActions" xml:space="preserve"><value>Hurtighandlinger</value></data>
+  <data name="Home_Action_Mode" xml:space="preserve"><value>Moduser</value></data>
+  <data name="Home_Action_Updates" xml:space="preserve"><value>Oppdateringer</value></data>
+  <data name="Home_SteamState" xml:space="preserve"><value>Steam-status</value></data>
+  <data name="Home_Backend" xml:space="preserve"><value>Aktiv backend</value></data>
   <data name="Mode_Title" xml:space="preserve"><value>Modus</value></data>
   <data name="Mode_Subtitle" xml:space="preserve"><value>Bytt backend som brukes til å låse opp spill lagt til med LuaTools — bare én aktiv om gangen.</value></data>
   <data name="Mode_CheckForUpdates" xml:space="preserve"><value>Se etter oppdateringer</value></data>

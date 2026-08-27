@@ -2,6 +2,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
 using AwesomeAssertions;
+using Wpf.Ui.Controls;
 using Xunit;
 
 namespace LuaToolsGui.Tests;
@@ -19,14 +20,25 @@ namespace LuaToolsGui.Tests;
 /// <para>
 /// This is a static check over the view sources rather than a WPF page load: constructing a view needs
 /// its view-model, and standing up the whole DI graph to prove a colour key exists is a poor trade. It
-/// catches the missing-token case, which is the one that actually recurs. It does NOT catch a bad enum in
-/// a markup extension — running the app remains the check for that.
+/// catches the missing-token case, which is the one that actually recurs.
+/// </para>
+///
+/// <para>
+/// The same is true of an icon name. <c>Symbol="Foo24"</c> and <c>{ui:SymbolIcon Foo24}</c> are parsed out
+/// of BAML when the page is first shown, so a name that is not a real <see cref="SymbolRegular"/> member
+/// is a plausible-looking string that throws only there — the identical failure mode as the missing token,
+/// and worth the identical check.
 /// </para>
 /// </summary>
 public class ViewParseTests
 {
     private static readonly Regex TokenRef =
         new(@"\{StaticResource\s+(?<key>[A-Za-z0-9_]+)\s*\}", RegexOptions.Compiled);
+
+    /// <summary>Both spellings of an icon: the property and the markup extension.</summary>
+    private static readonly Regex SymbolRef =
+        new(@"Symbol=""(?<name>[A-Za-z0-9_]+)""|\{ui:SymbolIcon\s+(?<name>[A-Za-z0-9_]+)\s*\}",
+            RegexOptions.Compiled);
 
     /// <summary>Walks up from the test binaries to the repo, so this works from any run directory.</summary>
     private static string RepoRoot()
@@ -68,10 +80,7 @@ public class ViewParseTests
         var suspects = TokenRef.Matches(xaml)
             .Select(m => m.Groups["key"].Value)
             .Where(k => k.EndsWith("Brush", StringComparison.Ordinal))
-            .Where(k => k.StartsWith("Text", StringComparison.Ordinal)
-                     || k.StartsWith("Accent", StringComparison.Ordinal)
-                     || k.StartsWith("Surface", StringComparison.Ordinal)
-                     || k.StartsWith("Border", StringComparison.Ordinal))
+            .Where(k => AppOwnedPrefixes.Any(p => k.StartsWith(p, StringComparison.Ordinal)))
             .Distinct(StringComparer.Ordinal)
             .ToList();
 
@@ -80,6 +89,52 @@ public class ViewParseTests
         missing.Should().BeEmpty(
             $"{file} names {{StaticResource}} tokens that Themes/Colors.xaml does not define, which throws "
           + "when the page is first shown");
+    }
+
+    /// <summary>
+    /// Prefixes that belong to THIS app's palette, so a miss is a real miss.
+    ///
+    /// <para>
+    /// The status colours are here for the same reason the first four were: they are defined in
+    /// Colors.xaml, nothing else supplies them, and the Home dashboard paints Steam's running state and
+    /// the self-update posture with them. WPF-UI's own keys (<c>SystemFillColor…</c>,
+    /// <c>CardBackgroundFillColor…</c>) deliberately match none of these — flagging those would make the
+    /// check fail constantly and get deleted, which is worse than not having it.
+    /// </para>
+    /// </summary>
+    private static readonly string[] AppOwnedPrefixes =
+        ["Text", "Accent", "Surface", "Border", "Success", "Warning", "Danger", "Info", "Alert"];
+
+    [Theory]
+    [MemberData(nameof(ViewFiles))]
+    public void Every_icon_a_view_names_is_a_real_symbol(string file)
+    {
+        string xaml = File.ReadAllText(Path.Combine(ViewsDir(), file));
+
+        var unknown = SymbolRef.Matches(xaml)
+            .Select(m => m.Groups["name"].Value)
+            .Where(n => n.Length > 0)
+            .Distinct(StringComparer.Ordinal)
+            .Where(n => !Enum.IsDefined(typeof(SymbolRegular), n))
+            .ToList();
+
+        unknown.Should().BeEmpty(
+            $"{file} names icons that Wpf.Ui's SymbolRegular does not define, which throws when the page "
+          + "is first shown");
+    }
+
+    [Fact]
+    public void The_status_tokens_the_home_dashboard_paints_with_all_exist()
+    {
+        // Home reports Steam open/closed and whether self-update is off. Both read as a colour before they
+        // read as a word, so a renamed token would take the meaning with it.
+        var palette = PaletteKeys();
+
+        foreach (string key in new[] { "SuccessTextBrush", "SuccessTintBrush", "SurfaceTintBrush",
+                                       "AccentTintBrush", "AccentOutlineBrush", "DangerBrush" })
+        {
+            palette.Should().Contain(key);
+        }
     }
 
     [Fact]

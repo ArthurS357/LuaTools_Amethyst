@@ -745,8 +745,13 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
                 files.Add(new InstalledFile(name, sha));
             }
 
+        // RecordExclusive rather than Record, for the same reason the Mode and AmethystTool sites use it:
+        // whatever this install just wrote is this plugin's to claim, and a name two entries claim is a name
+        // NEITHER can remove. Slots' names do not currently collide with any other backend's payload, so
+        // this absorbs nothing today and the write is byte-identical — the point is that adding a slot can
+        // never quietly reintroduce the deadlock here.
         if (files.Count > 0)
-            manifests.Record(new InstalledPlugin(PluginIds.StorePage, tag, DateTimeOffset.Now, files));
+            manifests.RecordExclusive(new InstalledPlugin(PluginIds.StorePage, tag, DateTimeOffset.Now, files));
     }
 
     /// <summary>
