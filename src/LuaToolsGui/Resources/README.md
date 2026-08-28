@@ -33,7 +33,10 @@ them as a reminder on every run. That list is the handoff to the next translatio
 UI is final, translate its keys across all the language files, clear them from `PENDING_TRANSLATION`, and
 parity is enforced again.
 
-**Currently pending:** the Builds page (multi-build switching), added 2026-07-31.
+**Currently pending:** the About page, the Home dashboard's explanatory lines, the startup Steam
+flow, the Hubcap error and key-expiry copy, the consent and disclosure prompts, and the Plugin
+page's source picker (added 2026-08-28). `python scripts/check-i18n.py` prints the exact list on
+every run — that output, not this line, is the authority on what is still pending.
 
 Never leave a hardcoded user-facing literal in a view as a "translate later" shortcut. Always add the key
 and reference it. That way the later pass only touches the `Strings.<tag>.resx` files, never the views.

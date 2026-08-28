@@ -42,7 +42,8 @@ SAMPLE_SIZE = 10
 #
 # This list IS the handoff to the translation pass. When a feature's UI is final: translate its keys
 # across every Strings.<tag>.resx, clear them from here, and this check goes back to demanding full
-# parity. Anything left here is untranslated in all 29 languages.
+# parity. Anything left here is untranslated in all 29 languages, with one stated exception noted
+# against the plugin-source group at the bottom.
 PENDING_TRANSLATION: frozenset[str] = frozenset({
     # Added by the security pass that replaced hardcoded English literals in AuthService with real
     # resource keys. They are localizable now (they weren't before) but not yet translated — clear
@@ -185,6 +186,42 @@ PENDING_TRANSLATION: frozenset[str] = frozenset({
     # Value is "Plugin", the twin of Nav_Plugin. Translating the shortcut but not the nav entry it points
     # at would split one label into two words; these two move together or not at all.
     "Home_Action_Plugin",
+    # Multi-source plugin install, added in 1.6.2: each creator publishes their own build of the plugin and
+    # the user picks which one is installed (PluginSourceResolver + the Plugin page's source cards). The
+    # page landed whole in one commit and its wording is still settling, which is this list's stated case.
+    #
+    # pt-BR is the ONE exception to "untranslated in all 29 languages" above. The feature shipped with a
+    # full pt-BR translation written by the maintainer, a native speaker — a real translation, not English
+    # copied in — so it stays; deleting it would only make 1.6.2 read worse in Portuguese. The other 28
+    # files fall back to English per key at runtime, as usual.
+    #
+    # Why the whole group waits rather than just the long ones: twelve of these are full explanatory
+    # sentences in the app's own editorial voice, not labels — the Settings_Accent_Hint case again. They
+    # also carry vocabulary ("plugin source", "creator", a published SHA-256, a release tag) that appears
+    # in no TRANSLATED string anywhere in the 29 files, so there is nothing to derive the terms from and
+    # translating them would be inventing the project's vocabulary in 28 languages at once. The eight short
+    # labels move with them: splitting one page into translated chrome around untranslated sentences is the
+    # Home_Action_Plugin problem, one screen speaking two languages.
+    "Plugin_Row_Source",
+    "Plugin_Sources_Header",
+    "Plugin_Sources_Subtitle",
+    "Plugin_Source_By",
+    "Plugin_Source_Active",
+    "Plugin_Source_Default",
+    "Plugin_Source_Installed",
+    "Plugin_Source_ActiveNotInstalled",
+    "Plugin_Source_Available",
+    "Plugin_Source_LatestVersion",
+    "Plugin_Btn_Activate",
+    "Plugin_Confirm_SwitchCaption",
+    "Plugin_Confirm_SwitchBody",
+    "Plugin_Toast_SourceSwitched",
+    "Plugin_Err_UnknownSource",
+    "Plugin_SourceErr_NoRelease",
+    "Plugin_SourceErr_NoTag",
+    "Plugin_SourceErr_MissingAsset",
+    "Plugin_SourceErr_ForeignAssetUrl",
+    "Plugin_SourceErr_NoDigest",
 })
 
 
