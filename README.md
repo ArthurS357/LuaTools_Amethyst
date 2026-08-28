@@ -12,7 +12,7 @@ It browses and installs manifest sources, edits `stplug-in` lua files (depot pin
 enable/disable), manages unlocker modes, launches games through Steam, and injects a companion plugin
 into Steam's store pages. It ships translated in 29 languages and auto-updates via Velopack.
 
-Current version: **1.6.1** · Repository: <https://github.com/ArthurS357/LuaTools_Amethyst>
+Current version: **1.6.2** · Repository: <https://github.com/ArthurS357/LuaTools_Amethyst>
 
 ### Checking which build you are running
 
@@ -207,7 +207,8 @@ one fetches a GitHub release, verifies it, and places the result. These are the 
 | Mode — AmethystTool | `ArthurS357/BetterSteamTools-Amethyst` | `AmethystTool.dll`, `amethysttool.toml`, `dwmapi.dll`, `xinput1_4.dll` | Steam root |
 | Mode — BetterSteamTools | `OpenSteam001/OpenSteamTool` | `dwmapi.dll`, `xinput1_4.dll`, `OpenSteamTool.dll` | Steam root |
 | Mode — BST Nightly | `madoiscool/OST-Nightly` | the same three | Steam root |
-| Plugin | `madoiscool/LTSP` | `plugin.zip`, `winmm.dll` | `%AppData%`, Steam root |
+| Plugin — ArthurS357 (default) | `ArthurS357/Front-end-Amethyst` | `plugin.zip`, `winmm.dll` | `%AppData%`, Steam root |
+| Plugin — madoiscool | `madoiscool/LTSP` | `plugin.zip`, `winmm.dll` | `%AppData%`, Steam root |
 | Manage — Remove Steam DRM | `atom0s/Steamless` | `Steamless.CLI.exe` (**executed**) | cache |
 
 Two Modes are no longer offered on the page. **SteamTools** (`mendy-tools/verynotsusdllsthataredefnotstrelated`,
@@ -216,6 +217,45 @@ install it any more. **CloudRedirect** (`Selectively11/CloudRedirect`) is hidden
 Both definitions stay in the app so that an existing install of either keeps its uninstall record and keeps
 its proxy DLLs protected from being removed by something else — and if SteamTools is still your active Mode,
 its card stays on the page so you can uninstall it.
+
+### The Plugin has two sources, and you pick one
+
+The Plugin row is the only one with more than one entry, because more than one creator publishes a build of
+the plugin. The page lists each as its own card — the same layout the Mode page uses for its mutually
+exclusive backends — and **you choose which one is active**. The active source is the one that gets
+installed, updated and reported on; `ArthurS357/Front-end-Amethyst` is the default for a fresh install, and
+anyone already installed from `madoiscool/LTSP` stays there until they say otherwise.
+
+**A failure never switches source.** If the active source publishes nothing installable — no release, no
+tag, a missing asset, an asset URL pointing outside its own repository, or no published SHA-256 — the page
+says so in plain words and the install fails. It does not quietly install the other creator's build
+instead. That is a deliberate change from an earlier build, which fell back automatically: falling back
+sounds like resilience, but it means anyone who can make one source fail (a block, a rate limit, an outage)
+also decides what lands next to `steam.exe` in its place.
+
+The active source changes when — and only when — **you** change it: *Use this source* on a card, or the
+`PluginSource` key in `settings.json`. Nothing else moves it, and no failure, outage or app update ever
+does. See [`PluginSource`](#pluginsource) for what editing that key by hand means for auto-update.
+
+Each source faces the **same fail-closed check**, and it is applied per-source: its newest release must
+carry a tag, carry every asset an install places, point every one of those assets at *its own* repository,
+and publish a SHA-256 for each. A source failing any of those is refused whole — its assets are never mixed
+with the other's, and one repository's digest is never accepted for another repository's bytes.
+
+**To switch**, press *Use this source* on the card you want. That runs a complete install of that
+repository — the same download, pin, hash and archive-screen checks as any other — and only writes your
+preference once it has fully succeeded. A failed switch leaves you exactly where you were: same source,
+same files, same recorded install. A successful one replaces the frontend directory outright, so the
+previous creator's files do not survive underneath the new one's.
+
+The choice lives in `settings.json` as `"PluginSource": "owner/repo"`, and the list of sources itself is
+**compiled in and not configurable** — for the same reason the AmethystTool pin is. The file *selects* from
+the two repositories this build ships and cannot name a third, so hand-editing it (or anything else running
+as your user editing it) can change which vetted source you are on but cannot introduce an unvetted one. A
+value naming anything else is ignored and the default is used.
+
+The Plugin page shows the active source on the status card and on the source cards, and the pre-install
+notice names it too — so which creator you are installing from is never implicit.
 
 Every one of them is verified as described under [GitHub mirrors](#github-mirrors) — HTTPS, GitHub host,
 **pinned to the owner/repo in this table**, and SHA-256 fail-closed — and `plugin.zip` and
@@ -341,8 +381,8 @@ before an artifact is written — after it is downloaded and verified, before it
 Steam folder — a notice shows what is about to happen:
 
 ```
-Installing from madoiscool/LTSP
-plugin.zip · version v1.2 · 2 file(s)
+Installing from ArthurS357/Front-end-Amethyst
+plugin.zip · version v1.0.0 · 2 file(s)
 SHA-256 e3e2d22e098ff3fb
 Verified: repository pinned · SHA-256 matched · archive screened
 ```
@@ -359,18 +399,21 @@ release publishes if you want to.
 
 ### Honest limits of that
 
-**None of these are this fork's repositories, and this fork cannot make them so.** They are the upstream
-and community projects that actually build these binaries; there is nothing to mirror that would not just
-be a stale copy of someone else's work, re-signed by us and no more trustworthy for it. Two consequences
-are worth stating plainly rather than leaving implied:
+**Most of these are not this fork's repositories, and this fork cannot make them so.** They are the
+upstream and community projects that actually build these binaries; there is nothing to mirror that would
+not just be a stale copy of someone else's work, re-signed by us and no more trustworthy for it. Two
+consequences are worth stating plainly rather than leaving implied:
 
-- **The pinning guarantees provenance, not intent.** It proves the bytes are the ones `madoiscool/LTSP`
-  published. It cannot tell you whether that release is benign. If one of these projects ships something
-  hostile, this app will faithfully verify it and install it.
+- **The pinning guarantees provenance, not intent.** It proves the bytes are the ones the pinned
+  repository published. It cannot tell you whether that release is benign. If one of these projects ships
+  something hostile, this app will faithfully verify it and install it. That applies to the fork's own
+  plugin repository exactly as much as to anyone else's — being ours is not evidence.
 - **There is a deliberate asymmetry with the app's own updates.** `AppUpdateSources` refuses to let the
   app update *itself* from `madoiscool/LuaTools`, because that repo publishes the official build with the
-  telemetry and key-upload this fork removed. That refusal does not, and cannot, extend to the loader DLL —
-  the plugin genuinely lives at `madoiscool/LTSP` and there is no fork of it to point at.
+  telemetry and key-upload this fork removed. That refusal does not, and cannot, extend to the loader DLL:
+  upstream's `madoiscool/LTSP` is still one of the plugin sources you can select, and keeping it selectable
+  is the point — it is what users who were installing from there before continue to get. The difference is
+  that it is now a choice you make and can see, not a place an install can end up on its own.
 
 What is available today to reduce exposure, in rough order of effect:
 
@@ -526,6 +569,20 @@ cannot substitute a different project's content.
 | `InsecureMetadataNotice` | `"once"` | `"always"` / `"off"` — how often the lookup is disclosed |
 | `AppUpdateRepos` | this fork's repo | Where the app updates itself from. `[]` disables self-update |
 | `PluginAutoUpdate` | `false` | `true` lets the store-page plugin update itself unattended |
+| `PluginSource` | unset | Which creator's plugin build is active — set from the Plugin page, not by hand |
+
+<a id="pluginsource"></a>
+`PluginSource` holds `"owner/repo"` and is written by the Plugin page when you press *Use this source*.
+Unset means "never chosen", which is what lets an existing install keep the source it actually came from
+instead of being moved by an app update. It **selects** from the two repositories this build ships and
+cannot name a third: a value matching neither is ignored and the default (`ArthurS357/Front-end-Amethyst`)
+is used.
+
+Auto-update, when on, installs **whatever this key says is active**; it never chooses a creator on its own.
+So editing this key by hand *is* changing your source — the app sees a value that disagrees with what is
+installed, treats that as an update to apply, and the next auto-update moves you there. That is your
+change taking effect, not the app switching for you, but it lands without a prompt. Prefer the Plugin page:
+it asks first and installs immediately, so the file and the disk never disagree in between.
 
 `PluginAutoUpdate` defaults to **off**, and that is a deliberate change from earlier builds. With it on,
 an out-of-date plugin is updated the moment you open Steam: the new release is downloaded, `winmm.dll` in
@@ -544,6 +601,7 @@ A full example:
   "EnableSourceAvailabilityChecks": true,
   "InsecureMetadataNotice": "always",
   "PluginAutoUpdate": true,
+  "PluginSource": "ArthurS357/Front-end-Amethyst",
   "GithubDownloadMirrors": []
 }
 ```

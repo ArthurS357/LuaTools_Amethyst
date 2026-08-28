@@ -6,10 +6,44 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization.Metadata;
 using LuaToolsGui.Models;
+using Microsoft.Extensions.Logging;
 
 namespace LuaToolsGui.Services;
 
+/// <summary>
+/// One configured plugin source as the Plugin page shows it: who publishes it, whether it is the active
+/// one, whether it is what is currently installed, what it publishes, and what is wrong with it.
+///
+/// <para>
+/// A source with a <see cref="Problem"/> is reported, never routed around. That is the whole difference
+/// from the build this replaced — see <see cref="PluginSourceResolver"/>.
+/// </para>
+/// </summary>
+/// <param name="Source">The repository — its owner is the "creator" the page groups by.</param>
+/// <param name="IsActive">The user's current choice: what Install/Update acts on.</param>
+/// <param name="IsInstalled">What the on-disk manifest says the present install came from.</param>
+/// <param name="LatestTag">Newest published tag, or null when nothing installable was found.</param>
+/// <param name="Problem">Why this source cannot be installed from, or
+/// <see cref="PluginSourceRejection.None"/>.</param>
+/// <param name="ProblemAsset">The asset the problem is about, when it is about one.</param>
+public sealed record PluginSourceStatus(
+    PluginSource Source,
+    bool IsActive,
+    bool IsInstalled,
+    string? LatestTag,
+    PluginSourceRejection Problem = PluginSourceRejection.None,
+    string? ProblemAsset = null);
+
 /// <summary>Queried state of the installed plugin vs. the latest GitHub release.</summary>
+/// <param name="ActiveSource">"owner/repo" the user has chosen to install from. ALWAYS known — unlike the
+/// release it points at, it is a persisted choice rather than a resolve result, so it is reported when
+/// offline and when the source is broken too.</param>
+/// <param name="InstalledSource">"owner/repo" the present install actually came from; null when nothing
+/// is installed.</param>
+/// <param name="ActiveSourceProblem">Why the ACTIVE source cannot serve an install right now. Surfaced as
+/// an error on the page; nothing switches to another source because of it.</param>
+/// <param name="ActiveSourceProblemAsset">The asset that problem is about, when it is about one.</param>
+/// <param name="Sources">Every configured source, for the page's per-source cards.</param>
 public sealed record PluginStatus(
     bool FrontendInstalled,
     bool DllInstalled,
@@ -19,17 +53,31 @@ public sealed record PluginStatus(
     bool UpdateAvailable,
     bool MillenniumPresent,
     bool Offline,          // couldn't reach GitHub
-    bool Port8080Busy);    // something other than Steam's own CDP server is listening on CDP's fixed port — warn only, see IsPort8080BusyAsync
+    bool Port8080Busy,     // something other than Steam's own CDP server is listening on CDP's fixed port — warn only, see IsPort8080BusyAsync
+    string ActiveSource = "",
+    string? InstalledSource = null,
+    PluginSourceRejection ActiveSourceProblem = PluginSourceRejection.None,
+    string? ActiveSourceProblemAsset = null,
+    IReadOnlyList<PluginSourceStatus>? Sources = null);
 
 /// <summary>
 /// Installs / updates / removes the LuaTools store-page plugin from GitHub releases (the app is the plugin
-/// MANAGER — it doesn't bundle the frontend). Each release of <c>madoiscool/LTSP</c> carries
+/// MANAGER — it doesn't bundle the frontend). Each release of a source in
+/// <see cref="AppConfig.PluginSources"/> carries
 /// <c>plugin.zip</c> (the frontend, extracted to %AppData%\LuaToolsGui\plugin — where CefInjectorService
 /// reads it) plus one loader DLL per <see cref="Slots"/> entry, dropped into the Steam install root
 /// (steam.exe loads it). Modeled on <see cref="UnlockerService"/>: fetch release JSON, download assets
 /// via <see cref="GithubProxy"/> (mirror fallback), verify each by its sha256 digest, then place. The DLL
 /// is locked while Steam runs, so DLL install/uninstall stops Steam first (via <see cref="SteamService"/>)
 /// and relaunches it if it was up.
+///
+/// There is more than one source (see <see cref="AppConfig.PluginSources"/>) and the user picks which one
+/// is ACTIVE on the Plugin page; the choice is persisted and nothing here ever changes it.
+/// <see cref="PluginSourceSelection"/> owns that decision and <see cref="PluginSourceResolver"/> owns the
+/// fail-closed gate each source faces. <b>There is no automatic fallback</b>: when the active source
+/// publishes nothing installable the install fails with a named reason and the other source is not
+/// touched. Downloads stay pinned to the active source — <see cref="AppConfig.PluginReleasesOwner"/> is
+/// not the pin for every install, it is one source's half of one.
 ///
 /// CDP itself (the debug bridge <see cref="CefInjectorService"/> connects through) is NOT opened by the
 /// DLL anymore — install/uninstall also manages a `.cef-enable-remote-debugging` NTFS junction next to
@@ -40,7 +88,8 @@ public sealed record PluginStatus(
 /// </summary>
 public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjectorService injector,
     CacheService cache, SettingsService settings, DownloadNotice notice,
-    InstallManifestService manifests, PluginRemovalService removal)
+    InstallManifestService manifests, PluginRemovalService removal,
+    ILogger<PluginInstallerService> log)
 {
     /// <summary>
     /// Asks the user whether LuaTools may enable Steam's remote-debugging bridge. Returns true to proceed.
@@ -200,7 +249,14 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
     private bool DllUpdateDisabled =>
         SteamDir is { } s && File.Exists(Path.Combine(s, DllUpdateDisabledMarker));
 
-    private GithubRelease? _cachedLatest;
+    /// <summary>
+    /// The last metadata sweep: every configured source paired with its newest release (null when none
+    /// came back). Cached as the whole sweep rather than as one chosen release because the Plugin page
+    /// shows a card per source, and because there is no longer a "winner" to cache — which source is
+    /// active is a persisted user choice, not a result of this lookup.
+    /// </summary>
+    private IReadOnlyList<(PluginSource Source, GithubRelease? Release)>? _cachedFetch;
+
 
     public bool MillenniumPresent =>
         SteamDir is { } s && File.Exists(Path.Combine(s, "millennium", "lib", "millennium.dll"));
@@ -211,6 +267,11 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
         public string? Tag { get; set; }
         public Dictionary<string, string>? DllShas { get; set; } // DllAsset name -> sha256, one per slot
         public string? ZipSha { get; set; }
+        /// <summary>"owner/repo" this install came from. Null for installs written before there was more
+        /// than one source — treated as the upstream fallback, which is the only thing those could be.
+        /// Recorded because a tag alone stops identifying a build once two repositories can both publish
+        /// "v1.0.0": without it, switching sources between two same-named tags would look up to date.</summary>
+        public string? Source { get; set; }
         /// <summary>Millennium config path → the exact enabledPlugins entries we removed there on install,
         /// so uninstall can restore Millennium's luatools plugin verbatim.</summary>
         public Dictionary<string, List<string>>? DisabledMillenniumEntries { get; set; }
@@ -234,20 +295,95 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
     }
 
     // ── GitHub ──
-    public async Task<GithubRelease?> FetchLatestAsync(bool force, CancellationToken ct = default)
+
+    /// <summary>The assets an install cannot proceed without — the frontend archive plus every loader
+    /// slot's DLL. A source that does not publish all of them is not a plugin source, whatever else its
+    /// release contains.</summary>
+    private static IReadOnlyList<string> RequiredAssets { get; } =
+        new[] { PluginZipAsset }.Concat(Slots.Select(s => s.DllAsset)).ToArray();
+
+    /// <summary>Newest published release for one source, or null when the repo has none / GitHub and every
+    /// mirror were unreachable for it. The two are deliberately not distinguished: both mean "this source
+    /// cannot serve an install right now", and the caller's response to each is the same.</summary>
+    private async Task<GithubRelease?> FetchReleaseAsync(PluginSource source, CancellationToken ct)
     {
-        if (!force && _cachedLatest is not null) return _cachedLatest;
-        string url = $"https://api.github.com/repos/{AppConfig.PluginReleasesOwner}/{AppConfig.PluginReleasesRepo}/releases/latest";
         try
         {
-            using var res = await gh.SendAsync(url, ct);
+            using var res = await gh.SendAsync(source.LatestReleaseApiUrl, ct);
             if (res is null || !res.IsSuccessStatusCode) return null;
-            var rel = JsonSerializer.Deserialize<GithubRelease>(await res.Content.ReadAsStringAsync(ct), JsonOpts);
-            if (rel is not null) _cachedLatest = rel;
-            return rel;
+            return JsonSerializer.Deserialize<GithubRelease>(await res.Content.ReadAsStringAsync(ct), JsonOpts);
         }
+        catch (OperationCanceledException) when (ct.IsCancellationRequested) { throw; }
         catch { return null; }
     }
+
+    /// <summary>
+    /// Ask every configured source for its newest release. Returns the sweep as fetched — verification and
+    /// selection happen above this, not here.
+    ///
+    /// <para>
+    /// EVERY source is queried, not just the active one, at a cost of one extra API request per forced
+    /// check (two sources, two requests). It buys the Plugin page's per-source cards: a user choosing
+    /// between sources needs to see what each one publishes and what is wrong with the one they are not on
+    /// — otherwise "switch source" is a blind guess. The cost is bounded by the compiled-in source list,
+    /// absorbed by the API mirror's server-side token where the unauthenticated rate limit would otherwise
+    /// bite, and only paid on <c>force</c>; everything else reads the cache.
+    /// </para>
+    ///
+    /// <para>
+    /// Querying a source is NOT choosing it. Nothing in this method or its callers promotes a healthy
+    /// source over the active one — see <see cref="PluginSourceResolver"/> for why that is deliberate.
+    /// </para>
+    /// </summary>
+    private async Task<IReadOnlyList<(PluginSource Source, GithubRelease? Release)>> ResolveAllAsync(
+        bool force, CancellationToken ct = default)
+    {
+        // Only a sweep that reached SOMETHING is served from cache. Caching "nothing came back" would pin a
+        // transient outage — one failed lookup and every later unforced check reports offline until
+        // something calls with force, which on the status path nothing does.
+        if (!force && _cachedFetch is { } cached && cached.Any(f => f.Release is not null)) return cached;
+
+        var fetched = new List<(PluginSource Source, GithubRelease? Release)>(AppConfig.PluginSources.Length);
+        foreach (var source in AppConfig.PluginSources)
+            fetched.Add((source, await FetchReleaseAsync(source, ct)));
+
+        if (fetched.Any(f => f.Release is not null)) _cachedFetch = fetched;
+        return fetched;
+    }
+
+    /// <summary>
+    /// The source the user has chosen to install from. Their persisted choice when they have made one, the
+    /// source the current install actually came from when they have not, and the catalogue default
+    /// otherwise — see <see cref="PluginSourceSelection.Resolve"/>.
+    ///
+    /// <para>
+    /// Read fresh rather than cached: the Plugin page writes the setting and immediately re-reads status,
+    /// and a stale active source would report the switch as not having happened.
+    /// </para>
+    /// </summary>
+    public PluginSource ActiveSource =>
+        PluginSourceSelection.Resolve(AppConfig.PluginSources, settings.PluginSource, InstalledSourceSlug());
+
+    /// <summary>
+    /// "owner/repo" the present install came from, or null when nothing is installed.
+    ///
+    /// <para>
+    /// An install whose manifest records no source at all predates the catalogue, and upstream's repo is
+    /// the only thing it could have been — so it reads as that rather than as "unknown". Getting this
+    /// wrong in the other direction is what would silently migrate an existing upstream user onto a
+    /// different repository on their next app update.
+    /// </para>
+    /// </summary>
+    private string? InstalledSourceSlug() => InstalledSourceSlug(ReadManifest());
+
+    /// <summary>Overload for callers that have already read the manifest — <see cref="GetStatusAsync"/>
+    /// runs on every Steam-open poke and read it three times over before this existed.</summary>
+    private string? InstalledSourceSlug(Manifest? manifest)
+    {
+        if (manifest is null && !File.Exists(LuatoolsJsPath)) return null;
+        return manifest?.Source ?? AppConfig.LegacyPluginSource.Slug;
+    }
+
 
     /// <summary>Fast, network-free check: the plugin frontend + a loader slot are both present. Used by the
     /// first-run onboarding gate (no GitHub round-trip, unlike <see cref="GetStatusAsync"/>).</summary>
@@ -283,41 +419,199 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
 
         bool port8080Busy = await IsPort8080BusyAsync();
         var manifest = ReadManifest();
-        var latest = await FetchLatestAsync(force, ct);
+        string? installedSource = InstalledSourceSlug(manifest);
+        var active = PluginSourceSelection.Resolve(
+            AppConfig.PluginSources, settings.PluginSource, installedSource);
 
-        if (latest is null)
-            return new PluginStatus(frontend, loader, false, manifest?.Tag, null, UpdateAvailable: false,
-                MillenniumPresent, Offline: true, port8080Busy);
+        var fetched = await ResolveAllAsync(force, ct);
+
+        // One card per configured source. Every source is judged by the SAME gate, independently — a
+        // problem on one says nothing about the other, and is never a reason to move the user.
+        var sources = fetched.Select(f =>
+        {
+            var problem = PluginSourceResolver.Verify(f.Source, f.Release, RequiredAssets);
+            return new PluginSourceStatus(
+                f.Source,
+                IsActive: f.Source == active,
+                IsInstalled: installedSource is not null
+                    && f.Source.Slug.Equals(installedSource, StringComparison.OrdinalIgnoreCase),
+                LatestTag: problem is null ? f.Release!.TagName : null,
+                Problem: problem?.Reason ?? PluginSourceRejection.None,
+                ProblemAsset: problem?.AssetName);
+        }).ToList();
+
+        // Offline is "nothing came back from ANY source" — a distinct state from "the active source
+        // published something unusable", which is a named problem the page reports as an error.
+        bool offline = fetched.All(f => f.Release is null);
+
+        var activeEntry = fetched.FirstOrDefault(f => f.Source == active);
+        var activeProblem = PluginSourceResolver.Verify(active, activeEntry.Release, RequiredAssets);
+
+        if (activeProblem is not null)
+        {
+            log.LogWarning("Active plugin source {Source} cannot serve an install: {Reason} ({Asset}).",
+                active.Slug, activeProblem.Reason, activeProblem.AssetName ?? "-");
+
+            // No release to compare against, so no update can be claimed — and, deliberately, no other
+            // source is consulted. The page shows the reason; switching is the user's call.
+            return new PluginStatus(frontend, loader, DllMatches: false, manifest?.Tag, LatestTag: null,
+                UpdateAvailable: false, MillenniumPresent, offline, port8080Busy,
+                ActiveSource: active.Slug, InstalledSource: installedSource,
+                ActiveSourceProblem: activeProblem.Reason, ActiveSourceProblemAsset: activeProblem.AssetName,
+                Sources: sources);
+        }
+
+        var latest = activeEntry.Release!;
 
         // dllMatches = true only when EVERY slot's proxy is present and matches its release asset digest.
         // AssetIntegrity.Matches also covers "file missing" and "no published digest" as non-matches, so a
         // digest-less release reports UpdateAvailable rather than silently claiming the DLL is current.
+        // The digests come from the ACTIVE source's release, so a source switch is compared against the
+        // new source's own hashes — one repository's digest is never used to judge another's bytes.
         bool dllMatches = Slots.All(slot =>
             SlotPath(slot) is { } p && AssetIntegrity.Matches(p, AssetDigest(latest, slot.DllAsset)));
         bool installed = frontend && loader;
+        // A source change counts as an update even at an identical tag: two repositories can both publish
+        // "v1.0.0", so tag equality alone would leave a user who just switched sources looking up to date
+        // on the OLD source's build. What moves them is the switch they asked for, not this check.
         // `|| legacy` keeps a leftover/locked legacy dll getting swept on subsequent auto-updates until gone.
-        bool updateAvailable = installed && (manifest?.Tag != latest.TagName || !dllMatches || legacy);
+        bool updateAvailable = installed
+            && (manifest?.Tag != latest.TagName
+                || !string.Equals(installedSource, active.Slug, StringComparison.OrdinalIgnoreCase)
+                || !dllMatches || legacy);
 
         return new PluginStatus(frontend, loader, dllMatches, manifest?.Tag, latest.TagName, updateAvailable,
-            MillenniumPresent, Offline: false, port8080Busy);
+            MillenniumPresent, Offline: false, port8080Busy,
+            ActiveSource: active.Slug, InstalledSource: installedSource, Sources: sources);
     }
 
     // ── Install / update ──
-    public async Task<(bool ok, string? error)> InstallAsync(IProgress<double?>? progress, CancellationToken ct = default)
+    // ── Install / update ──
+
+    /// <summary>
+    /// Install the ACTIVE source — the one the user chose. See <see cref="InstallSourceAsync"/>; this is
+    /// the entry point for Install / Update / Reinstall and for the silent auto-update, all of which act on
+    /// the current choice rather than making one.
+    /// </summary>
+    public Task<(bool ok, string? error)> InstallAsync(IProgress<double?>? progress, CancellationToken ct = default) =>
+        InstallSourceAsync(ActiveSource, progress, ct);
+
+    /// <summary>
+    /// Install one specific source, and — only once that has fully succeeded — make it the active one.
+    ///
+    /// <para>
+    /// This is both "install" and "switch source"; there is no separate switch path, because a switch IS
+    /// an install of a different repository and giving it its own code path is how the two drift apart on
+    /// exactly the checks that matter. Switching therefore costs the same full gate as any other install:
+    /// the target must be a source this build ships (<see cref="PluginSourceSelection"/>), its release must
+    /// pass <see cref="PluginSourceResolver.Verify"/>, every asset must download from that source's own
+    /// repository, and every byte must match that source's own published sha256.
+    /// </para>
+    ///
+    /// <para>
+    /// <b>Nothing is written and no preference is recorded until all of that passes.</b> A failed switch
+    /// leaves the previous install exactly as it was, still active, still recorded — so there is no state
+    /// where the app is pointed at one source and running another's files. A successful one replaces the
+    /// frontend directory wholesale and overwrites the loader slot under the same name, so the previous
+    /// source's files are gone rather than layered over.
+    /// </para>
+    ///
+    /// <para>
+    /// <b>There is no fallback.</b> If this source cannot deliver, that is the answer — the caller gets an
+    /// error naming the reason and the user decides whether to switch. The build this replaced tried the
+    /// next source automatically, which meant anyone able to make one source fail chose what got installed
+    /// instead of it.
+    /// </para>
+    /// </summary>
+    public async Task<(bool ok, string? error)> InstallSourceAsync(
+        PluginSource target, IProgress<double?>? progress, CancellationToken ct = default)
     {
         if (SteamDir is not { } steamDir) return (false, Resources.Strings.Plugin_Err_SteamNotFound);
 
-        var latest = await FetchLatestAsync(force: true, ct);
-        if (latest is null) return (false, Resources.Strings.Plugin_Err_GithubUnreachable);
+        // A source outside the compiled-in catalogue can only have come from a tampered settings file or a
+        // caller bug. Either way it names a repository this build never vetted, so it is refused here
+        // rather than downloaded and then judged.
+        if (!PluginSourceSelection.IsKnown(AppConfig.PluginSources, target))
+        {
+            log.LogWarning("Refused a plugin install from an unconfigured source {Source}.", target.Slug);
+            return (false, string.Format(Resources.Strings.Plugin_Err_UnknownSource, target.Slug));
+        }
 
-        var zipAsset = FindAsset(latest, PluginZipAsset);
-        if (zipAsset is null)
-            return (false, string.Format(Resources.Strings.Plugin_Err_MissingAssets, latest.TagName, PluginZipAsset, Slots[0].DllAsset));
+        var release = await FetchReleaseAsync(target, ct);
+        if (PluginSourceResolver.Verify(target, release, RequiredAssets) is { } problem)
+        {
+            log.LogWarning("Plugin install refused: source {Source} is {Reason} ({Asset}).",
+                target.Slug, problem.Reason, problem.AssetName ?? "-");
+            return (false, SourceProblemText(problem));
+        }
+
+        var (ok, error) = await InstallFromAsync(steamDir, new PluginReleaseChoice(target, release!), progress, ct);
+        if (!ok)
+        {
+            log.LogWarning("Plugin install from {Source} failed: {Error}", target.Slug, error);
+            return (false, error);
+        }
+
+        // Recorded only now. Persisting the choice before the install would leave a failed switch claiming
+        // a source that is not what is on disk.
+        settings.PluginSource = target.Slug;
+        // The sweep this status page reads is now stale in the one way that matters (what is installed).
+        _cachedFetch = null;
+        log.LogInformation("Plugin installed from {Source} {Tag}.", target.Slug, release!.TagName);
+        return (true, null);
+    }
+
+    /// <summary>
+    /// A source's rejection reason as a sentence for the user. One place, because the same reasons are
+    /// shown on the source cards and returned from a failed install, and two wordings of "no release" is
+    /// how one of them ends up saying something the other contradicts.
+    ///
+    /// <para>
+    /// Deliberately coarse: it names WHAT failed and, where useful, WHICH asset — never a URL, a digest or
+    /// a mirror host. Those are in the log, which is sanitised; an error balloon is not the place to
+    /// publish what an attacker's redirected metadata claimed.
+    /// </para>
+    /// </summary>
+    internal static string SourceProblemText(PluginSourceProblem problem) => problem.Reason switch
+    {
+        PluginSourceRejection.NoRelease => Resources.Strings.Plugin_SourceErr_NoRelease,
+        PluginSourceRejection.NoTag => Resources.Strings.Plugin_SourceErr_NoTag,
+        PluginSourceRejection.MissingAsset =>
+            string.Format(Resources.Strings.Plugin_SourceErr_MissingAsset, problem.AssetName),
+        PluginSourceRejection.ForeignAssetUrl =>
+            string.Format(Resources.Strings.Plugin_SourceErr_ForeignAssetUrl, problem.AssetName),
+        PluginSourceRejection.NoDigest =>
+            string.Format(Resources.Strings.Plugin_SourceErr_NoDigest, problem.AssetName),
+        _ => Resources.Strings.Plugin_Err_GithubUnreachable,
+    };
+
+    /// <summary>
+    /// The install itself, against one already-verified source.
+    ///
+    /// <para>
+    /// Nothing outside the staging folder is written until every asset has downloaded, hashed against this
+    /// source's own published digest, passed the archive screen and been disclosed to the user — so a
+    /// failure up to that point leaves the machine untouched, and a failure after it is final rather than
+    /// something to retry elsewhere.
+    /// </para>
+    /// </summary>
+    private async Task<(bool ok, string? error)> InstallFromAsync(
+        string steamDir, PluginReleaseChoice candidate, IProgress<double?>? progress, CancellationToken ct)
+    {
+        var (source, latest) = (candidate.Source, candidate.Release);
+
+        // PluginSourceResolver already established that every required asset is present, pinned to this
+        // source and digest-bearing, so these lookups cannot fail. They stay because the alternative is a
+        // null-forgiving `!` on a value whose guarantee lives in another type.
+        if (FindAsset(latest, PluginZipAsset) is not { } zipAsset)
+            return (false,
+                string.Format(Resources.Strings.Plugin_Err_MissingAssets, latest.TagName, PluginZipAsset, Slots[0].DllAsset));
         var slotAssets = new Dictionary<LoaderSlot, GithubAsset>();
         foreach (var slot in Slots)
         {
             if (FindAsset(latest, slot.DllAsset) is not { } asset)
-                return (false, string.Format(Resources.Strings.Plugin_Err_MissingAssets, latest.TagName, PluginZipAsset, slot.DllAsset));
+                return (false,
+                    string.Format(Resources.Strings.Plugin_Err_MissingAssets, latest.TagName, PluginZipAsset, slot.DllAsset));
             slotAssets[slot] = asset;
         }
 
@@ -330,19 +624,20 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
         var pinned = new List<FileStream>();
         try
         {
-            // Pinned to the plugin repo, not merely to a GitHub host: the loader DLL below is copied into
-            // the Steam root and loaded by steam.exe, and the URL comes from release JSON an API mirror may
-            // have served. See GithubProxy.IsAssetUrlForRepo.
+            // Pinned to THE SOURCE THIS RELEASE CAME FROM, not merely to a GitHub host: the loader DLL
+            // below is copied into the Steam root and loaded by steam.exe, and the URL comes from release
+            // JSON an API mirror may have served. See GithubProxy.IsAssetUrlForRepo. Passing the candidate's
+            // own owner/repo is what keeps each source's pin its own — pinning every download to one fixed
+            // repository while fetching metadata from another would refuse the fallback outright, and
+            // pinning to the metadata's own claim would be no pin at all.
             string zipPath = Path.Combine(tmp, PluginZipAsset);
-            await gh.DownloadAssetAsync(zipAsset.DownloadUrl, AppConfig.PluginReleasesOwner,
-                AppConfig.PluginReleasesRepo, zipPath, progress, ct);
+            await gh.DownloadAssetAsync(zipAsset.DownloadUrl, source.Owner, source.Repo, zipPath, progress, ct);
             pinned.Add(AssetIntegrity.OpenPinned(zipPath));
             var slotDlPaths = new Dictionary<LoaderSlot, string>();
             foreach (var (slot, asset) in slotAssets)
             {
                 string p = Path.Combine(tmp, slot.DllAsset);
-                await gh.DownloadAssetAsync(asset.DownloadUrl, AppConfig.PluginReleasesOwner,
-                    AppConfig.PluginReleasesRepo, p, progress, ct);
+                await gh.DownloadAssetAsync(asset.DownloadUrl, source.Owner, source.Repo, p, progress, ct);
                 pinned.Add(AssetIntegrity.OpenPinned(p));
                 slotDlPaths[slot] = p;
             }
@@ -352,31 +647,43 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
             // the Steam root and loaded by steam.exe, and the bytes can arrive from a third-party mirror
             // (GithubProxy falls back to public proxies in blocked regions). The old form
             // (`is { } zd && zipSha != zd`) treated a digest-less release JSON as "verified".
+            // The digests are read from THIS candidate's release. A source's bytes are only ever compared
+            // against its own published hashes, so a divergent hash in one source can never be satisfied by
+            // — or contaminate — another's.
             if (!AssetIntegrity.Matches(zipPath, AssetDigest(latest, PluginZipAsset)))
-                return (false, string.Format(Resources.Strings.Plugin_Err_VerifyFailed, PluginZipAsset));
+                return (false,
+                    string.Format(Resources.Strings.Plugin_Err_VerifyFailed, PluginZipAsset));
             string zipSha = AssetIntegrity.Sha256OfFile(zipPath); // recorded in the manifest below
 
             var slotShas = new Dictionary<LoaderSlot, string>();
             foreach (var (slot, p) in slotDlPaths)
             {
                 if (!AssetIntegrity.Matches(p, AssetDigest(latest, slot.DllAsset)))
-                    return (false, string.Format(Resources.Strings.Plugin_Err_VerifyFailed, slot.DllAsset));
+                    return (false,
+                        string.Format(Resources.Strings.Plugin_Err_VerifyFailed, slot.DllAsset));
                 slotShas[slot] = AssetIntegrity.Sha256OfFile(p);
             }
 
-            if (ScreenPluginArchive(zipPath, FrontendDir) is { } rejection) return (false, rejection);
+            if (ScreenPluginArchive(zipPath, FrontendDir) is { } rejection)
+                return (false, rejection);
 
             // Disclose what is about to be installed — the frontend zip plus one loader DLL per slot, the
             // latter going into the Steam root. Cancelling here has cost nothing: not a byte has been
-            // written outside the temp folder yet.
+            // written outside the temp folder yet. The notice names the source that actually served these
+            // bytes, so a fallback install is visible rather than silent.
+            //
+            // A refusal here is FATAL, not a source failure: the user was shown this source and said no.
+            // Quietly re-offering the next one would turn a decline into a different install.
             if (!await notice.ReviewAsync(new DownloadReview(
-                    AppConfig.PluginReleasesOwner, AppConfig.PluginReleasesRepo, latest.TagName,
+                    source.Owner, source.Repo, latest.TagName,
                     PluginZipAsset, zipSha,
                     FileCount: 1 + slotShas.Count,
                     ArchiveScreened: true), ct))
                 return (false, Resources.Strings.Download_Notice_Cancelled);
 
-            // 1) Frontend → %AppData%\LuaToolsGui\plugin (fresh).
+            // 1) Frontend → %AppData%\LuaToolsGui\plugin (fresh). Deleting the directory rather than
+            //    merging into it is what makes a SOURCE SWITCH a replacement: the previous source's files
+            //    do not survive underneath the new one's. Past this line a failure is final.
             if (Directory.Exists(FrontendDir)) Directory.Delete(FrontendDir, recursive: true);
             Directory.CreateDirectory(FrontendDir);
             ZipFile.ExtractToDirectory(zipPath, FrontendDir);
@@ -448,6 +755,7 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
             WriteManifest(new Manifest
             {
                 Tag = latest.TagName,
+                Source = source.Slug,
                 DllShas = slotShas.ToDictionary(kv => kv.Key.DllAsset, kv => kv.Value),
                 ZipSha = zipSha,
                 DisabledMillenniumEntries = disabledMillenniumEntries,
@@ -461,7 +769,18 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
 
             return (true, null);
         }
-        catch (Exception ex) { return (false, ex.Message); }
+        catch (OperationCanceledException) when (ct.IsCancellationRequested)
+        {
+            // The user (or a shutdown) cancelled. Not this source's fault, and not a reason to start over
+            // against another one.
+            throw;
+        }
+        catch (Exception ex)
+        {
+            // A download that never arrived, a mirror that served something unreadable, an IO error mid-copy.
+            // Retryable only while it happened entirely inside the staging folder.
+            return (false, ex.Message);
+        }
         finally
         {
             foreach (var handle in pinned) handle.Dispose();

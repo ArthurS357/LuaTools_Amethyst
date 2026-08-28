@@ -87,6 +87,7 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
                             <!-- Version -->
@@ -118,11 +119,60 @@
                             <Grid Grid.Row="2" Grid.Column="0" Margin="0,4" VerticalAlignment="Center">
                                 <ui:SymbolIcon FontSize="16" Foreground="{StaticResource SuccessTextBrush}" Symbol="CheckmarkCircle24" Visibility="{Binding DllOk, Converter={StaticResource BoolToVis}}" />
                                 <ui:SymbolIcon FontSize="16" Foreground="{StaticResource WarningBrush}" Symbol="Warning24" Visibility="{Binding DllOutOfDate, Converter={StaticResource BoolToVis}}" />
+                                <!-- Installed, but nothing was published to compare it against (offline, or
+                                     the active source is broken). Neutral on purpose: amber here would be
+                                     asserting the file is stale, which is exactly what is not known. -->
+                                <ui:SymbolIcon FontSize="16" Foreground="{StaticResource TextDimBrush}" Symbol="Info24" Visibility="{Binding DllUnknown, Converter={StaticResource BoolToVis}}" />
                                 <ui:SymbolIcon FontSize="16" Foreground="{StaticResource TextDimBrush}" Symbol="DismissCircle24" Visibility="{Binding DllNotInstalled, Converter={StaticResource BoolToVis}}" />
                             </Grid>
                             <TextBlock Grid.Row="2" Grid.Column="1" Margin="0,4" VerticalAlignment="Center" FontSize="12.5" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Plugin_Row_Loader}" />
                             <TextBlock Grid.Row="2" Grid.Column="2" Margin="0,4" VerticalAlignment="Center" FontSize="12.5" Foreground="{StaticResource TextPrimaryBrush}" Text="{Binding DllStatus}" />
+
+                            <!-- Source: the creator this install comes from. Chosen by the user in the
+                                 cards below and never changed on their behalf, so this row states a fact
+                                 about the install rather than reporting where a fallback ended up. -->
+                            <ui:SymbolIcon Grid.Row="3" Grid.Column="0" Margin="0,4" VerticalAlignment="Center" FontSize="16" Foreground="{StaticResource TextDimBrush}" Symbol="CloudArrowDown24" />
+                            <TextBlock Grid.Row="3" Grid.Column="1" Margin="0,4" VerticalAlignment="Center" FontSize="12.5" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Plugin_Row_Source}" />
+                            <TextBlock
+                                Grid.Row="3"
+                                Grid.Column="2"
+                                Margin="0,4"
+                                VerticalAlignment="Center"
+                                AutomationProperties.Name="{x:Static res:Strings.Plugin_Row_Source}"
+                                FontSize="12.5"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource TextPrimaryBrush}"
+                                Text="{Binding ActiveSource}"
+                                TextTrimming="CharacterEllipsis" />
                         </Grid>
+
+                        <!-- The active source cannot serve an install. An ERROR, not a nudge: nothing has
+                             switched to the other creator, so this is what tells the user their plugin is
+                             stuck and that picking another source below is the way out. -->
+                        <Border
+                            Margin="0,14,0,0"
+                            Padding="10,8"
+                            Background="{StaticResource AlertTintStrongBrush}"
+                            BorderBrush="{StaticResource DangerBrush}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            Visibility="{Binding ActiveSourceError, Converter={StaticResource NullToCollapsed}}">
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    Foreground="{StaticResource DangerBrush}"
+                                    Symbol="ErrorCircle24" />
+                                <TextBlock
+                                    Margin="10,0,0,0"
+                                    VerticalAlignment="Center"
+                                    AutomationProperties.LiveSetting="Assertive"
+                                    FontSize="11.5"
+                                    Foreground="{StaticResource DangerBrush}"
+                                    Text="{Binding ActiveSourceError}"
+                                    TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Border>
 
                         <!-- Millennium coexisting info -->
                         <Border
@@ -195,6 +245,163 @@
 
                     </StackPanel>
                 </Border>
+
+                <!-- ── Plugin sources ──────────────────────────────────────────────────────────
+                     One card per creator, laid out exactly like the Mode page's cards: same border,
+                     padding, ACTIVE badge and right-hand action column. Both pages answer the same
+                     question — which of several mutually exclusive things is the installed one — so
+                     they are deliberately the same control, not two takes on it.
+
+                     There is no fallback behind this list: the active card is what gets installed, and
+                     a broken source shows its reason here instead of quietly handing the install to the
+                     other creator. -->
+                <TextBlock
+                    Margin="2,26,0,0"
+                    FontSize="11"
+                    FontWeight="SemiBold"
+                    Foreground="{StaticResource TextDimBrush}"
+                    Text="{x:Static res:Strings.Plugin_Sources_Header}" />
+                <TextBlock
+                    Margin="2,6,0,0"
+                    FontSize="12"
+                    Foreground="{StaticResource TextMutedBrush}"
+                    Text="{x:Static res:Strings.Plugin_Sources_Subtitle}"
+                    TextWrapping="Wrap" />
+
+                <ItemsControl
+                    Margin="0,12,0,0"
+                    AutomationProperties.Name="{x:Static res:Strings.Plugin_Sources_Header}"
+                    ItemsSource="{Binding Sources}"
+                    KeyboardNavigation.TabNavigation="Continue">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                Margin="0,0,0,12"
+                                Padding="18"
+                                Background="{StaticResource SurfaceCardBrush}"
+                                BorderThickness="1"
+                                CornerRadius="10">
+                                <!-- The active card is outlined in the accent rather than only badged:
+                                     the badge alone puts the whole signal on a 10.5px word, and the
+                                     outline is what makes "which one am I on" readable without it. -->
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="BorderBrush" Value="{StaticResource BorderStrongBrush}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                <Setter Property="BorderBrush" Value="{StaticResource AccentOutlineBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <ui:SymbolIcon
+                                                VerticalAlignment="Center"
+                                                Foreground="{StaticResource AccentBrush}"
+                                                Symbol="PuzzlePiece24" />
+                                            <TextBlock
+                                                Margin="10,0,0,0"
+                                                VerticalAlignment="Center"
+                                                FontSize="15"
+                                                FontWeight="SemiBold"
+                                                Text="{Binding Slug}" />
+                                            <Border
+                                                Margin="10,0,0,0"
+                                                Padding="7,2"
+                                                VerticalAlignment="Center"
+                                                Background="{StaticResource AccentBadgeBrush}"
+                                                CornerRadius="4"
+                                                Visibility="{Binding IsActive, Converter={StaticResource BoolToVis}}">
+                                                <TextBlock
+                                                    AutomationProperties.Name="{x:Static res:Strings.Plugin_Source_Active}"
+                                                    FontSize="10.5"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="{StaticResource AccentSoftBrush}"
+                                                    Text="{x:Static res:Strings.Plugin_Source_Active}" />
+                                            </Border>
+                                            <!-- Which entry a user who has never chosen is on. -->
+                                            <Border
+                                                Margin="6,0,0,0"
+                                                Padding="7,2"
+                                                VerticalAlignment="Center"
+                                                Background="{StaticResource SurfaceStrongBrush}"
+                                                CornerRadius="4"
+                                                Visibility="{Binding IsDefault, Converter={StaticResource BoolToVis}}">
+                                                <TextBlock
+                                                    FontSize="10.5"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="{StaticResource TextMutedBrush}"
+                                                    Text="{x:Static res:Strings.Plugin_Source_Default}" />
+                                            </Border>
+                                        </StackPanel>
+
+                                        <TextBlock
+                                            Margin="0,6,0,0"
+                                            FontSize="12"
+                                            Foreground="{StaticResource TextDimBrush}"
+                                            Text="{Binding Creator}"
+                                            TextWrapping="Wrap" />
+
+                                        <TextBlock
+                                            Margin="0,6,0,0"
+                                            FontSize="12.5"
+                                            Foreground="{StaticResource TextMutedBrush}"
+                                            Text="{Binding StatusText}"
+                                            TextWrapping="Wrap" />
+
+                                        <!-- What this source publishes right now. -->
+                                        <StackPanel Margin="0,6,0,0" Orientation="Horizontal">
+                                            <TextBlock
+                                                FontSize="12.5"
+                                                Foreground="{StaticResource TextDimBrush}"
+                                                Text="{x:Static res:Strings.Plugin_Source_LatestVersion}" />
+                                            <TextBlock
+                                                Margin="8,0,0,0"
+                                                FontSize="12.5"
+                                                FontWeight="SemiBold"
+                                                Foreground="{StaticResource TextPrimaryBrush}"
+                                                Text="{Binding LatestVersion}" />
+                                        </StackPanel>
+
+                                        <!-- Why this source cannot be installed from. Stated on the card
+                                             it belongs to, so choosing between sources is informed. -->
+                                        <TextBlock
+                                            Margin="0,6,0,0"
+                                            FontSize="11.5"
+                                            Foreground="{StaticResource WarningStrongBrush}"
+                                            Text="{Binding ProblemText}"
+                                            TextWrapping="Wrap"
+                                            Visibility="{Binding ProblemText, Converter={StaticResource NullToCollapsed}}" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <!-- Switching is the only action a non-active card offers; the
+                                             active one is driven by the Install/Update button above,
+                                             which is the same split the Mode page uses. -->
+                                        <ui:Button
+                                            MinWidth="140"
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Center"
+                                            AutomationProperties.Name="{x:Static res:Strings.Plugin_Btn_Activate}"
+                                            Command="{Binding DataContext.ActivateCommand, ElementName=Root}"
+                                            CommandParameter="{Binding}"
+                                            Content="{x:Static res:Strings.Plugin_Btn_Activate}"
+                                            Icon="{ui:SymbolIcon CheckmarkCircle24}"
+                                            IsEnabled="{Binding DataContext.NotBusy, ElementName=Root}"
+                                            Visibility="{Binding ShowActivate, Converter={StaticResource BoolToVis}}" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
 
                 <!-- "What this does" — fills the page and explains the plugin at a glance. -->
                 <TextBlock

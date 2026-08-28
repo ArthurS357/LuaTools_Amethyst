@@ -395,6 +395,26 @@ Isso exclui os arquivos .lua de Steam\config\stplug-in. Reinicie o Steam depois 
   <data name="Plugin_Row_LatestVersion" xml:space="preserve"><value>Versão mais recente</value></data>
   <data name="Plugin_Row_Frontend" xml:space="preserve"><value>Frontend</value></data>
   <data name="Plugin_Row_Loader" xml:space="preserve"><value>Carregador (winmm.dll)</value></data>
+  <data name="Plugin_Row_Source" xml:space="preserve"><value>Fonte</value></data>
+  <data name="Plugin_Sources_Header" xml:space="preserve"><value>Fonte do plugin</value></data>
+  <data name="Plugin_Sources_Subtitle" xml:space="preserve"><value>Cada criador publica a própria build do plugin. Escolha qual você quer instalada — o LuaTools instala apenas a fonte ativa e nunca troca sozinho.</value></data>
+  <data name="Plugin_Source_By" xml:space="preserve"><value>por {0}</value></data>
+  <data name="Plugin_Source_Active" xml:space="preserve"><value>Ativo</value></data>
+  <data name="Plugin_Source_Default" xml:space="preserve"><value>Padrão</value></data>
+  <data name="Plugin_Source_Installed" xml:space="preserve"><value>Instalado a partir desta fonte.</value></data>
+  <data name="Plugin_Source_ActiveNotInstalled" xml:space="preserve"><value>Fonte ativa — ainda não instalada.</value></data>
+  <data name="Plugin_Source_Available" xml:space="preserve"><value>Disponível. Escolha para instalar deste criador.</value></data>
+  <data name="Plugin_Source_LatestVersion" xml:space="preserve"><value>Mais recente</value></data>
+  <data name="Plugin_Btn_Activate" xml:space="preserve"><value>Usar esta fonte</value></data>
+  <data name="Plugin_Confirm_SwitchCaption" xml:space="preserve"><value>Trocar a fonte do plugin</value></data>
+  <data name="Plugin_Confirm_SwitchBody" xml:space="preserve"><value>Isso instala o plugin a partir de {0}, substituindo o que está instalado agora, e fecha e reinicia o Steam para aplicar. Continuar?</value></data>
+  <data name="Plugin_Toast_SourceSwitched" xml:space="preserve"><value>Agora instalado a partir de {0}. O Steam está reiniciando para carregar.</value></data>
+  <data name="Plugin_Err_UnknownSource" xml:space="preserve"><value>{0} não é uma fonte de plugin que esta build oferece, então nada foi instalado.</value></data>
+  <data name="Plugin_SourceErr_NoRelease" xml:space="preserve"><value>Esta fonte não publicou nenhum release, ou não pôde ser acessada.</value></data>
+  <data name="Plugin_SourceErr_NoTag" xml:space="preserve"><value>O release mais recente desta fonte não tem tag de versão.</value></data>
+  <data name="Plugin_SourceErr_MissingAsset" xml:space="preserve"><value>O release mais recente desta fonte não tem {0}.</value></data>
+  <data name="Plugin_SourceErr_ForeignAssetUrl" xml:space="preserve"><value>O download de {0} desta fonte aponta para fora do próprio repositório, então foi recusado.</value></data>
+  <data name="Plugin_SourceErr_NoDigest" xml:space="preserve"><value>Esta fonte não publica SHA-256 para {0}, então o conteúdo não pôde ser comprovado.</value></data>
   <data name="Plugin_Millennium_Coexisting" xml:space="preserve"><value>Millennium detectado — o LuaTools é executado ao lado dele. A instalação desativa a cópia própria deste plugin do Millennium para que apenas o LuaLoader injete.</value></data>
   <data name="Plugin_Footer" xml:space="preserve"><value>O LuaLoader é instalado na sua pasta do Steam. Este app funciona como backend — se você fechá-lo pela bandeja, o plugin deixará de funcionar!</value></data>
   <data name="Plugin_Btn_Install" xml:space="preserve"><value>Instalar</value></data>

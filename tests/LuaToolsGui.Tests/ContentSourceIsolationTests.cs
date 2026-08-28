@@ -34,10 +34,12 @@ public class ContentSourceIsolationTests
 
         // ...and must not be any of the content sources: collapsing the two would mean a change to how
         // the app updates itself could silently redirect where plugins come from.
-        string pluginRepo = $"{AppConfig.PluginReleasesOwner}/{AppConfig.PluginReleasesRepo}";
+        // EVERY catalogued plugin source, not just upstream's: the fork's own frontend repo lives under the
+        // same owner as the self-update feed, which is precisely the pair a careless edit would merge.
         foreach (string feed in selfUpdate.Repos)
         {
-            Assert.DoesNotContain(pluginRepo, feed, StringComparison.OrdinalIgnoreCase);
+            foreach (var source in AppConfig.PluginSources)
+                Assert.DoesNotContain(source.Slug, feed, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain(AppConfig.SteamlessRepo, feed, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain(AppConfig.CloudRedirectRepo, feed, StringComparison.OrdinalIgnoreCase);
         }
@@ -70,10 +72,11 @@ public class ContentSourceIsolationTests
     {
         // The blocklist must target only the repos that publish the official APP build. If it ever caught
         // a content repo (the plugin lives under the same owner), disabling self-update would silently
-        // take plugin downloads with it.
-        string pluginRepo = $"{AppConfig.PluginReleasesOwner}/{AppConfig.PluginReleasesRepo}";
-
-        Assert.DoesNotContain(pluginRepo, AppConfig.UpstreamReleaseRepos, StringComparer.OrdinalIgnoreCase);
+        // take plugin downloads with it. Checked for every selectable source: madoiscool publishes both
+        // the official app AND a plugin the user may legitimately choose, so the blocklist has to tell
+        // "madoiscool/LuaTools" from "madoiscool/LTSP" rather than matching on the owner.
+        foreach (var source in AppConfig.PluginSources)
+            Assert.DoesNotContain(source.Slug, AppConfig.UpstreamReleaseRepos, StringComparer.OrdinalIgnoreCase);
         Assert.DoesNotContain(AppConfig.SteamlessRepo, AppConfig.UpstreamReleaseRepos, StringComparer.OrdinalIgnoreCase);
         Assert.DoesNotContain(AppConfig.CloudRedirectRepo, AppConfig.UpstreamReleaseRepos, StringComparer.OrdinalIgnoreCase);
     }

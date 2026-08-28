@@ -476,6 +476,26 @@ This deletes the .lua files from Steam\config\stplug-in. Restart Steam afterward
   <data name="Plugin_Row_LatestVersion" xml:space="preserve"><value>Latest version</value></data>
   <data name="Plugin_Row_Frontend" xml:space="preserve"><value>Frontend</value></data>
   <data name="Plugin_Row_Loader" xml:space="preserve"><value>Loader (winmm.dll)</value></data>
+  <data name="Plugin_Row_Source" xml:space="preserve"><value>Source</value></data>
+  <data name="Plugin_Sources_Header" xml:space="preserve"><value>Plugin source</value></data>
+  <data name="Plugin_Sources_Subtitle" xml:space="preserve"><value>Each creator publishes their own build of the plugin. Pick the one you want installed — LuaTools only ever installs the active source, and never switches on its own.</value></data>
+  <data name="Plugin_Source_By" xml:space="preserve"><value>by {0}</value></data>
+  <data name="Plugin_Source_Active" xml:space="preserve"><value>Active</value></data>
+  <data name="Plugin_Source_Default" xml:space="preserve"><value>Default</value></data>
+  <data name="Plugin_Source_Installed" xml:space="preserve"><value>Installed from this source.</value></data>
+  <data name="Plugin_Source_ActiveNotInstalled" xml:space="preserve"><value>Active source — not installed yet.</value></data>
+  <data name="Plugin_Source_Available" xml:space="preserve"><value>Available. Choose it to install from this creator instead.</value></data>
+  <data name="Plugin_Source_LatestVersion" xml:space="preserve"><value>Latest</value></data>
+  <data name="Plugin_Btn_Activate" xml:space="preserve"><value>Use this source</value></data>
+  <data name="Plugin_Confirm_SwitchCaption" xml:space="preserve"><value>Switch plugin source</value></data>
+  <data name="Plugin_Confirm_SwitchBody" xml:space="preserve"><value>This installs the plugin from {0}, replacing what is installed now, and closes and restarts Steam to apply it. Continue?</value></data>
+  <data name="Plugin_Toast_SourceSwitched" xml:space="preserve"><value>Now installed from {0}. Steam is restarting to load it.</value></data>
+  <data name="Plugin_Err_UnknownSource" xml:space="preserve"><value>{0} is not a plugin source this build ships, so nothing was installed.</value></data>
+  <data name="Plugin_SourceErr_NoRelease" xml:space="preserve"><value>This source published no release, or could not be reached.</value></data>
+  <data name="Plugin_SourceErr_NoTag" xml:space="preserve"><value>This source's newest release carries no version tag.</value></data>
+  <data name="Plugin_SourceErr_MissingAsset" xml:space="preserve"><value>This source's newest release is missing {0}.</value></data>
+  <data name="Plugin_SourceErr_ForeignAssetUrl" xml:space="preserve"><value>This source's download for {0} points outside its own repository, so it was refused.</value></data>
+  <data name="Plugin_SourceErr_NoDigest" xml:space="preserve"><value>This source publishes no SHA-256 for {0}, so its contents could not be proven.</value></data>
   <data name="Plugin_Millennium_Coexisting" xml:space="preserve"><value>Millennium detected — LuaTools runs alongside it. Installing disables Millennium's own copy of this plugin so only LuaLoader injects.</value></data>
   <data name="Plugin_Footer" xml:space="preserve"><value>LuaLoader installs into your Steam folder. This app works as the backend — if you close it from the tray, the plugin will no longer function!</value></data>
   <data name="Plugin_Btn_Install" xml:space="preserve"><value>Install</value></data>

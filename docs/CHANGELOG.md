@@ -1,5 +1,74 @@
 # Changelog
 
+## 1.6.2 — 2026-08-27
+
+### Pagina Plugin lista as fontes por criador, e voce escolhe a ativa
+
+- **A fonte do plugin deixou de ser um par de constantes e virou um CATALOGO escolhivel.**
+  `AppConfig.PluginSources` traz `ArthurS357/Front-end-Amethyst` (padrao) e `madoiscool/LTSP`. A ordem e
+  ordem de exibicao e o padrao de instalacao nova — **nao** e mais uma cadeia de prioridade.
+  `PluginReleasesOwner`/`PluginReleasesRepo` continuam apontando para upstream, agora como uma entrada do
+  catalogo entre outras.
+- **A pagina Plugin agora mostra um card por criador**, no mesmo formato dos cards da pagina Modos: mesma
+  borda, mesmo selo `Ativo`, mesma coluna de acao a direita. As duas paginas fazem a mesma pergunta — qual
+  de varias coisas mutuamente exclusivas deve ser a instalada — e responder a ela nao deveria parecer dois
+  produtos diferentes. Cada card mostra o criador, a versao publicada, o status e, quando aplicavel, o
+  motivo pelo qual aquela fonte nao pode ser instalada.
+- **O FALLBACK AUTOMATICO FOI REMOVIDO.** Se a fonte ativa nao publica nada instalavel — sem release, sem
+  tag, asset faltando, URL de asset apontando para fora do proprio repositorio, ou sem sha256 publicado —
+  a pagina **mostra o erro** e a instalacao falha. Nada instala a build do outro criador no lugar.
+  Cair para a proxima fonte parece resiliencia, mas significa que quem consegue derrubar a primeira
+  (bloqueio, rate limit, outage) tambem decide o que cai ao lado do `steam.exe` no lugar dela. Isso valia
+  tanto para falha de metadados quanto para falha de bytes; ambas agora param na fonte escolhida.
+- **A escolha e do usuario e e persistida** em `settings.json` como `"PluginSource": "owner/repo"`,
+  gravada pelo botao *Usar esta fonte*. A precedencia esta em `PluginSourceSelection.Resolve`, que e
+  politica pura e testavel: escolha do usuario -> fonte da instalacao atual -> padrao do catalogo.
+- **`settings.json` SELECIONA, nunca NOMEIA.** O slug persistido e validado contra o catalogo compilado no
+  momento do uso, nao na escrita — o arquivo existente nunca passou por validacao nenhuma, e e justamente
+  ele que alguem com acesso de usuario editaria. Um valor que nao casa com nenhuma fonte compilada e
+  ignorado e o padrao vale. Assim o arquivo pode trocar entre fontes ja auditadas, mas nao pode introduzir
+  uma nova.
+- **Compatibilidade com instalacoes existentes.** Quem ja instalou de `madoiscool/LTSP` continua nele:
+  sem escolha gravada, a fonte ativa e a que o manifesto registra. Manifesto antigo (sem `Source`) e lido
+  como upstream — a unica coisa que ele poderia ter sido. O padrao ser o repositorio do fork nao migra
+  ninguem numa atualizacao do app.
+- **Trocar de fonte e uma instalacao completa, nao um atalho.** `InstallSourceAsync` e o mesmo caminho de
+  Instalar/Atualizar: fonte tem que estar no catalogo, release tem que passar `PluginSourceResolver.Verify`
+  inteiro, cada asset baixa do proprio repositorio da fonte e cada byte confere com o sha256 que ela
+  publicou. **Nada e escrito e nenhuma preferencia e gravada antes disso tudo passar** — troca que falha
+  deixa a instalacao anterior exatamente como estava, ainda ativa, ainda registrada. Troca que da certo
+  apaga o diretorio do frontend inteiro, entao os arquivos do criador anterior nao sobrevivem embaixo dos
+  novos.
+- **`PluginSourceResolver` virou um portao de uma pergunta so.** Sem `Choose`, sem `Usable`, sem ordem:
+  `Verify(fonte, release, assets)` responde "essa fonte da para instalar, sim ou nao, e se nao, por que".
+  O portao em si nao mudou e continua fail-closed. O que sumiu foi a capacidade de responder "essa nao,
+  mas aquela ali sim".
+- **A lista de exclusao por falha de bytes (`_bytesFailedSources`) foi removida junto.** Ela existia so
+  para o fallback assentar em vez de oscilar entre fontes; sem fallback, uma fonte que publica hash que
+  nao bate com o proprio asset agora simplesmente falha e diz por que, toda vez, em vez de silenciosamente
+  empurrar o usuario para outro repositorio.
+- **Erros nao vazam metadado hostil.** `SourceProblemText` nomeia o que falhou e qual asset; a URL
+  recusada e o digest ficam so no log (que ja passa por `LogSanitizer`). O caso `ForeignAssetUrl` e por
+  definicao aquele em que os metadados sao controlados por outra pessoa — devolver a URL dela para a UI
+  seria publicar exatamente o que o pin acabou de recusar.
+- **i18n**: 20 chaves novas em `Strings.resx` e `Strings.pt-BR.resx` (rotulo da linha `Fonte`, cabecalho da
+  secao, selos, status por fonte, confirmacao de troca e os cinco motivos de recusa). O selo ambar
+  `reserva` foi removido — descrevia um comportamento que nao existe mais, e a verificacao disso agora
+  varre os 30 arquivos `Strings*.resx`, nao so os dois editados a mao. As outras 28 linguas caem em ingles
+  para essas chaves ate serem traduzidas, que e o comportamento padrao de satelite do .NET.
+
+### Linha do loader nao afirma mais o que nao da para saber
+
+- **Offline, ou fonte ativa quebrada, agora le como `Instalado` e nada mais.** Antes a pagina mostrava, no
+  mesmo card, o erro dizendo que a fonte nao pode ser alcancada, a pilha verde `Atualizado` e o aviso
+  ambar `Desatualizado`. Nenhuma das duas ultimas era verificavel — sem release para comparar, nao ha o
+  que afirmar. O aviso ambar era o pior dos dois: mandava atualizar usando exatamente a fonte que acabou
+  de falhar.
+
+O registro completo da auditoria que acompanhou esta versao — o que foi verificado, o que foi achado e por
+que cada correcao ficou como ficou — esta em
+[`auditoria-fontes-plugin-2026-08-27.md`](auditoria-fontes-plugin-2026-08-27.md).
+
 ## 1.6.1 — 2026-08-27
 
 ### Absorcao de registro de instalacao agora e simetrica

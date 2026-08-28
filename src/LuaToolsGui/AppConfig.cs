@@ -198,11 +198,52 @@ public static class AppConfig
     ];
 
     // ── Plugin releases (the store-page plugin manager fetches these) ──────────────
-    // Separate from the app's own Velopack self-update repo above. Each release of this repo carries
+    // Separate from the app's own Velopack self-update repo above. Each release of these repos carries
     // `plugin.zip` (the frontend) + `winmm.dll` (the loader); the tag is the version (e.g. "v1.2").
     // Fetched + verified (by asset sha256 digest) through GithubProxy like everything else.
+    //
+    // TWO sources, and this list is a CATALOGUE, not a priority chain. The Plugin page shows each one as
+    // its own card and the user picks which is active; the choice is persisted (SettingsService.
+    // PluginSource) and nothing ever changes it on the user's behalf. If the active source publishes
+    // nothing installable, the page says so and the install fails — the OTHER source is never reached for.
+    // See Services.PluginSourceResolver for why the automatic fallback that used to live here was removed:
+    // it handed the choice of what gets installed to whoever could make the first source fail.
+    //
+    // Each source is judged independently and fail-closed: its release must carry every required asset,
+    // each asset's browser_download_url must be pinned to THAT source's own repository, and each must
+    // carry a parseable sha256 digest. One source's hashes are never consulted for another's bytes.
+    //
+    // Compiled in on purpose: NOT settings-driven, for the same reason as AmethystToolOwner below. The
+    // loader DLL lands next to steam.exe. settings.json selects BY SLUG from this list and can name
+    // nothing outside it (see Services.PluginSourceSelection), so a user-writable file can pick a source
+    // but can never introduce one.
+
+    /// <summary>Default plugin source: this fork's own frontend. What a fresh install uses when the user
+    /// has not chosen otherwise.</summary>
+    public const string PluginPrimaryOwner = "ArthurS357";
+    public const string PluginPrimaryRepo = "Front-end-Amethyst";
+
+    /// <summary>The original upstream frontend. Selectable like any other source, and the pin every
+    /// pre-existing install was made against — which is why an install recording no source at all is
+    /// treated as having come from here rather than being moved somewhere else.</summary>
     public const string PluginReleasesOwner = "madoiscool";
     public const string PluginReleasesRepo = "LTSP";
+
+    /// <summary>Every plugin source the user may choose between. Order is presentation order, and the
+    /// first entry is the default for a fresh install — it is NOT a fallback chain.</summary>
+    public static readonly PluginSource[] PluginSources =
+    [
+        new(PluginPrimaryOwner, PluginPrimaryRepo),
+        new(PluginReleasesOwner, PluginReleasesRepo),
+    ];
+
+    /// <summary>What a fresh install uses when the user has expressed no preference.</summary>
+    public static PluginSource DefaultPluginSource => PluginSources[0];
+
+    /// <summary>What an install that predates source recording must have come from — upstream's repo was
+    /// the only plugin source that ever existed before this catalogue did. Recorded so those users stay
+    /// on the source they actually have instead of being migrated by an app update.</summary>
+    public static PluginSource LegacyPluginSource => new(PluginReleasesOwner, PluginReleasesRepo);
 
     // ── AmethystTool (BetterSteamTools fork) ──────────────────────────────────────
     // A NATIVE injection plugin: its release archive carries AmethystTool.dll plus two proxy DLLs

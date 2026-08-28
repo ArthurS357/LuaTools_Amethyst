@@ -112,6 +112,15 @@ public class AppSettings
     // Nullable so "never set" (→ default OFF) is distinguishable from an explicit choice.
     public bool? PluginAutoUpdate { get; set; }
 
+    // ── Store-page plugin source (Plugin page) — the user's chosen creator/repo ──
+    // "owner/repo", selected on the Plugin page. Only a slug that names one of AppConfig.PluginSources is
+    // honoured; anything else is ignored in favour of the default (see PluginSourceSelection). This file
+    // therefore SELECTS a compiled-in source and can never introduce one — which matters because the
+    // install it governs places a DLL next to steam.exe.
+    // Nullable so "never chosen" is distinguishable from a choice, which is what lets an existing install
+    // keep the source it actually came from instead of being moved by an app update.
+    public string? PluginSource { get; set; }
+
     // ── GitHub mirror overrides (advanced; no UI, edit settings.json by hand) ──
     // The defaults are public third-party proxies used only when github.com is unreachable. Set either
     // list to [] to disable mirrors entirely (direct connections only), or to your own https prefixes.
@@ -400,6 +409,23 @@ public sealed class SettingsService
         set { _settings.PluginAutoUpdate = value; Save(); }
     }
 
+    /// <summary>
+    /// The plugin source the user picked on the Plugin page ("owner/repo"), or null if never chosen.
+    ///
+    /// <para>
+    /// Stored raw and validated at the point of USE, not here: <see cref="PluginSourceSelection"/> matches
+    /// it against the compiled-in catalogue and falls back to the default when it names nothing, so a
+    /// hand-edited or stale settings.json cannot point an install at an arbitrary repository. Validating
+    /// on write instead would leave the file's existing contents unchecked, which is the case that
+    /// actually matters.
+    /// </para>
+    /// </summary>
+    public string? PluginSource
+    {
+        get => _settings.PluginSource;
+        set { _settings.PluginSource = string.IsNullOrWhiteSpace(value) ? null : value; Save(); }
+    }
+
     private void Load()
     {
         // Prefer the primary file; fall back to the last-good .bak. Crucially, NEVER silently reset a
@@ -475,6 +501,7 @@ public sealed class SettingsService
             && _settings.WarnOnInsecureMetadata is null
             && _settings.AppUpdateRepos is null
             && _settings.PluginAutoUpdate is null
+            && _settings.PluginSource is null
             && _settings.GithubDownloadMirrors is null
             && _settings.GithubApiMirrors is null;
         if (empty)

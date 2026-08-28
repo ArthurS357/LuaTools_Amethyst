@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.6.1");
+        AppVersion.Current.Should().Be("1.6.2");
     }
 
     [Fact]
@@ -35,7 +35,10 @@ public class ChangelogTests
     {
         var current = Changelog.Entries[0];
 
-        current.Released.Should().Be("2026-08-27");
+        // Deliberately NOT a hardcoded date. Pinning one here means every bump has to remember to edit a
+        // test that is not about the date, and it passes or fails for a reason unrelated to what this test
+        // is checking — 1.6.2 only stayed green because it happened to ship the same day as 1.6.1. Shape
+        // is covered by Every_entry_is_complete_enough_to_render; ordering by Release_dates_never_go_backwards.
         current.Summary.Should().NotBeNullOrWhiteSpace();
         current.Highlights.Should().HaveCountGreaterThanOrEqualTo(3);
         current.Highlights.Should().AllSatisfy(h => h.Should().NotBeNullOrWhiteSpace());
@@ -46,9 +49,9 @@ public class ChangelogTests
     {
         string text = string.Join(" ", Changelog.Entries[0].Highlights);
 
-        text.Should().ContainEquivalentOf("proxy DLLs");
-        text.Should().ContainEquivalentOf("Home");
-        text.Should().ContainEquivalentOf("self-update");
+        text.Should().ContainEquivalentOf("creator");
+        text.Should().ContainEquivalentOf("fallback");
+        text.Should().ContainEquivalentOf("SHA-256");
     }
 
     [Fact]
@@ -72,6 +75,19 @@ public class ChangelogTests
             e.Summary.Should().NotBeNullOrWhiteSpace();
             e.Highlights.Should().NotBeEmpty();
         });
+    }
+
+    [Fact]
+    public void Release_dates_never_go_backwards()
+    {
+        // Replaces the hardcoded date that used to sit in the current-release test. This checks the thing
+        // that would actually be wrong — a new entry dated before the one it supersedes — instead of
+        // needing an edit on every bump. Equal dates are allowed: two releases can ship the same day.
+        var dates = Changelog.Entries
+            .Select(e => DateOnly.ParseExact(e.Released, "yyyy-MM-dd"))
+            .ToList();
+
+        dates.Should().BeInDescendingOrder();
     }
 
     [Fact]

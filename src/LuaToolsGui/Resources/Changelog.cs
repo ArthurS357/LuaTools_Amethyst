@@ -29,6 +29,16 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.6.2", "2026-08-27",
+            "The Plugin page now lists every creator who publishes the plugin and lets you pick which one is installed — and never switches for you.",
+            [
+                "The Plugin page shows one card per creator, laid out like the Mode page's cards, with the active one outlined. Press \"Use this source\" to switch; it runs a full install of that repository and only records your choice once that has succeeded.",
+                "There is no automatic fallback any more. If the source you are on publishes nothing installable, the page says exactly why and the install fails — it does not quietly install the other creator's build instead.",
+                "Each source is checked on its own and fail-closed: its release must carry every asset, point each one at its own repository, and publish a SHA-256 for it. One creator's hashes are never used to judge another's files.",
+                "Anyone already installed from madoiscool/LTSP stays there. The fork's own frontend is only the default for a fresh install, so an app update never moves you.",
+                "The loader row no longer reports \"Up to date\" or \"Out of date\" when it could not reach a release to compare against — offline, or a broken source, now reads as simply \"Installed\".",
+            ]),
+
         new("1.6.1", "2026-08-27",
             "A fix for a manifest deadlock between backends, a Home page that finally shows what state everything is in, and more translations.",
             [
