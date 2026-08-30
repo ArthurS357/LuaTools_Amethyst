@@ -49,6 +49,11 @@ build-release.ps1
 # Python bytecode from scripts/tests
 __pycache__/
 *.pyc
+*.pytest_cache
+.artifacts
+*.release/
+release/
+.release
 
 # Never commit
 *.lnk
