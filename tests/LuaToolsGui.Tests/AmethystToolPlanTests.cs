@@ -224,4 +224,108 @@ public class AmethystToolPlanTests
     [Fact]
     public void An_empty_steam_root_is_not_installed() =>
         AmethystToolPlan.IsInstalled(Existing()).Should().BeFalse();
+
+    // ── Quarantine ────────────────────────────────────────────────────────────
+    //
+    // The payload overwrites dwmapi.dll and xinput1_4.dll, so a Mode's proxy DLLs stop being loaded on
+    // their own. OpenSteamTool.dll is the one that does NOT get overwritten — AmethystTool is a fork of
+    // BetterSteamTools, so its loader can still find it, and Steam comes back up with two engines hooked
+    // into it. That is the state behind the reported download failure.
+
+    [Theory]
+    [InlineData("OpenSteamTool.dll")]
+    [InlineData("opensteamtool.toml")]
+    public void The_displaced_backends_files_are_quarantined_into_the_backup_folder(string leftover)
+    {
+        var plan = Plan(null, leftover);
+
+        plan.Rejected.Should().BeFalse();
+        var step = plan.Quarantine.Should().ContainSingle().Subject;
+        step.FileName.Should().Be(leftover);
+        step.SourcePath.Should().Be(Path.Combine(SteamRoot, leftover));
+        step.BackupPath.Should().Be(Path.Combine(plan.BackupDirectory!, leftover));
+    }
+
+    [Fact]
+    public void A_quarantine_on_its_own_creates_the_backup_folder()
+    {
+        // No payload file is being overwritten here, so nothing else would have asked for one — and a
+        // quarantine step with nowhere to move to would have to delete instead.
+        var plan = Plan(null, "OpenSteamTool.dll");
+
+        plan.HasBackups.Should().BeTrue();
+        plan.Steps.Should().OnlyContain(s => s.BackupPath == null);
+    }
+
+    [Fact]
+    public void Nothing_is_quarantined_from_a_clean_steam_root() =>
+        Plan(null).Quarantine.Should().BeEmpty();
+
+    [Fact]
+    public void The_cloud_redirect_addon_is_left_where_it_is()
+    {
+        // Deliberate: nothing loads cloud_redirect.dll by name — OpenSteamTool does — so once that DLL is
+        // quarantined this one is already inert, and moving it would be touching a separate add-on.
+        var plan = Plan(null, "cloud_redirect.dll");
+
+        plan.Quarantine.Should().BeEmpty();
+        plan.HasBackups.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Quarantine_never_names_a_file_the_payload_already_overwrites() =>
+        AmethystToolPlan.ConflictingFiles.Should().NotIntersectWith(AmethystToolPlan.PayloadFiles);
+
+    // ── First-run detection abstains ──────────────────────────────────────────
+    //
+    // With an empty slot (fresh or lost settings.json) DetectActiveModeAsync adopts a Mode by hashing
+    // dwmapi.dll and xinput1_4.dll against published releases. AmethystTool is a fork, so on ITS root
+    // those two can hash-match BetterSteamTools exactly — and the ACTIVE badge would land on the wrong
+    // card. IsAmethystRoot is the check that makes detection abstain instead.
+
+    [Fact]
+    public void A_root_whose_shared_dlls_are_indistinguishable_is_still_recognised_as_AmethystTools()
+    {
+        // Exactly the ambiguous case: dwmapi.dll and xinput1_4.dll here are byte-identical to
+        // BetterSteamTools', so every hash check downstream says "BetterSteamTools". The two names no Mode
+        // places are what settle it, and detection abstains.
+        AmethystToolPlan.IsAmethystRoot(Existing([.. AmethystToolPlan.PayloadFiles]))
+            .Should().BeTrue();
+    }
+
+    [Fact]
+    public void A_root_that_is_plainly_a_modes_is_left_to_normal_detection()
+    {
+        // BetterSteamTools' three files and nothing else — no abstention, detection proceeds and adopts
+        // the Mode as it always did.
+        AmethystToolPlan.IsAmethystRoot(
+            Existing("dwmapi.dll", "xinput1_4.dll", "OpenSteamTool.dll")).Should().BeFalse();
+    }
+
+    [Theory]
+    [InlineData("AmethystTool.dll")]
+    [InlineData("amethysttool.toml")]
+    public void One_exclusive_file_on_its_own_is_not_enough_to_abstain(string present)
+    {
+        // A single leftover is not an AmethystTool root — abstaining on it would disable first-run
+        // detection for a Mode user who has one stale file lying around.
+        AmethystToolPlan.IsAmethystRoot(Existing(present, "dwmapi.dll", "xinput1_4.dll"))
+            .Should().BeFalse();
+    }
+
+    [Fact]
+    public void An_empty_root_leaves_detection_alone() =>
+        AmethystToolPlan.IsAmethystRoot(Existing()).Should().BeFalse();
+
+    [Fact]
+    public void The_exclusive_files_are_payload_files_no_mode_places()
+    {
+        AmethystToolPlan.ExclusiveFiles.Should().BeSubsetOf(AmethystToolPlan.PayloadFiles);
+
+        // The property the abstention rests on: if a Mode ever starts placing one of these, presence stops
+        // pointing at AmethystTool and this test fails before the detection quietly starts guessing.
+        foreach (var mode in UnlockerService.AllModes)
+            mode.PlaceFiles.Should().NotIntersectWith(AmethystToolPlan.ExclusiveFiles,
+                "no Mode may place a file AmethystTool is identified by");
+    }
 }

@@ -128,6 +128,15 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
         if (root is null || !steam.IsValid)
             return new ModeState(mode, ModeStatus.Unknown, active, null);
 
+        // AmethystTool holds the slot, so dwmapi.dll and xinput1_4.dll in the root are ITS bytes. Every
+        // status path below decides "is this Mode installed?" from those two files — OstMirrorStatusAsync
+        // reports NotInstalled only when dwmapi.dll is ABSENT, and anything present it cannot recognise it
+        // calls UpdateAvailable. AmethystTool always leaves that file present, so every Mode card read as
+        // installed beside it, offering an Update button that would silently hand the slot back. A Mode
+        // whose proxy DLLs someone else owns is not installed, whatever else is lying around.
+        if (ActiveBackend == ActiveBackend.AmethystTool)
+            return new ModeState(mode, ModeStatus.NotInstalled, active, null);
+
         // OpenSteamTools status uses our mendy-tools "ost-" mirror (real per-DLL hashes), since the
         // upstream OST release only publishes a zip digest, not per-file hashes.
         if (mode == UnlockerMode.OpenSteamTools)
@@ -229,8 +238,12 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
 
     // ── Install / switch ─────────────────────────────────────────────
 
-    /// <summary>Download + verify a mode's files, place them in the Steam root, remove the other mode's
-    /// unique files, and persist the selection. Best-effort per file (locked files land in Failed).</summary>
+    /// <summary>Download + verify a mode's files, place them in the Steam root, and persist the selection.
+    /// Best-effort per file (locked files land in Failed).
+    /// <para>
+    /// The previous mode's unique files are NOT deleted — they are carried into this mode's install record
+    /// instead, so one uninstall cleans up the whole chain. See <see cref="RecordModeInstall"/>.
+    /// </para></summary>
     public async Task<ModeInstallResult> InstallAsync(
         UnlockerMode mode, IProgress<double?>? progress = null, CancellationToken ct = default)
     {
@@ -488,7 +501,8 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
     /// Both DLLs must be present and each must hash-match SOME release with the right tag prefix — the
     /// two DLLs ship in SEPARATE releases (they aren't published together), so each is matched
     /// independently across all releases, not against one single release.
-    /// Persists the match as the active mode. Returns the detected mode, or null if nothing matched.
+    /// Persists the match as the active mode. Returns the detected mode, or null if nothing matched — or
+    /// if the root is AmethystTool's, in which case it abstains without selecting anything.
     /// 1 guaranteed API call (one repo serves both ost-/st), plus 1 conditional (CloudRedirect).
     /// </summary>
     public async Task<UnlockerMode?> DetectActiveModeAsync(CancellationToken ct = default)
@@ -501,6 +515,15 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
 
         string? root = steam.EffectivePath;
         if (root is null || !steam.IsValid) return null;
+
+        // The guard above only covers a slot that already NAMES AmethystTool. An empty one — a fresh or
+        // lost settings.json — reaches here with an AmethystTool root and matches BetterSteamTools on
+        // hash, because the fork's proxy DLLs can be byte-identical to the ones it forked from. Adopting
+        // that match would put the ACTIVE badge on the wrong card and offer an Update that hands the slot
+        // over. AmethystTool.dll and amethysttool.toml are the two names no Mode places, so they settle it.
+        // Abstain rather than select AmethystTool: presence is not proof of ownership, and leaving the slot
+        // at None asks the user instead of guessing at them. See AmethystToolPlan.IsAmethystRoot.
+        if (AmethystToolPlan.IsAmethystRoot(SteamRootFileNames(root))) return null;
 
         string dwmapi = Path.Combine(root, "dwmapi.dll");
         string xinput = Path.Combine(root, "xinput1_4.dll");
@@ -567,6 +590,26 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
 
         if (detected is { } m) settings.SelectedMode = m.ToString();
         return detected;
+    }
+
+    /// <summary>
+    /// Names sitting directly in the Steam root, for the pure policy above to consult. An unreadable root
+    /// yields an empty set, which makes the caller fall through to the hash checks it would have run
+    /// anyway — never a detection that fails closed on a permissions hiccup.
+    /// </summary>
+    private static IReadOnlySet<string> SteamRootFileNames(string root)
+    {
+        try
+        {
+            return Directory.EnumerateFiles(root, "*", SearchOption.TopDirectoryOnly)
+                .Select(Path.GetFileName)
+                .OfType<string>()
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+        {
+            return new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        }
     }
 
     // ── Install record ───────────────────────────────────────────────

@@ -179,6 +179,42 @@ public class AmethystToolInstallTests : IDisposable
         Directory.EnumerateFiles(_steam).Should().BeEmpty();
     }
 
+    [Fact]
+    public void The_displaced_backends_engine_leaves_the_steam_root()
+    {
+        // What the reported download failure looked like on disk: AmethystTool.dll installed, and
+        // BetterSteamTools' OpenSteamTool.dll still sitting beside it for the forked loader to pick up.
+        File.WriteAllText(SteamFile("OpenSteamTool.dll"), "bst-engine");
+        File.WriteAllText(SteamFile("opensteamtool.toml"), "bst-config");
+        StageArchiveContents();
+
+        var plan = BuildPlan();
+        AmethystToolService.ApplyPlan(plan);
+
+        File.Exists(SteamFile("OpenSteamTool.dll")).Should().BeFalse();
+        File.Exists(SteamFile("opensteamtool.toml")).Should().BeFalse();
+
+        // Moved, not deleted — it is another tool's file and switching back must find it.
+        File.ReadAllText(Path.Combine(plan.BackupDirectory!, "OpenSteamTool.dll")).Should().Be("bst-engine");
+        File.ReadAllText(Path.Combine(plan.BackupDirectory!, "opensteamtool.toml")).Should().Be("bst-config");
+
+        // And the payload still landed.
+        File.ReadAllText(SteamFile("AmethystTool.dll")).Should().Be("new:AmethystTool.dll");
+    }
+
+    [Fact]
+    public void A_steam_root_with_nothing_to_displace_is_untouched_beyond_the_payload()
+    {
+        StageArchiveContents();
+
+        var plan = BuildPlan();
+        AmethystToolService.ApplyPlan(plan);
+
+        plan.Quarantine.Should().BeEmpty();
+        Directory.EnumerateFiles(_steam).Select(Path.GetFileName)
+            .Should().BeEquivalentTo(AmethystToolPlan.PayloadFiles);
+    }
+
     // ── Integrity of the downloaded archive ───────────────────────────────────
 
     private string WriteZip(string name, Action<ZipArchive> build)

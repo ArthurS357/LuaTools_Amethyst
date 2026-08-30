@@ -20,6 +20,18 @@ public sealed record AmethystInstallStep(
     string? BackupPath);
 
 /// <summary>
+/// One file left in the Steam root by the backend this install displaces, which the payload does NOT
+/// overwrite — so without this it would still be sitting next to <c>steam.exe</c> afterwards.
+/// </summary>
+/// <param name="FileName">Bare name, always one of <see cref="AmethystToolPlan.ConflictingFiles"/>.</param>
+/// <param name="SourcePath">Where it is now — directly in the Steam root.</param>
+/// <param name="BackupPath">Where it is moved to. Moved, never deleted: it is another tool's file.</param>
+public sealed record AmethystQuarantineStep(
+    string FileName,
+    string SourcePath,
+    string BackupPath);
+
+/// <summary>
 /// The decision of what an AmethystTool install would do, made entirely from values — no disk is touched
 /// to produce one. Either every step is known and <see cref="Rejection"/> is null, or nothing is installed
 /// and <see cref="Rejection"/> says why.
@@ -29,6 +41,16 @@ public sealed record AmethystInstallPlan(
     string? BackupDirectory,
     string? Rejection)
 {
+    /// <summary>
+    /// Files the displaced backend placed that the payload does not overwrite, and which have to leave the
+    /// Steam root for AmethystTool to be the only engine there. Empty for a clean Steam root.
+    /// </summary>
+    /// <remarks>
+    /// Not part of the positional signature so the three-argument construction every existing caller and
+    /// test uses keeps compiling and keeps meaning "nothing to quarantine".
+    /// </remarks>
+    public IReadOnlyList<AmethystQuarantineStep> Quarantine { get; init; } = [];
+
     public bool Rejected => Rejection is not null;
 
     /// <summary>True when at least one destination file already existed and will be preserved first.</summary>
@@ -82,6 +104,50 @@ public static class AmethystToolPlan
         "amethysttool.toml",
         "dwmapi.dll",
         "xinput1_4.dll",
+    ];
+
+    /// <summary>
+    /// Files another backend leaves behind that this install has to move out of the way.
+    ///
+    /// <para>
+    /// The proxy DLLs take care of themselves: <c>dwmapi.dll</c> and <c>xinput1_4.dll</c> are in
+    /// <see cref="PayloadFiles"/>, so installing overwrites whatever a Mode put there and steam.exe loads
+    /// AmethystTool instead. <c>OpenSteamTool.dll</c> is the part that does not — BetterSteamTools places
+    /// it, the payload has no file by that name, and AmethystTool is a FORK of BetterSteamTools whose
+    /// loader can still find and load it. That leaves two engines hooking one Steam process, which is not
+    /// a state anything downstream is built for. Its config travels with it, so a later reinstall does not
+    /// find a stale <c>opensteamtool.toml</c> next to a DLL that came back.
+    /// </para>
+    ///
+    /// <para>
+    /// <c>cloud_redirect.dll</c> is deliberately NOT here. Nothing loads it by name — OpenSteamTool does —
+    /// so once that DLL is out of the root it is inert, and moving a separate add-on's file would be doing
+    /// more than getting the conflict out of the way.
+    /// </para>
+    ///
+    /// <para>These are MOVED into the backup folder, never deleted: they belong to another tool, and a
+    /// user who switches back must find them where the card says they went.</para>
+    /// </summary>
+    public static readonly IReadOnlyList<string> ConflictingFiles =
+    [
+        "OpenSteamTool.dll",
+        "opensteamtool.toml",
+    ];
+
+    /// <summary>
+    /// The payload files no <see cref="UnlockerMode"/> ever places — the ones whose presence points at
+    /// AmethystTool and at nothing else.
+    ///
+    /// <para>
+    /// The other two, <c>dwmapi.dll</c> and <c>xinput1_4.dll</c>, are shared with every Mode and are
+    /// therefore evidence of nothing. See <see cref="IsAmethystRoot"/> for the one decision this exists
+    /// for.
+    /// </para>
+    /// </summary>
+    public static readonly IReadOnlyList<string> ExclusiveFiles =
+    [
+        "AmethystTool.dll",
+        "amethysttool.toml",
     ];
 
     /// <summary>Prefix of the per-install backup folder created inside the Steam root.</summary>
@@ -143,7 +209,11 @@ public static class AmethystToolPlan
             return AmethystInstallPlan.Reject(
                 $"the archive is missing required file(s): {string.Join(", ", missing)}");
 
-        string? backupDir = anyBackup
+        // The displaced backend's own files. They need the same backup folder as an overwrite does, so
+        // finding one is enough on its own to create it.
+        var conflicting = ConflictingFiles.Where(existingSteamRootFiles.Contains).ToList();
+
+        string? backupDir = anyBackup || conflicting.Count > 0
             ? Path.Combine(steamRoot, BackupDirectoryPrefix + now.ToString("yyyyMMdd-HHmmss"))
             : null;
 
@@ -158,7 +228,13 @@ public static class AmethystToolPlan
                     : null));
         }
 
-        return new AmethystInstallPlan(steps, backupDir, null);
+        return new AmethystInstallPlan(steps, backupDir, null)
+        {
+            Quarantine = [.. conflicting.Select(name => new AmethystQuarantineStep(
+                name,
+                Path.Combine(steamRoot, name),
+                Path.Combine(backupDir!, name)))],
+        };
     }
 
     /// <summary>
@@ -168,6 +244,33 @@ public static class AmethystToolPlan
     {
         ArgumentNullException.ThrowIfNull(steamRootFiles);
         return PayloadFiles.All(steamRootFiles.Contains);
+    }
+
+    /// <summary>
+    /// Whether this Steam root carries AmethystTool's own files — the question first-run detection has to
+    /// ask before it hashes anything.
+    ///
+    /// <para>
+    /// <b>What it is for.</b> <see cref="UnlockerService.DetectActiveModeAsync"/> adopts a Mode by hashing
+    /// <c>dwmapi.dll</c> and <c>xinput1_4.dll</c> against published releases. AmethystTool is a FORK, so
+    /// those two files can be byte-identical to the Mode it forked from — meaning a root that is
+    /// AmethystTool's matches BetterSteamTools perfectly, and with an empty slot (fresh or lost
+    /// <c>settings.json</c>) detection would hand the ACTIVE badge to the wrong card. The hash says what a
+    /// file IS; it cannot say which tool put it there. These two names can, because no Mode places them.
+    /// </para>
+    ///
+    /// <para>
+    /// <b>It abstains rather than claims.</b> A true answer makes detection select nothing, leaving the
+    /// slot at <see cref="ActiveBackend.None"/> for the user to resolve. It deliberately does NOT select
+    /// AmethystTool: file presence is the same weak evidence
+    /// <see cref="AmethystToolService.BackfillRecordIfMissing"/> already refuses to claim ownership from,
+    /// and "we don't know" is a state this app can show honestly.
+    /// </para>
+    /// </summary>
+    public static bool IsAmethystRoot(IReadOnlySet<string> steamRootFiles)
+    {
+        ArgumentNullException.ThrowIfNull(steamRootFiles);
+        return ExclusiveFiles.All(steamRootFiles.Contains);
     }
 
     /// <summary>

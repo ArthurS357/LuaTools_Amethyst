@@ -108,8 +108,26 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
         }
     }
 
-    /// <summary>Network-free check: every payload file is present in the Steam root.</summary>
-    public bool IsInstalledLocally() => AmethystToolPlan.IsInstalled(SteamRootFiles());
+    /// <summary>
+    /// Network-free check: every payload file is present in the Steam root AND a Mode has not taken the
+    /// proxy-DLL slot since.
+    ///
+    /// <para>
+    /// <b>Why the slot is part of "installed".</b> Two of the four names are <c>dwmapi.dll</c> and
+    /// <c>xinput1_4.dll</c>, which every Mode also writes. Installing BetterSteamTools over AmethystTool
+    /// replaces exactly those two and leaves <c>AmethystTool.dll</c> and <c>amethysttool.toml</c> behind,
+    /// so all four names are still present while none of the loaded bytes are AmethystTool's — and the
+    /// card reported "up to date, v1.1.0" next to a BetterSteamTools card holding the ACTIVE badge. Name
+    /// presence cannot tell those apart; the slot can, because only one backend ever holds it.
+    /// </para>
+    ///
+    /// <para>
+    /// <see cref="ActiveBackend.None"/> still counts as installed: nothing has claimed the slot, so the
+    /// files in the root are the best evidence there is. Only a Mode actively owning it demotes this.
+    /// </para>
+    /// </summary>
+    public bool IsInstalledLocally() =>
+        AmethystToolPlan.IsInstalled(SteamRootFiles()) && unlocker.ActiveBackend != ActiveBackend.Mode;
 
     /// <summary>
     /// Whether AmethystTool currently owns the proxy-DLL slot — what the card's ACTIVE badge means.
@@ -311,6 +329,13 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
         if (plan.Rejected) throw new InvalidOperationException("Refusing to apply a rejected plan.");
 
         if (plan.BackupDirectory is { } backupDir) Directory.CreateDirectory(backupDir);
+
+        // Before the payload, not after: OpenSteamTool.dll is the displaced backend's engine, and the
+        // point is that steam.exe never comes back up with it and AmethystTool.dll both in the root. A
+        // move, so switching back finds it in the folder the card names.
+        foreach (var quarantined in plan.Quarantine)
+            if (File.Exists(quarantined.SourcePath))
+                File.Move(quarantined.SourcePath, quarantined.BackupPath, overwrite: true);
 
         foreach (var step in plan.Steps)
         {
