@@ -1,5 +1,101 @@
 # Changelog
 
+## 1.6.3 — 2026-08-30
+
+### Conflito de engines: instalar o AmethystTool sobre o BetterSteamTools deixava os dois carregados
+
+- **`OpenSteamTool.dll` e `opensteamtool.toml` agora sao colocados em QUARENTENA no ato da instalacao.**
+  O payload do AmethystTool sobrescreve `dwmapi.dll` e `xinput1_4.dll`, entao os proxies de um Mode param
+  de ser carregados sozinhos. `OpenSteamTool.dll` era o unico que **nao** era sobrescrito — e o AmethystTool
+  e um FORK do BetterSteamTools, cujo loader ainda encontra e carrega esse arquivo. Resultado: o steam.exe
+  subia com dois engines fisgados nele, que e o estado por tras da falha de download reportada.
+  `AmethystToolPlan.ConflictingFiles` nomeia os dois arquivos e `AmethystInstallPlan.Quarantine` diz para
+  onde vao.
+- **Sao MOVIDOS, nunca apagados.** Pertencem a outra ferramenta. Vao para a mesma pasta de backup por
+  instalacao que um sobrescrito usa, e uma quarentena sozinha ja e motivo suficiente para criar essa pasta —
+  antes ela so existia quando algum arquivo do payload seria sobrescrito. O card mostra o caminho
+  (`Amethyst_Backup_Line`), entao quem quiser voltar sabe onde procurar.
+- **A quarentena roda ANTES do payload,** nao depois: o ponto e que o Steam nunca volte com
+  `OpenSteamTool.dll` e `AmethystTool.dll` juntos na raiz.
+- **`cloud_redirect.dll` fica onde esta, de proposito.** Nada o carrega pelo nome — quem carrega e o
+  OpenSteamTool. Com aquele DLL fora da raiz, este ja esta inerte, e mover o arquivo de um add-on separado
+  seria fazer mais do que tirar o conflito do caminho. Coberto por teste.
+- A entrada de manifesto do Mode continua reivindicando `OpenSteamTool.dll`. E deliberado: o arquivo foi
+  movido, nao apagado, e a remocao o reporta como `Absent` e pula. Tirar a reivindicacao apagaria o unico
+  registro de que o Mode colocou aquele arquivo ali.
+
+### Falso positivo de "instalado" nos dois lados
+
+- **O card do AmethystTool nao le mais "atualizado" enquanto um Mode segura os proxies.**
+  `IsInstalledLocally()` respondia so por presenca de nome, e dois dos quatro nomes (`dwmapi.dll`,
+  `xinput1_4.dll`) sao escritos por todo Mode. Instalar o BetterSteamTools sobre o AmethystTool troca
+  exatamente esses dois e deixa `AmethystTool.dll` e `amethysttool.toml` para tras — os quatro nomes seguiam
+  presentes, nenhum byte carregado era do AmethystTool, e o card anunciava "v1.1.0, atualizado" ao lado de um
+  card de Mode com o selo ATIVO. Agora a checagem consulta tambem o slot unico de backend ativo.
+  `ActiveBackend.None` continua contando como instalado: ninguem reivindicou o slot, entao os arquivos na
+  raiz sao a melhor evidencia que existe.
+- **Os cards de Mode nao leem mais como instalados enquanto o AmethystTool segura os DLLs.**
+  `ModeStatusAsync` decidia "esse Mode esta instalado?" a partir dos mesmos dois arquivos —
+  `OstMirrorStatusAsync` so reporta `NotInstalled` quando `dwmapi.dll` esta AUSENTE, e qualquer coisa que nao
+  reconheca vira `UpdateAvailable`. O AmethystTool sempre deixa aquele arquivo presente, entao todo card de
+  Mode lia como instalado ao lado dele, oferecendo um botao de Atualizar que devolveria o slot em silencio.
+- O botao de **Desinstalar de cada Mode nao depende do status** e continua disponivel: ele e decidido pelo
+  registro de instalacao (`ModeRemovalService.CanUninstall`), nao pelo `ModeStatus`.
+
+### Deteccao de modo ativo abstem-se numa raiz do AmethystTool
+
+- **`DetectActiveModeAsync` agora retorna `null` quando a raiz da Steam carrega `AmethystTool.dll` E
+  `amethysttool.toml` e o slot esta vazio.** A guarda anterior so cobria um slot que ja NOMEAVA o
+  AmethystTool. Um slot vazio — `settings.json` novo ou perdido — chegava ali com uma raiz do AmethystTool e
+  casava com o BetterSteamTools por hash, porque os proxies do fork podem ser byte a byte identicos aos do
+  projeto de que ele saiu. Adotar esse casamento poria o selo ATIVO no card errado e ofereceria um Atualizar
+  que entregaria o slot.
+- **Abster e nao reivindicar.** A guarda deliberadamente NAO seleciona o AmethystTool: presenca de arquivo e
+  a mesma evidencia fraca de que `BackfillRecordIfMissing` ja se recusa a inferir propriedade. O slot fica em
+  `ActiveBackend.None` e a decisao volta para o usuario.
+- `AmethystToolPlan.ExclusiveFiles` guarda os dois nomes que nenhum Mode coloca, e um teste percorre
+  `UnlockerService.AllModes` para falhar caso algum Mode passe a colocar um deles — a abstencao para de valer
+  em silencio no dia em que essa propriedade deixar de ser verdade.
+- **Raiz ilegivel falha aberto, nao fechado.** `SteamRootFileNames` devolve um conjunto vazio diante de
+  `IOException`/`UnauthorizedAccessException`, o que faz o chamador cair nas checagens de hash que rodaria de
+  qualquer forma. Um tropeco de permissao nunca desliga a deteccao.
+
+### Correcoes de acompanhamento desta auditoria
+
+- **`AmethystToolService.CanUninstall` volta a olhar presenca de arquivo direto**, e nao `IsInstalledLocally()`.
+  As duas perguntas se separaram nesta versao: uma e "o card diz instalado?" (que um Mode no slot torna falsa
+  de proposito), a outra e "sobrou alguma coisa para remover?". Compartilhar a checagem tirava o botao de
+  Desinstalar exatamente de quem instalou o AmethystTool antes de existirem registros de instalacao e depois
+  poe um Mode por cima — deixando `AmethystTool.dll` e `amethysttool.toml` orfaos na raiz, sem caminho de
+  remocao dentro do app. Nada de inseguro e reivindicado: `BackfillRecordIfMissing` so registra arquivos do
+  payload realmente encontrados, e a remocao continua pulando qualquer nome que outra instalacao viva
+  reivindique.
+- **As duas correcoes de falso positivo viraram uma politica pura, `ActiveBackendPolicy.StillOwnsItsFiles`.**
+  Elas eram condicoes soltas dentro de metodos de servico com I/O, sem teste possivel — e as duas faziam a
+  MESMA pergunta por caminhos diferentes, que e exatamente como o defeito original apareceu em dois lugares.
+  `holder == None || holder == candidate`: o slot vazio nao rebaixa ninguem, e so um backend DIFERENTE
+  segurando o slot responde nao. Os dois call sites agora chamam a mesma funcao, e a tabela verdade inteira
+  (9 pares) esta fixada em teste, entao um quarto membro de `ActiveBackend` nao pode ser adicionado sem
+  decidir o que ele significa aqui. +8 testes, sem mudanca de comportamento.
+- **`release/` sai do controle de versao** (`git rm --cached`). O `.gitignore` de c7a72c8 passou a ignorar a
+  pasta, mas isso nao destrackeia o que ja estava no indice: os ~266 MB de nupkg/Setup.exe/Portable.zip
+  commitados em f859ab4 voltariam em todo commit futuro. Os arquivos continuam em disco; o historico
+  anterior segue carregando-os.
+
+### i18n
+
+- **As 20 chaves da selecao manual de fonte do plugin entram em `PENDING_TRANSLATION`** (`Plugin_Row_Source`,
+  `Plugin_Sources_*`, `Plugin_Source_*`, `Plugin_Btn_Activate`, `Plugin_Confirm_Switch*`,
+  `Plugin_Toast_SourceSwitched`, `Plugin_Err_UnknownSource`, `Plugin_SourceErr_*`). Com isso
+  `scripts/check-i18n.py` volta a passar: elas ficam isentas da paridade de chaves e sao listadas como
+  pendencia a cada execucao, em vez de reprovar o CI.
+- **pt-BR e a excecao declarada** ao "sem traducao nas 29 linguas": a funcionalidade nasceu com traducao
+  pt-BR completa escrita pelo mantenedor, falante nativo. Ela fica. Os outros 28 arquivos caem para o ingles
+  por chave em tempo de execucao, como sempre.
+- **`Resources/README.md`** descreve os grupos pendentes atuais (107 chaves) e aponta a saida de
+  `scripts/check-i18n.py` como a autoridade, nao a propria frase.
+
+
 ## 1.6.2 — 2026-08-27
 
 ### Pagina Plugin lista as fontes por criador, e voce escolhe a ativa

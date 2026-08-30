@@ -70,4 +70,31 @@ public static class ActiveBackendPolicy
     /// <summary>Whether AmethystTool is the selected backend.</summary>
     public static bool IsAmethystTool(string? selectedMode) =>
         string.Equals(selectedMode, AmethystToolToken, StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Whether <paramref name="candidate"/>'s files sitting in the Steam root can still be the bytes
+    /// steam.exe loads, given who holds the slot.
+    ///
+    /// <para>
+    /// <b>The one question behind both false positives.</b> <c>dwmapi.dll</c> and <c>xinput1_4.dll</c>
+    /// are placed by every Mode AND by AmethystTool, so installing either over the other replaces exactly
+    /// those two and leaves the loser's remaining names behind. Presence then says nothing about what is
+    /// loaded: the AmethystTool card read "up to date" beside a Mode card holding the ACTIVE badge, and
+    /// every Mode card read as installed beside AmethystTool, offering an Update that would hand the slot
+    /// back. Only the slot can tell them apart, because only one backend ever holds it.
+    /// </para>
+    ///
+    /// <para>
+    /// <see cref="ActiveBackend.None"/> is true for everyone: nothing has claimed the slot, so the files
+    /// in the root are the best evidence there is. Only a DIFFERENT backend actively owning it is a no.
+    /// </para>
+    ///
+    /// <para>
+    /// This answers "does the card say installed?" and nothing else. "Is there anything left to remove?"
+    /// is a different question with a different answer — see <c>AmethystToolService.CanUninstall</c>,
+    /// which must stay true precisely in the case this returns false.
+    /// </para>
+    /// </summary>
+    public static bool StillOwnsItsFiles(ActiveBackend holder, ActiveBackend candidate) =>
+        holder == ActiveBackend.None || holder == candidate;
 }

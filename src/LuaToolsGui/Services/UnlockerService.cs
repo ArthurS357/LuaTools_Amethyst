@@ -134,7 +134,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
         // calls UpdateAvailable. AmethystTool always leaves that file present, so every Mode card read as
         // installed beside it, offering an Update button that would silently hand the slot back. A Mode
         // whose proxy DLLs someone else owns is not installed, whatever else is lying around.
-        if (ActiveBackend == ActiveBackend.AmethystTool)
+        if (!ActiveBackendPolicy.StillOwnsItsFiles(ActiveBackend, ActiveBackend.Mode))
             return new ModeState(mode, ModeStatus.NotInstalled, active, null);
 
         // OpenSteamTools status uses our mendy-tools "ost-" mirror (real per-DLL hashes), since the

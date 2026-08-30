@@ -29,6 +29,17 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.6.3", "2026-08-30",
+            "Installing AmethystTool no longer leaves BetterSteamTools' engine hooked into Steam beside it, and the Mode page stops claiming the wrong backend is the installed one.",
+            [
+                "Installing AmethystTool over BetterSteamTools now moves that tool's OpenSteamTool.dll and opensteamtool.toml into the backup folder first. They were the one pair the install did not overwrite, and the forked loader could still pick the DLL up — leaving two engines hooked into one Steam. They are MOVED, not deleted, and the card names the folder they went to.",
+                "Installing a Mode over AmethystTool no longer leaves the AmethystTool card reporting \"up to date\" next to the Mode card holding the ACTIVE badge. Two of the four files are shared, so their names alone could never tell the two apart; the card now reads the one slot that says who actually owns the proxy DLLs.",
+                "The Mode cards no longer read as installed while AmethystTool holds those DLLs, which used to offer an Update button that would silently hand the slot back.",
+                "First-run detection now abstains on a Steam folder that is AmethystTool's rather than adopting BetterSteamTools. The fork's proxy DLLs can be byte-identical to the ones it forked from, so with no choice stored yet the hash check put the ACTIVE badge on the wrong card.",
+                "AmethystTool's Uninstall button stays available when a Mode has taken the slot, so its two leftover files can still be removed from inside the app.",
+                "The Plugin page's 20 source-picker strings are registered as awaiting translation, so the language check reports them instead of failing CI.",
+            ]),
+
         new("1.6.2", "2026-08-27",
             "The Plugin page now lists every creator who publishes the plugin and lets you pick which one is installed — and never switches for you.",
             [

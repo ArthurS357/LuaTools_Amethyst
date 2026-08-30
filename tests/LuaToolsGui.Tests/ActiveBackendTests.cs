@@ -74,6 +74,67 @@ public class ActiveBackendTests
             .NotContain(n => n.Equals(ActiveBackendPolicy.AmethystToolToken, StringComparison.OrdinalIgnoreCase));
     }
 
+    // ── Whose files are actually loaded ───────────────────────────────────────
+    //
+    // Exclusivity above settles who is ACTIVE. This settles the separate question the two cards got wrong
+    // in 1.6.2: whether the files a backend left in the Steam root are still the bytes steam.exe loads.
+    // dwmapi.dll and xinput1_4.dll are placed by every Mode AND by AmethystTool, so installing either over
+    // the other replaces exactly those two and leaves the loser's remaining names sitting there. Presence
+    // alone therefore proves nothing, and both cards believed it.
+
+    [Fact]
+    public void A_mode_holding_the_slot_means_AmethystTools_leftover_files_are_not_loaded()
+    {
+        // The AmethystTool card read "up to date, v1.1.0" beside a Mode card holding the ACTIVE badge:
+        // AmethystTool.dll and amethysttool.toml were still there, but none of the loaded bytes were its.
+        ActiveBackendPolicy.StillOwnsItsFiles(ActiveBackend.Mode, ActiveBackend.AmethystTool)
+            .Should().BeFalse();
+    }
+
+    [Fact]
+    public void AmethystTool_holding_the_slot_means_a_modes_leftover_files_are_not_loaded()
+    {
+        // The mirror defect: every Mode card read as installed beside AmethystTool, because the status
+        // paths decide "installed?" from dwmapi.dll, which AmethystTool always leaves present. The card
+        // then offered an Update button that would have handed the slot back without saying so.
+        ActiveBackendPolicy.StillOwnsItsFiles(ActiveBackend.AmethystTool, ActiveBackend.Mode)
+            .Should().BeFalse();
+    }
+
+    [Theory]
+    [InlineData(ActiveBackend.Mode)]
+    [InlineData(ActiveBackend.AmethystTool)]
+    public void The_backend_that_holds_the_slot_owns_what_it_placed(ActiveBackend holder)
+    {
+        ActiveBackendPolicy.StillOwnsItsFiles(holder, holder).Should().BeTrue();
+    }
+
+    [Theory]
+    [InlineData(ActiveBackend.None)]
+    [InlineData(ActiveBackend.Mode)]
+    [InlineData(ActiveBackend.AmethystTool)]
+    public void An_unclaimed_slot_leaves_the_files_as_the_best_evidence_there_is(ActiveBackend candidate)
+    {
+        // None must NOT demote anyone. Nothing has claimed the slot — a fresh or lost settings.json — so
+        // the files in the root are all there is to go on, and reading them as "not installed" would hide
+        // a working install from its own card.
+        ActiveBackendPolicy.StillOwnsItsFiles(ActiveBackend.None, candidate).Should().BeTrue();
+    }
+
+    [Fact]
+    public void Only_a_different_backend_actively_holding_the_slot_is_ever_a_no()
+    {
+        // Pins the whole truth table, so a fourth ActiveBackend member cannot be added without deciding
+        // what it means here. Exactly two of the nine pairs are false, and both are named above.
+        var backends = Enum.GetValues<ActiveBackend>();
+
+        foreach (var holder in backends)
+            foreach (var candidate in backends)
+                ActiveBackendPolicy.StillOwnsItsFiles(holder, candidate)
+                    .Should().Be(holder == ActiveBackend.None || holder == candidate,
+                        $"holder={holder}, candidate={candidate}");
+    }
+
     // ── settings.json compatibility ───────────────────────────────────────────
 
     [Fact]

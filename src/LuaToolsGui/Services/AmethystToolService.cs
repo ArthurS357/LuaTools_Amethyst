@@ -127,7 +127,8 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
     /// </para>
     /// </summary>
     public bool IsInstalledLocally() =>
-        AmethystToolPlan.IsInstalled(SteamRootFiles()) && unlocker.ActiveBackend != ActiveBackend.Mode;
+        AmethystToolPlan.IsInstalled(SteamRootFiles())
+        && ActiveBackendPolicy.StillOwnsItsFiles(unlocker.ActiveBackend, ActiveBackend.AmethystTool);
 
     /// <summary>
     /// Whether AmethystTool currently owns the proxy-DLL slot — what the card's ACTIVE badge means.
@@ -149,9 +150,20 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
     /// <see cref="BackfillRecordIfMissing"/> can turn into one. Gating the button on the record ALONE
     /// would disable it for everyone who installed before records existed, even though their removal is
     /// perfectly provable from this service's own manifest.
+    ///
+    /// <para>
+    /// File presence directly, NOT <see cref="IsInstalledLocally"/>: that one now answers "does the card
+    /// say installed?", which a Mode holding the slot deliberately makes false. This asks the different
+    /// question "is there anything left to remove?", and installing a Mode over AmethystTool leaves
+    /// <c>AmethystTool.dll</c> and <c>amethysttool.toml</c> in the root — exactly when the button must
+    /// still work. Sharing the slot-aware check would have stranded those files with no way to remove
+    /// them in-app. Claiming nothing unsafe: <see cref="BackfillRecordIfMissing"/> records only payload
+    /// files actually found, and removal still skips any name a live install claims.
+    /// </para>
     /// </summary>
     public bool CanUninstall =>
-        removal.HasRecordFor(PluginIds.AmethystTool) || (ReadManifest() is not null && IsInstalledLocally());
+        removal.HasRecordFor(PluginIds.AmethystTool)
+        || (ReadManifest() is not null && AmethystToolPlan.IsInstalled(SteamRootFiles()));
 
     public async Task<GithubRelease?> FetchLatestAsync(bool force, CancellationToken ct = default)
     {
@@ -290,8 +302,12 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
             // from before this install overwrote them, and the bytes on disk are AmethystTool's now, so
             // that claim is stale. Recording and trimming in ONE write is what stops a failure between the
             // two halves from persisting a name both entries claim — which neither could then remove. A
-            // name the Mode entry lists that AmethystTool never touches, e.g. OpenSteamTool.dll, is left
-            // exactly as it was; see InstallManifest.AbsorbFiles for why this trims instead of folding.
+            // name the Mode entry lists that the PAYLOAD never writes, e.g. OpenSteamTool.dll, is left
+            // claimed exactly as it was; see InstallManifest.AbsorbFiles for why this trims instead of
+            // folding. ApplyPlan has by now QUARANTINED that particular file into the backup folder, so
+            // the Mode's claim on it names something no longer in the root — removal reports it Absent and
+            // skips it, which is the honest outcome: it was moved aside, not deleted, and dropping the
+            // claim would erase the only record that the Mode put it there.
             manifests.RecordExclusive(new InstalledPlugin(
                 PluginIds.AmethystTool, latest.TagName, DateTimeOffset.Now,
                 [.. plan.Steps.Select(step => new InstalledFile(
