@@ -12,7 +12,23 @@ namespace LuaToolsGui.Services;
 /// commented pin means "Steam keeps this updated", not "pinned to this manifest".
 /// </para>
 /// </summary>
-public record LuaEntry(long Id, bool HasKey, string? ManifestId, string? CommentedManifestId, string? Comment);
+public record LuaEntry(long Id, bool HasKey, string? ManifestId, string? CommentedManifestId, string? Comment)
+{
+    /// <summary>
+    /// The depot decryption key from <c>addappid(id, 1, "key")</c>, or null for a bare
+    /// <c>addappid(id)</c> — a DLC entitlement rather than a content depot.
+    /// </summary>
+    /// <remarks>
+    /// Added for <see cref="DepotDownloaderService.ResolveKeys"/>, which needs the actual key bytes to
+    /// decrypt CDN chunks; <see cref="HasKey"/> only ever answered whether one was present. It is an
+    /// init-only property rather than a positional parameter on purpose — changing the record's signature
+    /// would ripple through every construction and deconstruction site for no gain.
+    ///
+    /// <para>This value stays on this machine. See the "Removed: outbound data collection" note in
+    /// <see cref="AppConfig"/> for what must never be built on top of it.</para>
+    /// </remarks>
+    public string? Key { get; init; }
+}
 
 /// <summary>Parsed contents of a stplug-in lua file.
 /// <para>
@@ -91,6 +107,8 @@ public static partial class LuaFileParser
             // we'd wrongly report the depot/DLC as "not in lua".
             var order = new List<long>();
             var hasKeyById = new Dictionary<long, bool>();
+            var keyById = new Dictionary<long, string>();            // the key itself, when a line carried one
+            var disabledKeyById = new Dictionary<long, string>();
             var commentById = new Dictionary<long, string>();
             var manifests = new Dictionary<long, string>();          // active pins
             var commentedManifests = new Dictionary<long, string>(); // pins disabled by Auto Update
@@ -117,6 +135,7 @@ public static partial class LuaFileParser
                 if (!m.Success || !long.TryParse(m.Groups[1].Value, out long id)) continue;
 
                 bool hasKey = m.Groups[2].Success && !string.IsNullOrEmpty(m.Groups[2].Value);
+                string? key = hasKey ? m.Groups[2].Value : null;
 
                 // Keep the best (longest) trailing comment seen for this id — it's the human name
                 // ('addappid(2784471, …) -- Depot 2784471'). Captured for commented-out lines too, and
@@ -126,6 +145,14 @@ public static partial class LuaFileParser
                 if (comment is not null &&
                     (!commentById.TryGetValue(id, out var prev) || comment.Length > prev.Length))
                     commentById[id] = comment;
+
+                // First key seen for an id wins, matching how hasKey merges: a later keyless line must not
+                // erase a key an earlier line carried.
+                if (key is not null)
+                {
+                    var into = commented ? disabledKeyById : keyById;
+                    if (!into.ContainsKey(id)) into[id] = key;
+                }
 
                 if (commented)
                 {
@@ -142,7 +169,8 @@ public static partial class LuaFileParser
                 .Select(id => new LuaEntry(id, hasKeyById[id],
                     manifests.TryGetValue(id, out var mid) ? mid : null,
                     commentedManifests.TryGetValue(id, out var cmid) ? cmid : null,
-                    commentById.TryGetValue(id, out var c) ? c : null))
+                    commentById.TryGetValue(id, out var c) ? c : null)
+                { Key = keyById.TryGetValue(id, out var k) ? k : null })
                 .ToList();
 
             // Ids that are ONLY commented out. An id with both an active and a commented line is active
@@ -152,7 +180,8 @@ public static partial class LuaFileParser
                 .Select(id => new LuaEntry(id, disabledHasKey[id],
                     manifests.TryGetValue(id, out var dmid) ? dmid : null,
                     commentedManifests.TryGetValue(id, out var dcmid) ? dcmid : null,
-                    commentById.TryGetValue(id, out var dc) ? dc : null))
+                    commentById.TryGetValue(id, out var dc) ? dc : null)
+                { Key = disabledKeyById.TryGetValue(id, out var dk) ? dk : null })
                 .ToList();
 
             // The base app is the first addappid id (matches how the files are generated).

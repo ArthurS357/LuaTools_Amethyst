@@ -222,6 +222,47 @@ PENDING_TRANSLATION: frozenset[str] = frozenset({
     "Plugin_SourceErr_MissingAsset",
     "Plugin_SourceErr_ForeignAssetUrl",
     "Plugin_SourceErr_NoDigest",
+    # Depot content download, added by the v1.3.0 portability pass (Phases A-C). Raw depot fetching from
+    # Steam's CDN via the pinned DepotDownloaderMod: the Depots-page picker, its disk-budget and phase
+    # copy, and the structured failure messages DepotErrorText renders. English-only until a
+    # localisation pass covers them — several are full explanatory sentences (the picker hint, the
+    # clean-up prompt) where a translation done without native review reads worse than English.
+    "Builds_Depot_Download",
+    "Builds_Depot_Unavailable",
+    "Builds_Depot_PickTitle",
+    "Builds_Depot_PickHint",
+    "Builds_Depot_NoCandidates",
+    "Builds_Depot_NeedsKey",
+    "Builds_Depot_NeedsManifest",
+    "Builds_Depot_NeedsSignIn",
+    "Builds_Depot_SelectAll",
+    "Builds_Depot_SelectNone",
+    "Builds_Depot_Destination",
+    "Builds_Depot_Change",
+    "Builds_Depot_Space",
+    "Builds_Depot_NotEnoughSpace",
+    "Builds_Depot_Confirm",
+    "Builds_Depot_Cancel",
+    "Builds_Depot_Downloading",
+    "Builds_Depot_Phase_PreAllocating",
+    "Builds_Depot_Phase_Validating",
+    "Builds_Depot_Phase_FetchingManifest",
+    "Builds_Depot_Phase_Downloading",
+    "Builds_Depot_Done",
+    "Builds_Depot_OpenFolder",
+    "Builds_Depot_CleanUp_Title",
+    "Builds_Depot_CleanUp_Body",
+    "Builds_Depot_CleanUp_Failed",
+    "Depot_Err_ToolNotPinned",
+    "Depot_Err_Tool",
+    "Depot_Err_SteamNotFound",
+    "Depot_Err_NoKeys",
+    "Depot_Err_NoKeyFor",
+    "Depot_Err_BadKey",
+    "Depot_Err_NoManifest",
+    "Depot_Err_SignIn",
+    "Depot_Err_NoSpace",
+    "Depot_Err_Failed",
 })
 
 

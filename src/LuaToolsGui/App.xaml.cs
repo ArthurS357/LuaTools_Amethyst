@@ -110,6 +110,7 @@ public partial class App : Application
                 services.AddSingleton<DownloadNotice>();
                 services.AddSingleton<HardwareAppIdService>();
                 services.AddSingleton<SteamlessService>();
+                services.AddSingleton<DepotDownloaderService>();
                 services.AddSingleton<CloudRedirectService>();
                 // Install record + removal: registered before everything that takes them as deps.
                 services.AddSingleton<InstallManifestService>();
@@ -743,6 +744,10 @@ public partial class App : Application
         // %TEMP% and self-delete). Remove any leftovers from that user-visible folder, best-effort.
         _ = System.Threading.Tasks.Task.Run(() =>
         {
+            // Depot decryption keys a killed process left on disk. The normal path deletes them the moment
+            // the download ends, so anything still here belongs to a session that did not exit cleanly.
+            DepotDownloaderService.SweepKeyFiles();
+
             try
             {
                 string legacy = System.IO.Path.Combine(

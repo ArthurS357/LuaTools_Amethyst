@@ -691,4 +691,42 @@ Enable it?</value></data>
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>Kept {0}: another installed tool still uses it. Only the install record was removed.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Uninstall failed: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>The install record could not be used: {0}</value></data>
+
+  <!-- ── Depot content download (Depots page picker + DepotDownloaderService) ──  NOT YET TRANSLATED, see Resources/README.md -->
+  <data name="Builds_Depot_Download" xml:space="preserve"><value>Download depots…</value></data>
+  <data name="Builds_Depot_Unavailable" xml:space="preserve"><value>Depot downloading is unavailable in this build: it has no verified pin for the downloader tool.</value></data>
+  <data name="Builds_Depot_PickTitle" xml:space="preserve"><value>Download depot content</value></data>
+  <data name="Builds_Depot_PickHint" xml:space="preserve"><value>Raw files are pulled straight from Steam's CDN, anonymously. Nothing is installed — the depots are written to the folder below for you to use as you like.</value></data>
+  <data name="Builds_Depot_NoCandidates" xml:space="preserve"><value>None of this game's depots can be downloaded. They need both a decryption key from the lua and a manifest published by Steam.</value></data>
+  <data name="Builds_Depot_NeedsKey" xml:space="preserve"><value>no key in this build</value></data>
+  <data name="Builds_Depot_NeedsManifest" xml:space="preserve"><value>Steam publishes no manifest</value></data>
+  <data name="Builds_Depot_NeedsSignIn" xml:space="preserve"><value>sign in to fetch its manifest</value></data>
+  <data name="Builds_Depot_SelectAll" xml:space="preserve"><value>Select all</value></data>
+  <data name="Builds_Depot_SelectNone" xml:space="preserve"><value>Clear</value></data>
+  <data name="Builds_Depot_Destination" xml:space="preserve"><value>Destination folder</value></data>
+  <data name="Builds_Depot_Change" xml:space="preserve"><value>Change…</value></data>
+  <data name="Builds_Depot_Space" xml:space="preserve"><value>{0} required · {1} free on {2}</value></data>
+  <data name="Builds_Depot_NotEnoughSpace" xml:space="preserve"><value>Not enough free space on that drive. Pick fewer depots or choose another folder.</value></data>
+  <data name="Builds_Depot_Confirm" xml:space="preserve"><value>Download {0} depot(s)</value></data>
+  <data name="Builds_Depot_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Builds_Depot_Downloading" xml:space="preserve"><value>Depot {0} of {1} · {2}</value></data>
+  <data name="Builds_Depot_Phase_PreAllocating" xml:space="preserve"><value>reserving disk space</value></data>
+  <data name="Builds_Depot_Phase_Validating" xml:space="preserve"><value>checking existing files</value></data>
+  <data name="Builds_Depot_Phase_FetchingManifest" xml:space="preserve"><value>fetching manifest</value></data>
+  <data name="Builds_Depot_Phase_Downloading" xml:space="preserve"><value>downloading</value></data>
+  <data name="Builds_Depot_Done" xml:space="preserve"><value>Downloaded {0} depot(s) to {1}</value></data>
+  <data name="Builds_Depot_OpenFolder" xml:space="preserve"><value>Open folder</value></data>
+  <data name="Builds_Depot_CleanUp_Title" xml:space="preserve"><value>Remove the partial download?</value></data>
+  <data name="Builds_Depot_CleanUp_Body" xml:space="preserve"><value>The download was cancelled after creating {0} file(s) in {1}. Delete just those files? Anything that was already there is left alone.</value></data>
+  <data name="Builds_Depot_CleanUp_Failed" xml:space="preserve"><value>Some files could not be deleted — they may still be in use. Try again in a moment.</value></data>
+  <data name="Depot_Err_ToolNotPinned" xml:space="preserve"><value>Depot downloading is turned off in this build because it carries no verified pin for the downloader tool.</value></data>
+  <data name="Depot_Err_Tool" xml:space="preserve"><value>The depot downloader could not be obtained, or what arrived failed verification.</value></data>
+  <data name="Depot_Err_SteamNotFound" xml:space="preserve"><value>Steam location not found — set it in Settings.</value></data>
+  <data name="Depot_Err_NoKeys" xml:space="preserve"><value>No depot decryption keys were found for this game.</value></data>
+  <data name="Depot_Err_NoKeyFor" xml:space="preserve"><value>Depot {0} has no usable decryption key.</value></data>
+  <data name="Depot_Err_BadKey" xml:space="preserve"><value>The key stored for depot {0} does not match its manifest.</value></data>
+  <data name="Depot_Err_NoManifest" xml:space="preserve"><value>The manifest for that depot could not be obtained.</value></data>
+  <data name="Depot_Err_SignIn" xml:space="preserve"><value>Sign in to fetch a manifest Steam does not already have on this machine.</value></data>
+  <data name="Depot_Err_NoSpace" xml:space="preserve"><value>Not enough disk space: {0} required, {1} free.</value></data>
+  <data name="Depot_Err_Failed" xml:space="preserve"><value>Depot {0} failed: {1}</value></data>
 </root>

@@ -152,6 +152,7 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
     private readonly SteamAppInfoCache _appInfo;
     private readonly CoverCache _covers;
     private readonly SteamDepotInfo _depotInfo;
+    private readonly DepotDownloaderService _depotTool;
     private readonly ToastService _toast;
     private readonly SettingsService _settings;
 
@@ -161,9 +162,11 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
     private long _depotLoadToken;
 
     public BuildsViewModel(SteamService steam, LuaVault vault, SteamAppListCache appList,
-        SteamAppInfoCache appInfo, CoverCache covers, SteamDepotInfo depotInfo, ToastService toast,
+        SteamAppInfoCache appInfo, CoverCache covers, SteamDepotInfo depotInfo,
+        DepotDownloaderService depotTool, ToastService toast,
         SettingsService settings)
     {
+        _depotTool = depotTool;
         _steam = steam;
         _vault = vault;
         _appList = appList;
@@ -217,6 +220,9 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
     /// </summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasSelection))]
+    // The depot-download button is gated on HasSelection, and a property-changed notification does not
+    // re-evaluate a command's CanExecute — without this it stays disabled after a game is picked.
+    [NotifyCanExecuteChangedFor(nameof(StartDepotDownloadCommand))]
     private LuaTileViewModel? _activeGame;
 
     public bool HasSelection => ActiveGame is not null;
@@ -1171,6 +1177,7 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
         _allMissing = items.Where(d => !IsInLua(d) && !IsUnknown(d)).Select(Row).ToList();
         _allUnknown = items.Where(d => !IsInLua(d) && IsUnknown(d)).Select(Row).ToList();
         ApplyDepotFilter();
+        RebuildDepotPicks(info, lua);
     }
 
     private static string PrettyOs(string os) => os switch

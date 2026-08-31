@@ -178,6 +178,28 @@ public class LuaToolsApiClient(
         return DownloadFileAsync(url, $"{appid}.zip", progress, ct);
     }
 
+    /// <summary>
+    /// Auth — one depot's <c>.manifest</c>, for a depot Steam's own <c>config\depotcache</c> doesn't have.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Needed because a game added with "Auto Update Apps" on has its <c>setManifestid</c> pins commented
+    /// out and its manifest files skipped, so the depot downloader has nothing to feed
+    /// <c>-manifestfile</c>. Signed-in only: guests can still download depots whose manifest is already on
+    /// disk, they just cannot pull new ones.
+    /// </para>
+    /// <para>
+    /// The staged filename here is a FALLBACK, not the installed name. What actually reaches depotcache is
+    /// recomputed as <c>&lt;depot&gt;_&lt;manifest&gt;.manifest</c> by the caller, and screened by
+    /// <see cref="ManifestFile.IsSteamManifest"/> first — so a <c>Content-Disposition</c> header cannot
+    /// choose what this file is called once installed.
+    /// </para>
+    /// </remarks>
+    public Task<DownloadedFile> DownloadDepotManifestAsync(
+        long depotId, string manifestId, IProgress<double?>? progress, CancellationToken ct = default) =>
+        DownloadFileAsync($"/api/givemethemanifestpunk/{depotId}/{manifestId}",
+                          $"{depotId}_{manifestId}.manifest", progress, ct);
+
     public Task<DownloadedFile> GenerateDlcAsync(
         string appid, string baseAppId, string? gameName, IProgress<double?>? progress, CancellationToken ct = default)
     {

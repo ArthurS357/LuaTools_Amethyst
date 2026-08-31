@@ -10,6 +10,14 @@ public class CacheData
     public string? OpenSteamToolsInstalledVersion { get; set; }
     public string? OpenSteamToolsInstalledZipDigest { get; set; }
 
+    // ── DepotDownloaderMod install fingerprint ──
+    // The release tag of the tool currently extracted under %AppData%\LuaToolsGui\depotdownloader, and when
+    // its pin was last checked. The tag is what makes an existing exe REUSABLE: it has to equal
+    // AppConfig.DepotDownloaderPinnedTag, so an exe left over from a previous pin is treated as absent
+    // rather than run. The timestamp only throttles the GitHub lookup (EnsureToolAsync runs once per depot).
+    public string? DepotDownloaderVersion { get; set; }
+    public long DepotDownloaderCheckedAtMs { get; set; }
+
     // ── Steam appdetails rate-limit window (rolling ~200 req / ~200s per IP) ──
     // Unix-ms timestamps of recent requests, so the sliding window survives restarts and we don't
     // burst fresh into a still-counting window.
@@ -84,6 +92,20 @@ public sealed class CacheService
     {
         get => _cache.OpenSteamToolsInstalledZipDigest;
         set { _cache.OpenSteamToolsInstalledZipDigest = string.IsNullOrWhiteSpace(value) ? null : value; Save(); }
+    }
+
+    /// <summary>DepotDownloaderMod: the release tag last extracted, checked against the compiled-in pin.</summary>
+    public string? DepotDownloaderVersion
+    {
+        get => _cache.DepotDownloaderVersion;
+        set { _cache.DepotDownloaderVersion = string.IsNullOrWhiteSpace(value) ? null : value; Save(); }
+    }
+
+    /// <summary>DepotDownloaderMod: Unix-ms of the last pin check (0 = never), for the lookup throttle.</summary>
+    public long DepotDownloaderCheckedAtMs
+    {
+        get => _cache.DepotDownloaderCheckedAtMs;
+        set { _cache.DepotDownloaderCheckedAtMs = value; Save(); }
     }
 
     // The collection accessors below all hand back a COPY and mutate under SaveLock. Previously they
@@ -237,6 +259,8 @@ public sealed class CacheService
     {
         bool empty = _cache.OpenSteamToolsInstalledVersion is null
             && _cache.OpenSteamToolsInstalledZipDigest is null
+            && _cache.DepotDownloaderVersion is null
+            && _cache.DepotDownloaderCheckedAtMs == 0
             && _cache.SteamApiRequestTimes.Count == 0
             && _cache.HardwareAppIds.Count == 0
             && _cache.HardwareAppIdsFetchedAtMs == 0

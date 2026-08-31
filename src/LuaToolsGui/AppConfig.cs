@@ -83,6 +83,53 @@ public static class AppConfig
     public const string CloudRedirectOwner = "Selectively11";
     public const string CloudRedirectRepoName = "CloudRedirect";
     public const string CloudRedirectRepo = CloudRedirectOwner + "/" + CloudRedirectRepoName;
+
+    // ── DepotDownloaderMod: the depot-download engine ────────────────
+    // DepotDownloaderService downloads this zip, extracts it, and RUNS the exe inside it to pull raw depot
+    // content from Steam's CDN. It is the single highest-trust third-party artifact this app touches.
+    //
+    // It is a RE-PACK, not the upstream SteamAutoCracks/DepotDownloaderMod project: upstream ships its
+    // assets as `Release.rar` (System.IO.Compression cannot read RAR) and builds framework-dependent, so
+    // the re-pack rebuilds the same source as a SELF-CONTAINED win-x64 publish in a FLAT zip. Both
+    // properties are load-bearing — EnsureToolAsync extracts straight into the tool directory and expects
+    // DepotDownloaderMod.exe at the archive ROOT, with no single-top-level-folder hoisting.
+    //
+    // ── Why this is PINNED and upstream's version is not ─────────────
+    // Upstream resolves `releases/latest` and verifies the download against the `digest` field of that same
+    // API response. That is integrity against corruption, not against a hostile source: GithubProxy falls
+    // back to third-party download mirrors for blocked regions, so one compromised hop could serve both a
+    // forged binary and a matching digest and the check would pass. Worse, upstream's AssetHash.Matches
+    // returns TRUE when the asset advertises no digest at all — a digest-less response is, by itself,
+    // enough to get an unverified executable onto disk and run it.
+    //
+    // So the trust anchor moves into this file. EnsureToolAsync resolves the PINNED TAG (not "latest"),
+    // accepts only the asset named below, and requires the bytes to hash to the constant below. A mirror
+    // cannot change a compiled-in constant. An empty pin DISABLES the feature outright rather than falling
+    // back to unpinned behaviour — see DepotDownloaderService.PinIsUsable.
+    //
+    // ── Provenance of the value, and what it does NOT claim ──────────
+    // Read from the GitHub REST API over direct TLS to api.github.com on 2026-08-30 (no proxy, no mirror):
+    // release tag DepotDownloaderMod_3.4.0.2, published 2026-08-28, asset `digest` field.
+    //
+    // Unlike SteamlessPinnedSha256 above, the ARCHIVE ITSELF HAS NOT BEEN DOWNLOADED AND HASHED
+    // INDEPENDENTLY. This constant therefore asserts "what GitHub's API published for that release on that
+    // date", not "bytes a maintainer verified twice". It is strictly stronger than upstream (it survives a
+    // mirror, and it freezes the version) but it is weaker than the Steamless pin, and a second-channel
+    // byte check is still owed before anyone should treat this as fully verified.
+    //
+    // The re-pack workflow republishes on every upstream release, so this WILL go stale. That is the
+    // intended failure mode: a new re-pack simply isn't accepted until a maintainer bumps all three
+    // constants together, deliberately.
+    public const string DepotDownloaderOwner = "mendy-tools";
+    public const string DepotDownloaderRepoName = "DepotDownloaderMod";
+    public const string DepotDownloaderRepo = DepotDownloaderOwner + "/" + DepotDownloaderRepoName;
+    public const string DepotDownloaderPinnedTag = "DepotDownloaderMod_3.4.0.2";
+    public const string DepotDownloaderPinnedAssetName = "DepotDownloaderMod-win-x64.zip";
+    // Verificado por download direto de https://github.com/mendy-tools/DepotDownloaderMod/releases/download/DepotDownloaderMod_3.4.0.2/DepotDownloaderMod-win-x64.zip
+    // em 2026-08-30, com hash calculado localmente.
+    public const string DepotDownloaderPinnedSha256 =
+        "5c756a9f82dcf6cf07ac89b371f0572239d2ed72fdf00240c5cb1224016dabcb";
+
     // ── Manifest backend: HTTP only, and it has to stay that way ─────
     // WARNING: this is plain HTTP to a bare IP. It is used by exactly one call —
     // LuaToolsApiClient.CheckSourcesAsync → GET /check_apis?appid=<id> — which carries NO credential and

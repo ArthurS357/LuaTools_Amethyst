@@ -651,4 +651,42 @@ public static class Strings
     public static string Removal_Toast_SharedKept => Get(nameof(Removal_Toast_SharedKept));
     public static string Removal_Toast_Failed => Get(nameof(Removal_Toast_Failed));
     public static string Removal_Err_Record => Get(nameof(Removal_Err_Record));
+
+    // ── Depot content download (Depots page picker + DepotDownloaderService) ──
+    public static string Builds_Depot_Download => Get(nameof(Builds_Depot_Download));
+    public static string Builds_Depot_Unavailable => Get(nameof(Builds_Depot_Unavailable));
+    public static string Builds_Depot_PickTitle => Get(nameof(Builds_Depot_PickTitle));
+    public static string Builds_Depot_PickHint => Get(nameof(Builds_Depot_PickHint));
+    public static string Builds_Depot_NoCandidates => Get(nameof(Builds_Depot_NoCandidates));
+    public static string Builds_Depot_NeedsKey => Get(nameof(Builds_Depot_NeedsKey));
+    public static string Builds_Depot_NeedsManifest => Get(nameof(Builds_Depot_NeedsManifest));
+    public static string Builds_Depot_NeedsSignIn => Get(nameof(Builds_Depot_NeedsSignIn));
+    public static string Builds_Depot_SelectAll => Get(nameof(Builds_Depot_SelectAll));
+    public static string Builds_Depot_SelectNone => Get(nameof(Builds_Depot_SelectNone));
+    public static string Builds_Depot_Destination => Get(nameof(Builds_Depot_Destination));
+    public static string Builds_Depot_Change => Get(nameof(Builds_Depot_Change));
+    public static string Builds_Depot_Space => Get(nameof(Builds_Depot_Space));
+    public static string Builds_Depot_NotEnoughSpace => Get(nameof(Builds_Depot_NotEnoughSpace));
+    public static string Builds_Depot_Confirm => Get(nameof(Builds_Depot_Confirm));
+    public static string Builds_Depot_Cancel => Get(nameof(Builds_Depot_Cancel));
+    public static string Builds_Depot_Downloading => Get(nameof(Builds_Depot_Downloading));
+    public static string Builds_Depot_Phase_PreAllocating => Get(nameof(Builds_Depot_Phase_PreAllocating));
+    public static string Builds_Depot_Phase_Validating => Get(nameof(Builds_Depot_Phase_Validating));
+    public static string Builds_Depot_Phase_FetchingManifest => Get(nameof(Builds_Depot_Phase_FetchingManifest));
+    public static string Builds_Depot_Phase_Downloading => Get(nameof(Builds_Depot_Phase_Downloading));
+    public static string Builds_Depot_Done => Get(nameof(Builds_Depot_Done));
+    public static string Builds_Depot_OpenFolder => Get(nameof(Builds_Depot_OpenFolder));
+    public static string Builds_Depot_CleanUp_Title => Get(nameof(Builds_Depot_CleanUp_Title));
+    public static string Builds_Depot_CleanUp_Body => Get(nameof(Builds_Depot_CleanUp_Body));
+    public static string Builds_Depot_CleanUp_Failed => Get(nameof(Builds_Depot_CleanUp_Failed));
+    public static string Depot_Err_ToolNotPinned => Get(nameof(Depot_Err_ToolNotPinned));
+    public static string Depot_Err_Tool => Get(nameof(Depot_Err_Tool));
+    public static string Depot_Err_SteamNotFound => Get(nameof(Depot_Err_SteamNotFound));
+    public static string Depot_Err_NoKeys => Get(nameof(Depot_Err_NoKeys));
+    public static string Depot_Err_NoKeyFor => Get(nameof(Depot_Err_NoKeyFor));
+    public static string Depot_Err_BadKey => Get(nameof(Depot_Err_BadKey));
+    public static string Depot_Err_NoManifest => Get(nameof(Depot_Err_NoManifest));
+    public static string Depot_Err_SignIn => Get(nameof(Depot_Err_SignIn));
+    public static string Depot_Err_NoSpace => Get(nameof(Depot_Err_NoSpace));
+    public static string Depot_Err_Failed => Get(nameof(Depot_Err_Failed));
 }

@@ -18,6 +18,36 @@
             <TextBlock Text="{Binding Converter={StaticResource FilterOptionDisplay}}" />
         </DataTemplate>
 
+        <!-- One row in the depot-download picker: a tickbox, the depot's name and its id · size · os ·
+             lang, and — when it can't be fetched — the reason, in place of the size line. Rows that can't
+             be picked stay VISIBLE rather than being filtered out: "this depot has no key in this build"
+             is the answer to the question the user is actually asking. -->
+        <DataTemplate x:Key="DepotPickTemplate">
+            <CheckBox
+                Margin="0,0,0,2"
+                Padding="8,0,0,0"
+                AutomationProperties.Name="{Binding Title}"
+                IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                IsEnabled="{Binding CanPick}">
+                <StackPanel>
+                    <TextBlock
+                        FontSize="12.5"
+                        Text="{Binding Title}"
+                        TextTrimming="CharacterEllipsis" />
+                    <TextBlock
+                        FontSize="11"
+                        Foreground="{StaticResource TextDimBrush}"
+                        Text="{Binding Meta}" />
+                    <TextBlock
+                        FontSize="11"
+                        Foreground="{StaticResource WarningBrush}"
+                        Text="{Binding BlockedReason}"
+                        TextWrapping="Wrap"
+                        Visibility="{Binding BlockedReason, Converter={StaticResource NullToCollapsed}}" />
+                </StackPanel>
+            </CheckBox>
+        </DataTemplate>
+
         <!-- Borderless, hover-highlight button used as a clickable depot/DLC row (opens SteamDB). -->
         <Style x:Key="RowButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent" />
@@ -658,13 +688,31 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
-                        <ui:TextBox
-                            Margin="0,0,12,0"
-                            Icon="{ui:SymbolIcon Search24}"
-                            PlaceholderText="{x:Static res:Strings.Builds_Depot_Search}"
-                            Text="{Binding DepotSearchText, UpdateSourceTrigger=PropertyChanged}" />
+                        <Grid Margin="0,0,12,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <ui:TextBox
+                                Icon="{ui:SymbolIcon Search24}"
+                                PlaceholderText="{x:Static res:Strings.Builds_Depot_Search}"
+                                Text="{Binding DepotSearchText, UpdateSourceTrigger=PropertyChanged}" />
+
+                            <!-- Opens the picker rather than starting anything: the destination and the
+                                 free-space figure have to be on screen while the user is still choosing
+                                 what to tick, not after they commit to tens of GB. -->
+                            <ui:Button
+                                Grid.Column="1"
+                                Margin="8,0,0,0"
+                                Command="{Binding StartDepotDownloadCommand}"
+                                Content="{x:Static res:Strings.Builds_Depot_Download}"
+                                Icon="{ui:SymbolIcon ArrowDownload24}"
+                                ToolTip="{x:Static res:Strings.Builds_Depot_PickHint}" />
+                        </Grid>
 
                         <TextBlock
                             Grid.Row="1"
@@ -802,6 +850,217 @@
                             </StackPanel>
                         </StackPanel>
                     </ScrollViewer>
+
+                    <!--  Download strip: progress while a depot job runs, then its outcome.  -->
+                    <Border
+                        Grid.Row="2"
+                        Margin="0,8,12,0"
+                        Padding="12,10"
+                        Background="{StaticResource SurfaceCardBrush}"
+                        BorderBrush="{StaticResource BorderSubtleBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Visibility="{Binding IsDepotStripVisible, Converter={StaticResource BoolToVis}}">
+                        <StackPanel>
+                            <!--  Running  -->
+                            <StackPanel Visibility="{Binding IsDepotDownloading, Converter={StaticResource BoolToVis}}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Foreground="{StaticResource TextSecondaryBrush}"
+                                        Text="{Binding DepotStatus}"
+                                        TextTrimming="CharacterEllipsis" />
+                                    <ui:Button
+                                        Grid.Column="1"
+                                        Margin="8,0,0,0"
+                                        Command="{Binding CancelDepotDownloadCommand}"
+                                        Content="{x:Static res:Strings.Builds_Depot_Cancel}" />
+                                </Grid>
+                                <ProgressBar
+                                    Height="4"
+                                    Margin="0,8,0,0"
+                                    IsIndeterminate="{Binding IsDepotProgressIndeterminate}"
+                                    Maximum="100"
+                                    Value="{Binding DepotProgress, Mode=OneWay}" />
+                            </StackPanel>
+
+                            <!--  Failed  -->
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{StaticResource DangerBrush}"
+                                Text="{Binding DepotDownloadError}"
+                                TextWrapping="Wrap"
+                                Visibility="{Binding HasDepotError, Converter={StaticResource BoolToVis}}" />
+
+                            <!--  Done  -->
+                            <Grid Visibility="{Binding HasDepotResult, Converter={StaticResource BoolToVis}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontSize="12"
+                                    Foreground="{StaticResource SuccessTextBrush}"
+                                    Text="{Binding DepotDownloadDone}"
+                                    TextWrapping="Wrap" />
+                                <ui:Button
+                                    Grid.Column="1"
+                                    Margin="8,0,0,0"
+                                    Command="{Binding OpenDepotFolderCommand}"
+                                    Content="{x:Static res:Strings.Builds_Depot_OpenFolder}"
+                                    Icon="{ui:SymbolIcon FolderOpen24}" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!--  Picker overlay. Spans the whole depot pane so the list behind it can't be
+                          interacted with while a selection is being made.  -->
+                    <Border
+                        Grid.Row="0"
+                        Grid.RowSpan="3"
+                        Margin="0,0,12,0"
+                        Background="{StaticResource SurfaceOverlayBrush}"
+                        Visibility="{Binding IsDepotPickerOpen, Converter={StaticResource BoolToVis}}">
+                        <Border
+                            Margin="0,8"
+                            Padding="16"
+                            Background="{StaticResource SurfaceRaisedBrush}"
+                            BorderBrush="{StaticResource BorderDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="10">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <StackPanel>
+                                    <TextBlock
+                                        FontSize="15"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource TextPrimaryBrush}"
+                                        Text="{x:Static res:Strings.Builds_Depot_PickTitle}" />
+                                    <TextBlock
+                                        Margin="0,4,0,0"
+                                        FontSize="11.5"
+                                        Foreground="{StaticResource TextMutedBrush}"
+                                        Text="{x:Static res:Strings.Builds_Depot_PickHint}"
+                                        TextWrapping="Wrap" />
+
+                                    <!--  Feature switched off because this build carries no verified pin.  -->
+                                    <TextBlock
+                                        Margin="0,8,0,0"
+                                        FontSize="11.5"
+                                        Foreground="{StaticResource WarningBrush}"
+                                        Text="{x:Static res:Strings.Builds_Depot_Unavailable}"
+                                        TextWrapping="Wrap">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsDepotDownloadAvailable}" Value="False">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+
+                                    <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                                        <ui:Button
+                                            Command="{Binding SelectAllDepotsCommand}"
+                                            Content="{x:Static res:Strings.Builds_Depot_SelectAll}" />
+                                        <ui:Button
+                                            Margin="8,0,0,0"
+                                            Command="{Binding SelectNoDepotsCommand}"
+                                            Content="{x:Static res:Strings.Builds_Depot_SelectNone}" />
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <!--  Empty state: says WHY there is nothing to pick, not just that there isn't.  -->
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Margin="0,12,0,0"
+                                    VerticalAlignment="Top"
+                                    FontSize="11.5"
+                                    Foreground="{StaticResource TextDimBrush}"
+                                    Text="{x:Static res:Strings.Builds_Depot_NoCandidates}"
+                                    TextWrapping="Wrap"
+                                    Visibility="{Binding HasDepotPicks, Converter={StaticResource InverseBoolToVis}}" />
+
+                                <ScrollViewer
+                                    Grid.Row="1"
+                                    Margin="0,12,0,0"
+                                    VerticalScrollBarVisibility="Auto"
+                                    Visibility="{Binding HasDepotPicks, Converter={StaticResource BoolToVis}}">
+                                    <ItemsControl
+                                        Margin="0,0,12,0"
+                                        ItemTemplate="{StaticResource DepotPickTemplate}"
+                                        ItemsSource="{Binding DepotPicks}" />
+                                </ScrollViewer>
+
+                                <StackPanel Grid.Row="2" Margin="0,12,0,0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock
+                                            VerticalAlignment="Center"
+                                            FontSize="11.5"
+                                            Foreground="{StaticResource TextMutedBrush}"
+                                            Text="{Binding DepotOutDir}"
+                                            TextTrimming="CharacterEllipsis"
+                                            ToolTip="{Binding DepotOutDir}" />
+                                        <ui:Button
+                                            Grid.Column="1"
+                                            Margin="8,0,0,0"
+                                            Command="{Binding ChangeDepotFolderCommand}"
+                                            Content="{x:Static res:Strings.Builds_Depot_Change}"
+                                            Icon="{ui:SymbolIcon Folder24}" />
+                                    </Grid>
+
+                                    <TextBlock
+                                        Margin="0,8,0,0"
+                                        FontSize="11.5"
+                                        Foreground="{StaticResource TextSecondaryBrush}"
+                                        Text="{Binding SpaceLabel}" />
+
+                                    <!--  Advisory: the job re-checks before allocating and again between
+                                          depots, because the volume is shared with the whole machine.  -->
+                                    <TextBlock
+                                        Margin="0,4,0,0"
+                                        FontSize="11.5"
+                                        Foreground="{StaticResource DangerBrush}"
+                                        Text="{x:Static res:Strings.Builds_Depot_NotEnoughSpace}"
+                                        TextWrapping="Wrap"
+                                        Visibility="{Binding HasEnoughSpace, Converter={StaticResource InverseBoolToVis}}" />
+
+                                    <StackPanel
+                                        Margin="0,12,0,0"
+                                        HorizontalAlignment="Right"
+                                        Orientation="Horizontal">
+                                        <ui:Button
+                                            Command="{Binding CancelDepotDownloadCommand}"
+                                            Content="{x:Static res:Strings.Builds_Depot_Cancel}" />
+                                        <ui:Button
+                                            Margin="8,0,0,0"
+                                            Appearance="Primary"
+                                            Command="{Binding ConfirmDepotDownloadCommand}"
+                                            Content="{Binding DepotConfirmLabel}"
+                                            Icon="{ui:SymbolIcon ArrowDownload24}" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </Border>
                     </Grid>
                 </Grid>
             </Grid>
