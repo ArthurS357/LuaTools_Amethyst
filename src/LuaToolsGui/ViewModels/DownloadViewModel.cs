@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LuaToolsGui.Models;
 using LuaToolsGui.Services;
+using LuaToolsGui.Services.Downloads;
 
 namespace LuaToolsGui.ViewModels;
 
@@ -84,6 +85,8 @@ public partial class DownloadViewModel : ObservableObject
     private readonly SteamDepotInfo _depotInfo;
     private readonly HardwareAppIdService _hardware;
     private readonly CacheService _cache;
+    private readonly DownloadQueue _queue;
+    private readonly ManifestJobFactory _jobs;
     private CancellationTokenSource? _searchCts;
     private CancellationTokenSource? _detailsCts;
 
@@ -109,6 +112,10 @@ public partial class DownloadViewModel : ObservableObject
 
     /// <summary>Set by App: navigate to Manage and open this appid's detail (the install banner's "Reveal").</summary>
     public Action<long>? NavigateToGame { get; set; }
+
+    /// <summary>Set by App: bring this page up. The Downloads page's "Review" button on an item waiting on
+    /// the overwrite overlay uses it — the overlay lives here, so that is where the user has to be.</summary>
+    public Action? NavigateToAdd { get; set; }
 
     public ObservableCollection<SteamSearchResult> SearchResults { get; } = [];
     public ObservableCollection<SourceRowViewModel> Sources { get; } = [];
@@ -296,8 +303,16 @@ public partial class DownloadViewModel : ObservableObject
     public bool HasDiffAdded => DiffAdded.Count > 0;
     public bool HasDiffRemoved => DiffRemoved.Count > 0;
 
-    // Set while a confirm is pending so the confirm/cancel commands know what to install.
-    private (string zipPath, long appId)? _pendingInstall;
+    /// <summary>
+    /// Settled by the confirm/cancel commands to release the queue's confirmation gate.
+    /// </summary>
+    /// <remarks>
+    /// The download no longer runs inline, so "show the overlay and let a later command finish the
+    /// install" cannot work — by then the queue is already awaiting an answer on a background item. The
+    /// overlay now ANSWERS a pending gate instead of driving the install itself, which is also what makes
+    /// the staged-file cleanup on a decline the queue's job rather than this page's.
+    /// </remarks>
+    private TaskCompletionSource<bool>? _pendingConfirm;
 
     private bool _suppressSearch;
     private string? _fastFetchSource;
@@ -312,7 +327,8 @@ public partial class DownloadViewModel : ObservableObject
     public DownloadViewModel(LuaToolsApiClient api, HubcapService hubcap, SettingsService settings,
         AuthService auth, ToastService toast, LuaInstaller installer,
         SteamAppListCache appList, SteamAppInfoCache appInfo, SteamDepotInfo depotInfo,
-        HardwareAppIdService hardware, DropInstallViewModel drop, CacheService cache)
+        HardwareAppIdService hardware, DropInstallViewModel drop, CacheService cache,
+        DownloadQueue queue, ManifestJobFactory jobs)
     {
         _api = api;
         _hubcap = hubcap;
@@ -326,6 +342,8 @@ public partial class DownloadViewModel : ObservableObject
         _hardware = hardware;
         Drop = drop;
         _cache = cache;
+        _queue = queue;
+        _jobs = jobs;
         _fastFetch = settings.FastFetch;
     }
 
@@ -676,87 +694,73 @@ public partial class DownloadViewModel : ObservableObject
 
     // ── Downloads ───────────────────────────────────────────────────
 
-    /// <summary>Base-game manifest zip: download, then install (confirming first if a lua already exists).</summary>
+    /// <summary>
+    /// Base-game manifest bundle: hand the work to <see cref="DownloadQueue"/> and wait for it to settle.
+    /// </summary>
+    /// <remarks>
+    /// <para>The fetch and the install now live in <see cref="ManifestJobFactory"/>, shared with the plugin
+    /// add service and the HTTP bridge — this method only decides WHAT to enqueue and how to report the
+    /// outcome on this page. Awaiting <see cref="DownloadItem.Completion"/> keeps the contract callers
+    /// already depend on: <see cref="ProtocolInstall"/>'s silent variant reads InstallStatus straight after
+    /// awaiting this, and would otherwise report on a download that had not started.</para>
+    ///
+    /// <para>The old <c>Sources.Any(s =&gt; s.IsDownloading)</c> gate is gone. The queue dedupes on the
+    /// job's appid key, so a second click joins the running item instead of being silently dropped — and,
+    /// unlike the old gate, that also holds across pages and across the plugin.</para>
+    /// </remarks>
     public async Task DownloadFromSourceAsync(SourceRowViewModel source, CancellationToken ct = default)
     {
-        if (Details is null || Sources.Any(s => s.IsDownloading)) return;
+        if (Details is null) return;
 
         // Hubcap downloads use the user's OWN key and never touch lua.tools, so a guest with a key
         // configured can download without signing in. Every other source still needs a lua.tools account.
         bool hubcapWithKey = source.NeedsKey && !string.IsNullOrEmpty(_settings.HubcapApiKey);
         if (!hubcapWithKey && await PromptSignInIfGuestAsync(Resources.Strings.Add_SignIn_Download)) return;
+
         Error = null;
         LastDownload = null;
         InstallStatus = null;
         long appId = Details.AppId;
+
+        var job = _jobs.CreateManifestJob(
+            appId, source.Name, source.NeedsKey, Details.Name,
+            // A silent/headless install has no surfaced window to confirm on, so it overwrites — the same
+            // rule the inline path used, just expressed as "this job has no gate".
+            confirm: _silentInstall ? null : (file, _, gateCt) => ConfirmOverwriteAsync(file, appId, gateCt),
+            onFinished: (item, result) => ReportQueued(item, result, source.NeedsKey),
+            onReveal: () => NavigateToAdd?.Invoke());
+
+        // Indeterminate for the whole run: the byte-level figures belong to the Downloads page now, and a
+        // fraction here would be a second, worse copy of them. The flag still greys the row out.
         source.IsDownloading = true;
         source.IsProgressIndeterminate = true;
-        try
-        {
-            var progress = new Progress<double?>(p =>
-            {
-                source.IsProgressIndeterminate = p is null;
-                if (p is not null) source.Progress = p.Value * 100;
-            });
-            // Key-gated (Hubcap) sources download DIRECTLY from hubcapmanifest.com with the user's key;
-            // everything else goes through lua.tools and counts toward the 25/day limit.
-            DownloadedFile download;
-            if (source.NeedsKey)
-            {
-                string appidStr = appId.ToString();
-                // Peek BEFORE downloading: a successful download invalidates this entry (HubcapService),
-                // and this is our only chance to record what "current" meant at download time.
-                string? fileModified = _hubcap.PeekCachedFileModified(appidStr);
-                var result = await _hubcap.DownloadManifestAsync(
-                    appidStr, _settings.HubcapApiKey ?? "", progress, ct);
-                if (result is not HubcapResult<DownloadedFile>.Ok ok)
-                {
-                    Error = HubcapErrorText.Describe(result);
-                    return;
-                }
-                download = ok.Value;
-                // Only record a real marker — leaving no record (rather than an unknown/null one) keeps
-                // ManifestFreshnessPolicy from guessing at staleness until the next status check confirms it.
-                if (fileModified is not null)
-                    _cache.SaveInstalledManifestFileModified(appidStr, fileModified);
-            }
-            else
-            {
-                download = await _api.DownloadManifestAsync(
-                    appId.ToString(), source.Name, Details.Name, progress);
-            }
-            LastDownload = download;
-
-            if (source.NeedsKey) await ApplyHubcapStateAsync(ct); // refresh the key's X/Y usage badge
-            else await RefreshStandardUsageAsync(); // non-Hubcap usage just changed (counts toward 25/day)
-
-            // If a lua for this game is already installed, confirm with a before/after diff first — unless
-            // this is a silent install, which has no surfaced window and just overwrites.
-            string? existing = _installer.ReadInstalledLua(appId);
-            if (!_silentInstall && existing is not null && await ShowOverwriteConfirmAsync(existing, download.FilePath, appId))
-                return; // waiting on the user; confirm/cancel command finishes the install
-
-            InstallZipAndReport(download.FilePath, appId);
-        }
-        catch (ApiException ex)
-        {
-            Error = ex.Message;
-        }
-        catch (OperationCanceledException)
-        {
-            // Only reachable from the FastFetch path, whose token dies with its fetch. A user-initiated
-            // download passes no token, so it can't land here.
-        }
-        catch (Exception)
-        {
-            Error = Resources.Strings.Add_Err_Download;
-        }
+        try { await _queue.Enqueue(job).Completion; }
         finally
         {
             source.IsDownloading = false;
-            source.Progress = 0;
             source.IsProgressIndeterminate = false;
         }
+    }
+
+    /// <summary>Project a settled queue item onto this page's result banner.</summary>
+    private void ReportQueued(DownloadItem item, JobResult? result, bool needsKey)
+    {
+        if (result is null)
+        {
+            // Cancelled, or failed before the install phase. The item carries the reason either way.
+            InstallFailed = item.Status is DownloadStatus.Failed;
+            InstallStatus = item.Status is DownloadStatus.Failed ? null : item.Message;
+            if (item.Status is DownloadStatus.Failed) Error = item.Message;
+            return;
+        }
+
+        InstallFailed = !result.Ok;
+        if (result.Ok) _installedAppId = item.AppId; // for the banner's Reveal, even after the search clears
+        InstallStatus = result.Message;
+
+        // The usage badge only moves once the download has actually happened, so it is refreshed here
+        // rather than optimistically at enqueue time.
+        _ = needsKey ? ApplyHubcapStateAsync() : RefreshStandardUsageAsync();
     }
 
     /// <summary>DLC lua: download and install silently (it's just an unlock — no confirm).</summary>
@@ -796,12 +800,23 @@ public partial class DownloadViewModel : ObservableObject
 
     // ── Install + overwrite confirm ─────────────────────────────────
 
-    /// <summary>Build the before/after diff and open the confirm overlay. Returns true if shown.</summary>
-    private async Task<bool> ShowOverwriteConfirmAsync(string oldLuaPath, string newZipPath, long appId)
+    /// <summary>
+    /// The queue's confirmation gate: build the before/after diff, show the overlay, and answer with what
+    /// the user chose. True proceeds with the install; false makes the queue discard the staged file.
+    /// </summary>
+    /// <remarks>
+    /// Answers true without asking in the two cases where there is nothing to weigh — no lua installed for
+    /// this game, or a download that cannot be parsed into a diff. Both used to install directly from
+    /// inside this method; letting the gate return instead keeps a single install path.
+    /// </remarks>
+    private async Task<bool> ConfirmOverwriteAsync(DownloadedFile file, long appId, CancellationToken ct)
     {
+        string? oldLuaPath = _installer.ReadInstalledLua(appId);
+        if (oldLuaPath is null) return true; // nothing to overwrite
+
         var oldLua = LuaFileParser.Parse(oldLuaPath, appId);
-        var newLua = ExtractLuaFromZip(newZipPath, appId);
-        if (newLua is null) { InstallZipAndReport(newZipPath, appId); return false; } // can't diff — just install
+        var newLua = ExtractLuaFromZip(file.FilePath, appId);
+        if (newLua is null) return true; // can't diff — install rather than block on an unanswerable prompt
 
         var diff = LuaFileParser.Diff(oldLua, newLua);
 
@@ -812,8 +827,18 @@ public partial class DownloadViewModel : ObservableObject
         DiffRemoved = diff.Removed.Select(ToDiffRow).ToList();
         ConfirmTitle = string.Format(Resources.Strings.Add_Confirm_Replace, Details?.Name ?? appId.ToString());
         ConfirmNoChanges = diff.HasChanges ? null : Resources.Strings.Add_Confirm_NoChanges;
-        _pendingInstall = (newZipPath, appId);
+
+        var gate = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        _pendingConfirm = gate;
         IsConfirmingOverwrite = true;
+
+        // A cancel from the Downloads page has to take the overlay down too, or it would sit there
+        // answering for an item that no longer exists.
+        using var registration = ct.Register(() =>
+        {
+            IsConfirmingOverwrite = false;
+            gate.TrySetResult(false);
+        });
 
         // Lazily resolve any DLC rows still showing a bare id via appdetails, then rebuild.
         var unnamed = diff.Added.Concat(diff.Removed)
@@ -823,43 +848,33 @@ public partial class DownloadViewModel : ObservableObject
         {
             await Parallel.ForEachAsync(unnamed, new ParallelOptions { MaxDegreeOfParallelism = 4 },
                 async (id, _) => await _appInfo.ResolveAsync(id));
-            if (IsConfirmingOverwrite && _pendingInstall is { } p && p.appId == appId)
+            if (IsConfirmingOverwrite && ReferenceEquals(_pendingConfirm, gate))
             {
                 DiffAdded = diff.Added.Select(ToDiffRow).ToList();
                 DiffRemoved = diff.Removed.Select(ToDiffRow).ToList();
             }
         }
-        return true;
+
+        return await gate.Task;
     }
 
     [RelayCommand]
-    private void ConfirmOverwrite()
-    {
-        IsConfirmingOverwrite = false;
-        if (_pendingInstall is { } p) InstallZipAndReport(p.zipPath, p.appId);
-        _pendingInstall = null;
-    }
+    private void ConfirmOverwrite() => SettleConfirm(true);
 
     [RelayCommand]
     private void CancelOverwrite()
     {
-        IsConfirmingOverwrite = false;
-        if (_pendingInstall is { } p) DeleteStaged(p.zipPath); // not installing — don't leave it in temp
-        _pendingInstall = null;
+        SettleConfirm(false);
+        // The queue deletes the staged file it is holding; this page only reports the choice.
         InstallStatus = Resources.Strings.Add_Status_Cancelled;
         InstallFailed = false;
     }
 
-    private void InstallZipAndReport(string zipPath, long appId)
+    private void SettleConfirm(bool proceed)
     {
-        _installedAppId = appId; // remember for the banner's Reveal, even after the search is cleared
-        // The download is always saved as "<appid>.zip", but some sources return a BARE .lua (no zip
-        // wrapper) — unzipping that throws "End of Central Directory record could not be found". Sniff
-        // the bytes instead of trusting the extension: real zips start with "PK\x03\x04".
-        ReportInstall(IsZip(zipPath)
-            ? _installer.InstallZip(zipPath, appId)
-            : _installer.InstallLua(zipPath, appId));
-        DeleteStaged(zipPath); // installed into Steam — the temp staging copy is no longer needed
+        IsConfirmingOverwrite = false;
+        _pendingConfirm?.TrySetResult(proceed);
+        _pendingConfirm = null;
     }
 
     /// <summary>Best-effort delete of a staged download after it's been installed, so nothing piles

@@ -861,35 +861,12 @@
                         BorderThickness="1"
                         CornerRadius="8"
                         Visibility="{Binding IsDepotStripVisible, Converter={StaticResource BoolToVis}}">
+                        <!--  No progress bar here any more: depot downloads run in the app-wide queue, so
+                              this strip only reports that the selection was handed over (or that it could
+                              not be). Everything live about it — bytes, speed, pause, cancel — is on the
+                              Downloads page, which is what the link below opens.  -->
                         <StackPanel>
-                            <!--  Running  -->
-                            <StackPanel Visibility="{Binding IsDepotDownloading, Converter={StaticResource BoolToVis}}">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        FontSize="12"
-                                        Foreground="{StaticResource TextSecondaryBrush}"
-                                        Text="{Binding DepotStatus}"
-                                        TextTrimming="CharacterEllipsis" />
-                                    <ui:Button
-                                        Grid.Column="1"
-                                        Margin="8,0,0,0"
-                                        Command="{Binding CancelDepotDownloadCommand}"
-                                        Content="{x:Static res:Strings.Builds_Depot_Cancel}" />
-                                </Grid>
-                                <ProgressBar
-                                    Height="4"
-                                    Margin="0,8,0,0"
-                                    IsIndeterminate="{Binding IsDepotProgressIndeterminate}"
-                                    Maximum="100"
-                                    Value="{Binding DepotProgress, Mode=OneWay}" />
-                            </StackPanel>
-
-                            <!--  Failed  -->
+                            <!--  Refused before queueing  -->
                             <TextBlock
                                 FontSize="12"
                                 Foreground="{StaticResource DangerBrush}"
@@ -897,10 +874,11 @@
                                 TextWrapping="Wrap"
                                 Visibility="{Binding HasDepotError, Converter={StaticResource BoolToVis}}" />
 
-                            <!--  Done  -->
+                            <!--  Sent to Downloads  -->
                             <Grid Visibility="{Binding HasDepotResult, Converter={StaticResource BoolToVis}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
@@ -912,6 +890,14 @@
                                 <ui:Button
                                     Grid.Column="1"
                                     Margin="8,0,0,0"
+                                    AutomationProperties.Name="{x:Static res:Strings.Nav_Downloads}"
+                                    Command="{Binding OpenDownloadsCommand}"
+                                    Content="{x:Static res:Strings.Nav_Downloads}"
+                                    Icon="{ui:SymbolIcon ArrowDownload24}" />
+                                <ui:Button
+                                    Grid.Column="2"
+                                    Margin="8,0,0,0"
+                                    AutomationProperties.Name="{x:Static res:Strings.Builds_Depot_OpenFolder}"
                                     Command="{Binding OpenDepotFolderCommand}"
                                     Content="{x:Static res:Strings.Builds_Depot_OpenFolder}"
                                     Icon="{ui:SymbolIcon FolderOpen24}" />

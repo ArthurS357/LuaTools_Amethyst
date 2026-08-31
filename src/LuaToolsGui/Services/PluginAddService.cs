@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
-using System.IO;
 using LuaToolsGui.Models;
+using LuaToolsGui.Services.Downloads;
 
 namespace LuaToolsGui.Services;
 
@@ -16,7 +16,8 @@ public class PluginAddService(
     HubcapService hubcap,
     SettingsService settings,
     AuthService auth,
-    LuaInstaller installer)
+    DownloadQueue queue,
+    ManifestJobFactory jobs)
 {
     private const string HubcapSourceName = "Sadie (Morrenus)";
 
@@ -55,19 +56,6 @@ public class PluginAddService(
     }
 
     private readonly ConcurrentDictionary<long, AddState> _states = new();
-
-    /// <summary>True if the file begins with the ZIP magic (PK\x03\x04). A bare .lua returns false so
-    /// it's installed as a loose lua instead of unzipped.</summary>
-    private static bool IsZip(string path)
-    {
-        try
-        {
-            using var fs = File.OpenRead(path);
-            Span<byte> sig = stackalloc byte[4];
-            return fs.Read(sig) == 4 && sig[0] == 0x50 && sig[1] == 0x4B && sig[2] == 0x03 && sig[3] == 0x04;
-        }
-        catch { return false; }
-    }
 
     public AddState? GetState(long appId) => _states.TryGetValue(appId, out var s) ? s : null;
 
@@ -292,6 +280,16 @@ public class PluginAddService(
         catch { }
     }
 
+    /// <summary>
+    /// Hand the add to <see cref="DownloadQueue"/> and project the settled item back onto
+    /// <see cref="AddState"/>, which the plugin polls.
+    /// </summary>
+    /// <remarks>
+    /// The fetch, the zip sniff, the staged-file cleanup and the result wording all moved to
+    /// <see cref="ManifestJobFactory"/>. They were duplicated here from the Add page and had already
+    /// drifted — this copy installed with no overwrite diff and reported through its own string building,
+    /// so the same download told the user two different things depending on where it was started.
+    /// </remarks>
     private async Task DownloadAsync(long appId, AddState state, SourceRow row)
     {
         if (state.Busy) return;
@@ -300,72 +298,36 @@ public class PluginAddService(
         state.InstallStatus = null;
         state.InstallFailed = false;
         row.Downloading = true;
-        row.Indeterminate = true;
+        row.Indeterminate = true; // the byte figures live on the Downloads page; this only greys the row
         row.Progress = 0;
         try
         {
-            var progress = new Progress<double?>(p =>
-            {
-                row.Indeterminate = p is null;
-                if (p is not null) row.Progress = p.Value * 100;
-            });
+            // No confirm gate: headless, with no window to show the overwrite diff on — the same rule the
+            // inline path used.
+            var job = jobs.CreateManifestJob(appId, row.Name, row.NeedsKey, state.GameName);
+            var item = queue.Enqueue(job);
 
-            DownloadedFile dl;
-            if (row.NeedsKey)
-            {
-                var fetched = await hubcap.DownloadManifestAsync(
-                    appId.ToString(), settings.HubcapApiKey ?? "", progress, state.Cts.Token);
-                if (fetched is not HubcapResult<DownloadedFile>.Ok ok)
-                {
-                    state.Error = HubcapErrorText.Describe(fetched);
-                    state.InstallFailed = true;
-                    AppLog.Log($"PluginAdd.Download appid={appId} source='{row.Name}' FAILED: {state.Error}");
-                    return;
-                }
-                dl = ok.Value;
-            }
-            else
-            {
-                dl = await api.DownloadManifestAsync(appId.ToString(), row.Name, state.GameName, progress);
-            }
+            // The plugin's own cancel (a superseded Start) has to reach the queued item, not just this
+            // await — otherwise the download keeps running with nothing left to report to.
+            using var link = state.Cts.Token.Register(() => queue.Cancel(item));
 
-            // Some sources (e.g. Luie) return a BARE .lua, not a zip — sniff the bytes and install
-            // accordingly (same as DownloadViewModel.InstallZipAndReport). Trusting the extension /
-            // always unzipping throws "End of Central Directory record could not be found".
-            var result = IsZip(dl.FilePath)
-                ? installer.InstallZip(dl.FilePath, appId)
-                : installer.InstallLua(dl.FilePath, appId);
-            try { if (File.Exists(dl.FilePath)) File.Delete(dl.FilePath); } catch { }
+            var result = await item.Completion;
 
-            if (result.Error is not null)
+            if (result is { Ok: true })
             {
-                state.Error = result.Error;
-                state.InstallFailed = true;
-                AppLog.Log($"PluginAdd.Download appid={appId} source='{row.Name}' INSTALL ERROR: {result.Error}");
-            }
-            else
-            {
-                // Reuse the GUI add flow's localized strings (see DownloadViewModel.ReportInstall) instead
-                // of a hardcoded English string, so the plugin popup is translated + consistent with the app.
-                // "· via {source}" mirrors the GUI's FastFetch suffix, naming the source this add came from.
-                var name = string.IsNullOrEmpty(state.GameName) ? "lua" : state.GameName;
-                state.InstallStatus = result.ManifestCount > 0
-                    ? string.Format(Resources.Strings.Add_Status_AddedManifests, name, result.ManifestCount)
-                    : string.Format(Resources.Strings.Add_Status_AddedFetch, name);
-                state.InstallStatus += " " + string.Format(Resources.Strings.Add_FastFetch_Via, row.Name);
+                state.InstallStatus = result.Message;
                 AppLog.Log($"PluginAdd.Download appid={appId} source='{row.Name}' OK: {state.InstallStatus}");
             }
-        }
-        catch (OperationCanceledException)
-        {
-            // Superseded add — no install happened, so this is not a failure to report.
-            AppLog.Log($"PluginAdd.Download appid={appId} source='{row.Name}' cancelled (superseded)");
-        }
-        catch (Exception ex)
-        {
-            state.Error = ex.Message;
-            state.InstallFailed = true;
-            AppLog.Log($"PluginAdd.Download appid={appId} source='{row.Name}' EXCEPTION: {ex}");
+            else if (item.Status is DownloadStatus.Cancelled)
+            {
+                AppLog.Log($"PluginAdd.Download appid={appId} source='{row.Name}' cancelled");
+            }
+            else
+            {
+                state.Error = result?.Message ?? item.Message;
+                state.InstallFailed = true;
+                AppLog.Log($"PluginAdd.Download appid={appId} source='{row.Name}' FAILED: {state.Error}");
+            }
         }
         finally
         {

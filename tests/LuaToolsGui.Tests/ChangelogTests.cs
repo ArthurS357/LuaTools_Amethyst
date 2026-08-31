@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.6.3");
+        AppVersion.Current.Should().Be("1.7.0");
     }
 
     [Fact]
@@ -49,11 +49,11 @@ public class ChangelogTests
     {
         string text = string.Join(" ", Changelog.Entries[0].Highlights);
 
-        // One anchor per fix the release was actually about, so an entry that got copied forward from the
-        // previous version fails here rather than shipping a changelog describing the wrong release.
-        text.Should().ContainEquivalentOf("OpenSteamTool");  // the engine conflict, quarantined on install
-        text.Should().ContainEquivalentOf("ACTIVE");         // the badge that named the wrong backend
-        text.Should().ContainEquivalentOf("detection");      // the first-run guard that now abstains
+        // One anchor per change the release was actually about, so an entry that got copied forward from
+        // the previous version fails here rather than shipping a changelog describing the wrong release.
+        text.Should().ContainEquivalentOf("Downloads page"); // the new page and the queue behind it
+        text.Should().ContainEquivalentOf("Resume");         // pause/resume, depot downloads only
+        text.Should().ContainEquivalentOf("history");        // persisted, with per-row and bulk clearing
     }
 
     [Fact]

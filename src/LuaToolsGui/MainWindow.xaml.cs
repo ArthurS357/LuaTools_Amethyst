@@ -93,6 +93,9 @@ public partial class MainWindow : Wpf.Ui.Controls.FluentWindow, ITrayWindow
     /// <summary>Switch to Manage (used by Home's "recently added" cards). Caller opens the detail.</summary>
     public void NavigateToManage() => RootNavigation.Navigate(typeof(ManageView));
 
+    /// <summary>Switch to Downloads (used by the Depots page's "sent to Downloads" notice).</summary>
+    public void NavigateToDownloads() => RootNavigation.Navigate(typeof(DownloadsView));
+
     /// <summary>Switch to Builds (used by the Manage flyout's "Manage Build"). Caller selects the game.</summary>
     public void NavigateToBuilds() => RootNavigation.Navigate(typeof(BuildsView));
 

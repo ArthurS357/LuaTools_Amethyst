@@ -3,7 +3,7 @@ using System.Globalization;
 namespace LuaToolsGui.Services;
 
 /// <summary>
-/// Byte counts as text, for disk-budget messages.
+/// Byte counts as text, for disk-budget messages and live download metrics.
 /// </summary>
 /// <remarks>
 /// Deliberately separate from <c>BuildsViewModel.FormatSize</c>, which formats the "id · size · os · lang"
@@ -44,5 +44,33 @@ internal static class ByteSize
             : value.ToString(value < 10 ? "0.##" : "0.#", culture);
 
         return $"{formatted} {Units[unit]}";
+    }
+
+    /// <summary>
+    /// A transfer rate, e.g. "4.2 MB/s". EMPTY when the rate is not yet measurable, so the label hides
+    /// itself instead of claiming a download is stalled at 0 B/s before the first sampling window closes.
+    /// </summary>
+    /// <remarks>
+    /// "/s" is a unit symbol, not prose, so it stays unlocalized alongside the KB/MB/GB above. The number
+    /// itself still goes through <see cref="Format"/> and so keeps the user's decimal separator.
+    /// </remarks>
+    public static string Rate(double bytesPerSecond, CultureInfo? culture = null) =>
+        double.IsNaN(bytesPerSecond) || bytesPerSecond <= 0
+            ? ""
+            : Format((long)bytesPerSecond, culture) + "/s";
+
+    /// <summary>
+    /// A remaining time, e.g. "1m 12s" / "8s" / "2h 5m". Empty for a non-positive or absurd duration.
+    /// </summary>
+    /// <remarks>
+    /// A day or more is treated as unmeasurable rather than rendered: an ETA that long only ever comes
+    /// from a rate sampled during a stall, and "17h 3m remaining" is worse than saying nothing.
+    /// </remarks>
+    public static string Duration(TimeSpan t)
+    {
+        if (t <= TimeSpan.Zero || t.TotalDays >= 1) return "";
+        if (t.TotalHours >= 1) return $"{(int)t.TotalHours}h {t.Minutes}m";
+        if (t.TotalMinutes >= 1) return $"{(int)t.TotalMinutes}m {t.Seconds}s";
+        return $"{Math.Max(1, (int)Math.Ceiling(t.TotalSeconds))}s";
     }
 }

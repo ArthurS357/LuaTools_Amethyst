@@ -263,6 +263,47 @@ PENDING_TRANSLATION: frozenset[str] = frozenset({
     "Depot_Err_SignIn",
     "Depot_Err_NoSpace",
     "Depot_Err_Failed",
+    # The Downloads page, added in 1.7.0: the app-wide download queue with its history, pause/resume and
+    # per-row actions. The page landed whole in one commit and the wording is still settling — the same
+    # case as the plugin-source group above. Several of these are full sentences in the app's own
+    # editorial voice (the subtitle, the empty state, the clear-history confirmation), which is exactly
+    # where a translation done without native review reads as wrong.
+    "Builds_Depot_Queued",
+    "Nav_Downloads",
+    "Downloads_Title",
+    "Downloads_Subtitle",
+    "Downloads_Empty",
+    "Downloads_Section_Active",
+    "Downloads_Section_History",
+    "Downloads_ActionRequired",
+    "Downloads_Of",
+    "Downloads_Eta",
+    "Downloads_Source_Depots",
+    "Downloads_Status_Queued",
+    "Downloads_Status_Downloading",
+    "Downloads_Status_AwaitingConfirm",
+    "Downloads_Status_Installing",
+    "Downloads_Status_Paused",
+    "Downloads_Status_Verifying",
+    "Downloads_Status_Completed",
+    "Downloads_Status_Failed",
+    "Downloads_Status_Cancelled",
+    "Downloads_Action_Review",
+    "Downloads_Action_Pause",
+    "Downloads_Action_Resume",
+    "Downloads_Action_MoveUp",
+    "Downloads_Action_MoveDown",
+    "Downloads_Action_Cancel",
+    "Downloads_Action_Retry",
+    "Downloads_Action_Remove",
+    "Downloads_Action_ClearHistory",
+    "Downloads_Action_CopyAppId",
+    "Downloads_Action_ShowInFolder",
+    "Downloads_ClearHistory_Confirm",
+    "Downloads_Err_Interrupted",
+    "Downloads_Err_Cancelled",
+    "Downloads_Err_ClipboardBusy",
+    "Downloads_Err_PathMissing",
 })
 
 

@@ -126,6 +126,12 @@ public partial class App : Application
                 services.AddSingleton<LuaToolsApiClient>();
                 services.AddSingleton<HubcapService>();
                 services.AddSingleton<UpdateService>();
+                // The app-wide download queue. Registered before every page and service that enqueues into
+                // it, and started as a hosted service so the persisted history is loaded and anything left
+                // in flight at shutdown is recorded as cancelled rather than vanishing.
+                services.AddSingleton<Services.Downloads.DownloadQueue>();
+                services.AddHostedService(sp => sp.GetRequiredService<Services.Downloads.DownloadQueue>());
+                services.AddSingleton<Services.Downloads.ManifestJobFactory>();
                 // Hook loader infrastructure
                 services.AddSingleton<PluginAddService>();
                 services.AddSingleton<HttpServerService>();
@@ -135,6 +141,7 @@ public partial class App : Application
                 services.AddSingleton<CefInjectorService>();
                 services.AddHostedService(sp => sp.GetRequiredService<CefInjectorService>());
                 services.AddSingleton<DownloadViewModel>();
+                services.AddSingleton<DownloadsViewModel>();
                 services.AddSingleton<SettingsViewModel>();
                 services.AddSingleton<ManageViewModel>();
                 services.AddSingleton<BuildsViewModel>();
@@ -151,6 +158,7 @@ public partial class App : Application
                 // Pages resolved by NavigationView via the DI service provider.
                 services.AddSingleton<HomeView>();
                 services.AddSingleton<DownloadView>();
+                services.AddSingleton<DownloadsView>();
                 services.AddSingleton<ManageView>();
                 services.AddSingleton<BuildsView>();
                 services.AddSingleton<ModeView>();
@@ -878,6 +886,14 @@ public partial class App : Application
         // App updates now apply silently via RunUpdateFlowAsync (restart-on-Steam-open, unconditionally
         // and before any plugin update), so no "Restart" prompt toast.
         var download = _host.Services.GetRequiredService<DownloadViewModel>();
+
+        // Downloads page wiring. "Review" on an item waiting on the overwrite diff has to land the user on
+        // the page that owns that overlay — the Add page — so both halves of the jump are set here.
+        download.NavigateToAdd = () => Dispatcher.Invoke(window.NavigateToAdd);
+        _host.Services.GetRequiredService<DownloadsViewModel>().RevealItem =
+            _ => Dispatcher.Invoke(window.NavigateToAdd);
+        _host.Services.GetRequiredService<BuildsViewModel>().NavigateToDownloads =
+            () => Dispatcher.Invoke(window.NavigateToDownloads);
 
         var manage = _host.Services.GetRequiredService<ManageViewModel>();
 

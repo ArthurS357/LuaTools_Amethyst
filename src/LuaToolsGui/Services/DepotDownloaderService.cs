@@ -570,10 +570,16 @@ public sealed partial class DepotDownloaderService(
     /// </summary>
     /// <param name="completed">Depots already finished (a resume). These are skipped rather than re-hashed.</param>
     /// <param name="createdFile">Receives every path the run creates, so a cancel can delete exactly those.</param>
+    /// <param name="depotCompleted">
+    /// Reports each depot id the moment it finishes, so a caller that is cancelled mid-run still knows what
+    /// not to fetch again. <see cref="DepotJobResult.CompletedDepots"/> only reaches a caller that gets a
+    /// RESULT, and a pause or a cancel throws instead — which is exactly when the list matters most, since
+    /// resuming without it re-hashes every depot that was already done.
+    /// </param>
     public async Task<DepotJobResult> DownloadDepotsAsync(
         long appId, IReadOnlyList<DepotSelection> selections, string outDir,
         IReadOnlyCollection<long> completed, IProgress<DepotProgress>? progress,
-        IProgress<string>? createdFile, CancellationToken ct)
+        IProgress<string>? createdFile, IProgress<long>? depotCompleted, CancellationToken ct)
     {
         var done = new List<long>(completed);
 
@@ -684,6 +690,7 @@ public sealed partial class DepotDownloaderService(
             if (!res.Ok) return new DepotJobResult(false, res.Failure, ready.DepotId, res.Detail, done);
 
             done.Add(ready.DepotId);
+            depotCompleted?.Report(ready.DepotId);
             bytesDone += ready.Size;
             progress?.Report(new DepotProgress(bytesDone, totalSize, DepotPhase.Downloading, index, resolved.Count));
         }

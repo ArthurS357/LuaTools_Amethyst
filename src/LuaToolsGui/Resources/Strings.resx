@@ -729,4 +729,40 @@ Enable it?</value></data>
   <data name="Depot_Err_SignIn" xml:space="preserve"><value>Sign in to fetch a manifest Steam does not already have on this machine.</value></data>
   <data name="Depot_Err_NoSpace" xml:space="preserve"><value>Not enough disk space: {0} required, {1} free.</value></data>
   <data name="Depot_Err_Failed" xml:space="preserve"><value>Depot {0} failed: {1}</value></data>
+  <data name="Builds_Depot_Queued" xml:space="preserve"><value>Sent {0} depot(s) to Downloads.</value></data>
+  <data name="Nav_Downloads" xml:space="preserve"><value>Downloads</value></data>
+  <data name="Downloads_Title" xml:space="preserve"><value>Downloads</value></data>
+  <data name="Downloads_Subtitle" xml:space="preserve"><value>Everything the app is fetching right now, and what it fetched before. Manifests and depot content share this queue.</value></data>
+  <data name="Downloads_Empty" xml:space="preserve"><value>Nothing has been downloaded yet. Adding a game from the Add page, or fetching depot content from the Depots page, will show it here.</value></data>
+  <data name="Downloads_Section_Active" xml:space="preserve"><value>In progress</value></data>
+  <data name="Downloads_Section_History" xml:space="preserve"><value>History</value></data>
+  <data name="Downloads_ActionRequired" xml:space="preserve"><value>ACTION REQUIRED</value></data>
+  <data name="Downloads_Of" xml:space="preserve"><value>{0} of {1}</value></data>
+  <data name="Downloads_Eta" xml:space="preserve"><value>{0} left</value></data>
+  <data name="Downloads_Source_Depots" xml:space="preserve"><value>{0} depot(s)</value></data>
+  <data name="Downloads_Status_Queued" xml:space="preserve"><value>Queued</value></data>
+  <data name="Downloads_Status_Downloading" xml:space="preserve"><value>Downloading</value></data>
+  <data name="Downloads_Status_AwaitingConfirm" xml:space="preserve"><value>Waiting for you</value></data>
+  <data name="Downloads_Status_Installing" xml:space="preserve"><value>Installing</value></data>
+  <data name="Downloads_Status_Paused" xml:space="preserve"><value>Paused</value></data>
+  <data name="Downloads_Status_Verifying" xml:space="preserve"><value>Verifying</value></data>
+  <data name="Downloads_Status_Completed" xml:space="preserve"><value>Done</value></data>
+  <data name="Downloads_Status_Failed" xml:space="preserve"><value>Failed</value></data>
+  <data name="Downloads_Status_Cancelled" xml:space="preserve"><value>Cancelled</value></data>
+  <data name="Downloads_Action_Review" xml:space="preserve"><value>Review</value></data>
+  <data name="Downloads_Action_Pause" xml:space="preserve"><value>Pause</value></data>
+  <data name="Downloads_Action_Resume" xml:space="preserve"><value>Resume</value></data>
+  <data name="Downloads_Action_MoveUp" xml:space="preserve"><value>Move up</value></data>
+  <data name="Downloads_Action_MoveDown" xml:space="preserve"><value>Move down</value></data>
+  <data name="Downloads_Action_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Downloads_Action_Retry" xml:space="preserve"><value>Retry</value></data>
+  <data name="Downloads_Action_Remove" xml:space="preserve"><value>Remove</value></data>
+  <data name="Downloads_Action_ClearHistory" xml:space="preserve"><value>Clear history</value></data>
+  <data name="Downloads_Action_CopyAppId" xml:space="preserve"><value>Copy App ID</value></data>
+  <data name="Downloads_Action_ShowInFolder" xml:space="preserve"><value>Show in folder</value></data>
+  <data name="Downloads_ClearHistory_Confirm" xml:space="preserve"><value>Remove all {0} entries from the download history? The files themselves are not touched.</value></data>
+  <data name="Downloads_Err_Interrupted" xml:space="preserve"><value>Interrupted when the app closed.</value></data>
+  <data name="Downloads_Err_Cancelled" xml:space="preserve"><value>Cancelled.</value></data>
+  <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>The clipboard is in use by another program — nothing was copied.</value></data>
+  <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>That location no longer exists: {0}</value></data>
 </root>

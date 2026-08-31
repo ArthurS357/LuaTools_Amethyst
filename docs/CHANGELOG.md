@@ -1,5 +1,67 @@
 # Changelog
 
+## 1.7.0 — 2026-08-30
+
+### Aba Downloads: uma fila unica para tudo que o app baixa
+
+- **Nova aba Downloads na barra de navegacao.** Todo download que o app executa aparece nela com tamanho,
+  velocidade e tempo restante, e pode ser cancelado ou repetido de um so lugar. Antes cada pagina desenhava
+  a propria barra, e um download iniciado em uma pagina era invisivel de qualquer outra.
+- **`Services/Downloads/`** — a infraestrutura da fila, portada do LuaTools v1.3.0 e adaptada:
+  `DownloadQueue` (o escalonador, um `IHostedService`), `DownloadItem` (a linha viva, com a janela
+  deslizante de amostras que deriva velocidade e ETA), `DownloadJob`/`DownloadProgress`/`ProgressRelay<T>`
+  (o contrato) e `DownloadHistory` (o registro persistido).
+- **`ManifestJobFactory`** e o unico lugar que sabe como um manifesto e buscado e instalado, e como uma
+  selecao de depots e executada. Os tres caminhos de download que existiam — a pagina Add, o
+  `PluginAddService` e a ponte HTTP — tinham cada um a sua copia da mesma sequencia, com o proprio sniff de
+  zip, a propria limpeza do arquivo em staging e a propria redacao do resultado. Elas ja tinham divergido:
+  o mesmo download relatava coisas diferentes conforme onde tivesse sido iniciado.
+
+### Pausar, retomar e sobreviver a navegacao
+
+- **Downloads de depot podem ser pausados e retomados.** Sao o unico tipo cujo trabalho parcial sobrevive a
+  interrupcao, porque os bytes ja estao em disco — o Resume continua a partir do primeiro depot que nao
+  terminou em vez de rebaixar dezenas de GB. `DownloadDepotsAsync` passou a reportar cada depot concluido
+  assim que ele termina (`IProgress<long> depotCompleted`): o resultado so chega a quem recebe um
+  `DepotJobResult`, e um cancelamento lanca em vez de retornar — exatamente quando essa lista mais importa.
+- **Um download nao morre mais ao sair da pagina.** A aba Depots entrega a selecao para a fila e informa
+  isso, em vez de segurar uma transferencia de horas dentro do comando da propria pagina.
+- **Corrida corrigida no Resume.** Um `Resume` podia chegar antes de a execucao pausada observar o proprio
+  cancelamento, e a execucao obsoleta entao encerrava o item — cancelando a que acabara de substitui-la.
+  `RunItemAsync` compara a identidade do `CancellationTokenSource` que possui e fica em silencio quando foi
+  substituida.
+
+### Historico
+
+- **Downloads concluidos ficam registrados e sobrevivem a um restart**, com limpeza individual e em massa.
+  Guardado em `cache.json` — contabilidade do app —, nunca em `settings.json`, cujo formato ja distribuido
+  nao pode mudar. Um `cache.json` escrito antes desta versao simplesmente nao tem o campo e carrega com
+  historico vazio.
+- **Mensagens de falha passam por `LogSanitizer` antes de ir para o disco.** O texto de uma excecao pode ser
+  montado a partir de um corpo HTTP (`AuthService` lanca `$"Token exchange failed ({code}): {body}"`), e
+  `cache.json` e texto plano no perfil do usuario — o mesmo tratamento que o log de crash ja recebia.
+
+### Deduplicacao
+
+- **Iniciar o mesmo jogo duas vezes entra no download que ja esta rodando** em vez de disputar com ele. A
+  chave e o appid, nao a fonte: duas fontes escrevem o mesmo `<appid>.lua` na mesma pasta, entao deixar as
+  duas correrem disputaria o instalador. Essa verificacao era por pagina, de modo que a janela do app e o
+  plugin da loja podiam cada um iniciar a sua.
+
+### Nao portado, deliberadamente
+
+- O botao do **SteamAutoCrack** que a aba Downloads original hospedava, junto de todo o `ManifestJobFactory`
+  que o construia. Tambem seguem fora: telemetria, auto-update, envio de chaves, execucao elevada e
+  `AssetHash`. Um teste (`DownloadsPageTests`) verifica que nada disso reaparece em `Services/Downloads/`.
+- A fila **nao acrescenta permissao, so agendamento**: integridade, staging e quarentena continuam dentro
+  dos servicos que os delegates chamam, e o pin do DepotDownloader nao foi tocado.
+
+### i18n
+
+- 36 chaves novas (`Nav_Downloads`, `Downloads_*`, `Builds_Depot_Queued`) em `Strings.resx` e
+  `Strings.Designer.cs`, registradas em `PENDING_TRANSLATION` conforme o padrao — a pagina chegou inteira em
+  um commit e a redacao ainda esta assentando.
+
 ## 1.6.3 — 2026-08-30
 
 ### Conflito de engines: instalar o AmethystTool sobre o BetterSteamTools deixava os dois carregados

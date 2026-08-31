@@ -170,8 +170,13 @@ public class LuaToolsApiClient(
         return await ReadJsonAsync<DlcInfo>(res, ct);
     }
 
+    /// <summary>
+    /// A game's manifest bundle from a named source. Reports BYTE counts, not a fraction, because this is
+    /// the one download the Downloads queue schedules — size, speed and ETA are derivable only from bytes.
+    /// </summary>
     public Task<DownloadedFile> DownloadManifestAsync(
-        string appid, string source, string? gameName, IProgress<double?>? progress, CancellationToken ct = default)
+        string appid, string source, string? gameName,
+        IProgress<Downloads.DownloadProgress>? progress, CancellationToken ct = default)
     {
         string url = $"/api/manifest/download?appid={appid}&source={Uri.EscapeDataString(source)}";
         if (!string.IsNullOrEmpty(gameName)) url += $"&game_name={Uri.EscapeDataString(gameName)}";
@@ -272,8 +277,25 @@ public class LuaToolsApiClient(
     private static async Task<T?> ReadJsonAsync<T>(HttpResponseMessage res, CancellationToken ct) =>
         JsonSerializer.Deserialize<T>(await res.Content.ReadAsStringAsync(ct), JsonOpts);
 
+    /// <summary>
+    /// Adapt a fraction-reporting caller onto the byte-level sink below.
+    /// </summary>
+    /// <remarks>
+    /// The copy loop reports bytes now, but most callers here (the depot manifest fetch, DLC generation,
+    /// Denuvo slots) feed a plain progress bar and have no use for the counts. Rather than fork the loop or
+    /// churn every one of their call sites, they keep <c>IProgress&lt;double?&gt;</c> and get folded down
+    /// here — a fraction is derivable from bytes, which is why the queue's contract is the wider one.
+    /// </remarks>
+    private static IProgress<Downloads.DownloadProgress>? AsFraction(IProgress<double?>? progress) =>
+        progress is null ? null : new Downloads.ProgressRelay<Downloads.DownloadProgress>(
+            p => progress.Report(p.Fraction));
+
+    private Task<DownloadedFile> DownloadFileAsync(
+        string url, string fallbackName, IProgress<double?>? progress, CancellationToken ct) =>
+        DownloadFileAsync(url, fallbackName, AsFraction(progress), ct);
+
     private async Task<DownloadedFile> DownloadFileAsync(
-        string url, string fallbackName, IProgress<double?>? progress, CancellationToken ct)
+        string url, string fallbackName, IProgress<Downloads.DownloadProgress>? progress, CancellationToken ct)
     {
         var res = await SendAsync(HttpMethod.Get, url, ct, HttpCompletionOption.ResponseHeadersRead);
         return await SaveResponseAsync(res, fallbackName, progress, ct);
@@ -288,11 +310,12 @@ public class LuaToolsApiClient(
         var res = await _http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, ct);
         if (!res.IsSuccessStatusCode)
             throw new ApiException($"Download failed ({(int)res.StatusCode}).", res.StatusCode);
-        return await SaveResponseAsync(res, fallbackName, progress, ct);
+        return await SaveResponseAsync(res, fallbackName, AsFraction(progress), ct);
     }
 
-    private async Task<DownloadedFile> SaveResponseAsync(
-        HttpResponseMessage res, string fallbackName, IProgress<double?>? progress, CancellationToken ct)
+    private static async Task<DownloadedFile> SaveResponseAsync(
+        HttpResponseMessage res, string fallbackName,
+        IProgress<Downloads.DownloadProgress>? progress, CancellationToken ct)
     {
         string fileName = res.Content.Headers.ContentDisposition?.FileName?.Trim('"') ?? fallbackName;
         foreach (char c in Path.GetInvalidFileNameChars()) fileName = fileName.Replace(c, '_');
@@ -312,8 +335,11 @@ public class LuaToolsApiClient(
         {
             await dst.WriteAsync(buffer.AsMemory(0, read), ct);
             written += read;
-            progress?.Report(total is > 0 ? (double)written / total.Value : null);
+            progress?.Report(new Downloads.DownloadProgress(written, total));
         }
+
+        // One final report so a zero-length or single-chunk body still settles the bar at 100%.
+        progress?.Report(new Downloads.DownloadProgress(written, total ?? written));
 
         return new DownloadedFile(filePath, fileName);
     }

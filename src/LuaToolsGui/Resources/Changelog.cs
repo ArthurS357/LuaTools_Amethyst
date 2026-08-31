@@ -29,6 +29,16 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.7.0", "2026-08-30",
+            "Downloads are now one queue with its own page: manifests and depot content share it, they survive leaving the page they were started from, and finished ones are kept in a history.",
+            [
+                "New Downloads page in the nav rail. Every download the app runs shows up there with its size, speed and time remaining, and can be cancelled or retried from one place. Previously each page drew its own bar and a download that was started on one page was invisible from every other.",
+                "Depot downloads can be paused and resumed. They are the only kind whose partial work survives being interrupted — the bytes are already on disk — so Resume picks up from the first depot that had not finished instead of re-fetching tens of GB.",
+                "A download no longer dies when you navigate away. The Depots page hands its selection to the queue and says so, rather than holding a multi-hour transfer open inside the page's own command.",
+                "Finished downloads are kept in a history that survives a restart, with per-row and bulk clearing. It is stored in cache.json, so nothing about the settings file changes; failure messages are sanitized on the way in, the same as the crash log.",
+                "The Add page, the Steam store plugin and the store-page bridge now share one download-and-install path. All three had their own copy of it, and they had drifted — the same download reported its result differently depending on where it was started.",
+                "Starting the same game twice joins the download already running instead of racing it. That check used to be per-page, so the app window and the store plugin could each start one over the same file.",
+            ]),
         new("1.6.3", "2026-08-30",
             "Installing AmethystTool no longer leaves BetterSteamTools' engine hooked into Steam beside it, and the Mode page stops claiming the wrong backend is the installed one.",
             [

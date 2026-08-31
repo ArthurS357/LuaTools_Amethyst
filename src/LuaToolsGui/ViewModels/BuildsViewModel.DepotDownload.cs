@@ -6,6 +6,7 @@ using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LuaToolsGui.Services;
+using LuaToolsGui.Services.Downloads;
 using Microsoft.Win32;
 
 namespace LuaToolsGui.ViewModels;
@@ -99,15 +100,9 @@ public partial class BuildsViewModel
 
     // ── Run state ────────────────────────────────────────────────────
 
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsDepotStripVisible))]
-    [NotifyCanExecuteChangedFor(nameof(ConfirmDepotDownloadCommand))]
-    [NotifyCanExecuteChangedFor(nameof(StartDepotDownloadCommand))]
-    private bool _isDepotDownloading;
-
-    [ObservableProperty] private double _depotProgress;
-    [ObservableProperty] private bool _isDepotProgressIndeterminate;
-    [ObservableProperty] private string? _depotStatus;
+    // Progress, pause/resume, cancel-and-clean-up and the per-depot phase line all moved to the Downloads
+    // page when depot downloads joined the app-wide queue. What is left here is the handoff: this page
+    // decides WHAT to download and where, and reports that it was sent.
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasDepotError))]
@@ -123,31 +118,8 @@ public partial class BuildsViewModel
 
     public bool HasDepotResult => !string.IsNullOrEmpty(DepotDownloadDone);
 
-    /// <summary>The strip under the depot list carries exactly one of: progress, a failure, or a result.</summary>
-    public bool IsDepotStripVisible => IsDepotDownloading || HasDepotError || HasDepotResult;
-
-    private CancellationTokenSource? _depotCts;
-
-    /// <summary>Paths the running download reported creating, so a cancel can delete exactly those.</summary>
-    /// <remarks>Appended from the child process's stdout thread; every read of it happens after that
-    /// process has exited, but the list still needs a lock while it is being filled.</remarks>
-    private readonly List<string> _depotCreatedFiles = [];
-
-    private readonly Lock _createdFilesLock = new();
-
-    /// <summary>
-    /// An <see cref="IProgress{T}"/> that runs its handler on the CALLING thread.
-    /// </summary>
-    /// <remarks>
-    /// <see cref="Progress{T}"/> posts every report to the synchronization context it was built on, which
-    /// is the right behaviour for the progress bar and the wrong one for the created-files list: a large
-    /// depot reports thousands of paths, none of which is visible, and marshalling each to the dispatcher
-    /// would queue thousands of UI work items to append to a list.
-    /// </remarks>
-    private sealed class DirectProgress<T>(Action<T> handler) : IProgress<T>
-    {
-        public void Report(T value) => handler(value);
-    }
+    /// <summary>The strip under the depot list carries either a failure or the handoff notice.</summary>
+    public bool IsDepotStripVisible => HasDepotError || HasDepotResult;
 
     // ── Building the pick list ───────────────────────────────────────
 
@@ -286,6 +258,7 @@ public partial class BuildsViewModel
         DepotDownloadError = null;
         DepotDownloadDone = null;
 
+
         // Chosen HERE, before the picker is confirmed, so the free-space figure is on screen while the user
         // is still deciding what to tick rather than after they commit.
         DepotOutDir = Path.Combine(DownloadsFolder(), "LuaTools Depots",
@@ -294,7 +267,9 @@ public partial class BuildsViewModel
         IsDepotPickerOpen = true;
     }
 
-    private bool CanStartDepotDownload() => !IsDepotDownloading && HasSelection;
+    // No busy check any more: the queue dedupes on the game's depot key, so opening the picker again while
+    // a selection for the same game is running joins that item rather than starting a rival download.
+    private bool CanStartDepotDownload() => HasSelection;
 
     [RelayCommand]
     private void ChangeDepotFolder()
@@ -319,8 +294,17 @@ public partial class BuildsViewModel
         foreach (var p in DepotPicks) p.IsSelected = false;
     }
 
+    /// <summary>
+    /// Hand the ticked depots to <see cref="DownloadQueue"/> and close the picker.
+    /// </summary>
+    /// <remarks>
+    /// Returns as soon as the job is queued rather than awaiting the transfer: a depot selection can run for
+    /// hours, and holding this page's command open for it is what made the download die whenever the user
+    /// navigated away. The Downloads page owns the progress, the pause/resume and the cancel-with-cleanup
+    /// from here on.
+    /// </remarks>
     [RelayCommand(CanExecute = nameof(CanConfirmDepotDownload))]
-    private async Task ConfirmDepotDownloadAsync()
+    private void ConfirmDepotDownload()
     {
         if (ActiveGame is not { } game) return;
 
@@ -331,119 +315,34 @@ public partial class BuildsViewModel
         if (picked.Count == 0) return;
 
         IsDepotPickerOpen = false;
-        IsDepotDownloading = true;
         DepotDownloadError = null;
-        DepotDownloadDone = null;
-        DepotProgress = 0;
-        IsDepotProgressIndeterminate = true;
-        DepotStatus = Resources.Strings.Builds_Depot_Phase_FetchingManifest;
-        lock (_createdFilesLock) _depotCreatedFiles.Clear();
 
         string outDir = DepotOutDir;
-        _depotCts = new CancellationTokenSource();
+        string name = game.Name ?? game.AppId.ToString(CultureInfo.InvariantCulture);
 
-        try
-        {
-            var progress = new Progress<DepotProgress>(OnDepotProgress);
-            var created = new DirectProgress<string>(path =>
-            {
-                lock (_createdFilesLock) _depotCreatedFiles.Add(path);
-            });
+        _queue.Enqueue(_jobs.CreateDepotJob(game.AppId, name, picked, outDir));
 
-            var result = await _depotTool.DownloadDepotsAsync(
-                game.AppId, picked, outDir, [], progress, created, _depotCts.Token);
-
-            if (result.Ok)
-            {
-                DepotProgress = 100;
-                IsDepotProgressIndeterminate = false;
-                DepotStatus = null;
-                DepotDownloadDone = string.Format(CultureInfo.CurrentCulture,
-                    Resources.Strings.Builds_Depot_Done, picked.Count, outDir);
-            }
-            else
-            {
-                DepotDownloadError = DepotErrorText.Describe(result.Failure, result.DepotId, result.Detail);
-            }
-        }
-        catch (OperationCanceledException)
-        {
-            // A cancel is a choice, not a failure — no error banner, just the offer to clean up.
-            DepotStatus = null;
-            OfferToDeletePartialDownload(outDir);
-        }
-        finally
-        {
-            IsDepotDownloading = false;
-            IsDepotProgressIndeterminate = false;
-            _depotCts?.Dispose();
-            _depotCts = null;
-        }
+        DepotDownloadDone = string.Format(CultureInfo.CurrentCulture,
+            Resources.Strings.Builds_Depot_Queued, picked.Count);
     }
 
-    private bool CanConfirmDepotDownload() => RequiredBytes > 0 && !IsDepotDownloading;
+    private bool CanConfirmDepotDownload() => RequiredBytes > 0;
 
-    /// <summary>Cancel a running download, or just close the picker when nothing is running.</summary>
+    /// <summary>Close the picker without queueing anything.</summary>
     [RelayCommand]
-    private void CancelDepotDownload()
-    {
-        if (IsDepotDownloading) _depotCts?.Cancel();
-        else IsDepotPickerOpen = false;
-    }
+    private void CancelDepotDownload() => IsDepotPickerOpen = false;
+
+    /// <summary>Jump to the Downloads page, from the "sent to Downloads" notice.</summary>
+    [RelayCommand]
+    private void OpenDownloads() => NavigateToDownloads?.Invoke();
+
+    /// <summary>Set by App: bring the Downloads page up.</summary>
+    public Action? NavigateToDownloads { get; set; }
 
     [RelayCommand]
     private void OpenDepotFolder()
     {
         if (Directory.Exists(DepotOutDir)) SteamService.OpenUrl(DepotOutDir);
-    }
-
-    private void OnDepotProgress(DepotProgress p)
-    {
-        IsDepotProgressIndeterminate = p.Total <= 0;
-        DepotProgress = p.Total > 0 ? Math.Clamp(p.Bytes * 100d / p.Total, 0, 100) : 0;
-
-        string phase = p.Phase switch
-        {
-            DepotPhase.PreAllocating => Resources.Strings.Builds_Depot_Phase_PreAllocating,
-            DepotPhase.Validating => Resources.Strings.Builds_Depot_Phase_Validating,
-            DepotPhase.Manifest => Resources.Strings.Builds_Depot_Phase_FetchingManifest,
-            _ => Resources.Strings.Builds_Depot_Phase_Downloading,
-        };
-
-        DepotStatus = p.Count > 0
-            ? string.Format(CultureInfo.CurrentCulture, Resources.Strings.Builds_Depot_Downloading,
-                p.Index, p.Count, phase)
-            : phase;
-    }
-
-    /// <summary>
-    /// After a cancel, offer to remove what the run created — and only that.
-    /// </summary>
-    /// <remarks>
-    /// Asked rather than assumed because the destination is user-chosen and can legitimately be an existing
-    /// game folder being repaired. The deletion itself is limited to paths the downloader reported
-    /// pre-allocating, and every one is checked to be inside the output folder before it is touched (see
-    /// <see cref="DepotDownloaderService.TryDeleteCreatedFiles"/>).
-    /// </remarks>
-    private void OfferToDeletePartialDownload(string outDir)
-    {
-        // Snapshot under the lock: the child's stdout thread has stopped by now, but taking a copy is what
-        // makes that a guarantee rather than a timing assumption.
-        List<string> created;
-        lock (_createdFilesLock) created = [.. _depotCreatedFiles];
-
-        if (created.Count == 0 || !DepotDownloaderService.HasDownloadedContent(outDir)) return;
-
-        var answer = MessageBox.Show(
-            string.Format(CultureInfo.CurrentCulture, Resources.Strings.Builds_Depot_CleanUp_Body,
-                created.Count, outDir),
-            Resources.Strings.Builds_Depot_CleanUp_Title,
-            MessageBoxButton.YesNo, MessageBoxImage.Question);
-        if (answer != MessageBoxResult.Yes) return;
-
-        if (!DepotDownloaderService.TryDeleteCreatedFiles(outDir, created))
-            _toast.Show(Resources.Strings.Builds_Depot_CleanUp_Title,
-                Resources.Strings.Builds_Depot_CleanUp_Failed, error: true);
     }
 
     /// <summary>The user's Downloads folder, honouring a relocated one.</summary>

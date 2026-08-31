@@ -217,11 +217,11 @@ public class DepotPickerTests
     [InlineData("SpaceLabel")]
     [InlineData("HasEnoughSpace")]
     [InlineData("DepotConfirmLabel")]
-    [InlineData("IsDepotDownloading")]
     [InlineData("IsDepotStripVisible")]
-    [InlineData("DepotProgress")]
-    [InlineData("IsDepotProgressIndeterminate")]
-    [InlineData("DepotStatus")]
+    // No IsDepotDownloading / DepotProgress / DepotStatus row here: depot downloads moved to the app-wide
+    // queue in 1.7.0, so this page no longer owns a live download to describe. Its strip reports only the
+    // handoff, and the progress it used to draw is asserted on the Downloads page instead.
+    [InlineData("OpenDownloadsCommand")]
     [InlineData("DepotDownloadError")]
     [InlineData("HasDepotError")]
     [InlineData("DepotDownloadDone")]
@@ -256,12 +256,13 @@ public class DepotPickerTests
     {
         string xaml = BuildsViewXaml();
 
-        // Loading, empty, error and success each need somewhere for the eye to land, or a stalled download
-        // looks identical to a finished one.
+        // Empty, refused and handed-over each need somewhere for the eye to land. Since 1.7.0 the running
+        // state is no longer one of this page's: the selection is queued and the Downloads page owns it
+        // from there, so "sent" has to name where it went or the click looks like it did nothing.
         xaml.Should().Contain("Builds_Depot_NoCandidates");   // empty
-        xaml.Should().Contain("DepotDownloadError");          // error
-        xaml.Should().Contain("DepotDownloadDone");           // success
-        xaml.Should().Contain("IsDepotProgressIndeterminate"); // working, size not yet known
-        xaml.Should().Contain("CancelDepotDownloadCommand");   // always a way out
+        xaml.Should().Contain("DepotDownloadError");          // refused before queueing
+        xaml.Should().Contain("DepotDownloadDone");           // handed over
+        xaml.Should().Contain("OpenDownloadsCommand");        // ...and a way to follow it
+        xaml.Should().Contain("CancelDepotDownloadCommand");  // always a way out of the picker
     }
 }

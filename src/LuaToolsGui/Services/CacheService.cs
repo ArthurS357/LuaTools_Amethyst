@@ -50,6 +50,13 @@ public class CacheData
     // appid (string) → the source's `file_modified` marker at the time we last downloaded that appid's
     // manifest via Hubcap. An opaque change token, not a parsed date — see ManifestFreshnessPolicy for why.
     public Dictionary<string, string> InstalledManifestFileModified { get; set; } = [];
+
+    // ── Downloads page history ───────────────────────────────────────
+    // Finished downloads, newest first, capped by DownloadQueue.MaxHistory. Kept here rather than in
+    // settings.json because it is app bookkeeping, not a user choice — and because settings.json is
+    // already distributed and its shape must not change. An older cache.json simply has no such array
+    // and loads as an empty history.
+    public List<Downloads.DownloadHistoryRecord> DownloadHistory { get; set; } = [];
 }
 
 /// <summary>
@@ -228,6 +235,32 @@ public sealed class CacheService
         }
     }
 
+    // ── Downloads page history ───────────────────────────────────────
+
+    /// <summary>Finished downloads from previous sessions, for the Downloads page's history list.</summary>
+    public IReadOnlyList<Downloads.DownloadHistoryRecord> GetDownloadHistory()
+    {
+        lock (SaveLock) return _cache.DownloadHistory.ToList();
+    }
+
+    /// <summary>
+    /// Replace the whole history. Called on every finish, clear and per-row removal, so both kinds of
+    /// clearing reach disk through the same path rather than only pruning the in-memory list.
+    /// </summary>
+    /// <remarks>
+    /// Each record is sanitized on the way in — see <see cref="Downloads.DownloadHistoryRecord.Sanitized"/>
+    /// for why a failure message is not trusted to be free of credentials.
+    /// </remarks>
+    public void SaveDownloadHistory(IEnumerable<Downloads.DownloadHistoryRecord> records)
+    {
+        var snapshot = records.Select(r => r.Sanitized()).ToList(); // materialize OUTSIDE the lock
+        lock (SaveLock)
+        {
+            _cache.DownloadHistory = snapshot;
+            SaveCore();
+        }
+    }
+
     private void Load()
     {
         try
@@ -267,7 +300,8 @@ public sealed class CacheService
             && _cache.LoadedAppIds.Count == 0
             && !_cache.OnboardingComplete
             && _cache.CdpConsentGranted is null
-            && _cache.InstalledManifestFileModified.Count == 0;
+            && _cache.InstalledManifestFileModified.Count == 0
+            && _cache.DownloadHistory.Count == 0;
         if (empty)
         {
             foreach (string p in new[] { _filePath, _tmpPath })

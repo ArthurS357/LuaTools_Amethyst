@@ -332,12 +332,14 @@ public partial class HubcapService
     /// </para>
     /// </summary>
     public Task<HubcapResult<DownloadedFile>> DownloadManifestAsync(
-        string appid, string key, IProgress<double?>? progress, CancellationToken ct = default) =>
+        string appid, string key, IProgress<Downloads.DownloadProgress>? progress,
+        CancellationToken ct = default) =>
         WithAuthFallbackAsync(_manifestTransport, bearer => SendManifestAsync(appid, key, bearer, progress, ct));
 
     /// <summary>One download attempt with a chosen auth transport. Streams straight to disk on success.</summary>
     private async Task<HubcapResult<DownloadedFile>> SendManifestAsync(
-        string appid, string key, bool useBearer, IProgress<double?>? progress, CancellationToken ct)
+        string appid, string key, bool useBearer, IProgress<Downloads.DownloadProgress>? progress,
+        CancellationToken ct)
     {
         try
         {
@@ -462,7 +464,8 @@ public partial class HubcapService
         JsonSerializer.Deserialize<T>(await res.Content.ReadAsStringAsync(ct), JsonOpts);
 
     private static async Task<DownloadedFile> SaveResponseAsync(
-        HttpResponseMessage res, string fallbackName, IProgress<double?>? progress, CancellationToken ct)
+        HttpResponseMessage res, string fallbackName,
+        IProgress<Downloads.DownloadProgress>? progress, CancellationToken ct)
     {
         string fileName = res.Content.Headers.ContentDisposition?.FileName?.Trim('"') ?? fallbackName;
         foreach (char c in Path.GetInvalidFileNameChars()) fileName = fileName.Replace(c, '_');
@@ -481,8 +484,11 @@ public partial class HubcapService
         {
             await dst.WriteAsync(buffer.AsMemory(0, read), ct);
             written += read;
-            progress?.Report(total is > 0 ? (double)written / total.Value : null);
+            progress?.Report(new Downloads.DownloadProgress(written, total));
         }
+
+        // One final report so a zero-length or single-chunk body still settles the bar at 100%.
+        progress?.Report(new Downloads.DownloadProgress(written, total ?? written));
 
         return new DownloadedFile(filePath, fileName);
     }

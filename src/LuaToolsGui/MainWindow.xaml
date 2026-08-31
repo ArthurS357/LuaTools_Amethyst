@@ -79,6 +79,11 @@
                             <ui:SymbolIcon Symbol="Add24" />
                         </ui:NavigationViewItem.Icon>
                     </ui:NavigationViewItem>
+                    <ui:NavigationViewItem Content="{x:Static res:Strings.Nav_Downloads}" TargetPageType="{x:Type views:DownloadsView}">
+                        <ui:NavigationViewItem.Icon>
+                            <ui:SymbolIcon Symbol="ArrowDownload24" />
+                        </ui:NavigationViewItem.Icon>
+                    </ui:NavigationViewItem>
                     <ui:NavigationViewItem Content="{x:Static res:Strings.Nav_Manage}" TargetPageType="{x:Type views:ManageView}">
                         <ui:NavigationViewItem.Icon>
                             <ui:SymbolIcon Symbol="Games24" />

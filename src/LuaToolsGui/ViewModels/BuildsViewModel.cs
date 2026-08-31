@@ -153,6 +153,8 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
     private readonly CoverCache _covers;
     private readonly SteamDepotInfo _depotInfo;
     private readonly DepotDownloaderService _depotTool;
+    private readonly Services.Downloads.DownloadQueue _queue;
+    private readonly Services.Downloads.ManifestJobFactory _jobs;
     private readonly ToastService _toast;
     private readonly SettingsService _settings;
 
@@ -164,8 +166,11 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
     public BuildsViewModel(SteamService steam, LuaVault vault, SteamAppListCache appList,
         SteamAppInfoCache appInfo, CoverCache covers, SteamDepotInfo depotInfo,
         DepotDownloaderService depotTool, ToastService toast,
-        SettingsService settings)
+        SettingsService settings,
+        Services.Downloads.DownloadQueue queue, Services.Downloads.ManifestJobFactory jobs)
     {
+        _queue = queue;
+        _jobs = jobs;
         _depotTool = depotTool;
         _steam = steam;
         _vault = vault;

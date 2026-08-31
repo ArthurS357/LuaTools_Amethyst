@@ -4,6 +4,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Windows;
+using LuaToolsGui.Services.Downloads;
 using LuaToolsGui.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -686,6 +687,17 @@ public class HttpServerService : IHostedService
 
     // ── Download worker ───────────────────────────────────────────────
 
+    /// <summary>
+    /// Run one plugin-initiated add through <see cref="DownloadQueue"/>, mirroring the queued item onto the
+    /// <see cref="DownloadState"/> the store page polls.
+    /// </summary>
+    /// <remarks>
+    /// The wire shape is unchanged — the frontend still polls the same status strings and the same
+    /// bytesRead/totalBytes pair — but the work is now the app's one download path, so a bridge-initiated
+    /// add appears on the Downloads page and can be cancelled, retried and reviewed there like any other.
+    /// The queue also dedupes it against the same appid started from the app window, which is what the
+    /// bridge's own duplicate check used to do on its own.
+    /// </remarks>
     private async Task DownloadAndInstallAsync(long appId, string source, CancellationToken ct)
     {
         var state = _downloads[appId];
@@ -693,47 +705,54 @@ public class HttpServerService : IHostedService
         {
             state.Status = "downloading";
             state.BytesRead = 0;
-            state.TotalBytes = 100; // progress reported as a 0..100 percentage
+            state.TotalBytes = 0;
 
-            var api = _services.GetRequiredService<LuaToolsApiClient>();
-            var progress = new Progress<double?>(p =>
+            var jobs = _services.GetRequiredService<ManifestJobFactory>();
+            var queue = _services.GetRequiredService<DownloadQueue>();
+
+            // No confirm gate and no key-gated source: this endpoint has always gone through the
+            // authenticated lua.tools proxy by source NAME, and there is no window to confirm on.
+            var item = queue.Enqueue(jobs.CreateManifestJob(appId, source, needsKey: false, gameName: null));
+
+            using var link = ct.Register(() => queue.Cancel(item));
+            item.PropertyChanged += MirrorProgress;
+            try
             {
-                if (p is not null)
+                var result = await item.Completion;
+
+                if (result is { Ok: true })
                 {
-                    state.TotalBytes = 100;
-                    state.BytesRead = (long)(p.Value * 100);
+                    state.Status = "done";
+                    state.Success = true;
+                    state.Api = source;
+                    state.InstalledPath = result.InstalledPath;
                 }
-            });
-
-            // Download through the app's authenticated lua.tools proxy BY SOURCE NAME
-            // (same path as DownloadViewModel.DownloadFromSourceAsync). Works for every
-            // dynamic source, not just ones with a public URL.
-            var download = await api.DownloadManifestAsync(appId.ToString(), source, null, progress, ct);
-
-            state.Status = "processing";
-            var result = _installer.InstallZip(download.FilePath, appId);
-            try { if (File.Exists(download.FilePath)) File.Delete(download.FilePath); } catch { }
-
-            if (result.Error is not null)
-            {
-                state.Status = "failed"; // frontend startPolling shows failure UI on "failed"
-                state.Error = result.Error;
-                return;
+                else if (item.Status is DownloadStatus.Cancelled)
+                {
+                    state.Status = "cancelled";
+                    state.Error = item.Message;
+                }
+                else
+                {
+                    state.Status = "failed"; // frontend startPolling shows failure UI on "failed"
+                    state.Error = result?.Message ?? item.Message;
+                }
             }
+            finally { item.PropertyChanged -= MirrorProgress; }
 
-            state.Status = "done";
-            state.Success = true;
-            state.Api = source;
-        }
-        catch (OperationCanceledException)
-        {
-            state.Status = "cancelled";
-            state.Error = "Cancelled by user";
+            void MirrorProgress(object? _, System.ComponentModel.PropertyChangedEventArgs e)
+            {
+                if (e.PropertyName is not (nameof(DownloadItem.BytesRead) or nameof(DownloadItem.Status)))
+                    return;
+                state.BytesRead = item.BytesRead;
+                state.TotalBytes = item.TotalBytes ?? 0;
+                if (item.Status is DownloadStatus.Installing) state.Status = "processing";
+            }
         }
         catch (Exception ex)
         {
             state.Status = "failed"; // frontend startPolling shows failure UI on "failed"
-            state.Error = ex.Message;
+            state.Error = LogSanitizer.Sanitize(ex.Message);
         }
         finally
         {
