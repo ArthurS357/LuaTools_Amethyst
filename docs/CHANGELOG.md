@@ -1,5 +1,58 @@
 # Changelog
 
+## 1.7.1 — 2026-09-02
+
+### O accent para de morrer na borda do container central
+
+- **`TextFillColorPrimaryBrush` tokenizada.** As dez Views definem `TextElement.Foreground` a partir dessa
+  chave na raiz, entao ela e a cor de texto PADRAO de todo o container central. O WPF-UI a publica como
+  branco puro (`#FFFFFFFF`) sem `Color` correspondente, e ela nao existia em `Themes/Colors.xaml` — era o
+  unico token de texto que uma troca de accent nao conseguia mover. A barra de navegacao ia para Moss50
+  enquanto cada pagina dentro dela continuava branca de fabrica; a costura que o usuario lia como "o accent
+  parou de aplicar na area de conteudo".
+- Declarada em `Themes/Colors.xaml` contra `Plum50Color` e repintada por `AccentPalette.ShellColors`, do
+  mesmo jeito que `NavigationViewItemForeground` logo acima dela. Brush-only, como as outras duas.
+
+### DLC entra na fila unificada
+
+- **`GenerateDlcAsync` deixou de baixar e instalar inline.** Era o ultimo dos quatro caminhos de download
+  fora da fila: um unlock de DLC nao aparecia na aba Downloads e podia rodar em paralelo com uma instalacao
+  de manifesto gravando o mesmo `<appid>.lua`.
+- **`ManifestJobFactory.CreateDlcJob`** monta o job. Ele compartilha o `ManifestKey` com um download de
+  manifesto de proposito — e esse dedupe key que torna os dois mutuamente exclusivos, exatamente como ja
+  acontecia entre duas fontes.
+- Sem gate de confirmacao: um unlock de DLC so ADICIONA uma linha de entitlement, entao nao ha diff
+  antes/depois em que valha parar. Bate com o caminho inline que ele substitui, que instalava em silencio.
+- `InstallManifest` passou a aceitar `source` anulavel — um DLC e gerado para o appid, nao buscado numa das
+  fontes nomeadas, entao nao ha "via X" para atribuir.
+- `LuaToolsApiClient.GenerateDlcAsync` agora reporta `DownloadProgress` em vez de `double?`, como o resto
+  da infraestrutura de fila.
+
+### Barra redundante removida da aba Add
+
+- **A `ProgressBar` por fonte saiu.** Ela ficou indeterminada no momento em que a fila assumiu os bytes, o
+  que a tornou uma segunda copia, mais pobre, da barra real. A linha agora mostra "Queued" e um botao que
+  abre a aba Downloads, onde estao tamanho, velocidade, pause e cancel de verdade.
+- `App` conecta `DownloadViewModel.NavigateToDownloads`, igual ao aviso da aba Depots.
+- `SourceRowViewModel` perdeu `Progress` e `IsProgressIndeterminate`; `IsDownloading` continua sendo o que
+  esmaece a linha.
+
+### Codigo morto removido
+
+- `_fastFetchSource`, `ReportInstall` e `DeleteStaged` sairam junto com o caminho inline a que pertenciam.
+  `_fastFetchSource` era atribuido e nunca mais lido depois que a fila assumiu — um `CS0414` esperando para
+  quebrar o build sob `TreatWarningsAsErrors`.
+
+### Testes
+
+- +6 testes (total: 1601). Cobrem a chave de texto tokenizada em `AccentPaletteTests` e o comportamento
+  "Queued" da linha de fonte em `DownloadsPageTests`.
+
+### Sem mudanca de politica
+
+- Nenhuma telemetria, auto-update, elevacao UAC, SAC ou envio de chaves reintroduzido. `settings.json`
+  inalterado. Nenhuma dependencia NuGet nova.
+
 ## 1.7.0 — 2026-08-30
 
 ### Aba Downloads: uma fila unica para tudo que o app baixa

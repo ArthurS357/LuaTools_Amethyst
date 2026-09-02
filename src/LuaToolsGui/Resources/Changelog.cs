@@ -29,6 +29,15 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.7.1", "2026-09-02",
+            "The accent now reaches the text inside the pages, not just the rail around them, and DLC unlocks go through the same download queue as everything else.",
+            [
+                "Switching accent repaints the text in the central container. Every page sets its body text from a WPF-UI key that shipped as untokenised pure white, so the rail followed the accent while the pages inside it stayed stock white — the seam that read as \"the accent stopped applying\". That key is now part of the theme like every other colour.",
+                "A DLC unlock now appears on the Downloads page. It was the last path that still downloaded and installed inline, so it was invisible from the queue and could run at the same time as a manifest install writing the same file for that game. The two now exclude each other.",
+                "The Add page no longer draws its own bar under a source. It went blank the moment the queue took over the bytes, so it was a second, emptier copy of the real one; the row now reads \"Queued\" and links to the Downloads page, where the size, speed and controls actually are.",
+                "Removed the download-and-install code left stranded by that move, including a field that was written and never read again — a build failure waiting for the next warning sweep.",
+            ]),
+
         new("1.7.0", "2026-08-30",
             "Downloads are now one queue with its own page: manifests and depot content share it, they survive leaving the page they were started from, and finished ones are kept in a history.",
             [

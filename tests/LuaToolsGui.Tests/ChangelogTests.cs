@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.7.0");
+        AppVersion.Current.Should().Be("1.7.1");
     }
 
     [Fact]
@@ -51,9 +51,9 @@ public class ChangelogTests
 
         // One anchor per change the release was actually about, so an entry that got copied forward from
         // the previous version fails here rather than shipping a changelog describing the wrong release.
-        text.Should().ContainEquivalentOf("Downloads page"); // the new page and the queue behind it
-        text.Should().ContainEquivalentOf("Resume");         // pause/resume, depot downloads only
-        text.Should().ContainEquivalentOf("history");        // persisted, with per-row and bulk clearing
+        text.Should().ContainEquivalentOf("accent");  // the page-content text brush now follows the accent
+        text.Should().ContainEquivalentOf("DLC");     // DLC unlocks go through the shared queue
+        text.Should().ContainEquivalentOf("Queued");  // the Add page's bar replaced by a queued notice
     }
 
     [Fact]
