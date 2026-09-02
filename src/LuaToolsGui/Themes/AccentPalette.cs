@@ -187,6 +187,54 @@ public sealed record AccentPalette(
     }
 
     /// <summary>
+    /// WPF-UI's OWN accent brushes, mapped to the weight each takes under this palette.
+    ///
+    /// <para>
+    /// These are separate from <see cref="BrushColors"/> — that is the app's own eight tokens, this is
+    /// WPF-UI's nine, which paint every templated accent surface: <c>ui:Button Appearance="Primary"</c>,
+    /// ToggleSwitch, accent text, focus rings, selection highlights.
+    /// </para>
+    ///
+    /// <para>
+    /// They have to be repainted here rather than left to <c>ApplicationAccentColorManager.Apply</c>,
+    /// which replaces the brush OBJECTS instead of repainting them and so cannot reach anything already on
+    /// screen. <c>App.DropAccentBrushOverrides</c> removes those replacements; Themes/Colors.xaml declares
+    /// the nine in their place, and this is what moves them. The <c>{DynamicResource}</c> in that file
+    /// keeps them unfrozen — it is not what carries the colour, exactly as with every other brush in the
+    /// palette.
+    /// </para>
+    ///
+    /// <para>
+    /// The weight each brush takes is WPF-UI 4.3.0's own mapping under the DARK theme, measured rather
+    /// than assumed: the text weights are swapped there, which is why Primary reads the 500 and Tertiary
+    /// reads the 400. The WPF-UI version is pinned exactly, and AccentBrushIdentityTests is what notices
+    /// if an upgrade moves it.
+    /// </para>
+    /// </summary>
+    public IReadOnlyDictionary<string, Color> WpfUiAccentColors(IResolveColor resolve)
+    {
+        Color soft = resolve.Color(SoftKey);        // 300
+        Color primary = resolve.Color(PrimaryKey);  // 400
+        Color border = resolve.Color(BorderKey);    // 500
+        Color fill = resolve.Color(FillKey);        // 600
+
+        return new Dictionary<string, Color>(StringComparer.Ordinal)
+        {
+            ["SystemAccentBrush"] = fill,
+            ["AccentFillColorSelectedTextBackgroundBrush"] = fill,
+
+            ["SystemFillColorAttentionBrush"] = border,
+            ["AccentTextFillColorPrimaryBrush"] = border,
+            ["AccentFillColorDefaultBrush"] = border,
+            ["AccentFillColorSecondaryBrush"] = border,
+            ["AccentFillColorTertiaryBrush"] = border,
+
+            ["AccentTextFillColorTertiaryBrush"] = primary,
+            ["AccentTextFillColorSecondaryBrush"] = soft,
+        };
+    }
+
+    /// <summary>
     /// WPF-UI's OWN surface keys, which Themes/Colors.xaml deliberately redefines.
     ///
     /// <para>

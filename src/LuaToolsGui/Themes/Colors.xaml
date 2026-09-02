@@ -326,6 +326,45 @@
          from AccentPalette.ShellColors, so the container follows the neutral ramp like everything else. -->
     <SolidColorBrush x:Key="TextFillColorPrimaryBrush" Color="{DynamicResource Plum50Color}" />
 
+    <!-- WPF-UI's OWN accent brushes, redeclared here so the app owns the brush OBJECT.
+
+         This is the half of the accent switch that never worked, and it fails in a way none of the
+         surface overrides above do. ApplicationAccentColorManager.Apply does not mutate these: it builds
+         NINE FRESH SolidColorBrush objects and assigns them at the TOP LEVEL of Application.Resources on
+         every switch. Assigning a Freezable there freezes it (see PromoteSurfaceOverrides), so they are
+         frozen on arrival and can never be repainted — and, worse, the object a view resolved through
+         {StaticResource} at load time is thrown away and replaced by a different one. The view keeps
+         holding the old brush, so it keeps painting the old accent for the rest of the session.
+
+         That is the seam users report as "the accent applies around the edges but not in the middle":
+         the shell is painted from the surface brushes above, which ARE mutated in place and do follow the
+         switch, while every accent-painted control inside the content area — ui:Button Appearance=Primary,
+         ToggleSwitch, accent text and focus rings — stays on whichever accent was applied when the page
+         was first loaded.
+
+         Declared here they are merged LAST (App.xaml) so they outrank WPF-UI's copies, and each takes its
+         Colour through {DynamicResource}, which is what keeps the Freezable mutable AND makes it track the
+         SystemAccentColor* entries the manager rewrites on every switch. No repaint entry is needed: the
+         colour follows on its own, and the object identity never changes.
+
+         App.DropAccentBrushOverrides is the other half — it removes the manager's frozen top-level copies
+         after each Apply, so resolution falls through to these. Removing that call silently restores the
+         bug: nothing throws, the build is clean, and the middle of the window stops following the accent.
+
+         The brush -> colour mapping is WPF-UI 4.3.0's own, measured against the Dark theme rather than
+         assumed (WPF-UI swaps the text weights on dark, which is why Primary reads Secondary and Tertiary
+         reads Primary below). It is verified by ThemeLiveSwitchTests; the WPF-UI version is pinned
+         exactly, and that test is what notices if an upgrade moves the mapping. -->
+    <SolidColorBrush x:Key="SystemAccentBrush" Color="{DynamicResource SystemAccentColor}" />
+    <SolidColorBrush x:Key="SystemFillColorAttentionBrush" Color="{DynamicResource SystemAccentColorSecondary}" />
+    <SolidColorBrush x:Key="AccentTextFillColorPrimaryBrush" Color="{DynamicResource SystemAccentColorSecondary}" />
+    <SolidColorBrush x:Key="AccentTextFillColorSecondaryBrush" Color="{DynamicResource SystemAccentColorTertiary}" />
+    <SolidColorBrush x:Key="AccentTextFillColorTertiaryBrush" Color="{DynamicResource SystemAccentColorPrimary}" />
+    <SolidColorBrush x:Key="AccentFillColorSelectedTextBackgroundBrush" Color="{DynamicResource SystemAccentColor}" />
+    <SolidColorBrush x:Key="AccentFillColorDefaultBrush" Color="{DynamicResource SystemAccentColorSecondary}" />
+    <SolidColorBrush x:Key="AccentFillColorSecondaryBrush" Color="{DynamicResource SystemAccentColorSecondary}" />
+    <SolidColorBrush x:Key="AccentFillColorTertiaryBrush" Color="{DynamicResource SystemAccentColorSecondary}" />
+
     <Color x:Key="SolidBackgroundFillColorBase">#0E0B14</Color>
     <SolidColorBrush x:Key="SolidBackgroundFillColorBaseBrush" Color="{DynamicResource SolidBackgroundFillColorBase}" />
     <Color x:Key="SolidBackgroundFillColorBaseAlt">#07050C</Color>

@@ -85,7 +85,25 @@ public sealed class ThemeHost : IDisposable
 /// Covers the accent switch against a live Application — the only arrangement in which its two real
 /// failure modes exist.
 /// </summary>
-public class ThemeLiveSwitchTests(ThemeHost host) : IClassFixture<ThemeHost>
+/// <summary>
+/// Shares the one <see cref="ThemeHost"/> across every theme test class.
+///
+/// <para>
+/// It has to be a COLLECTION fixture, not a class fixture: WPF allows a single
+/// <see cref="Application"/> per AppDomain, so a second test class taking
+/// <c>IClassFixture&lt;ThemeHost&gt;</c> builds a second Application and aborts the whole run with
+/// "cannot create more than one instance of System.Windows.Application". Any new class that needs a live
+/// Application joins this collection instead of declaring its own fixture.
+/// </para>
+/// </summary>
+[CollectionDefinition(ThemeHostCollection.Name)]
+public sealed class ThemeHostCollection : ICollectionFixture<ThemeHost>
+{
+    public const string Name = "theme host";
+}
+
+[Collection(ThemeHostCollection.Name)]
+public class ThemeLiveSwitchTests(ThemeHost host)
 {
     /// <summary>Tokens the palette repaints, one from each family the switch has to reach.</summary>
     public static TheoryData<string> RepaintedTokens() =>

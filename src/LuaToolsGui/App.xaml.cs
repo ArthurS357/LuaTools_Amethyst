@@ -383,6 +383,16 @@ public partial class App : Application
             secondaryAccent: border.Value,   // borders, non-text UI
             tertiaryAccent: soft.Value);     // softest wash
 
+        // Undo the one thing that call does which cannot be lived with. It does not repaint WPF-UI's nine
+        // accent BRUSHES - it builds new ones and assigns them here, at the top level, where they are
+        // frozen on arrival and where they outrank the palette. Every accent-painted control that had
+        // already resolved one through {StaticResource} keeps holding the PREVIOUS object, so it keeps
+        // painting the previous accent: the shell follows the switch and the middle of the window does
+        // not. Dropping them lets resolution fall through to Themes/Colors.xaml, which declares the same
+        // nine against {DynamicResource SystemAccentColor*} - unfrozen, stable in identity, and already
+        // tracking the COLOUR entries the call above did update. See the block in Colors.xaml.
+        DropAccentBrushOverrides();
+
         // Promote FIRST, then repaint. PromoteSurfaceOverrides copies values UP out of the merged
         // dictionaries into the top level; run after a repaint it would copy the XAML defaults back over
         // the palette that was just applied, which is precisely how a switch ends up needing a restart to
@@ -419,6 +429,10 @@ public partial class App : Application
             var resolve = new Themes.DictionaryColors(Current.Resources);
             Themes.ThemeRepaint.Apply(Current.Resources, palette.SurfaceColors(resolve));
             Themes.ThemeRepaint.Apply(Current.Resources, palette.ShellColors(resolve));
+
+            // WPF-UI's own accent brushes. Must run AFTER DropAccentBrushOverrides has taken the frozen
+            // top-level copies out, or the lookup finds those and repaints something nothing is holding.
+            Themes.ThemeRepaint.Apply(Current.Resources, palette.WpfUiAccentColors(resolve));
         }
         catch (KeyNotFoundException ex)
         {
@@ -585,6 +599,50 @@ public partial class App : Application
     /// directly on markup this app owns — see the root Grid's Background in MainWindow.xaml.
     /// </para>
     /// </summary>
+    /// <summary>
+    /// WPF-UI's accent brush keys, in the spelling <c>ApplicationAccentColorManager</c> writes them.
+    ///
+    /// <para>
+    /// Verified against WPF-UI 4.3.0, which is pinned exactly for this kind of reason. A key that
+    /// disappears from a later version simply stops being removed here, which is harmless; a key that is
+    /// ADDED and not listed reintroduces the stale-accent bug for whatever it paints, which is why
+    /// ThemeLiveSwitchTests asserts identity across a switch for every one of them rather than trusting
+    /// this list to stay complete.
+    /// </para>
+    /// </summary>
+    private static readonly string[] WpfUiAccentBrushKeys =
+    [
+        "SystemAccentBrush",
+        "SystemFillColorAttentionBrush",
+        "AccentTextFillColorPrimaryBrush",
+        "AccentTextFillColorSecondaryBrush",
+        "AccentTextFillColorTertiaryBrush",
+        "AccentFillColorSelectedTextBackgroundBrush",
+        "AccentFillColorDefaultBrush",
+        "AccentFillColorSecondaryBrush",
+        "AccentFillColorTertiaryBrush",
+    ];
+
+    /// <summary>
+    /// Remove the frozen accent brushes <c>ApplicationAccentColorManager.Apply</c> just wrote at the top
+    /// level, so lookups fall through to the mutable ones in Themes/Colors.xaml.
+    ///
+    /// <para>
+    /// The mirror image of <see cref="PromoteSurfaceOverrides"/>: that one lifts COLOUR values up to the
+    /// top level because value types must be found there, this one pushes BRUSH entries back down because
+    /// reference types must not be replaced there. Both exist for the same underlying reason - a view
+    /// resolves <c>{StaticResource}</c> once and then holds the object forever.
+    /// </para>
+    /// </summary>
+    private static void DropAccentBrushOverrides()
+    {
+        var res = Current?.Resources;
+        if (res is null) return;
+
+        foreach (var key in WpfUiAccentBrushKeys)
+            res.Remove(key);
+    }
+
     private static void PromoteSurfaceOverrides()
     {
         var res = Current?.Resources;
