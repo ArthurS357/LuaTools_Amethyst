@@ -1,5 +1,49 @@
 # Changelog
 
+## 1.7.2 — 2026-09-02
+
+### O accent chega aos controles do container central
+
+1.7.1 corrigiu a metade errada do problema. `TextFillColorPrimaryBrush` era uma lacuna real e o texto
+corrido passou a seguir a rampa, mas o que o usuario olha sao os controles pintados pelas NOVE brushes de
+accent do WPF-UI — e essas nunca estavam sendo repintadas. Com Vermelho selecionado, a janela e a barra
+de navegacao iam para wine enquanto os botoes primarios, os toggles e o texto de accent dentro da pagina
+continuavam violeta.
+
+- **`ApplicationAccentColorManager.Apply` nao muta essas brushes.** Ele constroi nove `SolidColorBrush`
+  NOVAS e as atribui no topo de `Application.Resources`, onde o WPF as congela na chegada. Duas
+  consequencias, e a segunda e o bug: elas ficam congeladas, entao nada consegue repinta-las depois; e o
+  objeto que uma View resolveu via `{StaticResource}` no load e descartado e trocado por outro, entao a
+  View continua segurando a brush antiga e continua pintando o accent antigo pelo resto da sessao.
+- **Perguntar a cor ao dicionario sempre devolvia a resposta certa** — foi por isso que o bug sobreviveu a
+  um teste baseado em cor e a um build limpo.
+
+### A correcao segue o mecanismo que o resto da paleta ja usa
+
+- **`Themes/Colors.xaml` declara as nove**, contra `{DynamicResource SystemAccentColor*}`. O
+  `DynamicResource` e o que mantem um `Freezable` mutavel — mesma razao pela qual toda brush daquele
+  arquivo e escrita assim. Ele nao carrega a cor.
+- **`App.DropAccentBrushOverrides`** remove as copias congeladas de topo depois de cada `Apply`, para a
+  resolucao cair nas nossas. E o espelho de `PromoteSurfaceOverrides`: cor e tipo de valor e precisa
+  SUBIR para o topo; brush e referencia e precisa DESCER para nao ser substituida.
+- **`AccentPalette.WpfUiAccentColors`** mapeia cada brush ao seu peso e o `ThemeRepaint` a move, depois do
+  drop.
+- O mapeamento brush → peso e o do proprio WPF-UI 4.3.0 sob o tema escuro, **medido** contra uma
+  `Application` viva em vez de presumido: ele troca os pesos de texto no escuro.
+
+### Testes
+
+- **+28 testes (total: 1629).** Eles verificam **IDENTIDADE** da brush atraves de uma troca, nao so a cor —
+  uma asserção de cor passava durante todo o bug. Tambem cobrem: brush nao congelada, cor efetivamente
+  muda, e nenhuma copia de topo sobrando sombreando a paleta.
+- `ThemeHost` virou **collection fixture**: o WPF permite uma unica `Application` por AppDomain, e uma
+  segunda classe com `IClassFixture<ThemeHost>` aborta a execucao inteira.
+
+### Sem mudanca de politica
+
+- Nenhuma telemetria, auto-update, elevacao UAC, SAC ou envio de chaves reintroduzido. `settings.json`
+  inalterado. Nenhuma dependencia NuGet nova. Pin `[4.3.0]` do WPF-UI mantido.
+
 ## 1.7.1 — 2026-09-02
 
 ### O accent para de morrer na borda do container central

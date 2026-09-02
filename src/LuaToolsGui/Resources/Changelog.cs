@@ -29,6 +29,15 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.7.2", "2026-09-02",
+            "Finishes the accent fix 1.7.1 only half made: the colour now reaches the buttons, toggles and accent text inside the pages, not just the window around them.",
+            [
+                "Choosing an accent now repaints the accent-coloured controls in the middle of the window. The primary buttons, toggles, focus rings and accent text kept whichever colour was active when their page first loaded, so picking Red gave a wine window and rail with violet buttons still sitting inside it.",
+                "The cause was that those controls are painted by the UI library, which REPLACES its accent brushes on every change instead of recolouring them. Anything already on screen went on using the brush it had picked up at load. The app now owns those brushes and recolours them in place, the same way it already did for every surface.",
+                "It still takes effect immediately, with no restart, and picking the same accent twice does nothing visible - the second switch used to be the one that quietly stopped working.",
+                "Body text, fixed in 1.7.1, is unchanged. This is the other half of the same seam.",
+            ]),
+
         new("1.7.1", "2026-09-02",
             "The accent now reaches the text inside the pages, not just the rail around them, and DLC unlocks go through the same download queue as everything else.",
             [

@@ -12,7 +12,7 @@ It browses and installs manifest sources, edits `stplug-in` lua files (depot pin
 enable/disable), manages unlocker modes, launches games through Steam, and injects a companion plugin
 into Steam's store pages. It ships translated in 29 languages and auto-updates via Velopack.
 
-Current version: **1.7.1** · Repository: <https://github.com/ArthurS357/LuaTools_Amethyst>
+Current version: **1.7.2** · Repository: <https://github.com/ArthurS357/LuaTools_Amethyst>
 
 ### Checking which build you are running
 
