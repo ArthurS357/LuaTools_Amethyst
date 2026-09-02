@@ -253,6 +253,12 @@ public sealed record AccentPalette(
         map["NavigationViewContentBackground"] = surfaceBase;
         map["NavigationViewItemForeground"] = resolve.Color(Neutrals.TextPrimaryKey);
 
+        // The default body-text colour for every page hosted in the nav content area: all ten Views set
+        // TextElement.Foreground from this key at their root. WPF-UI ships it as untokenised pure white,
+        // so before it was listed here the whole central container ignored the neutral ramp while the
+        // rail around it followed it. Brush-only, like the two above.
+        map["TextFillColorPrimaryBrush"] = resolve.Color(Neutrals.TextPrimaryKey);
+
         return map;
     }
 

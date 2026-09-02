@@ -890,6 +890,8 @@ public partial class App : Application
         // Downloads page wiring. "Review" on an item waiting on the overwrite diff has to land the user on
         // the page that owns that overlay — the Add page — so both halves of the jump are set here.
         download.NavigateToAdd = () => Dispatcher.Invoke(window.NavigateToAdd);
+        // The Add page's queued source rows link to the Downloads page, same as the Depots page's notice.
+        download.NavigateToDownloads = () => Dispatcher.Invoke(window.NavigateToDownloads);
         _host.Services.GetRequiredService<DownloadsViewModel>().RevealItem =
             _ => Dispatcher.Invoke(window.NavigateToAdd);
         _host.Services.GetRequiredService<BuildsViewModel>().NavigateToDownloads =

@@ -548,12 +548,29 @@
                                         Visibility="{Binding IsLocked, Converter={StaticResource BoolToVis}}" />
                                 </Grid>
 
-                                <ProgressBar
+                                <!--  No progress bar here any more: the download runs in the app-wide queue, so this
+                                      row only reports that the source was handed over. It had gone indeterminate the
+                                      moment the queue took ownership of the bytes, which made it a second, emptier
+                                      copy of the real one - everything live about it (bytes, speed, pause, cancel)
+                                      is on the Downloads page, which is what the link opens.  -->
+                                <StackPanel
                                     Margin="0,8,0,0"
-                                    IsIndeterminate="{Binding IsProgressIndeterminate}"
-                                    Maximum="100"
-                                    Visibility="{Binding IsDownloading, Converter={StaticResource BoolToVis}}"
-                                    Value="{Binding Progress, Mode=OneWay}" />
+                                    Orientation="Horizontal"
+                                    Visibility="{Binding IsDownloading, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="11.5"
+                                        Foreground="{StaticResource TextSecondaryBrush}"
+                                        Text="{x:Static res:Strings.Downloads_Status_Queued}" />
+                                    <ui:Button
+                                        Margin="8,0,0,0"
+                                        Padding="8,3"
+                                        AutomationProperties.Name="{x:Static res:Strings.Nav_Downloads}"
+                                        Command="{Binding DataContext.OpenDownloadsCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        Content="{x:Static res:Strings.Nav_Downloads}"
+                                        FontSize="11.5"
+                                        Icon="{ui:SymbolIcon ArrowDownload24}" />
+                                </StackPanel>
                             </StackPanel>
                         </Border>
                     </DataTemplate>

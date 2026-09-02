@@ -37,9 +37,9 @@ public partial class SourceRowViewModel : ObservableObject
 
     [ObservableProperty] private string? _statsText;
     [ObservableProperty] private bool _isSupporter;
+    /// <summary>Greys the row out and swaps the download button for the "queued" notice. There is no
+    /// fraction beside it any more - the bytes are reported on the Downloads page.</summary>
     [ObservableProperty] private bool _isDownloading;
-    [ObservableProperty] private double _progress;
-    [ObservableProperty] private bool _isProgressIndeterminate;
 
     public bool CanDownload => IsAvailable && !IsLocked;
 
@@ -315,7 +315,6 @@ public partial class DownloadViewModel : ObservableObject
     private TaskCompletionSource<bool>? _pendingConfirm;
 
     private bool _suppressSearch;
-    private string? _fastFetchSource;
 
     [ObservableProperty] private bool _fastFetch;
     partial void OnFastFetchChanged(bool value) => _settings.FastFetch = value;
@@ -564,7 +563,6 @@ public partial class DownloadViewModel : ObservableObject
                         Error = Resources.Strings.Add_FastFetch_NoSource;
                         return;
                     }
-                    _fastFetchSource = best.DisplayName;
                     await DownloadFromSourceAsync(best, ct);
                 }
                 else
@@ -730,16 +728,12 @@ public partial class DownloadViewModel : ObservableObject
             onFinished: (item, result) => ReportQueued(item, result, source.NeedsKey),
             onReveal: () => NavigateToAdd?.Invoke());
 
-        // Indeterminate for the whole run: the byte-level figures belong to the Downloads page now, and a
-        // fraction here would be a second, worse copy of them. The flag still greys the row out.
+        // Nothing to report per-source beyond "it is in the queue": the bar that used to sit here went
+        // indeterminate the moment the queue owned the bytes, which made it a second, emptier copy of the
+        // real one. The row now shows a "Queued" line and a link to the page that has the live figures.
         source.IsDownloading = true;
-        source.IsProgressIndeterminate = true;
         try { await _queue.Enqueue(job).Completion; }
-        finally
-        {
-            source.IsDownloading = false;
-            source.IsProgressIndeterminate = false;
-        }
+        finally { source.IsDownloading = false; }
     }
 
     /// <summary>Project a settled queue item onto this page's result banner.</summary>
@@ -763,7 +757,13 @@ public partial class DownloadViewModel : ObservableObject
         _ = needsKey ? ApplyHubcapStateAsync() : RefreshStandardUsageAsync();
     }
 
-    /// <summary>DLC lua: download and install silently (it's just an unlock — no confirm).</summary>
+    /// <summary>DLC lua: hand it to the queue like every other download.</summary>
+    /// <remarks>
+    /// Was the last path still downloading and installing inline, so a DLC unlock was invisible on the
+    /// Downloads page and could run concurrently with a manifest install for the same appid. It now builds
+    /// a job like <see cref="DownloadFromSourceAsync"/> does; the shared manifest dedupe key is what makes
+    /// those two mutually exclusive. Awaiting Completion keeps IsGenerating meaningful for the button.
+    /// </remarks>
     [RelayCommand]
     private async Task GenerateDlcAsync()
     {
@@ -773,30 +773,25 @@ public partial class DownloadViewModel : ObservableObject
         LastDownload = null;
         InstallStatus = null;
         long appId = Details.AppId;
-        IsGenerating = true;
-        try
-        {
-            var download = await _api.GenerateDlcAsync(appId.ToString(), Details.BaseAppId, Details.Name, null);
-            LastDownload = download;
 
-            var result = _installer.InstallLua(download.FilePath, appId);
-            ReportInstall(result);
-            DeleteStaged(download.FilePath); // installed — drop the temp staging copy
-            await RefreshStandardUsageAsync(); // DLC generate counts toward 25/day
-        }
-        catch (ApiException ex)
-        {
-            Error = ex.Message;
-        }
-        catch (Exception)
-        {
-            Error = Resources.Strings.Add_Err_Generate;
-        }
-        finally
-        {
-            IsGenerating = false;
-        }
+        var job = _jobs.CreateDlcJob(
+            appId, Details.BaseAppId, Details.Name,
+            // needsKey: false - a DLC generate is a lua.tools call, so the standard 25/day badge is the
+            // one that has to move afterwards, exactly as the inline path refreshed it.
+            onFinished: (item, result) => ReportQueued(item, result, needsKey: false),
+            onReveal: () => NavigateToAdd?.Invoke());
+
+        IsGenerating = true;
+        try { await _queue.Enqueue(job).Completion; }
+        finally { IsGenerating = false; }
     }
+
+    /// <summary>Jump to the Downloads page, from a queued source row's link.</summary>
+    [RelayCommand]
+    private void OpenDownloads() => NavigateToDownloads?.Invoke();
+
+    /// <summary>Set by App: bring the Downloads page up.</summary>
+    public Action? NavigateToDownloads { get; set; }
 
     // ── Install + overwrite confirm ─────────────────────────────────
 
@@ -877,13 +872,6 @@ public partial class DownloadViewModel : ObservableObject
         _pendingConfirm = null;
     }
 
-    /// <summary>Best-effort delete of a staged download after it's been installed, so nothing piles
-    /// up in the temp staging folder.</summary>
-    private static void DeleteStaged(string path)
-    {
-        try { if (File.Exists(path)) File.Delete(path); } catch { /* best effort */ }
-    }
-
     /// <summary>True if the file begins with the ZIP local-file-header magic (PK\x03\x04). A bare .lua
     /// (or any non-zip the server returned under a .zip name) returns false → install it as a loose lua.</summary>
     private static bool IsZip(string path)
@@ -895,35 +883,6 @@ public partial class DownloadViewModel : ObservableObject
             return fs.Read(sig) == 4 && sig[0] == 0x50 && sig[1] == 0x4B && sig[2] == 0x03 && sig[3] == 0x04;
         }
         catch { return false; }
-    }
-
-    /// <summary>Turn an InstallResult into the result banner text/state.</summary>
-    private void ReportInstall(InstallResult result)
-    {
-        if (result.Error is not null)
-        {
-            InstallFailed = true;
-            InstallStatus = result.Error;
-            return;
-        }
-
-        if (result.AnyFailed)
-        {
-            InstallFailed = true;
-            InstallStatus = string.Format(Resources.Strings.Add_Status_InstallFailed, result.Failed.Count);
-            return;
-        }
-
-        InstallFailed = false;
-        string name = Details?.Name ?? "lua";
-        InstallStatus = result.ManifestCount > 0
-            ? string.Format(Resources.Strings.Add_Status_AddedManifests, name, result.ManifestCount)
-            : string.Format(Resources.Strings.Add_Status_AddedFetch, name);
-        if (_fastFetchSource is not null)
-        {
-            InstallStatus += " " + string.Format(Resources.Strings.Add_FastFetch_Via, _fastFetchSource);
-            _fastFetchSource = null;
-        }
     }
 
     /// <summary>Fetch the app's depots from steamcmd (cached) and index by depot id + dlcappid.</summary>
@@ -1034,7 +993,6 @@ public partial class DownloadViewModel : ObservableObject
         DlcDepots.Clear();
         Error = null;
         LastDownload = null;
-        _fastFetchSource = null;
     }
 
     /// <summary>

@@ -167,6 +167,11 @@ public class DownloadsPageTests
         src.Should().NotContain("hubcap.DownloadManifestAsync");
         src.Should().NotContain("_hubcap.DownloadManifestAsync");
         src.Should().NotContain("DownloadDepotsAsync");
+
+        // The DLC generate was the last inline survivor of this phase: it downloaded and installed on the
+        // calling thread, so it never appeared on the Downloads page and could run alongside a manifest
+        // install for the same appid.
+        src.Should().NotContain("_api.GenerateDlcAsync");
     }
 
     [Fact]
@@ -222,6 +227,53 @@ public class DownloadsPageTests
     {
         // They write to different places and can honestly run at once.
         ManifestJobFactory.DepotKey(730).Should().NotBe(ManifestJobFactory.ManifestKey(730));
+    }
+
+    [Fact]
+    public void The_add_page_shows_no_second_progress_bar_for_a_queued_source()
+    {
+        string xaml = Source("Views", "DownloadView.xaml");
+
+        // Once the queue owned the bytes this bar could only be indeterminate, so it was a second and
+        // emptier copy of the row on the Downloads page. It is replaced by a "Queued" line plus a link.
+        xaml.Should().NotContain("<ProgressBar");
+        xaml.Should().Contain("Downloads_Status_Queued");
+        xaml.Should().Contain("OpenDownloadsCommand");
+
+        // The per-source fraction went with it - nothing binds it, so keeping it would be dead state.
+        string vm = Source("ViewModels", "DownloadViewModel.cs");
+        vm.Should().NotContain("IsProgressIndeterminate");
+
+        // The link has to be wired, or it is a dead button.
+        Source("App.xaml.cs").Should().Contain("download.NavigateToDownloads");
+    }
+
+    [Fact]
+    public void A_dlc_unlock_is_queued_rather_than_installed_on_the_click()
+    {
+        string vm = Source("ViewModels", "DownloadViewModel.cs");
+
+        // The command may only decide WHAT to enqueue. Installing from inside it is what kept DLC
+        // unlocks off the Downloads page and outside the queue's dedupe, pause and history.
+        vm.Should().Contain("_jobs.CreateDlcJob");
+        vm.Should().NotContain("_installer.InstallLua");
+
+        // Building the job belongs to the factory, beside the other two kinds.
+        string factory = Source("Services", "Downloads", "ManifestJobFactory.cs");
+        factory.Should().Contain("CreateDlcJob");
+        factory.Should().Contain("api.GenerateDlcAsync");
+    }
+
+    [Fact]
+    public void A_dlc_unlock_and_a_manifest_for_one_game_cannot_run_at_once()
+    {
+        // Both write the same <appid>.lua, so they share the manifest dedupe key rather than getting a
+        // "dlc:" key of their own - a separate key would let the two race the installer over one file.
+        string factory = Source("Services", "Downloads", "ManifestJobFactory.cs");
+
+        factory.Should().NotContain("DlcKey(");
+        // The job is built with ManifestKey, which is what makes the two mutually exclusive.
+        factory.Should().Contain("ManifestKey(appId)");
     }
 
     [Fact]

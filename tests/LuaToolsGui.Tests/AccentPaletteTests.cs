@@ -234,6 +234,27 @@ public class AccentPaletteTests
 
     [Theory]
     [MemberData(nameof(EveryPalette))]
+    public void The_page_content_container_follows_the_neutral_ramp(string id)
+    {
+        // TextFillColorPrimaryBrush is WPF-UI's own key, and every one of the ten Views sets
+        // TextElement.Foreground from it at its root - so it is the default body-text colour for the
+        // whole central container the pages render into. WPF-UI ships it as untokenised pure white with
+        // no Color counterpart, which left it the one text token an accent switch could not move: the
+        // nav rail went Moss50 while every page inside it stayed stock white. This is the regression
+        // test for that gap - it must be in the live repaint set and carry the palette's primary text
+        // colour, exactly like NavigationViewItemForeground beside it.
+        var p = AccentPalette.FromId(id);
+        var shell = p.ShellColors(new DictionaryColors(Palette));
+
+        shell.Should().ContainKey("TextFillColorPrimaryBrush");
+        shell["TextFillColorPrimaryBrush"].Should().Be(Get(p.Neutrals.TextPrimaryKey));
+
+        // Same AAA floor as the rail: this paints primary body text over the content-area fill.
+        Contrast(shell["TextFillColorPrimaryBrush"], shell["NavigationViewContentBackground"])
+            .Should().BeGreaterThanOrEqualTo(7.0, "page body text is primary text on the content fill");
+    }
+    [Theory]
+    [MemberData(nameof(EveryPalette))]
     public void Two_palettes_never_produce_the_same_surfaces(string id)
     {
         // A palette whose neutrals were left pointing at another ramp would look applied in the buttons

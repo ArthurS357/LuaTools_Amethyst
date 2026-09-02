@@ -206,7 +206,8 @@ public class LuaToolsApiClient(
                           $"{depotId}_{manifestId}.manifest", progress, ct);
 
     public Task<DownloadedFile> GenerateDlcAsync(
-        string appid, string baseAppId, string? gameName, IProgress<double?>? progress, CancellationToken ct = default)
+        string appid, string baseAppId, string? gameName,
+        IProgress<Downloads.DownloadProgress>? progress, CancellationToken ct = default)
     {
         string url = $"/api/dlc/generate?appid={appid}&base={baseAppId}";
         if (!string.IsNullOrEmpty(gameName)) url += $"&game_name={Uri.EscapeDataString(gameName)}";

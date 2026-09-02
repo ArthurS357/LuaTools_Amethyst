@@ -317,6 +317,15 @@
     <SolidColorBrush x:Key="NavigationViewContentBackground" Color="{DynamicResource ApplicationBackgroundColor}" />
     <SolidColorBrush x:Key="NavigationViewItemForeground" Color="{DynamicResource Plum50Color}" />
 
+    <!-- Every page hosted in the nav content area sets TextElement.Foreground from this key at its root
+         (all ten Views do), so it is the DEFAULT body-text colour for the whole central container. Same
+         story as NavigationViewItemForeground directly above: WPF-UI ships pure white (#FFFFFFFF) with no
+         Color counterpart, it is absent from this file, and so it was the one text token an accent switch
+         could not move. The nav rail went Moss50 while every page inside it stayed stock white - the seam
+         users read as "the accent stopped applying to the content area". Tokenised here, and repainted
+         from AccentPalette.ShellColors, so the container follows the neutral ramp like everything else. -->
+    <SolidColorBrush x:Key="TextFillColorPrimaryBrush" Color="{DynamicResource Plum50Color}" />
+
     <Color x:Key="SolidBackgroundFillColorBase">#0E0B14</Color>
     <SolidColorBrush x:Key="SolidBackgroundFillColorBaseBrush" Color="{DynamicResource SolidBackgroundFillColorBase}" />
     <Color x:Key="SolidBackgroundFillColorBaseAlt">#07050C</Color>

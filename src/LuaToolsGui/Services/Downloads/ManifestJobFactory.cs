@@ -80,6 +80,42 @@ public sealed class ManifestJobFactory(
             onReveal);
     }
 
+    /// <summary>
+    /// A DLC unlock: generate the .lua for <paramref name="appId"/> against its base game, then install.
+    /// </summary>
+    /// <remarks>
+    /// <para>Shares <see cref="ManifestKey"/> with a manifest download on purpose. Both end up writing the
+    /// same <c>&lt;appid&gt;.lua</c>, so letting a DLC generate run alongside a manifest install for the
+    /// same game would race the installer over one file - exactly what the manifest key already prevents
+    /// between two sources.</para>
+    ///
+    /// <para>No confirm gate: a DLC unlock only ever ADDS an entitlement line, so there is no before/after
+    /// diff worth stopping on. That matches the inline path this replaces, which installed silently.</para>
+    /// </remarks>
+    public DownloadJob CreateDlcJob(
+        long appId,
+        string baseAppId,
+        string? gameName,
+        Action<DownloadItem, JobResult?>? onFinished = null,
+        Action? onReveal = null)
+    {
+        string appidStr = appId.ToString(CultureInfo.InvariantCulture);
+        string title = string.IsNullOrWhiteSpace(gameName) ? appidStr : gameName;
+
+        return new DownloadJob(
+            DownloadKind.Manifest,
+            ManifestKey(appId),
+            appId,
+            title,
+            Resources.Strings.Add_DownloadLua,
+            covers.GetLocalPath(appId),
+            (item, progress, ct) => api.GenerateDlcAsync(appidStr, baseAppId, gameName, progress, ct),
+            (file, item, ct) => Task.FromResult(InstallManifest(file, appId, title, source: null)),
+            ConfirmAsync: null,
+            OnFinished: onFinished,
+            OnReveal: onReveal);
+    }
+
     private async Task<DownloadedFile> FetchManifestAsync(
         long appId, string sourceName, bool needsKey, string? gameName,
         IProgress<DownloadProgress> progress, CancellationToken ct)
@@ -111,7 +147,7 @@ public sealed class ManifestJobFactory(
     /// The zip sniff is not cosmetic: the file is always saved as <c>&lt;appid&gt;.zip</c>, but some sources
     /// return a BARE .lua, and unzipping that throws "End of Central Directory record could not be found".
     /// </remarks>
-    private JobResult InstallManifest(DownloadedFile file, long appId, string title, string source)
+    private JobResult InstallManifest(DownloadedFile file, long appId, string title, string? source)
     {
         var result = IsZip(file.FilePath)
             ? installer.InstallZip(file.FilePath, appId)
@@ -128,7 +164,10 @@ public sealed class ManifestJobFactory(
             ? string.Format(CultureInfo.CurrentCulture,
                 Resources.Strings.Add_Status_AddedManifests, title, result.ManifestCount)
             : string.Format(CultureInfo.CurrentCulture, Resources.Strings.Add_Status_AddedFetch, title);
-        message += " " + string.Format(CultureInfo.CurrentCulture, Resources.Strings.Add_FastFetch_Via, source);
+        // A DLC unlock passes null: it is generated for this appid rather than fetched from one of
+        // the named sources, so there is no "via X" to attribute it to.
+        if (source is not null)
+            message += " " + string.Format(CultureInfo.CurrentCulture, Resources.Strings.Add_FastFetch_Via, source);
 
         return new JobResult(true, message, installer.ReadInstalledLua(appId));
     }
