@@ -539,4 +539,21 @@ Dette sletter .lua-filerne fra Steam\config\stplug-in. Genstart Steam bagefter, 
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} blev beholdt: et andet installeret værktøj bruger den stadig. Kun installationsregistreringen blev fjernet.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Afinstallation mislykkedes: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Installationsregistreringen kunne ikke bruges: {0}</value></data>
+  <data name="Fixes_NotInstalled_Hint" xml:space="preserve"><value>Installér spillet først for at anvende et fix.</value></data>
+  <data name="Fixes_Applied_Hint" xml:space="preserve"><value>Denne rettelse er allerede anvendt. Fortryd den, hvis du vil installere en anden.</value></data>
+  <data name="Fixes_MyGames" xml:space="preserve"><value>Mine spil</value></data>
+  <data name="Fixes_MyGames_Count" xml:space="preserve"><value>{0} af dine spil har rettelser. Rul i listen for at se resten.</value></data>
+  <data name="Fixes_MyGames_NotInstalled" xml:space="preserve"><value>Der er endnu ikke tilføjet nogen lua-filer. Tilføj (eller installer) et spil for at se det her.</value></data>
+  <data name="Fixes_Revert" xml:space="preserve"><value>Fortryd</value></data>
+  <data name="Fixes_Revert_Cancel" xml:space="preserve"><value>Annuller</value></data>
+  <data name="Fixes_Revert_Confirm_Body" xml:space="preserve"><value>Fortryd "{0}"? Ændrede filer gendannes fra sikkerhedskopien, og filer tilføjet af rettelsen slettes.</value></data>
+  <data name="Fixes_Revert_Confirm_Title" xml:space="preserve"><value>Fortryd rettelsen til {0}?</value></data>
+  <data name="Fixes_Revert_Done" xml:space="preserve"><value>Rettelse fortrudt</value></data>
+  <data name="Fixes_Revert_Done_Body" xml:space="preserve"><value>{0} gendannet, {1} tilføjede filer fjernet.</value></data>
+  <data name="Fixes_Revert_Failed" xml:space="preserve"><value>Kunne ikke fortryde rettelsen</value></data>
+  <data name="Fixes_Revert_NoRecord" xml:space="preserve"><value>Ingen registrering af at denne rettelse er anvendt. Den er måske allerede fortrudt.</value></data>
+  <data name="Fixes_Revert_Conflict" xml:space="preserve"><value>Rettelsen kan ikke fortrydes sikkert</value></data>
+  <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>{0} er ændret, siden denne rettelse blev anvendt, så en gendannelse ville overskrive de ændringer. Hvis du har anvendt en anden rettelse ovenpå, så fortryd den først. {1} fil(er) berørt.</value></data>
+  <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Rettelse delvist fortrudt</value></data>
+  <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} fil(er) kunne ikke gendannes. Luk spillet og prøv igen.</value></data>
 </root>

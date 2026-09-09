@@ -539,4 +539,21 @@ Spowoduje to usunięcie plików .lua z Steam\config\stplug-in. Następnie urucho
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>Zachowano {0}: inne zainstalowane narzędzie nadal go używa. Usunięto tylko zapis instalacji.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Odinstalowanie nie powiodło się: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Nie udało się użyć zapisu instalacji: {0}</value></data>
+  <data name="Fixes_NotInstalled_Hint" xml:space="preserve"><value>Najpierw zainstaluj grę, aby zastosować poprawkę.</value></data>
+  <data name="Fixes_Applied_Hint" xml:space="preserve"><value>Ta poprawka jest już zastosowana. Cofnij ją, aby zainstalować inną.</value></data>
+  <data name="Fixes_MyGames" xml:space="preserve"><value>Moje gry</value></data>
+  <data name="Fixes_MyGames_Count" xml:space="preserve"><value>{0} z twoich gier ma poprawki. Przewiń listę, aby zobaczyć resztę.</value></data>
+  <data name="Fixes_MyGames_NotInstalled" xml:space="preserve"><value>Nie dodano jeszcze żadnych plików lua. Dodaj (lub zainstaluj) grę, aby ją tu zobaczyć.</value></data>
+  <data name="Fixes_Revert" xml:space="preserve"><value>Cofnij</value></data>
+  <data name="Fixes_Revert_Cancel" xml:space="preserve"><value>Anuluj</value></data>
+  <data name="Fixes_Revert_Confirm_Body" xml:space="preserve"><value>Cofnąć „{0}”? Zmodyfikowane pliki zostaną przywrócone z kopii zapasowej, a pliki dodane przez poprawkę usunięte.</value></data>
+  <data name="Fixes_Revert_Confirm_Title" xml:space="preserve"><value>Cofnąć poprawkę dla {0}?</value></data>
+  <data name="Fixes_Revert_Done" xml:space="preserve"><value>Poprawka cofnięta</value></data>
+  <data name="Fixes_Revert_Done_Body" xml:space="preserve"><value>Przywrócono {0}, usunięto {1} dodanych plików.</value></data>
+  <data name="Fixes_Revert_Failed" xml:space="preserve"><value>Nie udało się cofnąć poprawki</value></data>
+  <data name="Fixes_Revert_NoRecord" xml:space="preserve"><value>Brak zapisu o zastosowaniu tej poprawki. Mogła już zostać cofnięta.</value></data>
+  <data name="Fixes_Revert_Conflict" xml:space="preserve"><value>Nie można bezpiecznie cofnąć poprawki</value></data>
+  <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>Plik {0} zmienił się od zastosowania tej poprawki, więc przywrócenie nadpisałoby te zmiany. Jeśli zastosowano na wierzchu inną poprawkę, cofnij najpierw ją. Dotyczy {1} plik(ów).</value></data>
+  <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Poprawka cofnięta częściowo</value></data>
+  <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>Nie udało się przywrócić {0} plików. Zamknij grę i spróbuj ponownie.</value></data>
 </root>

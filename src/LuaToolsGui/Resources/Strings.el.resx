@@ -539,4 +539,21 @@
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>Το {0} διατηρήθηκε: άλλο εγκατεστημένο εργαλείο το χρησιμοποιεί ακόμη. Αφαιρέθηκε μόνο η εγγραφή εγκατάστασης.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Η απεγκατάσταση απέτυχε: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Δεν ήταν δυνατή η χρήση της εγγραφής εγκατάστασης: {0}</value></data>
+  <data name="Fixes_NotInstalled_Hint" xml:space="preserve"><value>Εγκαταστήστε πρώτα το παιχνίδι για να εφαρμόσετε ένα fix.</value></data>
+  <data name="Fixes_Applied_Hint" xml:space="preserve"><value>Αυτή η διόρθωση έχει ήδη εφαρμοστεί. Αναιρέστε την αν θέλετε να εγκαταστήσετε άλλη.</value></data>
+  <data name="Fixes_MyGames" xml:space="preserve"><value>Τα παιχνίδια μου</value></data>
+  <data name="Fixes_MyGames_Count" xml:space="preserve"><value>{0} από τα παιχνίδια σας έχουν διορθώσεις. Κυλήστε τη λίστα για τα υπόλοιπα.</value></data>
+  <data name="Fixes_MyGames_NotInstalled" xml:space="preserve"><value>Δεν έχετε προσθέσει ακόμη lua. Προσθέστε (ή εγκαταστήστε) ένα παιχνίδι για να εμφανιστεί εδώ.</value></data>
+  <data name="Fixes_Revert" xml:space="preserve"><value>Αναίρεση</value></data>
+  <data name="Fixes_Revert_Cancel" xml:space="preserve"><value>Άκυρο</value></data>
+  <data name="Fixes_Revert_Confirm_Body" xml:space="preserve"><value>Αναίρεση του «{0}»; Τα τροποποιημένα αρχεία θα επαναφερθούν από το αντίγραφο ασφαλείας και τα αρχεία που πρόσθεσε η διόρθωση θα διαγραφούν.</value></data>
+  <data name="Fixes_Revert_Confirm_Title" xml:space="preserve"><value>Αναίρεση της διόρθωσης για {0};</value></data>
+  <data name="Fixes_Revert_Done" xml:space="preserve"><value>Η διόρθωση αναιρέθηκε</value></data>
+  <data name="Fixes_Revert_Done_Body" xml:space="preserve"><value>Επαναφέρθηκαν {0}, αφαιρέθηκαν {1} πρόσθετα αρχεία.</value></data>
+  <data name="Fixes_Revert_Failed" xml:space="preserve"><value>Δεν ήταν δυνατή η αναίρεση της διόρθωσης</value></data>
+  <data name="Fixes_Revert_NoRecord" xml:space="preserve"><value>Δεν υπάρχει καταγραφή ότι εφαρμόστηκε αυτή η διόρθωση. Ίσως έχει ήδη αναιρεθεί.</value></data>
+  <data name="Fixes_Revert_Conflict" xml:space="preserve"><value>Δεν είναι δυνατή η ασφαλής επαναφορά της διόρθωσης</value></data>
+  <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>Το {0} έχει αλλάξει από τότε που εφαρμόστηκε αυτή η διόρθωση, οπότε η επαναφορά θα αντικαταστήσει αυτές τις αλλαγές. Αν εφαρμόσατε άλλη διόρθωση από πάνω, επαναφέρετε πρώτα εκείνη. Επηρεάζονται {1} αρχεία.</value></data>
+  <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Η διόρθωση αναιρέθηκε μερικώς</value></data>
+  <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>Δεν ήταν δυνατή η επαναφορά {0} αρχείων. Κλείστε το παιχνίδι και δοκιμάστε ξανά.</value></data>
 </root>

@@ -539,4 +539,21 @@
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} сохранён: его всё ещё использует другой установленный инструмент. Удалена только запись об установке.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Не удалось удалить: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Не удалось использовать запись об установке: {0}</value></data>
+  <data name="Fixes_NotInstalled_Hint" xml:space="preserve"><value>Сначала установите игру, чтобы применить фикс.</value></data>
+  <data name="Fixes_Applied_Hint" xml:space="preserve"><value>Это исправление уже применено. Откатите его, чтобы установить другое.</value></data>
+  <data name="Fixes_MyGames" xml:space="preserve"><value>Мои игры</value></data>
+  <data name="Fixes_MyGames_Count" xml:space="preserve"><value>Исправления есть для {0} ваших игр. Прокрутите список, чтобы увидеть остальные.</value></data>
+  <data name="Fixes_MyGames_NotInstalled" xml:space="preserve"><value>Файлы lua ещё не добавлены. Добавьте (или установите) игру, чтобы увидеть её здесь.</value></data>
+  <data name="Fixes_Revert" xml:space="preserve"><value>Откатить</value></data>
+  <data name="Fixes_Revert_Cancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="Fixes_Revert_Confirm_Body" xml:space="preserve"><value>Откатить «{0}»? Изменённые файлы будут восстановлены из резервной копии, а добавленные исправлением файлы удалены.</value></data>
+  <data name="Fixes_Revert_Confirm_Title" xml:space="preserve"><value>Откатить исправление для {0}?</value></data>
+  <data name="Fixes_Revert_Done" xml:space="preserve"><value>Исправление откачено</value></data>
+  <data name="Fixes_Revert_Done_Body" xml:space="preserve"><value>Восстановлено {0}, удалено добавленных файлов: {1}.</value></data>
+  <data name="Fixes_Revert_Failed" xml:space="preserve"><value>Не удалось откатить исправление</value></data>
+  <data name="Fixes_Revert_NoRecord" xml:space="preserve"><value>Нет записи о применении этого исправления. Возможно, его уже откатили.</value></data>
+  <data name="Fixes_Revert_Conflict" xml:space="preserve"><value>Не удаётся безопасно откатить фикс</value></data>
+  <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>Файл {0} изменился после применения этого фикса, и восстановление перезапишет эти изменения. Если поверх был применён другой фикс, сначала откатите его. Затронуто файлов: {1}.</value></data>
+  <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Исправление откачено частично</value></data>
+  <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>Не удалось восстановить файлов: {0}. Закройте игру и повторите попытку.</value></data>
 </root>

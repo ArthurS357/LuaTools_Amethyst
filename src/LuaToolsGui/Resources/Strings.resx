@@ -765,4 +765,25 @@ Enable it?</value></data>
   <data name="Downloads_Err_Cancelled" xml:space="preserve"><value>Cancelled.</value></data>
   <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>The clipboard is in use by another program — nothing was copied.</value></data>
   <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>That location no longer exists: {0}</value></data>
+  <data name="Fixes_NotInstalled_Hint" xml:space="preserve"><value>Install the game first to apply a fix.</value></data>
+  <data name="Fixes_Applied_Hint" xml:space="preserve"><value>This fix is already applied. Revert it if you want to install another.</value></data>
+  <data name="Fixes_MyGames" xml:space="preserve"><value>My games</value></data>
+  <data name="Fixes_MyGames_Count" xml:space="preserve"><value>{0} of your games have fixes. Scroll the grid to browse the rest.</value></data>
+  <data name="Fixes_MyGames_NotInstalled" xml:space="preserve"><value>No luas added yet — add a game (or install one) to see it here.</value></data>
+  <data name="Fixes_Revert" xml:space="preserve"><value>Revert</value></data>
+  <data name="Fixes_Revert_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Fixes_Revert_Confirm_Body" xml:space="preserve"><value>Revert "{0}"? Modified files will be restored from backup and files added by the fix will be deleted.</value></data>
+  <data name="Fixes_Revert_Confirm_Title" xml:space="preserve"><value>Revert fix for {0}?</value></data>
+  <data name="Fixes_Revert_Done" xml:space="preserve"><value>Fix reverted</value></data>
+  <data name="Fixes_Revert_Done_Body" xml:space="preserve"><value>{0} restored, {1} added files removed.</value></data>
+  <data name="Fixes_Revert_Failed" xml:space="preserve"><value>Couldn't revert fix</value></data>
+  <data name="Fixes_Revert_NoRecord" xml:space="preserve"><value>No record of this fix being applied. It may already have been reverted.</value></data>
+  <data name="Fixes_Revert_Conflict" xml:space="preserve"><value>Fix can't be reverted safely</value></data>
+  <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>{0} has changed since this fix was applied, so restoring it would overwrite those changes. If you applied another fix on top, revert that one first. {1} file(s) affected.</value></data>
+  <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Fix partially reverted</value></data>
+  <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} file(s) couldn't be restored. Close the game and try again.</value></data>
+  <data name="Notice_Manifests_Title" xml:space="preserve"><value>Steam changed how depot manifests are fetched</value></data>
+  <data name="Notice_Manifests_Source" xml:space="preserve"><value>Use a source that ships manifests — Sadie (Hubcap) or Ryuu. Sources without them can no longer resolve a depot.</value></data>
+  <data name="Notice_Manifests_Lock" xml:space="preserve"><value>Turn OFF “Auto Update Apps (Don’t Lock Manifests)” in Settings, so the lua stays pinned to the version you downloaded.</value></data>
+  <data name="Notice_Manifests_Retry" xml:space="preserve"><value>Already seeing “no internet” or “unknown error”? Re-add the lua from one of those sources with that setting off.</value></data>
 </root>

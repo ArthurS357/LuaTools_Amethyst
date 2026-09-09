@@ -539,4 +539,21 @@ Cela supprime les fichiers .lua de Steam\config\stplug-in. Redémarrez Steam ens
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} a été conservé : un autre outil installé l’utilise encore. Seul l’enregistrement d’installation a été retiré.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Échec de la désinstallation : {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Impossible d’utiliser l’enregistrement d’installation : {0}</value></data>
+  <data name="Fixes_NotInstalled_Hint" xml:space="preserve"><value>Installez d'abord le jeu pour appliquer un fix.</value></data>
+  <data name="Fixes_Applied_Hint" xml:space="preserve"><value>Ce correctif est déjà appliqué. Annulez-le pour en installer un autre.</value></data>
+  <data name="Fixes_MyGames" xml:space="preserve"><value>Mes jeux</value></data>
+  <data name="Fixes_MyGames_Count" xml:space="preserve"><value>{0} de vos jeux ont des correctifs. Faites défiler la grille pour voir les autres.</value></data>
+  <data name="Fixes_MyGames_NotInstalled" xml:space="preserve"><value>Aucun lua ajouté pour l'instant. Ajoutez (ou installez) un jeu pour le voir ici.</value></data>
+  <data name="Fixes_Revert" xml:space="preserve"><value>Annuler le correctif</value></data>
+  <data name="Fixes_Revert_Cancel" xml:space="preserve"><value>Annuler</value></data>
+  <data name="Fixes_Revert_Confirm_Body" xml:space="preserve"><value>Annuler « {0} » ? Les fichiers modifiés seront restaurés depuis la sauvegarde et les fichiers ajoutés par le correctif seront supprimés.</value></data>
+  <data name="Fixes_Revert_Confirm_Title" xml:space="preserve"><value>Annuler le correctif de {0} ?</value></data>
+  <data name="Fixes_Revert_Done" xml:space="preserve"><value>Correctif annulé</value></data>
+  <data name="Fixes_Revert_Done_Body" xml:space="preserve"><value>{0} restauré(s), {1} fichier(s) ajouté(s) supprimé(s).</value></data>
+  <data name="Fixes_Revert_Failed" xml:space="preserve"><value>Impossible d'annuler le correctif</value></data>
+  <data name="Fixes_Revert_NoRecord" xml:space="preserve"><value>Aucune trace de l'application de ce correctif. Il a peut-être déjà été annulé.</value></data>
+  <data name="Fixes_Revert_Conflict" xml:space="preserve"><value>Impossible d'annuler ce correctif en toute sécurité</value></data>
+  <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>{0} a changé depuis l'application de ce correctif ; le restaurer écraserait ces modifications. Si vous avez appliqué un autre correctif par-dessus, annulez-le d'abord. {1} fichier(s) concerné(s).</value></data>
+  <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Correctif partiellement annulé</value></data>
+  <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>Impossible de restaurer {0} fichier(s). Fermez le jeu et réessayez.</value></data>
 </root>

@@ -559,4 +559,21 @@ Isso exclui os arquivos .lua de Steam\config\stplug-in. Reinicie o Steam depois 
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} foi mantido: outra ferramenta instalada ainda usa esse arquivo. Só o registro de instalacao foi removido.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Falha ao desinstalar: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Nao foi possivel usar o registro de instalacao: {0}</value></data>
+  <data name="Fixes_NotInstalled_Hint" xml:space="preserve"><value>Instale o jogo primeiro para aplicar um fix.</value></data>
+  <data name="Fixes_Applied_Hint" xml:space="preserve"><value>Esta correção já está aplicada. Reverta se quiser instalar outra.</value></data>
+  <data name="Fixes_MyGames" xml:space="preserve"><value>Meus jogos</value></data>
+  <data name="Fixes_MyGames_Count" xml:space="preserve"><value>{0} dos seus jogos têm correções. Role a grade para ver o restante.</value></data>
+  <data name="Fixes_MyGames_NotInstalled" xml:space="preserve"><value>Nenhum lua adicionado ainda. Adicione (ou instale) um jogo para vê-lo aqui.</value></data>
+  <data name="Fixes_Revert" xml:space="preserve"><value>Reverter</value></data>
+  <data name="Fixes_Revert_Cancel" xml:space="preserve"><value>Cancelar</value></data>
+  <data name="Fixes_Revert_Confirm_Body" xml:space="preserve"><value>Reverter "{0}"? Os arquivos modificados serão restaurados do backup e os arquivos adicionados pela correção serão excluídos.</value></data>
+  <data name="Fixes_Revert_Confirm_Title" xml:space="preserve"><value>Reverter a correção de {0}?</value></data>
+  <data name="Fixes_Revert_Done" xml:space="preserve"><value>Correção revertida</value></data>
+  <data name="Fixes_Revert_Done_Body" xml:space="preserve"><value>{0} restaurado(s), {1} arquivo(s) adicionado(s) removido(s).</value></data>
+  <data name="Fixes_Revert_Failed" xml:space="preserve"><value>Não foi possível reverter a correção</value></data>
+  <data name="Fixes_Revert_NoRecord" xml:space="preserve"><value>Não há registro desta correção ter sido aplicada. Pode já ter sido revertida.</value></data>
+  <data name="Fixes_Revert_Conflict" xml:space="preserve"><value>Não é possível reverter o fix com segurança</value></data>
+  <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>{0} mudou desde que este fix foi aplicado, então restaurá-lo sobrescreveria essas mudanças. Se você aplicou outro fix por cima, reverta aquele primeiro. {1} arquivo(s) afetado(s).</value></data>
+  <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Correção revertida parcialmente</value></data>
+  <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>Não foi possível restaurar {0} arquivo(s). Feche o jogo e tente novamente.</value></data>
 </root>

@@ -1,5 +1,89 @@
 # Changelog
 
+## 1.7.3 — 2026-09-09
+
+Porta os tres fixes da v1.3.1 do upstream. Dois eram bugs que o Amethyst herdou; o terceiro nunca existiu
+aqui e foi implementado ja com as correcoes que o upstream levou uma versao para descobrir.
+
+### Manifests eram escritos numa pasta que a Steam nao le
+
+`SteamService.DepotCacheDir` apontava para `<Steam>\config\depotcache`. A Steam le `<Steam>\depotcache` —
+irmao de `steamapps`, nao filho de `config`. A assimetria e real e nao e erro de digitacao: `stplug-in` fica
+sob `config` porque e do SteamTools; `depotcache` e da propria Steam.
+
+O efeito era silencioso e por isso sobreviveu tanto tempo: um manifest na pasta errada e invisivel para a
+Steam, entao o depot pinado resolve para nada e o download nunca comeca — sem erro em lugar nenhum. O lado
+de leitura estava igualmente errado, entao o app tinha cache hit em arquivos que a Steam nao enxerga e cache
+miss em arquivos que ela ja tinha.
+
+- Caminho de escrita corrigido; `LegacyDepotCacheDir` existe apenas como **fallback de leitura**, nunca de
+  escrita, para que manifests ainda nao migrados continuem contando como cacheados.
+- `DepotCacheMigrationService` move o que ficou preso, no startup. Silencioso, idempotente, nunca sobrescreve,
+  e so move arquivo cujos bytes batem com o nome que ele mesmo carrega — um manifest truncado que chegasse ao
+  depotcache real seria grudento, porque o instalador pula destino existente.
+- Sete testes fixavam o caminho errado. Eles codificavam o bug e foram corrigidos junto.
+
+### Fixes Denuvo podem ser desfeitos
+
+O Amethyst aplicava um fix extraindo o zip e nao registrava nada — sem backup, sem record, sem botao. Agora
+`DenuvoFixService` grava o que mudou, em quatro fases (planejar → gravar o record → aplicar → assentar os
+fatos), e o record e o que faz o botao Revert aparecer.
+
+- **Backup e chaveado pelo caminho relativo completo.** Zips de fix repetem o mesmo nome em pastas diferentes
+  (`steam_api64.dll`, `config.ini`); chavear por nome colapsaria os dois num unico `.bak`.
+- **Cada entrada guarda o SHA-256 do que o fix escreveu.** Se o arquivo em disco nao e mais aquele, o revert
+  para em vez de sobrescrever — pega fix empilhado, update do jogo e edicao manual, que nenhuma regra de
+  ordem pegaria.
+- **Uma saida, um toast.** Revert parcial (caso comum: arquivo travado com o jogo aberto) mantem backups e
+  record de proposito, para continuar re-tentavel.
+- **Mais restrito que o upstream:** deletar um arquivo `added` exige hash. `FileHash.Matches` responde "true"
+  para hash ausente ("nada a verificar"), o que num ramo que DELETA significa deletar sem verificar. Todo
+  record deste app tem hash, entao exigir custa nada e fecha o caso do record plantado por um zip.
+
+### Filtro "My games" na aba Fixes
+
+Mostra so os jogos com lua em `stplug-in`. A contagem no tooltip e a **intersecao** com o listing, nao o total
+da biblioteca — no upstream, 243 luas adicionadas anunciavam "243 jogos com fixes" enquanto a grade filtrada
+mostrava uma duzia.
+
+### Aviso sobre a mudanca da Steam
+
+Numa manutencao de setembro de 2026 a Steam fechou o metodo que clientes tipo SteamTools usavam para obter
+manifests de jogos **nao possuidos**. A saida e operacional, nao tecnica — usar fonte que entregue os
+manifests (Sadie/Hubcap ou Ryuu), desligar "Auto Update Apps (Don't Lock Manifests)", e re-adicionar o que
+tiver sido adicionado do jeito antigo. **O app nao consegue detectar nada disso**, entao ele fala.
+
+`Views/ManifestSourceNotice.xaml` — cartao estatico, sem view model, sem comando, sem rede, sem estado
+persistido. Aparece em duas telas: a Add, logo acima da lista de fontes (onde a escolha acontece), e o
+painel de depots do Builds (onde um manifest que nao pode ser obtido vira a falha que o usuario ve).
+
+- **Interruptor unico:** `AppConfig.ShowManifestSourceNotice`. Escrito como expressao condicional e nao
+  como `if` porque a constante e de tempo de compilacao e o corpo do `if` seria provadamente inalcancavel —
+  CS0162 e erro neste build.
+- **Sem `{Binding}`.** As duas paginas hospedeiras tem DataContexts que nao tem nada em comum; um binding
+  resolveria contra a pagina hospedeira e renderizaria vazio em pelo menos uma. Ha teste fixando isso.
+- **Nao dispensavel, de proposito.** Dispensar exigiria um campo em `AppSettings`, e todo campo novo tem de
+  entrar no predicado `empty` do `SaveCore` — ja apagou o `settings.json` duas vezes. Nao vale por um cartao.
+- **Ingles apenas, deliberadamente.** As quatro chaves `Notice_Manifests_*` estao em `PENDING_TRANSLATION`:
+  o texto e para ser deletado, e pagar 29 traducoes por algo efemero e a troca errada. Se continuar aqui em
+  alguns releases, a premissa estava errada e ele deve ser traduzido.
+- **Acessibilidade:** nao e focavel e nao contem nada focavel, entao nao insere tab stop antes dos controles
+  que ele encima; o `Border` carrega `AutomationProperties.Name`; o icone e decorativo e recebe nome vazio
+  em vez de ser anunciado sem rotulo; as cores saem de tokens de tema, entao segue o accent e as duas rampas.
+
+**Lista de fontes nao mudou no codigo.** "Luie" e "Sushi" foram desabilitadas pelos criadores do lado do
+servidor — `SourceMeta` aqui e so metadado de exibicao (nome, Discord, se exige chave), e a lista real vem
+da API. Nada a alterar.
+
+### Nao portado
+
+- **`AppliedFixIndexService`** — na v1.3.1 e write-only: esta no DI e o `ManifestJobFactory` chama `Add`/
+  `Remove`, mas nada chama `ListAsync`/`RebuildAsync`. Criaria `%AppData%\LuaToolsGui\applied-fixes.json`,
+  um registro persistente de tudo que o usuario corrigiu, por zero beneficio atual. O record por jogo e
+  autoritativo e basta.
+- **Fixes na fila unificada** — o revert do upstream mora no `ManifestJobFactory` porque la o Denuvo ja passa
+  pela fila. Aqui isso continua sendo a pendencia §1, uma migracao de agendamento e nao uma reescrita.
+
 ## 1.7.2 — 2026-09-02
 
 ### O accent chega aos controles do container central

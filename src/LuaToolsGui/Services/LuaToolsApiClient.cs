@@ -184,7 +184,7 @@ public class LuaToolsApiClient(
     }
 
     /// <summary>
-    /// Auth — one depot's <c>.manifest</c>, for a depot Steam's own <c>config\depotcache</c> doesn't have.
+    /// Auth — one depot's <c>.manifest</c>, for a depot Steam's own <c>depotcache</c> doesn't have.
     /// </summary>
     /// <remarks>
     /// <para>

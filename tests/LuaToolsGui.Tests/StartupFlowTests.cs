@@ -384,6 +384,11 @@ public class SteamPathResolutionTests : IDisposable
         settings.SteamPathOverride = install;
 
         steam.StPlugInDir.Should().Be(Path.Combine(install, "config", "stplug-in"));
-        steam.DepotCacheDir.Should().Be(Path.Combine(install, "config", "depotcache"));
+
+        // The asymmetry is the point, not a typo: stplug-in is under config (SteamTools' folder),
+        // depotcache is NOT (it is Steam's own, a sibling of steamapps). Writing manifests under config
+        // made them invisible to Steam and silently broke every pinned download.
+        steam.DepotCacheDir.Should().Be(Path.Combine(install, "depotcache"));
+        steam.LegacyDepotCacheDir.Should().Be(Path.Combine(install, "config", "depotcache"));
     }
 }

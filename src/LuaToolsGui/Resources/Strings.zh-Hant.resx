@@ -539,4 +539,21 @@
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>已保留 {0}：另一個已安裝的工具仍在使用它。僅移除了安裝記錄。</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>解除安裝失敗：{0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>無法使用安裝記錄：{0}</value></data>
+  <data name="Fixes_NotInstalled_Hint" xml:space="preserve"><value>請先安裝遊戲，才能套用修正。</value></data>
+  <data name="Fixes_Applied_Hint" xml:space="preserve"><value>此修復已套用。若要安裝其他修復，請先還原。</value></data>
+  <data name="Fixes_MyGames" xml:space="preserve"><value>我的遊戲</value></data>
+  <data name="Fixes_MyGames_Count" xml:space="preserve"><value>你的 {0} 款遊戲有可用修復。捲動清單可瀏覽其餘內容。</value></data>
+  <data name="Fixes_MyGames_NotInstalled" xml:space="preserve"><value>尚未新增 lua，新增或安裝一款遊戲後會顯示在這裡。</value></data>
+  <data name="Fixes_Revert" xml:space="preserve"><value>還原</value></data>
+  <data name="Fixes_Revert_Cancel" xml:space="preserve"><value>取消</value></data>
+  <data name="Fixes_Revert_Confirm_Body" xml:space="preserve"><value>要還原「{0}」嗎？修改過的檔案將從備份復原，修復新增的檔案將被刪除。</value></data>
+  <data name="Fixes_Revert_Confirm_Title" xml:space="preserve"><value>還原 {0} 的修復？</value></data>
+  <data name="Fixes_Revert_Done" xml:space="preserve"><value>修復已還原</value></data>
+  <data name="Fixes_Revert_Done_Body" xml:space="preserve"><value>已復原 {0} 個，已刪除 {1} 個新增檔案。</value></data>
+  <data name="Fixes_Revert_Failed" xml:space="preserve"><value>無法還原修復</value></data>
+  <data name="Fixes_Revert_NoRecord" xml:space="preserve"><value>沒有套用此修復的紀錄，可能已經還原過了。</value></data>
+  <data name="Fixes_Revert_Conflict" xml:space="preserve"><value>無法安全還原此修復</value></data>
+  <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>自套用此修復以來，{0} 已被變更，還原會覆寫這些變更。如果你在其上套用了另一個修復，請先還原那一個。共影響 {1} 個檔案。</value></data>
+  <data name="Fixes_Revert_Partial" xml:space="preserve"><value>修復部分還原</value></data>
+  <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>有 {0} 個檔案無法復原。請關閉遊戲後重試。</value></data>
 </root>

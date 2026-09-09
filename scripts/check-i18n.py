@@ -45,6 +45,14 @@ SAMPLE_SIZE = 10
 # parity. Anything left here is untranslated in all 29 languages, with one stated exception noted
 # against the plugin-source group at the bottom.
 PENDING_TRANSLATION: frozenset[str] = frozenset({
+    # In-app notice about Steam's 2026-09 change to how depot manifests are obtained. Deliberately
+    # English-only for now: the guidance is expected to be SHORT-LIVED (see
+    # AppConfig.ShowManifestSourceNotice), and paying for 29 translations of text meant to be deleted is
+    # the wrong trade. If it is still here in a few releases, that assumption was wrong — translate it.
+    "Notice_Manifests_Title",
+    "Notice_Manifests_Source",
+    "Notice_Manifests_Lock",
+    "Notice_Manifests_Retry",
     # Added by the security pass that replaced hardcoded English literals in AuthService with real
     # resource keys. They are localizable now (they weren't before) but not yet translated — clear
     # these two from the list as soon as the translations land.

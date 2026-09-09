@@ -539,4 +539,21 @@ Questo elimina i file .lua da Steam\config\stplug-in. Riavvia Steam in seguito a
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} è stato mantenuto: un altro strumento installato lo usa ancora. È stato rimosso solo il record di installazione.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Disinstallazione non riuscita: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Non è stato possibile usare il record di installazione: {0}</value></data>
+  <data name="Fixes_NotInstalled_Hint" xml:space="preserve"><value>Installa prima il gioco per applicare un fix.</value></data>
+  <data name="Fixes_Applied_Hint" xml:space="preserve"><value>Questa fix è già applicata. Annullala se vuoi installarne un'altra.</value></data>
+  <data name="Fixes_MyGames" xml:space="preserve"><value>I miei giochi</value></data>
+  <data name="Fixes_MyGames_Count" xml:space="preserve"><value>{0} dei tuoi giochi hanno fix. Scorri la griglia per vedere gli altri.</value></data>
+  <data name="Fixes_MyGames_NotInstalled" xml:space="preserve"><value>Nessun lua aggiunto finora. Aggiungi (o installa) un gioco per vederlo qui.</value></data>
+  <data name="Fixes_Revert" xml:space="preserve"><value>Annulla fix</value></data>
+  <data name="Fixes_Revert_Cancel" xml:space="preserve"><value>Annulla</value></data>
+  <data name="Fixes_Revert_Confirm_Body" xml:space="preserve"><value>Annullare "{0}"? I file modificati verranno ripristinati dal backup e i file aggiunti dalla fix verranno eliminati.</value></data>
+  <data name="Fixes_Revert_Confirm_Title" xml:space="preserve"><value>Annullare la fix di {0}?</value></data>
+  <data name="Fixes_Revert_Done" xml:space="preserve"><value>Fix annullata</value></data>
+  <data name="Fixes_Revert_Done_Body" xml:space="preserve"><value>{0} ripristinati, {1} file aggiunti rimossi.</value></data>
+  <data name="Fixes_Revert_Failed" xml:space="preserve"><value>Impossibile annullare la fix</value></data>
+  <data name="Fixes_Revert_NoRecord" xml:space="preserve"><value>Nessuna traccia dell'applicazione di questa fix. Potrebbe essere già stata annullata.</value></data>
+  <data name="Fixes_Revert_Conflict" xml:space="preserve"><value>Impossibile ripristinare il fix in sicurezza</value></data>
+  <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>{0} è cambiato da quando questo fix è stato applicato, quindi ripristinarlo sovrascriverebbe quelle modifiche. Se hai applicato un altro fix sopra, ripristina prima quello. {1} file interessati.</value></data>
+  <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Fix annullata parzialmente</value></data>
+  <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>Impossibile ripristinare {0} file. Chiudi il gioco e riprova.</value></data>
 </root>

@@ -51,7 +51,7 @@ public class DepotDownloaderServiceTests : IDisposable
     {
         string root = Path.Combine(_dir, "steam");
         Directory.CreateDirectory(Path.Combine(root, "config", "stplug-in"));
-        Directory.CreateDirectory(Path.Combine(root, "config", "depotcache"));
+        Directory.CreateDirectory(Path.Combine(root, "depotcache"));
         return root;
     }
 
@@ -405,7 +405,7 @@ public class DepotDownloaderServiceTests : IDisposable
     public void Resolves_a_cached_manifest_whose_content_matches_its_name()
     {
         string root = NewSteamRoot();
-        string path = Path.Combine(root, "config", "depotcache", "1001_555.manifest");
+        string path = Path.Combine(root, "depotcache", "1001_555.manifest");
         File.WriteAllBytes(path, TestManifests.Build(depotId: 1001, gid: 555));
 
         NewService(root).ResolveManifestPath(1001, "555").Should().Be(path);
@@ -418,7 +418,7 @@ public class DepotDownloaderServiceTests : IDisposable
         // it as a cache MISS is what lets the fetch path repair it; trusting it would fail every run.
         string root = NewSteamRoot();
         byte[] full = TestManifests.Build(depotId: 1001, gid: 555);
-        File.WriteAllBytes(Path.Combine(root, "config", "depotcache", "1001_555.manifest"), full[..8]);
+        File.WriteAllBytes(Path.Combine(root, "depotcache", "1001_555.manifest"), full[..8]);
 
         NewService(root).ResolveManifestPath(1001, "555").Should().BeNull();
     }
@@ -427,7 +427,7 @@ public class DepotDownloaderServiceTests : IDisposable
     public void Refuses_a_manifest_whose_content_belongs_to_another_depot()
     {
         string root = NewSteamRoot();
-        File.WriteAllBytes(Path.Combine(root, "config", "depotcache", "1001_555.manifest"),
+        File.WriteAllBytes(Path.Combine(root, "depotcache", "1001_555.manifest"),
             TestManifests.Build(depotId: 9999, gid: 555));
 
         NewService(root).ResolveManifestPath(1001, "555").Should().BeNull();
@@ -443,7 +443,7 @@ public class DepotDownloaderServiceTests : IDisposable
         // Mandatory before re-fetching: InstallManifestFile skips an existing destination, so a corrupt
         // entry would survive the fetch and fail again on every attempt.
         string root = NewSteamRoot();
-        string path = Path.Combine(root, "config", "depotcache", "1001_555.manifest");
+        string path = Path.Combine(root, "depotcache", "1001_555.manifest");
         File.WriteAllBytes(path, [1, 2, 3]);
 
         var service = NewService(root);

@@ -362,6 +362,23 @@ public static class Strings
     public static string Fixes_Toast_CouldntApply => Get(nameof(Fixes_Toast_CouldntApply));
     public static string Fixes_Toast_Refreshed_Title => Get(nameof(Fixes_Toast_Refreshed_Title));
     public static string Fixes_Toast_Refreshed_Body => Get(nameof(Fixes_Toast_Refreshed_Body));
+    public static string Fixes_NotInstalled_Hint => Get(nameof(Fixes_NotInstalled_Hint));
+    public static string Fixes_Applied_Hint => Get(nameof(Fixes_Applied_Hint));
+    public static string Fixes_MyGames => Get(nameof(Fixes_MyGames));
+    public static string Fixes_MyGames_Count => Get(nameof(Fixes_MyGames_Count));
+    public static string Fixes_MyGames_NotInstalled => Get(nameof(Fixes_MyGames_NotInstalled));
+    public static string Fixes_Revert => Get(nameof(Fixes_Revert));
+    public static string Fixes_Revert_Cancel => Get(nameof(Fixes_Revert_Cancel));
+    public static string Fixes_Revert_Confirm_Title => Get(nameof(Fixes_Revert_Confirm_Title));
+    public static string Fixes_Revert_Confirm_Body => Get(nameof(Fixes_Revert_Confirm_Body));
+    public static string Fixes_Revert_Done => Get(nameof(Fixes_Revert_Done));
+    public static string Fixes_Revert_Done_Body => Get(nameof(Fixes_Revert_Done_Body));
+    public static string Fixes_Revert_Failed => Get(nameof(Fixes_Revert_Failed));
+    public static string Fixes_Revert_NoRecord => Get(nameof(Fixes_Revert_NoRecord));
+    public static string Fixes_Revert_Conflict => Get(nameof(Fixes_Revert_Conflict));
+    public static string Fixes_Revert_Conflict_Body => Get(nameof(Fixes_Revert_Conflict_Body));
+    public static string Fixes_Revert_Partial => Get(nameof(Fixes_Revert_Partial));
+    public static string Fixes_Revert_Partial_Body => Get(nameof(Fixes_Revert_Partial_Body));
 
     // ── Add / Download ──
     public static string Add_Title => Get(nameof(Add_Title));
@@ -403,6 +420,12 @@ public static class Strings
     public static string Add_Status_AddedFetch => Get(nameof(Add_Status_AddedFetch));
     public static string Add_FastFetch => Get(nameof(Add_FastFetch));
     public static string Add_FastFetch_Hint => Get(nameof(Add_FastFetch_Hint));
+
+    // ── Steam manifest-fetch notice (temporary; see AppConfig.ShowManifestSourceNotice) ──
+    public static string Notice_Manifests_Title => Get(nameof(Notice_Manifests_Title));
+    public static string Notice_Manifests_Source => Get(nameof(Notice_Manifests_Source));
+    public static string Notice_Manifests_Lock => Get(nameof(Notice_Manifests_Lock));
+    public static string Notice_Manifests_Retry => Get(nameof(Notice_Manifests_Retry));
     public static string Add_FastFetch_NoSource => Get(nameof(Add_FastFetch_NoSource));
     public static string Add_FastFetch_Via => Get(nameof(Add_FastFetch_Via));
 

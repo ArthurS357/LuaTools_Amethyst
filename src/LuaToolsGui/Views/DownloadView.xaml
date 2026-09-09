@@ -422,6 +422,11 @@
                 </Grid>
             </Border>
 
+            <!-- How manifests have to be fetched since Steam's 2026-09 change. Sits directly above the
+                 source list because that is where the choice it is about gets made. One line to remove;
+                 see AppConfig.ShowManifestSourceNotice. -->
+            <views:ManifestSourceNotice Margin="0,12,0,0" />
+
             <!-- Manifest sources -->
             <ItemsControl
                 Margin="0,12,0,0"

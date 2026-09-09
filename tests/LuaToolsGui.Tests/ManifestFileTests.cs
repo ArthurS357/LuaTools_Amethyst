@@ -15,7 +15,7 @@ namespace LuaToolsGui.Tests;
 /// <para>
 /// Two different contracts live here and they pull in opposite directions, so the tests state both
 /// explicitly. <see cref="ManifestFile.IsSteamManifest"/> and <see cref="ManifestFile.Matches"/> are
-/// FAIL-CLOSED: they gate what reaches <c>config\depotcache</c>, where a bad file is sticky.
+/// FAIL-CLOSED: they gate what reaches <c>depotcache</c>, where a bad file is sticky.
 /// <see cref="ManifestFile.KeyLooksValid"/> is FAIL-OPEN by design: it gates nothing, only the quality of
 /// an error message, and returning false on an unreadable file would reject every download.
 /// </para>

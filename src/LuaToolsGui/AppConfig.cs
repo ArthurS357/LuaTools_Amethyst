@@ -21,6 +21,31 @@ public static class AppConfig
     // (no lua.tools proxy). Key + stats are managed in Settings; key-gated source downloads hit it.
     public const string HubcapBaseUrl = "https://hubcapmanifest.com";
 
+    /// <summary>
+    /// Shows the in-app notice about how depot manifests have to be fetched since Steam's 2026-09
+    /// change. Set to <see langword="false"/> to hide it everywhere at once.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>This is temporary and meant to be turned off.</b> In a Steam maintenance window in early
+    /// September 2026, the method SteamTools-style clients used to obtain manifests for games the user
+    /// does NOT own stopped working. The practical consequence is a workflow change, not a code change:
+    /// pick a source that ships manifests, keep the lua version-pinned, and re-add anything that was
+    /// added the old way. The app cannot detect any of that, so it says it.
+    /// </para>
+    /// <para>
+    /// <b>When to remove:</b> as soon as the situation changes — a source list where the advice no longer
+    /// applies, or a working method that needs no user action. Flip this to <see langword="false"/> for a
+    /// quick disable; to delete it properly, drop <c>Views/ManifestSourceNotice.xaml</c>, its two usages
+    /// (<c>DownloadView</c> and <c>BuildsView</c>), and the four <c>Notice_Manifests_*</c> resource keys.
+    /// A stale warning is worse than none: it teaches people to ignore the ones that matter.
+    /// </para>
+    /// <para>
+    /// Purely static text. It reads no network, checks no state and records nothing.
+    /// </para>
+    /// </remarks>
+    public const bool ShowManifestSourceNotice = true;
+
     /// <summary>Must be registered in Supabase Auth → Redirect URLs.</summary>
     public const int OAuthCallbackPort = 53789;
     public const string OAuthCallbackUrl = "http://localhost:53789/callback";

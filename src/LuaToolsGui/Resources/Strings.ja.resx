@@ -539,4 +539,21 @@
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} は残しました: インストール済みの別のツールがまだ使用しています。インストール記録のみ削除しました。</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>アンインストールに失敗しました: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>インストール記録を使用できませんでした: {0}</value></data>
+  <data name="Fixes_NotInstalled_Hint" xml:space="preserve"><value>修正を適用するには、先にゲームをインストールしてください。</value></data>
+  <data name="Fixes_Applied_Hint" xml:space="preserve"><value>この修正は適用済みです。別のものを入れるには元に戻してください。</value></data>
+  <data name="Fixes_MyGames" xml:space="preserve"><value>マイゲーム</value></data>
+  <data name="Fixes_MyGames_Count" xml:space="preserve"><value>あなたのゲームのうち {0} 本に修正があります。ほかはグリッドをスクロールしてご覧ください。</value></data>
+  <data name="Fixes_MyGames_NotInstalled" xml:space="preserve"><value>lua がまだありません。ゲームを追加（またはインストール）すると表示されます。</value></data>
+  <data name="Fixes_Revert" xml:space="preserve"><value>元に戻す</value></data>
+  <data name="Fixes_Revert_Cancel" xml:space="preserve"><value>キャンセル</value></data>
+  <data name="Fixes_Revert_Confirm_Body" xml:space="preserve"><value>「{0}」を元に戻しますか？変更されたファイルはバックアップから復元され、修正が追加したファイルは削除されます。</value></data>
+  <data name="Fixes_Revert_Confirm_Title" xml:space="preserve"><value>{0} の修正を元に戻しますか？</value></data>
+  <data name="Fixes_Revert_Done" xml:space="preserve"><value>修正を元に戻しました</value></data>
+  <data name="Fixes_Revert_Done_Body" xml:space="preserve"><value>{0} 件を復元し、追加された {1} 件を削除しました。</value></data>
+  <data name="Fixes_Revert_Failed" xml:space="preserve"><value>修正を元に戻せませんでした</value></data>
+  <data name="Fixes_Revert_NoRecord" xml:space="preserve"><value>この修正を適用した記録がありません。すでに元に戻されている可能性があります。</value></data>
+  <data name="Fixes_Revert_Conflict" xml:space="preserve"><value>修正を安全に元に戻せません</value></data>
+  <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>この修正の適用後に {0} が変更されているため、復元するとその変更が上書きされます。別の修正を上に適用した場合は、先にそちらを元に戻してください。対象は {1} 個のファイルです。</value></data>
+  <data name="Fixes_Revert_Partial" xml:space="preserve"><value>修正は一部だけ元に戻りました</value></data>
+  <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} 個のファイルを復元できませんでした。ゲームを閉じてやり直してください。</value></data>
 </root>

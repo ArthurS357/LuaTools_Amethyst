@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
 using System.IO;
-using System.IO.Compression;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LuaToolsGui.Models;
@@ -61,6 +60,29 @@ public partial class FixItemVm(DenuvoFix f) : ObservableObject
     public string? FixFilename { get; } = f.FixFilename;
     public string DateLabel { get; } = FormatDate(f.CreatedAt);
 
+    /// <summary>
+    /// Whether the game is installed on disk. Only the FIX slot cares: it extracts a zip into the game
+    /// folder, so with no folder there is nothing to apply. The MANIFEST slot installs a lua and works
+    /// whether or not the game is installed.
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanDownloadFix), nameof(FixHint))]
+    private bool _gameInstalled;
+
+    /// <summary>True when the fix has been applied (its revert record exists on disk). Drives Revert.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanDownloadFix), nameof(FixHint))]
+    private bool _isApplied;
+
+    public bool CanDownloadFix => HasFix && GameInstalled && !IsApplied;
+
+    /// <summary>Why the Fix button is greyed out, or null when it isn't. A null ToolTip shows nothing,
+    /// so this doubles as the "should there be a tooltip at all" test.</summary>
+    public string? FixHint =>
+        IsApplied ? Resources.Strings.Fixes_Applied_Hint
+        : GameInstalled ? null
+        : Resources.Strings.Fixes_NotInstalled_Hint;
+
     private static string FormatDate(string? iso) =>
         DateTimeOffset.TryParse(iso, out var d) ? d.UtcDateTime.ToString("d MMM yyyy") : "";
 }
@@ -80,10 +102,12 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
     private readonly CoverCache covers;
     private readonly ToastService toast;
     private readonly SettingsService settings;
+    private readonly DenuvoFixService fixes;
 
     public FixesViewModel(
         LuaToolsApiClient api, AuthService auth, LuaInstaller installer, SteamService steam,
-        SteamLibraryService library, CoverCache covers, ToastService toast, SettingsService settings)
+        SteamLibraryService library, CoverCache covers, ToastService toast, SettingsService settings,
+        DenuvoFixService fixes)
     {
         this.api = api;
         this.auth = auth;
@@ -93,6 +117,7 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
         this.covers = covers;
         this.toast = toast;
         this.settings = settings;
+        this.fixes = fixes;
         InitPageSize(settings.FixesPageSize);
     }
 
@@ -118,6 +143,54 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
     partial void OnSearchTextChanged(string value) => ApplyFilter();
 
     [ObservableProperty] private string? _selectedTagId; // null = "All"
+
+    // Appids with a lua in Steam's config/stplug-in ("my games"), so the page can filter the fix
+    // listing down to games the user actually added. Empty when Steam isn't set up / no luas installed.
+    private HashSet<long> _installedAppIds = [];
+
+    /// <summary>True once the listing has been fetched (set at the end of LoadAsync).</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanFilter))]
+    private bool _loaded;
+
+    /// <summary>Gates the filter pills ("my games" + tags) behind a finished, non-empty listing.</summary>
+    public bool CanFilter => Loaded && _allGames.Count > 0;
+
+    /// <summary>Only show fix games the user has added (a lua in stplug-in). Mirrors Manage's "my games".</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(MyGamesHint))]
+    private bool _myGamesOnly;
+
+    /// <summary>
+    /// How many of the user's added games actually appear in the fix listing.
+    /// </summary>
+    /// <remarks>
+    /// The count must be the INTERSECTION, not <c>_installedAppIds.Count</c>. The string reads "{0} of
+    /// your games have fixes", but the raw count is every game with a lua added — so a library with 243
+    /// added games advertised 243 fixes while the filtered grid showed a dozen. This mirrors exactly what
+    /// <see cref="ApplyFilter"/> puts on screen when My games is on.
+    /// </remarks>
+    public string MyGamesHint
+    {
+        get
+        {
+            if (_installedAppIds.Count == 0) return Resources.Strings.Fixes_MyGames_NotInstalled;
+
+            int withFixes = _allGames.Count(g =>
+                long.TryParse(g.AppId, out long id) && _installedAppIds.Contains(id));
+            return string.Format(Resources.Strings.Fixes_MyGames_Count, withFixes);
+        }
+    }
+
+    partial void OnMyGamesOnlyChanged(bool value)
+    {
+        if (value)
+        {
+            SelectedTagId = null; // one filter at a time — turning "my games" on drops any tag
+            foreach (var pill in Tags) pill.IsSelected = false;
+        }
+        ApplyFilter();
+    }
 
     // ── Detail flyout ───────────────────────────────────────────────
     [ObservableProperty]
@@ -164,6 +237,14 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
             _allGames = data.Games.Select(g => new FixGameCardVm(g)).ToList();
             Tags.Clear();
             foreach (var t in data.Tags) Tags.Add(new TagPillVm(t));
+
+            // "My games" filter source: the same stplug-in scan the Manage page uses, so the toggle
+            // shows only games the user actually added. Scanned once per listing load, off the UI thread.
+            _installedAppIds = steam.StPlugInDir is { } dir
+                ? await Task.Run(() => LuaInstaller.EnumerateInstalled(dir).Select(i => i.AppId).ToHashSet())
+                : [];
+            OnPropertyChanged(nameof(MyGamesHint));
+
             ApplyFilter();
             if (_allGames.Count == 0) EmptyMessage = Resources.Strings.Fixes_Empty_None;
         }
@@ -174,6 +255,7 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
         finally
         {
             IsLoading = false;
+            Loaded = true; // gates the filter pills: they appear only once the listing settled
         }
     }
 
@@ -182,6 +264,7 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
     {
         if (SearchText.Length > 0) SearchText = ""; // reset filter → full list visible
         if (SelectedTagId is not null) SelectTag(SelectedTagId); // clear active tag (toggles off)
+        if (MyGamesOnly) MyGamesOnly = false; // ditto for the "my games" filter
         await LoadAsync(force: true);
         toast.Show(Resources.Strings.Fixes_Toast_Refreshed_Title,
             string.Format(Resources.Strings.Fixes_Toast_Refreshed_Body, _allGames.Count));
@@ -191,6 +274,7 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
     private void SelectTag(string? tagId)
     {
         SelectedTagId = SelectedTagId == tagId ? null : tagId; // toggle off when re-clicked
+        if (MyGamesOnly) MyGamesOnly = false; // one filter at a time — picking a tag drops "my games"
         foreach (var pill in Tags) pill.IsSelected = pill.Id == SelectedTagId;
         ApplyFilter();
     }
@@ -200,6 +284,7 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
         string q = SearchText.Trim();
         IEnumerable<FixGameCardVm> shown = _allGames;
         if (SelectedTagId is { } tag) shown = shown.Where(g => g.TagIds.Contains(tag));
+        if (MyGamesOnly) shown = shown.Where(g => long.TryParse(g.AppId, out long id) && _installedAppIds.Contains(id));
         if (q.Length > 0) shown = shown.Where(g => g.Matches(q));
 
         // Hand the filtered list to the base — it slices the visible page and (via OnPageSliced) warms
@@ -245,6 +330,18 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
             if (data is not null)
             {
                 _allFixes = data.Fixes.Select(f => new FixItemVm(f)).ToList();
+
+                // Is the game on disk? GetInstallDir walks libraryfolders.vdf + appmanifest_*.acf, so it
+                // is file I/O — off the UI thread. Resolved once here rather than per fix row.
+                string? installDir = long.TryParse(game.AppId, out long gameAppId)
+                    ? await Task.Run(() => library.GetInstallDir(gameAppId))
+                    : null;
+                foreach (var f in _allFixes)
+                {
+                    f.GameInstalled = installDir is not null;
+                    // Whether this specific fix has been applied (its revert record on disk).
+                    f.IsApplied = DenuvoFixService.IsApplied(installDir, f.Id);
+                }
 
                 // Build the per-game filter pills from the distinct tags across this game's fixes —
                 // but only when there's more than one (a single tag is no filter).
@@ -316,7 +413,7 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
             if (slot == "manifest")
                 InstallManifest(file, appId, game.Name);
             else
-                ApplyFix(file, appId, game.Name);
+                ApplyFix(file, appId, fix, game.Name);
         }
         catch (ApiException ex)
         {
@@ -363,7 +460,12 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
     }
 
     /// <summary>Fix slot: only applicable if the game is installed — extract the zip into its folder.</summary>
-    private void ApplyFix(DownloadedFile file, long appId, string gameName)
+    /// <remarks>
+    /// The extract itself lives in <see cref="DenuvoFixService"/>, which also writes the revert record
+    /// that makes the fix undoable. This method stays the security gate (screening) and the single toast
+    /// emitter for the action — one outcome, one toast.
+    /// </remarks>
+    private void ApplyFix(DownloadedFile file, long appId, FixItemVm fix, string gameName)
     {
         string? installDir = library.GetInstallDir(appId);
         if (installDir is null)
@@ -377,51 +479,117 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
 
         try
         {
-            // Extract into the game folder (overwrite existing files). Best-effort per entry.
-            using var archive = ZipFile.OpenRead(file.FilePath);
-            int failed = 0;
-            int refused = 0;
-            foreach (var entry in archive.Entries)
+            var result = fixes.Apply(file.FilePath, appId, fix.Id, installDir);
+
+            switch (result.Outcome)
             {
-                if (string.IsNullOrEmpty(entry.Name)) continue; // directory entry
+                case FixApplyOutcome.Applied:
+                    toast.Show(Resources.Strings.Fixes_Toast_FixApplied,
+                        string.Format(Resources.Strings.Fixes_Toast_FixApplied_Body, gameName));
+                    break;
 
-                // Containment is re-checked per entry rather than trusted from the analysis above. This
-                // used to be `Path.Combine(installDir, entry.FullName)` with no check at all, which is
-                // zip-slip: Path.Combine returns the second argument outright when it is rooted, so an
-                // entry named "C:\Windows\System32\x.dll" wrote there, and "..\..\" traversed out of the
-                // game folder. Keeping the check HERE as well as in the analyzer means the write path is
-                // safe on its own, and cannot be re-opened by someone later calling it without screening.
-                if (!FixAnalyzer.IsContained(installDir, entry.FullName, out string dest))
-                {
-                    AppLog.Log($"fix apply: refused entry outside the game folder — {entry.FullName}");
-                    refused++;
-                    continue;
-                }
+                case FixApplyOutcome.PartiallyApplied:
+                    toast.Show(Resources.Strings.Fixes_Toast_PartiallyApplied,
+                        string.Format(Resources.Strings.Fixes_Toast_PartiallyApplied_Body, result.Failed),
+                        error: true);
+                    break;
 
-                try
-                {
-                    Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
-                    entry.ExtractToFile(dest, overwrite: true);
-                }
-                catch { failed++; }
+                default: // RecordFailed / Failed — nothing was applied
+                    toast.Show(Resources.Strings.Fixes_Toast_CouldntApply,
+                        result.Error ?? Resources.Strings.Fixes_Toast_InstallFailed_Body, error: true);
+                    break;
             }
-            failed += refused;
 
-            if (failed > 0)
-                toast.Show(Resources.Strings.Fixes_Toast_PartiallyApplied,
-                    string.Format(Resources.Strings.Fixes_Toast_PartiallyApplied_Body, failed), error: true);
-            else
-                toast.Show(Resources.Strings.Fixes_Toast_FixApplied, string.Format(Resources.Strings.Fixes_Toast_FixApplied_Body, gameName));
-        }
-        catch (Exception ex)
-        {
-            toast.Show(Resources.Strings.Fixes_Toast_CouldntApply, ex.Message, error: true);
+            // A partial apply still backed files up and still wrote a record, so it IS applied and MUST be
+            // revertable — offer Revert for both, and only for those.
+            if (result.Outcome is FixApplyOutcome.Applied or FixApplyOutcome.PartiallyApplied)
+                fix.IsApplied = true;
         }
         finally
         {
-            DeleteStaged(file.FilePath); // archive is disposed by now — drop the temp staging copy
+            DeleteStaged(file.FilePath); // the service is done with it — drop the temp staging copy
         }
     }
+
+    // ── Revert ───────────────────────────────────────────────────────
+
+    /// <summary>Ask first, then revert. Reverting rewrites files inside the user's game folder.</summary>
+    [RelayCommand]
+    private void RevertFix(FixItemVm fix)
+    {
+        if (SelectedGame is not { } game) return;
+        _pendingRevert = (fix, game);
+        ConfirmRevertTitle = string.Format(Resources.Strings.Fixes_Revert_Confirm_Title, game.Name);
+        ConfirmRevertBody = string.Format(Resources.Strings.Fixes_Revert_Confirm_Body, game.Name);
+        IsConfirmingRevert = true;
+    }
+
+    [RelayCommand]
+    private void CancelRevertConfirm()
+    {
+        IsConfirmingRevert = false;
+        _pendingRevert = null;
+    }
+
+    [RelayCommand]
+    private async Task ConfirmRevert()
+    {
+        IsConfirmingRevert = false;
+        var pending = _pendingRevert;
+        _pendingRevert = null;
+        if (pending is not (var fix, var game)) return;
+        if (!long.TryParse(game.AppId, out long appId)) return;
+
+        string? installDir = await Task.Run(() => library.GetInstallDir(appId));
+        if (installDir is null)
+        {
+            toast.Show(Resources.Strings.Fixes_Toast_GameNotFound,
+                string.Format(Resources.Strings.Fixes_Toast_GameNotFound_Body, game.Name), error: true);
+            return;
+        }
+
+        var result = await Task.Run(() => fixes.Revert(fix.Id, installDir));
+
+        // Exactly one toast per outcome. The view model used to be able to add a second on failure, which
+        // made every partial revert — the common case, from a locked file while the game is running —
+        // fire twice for a single action.
+        switch (result.Outcome)
+        {
+            case FixRevertOutcome.Done:
+                toast.Show(Resources.Strings.Fixes_Revert_Done,
+                    string.Format(Resources.Strings.Fixes_Revert_Done_Body, result.Restored, result.Deleted));
+                fix.IsApplied = false;
+                break;
+
+            case FixRevertOutcome.Conflict:
+                toast.Show(Resources.Strings.Fixes_Revert_Conflict,
+                    string.Format(Resources.Strings.Fixes_Revert_Conflict_Body, result.ConflictFile, result.Conflicts),
+                    error: true);
+                break;
+
+            case FixRevertOutcome.Partial:
+                toast.Show(Resources.Strings.Fixes_Revert_Partial,
+                    string.Format(Resources.Strings.Fixes_Revert_Partial_Body, result.Errors), error: true);
+                break;
+
+            case FixRevertOutcome.NoRecord:
+                toast.Show(Resources.Strings.Fixes_Revert_Failed,
+                    Resources.Strings.Fixes_Revert_NoRecord, error: true);
+                // Nothing to revert, so the button should stop offering it.
+                fix.IsApplied = false;
+                break;
+
+            default: // Failed
+                toast.Show(Resources.Strings.Fixes_Revert_Failed,
+                    result.Error ?? Resources.Strings.Fixes_Revert_NoRecord, error: true);
+                break;
+        }
+    }
+
+    private (FixItemVm Fix, FixGameCardVm Game)? _pendingRevert;
+    [ObservableProperty] private bool _isConfirmingRevert;
+    [ObservableProperty] private string _confirmRevertTitle = "";
+    [ObservableProperty] private string _confirmRevertBody = "";
 
     /// <summary>
     /// Run <see cref="FixAnalyzer"/> over a staged download and decide whether to proceed.

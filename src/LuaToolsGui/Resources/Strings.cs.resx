@@ -539,4 +539,21 @@ Tím se smažou soubory .lua ze Steam\config\stplug-in. Poté restartujte Steam,
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} byl ponechán: jiný nainstalovaný nástroj jej stále používá. Odstraněn byl jen záznam o instalaci.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Odinstalace selhala: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Záznam o instalaci nebylo možné použít: {0}</value></data>
+  <data name="Fixes_NotInstalled_Hint" xml:space="preserve"><value>Nejdřív nainstaluj hru, abys mohl použít fix.</value></data>
+  <data name="Fixes_Applied_Hint" xml:space="preserve"><value>Tato oprava je již použita. Vraťte ji zpět, pokud chcete nainstalovat jinou.</value></data>
+  <data name="Fixes_MyGames" xml:space="preserve"><value>Moje hry</value></data>
+  <data name="Fixes_MyGames_Count" xml:space="preserve"><value>{0} z vašich her má opravy. Zbytek zobrazíte posunutím seznamu.</value></data>
+  <data name="Fixes_MyGames_NotInstalled" xml:space="preserve"><value>Zatím nebyly přidány žádné soubory lua. Přidejte (nebo nainstalujte) hru, aby se zde zobrazila.</value></data>
+  <data name="Fixes_Revert" xml:space="preserve"><value>Vrátit zpět</value></data>
+  <data name="Fixes_Revert_Cancel" xml:space="preserve"><value>Zrušit</value></data>
+  <data name="Fixes_Revert_Confirm_Body" xml:space="preserve"><value>Vrátit zpět „{0}“? Změněné soubory budou obnoveny ze zálohy a soubory přidané opravou budou smazány.</value></data>
+  <data name="Fixes_Revert_Confirm_Title" xml:space="preserve"><value>Vrátit zpět opravu pro {0}?</value></data>
+  <data name="Fixes_Revert_Done" xml:space="preserve"><value>Oprava vrácena zpět</value></data>
+  <data name="Fixes_Revert_Done_Body" xml:space="preserve"><value>Obnoveno {0}, odstraněno {1} přidaných souborů.</value></data>
+  <data name="Fixes_Revert_Failed" xml:space="preserve"><value>Opravu se nepodařilo vrátit zpět</value></data>
+  <data name="Fixes_Revert_NoRecord" xml:space="preserve"><value>O použití této opravy neexistuje záznam. Možná už byla vrácena zpět.</value></data>
+  <data name="Fixes_Revert_Conflict" xml:space="preserve"><value>Opravu nelze bezpečně vrátit</value></data>
+  <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>Soubor {0} se od použití této opravy změnil, takže obnovení by tyto změny přepsalo. Pokud jste navrch použili jinou opravu, vraťte nejprve ji. Dotčeno {1} souborů.</value></data>
+  <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Oprava vrácena zpět částečně</value></data>
+  <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} soubor(ů) se nepodařilo obnovit. Zavřete hru a zkuste to znovu.</value></data>
 </root>

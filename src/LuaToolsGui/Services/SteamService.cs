@@ -72,8 +72,32 @@ public class SteamService(SettingsService settings)
     public string? StPlugInDir =>
         EffectivePath is { } p ? Path.Combine(p, "config", "stplug-in") : null;
 
-    /// <summary>Full path to config\depotcache (where .manifest files go), or null if Steam isn't located.</summary>
+    /// <summary>
+    /// Full path to depotcache (where .manifest files go), or null if Steam isn't located.
+    /// </summary>
+    /// <remarks>
+    /// This is <c>&lt;Steam&gt;\depotcache</c>, a SIBLING of steamapps — NOT <c>config\depotcache</c>.
+    /// Only stplug-in lives under config; that folder is SteamTools'. depotcache is Steam's own, and
+    /// Steam builds the path as <c>%s/depotcache/%d_%llu.manifest</c> off the install root (the literal
+    /// is in steamclient64.dll, listed beside /common, /downloading, /temp and /workshop).
+    ///
+    /// This was wrong until 1.7.3 and it silently broke downloads: a manifest written to
+    /// config\depotcache is invisible to Steam, so a pinned depot resolves to nothing and the download
+    /// never starts, with no error anywhere. Measured upstream on a real install — of 2,314 files in
+    /// config\depotcache, 2,313 were byte-identical copies of the real depotcache with mtimes preserved
+    /// (a stale one-off mirror), and the single file that was ONLY there was the manifest for the one
+    /// app that would not download. Meanwhile 394 manifests Steam had fetched itself existed only in the
+    /// real folder. So the read side was as wrong as the write side: cache hits on files Steam cannot
+    /// see, cache misses on files it already has.
+    /// </remarks>
     public string? DepotCacheDir =>
+        EffectivePath is { } p ? Path.Combine(p, "depotcache") : null;
+
+    /// <summary>
+    /// The old, wrong location. Read-only fallback so manifests already sitting there still count as
+    /// cached instead of every install re-fetching its whole depot list once. Never written to.
+    /// </summary>
+    public string? LegacyDepotCacheDir =>
         EffectivePath is { } p ? Path.Combine(p, "config", "depotcache") : null;
 
     /// <summary>Open a store/steam URL or file path with the shell (browser, Steam client, Explorer).</summary>

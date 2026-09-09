@@ -539,4 +539,21 @@
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} е запазен: друг инсталиран инструмент все още го ползва. Премахнат е само записът за инсталация.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Премахването не успя: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Записът за инсталация не може да бъде използван: {0}</value></data>
+  <data name="Fixes_NotInstalled_Hint" xml:space="preserve"><value>Първо инсталирайте играта, за да приложите фикс.</value></data>
+  <data name="Fixes_Applied_Hint" xml:space="preserve"><value>Тази корекция вече е приложена. Върнете я, ако искате да инсталирате друга.</value></data>
+  <data name="Fixes_MyGames" xml:space="preserve"><value>Моите игри</value></data>
+  <data name="Fixes_MyGames_Count" xml:space="preserve"><value>{0} от вашите игри имат корекции. Превъртете списъка за останалите.</value></data>
+  <data name="Fixes_MyGames_NotInstalled" xml:space="preserve"><value>Все още няма добавени lua файлове. Добавете (или инсталирайте) игра, за да се появи тук.</value></data>
+  <data name="Fixes_Revert" xml:space="preserve"><value>Връщане</value></data>
+  <data name="Fixes_Revert_Cancel" xml:space="preserve"><value>Отказ</value></data>
+  <data name="Fixes_Revert_Confirm_Body" xml:space="preserve"><value>Да се върне ли „{0}“? Променените файлове ще бъдат възстановени от резервното копие, а добавените от корекцията файлове ще бъдат изтрити.</value></data>
+  <data name="Fixes_Revert_Confirm_Title" xml:space="preserve"><value>Да се върне ли корекцията за {0}?</value></data>
+  <data name="Fixes_Revert_Done" xml:space="preserve"><value>Корекцията е върната</value></data>
+  <data name="Fixes_Revert_Done_Body" xml:space="preserve"><value>Възстановени {0}, премахнати {1} добавени файла.</value></data>
+  <data name="Fixes_Revert_Failed" xml:space="preserve"><value>Корекцията не можа да бъде върната</value></data>
+  <data name="Fixes_Revert_NoRecord" xml:space="preserve"><value>Няма запис тази корекция да е била прилагана. Може вече да е върната.</value></data>
+  <data name="Fixes_Revert_Conflict" xml:space="preserve"><value>Поправката не може да се върне безопасно</value></data>
+  <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>{0} е променен, откакто беше приложена тази поправка, така че възстановяването ще презапише тези промени. Ако сте приложили друга поправка отгоре, първо върнете нея. Засегнати са {1} файла.</value></data>
+  <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Корекцията е върната частично</value></data>
+  <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} файл(а) не можаха да бъдат възстановени. Затворете играта и опитайте отново.</value></data>
 </root>

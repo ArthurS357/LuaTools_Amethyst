@@ -17,7 +17,11 @@ public record InstallResult(bool LuaInstalled, int ManifestCount, IReadOnlyList<
 
 /// <summary>
 /// Installs downloaded lua/manifest files into Steam: &lt;appid&gt;.lua → config\stplug-in,
-/// *.manifest → config\depotcache. Best-effort per file (a locked file doesn't abort the rest).
+/// *.manifest → depotcache. Best-effort per file (a locked file doesn't abort the rest).
+///
+/// Note the asymmetry, it is not a typo: stplug-in is under config (it is SteamTools'), depotcache is
+/// NOT (it is Steam's own, a sibling of steamapps). See <c>SteamService.DepotCacheDir</c> — writing
+/// manifests under config was a real bug that silently broke every pinned download.
 ///
 /// When the "Auto Update Apps" setting is on (default), setManifestid() lines in the lua are
 /// commented out so the app isn't pinned to a version and Steam keeps it updated. When off, the

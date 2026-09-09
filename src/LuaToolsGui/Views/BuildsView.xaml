@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:res="clr-namespace:LuaToolsGui.Resources"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:views="clr-namespace:LuaToolsGui.Views"
     xmlns:vm="clr-namespace:LuaToolsGui.ViewModels"
     d:DataContext="{d:DesignInstance Type=vm:BuildsViewModel}"
     TextElement.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
@@ -691,6 +692,15 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
+                        <!-- Wrapped in a StackPanel purely so the notice can share row 0 with the search
+                             row without renumbering everything below it. -->
+                        <StackPanel>
+
+                        <!-- A depot whose manifest cannot be fetched fails HERE, so the guidance about
+                             which sources still ship manifests belongs here too. One line to remove;
+                             see AppConfig.ShowManifestSourceNotice. -->
+                        <views:ManifestSourceNotice Margin="0,0,12,10" />
+
                         <Grid Margin="0,0,12,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -713,6 +723,7 @@
                                 Icon="{ui:SymbolIcon ArrowDownload24}"
                                 ToolTip="{x:Static res:Strings.Builds_Depot_PickHint}" />
                         </Grid>
+                        </StackPanel>
 
                         <TextBlock
                             Grid.Row="1"

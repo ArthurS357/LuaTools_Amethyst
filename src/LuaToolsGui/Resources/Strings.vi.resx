@@ -539,4 +539,21 @@ Thao tác này sẽ xóa các tệp .lua khỏi Steam\config\stplug-in. Sau đó
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>Đã giữ {0}: một công cụ đã cài khác vẫn đang dùng nó. Chỉ bản ghi cài đặt bị gỡ.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Gỡ cài đặt thất bại: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Không thể dùng bản ghi cài đặt: {0}</value></data>
+  <data name="Fixes_NotInstalled_Hint" xml:space="preserve"><value>Hãy cài game trước để áp dụng bản fix.</value></data>
+  <data name="Fixes_Applied_Hint" xml:space="preserve"><value>Bản sửa lỗi này đã được áp dụng. Hoàn tác nếu bạn muốn cài bản khác.</value></data>
+  <data name="Fixes_MyGames" xml:space="preserve"><value>Trò chơi của tôi</value></data>
+  <data name="Fixes_MyGames_Count" xml:space="preserve"><value>{0} trò chơi của bạn có bản sửa lỗi. Cuộn danh sách để xem phần còn lại.</value></data>
+  <data name="Fixes_MyGames_NotInstalled" xml:space="preserve"><value>Chưa thêm lua nào. Thêm (hoặc cài đặt) một trò chơi để thấy nó ở đây.</value></data>
+  <data name="Fixes_Revert" xml:space="preserve"><value>Hoàn tác</value></data>
+  <data name="Fixes_Revert_Cancel" xml:space="preserve"><value>Hủy</value></data>
+  <data name="Fixes_Revert_Confirm_Body" xml:space="preserve"><value>Hoàn tác "{0}"? Các tệp đã sửa đổi sẽ được khôi phục từ bản sao lưu và các tệp do bản sửa lỗi thêm vào sẽ bị xóa.</value></data>
+  <data name="Fixes_Revert_Confirm_Title" xml:space="preserve"><value>Hoàn tác bản sửa lỗi cho {0}?</value></data>
+  <data name="Fixes_Revert_Done" xml:space="preserve"><value>Đã hoàn tác bản sửa lỗi</value></data>
+  <data name="Fixes_Revert_Done_Body" xml:space="preserve"><value>Đã khôi phục {0}, đã xóa {1} tệp được thêm.</value></data>
+  <data name="Fixes_Revert_Failed" xml:space="preserve"><value>Không thể hoàn tác bản sửa lỗi</value></data>
+  <data name="Fixes_Revert_NoRecord" xml:space="preserve"><value>Không có ghi nhận nào về việc áp dụng bản sửa lỗi này. Có thể nó đã được hoàn tác.</value></data>
+  <data name="Fixes_Revert_Conflict" xml:space="preserve"><value>Không thể hoàn tác bản vá một cách an toàn</value></data>
+  <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>{0} đã thay đổi kể từ khi bản vá này được áp dụng, nên khôi phục sẽ ghi đè các thay đổi đó. Nếu bạn đã áp dụng bản vá khác lên trên, hãy hoàn tác bản đó trước. {1} tệp bị ảnh hưởng.</value></data>
+  <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Bản sửa lỗi được hoàn tác một phần</value></data>
+  <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>Không thể khôi phục {0} tệp. Hãy đóng trò chơi và thử lại.</value></data>
 </root>

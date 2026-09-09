@@ -539,4 +539,21 @@ Dit verwijdert de .lua-bestanden uit Steam\config\stplug-in. Herstart Steam daar
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} is behouden: een andere geïnstalleerde tool gebruikt het nog. Alleen de installatieregistratie is verwijderd.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Verwijderen mislukt: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>De installatieregistratie kon niet worden gebruikt: {0}</value></data>
+  <data name="Fixes_NotInstalled_Hint" xml:space="preserve"><value>Installeer eerst de game om een fix toe te passen.</value></data>
+  <data name="Fixes_Applied_Hint" xml:space="preserve"><value>Deze fix is al toegepast. Draai hem terug als je een andere wilt installeren.</value></data>
+  <data name="Fixes_MyGames" xml:space="preserve"><value>Mijn games</value></data>
+  <data name="Fixes_MyGames_Count" xml:space="preserve"><value>{0} van je games hebben fixes. Scroll door het overzicht voor de rest.</value></data>
+  <data name="Fixes_MyGames_NotInstalled" xml:space="preserve"><value>Nog geen lua's toegevoegd. Voeg een game toe (of installeer er een) om hem hier te zien.</value></data>
+  <data name="Fixes_Revert" xml:space="preserve"><value>Terugdraaien</value></data>
+  <data name="Fixes_Revert_Cancel" xml:space="preserve"><value>Annuleren</value></data>
+  <data name="Fixes_Revert_Confirm_Body" xml:space="preserve"><value>"{0}" terugdraaien? Gewijzigde bestanden worden hersteld vanaf de back-up en bestanden die de fix heeft toegevoegd worden verwijderd.</value></data>
+  <data name="Fixes_Revert_Confirm_Title" xml:space="preserve"><value>Fix voor {0} terugdraaien?</value></data>
+  <data name="Fixes_Revert_Done" xml:space="preserve"><value>Fix teruggedraaid</value></data>
+  <data name="Fixes_Revert_Done_Body" xml:space="preserve"><value>{0} hersteld, {1} toegevoegde bestand(en) verwijderd.</value></data>
+  <data name="Fixes_Revert_Failed" xml:space="preserve"><value>Kan fix niet terugdraaien</value></data>
+  <data name="Fixes_Revert_NoRecord" xml:space="preserve"><value>Geen registratie dat deze fix is toegepast. Mogelijk is hij al teruggedraaid.</value></data>
+  <data name="Fixes_Revert_Conflict" xml:space="preserve"><value>Fix kan niet veilig worden teruggedraaid</value></data>
+  <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>{0} is gewijzigd sinds deze fix is toegepast, dus herstellen zou die wijzigingen overschrijven. Als je er een andere fix overheen hebt toegepast, draai die dan eerst terug. {1} bestand(en) getroffen.</value></data>
+  <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Fix gedeeltelijk teruggedraaid</value></data>
+  <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} bestand(en) konden niet worden hersteld. Sluit de game en probeer opnieuw.</value></data>
 </root>

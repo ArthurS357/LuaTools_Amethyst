@@ -539,4 +539,21 @@ Detta tar bort .lua-filerna från Steam\config\stplug-in. Starta om Steam efter�
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} behölls: ett annat installerat verktyg använder den fortfarande. Endast installationsposten togs bort.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Avinstallationen misslyckades: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Installationsposten kunde inte användas: {0}</value></data>
+  <data name="Fixes_NotInstalled_Hint" xml:space="preserve"><value>Installera spelet först för att tillämpa en fix.</value></data>
+  <data name="Fixes_Applied_Hint" xml:space="preserve"><value>Den här korrigeringen är redan tillämpad. Ångra den om du vill installera en annan.</value></data>
+  <data name="Fixes_MyGames" xml:space="preserve"><value>Mina spel</value></data>
+  <data name="Fixes_MyGames_Count" xml:space="preserve"><value>{0} av dina spel har korrigeringar. Bläddra i listan för att se resten.</value></data>
+  <data name="Fixes_MyGames_NotInstalled" xml:space="preserve"><value>Inga lua-filer tillagda ännu. Lägg till (eller installera) ett spel för att se det här.</value></data>
+  <data name="Fixes_Revert" xml:space="preserve"><value>Ångra</value></data>
+  <data name="Fixes_Revert_Cancel" xml:space="preserve"><value>Avbryt</value></data>
+  <data name="Fixes_Revert_Confirm_Body" xml:space="preserve"><value>Ångra ”{0}”? Ändrade filer återställs från säkerhetskopian och filer som korrigeringen lagt till tas bort.</value></data>
+  <data name="Fixes_Revert_Confirm_Title" xml:space="preserve"><value>Ångra korrigeringen för {0}?</value></data>
+  <data name="Fixes_Revert_Done" xml:space="preserve"><value>Korrigering ångrad</value></data>
+  <data name="Fixes_Revert_Done_Body" xml:space="preserve"><value>{0} återställda, {1} tillagda filer borttagna.</value></data>
+  <data name="Fixes_Revert_Failed" xml:space="preserve"><value>Kunde inte ångra korrigeringen</value></data>
+  <data name="Fixes_Revert_NoRecord" xml:space="preserve"><value>Ingen notering om att den här korrigeringen tillämpats. Den kan redan vara ångrad.</value></data>
+  <data name="Fixes_Revert_Conflict" xml:space="preserve"><value>Fixen kan inte återställas säkert</value></data>
+  <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>{0} har ändrats sedan den här fixen tillämpades, så en återställning skulle skriva över de ändringarna. Om du tillämpat en annan fix ovanpå, återställ den först. {1} fil(er) påverkas.</value></data>
+  <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Korrigering delvis ångrad</value></data>
+  <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} fil(er) kunde inte återställas. Stäng spelet och försök igen.</value></data>
 </root>

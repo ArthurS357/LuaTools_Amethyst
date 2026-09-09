@@ -17,7 +17,7 @@ namespace LuaToolsGui.Services;
 /// </param>
 /// <param name="FilenamesEncrypted">
 /// Whether the payload's filenames are still encrypted with the depot key. Usually false — Steam stores
-/// them decrypted in <c>config\depotcache</c> — which is exactly why key checking cannot rely on it.
+/// them decrypted in <c>depotcache</c> — which is exactly why key checking cannot rely on it.
 /// </param>
 /// <param name="GidManifest">
 /// The manifest's own id. With <paramref name="DepotId"/> this is the file's self-declared identity, which
@@ -56,7 +56,7 @@ internal static class ManifestFile
 
     /// <summary>True when the file starts with the section magic a real Steam manifest begins with.</summary>
     /// <remarks>
-    /// Screens bytes BEFORE they are written into <c>config\depotcache</c>. A wrong file that lands there
+    /// Screens bytes BEFORE they are written into <c>depotcache</c>. A wrong file that lands there
     /// is sticky — <see cref="LuaInstaller.InstallManifestFile"/> skips an existing destination, so every
     /// later run resolves the bad copy locally and fails identically with no way back short of deleting it
     /// by hand.

@@ -539,4 +539,21 @@ Esto borra los archivos .lua de Steam\config\stplug-in. Reinicia Steam después 
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>Se conservó {0}: otra herramienta instalada todavía lo usa. Solo se quitó el registro de instalación.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Error al desinstalar: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>No se pudo usar el registro de instalación: {0}</value></data>
+  <data name="Fixes_NotInstalled_Hint" xml:space="preserve"><value>Instala el juego primero para aplicar un fix.</value></data>
+  <data name="Fixes_Applied_Hint" xml:space="preserve"><value>Este parche ya está aplicado. Revertilo si querés instalar otro.</value></data>
+  <data name="Fixes_MyGames" xml:space="preserve"><value>Mis juegos</value></data>
+  <data name="Fixes_MyGames_Count" xml:space="preserve"><value>{0} de tus juegos tienen parches. Desplazá la grilla para ver el resto.</value></data>
+  <data name="Fixes_MyGames_NotInstalled" xml:space="preserve"><value>Todavía no agregaste ningún lua. Agregá (o instalá) un juego para verlo acá.</value></data>
+  <data name="Fixes_Revert" xml:space="preserve"><value>Revertir</value></data>
+  <data name="Fixes_Revert_Cancel" xml:space="preserve"><value>Cancelar</value></data>
+  <data name="Fixes_Revert_Confirm_Body" xml:space="preserve"><value>¿Revertir "{0}"? Los archivos modificados se restaurarán desde la copia de seguridad y los archivos agregados por el parche se eliminarán.</value></data>
+  <data name="Fixes_Revert_Confirm_Title" xml:space="preserve"><value>¿Revertir el parche de {0}?</value></data>
+  <data name="Fixes_Revert_Done" xml:space="preserve"><value>Parche revertido</value></data>
+  <data name="Fixes_Revert_Done_Body" xml:space="preserve"><value>Se restauraron {0} y se eliminaron {1} archivo(s) agregado(s).</value></data>
+  <data name="Fixes_Revert_Failed" xml:space="preserve"><value>No se pudo revertir el parche</value></data>
+  <data name="Fixes_Revert_NoRecord" xml:space="preserve"><value>No hay registro de que este parche se haya aplicado. Puede que ya se haya revertido.</value></data>
+  <data name="Fixes_Revert_Conflict" xml:space="preserve"><value>No se puede revertir el fix de forma segura</value></data>
+  <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>{0} cambió desde que se aplicó este fix, así que restaurarlo sobrescribiría esos cambios. Si aplicaste otro fix encima, revierte ese primero. {1} archivo(s) afectado(s).</value></data>
+  <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Parche revertido parcialmente</value></data>
+  <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>No se pudieron restaurar {0} archivo(s). Cerrá el juego y probá de nuevo.</value></data>
 </root>

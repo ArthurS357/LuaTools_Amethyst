@@ -539,4 +539,21 @@ Aceasta șterge fișierele .lua din Steam\config\stplug-in. Repornește Steam du
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} a fost păstrat: alt instrument instalat îl folosește încă. A fost eliminată doar înregistrarea de instalare.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Dezinstalarea a eșuat: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Înregistrarea de instalare nu a putut fi folosită: {0}</value></data>
+  <data name="Fixes_NotInstalled_Hint" xml:space="preserve"><value>Instalează întâi jocul pentru a aplica un fix.</value></data>
+  <data name="Fixes_Applied_Hint" xml:space="preserve"><value>Această reparație este deja aplicată. Anuleaz-o dacă vrei să instalezi alta.</value></data>
+  <data name="Fixes_MyGames" xml:space="preserve"><value>Jocurile mele</value></data>
+  <data name="Fixes_MyGames_Count" xml:space="preserve"><value>{0} dintre jocurile tale au reparații. Derulează lista pentru restul.</value></data>
+  <data name="Fixes_MyGames_NotInstalled" xml:space="preserve"><value>Încă nu ai adăugat niciun lua. Adaugă (sau instalează) un joc ca să apară aici.</value></data>
+  <data name="Fixes_Revert" xml:space="preserve"><value>Anulează reparația</value></data>
+  <data name="Fixes_Revert_Cancel" xml:space="preserve"><value>Renunță</value></data>
+  <data name="Fixes_Revert_Confirm_Body" xml:space="preserve"><value>Anulezi „{0}”? Fișierele modificate vor fi restaurate din copia de rezervă, iar fișierele adăugate de reparație vor fi șterse.</value></data>
+  <data name="Fixes_Revert_Confirm_Title" xml:space="preserve"><value>Anulezi reparația pentru {0}?</value></data>
+  <data name="Fixes_Revert_Done" xml:space="preserve"><value>Reparație anulată</value></data>
+  <data name="Fixes_Revert_Done_Body" xml:space="preserve"><value>{0} restaurate, {1} fișiere adăugate eliminate.</value></data>
+  <data name="Fixes_Revert_Failed" xml:space="preserve"><value>Reparația nu a putut fi anulată</value></data>
+  <data name="Fixes_Revert_NoRecord" xml:space="preserve"><value>Nu există nicio înregistrare că această reparație a fost aplicată. Poate a fost deja anulată.</value></data>
+  <data name="Fixes_Revert_Conflict" xml:space="preserve"><value>Fix-ul nu poate fi anulat în siguranță</value></data>
+  <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>{0} s-a modificat de la aplicarea acestui fix, așa că restaurarea ar suprascrie acele modificări. Dacă ai aplicat alt fix peste, anulează-l mai întâi pe acela. {1} fișier(e) afectate.</value></data>
+  <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Reparație anulată parțial</value></data>
+  <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} fișier(e) nu au putut fi restaurate. Închide jocul și încearcă din nou.</value></data>
 </root>

@@ -55,8 +55,48 @@
             PlaceholderText="{x:Static res:Strings.Common_SearchPlaceholder}"
             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
 
-        <!-- Tag filter pills -->
-        <ItemsControl Grid.Row="2" Margin="0,12,0,0" ItemsSource="{Binding Tags}">
+        <!-- "My games" toggle + tag filter pills (shown once the listing is loaded and non-empty) -->
+        <StackPanel
+            Grid.Row="2"
+            Margin="0,12,0,0"
+            Orientation="Horizontal"
+            Visibility="{Binding CanFilter, Converter={StaticResource BoolToVis}}">
+            <ToggleButton
+                Margin="0,0,8,6"
+                Cursor="Hand"
+                IsChecked="{Binding MyGamesOnly}"
+                ToolTip="{Binding MyGamesHint}">
+                <ToggleButton.Template>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border
+                            x:Name="Pill"
+                            Padding="10,4"
+                            Background="{StaticResource AccentTintBrush}"
+                            BorderBrush="{StaticResource AccentOutlineBrush}"
+                            BorderThickness="1"
+                            CornerRadius="6">
+                            <TextBlock
+                                x:Name="PillText"
+                                FontSize="11.5"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource AccentBrush}"
+                                Text="{x:Static res:Strings.Fixes_MyGames}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- Active: filled accent, exactly like a selected tag pill. -->
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Pill" Property="Background" Value="{StaticResource AccentBrush}" />
+                                <Setter TargetName="Pill" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                                <Setter TargetName="PillText" Property="Foreground" Value="{StaticResource TextOnAccentBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Pill" Property="Background" Value="{StaticResource AccentTintStrongBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </ToggleButton.Template>
+            </ToggleButton>
+            <ItemsControl ItemsSource="{Binding Tags}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel Orientation="Horizontal" />
@@ -101,7 +141,8 @@
                     </Button>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
-        </ItemsControl>
+            </ItemsControl>
+        </StackPanel>
 
         <!-- Loading -->
         <StackPanel
@@ -484,8 +525,33 @@
                                                         CommandParameter="{Binding}"
                                                         Content="{x:Static res:Strings.Fixes_Fix}"
                                                         Icon="{ui:SymbolIcon Wrench24}"
+                                                        ToolTip="{Binding FixHint}"
+                                                        Visibility="{Binding HasFix, Converter={StaticResource BoolToVis}}">
+                                                        <!--
+                                                            Two independent reasons to disable: the fix itself is not
+                                                            applicable (game not installed, or already applied) and a
+                                                            download is in flight. Expressed as a Style so both can
+                                                            apply — a local IsEnabled attribute would beat the trigger.
+                                                        -->
+                                                        <ui:Button.Style>
+                                                            <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
+                                                                <Setter Property="IsEnabled" Value="{Binding CanDownloadFix}" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding DataContext.IsBusy, ElementName=Root}" Value="True">
+                                                                        <Setter Property="IsEnabled" Value="False" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ui:Button.Style>
+                                                    </ui:Button>
+                                                    <ui:Button
+                                                        Margin="8,0,0,0"
+                                                        Command="{Binding DataContext.RevertFixCommand, ElementName=Root}"
+                                                        CommandParameter="{Binding}"
+                                                        Content="{x:Static res:Strings.Fixes_Revert}"
+                                                        Icon="{ui:SymbolIcon ArrowUndo24}"
                                                         IsEnabled="{Binding DataContext.NotBusy, ElementName=Root}"
-                                                        Visibility="{Binding HasFix, Converter={StaticResource BoolToVis}}" />
+                                                        Visibility="{Binding IsApplied, Converter={StaticResource BoolToVis}}" />
                                                 </StackPanel>
                                             </StackPanel>
                                         </Border>
@@ -504,6 +570,58 @@
                         Maximum="100"
                         Value="{Binding DataContext.Progress, ElementName=Root}"
                         Visibility="{Binding DataContext.IsBusy, ElementName=Root, Converter={StaticResource BoolToVis}}" />
+
+                    <!--
+                        Revert confirmation (in-flyout card, same pattern as ModeView). Bindings go through
+                        ElementName=Root because this Grid's DataContext is SelectedGame, not the view model.
+                    -->
+                    <Grid
+                        Grid.Row="0"
+                        Grid.RowSpan="4"
+                        Margin="-20"
+                        Background="{StaticResource ScrimBrush}"
+                        Visibility="{Binding DataContext.IsConfirmingRevert, ElementName=Root, Converter={StaticResource BoolToVis}}">
+                        <Border
+                            MaxWidth="360"
+                            Margin="16"
+                            Padding="20"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Background="{StaticResource SurfaceOverlayBrush}"
+                            BorderBrush="{StaticResource BorderProminentBrush}"
+                            BorderThickness="1"
+                            CornerRadius="12">
+                            <StackPanel>
+                                <TextBlock
+                                    FontSize="16"
+                                    FontWeight="Bold"
+                                    Text="{Binding DataContext.ConfirmRevertTitle, ElementName=Root}"
+                                    TextWrapping="Wrap" />
+                                <TextBlock
+                                    Margin="0,8,0,0"
+                                    FontSize="12.5"
+                                    Foreground="{StaticResource TextMutedBrush}"
+                                    Text="{Binding DataContext.ConfirmRevertBody, ElementName=Root}"
+                                    TextWrapping="Wrap" />
+                                <StackPanel
+                                    Margin="0,18,0,0"
+                                    HorizontalAlignment="Right"
+                                    Orientation="Horizontal">
+                                    <ui:Button
+                                        Margin="0,0,10,0"
+                                        Padding="14,7"
+                                        Command="{Binding DataContext.CancelRevertConfirmCommand, ElementName=Root}"
+                                        Content="{x:Static res:Strings.Fixes_Revert_Cancel}" />
+                                    <ui:Button
+                                        Padding="14,7"
+                                        Appearance="Primary"
+                                        Command="{Binding DataContext.ConfirmRevertCommand, ElementName=Root}"
+                                        Content="{x:Static res:Strings.Fixes_Revert}"
+                                        Icon="{ui:SymbolIcon ArrowUndo24}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
                 </Grid>
             </Border>
         </Grid>

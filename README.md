@@ -112,6 +112,35 @@ always shows what is actually running.
 
 ---
 
+## Steam changed how depot manifests are obtained (September 2026)
+
+In a maintenance window in early September 2026, Steam closed the method SteamTools-style clients used to
+obtain manifests for games the user does **not** own. Nothing in this app can detect or work around that,
+so the answer is a change in how you use it:
+
+1. **Pick a source that ships the manifests** — **Sadie (Hubcap)** or **Ryuu**. A source without them can
+   no longer resolve a depot.
+2. **Turn off "Auto Update Apps (Don't Lock Manifests)"** in Settings, so the lua stays pinned to the
+   version you downloaded instead of being un-pinned on install.
+3. **Re-add anything that was added the old way.** A lua added before this shows up as `no internet` or
+   `unknown error` when a depot download tries to resolve its manifest. Re-adding it from one of those
+   sources, with that setting off, is the fix. Depot downloading works normally for luas added this way.
+
+"Luie" and "Sushi" were disabled upstream — Luie serves no manifests, and Sushi is out of date. That is a
+server-side list, so there is nothing in this build to change: `SourceMeta` here only carries display
+metadata (name, Discord link, whether a user key is required); the list itself comes from the API.
+
+The app shows this as a short static card on the **Add** page (above the source list, where the choice is
+made) and on the **Builds** page's depot panel (where a manifest that cannot be fetched surfaces as the
+failure). It reads no network, checks no state and records nothing — it is text.
+
+> **It is meant to be removed.** The switch is `AppConfig.ShowManifestSourceNotice`. When the advice stops
+> being true, turn it off, or delete `Views/ManifestSourceNotice.xaml`, its two usages, and the four
+> `Notice_Manifests_*` resource keys. A stale warning is worse than none: it teaches people to ignore the
+> ones that matter.
+
+---
+
 ## Remaining cleartext endpoint
 
 Exactly one HTTP request survives, and the app tells you about it.

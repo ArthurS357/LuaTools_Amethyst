@@ -539,4 +539,21 @@ Ez törli a .lua fájlokat a Steam\config\stplug-in mappából. Ezután indítsd
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} megmaradt: egy másik telepített eszköz még használja. Csak a telepítési bejegyzés lett eltávolítva.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Az eltávolítás nem sikerült: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>A telepítési bejegyzés nem volt használható: {0}</value></data>
+  <data name="Fixes_NotInstalled_Hint" xml:space="preserve"><value>Előbb telepítsd a játékot a fix alkalmazásához.</value></data>
+  <data name="Fixes_Applied_Hint" xml:space="preserve"><value>Ez a javítás már alkalmazva van. Vond vissza, ha másikat szeretnél telepíteni.</value></data>
+  <data name="Fixes_MyGames" xml:space="preserve"><value>Saját játékok</value></data>
+  <data name="Fixes_MyGames_Count" xml:space="preserve"><value>{0} játékodhoz van javítás. A többiért görgesd a listát.</value></data>
+  <data name="Fixes_MyGames_NotInstalled" xml:space="preserve"><value>Még nincs hozzáadott lua. Adj hozzá (vagy telepíts) egy játékot, hogy itt megjelenjen.</value></data>
+  <data name="Fixes_Revert" xml:space="preserve"><value>Visszavonás</value></data>
+  <data name="Fixes_Revert_Cancel" xml:space="preserve"><value>Mégse</value></data>
+  <data name="Fixes_Revert_Confirm_Body" xml:space="preserve"><value>Visszavonod a(z) „{0}” javítást? A módosított fájlok visszaállnak a biztonsági másolatból, a javítás által hozzáadott fájlok pedig törlődnek.</value></data>
+  <data name="Fixes_Revert_Confirm_Title" xml:space="preserve"><value>Visszavonod a(z) {0} javítását?</value></data>
+  <data name="Fixes_Revert_Done" xml:space="preserve"><value>Javítás visszavonva</value></data>
+  <data name="Fixes_Revert_Done_Body" xml:space="preserve"><value>{0} visszaállítva, {1} hozzáadott fájl eltávolítva.</value></data>
+  <data name="Fixes_Revert_Failed" xml:space="preserve"><value>A javítást nem sikerült visszavonni</value></data>
+  <data name="Fixes_Revert_NoRecord" xml:space="preserve"><value>Nincs nyoma annak, hogy ezt a javítást alkalmazták volna. Lehet, hogy már visszavonták.</value></data>
+  <data name="Fixes_Revert_Conflict" xml:space="preserve"><value>A javítás nem vonható vissza biztonságosan</value></data>
+  <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>A(z) {0} megváltozott a javítás alkalmazása óta, ezért a visszaállítás felülírná ezeket a módosításokat. Ha másik javítást is alkalmaztál rá, előbb azt vond vissza. {1} fájl érintett.</value></data>
+  <data name="Fixes_Revert_Partial" xml:space="preserve"><value>A javítás részben lett visszavonva</value></data>
+  <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} fájlt nem sikerült visszaállítani. Zárd be a játékot, és próbáld újra.</value></data>
 </root>

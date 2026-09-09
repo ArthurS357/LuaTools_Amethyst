@@ -539,4 +539,21 @@ Dette sletter .lua-filene fra Steam\config\stplug-in. Start Steam på nytt etter
   <data name="Removal_Toast_SharedKept" xml:space="preserve"><value>{0} ble beholdt: et annet installert verktøy bruker den fortsatt. Bare installasjonsoppføringen ble fjernet.</value></data>
   <data name="Removal_Toast_Failed" xml:space="preserve"><value>Avinstallering mislyktes: {0}</value></data>
   <data name="Removal_Err_Record" xml:space="preserve"><value>Installasjonsoppføringen kunne ikke brukes: {0}</value></data>
+  <data name="Fixes_NotInstalled_Hint" xml:space="preserve"><value>Installer spillet først for å bruke en fiks.</value></data>
+  <data name="Fixes_Applied_Hint" xml:space="preserve"><value>Denne rettelsen er allerede brukt. Angre den hvis du vil installere en annen.</value></data>
+  <data name="Fixes_MyGames" xml:space="preserve"><value>Mine spill</value></data>
+  <data name="Fixes_MyGames_Count" xml:space="preserve"><value>{0} av spillene dine har rettelser. Bla i listen for å se resten.</value></data>
+  <data name="Fixes_MyGames_NotInstalled" xml:space="preserve"><value>Ingen lua-filer lagt til ennå. Legg til (eller installer) et spill for å se det her.</value></data>
+  <data name="Fixes_Revert" xml:space="preserve"><value>Angre</value></data>
+  <data name="Fixes_Revert_Cancel" xml:space="preserve"><value>Avbryt</value></data>
+  <data name="Fixes_Revert_Confirm_Body" xml:space="preserve"><value>Angre «{0}»? Endrede filer gjenopprettes fra sikkerhetskopien, og filer lagt til av rettelsen slettes.</value></data>
+  <data name="Fixes_Revert_Confirm_Title" xml:space="preserve"><value>Angre rettelsen for {0}?</value></data>
+  <data name="Fixes_Revert_Done" xml:space="preserve"><value>Rettelse angret</value></data>
+  <data name="Fixes_Revert_Done_Body" xml:space="preserve"><value>{0} gjenopprettet, {1} tillagte filer fjernet.</value></data>
+  <data name="Fixes_Revert_Failed" xml:space="preserve"><value>Kunne ikke angre rettelsen</value></data>
+  <data name="Fixes_Revert_NoRecord" xml:space="preserve"><value>Ingen registrering av at denne rettelsen er brukt. Den kan allerede være angret.</value></data>
+  <data name="Fixes_Revert_Conflict" xml:space="preserve"><value>Fiksen kan ikke tilbakestilles trygt</value></data>
+  <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>{0} er endret siden denne fiksen ble brukt, så gjenoppretting ville overskrive de endringene. Hvis du har brukt en annen fiks oppå, tilbakestill den først. {1} fil(er) berørt.</value></data>
+  <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Rettelse delvis angret</value></data>
+  <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} fil(er) kunne ikke gjenopprettes. Lukk spillet og prøv igjen.</value></data>
 </root>

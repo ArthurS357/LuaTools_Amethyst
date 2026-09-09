@@ -408,8 +408,32 @@ public sealed partial class DepotDownloaderService(
     }
 
     /// <summary>The name a depot's manifest has in depotcache, whether or not it is there.</summary>
-    private string? CachedManifestPath(long depotId, string manifestId) =>
-        steam.DepotCacheDir is { } dir ? Path.Combine(dir, ManifestFileName(depotId, manifestId)) : null;
+    /// <remarks>
+    /// Prefers the real depotcache, then falls back to a file left behind in the old, wrong
+    /// <c>config\depotcache</c> (see <see cref="SteamService.DepotCacheDir"/>). The fallback is READ ONLY:
+    /// it exists so an install whose migration has not run yet — or could not move a locked file — still
+    /// counts those manifests as cached instead of re-fetching a whole depot list. Nothing is ever written
+    /// to the legacy folder.
+    /// </remarks>
+    private string? CachedManifestPath(long depotId, string manifestId)
+    {
+        string name = ManifestFileName(depotId, manifestId);
+
+        if (steam.DepotCacheDir is not { } dir) return null;
+
+        string real = Path.Combine(dir, name);
+        if (File.Exists(real)) return real;
+
+        if (steam.LegacyDepotCacheDir is { } legacyDir)
+        {
+            string legacy = Path.Combine(legacyDir, name);
+            if (File.Exists(legacy)) return legacy;
+        }
+
+        // Neither has it. Return the real path so callers that treat this as "where it WOULD be" keep
+        // pointing at the folder Steam actually reads.
+        return real;
+    }
 
     /// <summary>
     /// The content-addressed depotcache filename. Both halves are constrained by their types — a
@@ -760,7 +784,7 @@ public sealed partial class DepotDownloaderService(
     /// The network-free half of <see cref="EnsureManifestAsync"/>, split out so the screening order can be
     /// tested without a signed-in session. That order is the security property: unwrap to a name this method
     /// COMPUTES, prove the bytes are a Steam manifest, and only then write. Nothing that fails a check ever
-    /// reaches <c>config\depotcache</c>.
+    /// reaches <c>depotcache</c>.
     /// </remarks>
     internal (string? Path, DepotFailure Failure) InstallFetchedManifest(
         long depotId, string manifestId, string stagedPath)
@@ -775,7 +799,7 @@ public sealed partial class DepotDownloaderService(
             // InstallManifestFile names the destination after the file it is handed
             // (Path.GetFileName), and the staged name comes from the response's Content-Disposition
             // header when it sends one. Passing the staged file straight through would therefore let the
-            // server choose what this app writes into Steam's config\depotcache. The name is rebuilt here
+            // server choose what this app writes into Steam's depotcache. The name is rebuilt here
             // from a long and a digits-only gid, so it cannot carry a separator or a traversal segment.
             string manifestFile = Path.Combine(unzipDir, ManifestFileName(depotId, manifestId));
 

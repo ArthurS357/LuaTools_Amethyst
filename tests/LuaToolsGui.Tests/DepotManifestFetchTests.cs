@@ -9,7 +9,7 @@ namespace LuaToolsGui.Tests;
 
 /// <summary>
 /// Pins the screening a fetched depot manifest goes through before it is allowed into
-/// <c>config\depotcache</c>.
+/// <c>depotcache</c>.
 ///
 /// <para>
 /// This is the fail-closed gate on a network response. Order is the whole property: a zip wrapper is
@@ -31,7 +31,7 @@ public class DepotManifestFetchTests : IDisposable
     public DepotManifestFetchTests()
     {
         _steamRoot = Path.Combine(_dir, "steam");
-        _depotCache = Path.Combine(_steamRoot, "config", "depotcache");
+        _depotCache = Path.Combine(_steamRoot, "depotcache");
         _staging = Path.Combine(_dir, "staging");
         Directory.CreateDirectory(_depotCache);
         Directory.CreateDirectory(Path.Combine(_steamRoot, "config", "stplug-in"));
