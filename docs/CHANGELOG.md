@@ -1,38 +1,40 @@
+﻿## 1.7.4 — 2026-09-09
+- Corrige binário empacotado com versão antiga (1.7.2) na release 1.7.3.
 # Changelog
 
-## 1.7.3 — 2026-09-09
+## 1.7.3 â€” 2026-09-09
 
 Porta os tres fixes da v1.3.1 do upstream. Dois eram bugs que o Amethyst herdou; o terceiro nunca existiu
 aqui e foi implementado ja com as correcoes que o upstream levou uma versao para descobrir.
 
 ### Manifests eram escritos numa pasta que a Steam nao le
 
-`SteamService.DepotCacheDir` apontava para `<Steam>\config\depotcache`. A Steam le `<Steam>\depotcache` —
+`SteamService.DepotCacheDir` apontava para `<Steam>\config\depotcache`. A Steam le `<Steam>\depotcache` â€”
 irmao de `steamapps`, nao filho de `config`. A assimetria e real e nao e erro de digitacao: `stplug-in` fica
 sob `config` porque e do SteamTools; `depotcache` e da propria Steam.
 
 O efeito era silencioso e por isso sobreviveu tanto tempo: um manifest na pasta errada e invisivel para a
-Steam, entao o depot pinado resolve para nada e o download nunca comeca — sem erro em lugar nenhum. O lado
+Steam, entao o depot pinado resolve para nada e o download nunca comeca â€” sem erro em lugar nenhum. O lado
 de leitura estava igualmente errado, entao o app tinha cache hit em arquivos que a Steam nao enxerga e cache
 miss em arquivos que ela ja tinha.
 
 - Caminho de escrita corrigido; `LegacyDepotCacheDir` existe apenas como **fallback de leitura**, nunca de
   escrita, para que manifests ainda nao migrados continuem contando como cacheados.
 - `DepotCacheMigrationService` move o que ficou preso, no startup. Silencioso, idempotente, nunca sobrescreve,
-  e so move arquivo cujos bytes batem com o nome que ele mesmo carrega — um manifest truncado que chegasse ao
+  e so move arquivo cujos bytes batem com o nome que ele mesmo carrega â€” um manifest truncado que chegasse ao
   depotcache real seria grudento, porque o instalador pula destino existente.
 - Sete testes fixavam o caminho errado. Eles codificavam o bug e foram corrigidos junto.
 
 ### Fixes Denuvo podem ser desfeitos
 
-O Amethyst aplicava um fix extraindo o zip e nao registrava nada — sem backup, sem record, sem botao. Agora
-`DenuvoFixService` grava o que mudou, em quatro fases (planejar → gravar o record → aplicar → assentar os
+O Amethyst aplicava um fix extraindo o zip e nao registrava nada â€” sem backup, sem record, sem botao. Agora
+`DenuvoFixService` grava o que mudou, em quatro fases (planejar â†’ gravar o record â†’ aplicar â†’ assentar os
 fatos), e o record e o que faz o botao Revert aparecer.
 
 - **Backup e chaveado pelo caminho relativo completo.** Zips de fix repetem o mesmo nome em pastas diferentes
   (`steam_api64.dll`, `config.ini`); chavear por nome colapsaria os dois num unico `.bak`.
 - **Cada entrada guarda o SHA-256 do que o fix escreveu.** Se o arquivo em disco nao e mais aquele, o revert
-  para em vez de sobrescrever — pega fix empilhado, update do jogo e edicao manual, que nenhuma regra de
+  para em vez de sobrescrever â€” pega fix empilhado, update do jogo e edicao manual, que nenhuma regra de
   ordem pegaria.
 - **Uma saida, um toast.** Revert parcial (caso comum: arquivo travado com o jogo aberto) mantem backups e
   record de proposito, para continuar re-tentavel.
@@ -43,27 +45,27 @@ fatos), e o record e o que faz o botao Revert aparecer.
 ### Filtro "My games" na aba Fixes
 
 Mostra so os jogos com lua em `stplug-in`. A contagem no tooltip e a **intersecao** com o listing, nao o total
-da biblioteca — no upstream, 243 luas adicionadas anunciavam "243 jogos com fixes" enquanto a grade filtrada
+da biblioteca â€” no upstream, 243 luas adicionadas anunciavam "243 jogos com fixes" enquanto a grade filtrada
 mostrava uma duzia.
 
 ### Aviso sobre a mudanca da Steam
 
 Numa manutencao de setembro de 2026 a Steam fechou o metodo que clientes tipo SteamTools usavam para obter
-manifests de jogos **nao possuidos**. A saida e operacional, nao tecnica — usar fonte que entregue os
+manifests de jogos **nao possuidos**. A saida e operacional, nao tecnica â€” usar fonte que entregue os
 manifests (Sadie/Hubcap ou Ryuu), desligar "Auto Update Apps (Don't Lock Manifests)", e re-adicionar o que
 tiver sido adicionado do jeito antigo. **O app nao consegue detectar nada disso**, entao ele fala.
 
-`Views/ManifestSourceNotice.xaml` — cartao estatico, sem view model, sem comando, sem rede, sem estado
+`Views/ManifestSourceNotice.xaml` â€” cartao estatico, sem view model, sem comando, sem rede, sem estado
 persistido. Aparece em duas telas: a Add, logo acima da lista de fontes (onde a escolha acontece), e o
 painel de depots do Builds (onde um manifest que nao pode ser obtido vira a falha que o usuario ve).
 
 - **Interruptor unico:** `AppConfig.ShowManifestSourceNotice`. Escrito como expressao condicional e nao
-  como `if` porque a constante e de tempo de compilacao e o corpo do `if` seria provadamente inalcancavel —
+  como `if` porque a constante e de tempo de compilacao e o corpo do `if` seria provadamente inalcancavel â€”
   CS0162 e erro neste build.
 - **Sem `{Binding}`.** As duas paginas hospedeiras tem DataContexts que nao tem nada em comum; um binding
   resolveria contra a pagina hospedeira e renderizaria vazio em pelo menos uma. Ha teste fixando isso.
 - **Nao dispensavel, de proposito.** Dispensar exigiria um campo em `AppSettings`, e todo campo novo tem de
-  entrar no predicado `empty` do `SaveCore` — ja apagou o `settings.json` duas vezes. Nao vale por um cartao.
+  entrar no predicado `empty` do `SaveCore` â€” ja apagou o `settings.json` duas vezes. Nao vale por um cartao.
 - **Ingles apenas, deliberadamente.** As quatro chaves `Notice_Manifests_*` estao em `PENDING_TRANSLATION`:
   o texto e para ser deletado, e pagar 29 traducoes por algo efemero e a troca errada. Se continuar aqui em
   alguns releases, a premissa estava errada e ele deve ser traduzido.
@@ -72,25 +74,25 @@ painel de depots do Builds (onde um manifest que nao pode ser obtido vira a falh
   em vez de ser anunciado sem rotulo; as cores saem de tokens de tema, entao segue o accent e as duas rampas.
 
 **Lista de fontes nao mudou no codigo.** "Luie" e "Sushi" foram desabilitadas pelos criadores do lado do
-servidor — `SourceMeta` aqui e so metadado de exibicao (nome, Discord, se exige chave), e a lista real vem
+servidor â€” `SourceMeta` aqui e so metadado de exibicao (nome, Discord, se exige chave), e a lista real vem
 da API. Nada a alterar.
 
 ### Nao portado
 
-- **`AppliedFixIndexService`** — na v1.3.1 e write-only: esta no DI e o `ManifestJobFactory` chama `Add`/
+- **`AppliedFixIndexService`** â€” na v1.3.1 e write-only: esta no DI e o `ManifestJobFactory` chama `Add`/
   `Remove`, mas nada chama `ListAsync`/`RebuildAsync`. Criaria `%AppData%\LuaToolsGui\applied-fixes.json`,
   um registro persistente de tudo que o usuario corrigiu, por zero beneficio atual. O record por jogo e
   autoritativo e basta.
-- **Fixes na fila unificada** — o revert do upstream mora no `ManifestJobFactory` porque la o Denuvo ja passa
-  pela fila. Aqui isso continua sendo a pendencia §1, uma migracao de agendamento e nao uma reescrita.
+- **Fixes na fila unificada** â€” o revert do upstream mora no `ManifestJobFactory` porque la o Denuvo ja passa
+  pela fila. Aqui isso continua sendo a pendencia Â§1, uma migracao de agendamento e nao uma reescrita.
 
-## 1.7.2 — 2026-09-02
+## 1.7.2 â€” 2026-09-02
 
 ### O accent chega aos controles do container central
 
 1.7.1 corrigiu a metade errada do problema. `TextFillColorPrimaryBrush` era uma lacuna real e o texto
 corrido passou a seguir a rampa, mas o que o usuario olha sao os controles pintados pelas NOVE brushes de
-accent do WPF-UI — e essas nunca estavam sendo repintadas. Com Vermelho selecionado, a janela e a barra
+accent do WPF-UI â€” e essas nunca estavam sendo repintadas. Com Vermelho selecionado, a janela e a barra
 de navegacao iam para wine enquanto os botoes primarios, os toggles e o texto de accent dentro da pagina
 continuavam violeta.
 
@@ -99,26 +101,26 @@ continuavam violeta.
   consequencias, e a segunda e o bug: elas ficam congeladas, entao nada consegue repinta-las depois; e o
   objeto que uma View resolveu via `{StaticResource}` no load e descartado e trocado por outro, entao a
   View continua segurando a brush antiga e continua pintando o accent antigo pelo resto da sessao.
-- **Perguntar a cor ao dicionario sempre devolvia a resposta certa** — foi por isso que o bug sobreviveu a
+- **Perguntar a cor ao dicionario sempre devolvia a resposta certa** â€” foi por isso que o bug sobreviveu a
   um teste baseado em cor e a um build limpo.
 
 ### A correcao segue o mecanismo que o resto da paleta ja usa
 
 - **`Themes/Colors.xaml` declara as nove**, contra `{DynamicResource SystemAccentColor*}`. O
-  `DynamicResource` e o que mantem um `Freezable` mutavel — mesma razao pela qual toda brush daquele
+  `DynamicResource` e o que mantem um `Freezable` mutavel â€” mesma razao pela qual toda brush daquele
   arquivo e escrita assim. Ele nao carrega a cor.
 - **`App.DropAccentBrushOverrides`** remove as copias congeladas de topo depois de cada `Apply`, para a
   resolucao cair nas nossas. E o espelho de `PromoteSurfaceOverrides`: cor e tipo de valor e precisa
   SUBIR para o topo; brush e referencia e precisa DESCER para nao ser substituida.
 - **`AccentPalette.WpfUiAccentColors`** mapeia cada brush ao seu peso e o `ThemeRepaint` a move, depois do
   drop.
-- O mapeamento brush → peso e o do proprio WPF-UI 4.3.0 sob o tema escuro, **medido** contra uma
+- O mapeamento brush â†’ peso e o do proprio WPF-UI 4.3.0 sob o tema escuro, **medido** contra uma
   `Application` viva em vez de presumido: ele troca os pesos de texto no escuro.
 
 ### Testes
 
-- **+28 testes (total: 1629).** Eles verificam **IDENTIDADE** da brush atraves de uma troca, nao so a cor —
-  uma asserção de cor passava durante todo o bug. Tambem cobrem: brush nao congelada, cor efetivamente
+- **+28 testes (total: 1629).** Eles verificam **IDENTIDADE** da brush atraves de uma troca, nao so a cor â€”
+  uma asserÃ§Ã£o de cor passava durante todo o bug. Tambem cobrem: brush nao congelada, cor efetivamente
   muda, e nenhuma copia de topo sobrando sombreando a paleta.
 - `ThemeHost` virou **collection fixture**: o WPF permite uma unica `Application` por AppDomain, e uma
   segunda classe com `IClassFixture<ThemeHost>` aborta a execucao inteira.
@@ -128,13 +130,13 @@ continuavam violeta.
 - Nenhuma telemetria, auto-update, elevacao UAC, SAC ou envio de chaves reintroduzido. `settings.json`
   inalterado. Nenhuma dependencia NuGet nova. Pin `[4.3.0]` do WPF-UI mantido.
 
-## 1.7.1 — 2026-09-02
+## 1.7.1 â€” 2026-09-02
 
 ### O accent para de morrer na borda do container central
 
 - **`TextFillColorPrimaryBrush` tokenizada.** As dez Views definem `TextElement.Foreground` a partir dessa
   chave na raiz, entao ela e a cor de texto PADRAO de todo o container central. O WPF-UI a publica como
-  branco puro (`#FFFFFFFF`) sem `Color` correspondente, e ela nao existia em `Themes/Colors.xaml` — era o
+  branco puro (`#FFFFFFFF`) sem `Color` correspondente, e ela nao existia em `Themes/Colors.xaml` â€” era o
   unico token de texto que uma troca de accent nao conseguia mover. A barra de navegacao ia para Moss50
   enquanto cada pagina dentro dela continuava branca de fabrica; a costura que o usuario lia como "o accent
   parou de aplicar na area de conteudo".
@@ -147,11 +149,11 @@ continuavam violeta.
   fora da fila: um unlock de DLC nao aparecia na aba Downloads e podia rodar em paralelo com uma instalacao
   de manifesto gravando o mesmo `<appid>.lua`.
 - **`ManifestJobFactory.CreateDlcJob`** monta o job. Ele compartilha o `ManifestKey` com um download de
-  manifesto de proposito — e esse dedupe key que torna os dois mutuamente exclusivos, exatamente como ja
+  manifesto de proposito â€” e esse dedupe key que torna os dois mutuamente exclusivos, exatamente como ja
   acontecia entre duas fontes.
 - Sem gate de confirmacao: um unlock de DLC so ADICIONA uma linha de entitlement, entao nao ha diff
   antes/depois em que valha parar. Bate com o caminho inline que ele substitui, que instalava em silencio.
-- `InstallManifest` passou a aceitar `source` anulavel — um DLC e gerado para o appid, nao buscado numa das
+- `InstallManifest` passou a aceitar `source` anulavel â€” um DLC e gerado para o appid, nao buscado numa das
   fontes nomeadas, entao nao ha "via X" para atribuir.
 - `LuaToolsApiClient.GenerateDlcAsync` agora reporta `DownloadProgress` em vez de `double?`, como o resto
   da infraestrutura de fila.
@@ -168,7 +170,7 @@ continuavam violeta.
 ### Codigo morto removido
 
 - `_fastFetchSource`, `ReportInstall` e `DeleteStaged` sairam junto com o caminho inline a que pertenciam.
-  `_fastFetchSource` era atribuido e nunca mais lido depois que a fila assumiu — um `CS0414` esperando para
+  `_fastFetchSource` era atribuido e nunca mais lido depois que a fila assumiu â€” um `CS0414` esperando para
   quebrar o build sob `TreatWarningsAsErrors`.
 
 ### Testes
@@ -181,46 +183,46 @@ continuavam violeta.
 - Nenhuma telemetria, auto-update, elevacao UAC, SAC ou envio de chaves reintroduzido. `settings.json`
   inalterado. Nenhuma dependencia NuGet nova.
 
-## 1.7.0 — 2026-08-30
+## 1.7.0 â€” 2026-08-30
 
 ### Aba Downloads: uma fila unica para tudo que o app baixa
 
 - **Nova aba Downloads na barra de navegacao.** Todo download que o app executa aparece nela com tamanho,
   velocidade e tempo restante, e pode ser cancelado ou repetido de um so lugar. Antes cada pagina desenhava
   a propria barra, e um download iniciado em uma pagina era invisivel de qualquer outra.
-- **`Services/Downloads/`** — a infraestrutura da fila, portada do LuaTools v1.3.0 e adaptada:
+- **`Services/Downloads/`** â€” a infraestrutura da fila, portada do LuaTools v1.3.0 e adaptada:
   `DownloadQueue` (o escalonador, um `IHostedService`), `DownloadItem` (a linha viva, com a janela
   deslizante de amostras que deriva velocidade e ETA), `DownloadJob`/`DownloadProgress`/`ProgressRelay<T>`
   (o contrato) e `DownloadHistory` (o registro persistido).
 - **`ManifestJobFactory`** e o unico lugar que sabe como um manifesto e buscado e instalado, e como uma
-  selecao de depots e executada. Os tres caminhos de download que existiam — a pagina Add, o
-  `PluginAddService` e a ponte HTTP — tinham cada um a sua copia da mesma sequencia, com o proprio sniff de
+  selecao de depots e executada. Os tres caminhos de download que existiam â€” a pagina Add, o
+  `PluginAddService` e a ponte HTTP â€” tinham cada um a sua copia da mesma sequencia, com o proprio sniff de
   zip, a propria limpeza do arquivo em staging e a propria redacao do resultado. Elas ja tinham divergido:
   o mesmo download relatava coisas diferentes conforme onde tivesse sido iniciado.
 
 ### Pausar, retomar e sobreviver a navegacao
 
 - **Downloads de depot podem ser pausados e retomados.** Sao o unico tipo cujo trabalho parcial sobrevive a
-  interrupcao, porque os bytes ja estao em disco — o Resume continua a partir do primeiro depot que nao
+  interrupcao, porque os bytes ja estao em disco â€” o Resume continua a partir do primeiro depot que nao
   terminou em vez de rebaixar dezenas de GB. `DownloadDepotsAsync` passou a reportar cada depot concluido
   assim que ele termina (`IProgress<long> depotCompleted`): o resultado so chega a quem recebe um
-  `DepotJobResult`, e um cancelamento lanca em vez de retornar — exatamente quando essa lista mais importa.
+  `DepotJobResult`, e um cancelamento lanca em vez de retornar â€” exatamente quando essa lista mais importa.
 - **Um download nao morre mais ao sair da pagina.** A aba Depots entrega a selecao para a fila e informa
   isso, em vez de segurar uma transferencia de horas dentro do comando da propria pagina.
 - **Corrida corrigida no Resume.** Um `Resume` podia chegar antes de a execucao pausada observar o proprio
-  cancelamento, e a execucao obsoleta entao encerrava o item — cancelando a que acabara de substitui-la.
+  cancelamento, e a execucao obsoleta entao encerrava o item â€” cancelando a que acabara de substitui-la.
   `RunItemAsync` compara a identidade do `CancellationTokenSource` que possui e fica em silencio quando foi
   substituida.
 
 ### Historico
 
 - **Downloads concluidos ficam registrados e sobrevivem a um restart**, com limpeza individual e em massa.
-  Guardado em `cache.json` — contabilidade do app —, nunca em `settings.json`, cujo formato ja distribuido
+  Guardado em `cache.json` â€” contabilidade do app â€”, nunca em `settings.json`, cujo formato ja distribuido
   nao pode mudar. Um `cache.json` escrito antes desta versao simplesmente nao tem o campo e carrega com
   historico vazio.
 - **Mensagens de falha passam por `LogSanitizer` antes de ir para o disco.** O texto de uma excecao pode ser
   montado a partir de um corpo HTTP (`AuthService` lanca `$"Token exchange failed ({code}): {body}"`), e
-  `cache.json` e texto plano no perfil do usuario — o mesmo tratamento que o log de crash ja recebia.
+  `cache.json` e texto plano no perfil do usuario â€” o mesmo tratamento que o log de crash ja recebia.
 
 ### Deduplicacao
 
@@ -240,27 +242,27 @@ continuavam violeta.
 ### i18n
 
 - 36 chaves novas (`Nav_Downloads`, `Downloads_*`, `Builds_Depot_Queued`) em `Strings.resx` e
-  `Strings.Designer.cs`, registradas em `PENDING_TRANSLATION` conforme o padrao — a pagina chegou inteira em
+  `Strings.Designer.cs`, registradas em `PENDING_TRANSLATION` conforme o padrao â€” a pagina chegou inteira em
   um commit e a redacao ainda esta assentando.
 
-## 1.6.3 — 2026-08-30
+## 1.6.3 â€” 2026-08-30
 
 ### Conflito de engines: instalar o AmethystTool sobre o BetterSteamTools deixava os dois carregados
 
 - **`OpenSteamTool.dll` e `opensteamtool.toml` agora sao colocados em QUARENTENA no ato da instalacao.**
   O payload do AmethystTool sobrescreve `dwmapi.dll` e `xinput1_4.dll`, entao os proxies de um Mode param
-  de ser carregados sozinhos. `OpenSteamTool.dll` era o unico que **nao** era sobrescrito — e o AmethystTool
+  de ser carregados sozinhos. `OpenSteamTool.dll` era o unico que **nao** era sobrescrito â€” e o AmethystTool
   e um FORK do BetterSteamTools, cujo loader ainda encontra e carrega esse arquivo. Resultado: o steam.exe
   subia com dois engines fisgados nele, que e o estado por tras da falha de download reportada.
   `AmethystToolPlan.ConflictingFiles` nomeia os dois arquivos e `AmethystInstallPlan.Quarantine` diz para
   onde vao.
 - **Sao MOVIDOS, nunca apagados.** Pertencem a outra ferramenta. Vao para a mesma pasta de backup por
-  instalacao que um sobrescrito usa, e uma quarentena sozinha ja e motivo suficiente para criar essa pasta —
+  instalacao que um sobrescrito usa, e uma quarentena sozinha ja e motivo suficiente para criar essa pasta â€”
   antes ela so existia quando algum arquivo do payload seria sobrescrito. O card mostra o caminho
   (`Amethyst_Backup_Line`), entao quem quiser voltar sabe onde procurar.
 - **A quarentena roda ANTES do payload,** nao depois: o ponto e que o Steam nunca volte com
   `OpenSteamTool.dll` e `AmethystTool.dll` juntos na raiz.
-- **`cloud_redirect.dll` fica onde esta, de proposito.** Nada o carrega pelo nome — quem carrega e o
+- **`cloud_redirect.dll` fica onde esta, de proposito.** Nada o carrega pelo nome â€” quem carrega e o
   OpenSteamTool. Com aquele DLL fora da raiz, este ja esta inerte, e mover o arquivo de um add-on separado
   seria fazer mais do que tirar o conflito do caminho. Coberto por teste.
 - A entrada de manifesto do Mode continua reivindicando `OpenSteamTool.dll`. E deliberado: o arquivo foi
@@ -272,13 +274,13 @@ continuavam violeta.
 - **O card do AmethystTool nao le mais "atualizado" enquanto um Mode segura os proxies.**
   `IsInstalledLocally()` respondia so por presenca de nome, e dois dos quatro nomes (`dwmapi.dll`,
   `xinput1_4.dll`) sao escritos por todo Mode. Instalar o BetterSteamTools sobre o AmethystTool troca
-  exatamente esses dois e deixa `AmethystTool.dll` e `amethysttool.toml` para tras — os quatro nomes seguiam
+  exatamente esses dois e deixa `AmethystTool.dll` e `amethysttool.toml` para tras â€” os quatro nomes seguiam
   presentes, nenhum byte carregado era do AmethystTool, e o card anunciava "v1.1.0, atualizado" ao lado de um
   card de Mode com o selo ATIVO. Agora a checagem consulta tambem o slot unico de backend ativo.
   `ActiveBackend.None` continua contando como instalado: ninguem reivindicou o slot, entao os arquivos na
   raiz sao a melhor evidencia que existe.
 - **Os cards de Mode nao leem mais como instalados enquanto o AmethystTool segura os DLLs.**
-  `ModeStatusAsync` decidia "esse Mode esta instalado?" a partir dos mesmos dois arquivos —
+  `ModeStatusAsync` decidia "esse Mode esta instalado?" a partir dos mesmos dois arquivos â€”
   `OstMirrorStatusAsync` so reporta `NotInstalled` quando `dwmapi.dll` esta AUSENTE, e qualquer coisa que nao
   reconheca vira `UpdateAvailable`. O AmethystTool sempre deixa aquele arquivo presente, entao todo card de
   Mode lia como instalado ao lado dele, oferecendo um botao de Atualizar que devolveria o slot em silencio.
@@ -289,7 +291,7 @@ continuavam violeta.
 
 - **`DetectActiveModeAsync` agora retorna `null` quando a raiz da Steam carrega `AmethystTool.dll` E
   `amethysttool.toml` e o slot esta vazio.** A guarda anterior so cobria um slot que ja NOMEAVA o
-  AmethystTool. Um slot vazio — `settings.json` novo ou perdido — chegava ali com uma raiz do AmethystTool e
+  AmethystTool. Um slot vazio â€” `settings.json` novo ou perdido â€” chegava ali com uma raiz do AmethystTool e
   casava com o BetterSteamTools por hash, porque os proxies do fork podem ser byte a byte identicos aos do
   projeto de que ele saiu. Adotar esse casamento poria o selo ATIVO no card errado e ofereceria um Atualizar
   que entregaria o slot.
@@ -297,7 +299,7 @@ continuavam violeta.
   a mesma evidencia fraca de que `BackfillRecordIfMissing` ja se recusa a inferir propriedade. O slot fica em
   `ActiveBackend.None` e a decisao volta para o usuario.
 - `AmethystToolPlan.ExclusiveFiles` guarda os dois nomes que nenhum Mode coloca, e um teste percorre
-  `UnlockerService.AllModes` para falhar caso algum Mode passe a colocar um deles — a abstencao para de valer
+  `UnlockerService.AllModes` para falhar caso algum Mode passe a colocar um deles â€” a abstencao para de valer
   em silencio no dia em que essa propriedade deixar de ser verdade.
 - **Raiz ilegivel falha aberto, nao fechado.** `SteamRootFileNames` devolve um conjunto vazio diante de
   `IOException`/`UnauthorizedAccessException`, o que faz o chamador cair nas checagens de hash que rodaria de
@@ -309,12 +311,12 @@ continuavam violeta.
   As duas perguntas se separaram nesta versao: uma e "o card diz instalado?" (que um Mode no slot torna falsa
   de proposito), a outra e "sobrou alguma coisa para remover?". Compartilhar a checagem tirava o botao de
   Desinstalar exatamente de quem instalou o AmethystTool antes de existirem registros de instalacao e depois
-  poe um Mode por cima — deixando `AmethystTool.dll` e `amethysttool.toml` orfaos na raiz, sem caminho de
+  poe um Mode por cima â€” deixando `AmethystTool.dll` e `amethysttool.toml` orfaos na raiz, sem caminho de
   remocao dentro do app. Nada de inseguro e reivindicado: `BackfillRecordIfMissing` so registra arquivos do
   payload realmente encontrados, e a remocao continua pulando qualquer nome que outra instalacao viva
   reivindique.
 - **As duas correcoes de falso positivo viraram uma politica pura, `ActiveBackendPolicy.StillOwnsItsFiles`.**
-  Elas eram condicoes soltas dentro de metodos de servico com I/O, sem teste possivel — e as duas faziam a
+  Elas eram condicoes soltas dentro de metodos de servico com I/O, sem teste possivel â€” e as duas faziam a
   MESMA pergunta por caminhos diferentes, que e exatamente como o defeito original apareceu em dois lugares.
   `holder == None || holder == candidate`: o slot vazio nao rebaixa ninguem, e so um backend DIFERENTE
   segurando o slot responde nao. Os dois call sites agora chamam a mesma funcao, e a tabela verdade inteira
@@ -339,22 +341,22 @@ continuavam violeta.
   `scripts/check-i18n.py` como a autoridade, nao a propria frase.
 
 
-## 1.6.2 — 2026-08-27
+## 1.6.2 â€” 2026-08-27
 
 ### Pagina Plugin lista as fontes por criador, e voce escolhe a ativa
 
 - **A fonte do plugin deixou de ser um par de constantes e virou um CATALOGO escolhivel.**
   `AppConfig.PluginSources` traz `ArthurS357/Front-end-Amethyst` (padrao) e `madoiscool/LTSP`. A ordem e
-  ordem de exibicao e o padrao de instalacao nova — **nao** e mais uma cadeia de prioridade.
+  ordem de exibicao e o padrao de instalacao nova â€” **nao** e mais uma cadeia de prioridade.
   `PluginReleasesOwner`/`PluginReleasesRepo` continuam apontando para upstream, agora como uma entrada do
   catalogo entre outras.
 - **A pagina Plugin agora mostra um card por criador**, no mesmo formato dos cards da pagina Modos: mesma
-  borda, mesmo selo `Ativo`, mesma coluna de acao a direita. As duas paginas fazem a mesma pergunta — qual
-  de varias coisas mutuamente exclusivas deve ser a instalada — e responder a ela nao deveria parecer dois
+  borda, mesmo selo `Ativo`, mesma coluna de acao a direita. As duas paginas fazem a mesma pergunta â€” qual
+  de varias coisas mutuamente exclusivas deve ser a instalada â€” e responder a ela nao deveria parecer dois
   produtos diferentes. Cada card mostra o criador, a versao publicada, o status e, quando aplicavel, o
   motivo pelo qual aquela fonte nao pode ser instalada.
-- **O FALLBACK AUTOMATICO FOI REMOVIDO.** Se a fonte ativa nao publica nada instalavel — sem release, sem
-  tag, asset faltando, URL de asset apontando para fora do proprio repositorio, ou sem sha256 publicado —
+- **O FALLBACK AUTOMATICO FOI REMOVIDO.** Se a fonte ativa nao publica nada instalavel â€” sem release, sem
+  tag, asset faltando, URL de asset apontando para fora do proprio repositorio, ou sem sha256 publicado â€”
   a pagina **mostra o erro** e a instalacao falha. Nada instala a build do outro criador no lugar.
   Cair para a proxima fonte parece resiliencia, mas significa que quem consegue derrubar a primeira
   (bloqueio, rate limit, outage) tambem decide o que cai ao lado do `steam.exe` no lugar dela. Isso valia
@@ -363,18 +365,18 @@ continuavam violeta.
   gravada pelo botao *Usar esta fonte*. A precedencia esta em `PluginSourceSelection.Resolve`, que e
   politica pura e testavel: escolha do usuario -> fonte da instalacao atual -> padrao do catalogo.
 - **`settings.json` SELECIONA, nunca NOMEIA.** O slug persistido e validado contra o catalogo compilado no
-  momento do uso, nao na escrita — o arquivo existente nunca passou por validacao nenhuma, e e justamente
+  momento do uso, nao na escrita â€” o arquivo existente nunca passou por validacao nenhuma, e e justamente
   ele que alguem com acesso de usuario editaria. Um valor que nao casa com nenhuma fonte compilada e
   ignorado e o padrao vale. Assim o arquivo pode trocar entre fontes ja auditadas, mas nao pode introduzir
   uma nova.
 - **Compatibilidade com instalacoes existentes.** Quem ja instalou de `madoiscool/LTSP` continua nele:
   sem escolha gravada, a fonte ativa e a que o manifesto registra. Manifesto antigo (sem `Source`) e lido
-  como upstream — a unica coisa que ele poderia ter sido. O padrao ser o repositorio do fork nao migra
+  como upstream â€” a unica coisa que ele poderia ter sido. O padrao ser o repositorio do fork nao migra
   ninguem numa atualizacao do app.
 - **Trocar de fonte e uma instalacao completa, nao um atalho.** `InstallSourceAsync` e o mesmo caminho de
   Instalar/Atualizar: fonte tem que estar no catalogo, release tem que passar `PluginSourceResolver.Verify`
   inteiro, cada asset baixa do proprio repositorio da fonte e cada byte confere com o sha256 que ela
-  publicou. **Nada e escrito e nenhuma preferencia e gravada antes disso tudo passar** — troca que falha
+  publicou. **Nada e escrito e nenhuma preferencia e gravada antes disso tudo passar** â€” troca que falha
   deixa a instalacao anterior exatamente como estava, ainda ativa, ainda registrada. Troca que da certo
   apaga o diretorio do frontend inteiro, entao os arquivos do criador anterior nao sobrevivem embaixo dos
   novos.
@@ -388,11 +390,11 @@ continuavam violeta.
   empurrar o usuario para outro repositorio.
 - **Erros nao vazam metadado hostil.** `SourceProblemText` nomeia o que falhou e qual asset; a URL
   recusada e o digest ficam so no log (que ja passa por `LogSanitizer`). O caso `ForeignAssetUrl` e por
-  definicao aquele em que os metadados sao controlados por outra pessoa — devolver a URL dela para a UI
+  definicao aquele em que os metadados sao controlados por outra pessoa â€” devolver a URL dela para a UI
   seria publicar exatamente o que o pin acabou de recusar.
 - **i18n**: 20 chaves novas em `Strings.resx` e `Strings.pt-BR.resx` (rotulo da linha `Fonte`, cabecalho da
   secao, selos, status por fonte, confirmacao de troca e os cinco motivos de recusa). O selo ambar
-  `reserva` foi removido — descrevia um comportamento que nao existe mais, e a verificacao disso agora
+  `reserva` foi removido â€” descrevia um comportamento que nao existe mais, e a verificacao disso agora
   varre os 30 arquivos `Strings*.resx`, nao so os dois editados a mao. As outras 28 linguas caem em ingles
   para essas chaves ate serem traduzidas, que e o comportamento padrao de satelite do .NET.
 
@@ -400,15 +402,15 @@ continuavam violeta.
 
 - **Offline, ou fonte ativa quebrada, agora le como `Instalado` e nada mais.** Antes a pagina mostrava, no
   mesmo card, o erro dizendo que a fonte nao pode ser alcancada, a pilha verde `Atualizado` e o aviso
-  ambar `Desatualizado`. Nenhuma das duas ultimas era verificavel — sem release para comparar, nao ha o
+  ambar `Desatualizado`. Nenhuma das duas ultimas era verificavel â€” sem release para comparar, nao ha o
   que afirmar. O aviso ambar era o pior dos dois: mandava atualizar usando exatamente a fonte que acabou
   de falhar.
 
-O registro completo da auditoria que acompanhou esta versao — o que foi verificado, o que foi achado e por
-que cada correcao ficou como ficou — esta em
+O registro completo da auditoria que acompanhou esta versao â€” o que foi verificado, o que foi achado e por
+que cada correcao ficou como ficou â€” esta em
 [`auditoria-fontes-plugin-2026-08-27.md`](auditoria-fontes-plugin-2026-08-27.md).
 
-## 1.6.1 — 2026-08-27
+## 1.6.1 â€” 2026-08-27
 
 ### Absorcao de registro de instalacao agora e simetrica
 
@@ -424,7 +426,7 @@ que cada correcao ficou como ficou — esta em
   o AmethystTool, desinstalar qualquer um dos dois reportava os proxies como mantidos e os deixava na pasta
   da Steam.
 - **`InstallManifest.RecordExclusive` e a operacao que faltava.** Gravar a entrada e tirar aqueles nomes
-  das outras entradas passou a ser **uma** transformacao, nao duas chamadas em cada ponto de uso — o estado
+  das outras entradas passou a ser **uma** transformacao, nao duas chamadas em cada ponto de uso â€” o estado
   intermediario (gravado mas ainda nao absorvido) deixa de ser alcancavel, inclusive se a escrita falhar
   entre as duas metades. `InstallManifestService.RecordExclusive` aplica isso sob o mesmo `lock` e a mesma
   escrita atomica que o resto do arquivo.
@@ -435,7 +437,7 @@ que cada correcao ficou como ficou — esta em
   ficar vazia. Um arquivo que a copia **nao** conseguiu escrever (bloqueado ou sem permissao) ja ficava de
   fora do conjunto gravado, entao a reivindicacao de quem o colocou sobrevive.
 - **`store-page` passou pela mesma chamada, sem mudar de comportamento.** Ele reivindica apenas
-  `winmm.dll` e `winmm_real.dll`, que nenhum Mode e nenhum payload do AmethystTool coloca — a absorcao nao
+  `winmm.dll` e `winmm_real.dll`, que nenhum Mode e nenhum payload do AmethystTool coloca â€” a absorcao nao
   encontra sobreposicao e a escrita sai identica. O ponto de uso (`PluginInstallerService.RecordSteamRootFiles`)
   foi migrado mesmo assim: os tres backends que escrevem na pasta da Steam passam a gravar pela mesma
   operacao, e acrescentar um slot novo deixa de poder reintroduzir o impasse por esquecimento.
@@ -448,14 +450,14 @@ que cada correcao ficou como ficou — esta em
 
 - **A pagina dizia "No mode selected" para quem estava com o AmethystTool ativo.** A linha de status lia
   `SelectedModeDisplayName`, que e `null` justamente quando o AmethystTool ocupa o slot dos proxies. Ha um
-  slot so, entao ha uma pergunta so: a linha agora consulta o backend ativo e tem tres estados distintos —
+  slot so, entao ha uma pergunta so: a linha agora consulta o backend ativo e tem tres estados distintos â€”
   um Mode, AmethystTool, ou nenhum. O icone acende so quando alguem ocupa o slot.
 - **O status do AmethystTool exige evidencia em disco**, pela mesma razao que o selo do cartao: usa
   `AmethystToolService.IsActive` (selecao **e** payload presente), nao a selecao sozinha.
 - **A Steam agora aparece como aberta ou fechada**, nao so "detectada em tal caminho". E a informacao que
   decide se uma instalacao consegue escrever na pasta da Steam. O estado e dito em **texto**, nao apenas
   por cor.
-- **A versao do build aparece na propria pagina**, lida por `AppVersion` — a mesma fonte do rodape da nav e
+- **A versao do build aparece na propria pagina**, lida por `AppVersion` â€” a mesma fonte do rodape da nav e
   do User-Agent, entao os tres nao podem divergir.
 - **A postura do fork esta declarada na pagina**, nao so no Sobre: se o auto-update esta desligado, a
   pagina diz isso. Lido da resolucao **viva** do `UpdateService`, nao re-derivado do `settings.json`.
@@ -478,38 +480,38 @@ que cada correcao ficou como ficou — esta em
   escrito, ausencia de efeito sobre `store-page`, idempotencia, e o invariante geral (nenhum arquivo
   reivindicado por duas entradas depois da operacao).
 - Dois testes novos fixam que gravar o `store-page` de forma exclusiva **nao tira nada** de nenhum dos dois
-  backends, e que o resultado e indistinguivel de um `Record` simples — e isso que torna a migracao do ponto
+  backends, e que o resultado e indistinguivel de um `Record` simples â€” e isso que torna a migracao do ponto
   de uso uma uniformizacao e nao uma mudanca de comportamento, e e o que falha primeiro se algum slot futuro
   passar a colidir. `InstallManifestWriteTests` cobre a mesma garantia no nivel do arquivo.
-- `HomeDashboardBindingTests` (novo) checa a pagina pelos dois lados — todo `{Binding}` simples do XAML
+- `HomeDashboardBindingTests` (novo) checa a pagina pelos dois lados â€” todo `{Binding}` simples do XAML
   resolve num membro do view model, os comandos existem, nenhum texto visivel esta escrito direto na
   marcacao (`Text`/`Content`/`ToolTip`), os dois templates mostram foco de teclado, e os tres estados da
   linha de backend tem redacao distinta.
 - `ViewParseTests` passou a validar **nomes de icone**. A propria classe documentava essa lacuna: um
-  `Symbol="Foo24"` ou `{ui:SymbolIcon Foo24}` inexistente compila e so estoura quando a pagina e exibida —
+  `Symbol="Foo24"` ou `{ui:SymbolIcon Foo24}` inexistente compila e so estoura quando a pagina e exibida â€”
   o mesmo modo de falha do token de tema que ela ja pegava. O filtro de tokens tambem passou a cobrir as
   cores de estado (`Success`/`Warning`/`Danger`/`Info`/`Alert`), que a pagina inicial usa.
 - **Doze das dezoito chaves novas da pagina inicial foram traduzidas nos 29 idiomas** e saidas de
   `PENDING_TRANSLATION`, pelo mesmo metodo da passada de 1.5.2: cada valor foi derivado de uma traducao que o
-  **proprio arquivo daquele idioma** ja usa para aquela palavra — "backend" do `Mode_Subtitle` dele, "Refresh"
+  **proprio arquivo daquele idioma** ja usa para aquela palavra â€” "backend" do `Mode_Subtitle` dele, "Refresh"
   do `Settings_HubcapRefresh`, "Actions" do `Manage_ActionsHeader`, "plugin" do `Plugin_Title`, "active" do
-  `Settings_HubcapActive` — em vez de inventada. Nenhuma das doze tem placeholder, entao nao havia
+  `Settings_HubcapActive` â€” em vez de inventada. Nenhuma das doze tem placeholder, entao nao havia
   interpolacao a preservar. O `check-i18n.py` agora exige paridade completa nelas: 559 chaves em cada um dos
   29 arquivos, e a lista de pendencias caiu de 99 para 87.
 - **Seis ficaram pendentes, cada uma com o motivo registrado na propria lista.** `Home_Privacy_UpdatesOff`
   e `Home_Privacy_UpdatesOn` sao frases explicativas na voz editorial do app, o mesmo caso ja documentado
   para `Settings_Accent_Hint`. `Home_Action_Mode_Tip` e `Home_Action_Plugin_Tip` dependem de "proxy DLLs" e
-  "store-page plugin", que nao aparecem em **nenhuma** string ja traduzida dos 29 arquivos — nao havia de
+  "store-page plugin", que nao aparecem em **nenhuma** string ja traduzida dos 29 arquivos â€” nao havia de
   onde derivar o termo. `Home_Action_Updates_Tip` cita a pagina Sobre, que e inglesa por decisao.
   `Home_Action_Plugin` vale "Plugin", gemea de `Nav_Plugin`: traduzir o atalho e nao o item da barra de
   navegacao para o qual ele aponta separaria um rotulo so em duas palavras.
 - **`Settings_HubcapRefresh` estava sem diacriticos em `pl` e `ro`** ("Odswiez", "Reimprospatare"),
-  ao contrario do resto dos mesmos dois arquivos. Corrigido para "Odswiez" -> "Odśwież" e
-  "Reimprospatare" -> "Reîmprospătare"; o `Home_Refresh` novo de `ro` usa exatamente a mesma forma,
-  ja que foi derivado dessa chave. Achado ao derivar as traduçoes acima, nao por varredura: uma folding
+  ao contrario do resto dos mesmos dois arquivos. Corrigido para "Odswiez" -> "OdÅ›wieÅ¼" e
+  "Reimprospatare" -> "ReÃ®mprospÄƒtare"; o `Home_Refresh` novo de `ro` usa exatamente a mesma forma,
+  ja que foi derivado dessa chave. Achado ao derivar as traduÃ§oes acima, nao por varredura: uma folding
   ASCII so e distinguivel de uma palavra que naturalmente nao tem acento por revisao nativa.
 
-## 1.6.0 — 2026-08-26
+## 1.6.0 â€” 2026-08-26
 
 ### Um modo ativo por vez, AmethystTool no topo, SteamTools aposentado
 
@@ -526,9 +528,9 @@ que cada correcao ficou como ficou — esta em
 - **Formato do `settings.json` inalterado.** O campo `SelectedMode` sempre foi uma string livre lida como
   nome de enum, e um valor que nao e membro sempre significou "nenhum Mode ativo". O AmethystTool grava
   nesse mesmo campo, com um token que nenhum Mode usa. Um arquivo escrito por uma versao anterior mantem o
-  significado, e um escrito por esta e lido por uma anterior como "nenhum Mode" — nunca como o Mode errado.
+  significado, e um escrito por esta e lido por uma anterior como "nenhum Mode" â€” nunca como o Mode errado.
 - **A deteccao automatica nao rouba mais o slot.** O AmethystTool e um fork, entao seus proxies podem
-  bater com o hash do BetterSteamTools. A deteccao agora nao roda quando o AmethystTool esta ativo — do
+  bater com o hash do BetterSteamTools. A deteccao agora nao roda quando o AmethystTool esta ativo â€” do
   contrario ela readotaria o Mode e o duplo ATIVO voltaria por outro caminho.
 
 - **O cartao do AmethystTool passou a ser o primeiro da pagina Modo.** Ele lidera a lista, acima do
@@ -542,11 +544,11 @@ que cada correcao ficou como ficou — esta em
 
 - **Instalar o AmethystTool absorve o registro de Mode que ficou obsoleto.** Antes desta correcao, um
   registro `mode-*` que ja tinha instalado `dwmapi.dll`/`xinput1_4.dll` continuava reivindicando os dois
-  depois que o AmethystTool os sobrescrevia — a desinstalacao do AmethystTool relatava `SharedKept` para
+  depois que o AmethystTool os sobrescrevia â€” a desinstalacao do AmethystTool relatava `SharedKept` para
   arquivos que, na pratica, ja eram dele, "guardados" por um registro que nao correspondia mais aos bytes
   em disco. Agora, ao terminar a instalacao, o AmethystTool remove essas duas reivindicacoes especificas do
   registro do Mode antigo (`InstallManifest.AbsorbFiles`, politica pura + `InstallManifestService` para a
-  escrita). **So os nomes que o AmethystTool de fato acabou de gravar saem do registro antigo** — se aquele
+  escrita). **So os nomes que o AmethystTool de fato acabou de gravar saem do registro antigo** â€” se aquele
   registro ainda listar um arquivo que o AmethystTool nunca toca (ex.: `OpenSteamTool.dll` do
   BetterSteamTools), ele fica exatamente como estava. Um registro que so tinha os dois proxies e removido
   por inteiro; um que tem mais alguma coisa e apenas reduzido. Idempotente: rodar a instalacao de novo nao
@@ -554,7 +556,7 @@ que cada correcao ficou como ficou — esta em
 
 - **SteamTools saiu da pagina Modo.** O upstream parou de publicar atualizacoes, entao oferece-lo mandava
   o usuario para um backend que nao vai ser consertado. O cartao nao e mais mostrado e `InstallAsync`
-  recusa o modo. **A definicao continua no app de proposito**: o membro do enum e uma chave persistida —
+  recusa o modo. **A definicao continua no app de proposito**: o membro do enum e uma chave persistida â€”
   nomeia o registro `mode-steamtools` que diz quais arquivos ele colocou na pasta da Steam, e e o que
   `PluginRemovalService.ClaimedByOthers` consulta para nao apagar os proxies de uma instalacao que ainda
   esta la. Apagar a definicao deixaria os dois orfaos. Quem ainda tiver SteamTools como Mode ativo continua
@@ -564,7 +566,7 @@ que cada correcao ficou como ficou — esta em
 
 - **O cartao do AmethystTool agora fica na aba Modo, junto aos outros modos.** Ele estava na aba Plugin,
   ao lado do plugin de store-page, com quem nao compartilha nada: fonte diferente, payload diferente,
-  destino diferente. O que ele compartilha e com os Modes — dois dos quatro arquivos que instala,
+  destino diferente. O que ele compartilha e com os Modes â€” dois dos quatro arquivos que instala,
   `dwmapi.dll` e `xinput1_4.dll`, sao exatamente os proxies que SteamTools, BetterSteamTools e BST Nightly
   colocam. Ter AmethystTool instalado e ter um Mode instalado e o mesmo slot, entao os dois passam a
   aparecer na mesma lista. A aba Plugin voltou a ser so o plugin de store-page.
@@ -573,12 +575,12 @@ que cada correcao ficou como ficou — esta em
   Agora e um so, com o mesmo texto ("fechar Steam e continuar" na instalacao, "os arquivos vao para uma
   pasta de backup e a Steam fica fechada" na remocao).
 - **Uma instalacao de Mode e uma do AmethystTool nao rodam mais ao mesmo tempo.** Nas duas paginas
-  separadas, nada impedia iniciar as duas — e as duas param a Steam e escrevem os mesmos dois proxies. O
+  separadas, nada impedia iniciar as duas â€” e as duas param a Steam e escrevem os mesmos dois proxies. O
   botao do AmethystTool agora e regido pelo mesmo `IsBusy` da pagina que rege os cartoes de Mode, entao
   qualquer uma das operacoes desabilita a outra enquanto roda. O progresso vai para a barra unica no rodape
   da pagina, em vez de uma segunda barra dentro do cartao.
 - **A terminologia da UI acompanhou.** Status, botoes, badge e o aviso de "sem registro de instalacao" do
-  cartao passaram a usar a familia de recursos `Mode_*` — que ja existia, ja estava traduzida nos 30 idiomas
+  cartao passaram a usar a familia de recursos `Mode_*` â€” que ja existia, ja estava traduzida nos 30 idiomas
   e ja dizia "modo" em vez de "plugin". Nenhuma chave nova foi criada; `Removal_NoRecord_Hint`, que dizia
   "this plugin" e ficou sem uso, foi removida.
 - **Nada mudou na instalacao, na remocao ou na verificacao.** `AmethystToolService`, `AmethystToolPlan`,
@@ -595,38 +597,38 @@ que cada correcao ficou como ficou — esta em
   registro, a MESMA politica de remocao e a MESMA pasta de backup que a aba Plugin.
 - **Uma entrada de Mode por vez, com os restos carregados adiante.** Modes sao mutuamente exclusivos e
   sobrescrevem os nomes que compartilham. Uma entrada antiga sobrevivente continuaria reivindicando
-  `dwmapi.dll` — e reivindicacao de "outra instalacao" e exatamente o que impede um arquivo de ser removido,
+  `dwmapi.dll` â€” e reivindicacao de "outra instalacao" e exatamente o que impede um arquivo de ser removido,
   o que deixaria tanto o Mode novo quanto o AmethystTool permanentemente indesinstalaveis. Ao instalar, as
   entradas de outros Modes sao dobradas na nova: os nomes que sobreviveram em disco (`OpenSteamTool.dll`,
   tipicamente) entram no registro do Mode atual, entao um desinstalar limpa a cadeia inteira em vez de
   abandonar um arquivo que ninguem assume.
 - **O Mode ativo nao reivindica contra si mesmo.** `ClaimedByOthers` sempre somava os `PlaceFiles` do Mode
   ativo. Apontado para o proprio Mode ativo, isso marcaria cada arquivo dele como "ainda necessario a outra
-  instalacao", removeria zero arquivos e reportaria sucesso — a falha que a regra de compartilhamento existe
+  instalacao", removeria zero arquivos e reportaria sucesso â€” a falha que a regra de compartilhamento existe
   para evitar, virada para o alvo errado. A decisao virou funcao pura, `PluginRemoval.CombineClaims`.
 - **Deteccao automatica nao grava registro.** Na primeira execucao sem Mode selecionado o app compara os
   hashes das DLLs com os releases publicados e adota o que casar. Isso prova o que os arquivos SAO, e nada
-  sobre quem os colocou ali — entao nao ha registro, o botao fica desabilitado e o cartao explica o porque,
+  sobre quem os colocou ali â€” entao nao ha registro, o botao fica desabilitado e o cartao explica o porque,
   em vez de remover por adivinhacao. Mesma doutrina do AmethystTool.
 - **Tipo proprio para nao criar ciclo de DI.** `PluginRemovalService` ja depende de `UnlockerService` (para
   nao apagar as proxies do Mode ativo). Por isso a desinstalacao de Mode vive em `ModeRemovalService`, um
-  orquestrador fino sobre os dois — o container rejeitaria o ciclo em `ValidateOnBuild`.
+  orquestrador fino sobre os dois â€” o container rejeitaria o ciclo em `ValidateOnBuild`.
 - **`SelectedMode` volta a "nenhum" so depois de os arquivos sairem.** Limpar antes deixaria um desinstalar
   falho reportando "sem Mode" com as DLLs ainda sendo carregadas pela `steam.exe`, e o registro que diz
   quais arquivos sao esses fora do alcance da UI. Nada muda no formato do `settings.json`: o campo sempre
-  foi anulavel e o `null` sempre significou "nunca escolhido" — sem migracao.
+  foi anulavel e o `null` sempre significou "nunca escolhido" â€” sem migracao.
 
 ### Escrita atomica do registro de instalacao
 
 - **`File.WriteAllText` trocado por gravar-e-trocar.** O registro vai para um temporario IRMAO (mesmo
   volume, porque mover entre volumes e copia, e copia nao e atomica) e so entao entra no lugar via
-  `File.Replace` — ou `File.Move` na primeira gravacao, quando nao ha o que substituir. `WriteAllText`
+  `File.Replace` â€” ou `File.Move` na primeira gravacao, quando nao ha o que substituir. `WriteAllText`
   trunca antes e preenche depois: uma queda nessa janela deixa um arquivo que le como vazio, e "nada esta
   registrado" e justamente o que faz o Desinstalar se recusar a tocar em arquivos que continuam na raiz da
   Steam. A escrita atomica impede que um crash desarme o recurso em silencio.
 - **Falha nao destroi o registro anterior** e nao deixa temporario para tras; o retorno continua sendo
   `false` em vez de excecao, porque a instalacao ja aconteceu quando isso roda.
-- **Nome de temporario unico por chamada** — o lock e por instancia, o arquivo nao.
+- **Nome de temporario unico por chamada** â€” o lock e por instancia, o arquivo nao.
 - **`InstallManifestService` ganhou seam de diretorio** (ctor `internal`, padrao do `SettingsService`), para
   o caminho de escrita ser testavel sem sujar o registro de quem roda os testes.
 
@@ -634,7 +636,7 @@ que cada correcao ficou como ficou — esta em
 
 - **Desinstalar do AmethystTool passava por fora do proprio servico.** A view model chamava
   `PluginRemovalService.RemoveAsync` direto, entao nem o back-fill de registro (instalacoes anteriores ao
-  manifest) nem a limpeza do manifest de versao rodavam — o botao ficava habilitado para esses usuarios e
+  manifest) nem a limpeza do manifest de versao rodavam â€” o botao ficava habilitado para esses usuarios e
   respondia "sem registro". Agora vai por `AmethystToolService.UninstallAsync`.
 - **`DescribeRemoval` saiu da view model para `RemovalMessage`**, compartilhado entre a aba Plugin e a aba
   Modo. Duas descricoes escritas a mao para um mesmo desfecho e como "removido" e "mantido porque outra
@@ -642,7 +644,7 @@ que cada correcao ficou como ficou — esta em
 - **Chave i18n `Plugin_Toast_Removed` removida** dos 30 `.resx` e do `Strings.Designer.cs`. Ficou orfa
   quando o texto foi trocado pela variante que menciona a Steam; um accessor sem chave faz o `Strings.Get`
   devolver o NOME da chave e a UI exibir "Plugin_Toast_Removed".
-- **Documentado que a Steam nao e reaberta apos desinstalar** — README ganhou secao propria explicando que
+- **Documentado que a Steam nao e reaberta apos desinstalar** â€” README ganhou secao propria explicando que
   isso vale para os tres caminhos de desinstalacao e por que difere do instalar. Comportamento inalterado.
 
 ### Desinstalacao de plugins, e registro de instalacao
@@ -655,16 +657,16 @@ que cada correcao ficou como ficou — esta em
   `dwmapi.dll` e `xinput1_4.dll` sao colocados pelo AmethystTool E por tres dos unlockers da aba Modo. Com
   um Modo ativo, desinstalar o AmethystTool deixa esses dois no lugar e avisa; so o registro sai. Remover
   deixaria a Steam carregando um proxy cujo par sumiu. As reivindicacoes vem do manifest E do
-  `SelectedMode` — Modes nao mantem manifest proprio, entao so o manifest nao bastaria.
+  `SelectedMode` â€” Modes nao mantem manifest proprio, entao so o manifest nao bastaria.
 - **Nada e apagado, e movido.** Tudo removido vai para `Removal-backup-<timestamp>\<plugin>\` dentro da
   pasta da Steam. Um desinstalar do qual o usuario se arrepende vira mover arquivo de volta.
-- **Sem registro, sem remocao.** Se nao ha o que provar, o botao fica desabilitado com texto explicando —
+- **Sem registro, sem remocao.** Se nao ha o que provar, o botao fica desabilitado com texto explicando â€”
   nunca remocao por adivinhacao. Instalacoes anteriores ao registro continuam funcionando: ha um
   back-fill estreito, permitido so quando o app tem evidencia propria de que instalou (os nomes dos slots
   do plugin de store-page, que nada mais neste app coloca; ou o manifest local do AmethystTool).
 - **A Steam e parada e NAO e reaberta.** Os arquivos ficam travados com ela rodando, entao precisa cair;
   reabrir sozinha um cliente que ha um instante carregava uma DLL que agora nao existe mais nao e decisao
-  do desinstalador. Muda o comportamento do desinstalar do plugin de store-page, que antes reabria — o
+  do desinstalador. Muda o comportamento do desinstalar do plugin de store-page, que antes reabria â€” o
   toast agora diz que a Steam foi fechada.
 
 ### TOCTOU no PluginInstallerService
@@ -672,10 +674,10 @@ que cada correcao ficou como ficou — esta em
 - **Retroportado o endurecimento que so o AmethystTool tinha.** Verificar, triar e usar eram tres aberturas
   separadas do mesmo caminho; em cada intervalo outro processo rodando como o mesmo usuario podia trocar o
   arquivo, e os bytes que a `steam.exe` carrega nao seriam os bytes cujo digest foi conferido. Agora um
-  handle e mantido aberto sobre toda a sequencia — para o zip E para cada DLL de slot, que tinha a mesma
+  handle e mantido aberto sobre toda a sequencia â€” para o zip E para cada DLL de slot, que tinha a mesma
   janela entre verificar e copiar para a raiz da Steam.
 - **`FileShare.Read`, e a omissao importa mais que a inclusao.** Concede outros LEITORES (AssetIntegrity,
-  FixAnalyzer e ZipFile abrem por caminho) e nega escrita e — por nao ter `FileShare.Delete` — exclusao e
+  FixAnalyzer e ZipFile abrem por caminho) e nega escrita e â€” por nao ter `FileShare.Delete` â€” exclusao e
   rename. O arquivo nao pode ser substituido, truncado nem movido por baixo do handle.
 - **Centralizado em `AssetIntegrity.OpenPinned`**, usado pelos dois instaladores, com testes de regressao
   sobre o mecanismo em si.
@@ -684,7 +686,7 @@ que cada correcao ficou como ficou — esta em
 ### Instalacao automatica do AmethystTool
 
 - **A aba Plugin ganhou um segundo cartao: AmethystTool.** E o fork do BetterSteamTools mantido junto
-  deste app, e um plugin de injecao NATIVO — `dwmapi.dll` e `xinput1_4.dll` sao proxies que a `steam.exe`
+  deste app, e um plugin de injecao NATIVO â€” `dwmapi.dll` e `xinput1_4.dll` sao proxies que a `steam.exe`
   carrega pelo nome e que encaminham para `AmethystTool.dll`. Tudo vai para a RAIZ da Steam. O botao baixa
   o release, verifica, extrai e instala; a Steam e parada para a copia e reaberta depois, porque essas DLLs
   ficam travadas enquanto ela roda.
@@ -692,26 +694,26 @@ que cada correcao ficou como ficou — esta em
   `RELEASE_NOTES.md` e `TESTING.md`. A lista instalada e uma ALLOW-LIST (`AmethystToolPlan.PayloadFiles`),
   entao documentacao nao chega na pasta da Steam e um arquivo que um release futuro venha a adicionar e
   ignorado por padrao, em vez de instalado por padrao.
-- **Nada e sobrescrito sem copia antes.** Se `dwmapi.dll` ou `xinput1_4.dll` ja existir — outro tool e dono
-  dele, ou e reinstalacao — o arquivo atual e MOVIDO para `AmethystTool-backup-<timestamp>\` dentro da
+- **Nada e sobrescrito sem copia antes.** Se `dwmapi.dll` ou `xinput1_4.dll` ja existir â€” outro tool e dono
+  dele, ou e reinstalacao â€” o arquivo atual e MOVIDO para `AmethystTool-backup-<timestamp>\` dentro da
   pasta da Steam ANTES de a substituicao ser escrita, e o cartao diz para onde foi. Vale para o
   `amethysttool.toml` tambem: reinstalar troca a config, e a anterior fica na pasta de backup. Uma DLL
   proxy sobrescrita as cegas quebra a Steam de um jeito que o usuario nao desfaz.
 - **Verificacao fail-closed, sem valvula de escape.** O SHA-256 que o GitHub publica para o asset e
   obrigatorio; digest ausente, malformado ou divergente PARA a instalacao. Diferente do Steamless, aqui nao
-  ha hash pinado de fallback — o release ja publica digest, e um fallback so criaria um caminho em volta da
+  ha hash pinado de fallback â€” o release ja publica digest, e um fallback so criaria um caminho em volta da
   checagem. A URL do asset e pinada em `ArthurS357/BetterSteamTools-Amethyst` via
   `GithubProxy.IsAssetUrlForRepo`, entao um mirror hostil da API nao pode apontar para o payload de outro
   repositorio e entregar o hash correspondente.
-- **A decisao ficou separada da escrita.** `AmethystToolPlan` e politica pura sobre strings — o que copiar,
-  para onde, o que precisa de backup — e `AmethystToolService` so executa. E o que torna as tres garantias
+- **A decisao ficou separada da escrita.** `AmethystToolPlan` e politica pura sobre strings â€” o que copiar,
+  para onde, o que precisa de backup â€” e `AmethystToolService` so executa. E o que torna as tres garantias
   acima testaveis com uma pasta temporaria, sem Steam e sem rede.
 
 
-## 1.5.4 — 2026-08-22
+## 1.5.4 â€” 2026-08-22
 
 Duas coisas nesta versao: um botao **Jogar** na aba Gerenciar, e a base do app migrada de **.NET 8 para
-.NET 10 LTS**. Nao houve release 1.5.3 — a numeracao pula de 1.5.2 para 1.5.4.
+.NET 10 LTS**. Nao houve release 1.5.3 â€” a numeracao pula de 1.5.2 para 1.5.4.
 
 ### Jogar / Instalar
 
@@ -721,11 +723,11 @@ Duas coisas nesta versao: um botao **Jogar** na aba Gerenciar, e a base do app m
 - **O rotulo diz o que vai acontecer.** Com os arquivos em disco le **Jogar** e dispara
   `steam://rungameid/<appid>`; sem os arquivos le **Instalar** e dispara `steam://install/<appid>`, que
   abre o download na Steam. Rotulo e acao saem da MESMA regra (`SteamLaunchPolicy.IntentFor`) de proposito
-  — uma ViewModel que re-derivasse "diga Instalar quando nao instalado" por conta propria fica a uma
+  â€” uma ViewModel que re-derivasse "diga Instalar quando nao instalado" por conta propria fica a uma
   edicao de prometer uma coisa e fazer outra.
 - **Terceiro estado explicito: `Unknown`.** Quando a Steam nao e localizada, a biblioteca esta ILEGIVEL, e
   isso nao e sinonimo de "li e o jogo nao esta la". `Unknown` resolve para **Jogar**, nao para uma recusa:
-  `steam://rungameid/` se autocorrige — a propria Steam responde com o prompt de instalacao se o jogo e
+  `steam://rungameid/` se autocorrige â€” a propria Steam responde com o prompt de instalacao se o jogo e
   possuido e ausente, e com a pagina da loja se nao e possuido. Recusar deixaria o usuario preso atras de
   um botao morto exatamente no caso em que quem esta em duvida e o app.
 - **A Steam e iniciada antes, quando nao esta de pe.** Uma URL `steam://` enviada a um cliente morto e
@@ -735,12 +737,12 @@ Duas coisas nesta versao: um botao **Jogar** na aba Gerenciar, e a base do app m
   depois de subir. A espera so e paga quando a Steam precisou ser iniciada.
 - **Politica pura separada do adaptador.** `SteamLaunchPolicy` decide (`SteamLaunchPlan`) sem tocar em
   processo, disco ou registro; `SteamGameLauncher` reune os dois fatos e executa. A decisao inteira e
-  testavel sem Steam, sem WPF e sem I/O — e o que os testes novos de `SteamLaunchPolicyTests` cobrem.
+  testavel sem Steam, sem WPF e sem I/O â€” e o que os testes novos de `SteamLaunchPolicyTests` cobrem.
 - **`SteamProtocolUri` e a fronteira de seguranca do botao.** A URL chega em `Process.Start` com
   `UseShellExecute = true`, ou seja, o shell do Windows resolve o que estiver nela. Por isso o appid e
   validado como `long` numa faixa fechada (`0 < id < 2_000_000_000`) em vez de passar adiante como string:
   um `long` validado so consegue se renderizar como digitos, entao o resultado interpolado e comprovadamente
-  uma URL `steam://` bem formada — nao existe string que sobreviva ao parse para numero e ainda carregue
+  uma URL `steam://` bem formada â€” nao existe string que sobreviva ao parse para numero e ainda carregue
   aspas, espaco, troca de esquema ou um segundo argumento. Appid invalido devolve `null`, e `null` significa
   **nao iniciar processo nenhum**; nunca ha fallback para string crua. O teto de 2 bilhoes casa com o guarda
   do `SteamLinkParser` e exclui os valores compostos de 64 bits que `rungameid` usa para atalhos non-Steam.
@@ -756,19 +758,19 @@ Duas coisas nesta versao: um botao **Jogar** na aba Gerenciar, e a base do app m
   e para de receber correcao de seguranca; o .NET 10 e LTS ate **novembro de 2028**. Adiar a troca so
   encurta a janela em que ela pode ser feita com calma.
 - **`System.Security.Cryptography.ProtectedData` saiu do csproj.** Sob `net10.0-windows` o tipo ja vem com
-  o framework, e o NuGet levanta **NU1510** para a referencia redundante — que o `TreatWarningsAsErrors` do
+  o framework, e o NuGet levanta **NU1510** para a referencia redundante â€” que o `TreatWarningsAsErrors` do
   `Directory.Build.props` transforma em restore quebrado. Foi a unica alteracao que a migracao EXIGIU.
   O DPAPI (`AuthService`, `SettingsService`) nao muda: verificado que o tipo carrega de
   `shared\Microsoft.WindowsDesktop.App\10.0.11\` e que o round-trip funciona, e o blob continua no formato
-  Win32 `CryptProtectData` padrao — ou seja, chave Hubcap e tokens gravados pelo build .NET 8 seguem
+  Win32 `CryptProtectData` padrao â€” ou seja, chave Hubcap e tokens gravados pelo build .NET 8 seguem
   legiveis, sem migracao de dado.
   **O detalhe que importa:** ele vem do framework do WINDOWS DESKTOP, nao do base. Um projeto
   `net10.0-windows` sem `UseWPF`/`UseWindowsForms` nem compila contra ele (CS1069, tipo encaminhado). Logo,
   tirar `UseWPF` ou `UseWindowsForms` deste projeto quebraria o armazenamento de credencial, e nao so a UI.
   Ficou registrado no comentario do csproj.
 - **`Microsoft.Extensions.Hosting` 10.0.9 para 10.0.11**, alinhando com o runtime 10.0.11. Foi a UNICA
-  subida de versao de pacote da migracao. `WPF-UI` continua pinado exato em `[4.3.0]` — o tema Amethyst
-  depende de chaves internas de recurso dessa versao — e `Velopack 1.2.0` nao foi tocado para nao mexer no
+  subida de versao de pacote da migracao. `WPF-UI` continua pinado exato em `[4.3.0]` â€” o tema Amethyst
+  depende de chaves internas de recurso dessa versao â€” e `Velopack 1.2.0` nao foi tocado para nao mexer no
   auto-update. `VirtualizingWrapPanel`, `xunit`, `AwesomeAssertions` e `Microsoft.NET.Test.Sdk` tem versoes
   mais novas disponiveis e foram deixados como estao: nenhum deles bloqueia o .NET 10, e um salto de major
   no meio de uma migracao de runtime junta duas causas de falha numa mudanca so.
@@ -778,7 +780,7 @@ Duas coisas nesta versao: um botao **Jogar** na aba Gerenciar, e a base do app m
   proxima migracao.
 - **Zero mudanca de codigo exigida pela migracao.** Fora a remocao do `PackageReference`, nada precisou ser
   adaptado. O build passa com `TreatWarningsAsErrors=true` e **0 avisos**, e os testes existentes passam sem
-  alteracao — inclusive os que pinam as invariantes de seguranca (`LocalApiAccessPolicy`, `AssetIntegrity`,
+  alteracao â€” inclusive os que pinam as invariantes de seguranca (`LocalApiAccessPolicy`, `AssetIntegrity`,
   `AuthService.StateMatches`, `GithubProxy`, `LuaManifestValidator`). `BinaryFormatter`, removido no
   .NET 9, nao era usado em lugar nenhum.
 - **`RollForward=LatestMajor` mantido no projeto de testes** pelo mesmo motivo de sempre: nao custa nada e
@@ -790,17 +792,17 @@ Duas coisas nesta versao: um botao **Jogar** na aba Gerenciar, e a base do app m
 - **PENDENTE, fora deste repo: o `vpk pack`.** O passo de empacotamento e manual e nao esta versionado
   aqui, entao nada nesta mudanca o atualiza. Um build Velopack framework-dependent nomeia o runtime que o
   setup provisiona numa maquina limpa, e esse argumento precisa ir do desktop runtime do .NET 8 para o do
-  .NET 10 (`--framework net10.0-x64-desktop`) — caso contrario o instalador entrega um runtime em que o
+  .NET 10 (`--framework net10.0-x64-desktop`) â€” caso contrario o instalador entrega um runtime em que o
   binario 1.5.4 nao sobe. O `packId` continua o mesmo: ele e a chave de toda instalacao existente.
 - **`xunit` 2.9.2 aparece como preterido** (`Legacy`, alternativa `xunit.v3`) no `dotnet list package
   --deprecated`. Nao foi migrado aqui de proposito: xunit v3 muda o modelo de execucao da suite inteira e
-  nao tem relacao com o .NET 10 — a suite roda nele sem alteracao. Fica registrado como trabalho proprio.
+  nao tem relacao com o .NET 10 â€” a suite roda nele sem alteracao. Fica registrado como trabalho proprio.
 
 ### Formatacao e assinatura de codigo
 
 - **`.editorconfig` (novo) e `dotnet format --verify-no-changes` como portao.** O arquivo e deliberadamente
   minimo: toda regra nele ja casava com 100% da base antes de ser escrita, entao adiciona-lo nao gerou uma
-  unica violacao nova. `end_of_line` NAO e definido de proposito — o repo tem uma divisao real por arquivo
+  unica violacao nova. `end_of_line` NAO e definido de proposito â€” o repo tem uma divisao real por arquivo
   (CRLF na maioria dos `.cs`, LF nos `Resources/*.resx` e numa minoria de `.cs`), e forcar uma convencao
   marcaria como violacao todo arquivo do outro lado. O comportamento padrao do `dotnet format`, detectar e
   preservar o final de linha de cada arquivo, e o que ja deixa os dois coexistirem.
@@ -809,15 +811,15 @@ Duas coisas nesta versao: um botao **Jogar** na aba Gerenciar, e a base do app m
   inicializador de objeto quebrado por linha em `LaunchModStoreTests.cs`. Nenhuma delas muda comportamento.
 - **Assinatura de codigo documentada e ligada.** `build-release.ps1` assina `LuaTools.exe` com `signtool`
   quando `CERTIFICATE_PATH`/`CERTIFICATE_PASSWORD` estao definidos, e avisa em vez de pular em silencio
-  quando nao estao — releases continuam saindo sem assinatura por padrao, exatamente como antes. O
+  quando nao estao â€” releases continuam saindo sem assinatura por padrao, exatamente como antes. O
   certificado vem de variavel de ambiente e nao de parametro para que o valor nunca caia no historico do
   shell nem na invocacao registrada de um job de CI. Se o certificado ESTA configurado mas o `signtool` nao
   e encontrado, o script FALHA em vez de produzir um binario sem assinatura: cair para o artefato nao
   assinado entregaria em silencio exatamente aquilo que configurar o certificado existe para evitar. O
-  README ganhou a secao "Code signing" com os requisitos reais — por que um certificado self-signed ou DV
+  README ganhou a secao "Code signing" com os requisitos reais â€” por que um certificado self-signed ou DV
   nao resolve o SmartScreen, e por que o fluxo `/f`+`/p` deste script nao cobre EV com token de hardware.
 
-## 1.5.2 — 2026-08-19
+## 1.5.2 â€” 2026-08-19
 
 Fechar a janela deixa de matar o app: o X manda para a bandeja e o bridge local do plugin continua
 de pe. Mais os follow-ups de baixo risco que estavam registrados desde 1.5.1.
@@ -826,7 +828,7 @@ de pe. Mais os follow-ups de baixo risco que estavam registrados desde 1.5.1.
 
 - **Fechar a janela nao encerra mais o app.** O X passa a esconder a janela na bandeja e o processo
   continua vivo; a unica saida de verdade e o item **Sair** do menu da bandeja. Antes o comportamento
-  existia mas atras da opcao "Minimizar para a bandeja", **desligada por padrao** — ou seja, para quase
+  existia mas atras da opcao "Minimizar para a bandeja", **desligada por padrao** â€” ou seja, para quase
   todo mundo o X matava o app e junto com ele o bridge HTTP local que o plugin da store consulta. A
   integracao com a pagina da Steam simplesmente parava de responder, sem nada na tela dizendo por que.
   O padrao virou LIGADO. Quem prefere o antigo desliga a opcao em Configuracoes e a escolha e persistida.
@@ -836,7 +838,7 @@ de pe. Mais os follow-ups de baixo risco que estavam registrados desde 1.5.1.
 - **A regra saiu do code-behind.** `TrayService` (novo) e dono do icone e da decisao fechar-vs-encerrar,
   contra duas interfaces (`ITrayIcon`, `ITrayWindow`); `NotifyIconTray` e o unico adaptador WinForms e nao
   guarda logica. `MainWindow` virou o `ITrayWindow` que o servico dirige. Antes eram tres condicoes
-  embutidas no handler `Closing`, alcancaveis so com uma janela real — a regra com mais chance de irritar
+  embutidas no handler `Closing`, alcancaveis so com uma janela real â€” a regra com mais chance de irritar
   o usuario era a unica sem teste nenhum.
 - **`Dispose` do `NotifyIcon` garantido e idempotente.** Icone nao descartado fica morto na area de
   notificacao ate o usuario passar o mouse por cima.
@@ -848,21 +850,21 @@ de pe. Mais os follow-ups de baixo risco que estavam registrados desde 1.5.1.
 
 ### Follow-ups executados
 
-- **`Settings_HubcapKeyBad` mencionava `(smm_…)` nos 30 arquivos de idioma.** A validacao ja tinha sido
-  afrouxada em 1.5.1 (prefixo opcional, corpo hex 16–256), mas a mensagem de recusa continuou anunciando um
+- **`Settings_HubcapKeyBad` mencionava `(smm_â€¦)` nos 30 arquivos de idioma.** A validacao ja tinha sido
+  afrouxada em 1.5.1 (prefixo opcional, corpo hex 16â€“256), mas a mensagem de recusa continuou anunciando um
   formato que o codigo nao exige mais. Mensagem mais estrita que a checagem e pior que mensagem vaga: manda
   o usuario cacar uma chave que nunca foi o problema. O parentese foi removido de todos os idiomas. O
-  **placeholder** do campo (`Settings_HubcapKeyPlaceholder`) mantem o `smm_…` de proposito: e dica sobre o
+  **placeholder** do campo (`Settings_HubcapKeyPlaceholder`) mantem o `smm_â€¦` de proposito: e dica sobre o
   que colar num campo vazio, nao veredito sobre o que foi digitado.
-- **`PluginLog` → `AppLog`.** Ha muito tempo nao era so o log do bridge: resolvedor de auto-update, tela de
+- **`PluginLog` â†’ `AppLog`.** Ha muito tempo nao era so o log do bridge: resolvedor de auto-update, tela de
   seguranca de fixes/manifestos, aviso de DPAPI indisponivel, aviso de privacidade do lookup em texto claro
   e a checagem manual de update do About escrevem ali. O nome dizia "log do plugin", que e como um mantenedor
   decide **nao** olhar nele atras de um problema de update. O **arquivo** continua `plugin-backend.log` de
-  proposito — e o que o README e as respostas de suporte mandam enviar, e o que a geracao rotacionada `.1`
+  proposito â€” e o que o README e as respostas de suporte mandam enviar, e o que a geracao rotacionada `.1`
   ja se chama em disco.
-- **DTOs de API viraram `init`-only** (`ApiModels.cs`, `FixModels.cs`, `ModeModels.cs` — 96 propriedades).
+- **DTOs de API viraram `init`-only** (`ApiModels.cs`, `FixModels.cs`, `ModeModels.cs` â€” 96 propriedades).
   Sao alvos de desserializacao: o `System.Text.Json` preenche uma vez e nada no app tem o que escrever
-  depois. A conversao nao quebrou **nenhum** call site, que e justamente o argumento — a propriedade estava
+  depois. A conversao nao quebrou **nenhum** call site, que e justamente o argumento â€” a propriedade estava
   aberta a toa. `init` em `class`, deliberadamente **nao** `record`: `record` tambem trocaria igualdade de
   referencia por estrutural, e esses tipos vivem em caches e colecoes que nunca pediram semantica de valor.
 
@@ -870,13 +872,13 @@ de pe. Mais os follow-ups de baixo risco que estavam registrados desde 1.5.1.
 
 - **A primeira linha da primeira tela chamava o app pelo nome errado.** `Home_Welcome` dizia "Bem-vindo ao
   LuaTools" nos 30 idiomas, enquanto o titulo da janela, a aba About e o README dizem **LuaTools Amethyst**
-  — e o README manda o usuario identificar o build por exatamente essas superficies ("Checking which build
+  â€” e o README manda o usuario identificar o build por exatamente essas superficies ("Checking which build
   you are running"). A saudacao contradizia em silencio a propria checagem de identidade do fork. Agora
   nomeia o fork em todos os idiomas; "Amethyst" e nome de produto e nao se traduz, entao a frase traduzida
   segue intacta.
 - **`Plugin` no menu lateral era literal em ingles.** Os outros oito itens do rail leem de `Strings`; esse
   estava fixo no `MainWindow.xaml`. Numa UI traduzida ficava exatamente uma palavra em ingles no primeiro
-  elemento que o usuario olha. Virou `Nav_Plugin`, registrada em `PENDING_TRANSLATION` — sem traducao
+  elemento que o usuario olha. Virou `Nav_Plugin`, registrada em `PENDING_TRANSLATION` â€” sem traducao
   automatica, conforme a regra que vale para as outras 84 chaves.
 
 Fora isso, a abertura foi avaliada e **nao** recebeu mudancas: a janela ja pinta o fundo da paleta antes do
@@ -888,10 +890,10 @@ startup ja narra o que faz por toast. Nao havia defeito concreto ali para justif
 ### Follow-ups avaliados e nao implementados
 
 - **`file_modified` para detectar manifesto desatualizado.** `FileModified` e `NeedsUpdate` ja sao lidos e
-  guardados, e nada os consome — a pagina Manage ainda so sabe dizer "disponivel". A metade que falta e
+  guardados, e nada os consome â€” a pagina Manage ainda so sabe dizer "disponivel". A metade que falta e
   **local**: o app nao registra data de instalacao nem versao de origem de um manifesto, entao nao ha com o
   que comparar a data do HubCap. O `File.SetLastWriteTime` que o `LuaInstaller` carimba e a hora da
-  **escrita**, nao do manifesto que o HubCap gerou, e e reescrito por qualquer reinstalacao — comparar
+  **escrita**, nao do manifesto que o HubCap gerou, e e reescrito por qualquer reinstalacao â€” comparar
   aquilo reportaria "desatualizado" para copia atual e "atual" para copia velha. Fazer certo exige persistir
   o `file_modified` da origem junto de cada manifesto instalado, mais uma decisao de fuso sobre um valor que
   a API manda sem offset. E feature, nao limpeza; registrado no XML doc de `HubcapManifestStatus`.
@@ -910,20 +912,20 @@ startup ja narra o que faz por toast. Nao havia defeito concreto ali para justif
 - `HubcapKeyMessageTests` (novo, 3): nenhum dos 30 RESX pode citar `smm` na recusa; todo idioma continua
   com um texto de recusa nao vazio (apagar o valor faria o app exibir o **nome da chave** e o
   `check-i18n.py`, que so compara conjuntos de chaves, ainda passaria); e o placeholder segue permitido.
-- `ApiModelImmutabilityTests` (novo, 3): varredura por reflexao no namespace `Models` — nenhuma propriedade
+- `ApiModelImmutabilityTests` (novo, 3): varredura por reflexao no namespace `Models` â€” nenhuma propriedade
   publica com `set` (distinguido de `init` pelo modificador `IsExternalInit`), a varredura de fato encontra
   os DTOs (senao um rename de namespace vira teste que aprova para sempre), e `init` continua permitindo a
   desserializacao.
 - `PersistenceTests`: o default de `MinimizeToTray` passou a ser `true`, com `WantsResidentTrayApp` ainda
-  `false` — quem nunca escolheu nada nao vira app residente numa instalacao silenciosa.
+  `false` â€” quem nunca escolheu nada nao vira app residente numa instalacao silenciosa.
 - `ShellIdentityTests` (novo, 5): a saudacao nomeia o fork nos 30 idiomas; o titulo da janela continua
   ligado a `App_DisplayName` em vez de literal; **nenhum** item do rail pode ter `Content=` literal (pega o
-  proximo adicionado com pressa); o item Plugin le de `Nav_Plugin`; e a chave existe de fato — sem ela
+  proximo adicionado com pressa); o item Plugin le de `Nav_Plugin`; e a chave existe de fato â€” sem ela
   `Strings.Get` devolveria o **nome** da chave e o rail exibiria "Nav_Plugin".
 
-## 1.5.1 — 2026-08-18
+## 1.5.1 â€” 2026-08-18
 
-Correcao da troca de cor — que nunca chegou a funcionar — agora atras de um botao **Aplicar**, mais a
+Correcao da troca de cor â€” que nunca chegou a funcionar â€” agora atras de um botao **Aplicar**, mais a
 remocao de jogos dos Depots e os follow-ups de UX/seguranca do HubCap.
 
 ### Correcoes
@@ -940,12 +942,12 @@ remocao de jogos dos Depots e os follow-ups de UX/seguranca do HubCap.
 
   O Discord devolve ao Supabase apenas esse `state` e mais nada, entao sobrescreve-lo apaga o unico
   identificador do flow pendente. O redirect de volta para `http://localhost:53789/callback` nunca
-  acontecia, o listener local esperava os 5 minutos inteiros e o usuario via "sign-in timed out" — o
+  acontecia, o listener local esperava os 5 minutos inteiros e o usuario via "sign-in timed out" â€” o
   "botao do Discord nao loga de verdade". Correcao: remover o parametro.
 
   O nonce nao levava protecao junto. Quem liga o resgate a este cliente e o PKCE: um code injetado no
   listener por outro processo foi emitido contra outro `code_challenge`, entao a troca apresenta o nosso
-  verifier e o Supabase recusa — no servidor, que e o lugar certo para recusar. O guard `StateMatches`
+  verifier e o Supabase recusa â€” no servidor, que e o lugar certo para recusar. O guard `StateMatches`
   virou codigo morto e foi removido junto com seus testes; no lugar entrou um teste que exige a AUSENCIA
   do parametro, porque reintroduzi-lo parece endurecimento e derruba o recurso inteiro.
 - **Mensagem de timeout do login** passou a nomear o caminho que funciona (`/login` no servidor, colar o
@@ -957,17 +959,17 @@ remocao de jogos dos Depots e os follow-ups de UX/seguranca do HubCap.
 
   1. **Brushes congelados.** O WPF congela todo `Freezable` no momento em que o `ResourceDictionary` passa
      a ser propriedade de `Application.Resources`. `App.RepaintAccentBrushes` e `ThemeRepaint.Apply`
-     mutam `brush.Color` e pulam o que estiver congelado (`!brush.IsFrozen`) — ou seja, pulavam
+     mutam `brush.Color` e pulam o que estiver congelado (`!brush.IsFrozen`) â€” ou seja, pulavam
      **tudo**. Medido: `SurfaceBaseBrush IsFrozen=True` com o dicionario anexado, `False` solto. Foi
      exatamente essa diferenca que fez os testes anteriores passarem contra um dicionario avulso enquanto
      o app nao trocava de cor. Correcao: em `Themes/Colors.xaml` cada brush da paleta declara a cor via
      `Color="{DynamicResource ...}"`; uma referencia dinamica torna o `Freezable` nao-congelavel, e a
      mutacao volta a valer. 49 brushes convertidos, com 23 chaves `Color` semente novas para os tokens
-     translucidos. As cores de status ficam de fora de proposito — nao seguem o accent.
+     translucidos. As cores de status ficam de fora de proposito â€” nao seguem o accent.
   2. **`PromoteSurfaceOverrides` recongelava.** Atribuir um `Freezable` dentro de `Application.Resources`
      tambem congela. A funcao promovia Colors **e** Brushes, entao a primeira troca funcionava e todas as
      seguintes nao mexiam mais nas superficies do WPF-UI. Correcao: promover **somente** chaves `Color`.
-     Os brushes nao precisam de promocao — `Colors.xaml` e o ultimo merge e ja vence a resolucao.
+     Os brushes nao precisam de promocao â€” `Colors.xaml` e o ultimo merge e ja vence a resolucao.
 
 ### Mudancas
 
@@ -979,14 +981,14 @@ remocao de jogos dos Depots e os follow-ups de UX/seguranca do HubCap.
   - Setup so aparece quando ha o que instalar. Quem ja passou por ele, ou simplesmente ja tem as
     ferramentas (reinstalacao, segunda maquina, maquina de dev), vai direto ao ponto.
   - Login **nao** entra nessa decisao: navegar como convidado e suportado no resto do app, entao exigir
-    conta poria o instalador na frente de um convidado que ja tem tudo — o proprio incomodo removido.
+    conta poria o instalador na frente de um convidado que ja tem tudo â€” o proprio incomodo removido.
   - `ShowSetup` e `OfferReopen` nunca vem juntos: o setup ja inicia o Steam ao terminar, e dois caminhos
     disputando o lancamento produzem o dialogo "Steam is already running".
 - **Steam e pedido antes de ser forcado.** `StopSteam` era `Kill(entireProcessTree: true)` direto, em
-  todo caminho — instalacao de plugin, troca de modo, onboarding. Terminar o cliente nega a ele a chance
+  todo caminho â€” instalacao de plugin, troca de modo, onboarding. Terminar o cliente nega a ele a chance
   de gravar a config, que e o que produz o "Steam did not shut down correctly" no lancamento seguinte.
   Agora: `CloseMainWindow` com 10s de tolerancia, escalando so se autorizado. Na inicializacao a
-  escalada **nao** e automatica — se o Steam nao fechar, o usuario decide. Os instaladores continuam
+  escalada **nao** e automatica â€” se o Steam nao fechar, o usuario decide. Os instaladores continuam
   com `allowKill: true`, porque para eles "o Steam esta parado" nao e negociavel.
   - O resultado e um enum (`NotRunning`/`ClosedGracefully`/`Killed`/`StillRunning`) e reporta o que e
     **verdade**, nao o que foi tentado: um kill pode falhar, e um chamador informado "Killed" iria
@@ -995,7 +997,7 @@ remocao de jogos dos Depots e os follow-ups de UX/seguranca do HubCap.
 ### Desempenho
 
 - **Deteccao do caminho do Steam memoizada.** `AutoDetectedPath` reabria ate tres chaves de registro mais
-  um `File.Exists` a **cada leitura** — e `EffectivePath`/`StPlugInDir` sao lidos de 28 lugares, sendo os
+  um `File.Exists` a **cada leitura** â€” e `EffectivePath`/`StPlugInDir` sao lidos de 28 lugares, sendo os
   que importam por jogo. Atualizar a lista de Depots resolvia o caminho uma vez por titulo, entao uma
   biblioteca de 200 jogos fazia da ordem de 600 aberturas de registro para responder sempre a mesma
   coisa. O cache e revalidado (so e reusado enquanto ainda aponta para um `steam.exe` real) e `null`
@@ -1009,34 +1011,34 @@ remocao de jogos dos Depots e os follow-ups de UX/seguranca do HubCap.
   anterior continua ativa e o `settings.json` fica intacto. O botao fica desabilitado quando o que esta
   selecionado ja e o que esta pintado, entao "nada a aplicar" se le no controle em vez de ser descoberto
   clicando. Evita a repintura acidental de encostar no dropdown.
-- **Paleta tonal.** Escolher uma cor retinge o app inteiro — janela, cartoes, dialogos, bordas, textos
-  auxiliares — e nao so os botoes. Cada paleta ganhou uma rampa neutra de 11 passos (`Plum`, `Moss`,
+- **Paleta tonal.** Escolher uma cor retinge o app inteiro â€” janela, cartoes, dialogos, bordas, textos
+  auxiliares â€” e nao so os botoes. Cada paleta ganhou uma rampa neutra de 11 passos (`Plum`, `Moss`,
   `Wine`). As rampas alternativas sao derivadas por **luminancia relativa**, nao por lightness HSL: cada
   passo tem a mesma luminancia do passo Amethyst que substitui, entao todo contraste WCAG homologado
-  transfere sem recalculo. Rotacao por lightness igual foi testada e descartada — verde no mesmo L e
+  transfere sem recalculo. Rotacao por lightness igual foi testada e descartada â€” verde no mesmo L e
   mais claro, e derrubava Danger sobre chip inset para 3,92:1 (reprova AA).
 - **Remocao de jogo dos Depots.** A lista e a uniao de tres fontes em disco (lua vivo em `stplug-in`,
   build luas soltos, e a pasta do vault), e qualquer uma delas bastava para o jogo continuar aparecendo
-  — por isso apagar pela pagina Manage nao resolvia: o vault devolvia o jogo. `LuaVault.ForgetGame`
+  â€” por isso apagar pela pagina Manage nao resolvia: o vault devolvia o jogo. `LuaVault.ForgetGame`
   limpa as tres, com confirmacao modal e um icone discreto em cada linha (revelado no hover e tambem no
   foco de teclado). Persistencia e o proprio sistema de arquivos, entao a remocao sobrevive ao restart.
-- **HubCap — aviso de expiracao da chave.** `api_key_expires_at` ja chegava e so aparecia como data no
+- **HubCap â€” aviso de expiracao da chave.** `api_key_expires_at` ja chegava e so aparecia como data no
   fim da linha de uso; agora vira aviso proprio quando faltam 7 dias ou menos. Descoberto no caminho: o
   campo vem **sem offset de fuso**, e era lido como hora local (ate 26h de erro entre usuarios). Passou a
   ser lido como UTC nos dois pontos que o consomem.
-- **HubCap — campo da chave mascarado.** `ui:TextBox` trocado por `ui:PasswordBox`: a chave e uma
+- **HubCap â€” campo da chave mascarado.** `ui:TextBox` trocado por `ui:PasswordBox`: a chave e uma
   credencial bearer e era digitada/colada em texto claro na tela.
-- **HubCap — validacao de formato mais tolerante.** `^smm_[0-9a-f]{96}$` era uma aposta no formato atual
+- **HubCap â€” validacao de formato mais tolerante.** `^smm_[0-9a-f]{96}$` era uma aposta no formato atual
   de uma credencial de terceiro; se o HubCap rotacionasse o prefixo, o app recusaria localmente uma chave
   valida com uma mensagem indistinguivel de erro de digitacao. Agora aceita prefixo opcional e corpo hex
   de 16 a 256 caracteres, ancorado com `\A`/`\z` (em .NET `$` casa antes de `\n` final). `LogSanitizer`
-  acompanhou o novo formato — chave que o app aceita enviar e chave que pode chegar num log.
+  acompanhou o novo formato â€” chave que o app aceita enviar e chave que pode chegar num log.
 
 ### Testes
 
 - Suite de **725 para 815**.
 - `ThemeLiveSwitchTests` (novo): sobe uma `Application` real numa thread STA com os mesmos tres
-  dicionarios do `App.xaml`. E o unico arranjo em que o congelamento existe — os testes antigos usavam
+  dicionarios do `App.xaml`. E o unico arranjo em que o congelamento existe â€” os testes antigos usavam
   dicionario avulso e por isso aprovavam um recurso inerte. Cobre: nenhum brush da paleta congelado,
   cores de status seguem congeladas, cada token repinta, **a segunda troca funciona como a primeira**,
   fundo da janela acompanha, e o slot de accent do WPF-UI acompanha.
@@ -1053,222 +1055,223 @@ remocao de jogos dos Depots e os follow-ups de UX/seguranca do HubCap.
   desabilita de novo apos aplicar; voltar para a cor ativa nao conta como pendente; `CanExecuteChanged`
   dispara (sem isso o botao nao redesenha); duas aplicacoes seguidas pintam duas vezes.
 
-## 1.5.0 — 2026-08-18
+## 1.5.0 â€” 2026-08-18
 
-Follow-ups da auditoria da integração HubCap, mais a primeira opção de personalização visual do fork.
+Follow-ups da auditoria da integraÃ§Ã£o HubCap, mais a primeira opÃ§Ã£o de personalizaÃ§Ã£o visual do fork.
 
 ### Novidades
 
-- **Cor de destaque selecionável** em Configurações: Amethyst (roxo, padrão), Verde e Vermelho.
-  A escolha é gravada em `settings.json` (`AccentColor`) e aplicada **sem reiniciar** — os brushes de
-  accent são mutados no lugar, então as telas abertas repintam. As três rampas foram escolhidas por
-  medição, não a olho: 300/400 acima de 4.5:1 sobre `SurfaceBase`, 500 acima de 3:1 (WCAG 1.4.11) e 600
-  acima de 4.5:1 contra texto branco. O verde "óbvio" (`#16A34A`) alcançava só 3.3:1 com branco e foi
-  descartado; o vermelho e o verde diretos colidiam com `SuccessText`/`Danger`, daí esmeralda e rosa.
-- **Changelog dentro do app**, na aba Sobre. Embutido no binário — não lê `docs/CHANGELOG.md` nem busca
-  na rede, então renderiza igual offline e não tem como falhar ao carregar.
+- **Cor de destaque selecionÃ¡vel** em ConfiguraÃ§Ãµes: Amethyst (roxo, padrÃ£o), Verde e Vermelho.
+  A escolha Ã© gravada em `settings.json` (`AccentColor`) e aplicada **sem reiniciar** â€” os brushes de
+  accent sÃ£o mutados no lugar, entÃ£o as telas abertas repintam. As trÃªs rampas foram escolhidas por
+  mediÃ§Ã£o, nÃ£o a olho: 300/400 acima de 4.5:1 sobre `SurfaceBase`, 500 acima de 3:1 (WCAG 1.4.11) e 600
+  acima de 4.5:1 contra texto branco. O verde "Ã³bvio" (`#16A34A`) alcanÃ§ava sÃ³ 3.3:1 com branco e foi
+  descartado; o vermelho e o verde diretos colidiam com `SuccessText`/`Danger`, daÃ­ esmeralda e rosa.
+- **Changelog dentro do app**, na aba Sobre. Embutido no binÃ¡rio â€” nÃ£o lÃª `docs/CHANGELOG.md` nem busca
+  na rede, entÃ£o renderiza igual offline e nÃ£o tem como falhar ao carregar.
 
 ### Melhorias
 
-- **Mensagens de erro do HubCap traduzíveis.** As quatro strings que o usuário lê quando um download
-  falha eram literais em inglês dentro do serviço; agora são chaves de recurso. As unidades de espera
-  ("30 minutes") são chaves separadas, para idiomas que flexionam o substantivo por quantidade.
+- **Mensagens de erro do HubCap traduzÃ­veis.** As quatro strings que o usuÃ¡rio lÃª quando um download
+  falha eram literais em inglÃªs dentro do serviÃ§o; agora sÃ£o chaves de recurso. As unidades de espera
+  ("30 minutes") sÃ£o chaves separadas, para idiomas que flexionam o substantivo por quantidade.
 - **`HttpClient` do HubCap** passou a usar `SocketsHttpHandler` com `PooledConnectionLifetime` de 15
-  minutos — uma conexão que nunca é reaberta nunca re-resolve DNS, e o HubCap fica atrás do Cloudflare.
-  Toda requisição agora também se identifica com `User-Agent: LuaToolsAmethyst/<versão>`, derivado do
+  minutos â€” uma conexÃ£o que nunca Ã© reaberta nunca re-resolve DNS, e o HubCap fica atrÃ¡s do Cloudflare.
+  Toda requisiÃ§Ã£o agora tambÃ©m se identifica com `User-Agent: LuaToolsAmethyst/<versÃ£o>`, derivado do
   assembly em vez de literal.
-- A guarda de tema no startup passou a validar a rampa **ativa** em vez de assumir violeta, senão
+- A guarda de tema no startup passou a validar a rampa **ativa** em vez de assumir violeta, senÃ£o
   acusaria falha para quem escolhesse verde ou vermelho.
 
-## 1.4.0 — 2026-08-16
+## 1.4.0 â€” 2026-08-16
 
-Endurecimento pós-auditoria. Nenhuma funcionalidade nova; o tema desta versão é remover superfícies de
-ataque que sobreviveram à 1.3.0 e tornar visível o que já era verificado em silêncio.
+Endurecimento pÃ³s-auditoria. Nenhuma funcionalidade nova; o tema desta versÃ£o Ã© remover superfÃ­cies de
+ataque que sobreviveram Ã  1.3.0 e tornar visÃ­vel o que jÃ¡ era verificado em silÃªncio.
 
-### ⚠️ Mudança de comportamento
+### âš ï¸ MudanÃ§a de comportamento
 
 - **`PluginAutoUpdate` agora vem DESLIGADO.** Antes, abrir o Steam com um plugin desatualizado baixava a
-  nova release, **substituía `winmm.dll` na raiz do Steam** e reiniciava o Steam — sem prompt. É a ação
-  mais poderosa do app e acontecia sem perguntar. A atualização continua alcançável pelo botão
+  nova release, **substituÃ­a `winmm.dll` na raiz do Steam** e reiniciava o Steam â€” sem prompt. Ã‰ a aÃ§Ã£o
+  mais poderosa do app e acontecia sem perguntar. A atualizaÃ§Ã£o continua alcanÃ§Ã¡vel pelo botÃ£o
   Install/Update na aba Plugin; ela deixou de ser silenciosa. Para o comportamento antigo:
   `"PluginAutoUpdate": true` em `settings.json`.
 
-### Segurança
+### SeguranÃ§a
 
-- **Injeção de comando eliminada nas junctions.** Três sítios montavam `cmd.exe /c mklink /j "{path}"` e
+- **InjeÃ§Ã£o de comando eliminada nas junctions.** TrÃªs sÃ­tios montavam `cmd.exe /c mklink /j "{path}"` e
   `cmd.exe /c rmdir "{path}"` com o caminho interpolado na string de comando. Esse caminho deriva de
-  `SteamPathOverride` no `settings.json` — arquivo que qualquer processo do usuário escreve — então uma
+  `SteamPathOverride` no `settings.json` â€” arquivo que qualquer processo do usuÃ¡rio escreve â€” entÃ£o uma
   aspa fechava o literal e o `cmd` executava o que viesse depois. O novo `DirectoryJunction` dirige o
   reparse point NTFS por `DeviceIoControl(FSCTL_SET_REPARSE_POINT)`: sem shell, sem string de comando,
-  nada para escapar. A mitigação anterior (recusar caminho com aspa) foi removida por ter virado
+  nada para escapar. A mitigaÃ§Ã£o anterior (recusar caminho com aspa) foi removida por ter virado
   redundante.
-  - Continua sendo **junction**, não symlink. Symlink de diretório exige admin ou Developer Mode; o app
+  - Continua sendo **junction**, nÃ£o symlink. Symlink de diretÃ³rio exige admin ou Developer Mode; o app
     roda `asInvoker` e nunca eleva. `Directory.CreateSymbolicLink` teria quebrado o recurso para a maioria
-    dos usuários.
-  - A remoção usa `Directory.Delete(recursive: false)`, que corta o link sem descer no alvo. Coberto por
-    teste com canário.
-- **`plugin.zip` passa por triagem antes de extrair.** A checagem foi extraída para
-  `PluginInstallerService.ScreenPluginArchive`, agora testável sem rede nem Steam.
+    dos usuÃ¡rios.
+  - A remoÃ§Ã£o usa `Directory.Delete(recursive: false)`, que corta o link sem descer no alvo. Coberto por
+    teste com canÃ¡rio.
+- **`plugin.zip` passa por triagem antes de extrair.** A checagem foi extraÃ­da para
+  `PluginInstallerService.ScreenPluginArchive`, agora testÃ¡vel sem rede nem Steam.
 
-### Transparência
+### TransparÃªncia
 
-- **Aviso antes de aplicar qualquer artefato de Modo ou Plugin**, mostrando origem (`owner/repo`), versão,
-  SHA-256 e quais checagens passaram, com botão Cancelar e alguns segundos de carência. Cancelar não deixa
-  meio-estado: nesse ponto tudo ainda está em pasta temporária.
-  - O aviso é **advisory e falha aberto** por decisão explícita — os portões reais (pinagem, digest,
-    triagem) já rodaram e já recusaram o que não puderam provar. Um toast quebrado não pode virar
-    indisponibilidade funcional. Há teste fixando esse comportamento.
+- **Aviso antes de aplicar qualquer artefato de Modo ou Plugin**, mostrando origem (`owner/repo`), versÃ£o,
+  SHA-256 e quais checagens passaram, com botÃ£o Cancelar e alguns segundos de carÃªncia. Cancelar nÃ£o deixa
+  meio-estado: nesse ponto tudo ainda estÃ¡ em pasta temporÃ¡ria.
+  - O aviso Ã© **advisory e falha aberto** por decisÃ£o explÃ­cita â€” os portÃµes reais (pinagem, digest,
+    triagem) jÃ¡ rodaram e jÃ¡ recusaram o que nÃ£o puderam provar. Um toast quebrado nÃ£o pode virar
+    indisponibilidade funcional. HÃ¡ teste fixando esse comportamento.
 
-### Correções
+### CorreÃ§Ãµes
 
-- **`PluginAutoUpdate` não persistia.** A chave faltava no predicado `empty` de `SettingsService.SaveCore`,
-  então um usuário cuja única alteração fosse ela teria o `settings.json` **apagado** e a escolha perdida
+- **`PluginAutoUpdate` nÃ£o persistia.** A chave faltava no predicado `empty` de `SettingsService.SaveCore`,
+  entÃ£o um usuÃ¡rio cuja Ãºnica alteraÃ§Ã£o fosse ela teria o `settings.json` **apagado** e a escolha perdida
   no save seguinte. Introduzido na 1.3.0; encontrado pelo teste que fixa o novo default.
 - **`plugin.zip` era recusado por usar `require`.** Instalar o BetterSteamTools falhava com
   `backend/main.lua: the lua contains 'require', which a Steam manifest never needs`. Erro de categoria: a
-  triagem de `plugin.zip` aplicava as regras de **manifesto Steam** a código Lua de aplicação. Um manifesto
-  é uma DSL minúscula (`addappid()`, `setManifestid()`), então a denylist dele proíbe `require`, `pcall`,
-  `setmetatable`, `_G`, `rawget`/`rawset`, `collectgarbage`, `io.open` — tudo normal num programa Lua. Um
-  plugin ficava impossível de instalar.
+  triagem de `plugin.zip` aplicava as regras de **manifesto Steam** a cÃ³digo Lua de aplicaÃ§Ã£o. Um manifesto
+  Ã© uma DSL minÃºscula (`addappid()`, `setManifestid()`), entÃ£o a denylist dele proÃ­be `require`, `pcall`,
+  `setmetatable`, `_G`, `rawget`/`rawset`, `collectgarbage`, `io.open` â€” tudo normal num programa Lua. Um
+  plugin ficava impossÃ­vel de instalar.
 
-  `FixAnalyzer.AnalyzeArchive` passou a aceitar um `LuaScreeningProfile`. O padrão continua
-  `SteamManifest`, então o fluxo de Correções não mudou em nada; o fluxo de Plugin usa `ApplicationCode`,
-  cuja denylist é curta e só cobre execução: `os.execute`, `io.popen`, `package.loadlib`, `loadstring`,
-  `load()` com argumento montado em tempo de execução, e `require`/`dofile`/`loadfile` apontando para URL.
-  Ofuscação continua sendo detectada pela mesma passada de de-ofuscação.
+  `FixAnalyzer.AnalyzeArchive` passou a aceitar um `LuaScreeningProfile`. O padrÃ£o continua
+  `SteamManifest`, entÃ£o o fluxo de CorreÃ§Ãµes nÃ£o mudou em nada; o fluxo de Plugin usa `ApplicationCode`,
+  cuja denylist Ã© curta e sÃ³ cobre execuÃ§Ã£o: `os.execute`, `io.popen`, `package.loadlib`, `loadstring`,
+  `load()` com argumento montado em tempo de execuÃ§Ã£o, e `require`/`dofile`/`loadfile` apontando para URL.
+  OfuscaÃ§Ã£o continua sendo detectada pela mesma passada de de-ofuscaÃ§Ã£o.
 
-  Escopo honesto, registrado no código: isso é defesa em profundidade, não fronteira de confiança. A mesma
-  release entrega `winmm.dll`, que o steam.exe carrega — se a release for hostil, a DLL vence muito antes
-  do Lua. Quem protege de fato é a pinagem de repositório e o digest fail-closed.
+  Escopo honesto, registrado no cÃ³digo: isso Ã© defesa em profundidade, nÃ£o fronteira de confianÃ§a. A mesma
+  release entrega `winmm.dll`, que o steam.exe carrega â€” se a release for hostil, a DLL vence muito antes
+  do Lua. Quem protege de fato Ã© a pinagem de repositÃ³rio e o digest fail-closed.
 
 ### Testes e ferramentas
 
-- 442 → **536 testes xUnit**. Novos: `DirectoryJunctionTests` (16), `DownloadReviewTests` (17),
-  `PluginArchiveScreeningTests` (22), `LuaCodeValidatorTests` (34), persistência de `PluginAutoUpdate` (2).
-- **17 testes para `scripts/check-i18n.py`** (`unittest` da stdlib, sem dependência nova). O CI passou a
-  rodá-los **antes** da validação de RESX: um checker quebrado reporta run limpo.
-- Varredura confirmou zero literais de repositório fora do `AppConfig`.
+- 442 â†’ **536 testes xUnit**. Novos: `DirectoryJunctionTests` (16), `DownloadReviewTests` (17),
+  `PluginArchiveScreeningTests` (22), `LuaCodeValidatorTests` (34), persistÃªncia de `PluginAutoUpdate` (2).
+- **17 testes para `scripts/check-i18n.py`** (`unittest` da stdlib, sem dependÃªncia nova). O CI passou a
+  rodÃ¡-los **antes** da validaÃ§Ã£o de RESX: um checker quebrado reporta run limpo.
+- Varredura confirmou zero literais de repositÃ³rio fora do `AppConfig`.
 
-### Documentação
+### DocumentaÃ§Ã£o
 
-- README: aviso pré-instalação, novo default de `PluginAutoUpdate`, procedimento de instalação manual
-  quando uma verificação recusa, e duas pendências conhecidas registradas como tal — o último `cmd.exe`
-  em `App.RelaunchApp` (não explorável: `Environment.ProcessPath` vem do SO e `"` não é caractere legal
-  em caminho Windows) e a falha do `dotnet format` por ausência de `.editorconfig`.
-- `docs/teste-manual-1.4.0.md`: roteiro de verificação em máquina real.
+- README: aviso prÃ©-instalaÃ§Ã£o, novo default de `PluginAutoUpdate`, procedimento de instalaÃ§Ã£o manual
+  quando uma verificaÃ§Ã£o recusa, e duas pendÃªncias conhecidas registradas como tal â€” o Ãºltimo `cmd.exe`
+  em `App.RelaunchApp` (nÃ£o explorÃ¡vel: `Environment.ProcessPath` vem do SO e `"` nÃ£o Ã© caractere legal
+  em caminho Windows) e a falha do `dotnet format` por ausÃªncia de `.editorconfig`.
+- `docs/teste-manual-1.4.0.md`: roteiro de verificaÃ§Ã£o em mÃ¡quina real.
 
 ---
 
-## 1.3.0 — LuaTools Amethyst
+## 1.3.0 â€” LuaTools Amethyst
 
 ### Nome e identidade
 
 - Projeto renomeado para **LuaTools Amethyst**, publicado em
-  <https://github.com/ArthurS357/LuaTools_Amethyst>. Título da janela, aba **About** e metadados do
-  assembly (`AssemblyTitle`/`Product`) usam o nome novo; a tag temporária "privacy fork" saiu do rodapé.
-- A identidade **técnica** foi mantida de propósito: `AssemblyName` continua `LuaTools`, assim como
-  `%AppData%\LuaToolsGui`, o mutex de instância única e o protocolo `luatools://`. O loader DLL inicia
-  `LuaTools.exe` pelo nome e o Velopack chaveia a instalação nele — renomear órfãozaria toda instalação
+  <https://github.com/ArthurS357/LuaTools_Amethyst>. TÃ­tulo da janela, aba **About** e metadados do
+  assembly (`AssemblyTitle`/`Product`) usam o nome novo; a tag temporÃ¡ria "privacy fork" saiu do rodapÃ©.
+- A identidade **tÃ©cnica** foi mantida de propÃ³sito: `AssemblyName` continua `LuaTools`, assim como
+  `%AppData%\LuaToolsGui`, o mutex de instÃ¢ncia Ãºnica e o protocolo `luatools://`. O loader DLL inicia
+  `LuaTools.exe` pelo nome e o Velopack chaveia a instalaÃ§Ã£o nele â€” renomear Ã³rfÃ£ozaria toda instalaÃ§Ã£o
   existente.
 
 ### Nova aba "About"
 
-- Descreve o que é o fork, mostra a versão, **a fonte de update efetivamente em uso** (lida do
-  `UpdateService`, não do `settings.json`, para não anunciar um repositório que o validador está
-  ignorando), botão de verificação manual de updates e o caminho do `settings.json`.
+- Descreve o que Ã© o fork, mostra a versÃ£o, **a fonte de update efetivamente em uso** (lida do
+  `UpdateService`, nÃ£o do `settings.json`, para nÃ£o anunciar um repositÃ³rio que o validador estÃ¡
+  ignorando), botÃ£o de verificaÃ§Ã£o manual de updates e o caminho do `settings.json`.
 
 ### Auto-update
 
-- `AppUpdateRepos` agora tem padrão compilado apontando para o repositório do próprio fork. Continua
-  sobrescrevível pelo `settings.json`, e um array vazio desliga o update por completo.
-- A trava contra repositórios oficiais segue ativa e é testada.
+- `AppUpdateRepos` agora tem padrÃ£o compilado apontando para o repositÃ³rio do prÃ³prio fork. Continua
+  sobrescrevÃ­vel pelo `settings.json`, e um array vazio desliga o update por completo.
+- A trava contra repositÃ³rios oficiais segue ativa e Ã© testada.
 
-### Análise de correções (`FixAnalyzer`)
+### AnÃ¡lise de correÃ§Ãµes (`FixAnalyzer`)
 
-- **Corrigido zip-slip real** em `FixesViewModel.ApplyFix`: a extração fazia
-  `Path.Combine(installDir, entry.FullName)` sem verificação de contenção — entrada `C:\Windows\...`
-  escrevia lá, e `..\..\` saía da pasta do jogo. Agora há verificação no analisador **e** por entrada na
-  extração.
+- **Corrigido zip-slip real** em `FixesViewModel.ApplyFix`: a extraÃ§Ã£o fazia
+  `Path.Combine(installDir, entry.FullName)` sem verificaÃ§Ã£o de contenÃ§Ã£o â€” entrada `C:\Windows\...`
+  escrevia lÃ¡, e `..\..\` saÃ­a da pasta do jogo. Agora hÃ¡ verificaÃ§Ã£o no analisador **e** por entrada na
+  extraÃ§Ã£o.
 - Novo `FixAnalyzer` roda antes de qualquer escrita: zip-slip, caminhos absolutos/UNC, destinos
-  duplicados, contagem/tamanho/razão de compressão (zip bomb), lua perigoso — inclusive **ofuscado**
-  (escapes `\xNN`/`\NNN`, concatenação de literais, indexação por string). Reutiliza o denylist do
-  `LuaManifestValidator` em vez de duplicá-lo.
-- Executáveis, arquivos aninhados e diretivas lua desconhecidas são **registrados, não bloqueados** —
-  bloquear quebraria correções legítimas.
+  duplicados, contagem/tamanho/razÃ£o de compressÃ£o (zip bomb), lua perigoso â€” inclusive **ofuscado**
+  (escapes `\xNN`/`\NNN`, concatenaÃ§Ã£o de literais, indexaÃ§Ã£o por string). Reutiliza o denylist do
+  `LuaManifestValidator` em vez de duplicÃ¡-lo.
+- ExecutÃ¡veis, arquivos aninhados e diretivas lua desconhecidas sÃ£o **registrados, nÃ£o bloqueados** â€”
+  bloquear quebraria correÃ§Ãµes legÃ­timas.
 
-### Verificação de identidade do build
+### VerificaÃ§Ã£o de identidade do build
 
-- `BuildIdentity` confere no startup se o assembly se declara `LuaTools Amethyst`. Se não, grava
-  `BUILD:` no `crash.log` e mostra aviso não-bloqueante. Marcador positivo em vez de caça a resíduos do
-  upstream — esta última dispararia no próprio fork, cujo código documenta os recursos removidos.
+- `BuildIdentity` confere no startup se o assembly se declara `LuaTools Amethyst`. Se nÃ£o, grava
+  `BUILD:` no `crash.log` e mostra aviso nÃ£o-bloqueante. Marcador positivo em vez de caÃ§a a resÃ­duos do
+  upstream â€” esta Ãºltima dispararia no prÃ³prio fork, cujo cÃ³digo documenta os recursos removidos.
 
-## 1.3.0 (base) — 2026-08-16
+## 1.3.0 (base) â€” 2026-08-16
 
-### Tema visual — paleta "Amethyst"
+### Tema visual â€” paleta "Amethyst"
 
 - Nova paleta roxa centralizada em `src/LuaToolsGui/Themes/Colors.xaml`, em duas camadas
-  (primitivas `*Color` → semânticas `*Brush`). Substituiu **364 literais hexadecimais** espalhados
-  por 13 arquivos XAML — nenhuma view carrega mais `#RRGGBB`.
-- Superfícies, textos, bordas, estados de hover/pressed, selos de status e scrims agora saem de
-  tokens nomeados por função (`SurfaceCardBrush`, `TextMutedBrush`, `AccentTintBrush`, …).
-- O acento roxo também é injetado nos controles do WPF-UI (`App.ApplyAccentPalette`), para que a
-  barra de navegação, botões primários e toggles não continuem usando o acento azul do Windows.
+  (primitivas `*Color` â†’ semÃ¢nticas `*Brush`). Substituiu **364 literais hexadecimais** espalhados
+  por 13 arquivos XAML â€” nenhuma view carrega mais `#RRGGBB`.
+- SuperfÃ­cies, textos, bordas, estados de hover/pressed, selos de status e scrims agora saem de
+  tokens nomeados por funÃ§Ã£o (`SurfaceCardBrush`, `TextMutedBrush`, `AccentTintBrush`, â€¦).
+- O acento roxo tambÃ©m Ã© injetado nos controles do WPF-UI (`App.ApplyAccentPalette`), para que a
+  barra de navegaÃ§Ã£o, botÃµes primÃ¡rios e toggles nÃ£o continuem usando o acento azul do Windows.
 - Cores que viviam em ViewModels (`PluginStatusColor`, `HubcapKeyStatusColor`) passaram a guardar
   **chaves de recurso** em vez de hex, resolvidas pelo novo `ResourceKeyToBrushConverter`.
-- Backdrop Mica desligado na janela principal: o tom do Mica vem do papel de parede do usuário, o
+- Backdrop Mica desligado na janela principal: o tom do Mica vem do papel de parede do usuÃ¡rio, o
   que impedia garantir o fundo roxo.
 
 ### Acessibilidade
 
-- Todos os tokens de texto foram medidos (WCAG 2.1) contra as superfícies reais renderizadas e
+- Todos os tokens de texto foram medidos (WCAG 2.1) contra as superfÃ­cies reais renderizadas e
   passam em AA; a maioria em AAA. Pior caso: `TextDim` sobre card, 4.65:1.
-- **Correção real de contraste:** o cinza `#6b7280` — a cor mais usada do app (51 ocorrências) —
-  ficava em ~3.6:1 e reprovava em AA. Foi substituído por `TextDimBrush` `#978AB8` (6.17:1).
+- **CorreÃ§Ã£o real de contraste:** o cinza `#6b7280` â€” a cor mais usada do app (51 ocorrÃªncias) â€”
+  ficava em ~3.6:1 e reprovava em AA. Foi substituÃ­do por `TextDimBrush` `#978AB8` (6.17:1).
 
-### Segurança / privacidade
+### SeguranÃ§a / privacidade
 
-- **DonateKeys permanece removido.** A reativação foi avaliada com sondagem TLS real do servidor e
-  rejeitada por falta de suporte a HTTPS — ver `AppConfig.cs` e o relatório da entrega.
+- **DonateKeys permanece removido.** A reativaÃ§Ã£o foi avaliada com sondagem TLS real do servidor e
+  rejeitada por falta de suporte a HTTPS â€” ver `AppConfig.cs` e o relatÃ³rio da entrega.
 - **Fonte "Ryuu" em HTTP eliminada.** A URL `http://167.235.229.108/<appid>` era *dead data*: os campos
   `Url`/`SuccessCode` de `ApiSource` nunca eram lidos (o download resolve pelo NOME da fonte via proxy
-  HTTPS do lua.tools). Os campos foram removidos, então a URL em claro deixou de existir no código.
-- **Auto-update do app desligado por padrão.** `GithubReleasesRepos` apontava para o feed **oficial**:
+  HTTPS do lua.tools). Os campos foram removidos, entÃ£o a URL em claro deixou de existir no cÃ³digo.
+- **Auto-update do app desligado por padrÃ£o.** `GithubReleasesRepos` apontava para o feed **oficial**:
   o fork acabaria baixando e instalando sozinho, em segundo plano, um build com telemetria e DonateKeys.
-  Não há mais feed compilado — um build não configurado **não faz nenhuma requisição de update**. Para
+  NÃ£o hÃ¡ mais feed compilado â€” um build nÃ£o configurado **nÃ£o faz nenhuma requisiÃ§Ã£o de update**. Para
   habilitar, defina `AppUpdateRepos` no `settings.json`. As entradas passam por `AppUpdateSources`, que
-  exige `https://github.com/<owner>/<repo>`, **recusa `http://`** e **recusa os repositórios oficiais**
-  em qualquer grafia (maiúsculas, barra final, `.git`, `www.`). Recusas vão para o `plugin-backend.log`
-  com o motivo. Não afeta download de plugins/unlockers/manifests, que têm fontes próprias.
-- **`check_apis` analisado e controlável.** É **somente metadados** (mapa nome-da-fonte → status); nunca
-  transfere conteúdo — o download resolve a fonte pelo NOME e busca URL HTTPS assinada. Continua ligado
-  por padrão porque **a lista de fontes que o usuário escolhe É a resposta dele**: desligar por padrão
-  deixaria a maioria dos usuários sem fonte alguma. Agora há `"EnableSourceAvailabilityChecks": false`
-  para não contatar o host, e `"InsecureMetadataNotice"` com `once` (padrão) / `always` / `off` para a
-  frequência do aviso. Valor inválido cai para `once`, nunca para `off`.
-- **Limpeza de desinstalação (`UninstallCleanup`)**, ligada ao hook `OnBeforeUninstall` do Velopack. O
-  Velopack só apaga a pasta do app; ficavam para trás o *junction* do CDP (que mantinha o Steam abrindo
-  a porta de depuração **não autenticada** 8080 para sempre), as DLLs loader na raiz do Steam, o
+  exige `https://github.com/<owner>/<repo>`, **recusa `http://`** e **recusa os repositÃ³rios oficiais**
+  em qualquer grafia (maiÃºsculas, barra final, `.git`, `www.`). Recusas vÃ£o para o `plugin-backend.log`
+  com o motivo. NÃ£o afeta download de plugins/unlockers/manifests, que tÃªm fontes prÃ³prias.
+- **`check_apis` analisado e controlÃ¡vel.** Ã‰ **somente metadados** (mapa nome-da-fonte â†’ status); nunca
+  transfere conteÃºdo â€” o download resolve a fonte pelo NOME e busca URL HTTPS assinada. Continua ligado
+  por padrÃ£o porque **a lista de fontes que o usuÃ¡rio escolhe Ã‰ a resposta dele**: desligar por padrÃ£o
+  deixaria a maioria dos usuÃ¡rios sem fonte alguma. Agora hÃ¡ `"EnableSourceAvailabilityChecks": false`
+  para nÃ£o contatar o host, e `"InsecureMetadataNotice"` com `once` (padrÃ£o) / `always` / `off` para a
+  frequÃªncia do aviso. Valor invÃ¡lido cai para `once`, nunca para `off`.
+- **Limpeza de desinstalaÃ§Ã£o (`UninstallCleanup`)**, ligada ao hook `OnBeforeUninstall` do Velopack. O
+  Velopack sÃ³ apaga a pasta do app; ficavam para trÃ¡s o *junction* do CDP (que mantinha o Steam abrindo
+  a porta de depuraÃ§Ã£o **nÃ£o autenticada** 8080 para sempre), as DLLs loader na raiz do Steam, o
   registro do protocolo `luatools://` e o `%AppData%\LuaToolsGui` com o token e a chave de API.
 - Nenhuma telemetria foi reintroduzida.
 
 ### Robustez do tema
 
-- **WPF-UI fixado em `[4.3.0]`** (forma com colchetes: o NuGet recusa substituir a versão). O tema
-  depende de nomes de recurso *internos* do WPF-UI, que não são contrato público.
+- **WPF-UI fixado em `[4.3.0]`** (forma com colchetes: o NuGet recusa substituir a versÃ£o). O tema
+  depende de nomes de recurso *internos* do WPF-UI, que nÃ£o sÃ£o contrato pÃºblico.
 - **Guarda de runtime no startup** (`App.VerifyAccentApplied`): confere se `SystemAccentColorPrimary`
-  ficou com o roxo esperado. Se não, grava linha `THEME:` no `crash.log` e mostra aviso — a falha seria
-  invisível de outro modo (nada lança, o app só volta ao cinza).
-- Acento com **fonte única**: `ApplyAccentPalette` agora lê `Violet*Color` do dicionário em vez de
+  ficou com o roxo esperado. Se nÃ£o, grava linha `THEME:` no `crash.log` e mostra aviso â€” a falha seria
+  invisÃ­vel de outro modo (nada lanÃ§a, o app sÃ³ volta ao cinza).
+- Acento com **fonte Ãºnica**: `ApplyAccentPalette` agora lÃª `Violet*Color` do dicionÃ¡rio em vez de
   repetir os hexadecimais.
-- `Colors.xaml` enxuto: 6 tokens órfãos removidos; os demais documentados.
+- `Colors.xaml` enxuto: 6 tokens Ã³rfÃ£os removidos; os demais documentados.
 
-### Identificação do fork
+### IdentificaÃ§Ã£o do fork
 
-- Rodapé e título da janela mostram `privacy fork` ao lado da versão, para distinguir do build oficial
+- RodapÃ© e tÃ­tulo da janela mostram `privacy fork` ao lado da versÃ£o, para distinguir do build oficial
   (instalar um release oficial por cima reintroduz telemetria e DonateKeys).
 
-### Versão
+### VersÃ£o
 
-- `1.2.8` → `1.3.0` em `LuaToolsGui.csproj` (`<Version>`), única fonte da versão: alimenta
+- `1.2.8` â†’ `1.3.0` em `LuaToolsGui.csproj` (`<Version>`), Ãºnica fonte da versÃ£o: alimenta
   `AssemblyVersion`, `AssemblyFileVersion` e `AssemblyInformationalVersion`, que o
-  `MainViewModel` lê para o rodapé do menu.
+  `MainViewModel` lÃª para o rodapÃ© do menu.
+
