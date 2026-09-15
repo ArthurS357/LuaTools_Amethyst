@@ -20,6 +20,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Runs before the compiler because the compiler reports this badly. 1.7.4 committed the csproj in
+      # Windows-1252 and the build failed with "Invalid character in the given encoding. Line 19, position
+      # 64." naming no file anyone had edited. The checker's tests run first, as in the i18n workflow: a
+      # broken checker reports a clean tree. The runner image ships Python; stdlib only, no install step.
+      - name: Test the encoding checker
+        run: python -m unittest discover -s scripts/tests -p "test_check_encoding.py"
+
+      - name: Check text encoding
+        run: python scripts/check-encoding.py
+
       - name: Set up .NET 10
         uses: actions/setup-dotnet@v4
         with:

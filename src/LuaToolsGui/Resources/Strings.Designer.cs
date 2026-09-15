@@ -420,12 +420,6 @@ public static class Strings
     public static string Add_Status_AddedFetch => Get(nameof(Add_Status_AddedFetch));
     public static string Add_FastFetch => Get(nameof(Add_FastFetch));
     public static string Add_FastFetch_Hint => Get(nameof(Add_FastFetch_Hint));
-
-    // ── Steam manifest-fetch notice (temporary; see AppConfig.ShowManifestSourceNotice) ──
-    public static string Notice_Manifests_Title => Get(nameof(Notice_Manifests_Title));
-    public static string Notice_Manifests_Source => Get(nameof(Notice_Manifests_Source));
-    public static string Notice_Manifests_Lock => Get(nameof(Notice_Manifests_Lock));
-    public static string Notice_Manifests_Retry => Get(nameof(Notice_Manifests_Retry));
     public static string Add_FastFetch_NoSource => Get(nameof(Add_FastFetch_NoSource));
     public static string Add_FastFetch_Via => Get(nameof(Add_FastFetch_Via));
 

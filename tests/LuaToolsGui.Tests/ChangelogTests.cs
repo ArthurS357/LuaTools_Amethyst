@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.7.3");
+        AppVersion.Current.Should().Be("1.7.5");
     }
 
     [Fact]
@@ -51,9 +51,9 @@ public class ChangelogTests
 
         // One anchor per change the release was actually about, so an entry that got copied forward from
         // the previous version fails here rather than shipping a changelog describing the wrong release.
-        text.Should().ContainEquivalentOf("depotcache"); // manifests were written where Steam never looks
-        text.Should().ContainEquivalentOf("revert");     // Denuvo fixes can finally be undone
-        text.Should().ContainEquivalentOf("My games");   // the new filter on the Fixes page
+        text.Should().ContainEquivalentOf("BetterSteamTools"); // the notice is gone; the mode now fetches manifests
+        text.Should().ContainEquivalentOf("encoding");         // the csproj that broke the clean build
+        text.Should().ContainEquivalentOf("1.7.3.1");          // the version 1.7.4 reported instead of its own
     }
 
     [Fact]

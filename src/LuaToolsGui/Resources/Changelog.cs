@@ -29,6 +29,22 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.7.5", "2026-09-14",
+            "Removes the notice about how depot manifests are obtained, which had stopped being true, and fixes the build that 1.7.4 broke.",
+            [
+                "Removed the out-of-date notice about manifest sources from the Add and Builds pages. The upstream BetterSteamTools mode resolved the problem in its latest version.",
+                "The project file had been saved in the wrong text encoding, so a clean build stopped with \"Invalid character in the given encoding\". It is UTF-8 again, and the build now checks every committed text file for the same mistake before compiling.",
+                "The version shown in the footer and on the About page is correct again. 1.7.4 still identified itself as 1.7.3.1.",
+                "Nothing else changed: no new setting, no new network request from the app, and no change to how luas or fixes are installed.",
+            ]),
+
+        new("1.7.4", "2026-09-09",
+            "Repackages 1.7.3, whose installer contained the 1.7.2 program.",
+            [
+                "The 1.7.3 package was built while the previous program was still locked, so it shipped LuaTools.exe 1.7.2. 1.7.4 is the same code rebuilt and packaged again.",
+                "(Entry added retroactively in 1.7.5 as a process correction.)",
+            ]),
+
         new("1.7.3", "2026-09-09",
             "Manifests were being written where Steam never looks, which silently broke pinned downloads. They are now written to the right folder, existing ones are moved there, and Denuvo fixes can finally be undone.",
             [
@@ -36,7 +52,7 @@ public static class Changelog
                 "A Denuvo fix can now be reverted. Applying one records exactly which files it replaced or added, and keeps a backup of each, so Revert puts the game back the way it was. If something else has changed one of those files since - a game update, a hand-edit, or a second fix applied on top - the revert stops and says so rather than overwriting it.",
                 "The Fixes page has a \"My games\" filter, showing only games you have added a lua for. The count in its tooltip is the number that actually have fixes, not the size of your whole library.",
                 "A fix that is already applied no longer offers to apply itself again, and one whose game is not installed says why it is greyed out.",
-                "The Add and Builds pages now carry a short notice about Steam's September change to how depot manifests are obtained: use a source that ships them (Sadie/Hubcap or Ryuu), turn OFF \"Auto Update Apps (Don't Lock Manifests)\", and re-add anything that was added the old way. It is static text - the app checks nothing and sends nothing - and it will be removed once the advice stops being true.",
+                "The Add and Builds pages carried a short notice about Steam's September change to how depot manifests are obtained. It was removed in 1.7.5, when its advice stopped being true.",
             ]),
 
         new("1.7.2", "2026-09-02",
