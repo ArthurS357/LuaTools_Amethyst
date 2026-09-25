@@ -55,12 +55,27 @@ Nenhuma invalidacao. O codigo antigo lancava **antes** de gravar, entao nenhum a
 indevido; os blobs gravados antes da mudanca da Steam continuam validos. Conferido numa instalacao real:
 16 blobs, todos com `steam_appid` igual ao nome do arquivo, zero marcadores vazios.
 
-### README
+### Auto-update do app desligado por padrao
 
-A tabela "What is different from the official build" dizia que o auto-update do app vinha **desligado**
-por padrao. Isso valia na base 1.3.0 e deixou de valer quando o padrao compilado passou a ser o repositorio
-do proprio fork. A secao "Updating" do mesmo README ja dizia o certo; a tabela agora concorda com ela.
-Nenhuma mudanca de comportamento.
+Decisao do mantenedor: quem usa o app nao queria que ele se substituisse sozinho a cada release publicada.
+De 1.3.0 a 1.7.5 o padrao compilado apontava para o repositorio do fork; agora volta a ser vazio.
+
+- **`AppConfig.GithubReleasesRepos = []`.** `UpdateService` resolve `settings.AppUpdateRepos ?? GithubReleasesRepos`;
+  vazio da `IsDisabled`, nenhum `UpdateManager` e construido e `CheckAndStageAsync` retorna antes de qualquer
+  requisicao. O caminho ja existia e ja era coberto (`Unconfigured_DisablesSelfUpdate`); so o valor mudou.
+- **Opt-in intacto:** `"AppUpdateRepos": ["https://github.com/ArthurS357/LuaTools_Amethyst"]` no
+  `settings.json` religa, com a mesma validacao (`AppUpdateSources`: so https + github.com, upstream recusado).
+- **`AppConfig.ForkRepositoryUrl`**, separado do feed. O About caia em `GithubReleasesRepos.FirstOrDefault()`
+  para o link do repositorio; com o feed vazio, o botao ficaria sem destino justamente quando o texto manda
+  "atualizar manualmente pelo repositorio abaixo".
+- **`VelopackApp.Build().SetAutoApplyOnStartup(false)`.** O padrao do Velopack e aplicar no start qualquer
+  pacote mais novo ja baixado. Com update opt-in, um pacote que ficou no disco de quando o usuario tinha
+  optado (e depois desligou) nao pode trocar o binario no proximo start. Update optado continua aplicando
+  na saida (`UpdateService.ApplyOnExit`).
+- **Transicao:** instalacoes 1.7.5 ainda tem o update ligado (codigo delas). Elas baixam e aplicam a 1.7.6
+  sozinhas, uma ultima vez; a partir da 1.7.6 nada mais e buscado sem opt-in. Nao ha como mudar isso daqui.
+- README (tabela, secao "Updating" reescrita, tabela de chaves) e CONTRIBUTING atualizados. A tabela do README
+  dizia "Off by default" desde a base 1.3.0 e estava errada ate aqui; agora volta a ser verdade.
 
 ### Jogo adicionado na sessao so ganhava nome/capa depois de reiniciar
 
@@ -83,22 +98,27 @@ e `EnsureFullDetailsAsync` so aquecia o indice em RAM com `!_cache.ContainsKey(a
 
 ### Testes
 
-- **+1 teste (total: 1680).** `SteamAppInfoCacheNegativeMemoTests`: `GetCached` de um id sem blob, depois
-  `ResolveAsync` tem de fazer uma requisicao (stub responde 500, nada gravado em `%AppData%`). Falha com a
-  guarda antiga (0 requisicoes).
-- **+20 testes (total: 1679).** `SteamAppInfoCacheTests`: os 12 casos do upstream (formato filho, formato
-  direto, `success:false` achado pela chave, entrada de outro app recusada, 6 payloads improvaveis, chave
-  direta vence a varredura, chave direta com dados de outro app recusada) e 8 proprios com os formatos
-  medidos ao vivo (CS2 sob `2678630` com o blob completo, id-filho que nao resolve para o pai, 6 pares
-  medidos).
+- **+23 testes (total: 1682).**
+- **+20** `SteamAppInfoCacheTests`: os 12 casos do upstream (formato filho, formato direto, `success:false`
+  achado pela chave, entrada de outro app recusada, 6 payloads improvaveis, chave direta vence a varredura,
+  chave direta com dados de outro app recusada) e 8 proprios com os formatos medidos ao vivo (CS2 sob
+  `2678630` com o blob completo, id-filho que nao resolve para o pai, 6 pares medidos).
+- **+1** `SteamAppInfoCacheNegativeMemoTests`: `GetCached` de um id sem blob, depois `ResolveAsync` tem de
+  fazer uma requisicao (stub responde 500, nada gravado em `%AppData%`). Falha com a guarda antiga (0
+  requisicoes).
+- **+2** `AppUpdateSourcesTests`: o valor de opt-in documentado (`ForkRepositoryUrl`) e aceito; e guarda de
+  fonte exigindo `.SetAutoApplyOnStartup(false)` no `Program.cs`. `CompiledInDefault_PointsAtThisForkAndIsAccepted`
+  virou `CompiledInDefault_IsEmpty_SoSelfUpdateIsOff`; `ContentSourceIsolationTests` passa a checar o feed de
+  opt-in, ja que o padrao vazio nao toca nada.
 - Mutacao manual: desligar a varredura por `steam_appid` derruba os casos de chave-filho.
-- `ChangelogTests`: versao `1.7.6` e ancoras rotacionadas.
+- `ChangelogTests`: versao `1.7.6` e ancoras rotacionadas (inclui "off by default").
 
-### Sem mudanca de politica
+### Politica
 
-- Nenhuma telemetria, elevacao UAC ou envio de chaves reintroduzido. O auto-update continua apontando so para
-  o repositorio do fork. `AssetIntegrity`, `LogSanitizer`, DPAPI e quarentena intocados. `settings.json`
-  inalterado. Nenhuma dependencia nova, nenhuma requisicao de rede nova, nenhuma string de UI nova.
+- **Uma mudanca, na direcao de menos rede:** o app nao busca nem instala versao nova sem opt-in.
+- Nenhuma telemetria, elevacao UAC ou envio de chaves reintroduzido. `AssetIntegrity`, `LogSanitizer`, DPAPI e
+  quarentena intocados. Formato do `settings.json` inalterado (`AppUpdateRepos` ja existia). Nenhuma
+  dependencia nova, nenhuma requisicao de rede nova, nenhuma string de UI nova.
 
 ## 1.7.5 — 2026-09-14
 

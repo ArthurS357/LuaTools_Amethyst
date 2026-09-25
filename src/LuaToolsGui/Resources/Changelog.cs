@@ -30,8 +30,9 @@ public static class Changelog
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
         new("1.7.6", "2026-09-25",
-            "Game names, covers, genres and descriptions resolve again for popular games that Steam's store data had silently stopped answering for.",
+            "Game names, covers, genres and descriptions resolve again for popular games that Steam's store data had silently stopped answering for, and the app no longer updates itself unless you ask it to.",
             [
+                "Automatic updates are now off by default: the app no longer checks for new versions or installs them on its own. Update by installing a release by hand, or turn automatic updates back on in settings.json - the About page shows where, and what is in effect.",
                 "Steam changed how it answers store-detail requests: for any game that has a DLC or soundtrack, the answer now arrives filed under that add-on's id instead of the game's own. The app looked only under the game's id, found nothing and gave up without a word, so games like Counter-Strike 2, Portal 2, Dota 2, Elden Ring and Cyberpunk 2077 showed no name, cover, genres or description unless they were already cached.",
                 "The answer is now matched by the game id Steam puts inside it. One that cannot be proven to belong to the game is refused rather than guessed at, so one game's details can never be saved under another's.",
                 "Affected games fill in again as the background refresh reaches them; nothing needs to be re-added. A game added while the app is open now gets its name and cover without a restart. Details saved before Steam's change were never affected.",

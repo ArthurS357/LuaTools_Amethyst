@@ -32,7 +32,7 @@ public partial class AboutViewModel(MainViewModel main, UpdateService updates, T
 
     /// <summary>The project's home, shown even when self-update is disabled so manual updating is possible.</summary>
     public string RepositoryUrl =>
-        updates.Sources.Repos.FirstOrDefault() ?? AppConfig.GithubReleasesRepos.FirstOrDefault() ?? "";
+        updates.Sources.Repos.FirstOrDefault() ?? AppConfig.ForkRepositoryUrl;
 
     public bool AutoUpdateEnabled => !updates.Sources.IsDisabled;
 

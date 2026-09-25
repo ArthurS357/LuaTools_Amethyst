@@ -202,7 +202,15 @@ public static class AppConfig
     // deliberately untouched by everything here.
 
     /// <summary>
-    /// Compiled-in default for the app's own update feed: this fork's OWN repository.
+    /// This fork's home: where its releases are published. Shown on the About page (so updating by hand
+    /// is always one click away) and the value to put in <c>AppUpdateRepos</c> to opt in to self-update.
+    /// Deliberately NOT the update feed — see <see cref="GithubReleasesRepos"/>.
+    /// </summary>
+    public const string ForkRepositoryUrl = "https://github.com/ArthurS357/LuaTools_Amethyst";
+
+    /// <summary>
+    /// Compiled-in default for the app's own update feed: EMPTY, so self-update is OFF and the app makes no
+    /// update request at all unless the user opts in with <c>AppUpdateRepos</c> in settings.json.
     ///
     /// <para>
     /// It used to inherit upstream's list (madoiscool/LuaTools, mendy-tools/LuaTools), which is a privacy
@@ -213,10 +221,10 @@ public static class AppConfig
     /// </para>
     ///
     /// <para>
-    /// Now that LuaTools Amethyst is published, pointing at it is both safe and useful: updates ship from
-    /// the same source as the build the user installed. A user can still override or disable this
-    /// entirely with <c>AppUpdateRepos</c> in settings.json (an empty array turns self-update off, and
-    /// then no update request is made at all).
+    /// 1.3.0 through 1.7.5 pointed it at <see cref="ForkRepositoryUrl"/>. 1.7.6 empties it again, by the
+    /// maintainer's decision: people using the app did not want it replacing itself in the background
+    /// whenever a release went out. Updating is now a choice — install a release by hand, or opt in with
+    /// <c>"AppUpdateRepos": ["https://github.com/ArthurS357/LuaTools_Amethyst"]</c>.
     /// </para>
     ///
     /// <para>
@@ -225,10 +233,7 @@ public static class AppConfig
     /// updater back at an official build.
     /// </para>
     /// </summary>
-    public static readonly string[] GithubReleasesRepos =
-    [
-        "https://github.com/ArthurS357/LuaTools_Amethyst",
-    ];
+    public static readonly string[] GithubReleasesRepos = [];
 
     /// <summary>
     /// Repos known to publish the OFFICIAL build. <see cref="Services.AppUpdateSources"/> refuses to build

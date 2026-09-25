@@ -10,7 +10,8 @@ by the upstream project.
 A Windows desktop client for managing Steam manifest/lua configurations, built with WPF on .NET 10.
 It browses and installs manifest sources, edits `stplug-in` lua files (depot pinning, per-depot
 enable/disable), manages unlocker modes, launches games through Steam, and injects a companion plugin
-into Steam's store pages. It ships translated in 29 languages and auto-updates via Velopack.
+into Steam's store pages. It ships translated in 29 languages and installs via Velopack; updating itself
+is opt-in (see [Updating](#updating)).
 
 Current version: **1.7.6** · Repository: <https://github.com/ArthurS357/LuaTools_Amethyst>
 
@@ -32,7 +33,7 @@ back analytics and the Steam key upload. Reinstall from the repository above.
 | Umami telemetry | Per-launch ping, no opt-out anywhere in the UI, spoofed Chrome User-Agent to get past bot filtering | **Removed.** No analytics request is made at all |
 | DonateKeys | **On by default.** Scraped per-depot `DecryptionKey` values out of Steam's `config.vdf` and uploaded them over plain HTTP to a bare IP | **Removed.** See below |
 | Cleartext requests | Key upload + manifest lookups | Only one metadata lookup remains, and it announces itself |
-| App auto-update | Points at the official release feed | **On, from this fork's own repo only**; official repos refused, `"AppUpdateRepos": []` turns it off ([Updating](#updating)) |
+| App auto-update | Points at the official release feed | **Off by default**; opt in to this fork's own repo with `AppUpdateRepos`, official repos refused ([Updating](#updating)) |
 | Theme | Default | "Amethyst" purple palette, centralised and contrast-checked |
 
 ### Why DonateKeys was not re-enabled
@@ -58,37 +59,34 @@ return as opt-in, default off. The full probe is recorded in
 
 ## Updating
 
-Automatic updates are **on**, and point at this fork's own repository:
+Automatic updates are **off by default** (since 1.7.6). The app makes **no update request at all** and never
+replaces itself on its own. To update, download the latest release and run the installer:
 
 ```
-https://github.com/ArthurS357/LuaTools_Amethyst
+https://github.com/ArthurS357/LuaTools_Amethyst/releases
 ```
 
-The app checks on launch and stages the update in the background; it is applied when you close the app.
-You can also check on demand from the **About** tab ("Check for updates"), which uses exactly the same
-update path as the automatic check.
+The **About** tab links to the repository and says that automatic updates are off.
 
-To update **manually** instead, download the latest release from the repository and run the installer.
+### Turning automatic updates on
 
-### Changing or disabling the update source
-
-The compiled-in default can be overridden in `settings.json`:
+Opt in by adding this fork's repository to `settings.json` (the **About** tab shows the folder):
 
 ```json
-{ "AppUpdateRepos": ["https://github.com/you/YourFork"] }
+{ "AppUpdateRepos": ["https://github.com/ArthurS357/LuaTools_Amethyst"] }
 ```
 
-List more than one for fallback — they are tried in order, which covers a primary repo becoming
-unreachable (banned, DMCA'd, account removed) rather than merely being out of date.
+The app then checks on launch and stages the update in the background; it is applied when you close the
+app. The **About** tab's "Check for updates" uses exactly the same path. An update that was already
+downloaded is **not** applied at the next launch, only on exit, so switching back to off never leaves a
+pending version to swap in behind you.
 
-To turn self-update **off** entirely, set it to an empty array. The app then makes no update request at
-all:
+List more than one repo for fallback — they are tried in order, which covers a primary repo becoming
+unreachable (banned, DMCA'd, account removed) rather than merely being out of date. To turn automatic
+updates off again, delete the key or set it to an empty array (`"AppUpdateRepos": []`).
 
-```json
-{ "AppUpdateRepos": [] }
-```
-
-The About tab always shows the feed that is actually in use, so you can confirm what took effect.
+The About tab always shows the feed that is actually in use (or that updates are off), so you can confirm
+what took effect.
 
 Entries are validated before use ([`AppUpdateSources.cs`](src/LuaToolsGui/Services/AppUpdateSources.cs)):
 
@@ -567,7 +565,7 @@ cannot substitute a different project's content.
 |---|---|---|
 | `EnableSourceAvailabilityChecks` | `true` | `false` stops the cleartext lookup entirely (see above) |
 | `InsecureMetadataNotice` | `"once"` | `"always"` / `"off"` — how often the lookup is disclosed |
-| `AppUpdateRepos` | this fork's repo | Where the app updates itself from. `[]` disables self-update |
+| `AppUpdateRepos` | unset (off) | Opt in to self-update by listing this fork's repo. Unset or `[]` = no update request |
 | `PluginAutoUpdate` | `false` | `true` lets the store-page plugin update itself unattended |
 | `PluginSource` | unset | Which creator's plugin build is active — set from the Plugin page, not by hand |
 

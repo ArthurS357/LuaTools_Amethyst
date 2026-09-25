@@ -40,8 +40,8 @@ public class UpdateService
 
     public UpdateService(SettingsService settings)
     {
-        // settings.json wins when present; otherwise fall back to the compiled-in fork repo. An explicit
-        // empty array in settings therefore means "off", which is distinct from "not configured".
+        // settings.json wins when present; otherwise fall back to the compiled-in default, which is empty
+        // (off). Opting in is a user entry in settings.json; an explicit empty array there is also "off".
         var resolution = AppUpdateSources.Resolve(settings.AppUpdateRepos ?? AppConfig.GithubReleasesRepos);
         Sources = resolution;
 

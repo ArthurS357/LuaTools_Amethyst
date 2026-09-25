@@ -54,6 +54,7 @@ public class ChangelogTests
         text.Should().ContainEquivalentOf("Counter-Strike 2"); // the concrete game that stopped resolving
         text.Should().ContainEquivalentOf("soundtrack");       // why: answers now filed under a child app's id
         text.Should().ContainEquivalentOf("guessed");          // an unprovable answer is refused, not guessed
+        text.Should().ContainEquivalentOf("off by default");   // self-update became opt-in in this release
     }
 
     [Fact]

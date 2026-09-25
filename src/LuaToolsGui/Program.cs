@@ -22,7 +22,13 @@ public static class Program
         // 127.0.0.1:8080 for as long as it exists. See UninstallCleanup for the full list and rationale.
         // The callback is "fast": it must not prompt, must not block, and must not throw — UninstallCleanup
         // guards every step internally and reports failures rather than propagating them.
+        //
+        // SetAutoApplyOnStartup(false): Velopack's default is to apply any already-downloaded newer package
+        // at launch. Self-update is opt-in here (AppConfig.GithubReleasesRepos is empty), so a package left
+        // on disk — e.g. staged while the user had opted in, then they turned it off — must not swap the
+        // binary under them at the next start. An opted-in update still applies on exit (UpdateService).
         VelopackApp.Build()
+            .SetAutoApplyOnStartup(false)
             .OnBeforeUninstallFastCallback(_ => RunUninstallCleanup())
             .Run();
 

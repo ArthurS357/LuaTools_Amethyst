@@ -28,8 +28,9 @@ public class ContentSourceIsolationTests
     [Fact]
     public void SelfUpdateFeed_IsSeparateFromEveryContentSource()
     {
-        // The self-update feed is the fork's own repo...
-        var selfUpdate = AppUpdateSources.Resolve(AppConfig.GithubReleasesRepos);
+        // The self-update feed, once opted in, is the fork's own repo (the compiled-in default is empty,
+        // which trivially touches nothing — so check the value users are told to opt in with)...
+        var selfUpdate = AppUpdateSources.Resolve([AppConfig.ForkRepositoryUrl]);
         Assert.False(selfUpdate.IsDisabled);
 
         // ...and must not be any of the content sources: collapsing the two would mean a change to how

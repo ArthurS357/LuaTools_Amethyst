@@ -1,3 +1,4 @@
+using System.IO;
 using LuaToolsGui;
 using LuaToolsGui.Services;
 using Xunit;
@@ -41,11 +42,23 @@ public class AppUpdateSourcesTests
     }
 
     [Fact]
-    public void CompiledInDefault_PointsAtThisForkAndIsAccepted()
+    public void CompiledInDefault_IsEmpty_SoSelfUpdateIsOff()
     {
-        // Guards the actual shipped constant, not just the resolver. The default now points at the fork's
-        // own repository, so updates come from the same place the build did.
+        // Guards the actual shipped constant, not just the resolver. Since 1.7.6 the app never updates
+        // itself unless the user opts in: an unconfigured install makes no update request at all.
         var result = AppUpdateSources.Resolve(AppConfig.GithubReleasesRepos);
+
+        Assert.True(result.IsDisabled);
+        Assert.Empty(result.Repos);
+        Assert.Empty(result.Rejected);
+    }
+
+    [Fact]
+    public void ForkRepository_IsAcceptedWhenOptedIn()
+    {
+        // The README and the About page tell users to paste exactly this value into AppUpdateRepos to turn
+        // self-update on. If the resolver ever refused it, the documented opt-in would silently do nothing.
+        var result = AppUpdateSources.Resolve([AppConfig.ForkRepositoryUrl]);
 
         Assert.False(result.IsDisabled);
         Assert.Empty(result.Rejected);
@@ -53,11 +66,12 @@ public class AppUpdateSourcesTests
     }
 
     [Fact]
-    public void CompiledInDefault_IsNotAnUpstreamRepo()
+    public void CompiledInValues_AreNotUpstreamRepos()
     {
         // The failure this guards against is subtle: someone "restoring" the old feed, or a copy-paste
-        // that lands an official repo in the compiled default, where no settings.json would reveal it.
-        foreach (string repo in AppConfig.GithubReleasesRepos)
+        // that lands an official repo in the compiled default or the documented opt-in value, where no
+        // settings.json would reveal it.
+        foreach (string repo in AppConfig.GithubReleasesRepos.Append(AppConfig.ForkRepositoryUrl))
             Assert.DoesNotContain(AppConfig.UpstreamReleaseRepos,
                 blocked => repo.Contains(blocked, StringComparison.OrdinalIgnoreCase));
     }
@@ -175,5 +189,22 @@ public class AppUpdateSourcesTests
             ["https://github.com/someone/MyFork", "https://github.com/someone/myfork.git"], Blocked);
 
         Assert.Single(result.Repos);
+    }
+
+    // ── Startup: a package already on disk is not applied behind the user's back ──
+
+    [Fact]
+    public void Startup_DoesNotAutoApplyADownloadedPackage()
+    {
+        // Velopack applies any newer downloaded package at launch by default. With self-update opt-in, a
+        // package left on disk from when the user HAD opted in must not replace the app after they turn it
+        // off. Read from source: VelopackApp's builder exposes no way to inspect the setting afterwards.
+        var dir = new DirectoryInfo(AppContext.BaseDirectory);
+        while (dir is not null && !File.Exists(Path.Combine(dir.FullName, "LuaToolsGui.sln")))
+            dir = dir.Parent;
+        Assert.NotNull(dir);
+
+        string program = File.ReadAllText(Path.Combine(dir.FullName, "src", "LuaToolsGui", "Program.cs"));
+        Assert.Contains(".SetAutoApplyOnStartup(false)", program, StringComparison.Ordinal);
     }
 }
