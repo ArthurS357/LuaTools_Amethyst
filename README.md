@@ -12,7 +12,7 @@ It browses and installs manifest sources, edits `stplug-in` lua files (depot pin
 enable/disable), manages unlocker modes, launches games through Steam, and injects a companion plugin
 into Steam's store pages. It ships translated in 29 languages and auto-updates via Velopack.
 
-Current version: **1.7.5** · Repository: <https://github.com/ArthurS357/LuaTools_Amethyst>
+Current version: **1.7.6** · Repository: <https://github.com/ArthurS357/LuaTools_Amethyst>
 
 ### Checking which build you are running
 
@@ -32,7 +32,7 @@ back analytics and the Steam key upload. Reinstall from the repository above.
 | Umami telemetry | Per-launch ping, no opt-out anywhere in the UI, spoofed Chrome User-Agent to get past bot filtering | **Removed.** No analytics request is made at all |
 | DonateKeys | **On by default.** Scraped per-depot `DecryptionKey` values out of Steam's `config.vdf` and uploaded them over plain HTTP to a bare IP | **Removed.** See below |
 | Cleartext requests | Key upload + manifest lookups | Only one metadata lookup remains, and it announces itself |
-| App auto-update | Points at the official release feed | **Off by default**; opt-in to your own repo, official repos refused |
+| App auto-update | Points at the official release feed | **On, from this fork's own repo only**; official repos refused, `"AppUpdateRepos": []` turns it off ([Updating](#updating)) |
 | Theme | Default | "Amethyst" purple palette, centralised and contrast-checked |
 
 ### Why DonateKeys was not re-enabled

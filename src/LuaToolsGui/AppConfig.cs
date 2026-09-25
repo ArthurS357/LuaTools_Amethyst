@@ -34,6 +34,9 @@ public static class AppConfig
     // Steam's storefront "featured categories" (top sellers, new releases, etc.) — drives the Add page's
     // featured strips. Public, no auth.
     public const string SteamFeaturedUrl = "https://store.steampowered.com/api/featuredcategories";
+    // Steam's per-app store details (name, header image, genres, blurb). Public, no auth. The response is
+    // NOT reliably keyed by the requested appid — see SteamAppInfoCache.FindAppDetailsEntry.
+    public const string SteamAppDetailsUrl = "https://store.steampowered.com/api/appdetails";
 
     // Community list of Steam "hardware" appids (Steam Deck, Index, controllers, VR headsets). Fetched
     // via GithubProxy (raw.githubusercontent.com → mirror fallback) and cached ~14 days, to filter

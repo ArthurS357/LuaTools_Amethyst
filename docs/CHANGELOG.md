@@ -1,5 +1,105 @@
 # Changelog
 
+## 1.7.6 — 2026-09-25
+
+### appdetails deixou de responder pela chave do appid pedido
+
+`SteamAppInfoCache` fazia `doc.RootElement.GetProperty(appid.ToString())` em `ResolveAsync` e em
+`EnsureFullDetailsAsync`. Desde ~set/2026 a Steam devolve a entrada de todo app que TEM app-filho (DLC,
+trilha sonora) sob a chave **do filho**. Medido em 2026-09-25 com a URL exata do app
+(`?appids=<id>&cc=us&l=english`), 21 jogos reais:
+
+| Pedido | Chave devolvida | `data.steam_appid` |
+|---|---|---|
+| 730 (Counter-Strike 2) | `2678630` | 730 |
+| 500 (Left 4 Dead) | `1660740` | 500 |
+| 620 (Portal 2) | `323180` | 620 |
+| 570 (Dota 2) | `2120612` | 570 |
+| 1245620 (Elden Ring) | `2855530` | 1245620 |
+| 1091500 (Cyberpunk 2077) | `2441600` | 1091500 |
+
+16 dos 21 vieram sob chave de filho; 5 ainda sob o proprio id (10, 240, 4000, 271590, 1174180). Todo
+`success:false` (app isolado 1660740, id inexistente) veio sob o id pedido. Em 100% dos casos
+`data.steam_appid` ecoou o id pedido, e sempre houve exatamente uma entrada.
+
+- **Sintoma:** `GetProperty` lancava `KeyNotFoundException` direto num `catch { return null; }`. Nome, capa
+  (fallback `header_image`), filtros e sinopse do flyout ficavam vazios para jogos populares ainda nao
+  cacheados, sem nenhuma linha de log. O backfill devolvia `false` e re-tentava a cada sessao, gastando vagas
+  da janela de 190 req/200 s.
+- **Correcao, portada do upstream v1.3.2 (commit `0485dec`):** `FindAppDetailsEntry` tenta a chave direta
+  (recusada se o `data` dela nomear outro app) e depois varre as entradas procurando
+  `data.steam_appid == appid`. **Sem prova, devolve nulo**: nao existe fallback "so ha uma entrada, pega",
+  porque escrever os dados do jogo errado em `details\<appid>.json` e permanente e silencioso, enquanto
+  nao resolver custa uma requisicao e se cura sozinho.
+- **Nao-casamento nao grava o marcador `"{}"`** (ele e permanente: `HasFullDetails` ficaria verdadeiro para
+  sempre). Loga uma linha por app por sessao via `AppLog`, que passa pelo `LogSanitizer`. So o appid vai ao
+  log.
+- Parsing defensivo: `success`, `data` e `name` via `TryGetProperty`; `success:true` sem objeto `data` e
+  tratado como indisponivel, igual ao upstream.
+- `FindAppDetailsEntry` e pura (sem I/O) e `internal`, testavel sem stub de HTTP.
+
+### Divergencias deliberadas do upstream
+
+- **`AppLog.Log` no lugar do `ILogger<SteamAppInfoCache>`** que o upstream injeta no construtor. Construtor
+  e registro de DI ficam intocados.
+- **URL em constante:** `AppConfig.SteamAppDetailsUrl`, ao lado de `SteamStoreSearchUrl`/`SteamFeaturedUrl`,
+  e um helper `AppDetailsUrl(appid)` no lugar das duas copias da string interpolada.
+- `TryGetSuccessfulData` junta a checagem `success`/`data` que o upstream repete nos dois metodos.
+- **Nada mais da v1.3.2 foi portado.** Fallback de DNS pela Cloudflare (`DohResolver`, `AppHttp`,
+  `DnsMode`), reescrita do `ProxiedFileDownloader`, BOMs acrescentados e os servicos que o fork nao tem
+  ficaram de fora. Raciocinio na analise de portabilidade da v1.3.2.
+
+### Cache existente
+
+Nenhuma invalidacao. O codigo antigo lancava **antes** de gravar, entao nenhum app afetado recebeu `"{}"`
+indevido; os blobs gravados antes da mudanca da Steam continuam validos. Conferido numa instalacao real:
+16 blobs, todos com `steam_appid` igual ao nome do arquivo, zero marcadores vazios.
+
+### README
+
+A tabela "What is different from the official build" dizia que o auto-update do app vinha **desligado**
+por padrao. Isso valia na base 1.3.0 e deixou de valer quando o padrao compilado passou a ser o repositorio
+do proprio fork. A secao "Updating" do mesmo README ja dizia o certo; a tabela agora concorda com ela.
+Nenhuma mudanca de comportamento.
+
+### Jogo adicionado na sessao so ganhava nome/capa depois de reiniciar
+
+Pre-existente, tambem no upstream v1.3.2. `GetCached(appid)` memoiza `null` quando nao ha
+`details\<appid>.json` no disco (para nao reler o disco a cada render da grade). Mas `ResolveAsync` comecava
+com `if (_cache.TryGetValue(appid, out var cached)) return cached;` e devolvia esse `null` **sem ir a rede**,
+e `EnsureFullDetailsAsync` so aquecia o indice em RAM com `!_cache.ContainsKey(appid)`, tambem falso com o
+`null` memoizado.
+
+- **Sintoma:** todo chamador no padrao `GetCached(id) ?? await ResolveAsync(id)` (capas e nomes do Manage,
+  nomes de DLC no Builds, Download, DropInstall) nunca buscava um jogo sem blob no disco. O handler
+  `luaInstaller.Installed` em `App.xaml.cs` baixava o blob e atualizava a Home de novo esperando a capa, mas a
+  memoizacao escondia o resultado ate o app reiniciar.
+- **Correcao:** `ResolveAsync` so aceita o `null` memoizado como resposta quando **ha** blob no disco (o
+  marcador `"{}"` de deslistado, que continua sem ir a rede); sem blob, busca. `EnsureFullDetailsAsync`
+  aquece a RAM quando o valor e `null`, nao so quando a chave falta. A memoizacao negativa do `GetCached`
+  fica como estava.
+- Construtor `internal SteamAppInfoCache(CacheService, HttpMessageHandler)` como seam de teste, no molde do
+  `SteamDepotInfo`. Construtor publico e registro de DI intocados.
+
+### Testes
+
+- **+1 teste (total: 1680).** `SteamAppInfoCacheNegativeMemoTests`: `GetCached` de um id sem blob, depois
+  `ResolveAsync` tem de fazer uma requisicao (stub responde 500, nada gravado em `%AppData%`). Falha com a
+  guarda antiga (0 requisicoes).
+- **+20 testes (total: 1679).** `SteamAppInfoCacheTests`: os 12 casos do upstream (formato filho, formato
+  direto, `success:false` achado pela chave, entrada de outro app recusada, 6 payloads improvaveis, chave
+  direta vence a varredura, chave direta com dados de outro app recusada) e 8 proprios com os formatos
+  medidos ao vivo (CS2 sob `2678630` com o blob completo, id-filho que nao resolve para o pai, 6 pares
+  medidos).
+- Mutacao manual: desligar a varredura por `steam_appid` derruba os casos de chave-filho.
+- `ChangelogTests`: versao `1.7.6` e ancoras rotacionadas.
+
+### Sem mudanca de politica
+
+- Nenhuma telemetria, elevacao UAC ou envio de chaves reintroduzido. O auto-update continua apontando so para
+  o repositorio do fork. `AssetIntegrity`, `LogSanitizer`, DPAPI e quarentena intocados. `settings.json`
+  inalterado. Nenhuma dependencia nova, nenhuma requisicao de rede nova, nenhuma string de UI nova.
+
 ## 1.7.5 — 2026-09-14
 
 ### CI quebrado por encoding: era o csproj, nao um XAML

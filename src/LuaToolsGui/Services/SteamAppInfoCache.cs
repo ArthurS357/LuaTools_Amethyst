@@ -66,7 +66,7 @@ public class SteamAppInfoCache
     // (the fast in-RAM index below) are derived from these on demand; there is no separate appinfo.json.
     private static readonly string DetailsDir = Path.Combine(Dir, "details");
 
-    private readonly HttpClient _http = new() { Timeout = TimeSpan.FromSeconds(15) };
+    private readonly HttpClient _http;
     // In-memory fast path for name/header-image. Populated by network resolves, and lazily rehydrated from
     // the /details blobs on a GetCached miss. A null value means "looked, no usable details" (negative
     // cache) so we don't re-read a missing/empty blob on every grid render.
@@ -84,8 +84,13 @@ public class SteamAppInfoCache
     private const int MaxPerWindow = 190; // small safety margin under the measured 200
     private DateTime _lastPersist = DateTime.MinValue;
 
-    public SteamAppInfoCache(CacheService cache)
+    public SteamAppInfoCache(CacheService cache) : this(cache, new HttpClientHandler()) { }
+
+    /// <summary>Test seam: swap in a stub handler so lookups can be checked by counting the requests that
+    /// actually go out, rather than by hitting the real API.</summary>
+    internal SteamAppInfoCache(CacheService cache, HttpMessageHandler handler)
     {
+        _http = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(15) };
         _cache2 = cache;
         // Restore the rolling window from a previous run so we don't burst fresh into a counting window.
         var now = DateTime.UtcNow;
@@ -132,16 +137,109 @@ public class SteamAppInfoCache
         catch { return null; } // corrupt/partial blob → treat as not-cached
     }
 
+    // ── appdetails request + response shape ──────────────────────────
+
+    /// <summary>
+    /// cc=us so region-blocked games (e.g. titles banned in the user's country) still resolve —
+    /// this is metadata only, not purchasing, so a neutral region is correct.
+    /// </summary>
+    private static string AppDetailsUrl(long appid) =>
+        $"{AppConfig.SteamAppDetailsUrl}?appids={appid}&cc=us&l=english";
+
+    /// <summary>
+    /// Pick out the appdetails entry that actually describes <paramref name="appid"/>.
+    /// Null when no entry in the response can be PROVEN to be this app's.
+    /// </summary>
+    /// <remarks>
+    /// appdetails used to be keyed by the appid you asked for. Since ~Sep 2026, any app that HAS child
+    /// apps (a DLC, a soundtrack) comes back keyed by one of those CHILD ids instead: appids=730 answers
+    /// under "2678630", appids=500 under "1660740" (a child that itself returns success:false when queried
+    /// on its own). Measured 2026-09-25 against 21 real games: 16 child-keyed, 5 still keyed by the
+    /// requested id (10, 240, 4000, 271590, 1174180), and every success:false body keyed by the requested
+    /// id. The inner data.steam_appid always echoed the id we asked for; it is the only trustworthy anchor
+    /// left. Do not "simplify" the scan away.
+    ///
+    /// There is deliberately no "if the object has exactly one entry, take it" fallback. It would look
+    /// like it fixes more cases, but its failure mode is silent and permanent: the wrong game's name,
+    /// header image, genres and release date get written to details\&lt;appid&gt;.json, which is the single
+    /// on-disk source of truth for this app from then on. Resolving nothing costs one wasted request and
+    /// self-heals on the next try; resolving the wrong game needs the user to find and delete their
+    /// cache. Refuse rather than guess.
+    ///
+    /// Returns JsonElement? rather than throwing on purpose: GetProperty(appid) throwing
+    /// KeyNotFoundException into a bare catch is exactly what made this bug invisible. Pure (no I/O), and
+    /// internal so the shape tolerance is unit-testable with no HTTP stub.
+    /// </remarks>
+    internal static JsonElement? FindAppDetailsEntry(JsonElement root, long appid)
+    {
+        if (root.ValueKind != JsonValueKind.Object) return null;
+
+        // 1. The direct key. Still correct for childless apps, and the ONLY way a success:false body can
+        //    ever be matched (it carries no "data" object to anchor on). Refused only if it DOES carry a
+        //    data object and that object names some other app.
+        if (root.TryGetProperty(appid.ToString(), out var direct) &&
+            (!TryGetDataObject(direct, out var directData) || DataNamesApp(directData, appid)))
+            return direct;
+
+        // 2. Child-keyed shape: the key is a DLC/soundtrack id, so scan for the entry whose
+        //    data.steam_appid is the app we actually asked for.
+        foreach (var prop in root.EnumerateObject())
+            if (TryGetDataObject(prop.Value, out var data) && DataNamesApp(data, appid))
+                return prop.Value;
+
+        return null;
+    }
+
+    /// <summary>The entry's "data" object, if it has one. A success:false entry does not.</summary>
+    private static bool TryGetDataObject(JsonElement entry, out JsonElement data)
+    {
+        data = default;
+        return entry.ValueKind == JsonValueKind.Object &&
+               entry.TryGetProperty("data", out data) && data.ValueKind == JsonValueKind.Object;
+    }
+
+    /// <summary>True when this data blob's steam_appid is the app we asked for. A missing or non-numeric
+    /// steam_appid counts as "not proven", so it is refused rather than assumed.</summary>
+    private static bool DataNamesApp(JsonElement data, long appid) =>
+        data.TryGetProperty("steam_appid", out var sa) && sa.ValueKind == JsonValueKind.Number &&
+        sa.TryGetInt64(out long got) && got == appid;
+
+    /// <summary>The usable "data" object of a matched entry: success:true AND a data object. False for a
+    /// success:false (delisted/unavailable) entry, which carries no data at all.</summary>
+    private static bool TryGetSuccessfulData(JsonElement entry, out JsonElement data)
+    {
+        data = default;
+        return entry.TryGetProperty("success", out var ok) && ok.ValueKind == JsonValueKind.True &&
+               TryGetDataObject(entry, out data);
+    }
+
+    // Appids whose appdetails entry could not be identified at all this session. Used ONLY to keep the log
+    // to one line per app — deliberately nothing is persisted for them (see FindAppDetailsEntry: a "{}"
+    // marker here would permanently poison a perfectly good game's cache just to save a few requests).
+    private readonly ConcurrentDictionary<long, byte> _unresolvable = new();
+
+    /// <summary>Report, once per app per session, that no entry in the response could be proven to be
+    /// this app's. In normal operation this never fires; if it starts firing, Steam changed the response
+    /// shape again and <see cref="FindAppDetailsEntry"/> needs another case.</summary>
+    private void LogUnresolvableOnce(long appid)
+    {
+        if (_unresolvable.TryAdd(appid, 0))
+            AppLog.Log($"appdetails: no entry with steam_appid={appid} in the response — Steam's response " +
+                       "shape changed again. Nothing cached for this app.");
+    }
+
     /// <summary>Fetch an app's name + header image from Steam (throttled, retries on 429/403). Null on
     /// failure. Pulls the FULL appdetails payload and caches the whole blob (for filters) — name/header
     /// are derived from it — so each app is only ever fetched once.</summary>
     public async Task<SteamAppInfo?> ResolveAsync(long appid, CancellationToken ct = default)
     {
-        if (_cache.TryGetValue(appid, out var cached)) return cached;
+        // GetCached's memoized null only means "no usable blob on disk when I looked". It is a real answer
+        // when a blob IS there (the "{}" delisted marker), but with no blob at all it is a plain miss: a game
+        // added this session would otherwise never get a name or cover until the app restarts.
+        if (_cache.TryGetValue(appid, out var cached) && (cached is not null || HasFullDetails(appid)))
+            return cached;
 
-        // cc=us so region-blocked games (e.g. titles banned in the user's country) still resolve —
-        // this is metadata only, not purchasing, so a neutral region is correct.
-        var url = $"https://store.steampowered.com/api/appdetails?appids={appid}&cc=us&l=english";
+        var url = AppDetailsUrl(appid);
 
         const int maxAttempts = 3; // initial + 2 retries
         for (int attempt = 0; attempt < maxAttempts; attempt++)
@@ -158,16 +256,22 @@ public class SteamAppInfoCache
                 if (!res.IsSuccessStatusCode) return null;
 
                 using var doc = JsonDocument.Parse(await res.Content.ReadAsStringAsync(ct));
-                var entry = doc.RootElement.GetProperty(appid.ToString());
-                if (!entry.GetProperty("success").GetBoolean())
+                if (FindAppDetailsEntry(doc.RootElement, appid) is not { } entry)
+                {
+                    // Steam changed the response shape again. Resolve nothing, cache nothing — a null
+                    // here already means "couldn't resolve right now" to every caller.
+                    LogUnresolvableOnce(appid);
+                    return null;
+                }
+
+                if (!TryGetSuccessfulData(entry, out var data))
                 {
                     // Delisted/unavailable → no details to cache for filters; mark so backfill skips it.
                     _ = SaveFullDetailsAsync(appid, "{}");
                     return null;
                 }
 
-                var data = entry.GetProperty("data");
-                string? name = data.GetProperty("name").GetString();
+                string? name = data.TryGetProperty("name", out var nameEl) ? nameEl.GetString() : null;
                 if (string.IsNullOrWhiteSpace(name)) return null;
 
                 string? image = data.TryGetProperty("header_image", out var img) ? img.GetString() : null;
@@ -402,9 +506,7 @@ public class SteamAppInfoCache
     {
         if (HasFullDetails(appid)) return true;
 
-        // cc=us so region-blocked games (e.g. titles banned in the user's country) still resolve —
-        // this is metadata only, not purchasing, so a neutral region is correct.
-        var url = $"https://store.steampowered.com/api/appdetails?appids={appid}&cc=us&l=english";
+        var url = AppDetailsUrl(appid);
         const int maxAttempts = 3;
         for (int attempt = 0; attempt < maxAttempts; attempt++)
         {
@@ -420,8 +522,16 @@ public class SteamAppInfoCache
                 if (!res.IsSuccessStatusCode) return false;
 
                 using var doc = JsonDocument.Parse(await res.Content.ReadAsStringAsync(ct));
-                var entry = doc.RootElement.GetProperty(appid.ToString());
-                if (!entry.GetProperty("success").GetBoolean())
+                if (FindAppDetailsEntry(doc.RootElement, appid) is not { } entry)
+                {
+                    // Nothing landed on disk, so say so. Deliberately NOT the "{}" marker: that is
+                    // permanent (HasFullDetails would return true forever, so nothing ever re-fetches),
+                    // and poisoning a healthy game's cache is far worse than a few retried requests.
+                    LogUnresolvableOnce(appid);
+                    return false;
+                }
+
+                if (!TryGetSuccessfulData(entry, out var data))
                 {
                     // Delisted / unavailable even in a neutral region → won't ever resolve. Cache an
                     // empty marker so backfill stops retrying and it's not counted as "still fetching".
@@ -429,11 +539,11 @@ public class SteamAppInfoCache
                     return true;
                 }
 
-                var data = entry.GetProperty("data");
                 await SaveFullDetailsAsync(appid, data.GetRawText());
 
-                // Opportunistically warm the session RAM index too if it's missing.
-                if (!_cache.ContainsKey(appid) && data.TryGetProperty("name", out var n) && n.GetString() is { } nm && nm.Length > 0)
+                // Opportunistically warm the session RAM index too if it's missing — or holds GetCached's
+                // negative memo from before this blob existed, which would otherwise hide it until restart.
+                if (_cache.GetValueOrDefault(appid) is null && data.TryGetProperty("name", out var n) && n.GetString() is { } nm && nm.Length > 0)
                 {
                     string? image = data.TryGetProperty("header_image", out var img) ? img.GetString() : null;
                     _cache[appid] = new SteamAppInfo(nm, image);

@@ -29,6 +29,15 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.7.6", "2026-09-25",
+            "Game names, covers, genres and descriptions resolve again for popular games that Steam's store data had silently stopped answering for.",
+            [
+                "Steam changed how it answers store-detail requests: for any game that has a DLC or soundtrack, the answer now arrives filed under that add-on's id instead of the game's own. The app looked only under the game's id, found nothing and gave up without a word, so games like Counter-Strike 2, Portal 2, Dota 2, Elden Ring and Cyberpunk 2077 showed no name, cover, genres or description unless they were already cached.",
+                "The answer is now matched by the game id Steam puts inside it. One that cannot be proven to belong to the game is refused rather than guessed at, so one game's details can never be saved under another's.",
+                "Affected games fill in again as the background refresh reaches them; nothing needs to be re-added. A game added while the app is open now gets its name and cover without a restart. Details saved before Steam's change were never affected.",
+                "Nothing else changed: no new setting, no new network request, and no change to how luas or fixes are installed.",
+            ]),
+
         new("1.7.5", "2026-09-14",
             "Removes the notice about how depot manifests are obtained, which had stopped being true, and fixes the build that 1.7.4 broke.",
             [
