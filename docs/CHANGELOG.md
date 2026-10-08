@@ -1,10 +1,13 @@
 # Changelog
 
-## 1.7.7 — 2026-10-08 (pronta, nao publicada)
+## 1.7.7 — 2026-10-08
 
 Correcoes dos achados da sondagem de 2026-10-03: F-01, F-02, F-03 e F-05 (seguranca), F-08, F-09 e F-13
-(recursos, higiene e recuperacao). `.csproj`, changelog in-app e `docs/release-notes-1.7.7.md` em 1.7.7. A
-data acima e a do bump; ajustar se a publicacao cair em outro dia.
+(recursos, higiene e recuperacao).
+
+Verificacao ao vivo antes da publicacao, com o binario publicado e o plugin real: `/add` pela loja passou
+pela ponte autenticada (tres jogos instalados). O download de fix Denuvo (F-09) **nao** foi exercitado contra
+a API real: se o host R2 for recusado, ele aparece no `plugin-backend.log` como `Signed download refused`.
 
 ### O plugin da loja nao se atualiza mais sozinho sem opt-in (F-01)
 

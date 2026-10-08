@@ -22,6 +22,12 @@
 - **O índice de builds salvas (aba Builds) se recupera do backup quando está danificado**, e o backup não é
   mais sobrescrito pela cópia danificada.
 
+## Ressalva
+
+- O download de fix Denuvo com a checagem nova de link **não foi testado contra um fix real** antes desta
+  publicação. Se um fix falhar com "The server sent a download link this app won't follow", o endereço
+  recusado está no `plugin-backend.log` (pasta `%AppData%\LuaToolsGui`). Reporte-o numa issue.
+
 ## Testes
 
 - 98 testes novos desde a 1.7.6, incluindo os primeiros testes diretos da instalação de zip e das rotas da
