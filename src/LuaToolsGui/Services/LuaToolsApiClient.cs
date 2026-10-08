@@ -303,10 +303,33 @@ public class LuaToolsApiClient(
         return await SaveResponseAsync(res, fallbackName, progress, ct);
     }
 
+    /// <summary>
+    /// Whether a signed download URL handed back by the API is one we follow: HTTPS to a named host.
+    /// </summary>
+    /// <remarks>
+    /// No host allow-list. The links are signed R2 URLs, but nothing in this repository pins WHICH R2
+    /// hostname, and guessing one would break every fix download the day it differs. What is refused is
+    /// what no legitimate signed link is: plain http (the zip is extracted into the game folder), an IP
+    /// literal (loopback, link-local, LAN), localhost, or any other scheme.
+    /// </remarks>
+    internal static bool IsFollowableSignedUrl(string url) =>
+        Uri.TryCreate(url, UriKind.Absolute, out var uri)
+        && uri.Scheme == Uri.UriSchemeHttps
+        && uri.HostNameType == UriHostNameType.Dns
+        && !uri.IsLoopback;
+
     /// <summary>Download a file from an absolute URL with NO auth header (e.g. a signed R2 link).</summary>
-    private async Task<DownloadedFile> DownloadFromUrlAsync(
+    internal async Task<DownloadedFile> DownloadFromUrlAsync(
         string url, string fallbackName, IProgress<double?>? progress, CancellationToken ct)
     {
+        if (!IsFollowableSignedUrl(url))
+        {
+            // The host is logged (path and query are not: they carry the signature) so a user can report
+            // a refusal that turns out to be a legitimate link.
+            AppLog.Log($"Signed download refused: {GithubProxy.Redact(url)}");
+            throw new ApiException("The server sent a download link this app won't follow. Please report it.");
+        }
+
         // New request (not via SendAsync) so no Bearer header and the absolute URL isn't prefixed.
         var req = new HttpRequestMessage(HttpMethod.Get, url);
         var res = await _http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, ct);

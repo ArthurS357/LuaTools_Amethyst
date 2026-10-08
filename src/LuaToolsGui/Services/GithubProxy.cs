@@ -229,6 +229,6 @@ public class GithubProxy
 
     /// <summary>Scheme + host only, for error text. A rejected URL is attacker-influenced, so its path and
     /// query don't belong in a message that may be logged or shown.</summary>
-    private static string Redact(string url) =>
+    internal static string Redact(string url) =>
         Uri.TryCreate(url, UriKind.Absolute, out var uri) ? $"{uri.Scheme}://{uri.Host}" : "(unparseable URL)";
 }
