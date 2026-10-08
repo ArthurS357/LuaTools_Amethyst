@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.7.6");
+        AppVersion.Current.Should().Be("1.7.7");
     }
 
     [Fact]
@@ -51,10 +51,13 @@ public class ChangelogTests
 
         // One anchor per change the release was actually about, so an entry that got copied forward from
         // the previous version fails here rather than shipping a changelog describing the wrong release.
-        text.Should().ContainEquivalentOf("Counter-Strike 2"); // the concrete game that stopped resolving
-        text.Should().ContainEquivalentOf("soundtrack");       // why: answers now filed under a child app's id
-        text.Should().ContainEquivalentOf("guessed");          // an unprovable answer is refused, not guessed
-        text.Should().ContainEquivalentOf("off by default");   // self-update became opt-in in this release
+        text.Should().ContainEquivalentOf("PluginAutoUpdate"); // F-01: plugin self-update gated again
+        text.Should().ContainEquivalentOf("token");            // F-02: the local bridge requires it
+        text.Should().ContainEquivalentOf("depotcache");       // F-03: only <depot>_<gid>.manifest lands there
+        text.Should().ContainEquivalentOf("atomically");       // F-05
+        text.Should().ContainEquivalentOf("%TEMP%");           // F-08: no partials left behind
+        text.Should().ContainEquivalentOf("https");            // F-09: signed fix links
+        text.Should().ContainEquivalentOf("backup");           // F-13: vault index .bak
     }
 
     [Fact]

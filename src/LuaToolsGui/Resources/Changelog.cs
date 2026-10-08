@@ -29,6 +29,19 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.7.7", "2026-10-08",
+            "Security and reliability fixes from an internal audit: the local bridge requires its token, the store plugin no longer updates itself unless you turn that on, and downloads and saved builds are harder to damage.",
+            [
+                "The Steam store plugin no longer updates itself when Steam opens unless PluginAutoUpdate is on. It was being replaced, and Steam restarted, even with that setting off.",
+                "The local bridge on port 6767 now requires the app's token on every request and the right HTTP method on every route, so a web page open in your browser can no longer add or remove games behind your back.",
+                "A manifest zip can only write files named <depot>_<manifest>.manifest into Steam's depotcache. Anything else in the archive is skipped and reported instead of written wherever its name pointed.",
+                "Luas, manifests, cached game details and the sign-in file are written atomically, so a crash or power cut mid-write no longer leaves a truncated file that the app then trusts.",
+                "A download that fails, is cancelled or stops sending data no longer leaves a partial file in %TEMP%, and a server that goes silent for 60 seconds now ends the download with an error instead of hanging it.",
+                "Denuvo fix downloads only follow https links to a named host. Anything else is refused, and its host is logged so it can be reported.",
+                "A damaged Builds index is now recovered from its backup, and the backup is no longer overwritten by the damaged copy.",
+                "Nothing else changed: no new setting, no new network request, and no new dependency.",
+            ]),
+
         new("1.7.6", "2026-09-25",
             "Game names, covers, genres and descriptions resolve again for popular games that Steam's store data had silently stopped answering for, and the app no longer updates itself unless you ask it to.",
             [

@@ -1,9 +1,10 @@
 # Changelog
 
-## 1.7.7 — nao publicada (rascunho)
+## 1.7.7 — 2026-10-08 (pronta, nao publicada)
 
-Correcoes dos achados de seguranca da sondagem de 2026-10-03 (F-01, F-02, F-03, F-05). Versao do
-`.csproj`, changelog in-app e release notes **nao** foram atualizados: ficam para o passo de release.
+Correcoes dos achados da sondagem de 2026-10-03: F-01, F-02, F-03 e F-05 (seguranca), F-08, F-09 e F-13
+(recursos, higiene e recuperacao). `.csproj`, changelog in-app e `docs/release-notes-1.7.7.md` em 1.7.7. A
+data acima e a do bump; ajustar se a publicacao cair em outro dia.
 
 ### O plugin da loja nao se atualiza mais sozinho sem opt-in (F-01)
 
@@ -64,16 +65,73 @@ truncado e pulado como "ja instalado"; blob de detalhes truncado conta como em c
 - Nao feito: validar o blob por parse em `HasFullDetails` (caminho quente; a escrita atomica remove a causa).
   `DenuvoFixService`, `SteamAppListCache` e `LuaVault.SaveIndex` ficam de fora.
 
+### Download parcial em `%TEMP%` e travamento sem dados (F-08)
+
+`LuaToolsApiClient.SaveResponseAsync` (unico ponto que grava downloads do lua.tools: fila, aba Fixes,
+manifest de depot) nao apagava o parcial quando o corpo falhava ou era cancelado. A fila nunca recebia o
+`DownloadedFile`, entao `DeleteStaged` nao via o caminho. Com `ResponseHeadersRead`, o `HttpClient.Timeout`
+de 5 min so cobre ate os cabecalhos: um servidor que parava de mandar dados depois deles travava o download
+ate o usuario cancelar.
+
+- `try/catch` em volta da gravacao: falha, cancelamento ou stall apagam o parcial (streams ja fechados) e
+  relancam.
+- Prazo por leitura (`AppConfig.DownloadStallTimeout`, 60 s, via `CancelAfter` num CTS ligado). Limita
+  silencio, nao duracao: link lento que segue mandando dados nunca dispara. Stall vira `ApiException` ("stopped
+  sending data"), nao `OperationCanceledException`, para a fila nao mostrar como cancelamento do usuario.
+- Nome do `Content-Disposition`: vazio, `.`/`..` e nome de dispositivo (`CON`, `NUL.zip`, `COM1`...) caem no
+  nome de fallback. Separadores ja eram trocados por `_` (sem traversal).
+- **Nao feito, de proposito:** prefixar o nome para evitar colisao. O nome staged e a identidade do build
+  (`LuaInstaller.BuildIdFromFileName` le `<appid>_<buildid>.lua` do caminho staged), entao prefixar tiraria os
+  pins. A dedupe `manifest:<appid>` da fila cobre o caso comum. Teto de tamanho tambem nao: nao ha dado do
+  maior download legitimo (slot `fix` do Denuvo); com o parcial apagado, disco cheio limpa o que escreveu.
+
+### URL assinada do fix Denuvo sem validacao (F-09)
+
+`DownloadDenuvoAsync` seguia qualquer URL devolvida por `/api/denuvo/download`, e o zip e extraido na pasta
+do jogo. `DownloadFromUrlAsync` agora recusa, antes de qualquer requisicao, URL que nao seja `https`, com host
+IP literal (loopback, link-local, rede local) ou `localhost`, e outros esquemas (`file:`, `ftp:`). O host
+recusado vai para o `plugin-backend.log` (so esquema + host, via `GithubProxy.Redact`; caminho e query levam a
+assinatura).
+
+- Sem allow-list de host: o link e R2 assinado, mas nada no repo fixa qual hostname, e
+  `GithubProxy.IsTrustedDownloadUrl` e lista so de GitHub. Um host com nome que resolve para loopback por DNS
+  nao e pego (exigiria resolver o nome; o ganho e so de higiene, ver a sondagem).
+
+### `.bak` do indice do cofre de builds (F-13)
+
+`LuaVault.SaveIndex` copiava `index.json` sobre `index.json.bak` a cada gravacao, inclusive com o
+`index.json` corrompido: destruia a ultima copia boa. Lendo o codigo, a recuperacao que a sondagem supunha
+tambem nao acontecia: `LoadIndex` lia o principal e o `.bak` dentro do MESMO `try`, entao um `index.json`
+truncado (`JsonException`) caia direto num indice vazio sem tentar o `.bak`. Um JSON com `"Variants": null`
+era aceito e estourava depois.
+
+- `TryReadIndex` (ausente, nao-JSON ou sem lista de variantes -> `null`) usado pelos dois: `LoadIndex` cai
+  para o `.bak` arquivo a arquivo, e `SaveIndex` so faz backup de um indice legivel. Corrigir so o
+  `SaveIndex` compraria uma gravacao: a seguinte faria backup do indice quase vazio escrito sobre o corrompido.
+- Indice valido e vazio (todas as builds apagadas) continua sendo legivel: nao ressuscita o `.bak`.
+
 ### Testes
 
-+50 (1.682 -> 1.732): `PluginAutoUpdateGateTests`, `InstallZipTests` (primeiros testes diretos de
-`InstallZip`), `HttpServerRoutesTests` (listener real em porta livre sobre o `HandleRequest` real),
-`AtomicFileTests`, e `LocalApiAccessPolicyTests` reescrito. Cada correcao foi testada por mutacao (gate,
-verbo, token, regex e atomicidade removidos de proposito: os testes falham).
++50 (1.682 -> 1.732) na primeira rodada: `PluginAutoUpdateGateTests`, `InstallZipTests` (primeiros testes
+diretos de `InstallZip`), `HttpServerRoutesTests` (listener real em porta livre sobre o `HandleRequest` real),
+`AtomicFileTests`, e `LocalApiAccessPolicyTests` reescrito.
+
++48 (1.732 -> 1.780) na segunda: `StagedDownloadTests` (corpo que falha, cancela, fica em silencio, e um lento
+mas constante que nao pode ser confundido com stall; nomes aceitos e recusados), `SignedDownloadUrlTests`
+(inclusive que a recusa acontece antes de qualquer conexao e loga o host sem a assinatura) e 8 em
+`LuaVaultTests` (indice truncado, nao-JSON, `Variants: null`, `[]`, e indice vazio valido). Os testes novos do
+cofre falham contra o `LuaVault.cs` anterior.
+
+Cada correcao foi testada por mutacao (gate, verbo, token, regex, atomicidade, limpeza do parcial, prazo de
+leitura, cada clausula da validacao de URL e do indice removidos de proposito: os testes falham).
 
 ### Fora do escopo (pendencias da sondagem)
 
-F-04 (auto-update opt-in via espelhos de terceiros), F-06 a F-11, F-13, F-14, F-17.
+F-04 (auto-update opt-in via espelhos de terceiros), F-06 (ruido `HttpListenerException 995` no
+`crash.log`), F-07 (Drop/Fixes fora de `_installGate` e sincronos na UI), F-10 (~20 mensagens de erro em
+ingles nos servicos; as novas de F-08/F-09 seguem o mesmo padrao), F-11 (`/log` sem neutralizar `\n`), F-14
+(login OAuth derrubavel por qualquer pagina), F-17 (`global.json`/`Directory.Packages.props`/`.gitattributes`).
+Do F-08: colisao de nome entre downloads simultaneos e teto de tamanho.
 
 ## 1.7.6 — 2026-09-25
 
