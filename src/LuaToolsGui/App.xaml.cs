@@ -282,19 +282,17 @@ public partial class App : Application
             }
 
             // 2) No app update pending — safe to check/apply a plugin update against this (already-current) app.
+            // F-01: only through AutoUpdateAsync, which owns the PluginAutoUpdate gate. This used to call
+            // GetStatusAsync/InstallAsync inline and swapped the Steam-root DLL without opt-in.
             try
             {
-                var installer = _host.Services.GetRequiredService<PluginInstallerService>();
-                var st = await installer.GetStatusAsync(force: true);
-                if (st.UpdateAvailable)
-                {
-                    if (!st.DllMatches)
+                await _host.Services.GetRequiredService<PluginInstallerService>().AutoUpdateAsync(
+                    beforeInstall: st =>
                     {
+                        if (st.DllMatches) return;
                         var t = _host.Services.GetRequiredService<ToastService>();
                         Dispatcher.Invoke(() => t.Show("LuaTools", "Updating plugin — Steam will restart."));
-                    }
-                    await installer.InstallAsync(progress: null);
-                }
+                    });
             }
             catch { /* offline / install error — retry next Steam-open */ }
         }

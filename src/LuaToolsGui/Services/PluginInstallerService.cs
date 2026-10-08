@@ -391,7 +391,7 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
         File.Exists(LuatoolsJsPath)
         && (Slots.Any(s => SlotPath(s) is { } p && File.Exists(p)) || LegacyDllPaths.Any(File.Exists));
 
-    public async Task<PluginStatus> GetStatusAsync(bool force = false, CancellationToken ct = default)
+    public virtual async Task<PluginStatus> GetStatusAsync(bool force = false, CancellationToken ct = default)
     {
         bool frontend = File.Exists(LuatoolsJsPath);
         // "installed" if AT LEAST ONE slot's proxy is present — a partial/mid-migration state still counts
@@ -493,7 +493,7 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
     /// the entry point for Install / Update / Reinstall and for the silent auto-update, all of which act on
     /// the current choice rather than making one.
     /// </summary>
-    public Task<(bool ok, string? error)> InstallAsync(IProgress<double?>? progress, CancellationToken ct = default) =>
+    public virtual Task<(bool ok, string? error)> InstallAsync(IProgress<double?>? progress, CancellationToken ct = default) =>
         InstallSourceAsync(ActiveSource, progress, ct);
 
     /// <summary>
@@ -800,13 +800,14 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
     /// two of them (the Steam-open flow and the /check-updates HTTP handler) and a gate that has to be
     /// remembered at each caller is a gate that gets missed by the third one.
     /// </para></summary>
-    public async Task<bool> AutoUpdateAsync(CancellationToken ct = default)
+    public async Task<bool> AutoUpdateAsync(CancellationToken ct = default, Action<PluginStatus>? beforeInstall = null)
     {
         if (!settings.PluginAutoUpdate) return false;
         try
         {
             var st = await GetStatusAsync(force: true, ct);
             if (!st.UpdateAvailable) return false; // not installed, offline, or already current
+            beforeInstall?.Invoke(st);
             var (ok, _) = await InstallAsync(progress: null, ct);
             return ok;
         }
