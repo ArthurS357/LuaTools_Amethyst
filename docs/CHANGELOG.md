@@ -1,5 +1,80 @@
 # Changelog
 
+## 1.7.7 — nao publicada (rascunho)
+
+Correcoes dos achados de seguranca da sondagem de 2026-10-03 (F-01, F-02, F-03, F-05). Versao do
+`.csproj`, changelog in-app e release notes **nao** foram atualizados: ficam para o passo de release.
+
+### O plugin da loja nao se atualiza mais sozinho sem opt-in (F-01)
+
+`App.RunUpdateFlowAsync` chamava `GetStatusAsync`/`InstallAsync` direto. O gate `PluginAutoUpdate` vivia
+so em `PluginInstallerService.AutoUpdateAsync`, que esse fluxo nunca chamava. Com o plugin instalado, a
+cada abertura da Steam (`--tray-locked`) o app consultava o GitHub e, havendo release nova, trocava o
+`winmm.dll` da raiz da Steam e a reiniciava, mesmo com `PluginAutoUpdate` desligado por padrao e o README
+dizendo que nada na raiz muda sem o usuario apertar Install/Update.
+
+- O fluxo agora passa por `AutoUpdateAsync` (novo callback opcional `beforeInstall` mantem o toast "Steam
+  will restart"). Com o gate desligado nao ha nem a consulta ao GitHub.
+- `GetStatusAsync`/`InstallAsync` viraram `virtual` para o teste contar chamadas.
+- Origem: o fluxo inline veio do import do fork (`415cfc2`); o hardening `f32de88` pos o gate na camada
+  errada. Verificado por leitura e por teste (inclusive com o gate removido de proposito); nao reproduzido
+  contra uma release real do plugin.
+
+### Ponte HTTP local exige token e verbo (F-02)
+
+A ponte da porta 6767 servia sem token qualquer requisicao sem `Origin` (e qualquer origem Steam), sob a
+premissa de que navegador sempre envia `Origin`. Nao envia: um `GET` por navegacao ou `<img>` nao tem. Alem
+disso `MatchPost` era alias de `MatchGet`, entao `/add`, `/remove`, `/cancel`, `/open/fix` e as outras rotas
+com efeito colateral tambem respondiam a `GET`. Qualquer pagina aberta no navegador podia apagar um lua ou
+iniciar uma instalacao, as cegas.
+
+- `LocalApiAccessPolicy.Evaluate(host, token, expectedToken)` devolve `bool`: `Host` de loopback literal **e**
+  token correto. Saem a allow-list de origens, o eco de CORS (`SetCors`) e o atalho de `OPTIONS`: nenhum tinha
+  chamador legitimo. `Host` continua sendo checado antes do token (anti DNS-rebinding).
+- `MatchGet`/`MatchPost` exigem `GET`/`POST`.
+- O plugin nao e afetado: todo RPC passa pelo `CefInjectorService`, cujo mapa usa os verbos exatos e anexa o
+  token do lado C#. Conferido no `luatools.js` instalado (nenhum `fetch` direto para a 6767).
+- Seam de teste: `HttpServerService.Port` (interno, padrao 6767) e `HandleRequest` interno.
+
+### InstallZip so escreve manifests com nome `<depot>_<gid>.manifest` (F-03)
+
+`InstallZip` gravava `Path.Combine(depotcache, entry.Name)` com `overwrite`. Um nome com letra de unidade
+(`D:x.manifest`) faz `Path.Combine` devolver o segundo argumento: o arquivo escapava de `depotcache` e o
+resultado ainda dizia "sucesso". O caminho principal de manifests (aba Add, plugin da loja, ponte, arrastar e
+soltar) chama `InstallZip` sem passar pelo `FixAnalyzer`, que so roda na aba Fixes. `..\` **nao** escapa: o
+.NET 10 normaliza `\` em `FullName`/`Name` (testado).
+
+- Entrada `.manifest` so e extraida se casar `^[0-9]+_[0-9]+\.manifest\z`. O resto e pulado, listado em
+  `InstallResult.Failed` e sinalizado em `InstallResult.Error`. `.lua` e manifests validos do mesmo zip seguem
+  normalmente.
+- Reproduzido de ponta a ponta contra o binario compilado antes da correcao; os testes novos falham no codigo
+  antigo.
+- O mesmo codigo existe no upstream v1.3.2.
+
+### Escrita atomica (F-05)
+
+`stplug-in\<appid>.lua`, manifests do `depotcache`, `details\<appid>.json` e `auth.dat` eram gravados no
+lugar. Uma queda no meio deixava um arquivo truncado que o app passava a tratar como valido (manifest
+truncado e pulado como "ja instalado"; blob de detalhes truncado conta como em cache para sempre, porque
+`HasFullDetails` e so `File.Exists`).
+
+- Novo `AtomicFile.Write`: arquivo temporario irmao + `File.Move(overwrite)`. Se a Steam mantiver o destino
+  aberto sem `FILE_SHARE_DELETE` (o rename e recusado, a escrita no lugar nao seria), cai para a escrita no
+  lugar: nunca pior que antes.
+- Nao feito: validar o blob por parse em `HasFullDetails` (caminho quente; a escrita atomica remove a causa).
+  `DenuvoFixService`, `SteamAppListCache` e `LuaVault.SaveIndex` ficam de fora.
+
+### Testes
+
++50 (1.682 -> 1.732): `PluginAutoUpdateGateTests`, `InstallZipTests` (primeiros testes diretos de
+`InstallZip`), `HttpServerRoutesTests` (listener real em porta livre sobre o `HandleRequest` real),
+`AtomicFileTests`, e `LocalApiAccessPolicyTests` reescrito. Cada correcao foi testada por mutacao (gate,
+verbo, token, regex e atomicidade removidos de proposito: os testes falham).
+
+### Fora do escopo (pendencias da sondagem)
+
+F-04 (auto-update opt-in via espelhos de terceiros), F-06 a F-11, F-13, F-14, F-17.
+
 ## 1.7.6 — 2026-09-25
 
 ### appdetails deixou de responder pela chave do appid pedido
