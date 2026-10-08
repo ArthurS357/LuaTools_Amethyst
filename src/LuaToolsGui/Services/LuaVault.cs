@@ -710,22 +710,25 @@ public class LuaVault
 
     private VaultIndex LoadIndex(long appId)
     {
+        // Present but unreadable → fall back to the .bak rather than starting empty, which a later
+        // save would then make permanent.
+        string path = IndexPath(appId);
+        return TryReadIndex(path) ?? TryReadIndex(path + ".bak") ?? new VaultIndex { AppId = appId };
+    }
+
+    /// <summary>The index stored at <paramref name="path"/>, or null if it is missing, is not JSON, or is
+    /// JSON without a variant list. Each file is judged on its own: a torn index.json must not stop the
+    /// .bak from being tried, which a single shared catch did.</summary>
+    private static VaultIndex? TryReadIndex(string path)
+    {
         try
         {
-            string path = IndexPath(appId);
-            if (File.Exists(path) &&
-                JsonSerializer.Deserialize<VaultIndex>(File.ReadAllText(path), JsonOpts) is { } loaded)
-                return loaded;
-
-            // Present but unreadable → fall back to the .bak rather than starting empty, which a later
-            // save would then make permanent.
-            string bak = path + ".bak";
-            if (File.Exists(bak) &&
-                JsonSerializer.Deserialize<VaultIndex>(File.ReadAllText(bak), JsonOpts) is { } fromBak)
-                return fromBak;
+            return File.Exists(path) &&
+                   JsonSerializer.Deserialize<VaultIndex>(File.ReadAllText(path), JsonOpts) is { Variants: not null } index
+                ? index
+                : null;
         }
-        catch { /* fall through to a fresh index */ }
-        return new VaultIndex { AppId = appId };
+        catch { return null; }
     }
 
     /// <summary>
@@ -741,7 +744,9 @@ public class LuaVault
 
         Directory.CreateDirectory(AppDir(appId));
         File.WriteAllText(tmp, JsonSerializer.Serialize(index, JsonOpts));
-        try { if (File.Exists(path)) File.Copy(path, path + ".bak", overwrite: true); } catch { /* best effort */ }
+        // Only a readable index becomes the backup. When index.json is torn, the .bak is the last good copy
+        // (LoadIndex just recovered from it), and copying the torn file over it would destroy that.
+        try { if (TryReadIndex(path) is not null) File.Copy(path, path + ".bak", overwrite: true); } catch { /* best effort */ }
         File.Move(tmp, path, overwrite: true);
     }
 }

@@ -610,4 +610,91 @@ public class LuaVaultTests : IDisposable
         Assert.Contains(variants, v => v.DisplayLabel == "keeper" && v.BuildId == "18234567");
         Assert.Contains(reopened.AppsWithVariants(), id => id == AppId);
     }
+
+    // ── index.json / .bak recovery ─────────────────────────────────────────────────────────────────
+
+    private string IndexFile => Path.Combine(_tmp, "luavault", AppId.ToString(), "index.json");
+    private string BakFile => IndexFile + ".bak";
+
+    /// <summary>A stored default variant, with index.json and its .bak both holding it.</summary>
+    private string SeedIndexWithBak()
+    {
+        WriteLive(AutoUpdatingLua);
+        _vault.SyncDefaultFromLive(AppId);
+        string hash = _vault.GetVariants(AppId).Single().Hash;
+        File.Copy(IndexFile, BakFile, overwrite: true);
+        return hash;
+    }
+
+    private static bool IsReadableIndexHolding(string path, string hash)
+    {
+        try
+        {
+            using var doc = System.Text.Json.JsonDocument.Parse(File.ReadAllText(path));
+            return doc.RootElement.GetProperty("Variants").EnumerateArray()
+                .Any(v => v.GetProperty("Hash").GetString() == hash);
+        }
+        catch { return false; }
+    }
+
+    [Fact]
+    public void Save_BacksUpTheIndexItReplaces()
+    {
+        WriteLive(AutoUpdatingLua);
+        _vault.SyncDefaultFromLive(AppId);
+        string hash = _vault.GetVariants(AppId).Single().Hash;
+
+        _vault.SetEditBase(AppId, hash);
+
+        Assert.True(IsReadableIndexHolding(BakFile, hash));
+        Assert.DoesNotContain("EditBaseHash", File.ReadAllText(BakFile)); // the PREVIOUS index, not the new one
+    }
+
+    /// <summary>Regression: a torn index.json threw inside the same catch that guarded the .bak read, so
+    /// the .bak was never tried and the game's builds read as gone.</summary>
+    [Theory]
+    [InlineData("{\"AppId\": 3869")]                     // torn mid-write
+    [InlineData("not json")]
+    [InlineData("{\"AppId\": 386940, \"Variants\": null}")] // JSON, but not an index
+    [InlineData("[]")]
+    public void UnreadableIndex_IsRecoveredFromTheBak(string torn)
+    {
+        string hash = SeedIndexWithBak();
+        File.WriteAllText(IndexFile, torn);
+
+        Assert.Contains(_vault.GetVariants(AppId), v => v.Hash == hash);
+    }
+
+    /// <summary>Regression (F-13): saving over a torn index copied the torn file over the good .bak. With
+    /// the .bak kept, the save writes the recovered variants back, so a SECOND save is safe too.</summary>
+    [Theory]
+    [InlineData("{\"AppId\": 3869")]
+    [InlineData("{\"AppId\": 386940, \"Variants\": null}")]
+    public void SavingOverAnUnreadableIndex_KeepsTheGoodBak(string torn)
+    {
+        string hash = SeedIndexWithBak();
+        File.WriteAllText(IndexFile, torn);
+
+        _vault.SetEditBase(AppId, hash);
+        Assert.True(IsReadableIndexHolding(BakFile, hash));
+        Assert.True(IsReadableIndexHolding(IndexFile, hash));
+
+        _vault.SetEditBase(AppId, null);
+        Assert.True(IsReadableIndexHolding(BakFile, hash));
+        Assert.Contains(_vault.GetVariants(AppId), v => v.Hash == hash);
+    }
+
+    /// <summary>An index with no variants is a real state (every build deleted), not a torn file. It must
+    /// neither resurrect the .bak's variants nor be refused as the next backup.</summary>
+    [Fact]
+    public void EmptyButValidIndex_IsNotMistakenForATornOne()
+    {
+        SeedIndexWithBak();
+        File.WriteAllText(IndexFile, "{\"AppId\": 386940, \"Variants\": []}");
+
+        Assert.Empty(_vault.GetVariants(AppId));
+
+        _vault.SetEditBase(AppId, "deadbeef");
+        Assert.Contains("\"Variants\": []", File.ReadAllText(BakFile));
+    }
 }
