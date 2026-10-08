@@ -173,8 +173,8 @@ rather than gated.
 
 ## Downloaded fixes are screened before they touch your disk
 
-Fixes and manifests arrive as archives that end up either in Steam's folders or inside a game's install
-directory. Before anything is written, [`FixAnalyzer`](src/LuaToolsGui/Services/FixAnalyzer.cs) inspects
+Fixes and manifests downloaded on the Fixes page arrive as archives that end up either in Steam's folders or
+inside a game's install directory. Before anything is written, [`FixAnalyzer`](src/LuaToolsGui/Services/FixAnalyzer.cs) inspects
 the staged download and **refuses** it on:
 
 - **Path escapes (zip-slip)** — entries traversing out of the target folder with `..`, or using absolute
@@ -194,6 +194,11 @@ Things that are **recorded but allowed**, because blocking them would break legi
 Every decision is written to `plugin-backend.log`, and a refusal is shown as a toast explaining why.
 (The file keeps that name for continuity — it is the app's only log, not just the plugin bridge's. The
 class behind it is `AppLog`.)
+
+Manifest zips installed any other way — the Add page, the store plugin, the local bridge, drag-and-drop —
+do **not** go through `FixAnalyzer`. For those, [`LuaInstaller.InstallZip`](src/LuaToolsGui/Services/LuaInstaller.cs)
+only extracts `.manifest` entries named `<depot>_<gid>.manifest`; anything else in the archive is skipped
+and reported.
 
 ## Where Modes and the Plugin come from
 
