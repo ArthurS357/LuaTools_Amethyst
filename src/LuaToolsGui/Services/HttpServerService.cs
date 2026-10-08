@@ -55,17 +55,17 @@ public class HttpServerService : IHostedService
     // with `Access-Control-Allow-Origin: *` and no other check, which is exactly that hole: a browser
     // preflight succeeded, so any origin could POST to /open-url, /remove/{appid}, /add/{appid}, etc.
     //
-    // Three layers now gate every request (see IsAuthorized):
+    // Two layers gate every request (see Authorize), and there is no CORS at all:
     //   1. Host must be literal loopback — stops DNS rebinding (an attacker name resolving to 127.0.0.1
     //      arrives with its own Host header, so it no longer reaches the handlers).
-    //   2. The app's OWN client (CefInjectorService, which is what actually issues these calls — the store
-    //      page can't fetch localhost from an HTTPS page, that's why the CDP bridge exists) authenticates
-    //      with a per-launch token instead of relying on origin at all.
-    //   3. A browser request carrying an Origin is only served if that origin is an allow-listed Steam
-    //      surface, and the CORS header echoes that one origin rather than "*".
+    //   2. A per-launch token is REQUIRED. The only legitimate caller is CefInjectorService (the store
+    //      page can't fetch localhost, that's why the CDP bridge exists), which attaches it from C#. Origin
+    //      is deliberately not consulted: a GET by navigation or <img> sends none, so "no Origin" proved
+    //      nothing and let any web page drive /remove, /add, /cancel and friends.
+    // Routes also require their verb (MatchGet/MatchPost), so a side-effect route can't be hit by GET.
     //
     // The decision itself lives in LocalApiAccessPolicy so it is unit-testable; this class only supplies
-    // the transport (reading headers, writing the 403, emitting the CORS headers).
+    // the transport (reading headers, writing the 403).
 
     /// <summary>Per-launch shared secret. Read by <see cref="CefInjectorService"/>, which sends it on every
     /// bridge call; never written to disk and never leaves the machine.</summary>
@@ -77,6 +77,10 @@ public class HttpServerService : IHostedService
     /// <summary>Cap on retained per-app download states, so a long session can't grow _downloads without
     /// bound. Finished entries are evicted oldest-first once the cap is passed.</summary>
     private const int MaxTrackedDownloads = 256;
+
+    /// <summary>Test seam: tests listen on a free port instead of the fixed 6767 (CefInjectorService's
+    /// BaseUrl is separate and stays 6767).</summary>
+    internal int Port { get; init; } = 6767;
 
     public HttpServerService(LuaInstaller installer, SteamService steam, CacheService cache,
         IServiceProvider services, ILogger<HttpServerService> logger)
@@ -138,7 +142,7 @@ public class HttpServerService : IHostedService
     {
         _appCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         _listener = new HttpListener();
-        _listener.Prefixes.Add("http://127.0.0.1:6767/");
+        _listener.Prefixes.Add($"http://127.0.0.1:{Port}/");
         try { _listener.Start(); }
         catch (HttpListenerException)
         {
@@ -149,7 +153,7 @@ public class HttpServerService : IHostedService
                 // the machine, including other (possibly less trusted) logins — the app only ever needs to
                 // listen as the user running it.
                 string account = $"{Environment.UserDomainName}\\{Environment.UserName}";
-                var psi = new System.Diagnostics.ProcessStartInfo("netsh", $"http add urlacl url=http://127.0.0.1:6767/ user=\"{account}\"")
+                var psi = new System.Diagnostics.ProcessStartInfo("netsh", $"http add urlacl url=http://127.0.0.1:{Port}/ user=\"{account}\"")
                 {
                     Verb = "runas",
                     UseShellExecute = true,
@@ -192,7 +196,7 @@ public class HttpServerService : IHostedService
         }
     }
 
-    private async Task HandleRequest(HttpListenerContext ctx)
+    internal async Task HandleRequest(HttpListenerContext ctx)
     {
         var req = ctx.Request;
         var resp = ctx.Response;
@@ -201,8 +205,7 @@ public class HttpServerService : IHostedService
 
         // Gate BEFORE any routing: an unauthorized caller must not be able to reach a handler, and must
         // not receive CORS headers that would let it read the response either.
-        var access = Authorize(req);
-        if (!access.Allowed)
+        if (!Authorize(req))
         {
             resp.StatusCode = 403;
             var denied = Encoding.UTF8.GetBytes(JsonErr("Forbidden"));
@@ -213,8 +216,6 @@ public class HttpServerService : IHostedService
             return;
         }
 
-        SetCors(resp, access.AllowOrigin);
-
         try
         {
             string? path = req.Url?.AbsolutePath.TrimEnd('/');
@@ -223,21 +224,17 @@ public class HttpServerService : IHostedService
                 AppLog.Log($"HTTP {req.HttpMethod} {path}");
             (int status, string body) = path switch
             {
-                // Answer CORS preflight FIRST — otherwise it matches a POST route (the
-                // matchers ignore method) and returns non-2xx, so the browser blocks the
-                // real request (this is why JSON POSTs like /add-source did nothing).
-                _ when req.HttpMethod == "OPTIONS" => (204, ""),
-                var p when MatchGet(p, "/has/{appid}", out var id) => await HandleHas(id),
+                var p when MatchGet(req.HttpMethod, p, "/has/{appid}", out var id) => await HandleHas(id),
                 // Steam-plugin headless add: reflects the app's real DownloadViewModel.
-                var p when MatchPost(p, "/add/{appid}", out var id) => await HandleAdd(id, req),
-                var p when MatchGet(p, "/add-status/{appid}", out var id) => HandleAddStatus(id),
-                var p when MatchPost(p, "/add-source/{appid}", out var id) => await HandleAddSource(id, req),
-                var p when MatchPost(p, "/check-sources/{appid}", out var id) => await HandleCheckSources(id),
-                var p when MatchPost(p, "/download/{appid}", out var id) => await HandleDownload(id, req),
-                var p when MatchGet(p, "/download-status/{appid}", out var id) => HandleStatus(id),
-                var p when MatchPost(p, "/cancel/{appid}", out var id) => HandleCancel(id),
-                var p when MatchPost(p, "/remove/{appid}", out var id) => HandleRemove(id),
-                var p when MatchPost(p, "/open/fix/{appid}", out var id) => HandleOpenFix(id),
+                var p when MatchPost(req.HttpMethod, p, "/add/{appid}", out var id) => await HandleAdd(id, req),
+                var p when MatchGet(req.HttpMethod, p, "/add-status/{appid}", out var id) => HandleAddStatus(id),
+                var p when MatchPost(req.HttpMethod, p, "/add-source/{appid}", out var id) => await HandleAddSource(id, req),
+                var p when MatchPost(req.HttpMethod, p, "/check-sources/{appid}", out var id) => await HandleCheckSources(id),
+                var p when MatchPost(req.HttpMethod, p, "/download/{appid}", out var id) => await HandleDownload(id, req),
+                var p when MatchGet(req.HttpMethod, p, "/download-status/{appid}", out var id) => HandleStatus(id),
+                var p when MatchPost(req.HttpMethod, p, "/cancel/{appid}", out var id) => HandleCancel(id),
+                var p when MatchPost(req.HttpMethod, p, "/remove/{appid}", out var id) => HandleRemove(id),
+                var p when MatchPost(req.HttpMethod, p, "/open/fix/{appid}", out var id) => HandleOpenFix(id),
                 "/open/settings" when req.HttpMethod == "POST" => HandleOpenSettings(),
                 "/open-url" when req.HttpMethod == "POST" => await HandleOpenUrl(req),
                 "/restart-steam" when req.HttpMethod == "POST" => HandleRestartSteam(),
@@ -274,10 +271,18 @@ public class HttpServerService : IHostedService
     /// <summary>Match a "/segment/{appid}" pattern and parse the appid. Parsing here (rather than
     /// <c>long.Parse</c> at each call site) means a non-numeric appid simply fails to match and falls
     /// through to 404, instead of throwing and surfacing as a 500.</summary>
-    private static bool MatchGet(string? path, string pattern, out long id)
+    internal static bool MatchGet(string method, string? path, string pattern, out long id) =>
+        MatchPath(method == "GET", path, pattern, out id);
+
+    // F-02: this used to be an alias of MatchGet that ignored the verb, so every side-effect route also
+    // answered GET (and a GET by navigation or <img> carries no Origin).
+    internal static bool MatchPost(string method, string? path, string pattern, out long id) =>
+        MatchPath(method == "POST", path, pattern, out id);
+
+    private static bool MatchPath(bool verbMatches, string? path, string pattern, out long id)
     {
         id = 0;
-        if (path is null) return false;
+        if (!verbMatches || path is null) return false;
         var parts = pattern.TrimEnd('/').Split('/');
         var pathParts = path.Split('/');
         if (parts.Length != pathParts.Length) return false;
@@ -290,15 +295,11 @@ public class HttpServerService : IHostedService
         return long.TryParse(raw, out id);
     }
 
-    private static bool MatchPost(string? path, string pattern, out long id) =>
-        MatchGet(path, pattern, out id);
-
-    /// <summary>Transport adapter: pull the three headers the policy needs off the request and let
+    /// <summary>Transport adapter: pull the two headers the policy needs off the request and let
     /// <see cref="LocalApiAccessPolicy"/> decide. The decision itself lives there so it can be unit-tested
     /// (<see cref="HttpListenerRequest"/> is sealed and cannot be constructed by a test).</summary>
-    private static AccessDecision Authorize(HttpListenerRequest req) =>
-        LocalApiAccessPolicy.Evaluate(
-            req.Headers["Host"], req.Headers[TokenHeader], req.Headers["Origin"], SessionToken);
+    private static bool Authorize(HttpListenerRequest req) =>
+        LocalApiAccessPolicy.Evaluate(req.Headers["Host"], req.Headers[TokenHeader], SessionToken);
 
     // ── Endpoint handlers ─────────────────────────────────────────────
 
@@ -762,18 +763,6 @@ public class HttpServerService : IHostedService
     }
 
     // ── Helpers ───────────────────────────────────────────────────────
-
-    /// <summary>Emit CORS headers only for an allow-listed browser origin, echoing that single origin.
-    /// A non-browser caller (<paramref name="allowOrigin"/> null) gets no CORS headers at all — it doesn't
-    /// need them, and a wildcard here is what previously made this server reachable from any web page.</summary>
-    private static void SetCors(HttpListenerResponse resp, string? allowOrigin)
-    {
-        if (allowOrigin is null) return;
-        resp.AddHeader("Access-Control-Allow-Origin", allowOrigin);
-        resp.AddHeader("Vary", "Origin");
-        resp.AddHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-        resp.AddHeader("Access-Control-Allow-Headers", "Content-Type, " + TokenHeader);
-    }
 
     private static string Json(object obj) => JsonSerializer.Serialize(obj);
     private static string JsonErr(string msg) => JsonSerializer.Serialize(new { success = false, error = msg });
