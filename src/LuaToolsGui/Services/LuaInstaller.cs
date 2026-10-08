@@ -134,9 +134,9 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
                 "— installed anyway (not a known manifest directive)");
 
         if (AutoUpdate && !forceLocked)
-            File.WriteAllText(dest, CommentOutManifestPins(lua));
+            AtomicFile.WriteAllText(dest, CommentOutManifestPins(lua));
         else
-            File.Copy(sourceLuaPath, dest, overwrite: true);
+            AtomicFile.Write(dest, p => File.Copy(sourceLuaPath, p, overwrite: true));
 
         StampNow(dest);
     }
@@ -269,7 +269,7 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
             // rather than overwrite, which would needlessly fail when Steam has the file open.
             if (!File.Exists(dest))
             {
-                File.Copy(manifestPath, dest, overwrite: false);
+                AtomicFile.Write(dest, p => File.Copy(manifestPath, p, overwrite: true));
                 StampNow(dest);
             }
             return new InstallResult(LuaInstalled: false, ManifestCount: 1, Failed: [], Error: null);
@@ -360,7 +360,7 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
                     }
                     else
                     {
-                        entry.ExtractToFile(dest, overwrite: true);
+                        AtomicFile.Write(dest, p => entry.ExtractToFile(p, overwrite: true));
                         StampNow(dest);
                         manifestCount++;
                     }

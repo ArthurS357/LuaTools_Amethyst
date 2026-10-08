@@ -402,7 +402,7 @@ public class AuthService
         {
             try
             {
-                File.WriteAllBytes(AuthFile, enc);
+                AtomicFile.WriteAllBytes(AuthFile, enc);
                 return;
             }
             catch (IOException) when (attempt < 3)

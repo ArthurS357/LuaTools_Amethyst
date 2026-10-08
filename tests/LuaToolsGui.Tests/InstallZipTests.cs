@@ -172,6 +172,26 @@ public sealed class InstallZipTests : IDisposable
     }
 
     [Fact]
+    public void A_successful_install_leaves_no_temp_files_in_steams_folders()
+    {
+        _installer.InstallZip(MakeZip(("730.lua", "addappid(730)\n"), ("730_99.manifest", "BYTES")), 730);
+
+        Directory.GetFiles(StPlugIn).Select(Path.GetFileName).Should().Equal("730.lua");
+        DepotCacheFiles().Should().Equal("730_99.manifest");
+    }
+
+    [Fact]
+    public void A_lua_installed_over_an_existing_one_replaces_it_whole()
+    {
+        File.WriteAllText(Path.Combine(StPlugIn, "730.lua"), new string('#', 5000));
+
+        _installer.InstallZip(MakeZip(("730.lua", "addappid(730)\n")), 730);
+
+        File.ReadAllText(Path.Combine(StPlugIn, "730.lua")).Should().Contain("addappid(730)")
+            .And.NotContain("#####");
+    }
+
+    [Fact]
     public void An_existing_manifest_is_kept_not_overwritten()
     {
         // Content-addressed names: an existing file is skipped (and counted), as before.

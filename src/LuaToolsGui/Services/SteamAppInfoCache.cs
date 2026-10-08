@@ -582,7 +582,8 @@ public class SteamAppInfoCache
         try
         {
             Directory.CreateDirectory(DetailsDir);
-            await File.WriteAllTextAsync(DetailsPath(appid), rawJson);
+            // Atomic: HasFullDetails is just File.Exists, so a truncated blob would read as cached forever.
+            await Task.Run(() => AtomicFile.WriteAllText(DetailsPath(appid), rawJson));
         }
         catch { /* best effort */ }
     }
