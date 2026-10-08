@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using LuaToolsGui.Models;
 
 namespace LuaToolsGui.Services;
@@ -314,34 +315,80 @@ public class LuaToolsApiClient(
         return await SaveResponseAsync(res, fallbackName, AsFraction(progress), ct);
     }
 
-    private static async Task<DownloadedFile> SaveResponseAsync(
+    /// <summary>
+    /// Stream a response body into the staging folder. <paramref name="folder"/> and
+    /// <paramref name="stallTimeout"/> exist for tests; production passes neither.
+    /// </summary>
+    internal static async Task<DownloadedFile> SaveResponseAsync(
         HttpResponseMessage res, string fallbackName,
-        IProgress<Downloads.DownloadProgress>? progress, CancellationToken ct)
+        IProgress<Downloads.DownloadProgress>? progress, CancellationToken ct,
+        string? folder = null, TimeSpan? stallTimeout = null)
     {
-        string fileName = res.Content.Headers.ContentDisposition?.FileName?.Trim('"') ?? fallbackName;
-        foreach (char c in Path.GetInvalidFileNameChars()) fileName = fileName.Replace(c, '_');
+        string fileName = StagedFileName(res.Content.Headers.ContentDisposition?.FileName, fallbackName);
 
-        string folder = InterimDownloadsFolder;
+        folder ??= InterimDownloadsFolder;
         Directory.CreateDirectory(folder);
         string filePath = Path.Combine(folder, fileName);
 
-        long? total = res.Content.Headers.ContentLength;
-        await using var src = await res.Content.ReadAsStreamAsync(ct);
-        await using var dst = File.Create(filePath);
+        // HttpClient.Timeout stops covering the request once the headers arrive (ResponseHeadersRead), so
+        // a server that goes quiet mid-body would hang here until the user cancels. Each read gets its own
+        // deadline instead.
+        TimeSpan stall = stallTimeout ?? AppConfig.DownloadStallTimeout;
+        using var readCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
 
-        var buffer = new byte[81920];
+        long? total = res.Content.Headers.ContentLength;
         long written = 0;
-        int read;
-        while ((read = await src.ReadAsync(buffer, ct)) > 0)
+        try
         {
-            await dst.WriteAsync(buffer.AsMemory(0, read), ct);
-            written += read;
-            progress?.Report(new Downloads.DownloadProgress(written, total));
+            await using var src = await res.Content.ReadAsStreamAsync(ct);
+            await using var dst = File.Create(filePath);
+
+            var buffer = new byte[81920];
+            while (true)
+            {
+                readCts.CancelAfter(stall);
+                int read = await src.ReadAsync(buffer, readCts.Token);
+                if (read == 0) break;
+                await dst.WriteAsync(buffer.AsMemory(0, read), ct);
+                written += read;
+                progress?.Report(new Downloads.DownloadProgress(written, total));
+            }
+        }
+        catch (Exception ex)
+        {
+            // The caller never gets a DownloadedFile for a body that failed or was cancelled, so nothing
+            // downstream knows this path to clean it up. The streams are already closed by now.
+            try { File.Delete(filePath); } catch { /* best effort */ }
+
+            if (ex is OperationCanceledException && !ct.IsCancellationRequested)
+                throw new ApiException($"The download stopped sending data for {stall.TotalSeconds:0} seconds — try again.");
+            throw;
         }
 
         // One final report so a zero-length or single-chunk body still settles the bar at 100%.
         progress?.Report(new Downloads.DownloadProgress(written, total ?? written));
 
         return new DownloadedFile(filePath, fileName);
+    }
+
+    private static readonly Regex DeviceName =
+        new(@"^(CON|PRN|AUX|NUL|COM[0-9]|LPT[0-9])$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+
+    /// <summary>
+    /// The name a download is staged under: the server's <c>Content-Disposition</c> name when Windows
+    /// would treat it as a plain file in the staging folder, else <paramref name="fallbackName"/>.
+    /// </summary>
+    /// <remarks>
+    /// The server's name is kept, not replaced, because it carries meaning:
+    /// <see cref="LuaInstaller.BuildIdFromFileName"/> reads the build from a staged
+    /// <c>&lt;appid&gt;_&lt;buildid&gt;.lua</c>. Separators are replaced, so what is left to refuse is a name
+    /// that resolves to something other than a file here: <c>.</c>/<c>..</c> (this folder or its parent,
+    /// once Windows strips trailing dots) and device names (<c>CON</c>, <c>NUL.zip</c>).
+    /// </remarks>
+    internal static string StagedFileName(string? serverName, string fallbackName)
+    {
+        string name = (serverName ?? "").Trim('"').TrimEnd('.', ' ');
+        foreach (char c in Path.GetInvalidFileNameChars()) name = name.Replace(c, '_');
+        return name.Length == 0 || DeviceName.IsMatch(name.Split('.')[0].TrimEnd()) ? fallbackName : name;
     }
 }

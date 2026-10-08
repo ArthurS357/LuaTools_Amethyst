@@ -29,6 +29,10 @@ public static class AppConfig
     // because the web app enforces it inline with no API field exposing it; change in one place if it moves.
     public const int DailyDownloadLimit = 25;
 
+    // How long a download body may go without delivering a single byte before it is abandoned. Bounds
+    // silence, not total duration: a slow link that keeps trickling data never trips it.
+    public static readonly TimeSpan DownloadStallTimeout = TimeSpan.FromSeconds(60);
+
     // Public upstream APIs the app calls directly (no lua.tools proxy needed for guest browsing).
     public const string SteamStoreSearchUrl = "https://store.steampowered.com/api/storesearch/";
     // Steam's storefront "featured categories" (top sellers, new releases, etc.) — drives the Add page's
