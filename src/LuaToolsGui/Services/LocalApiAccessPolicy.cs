@@ -33,11 +33,13 @@ internal static class LocalApiAccessPolicy
     /// <param name="hostHeader">Raw <c>Host</c> header, with or without a port.</param>
     /// <param name="tokenHeader">Raw session-token header, if the caller sent one.</param>
     /// <param name="expectedToken">This launch's session token.</param>
-    public static bool Evaluate(string? hostHeader, string? tokenHeader, string expectedToken) =>
+    public static bool Evaluate(string? hostHeader, string? tokenHeader, string expectedToken)
+    {
         // Host first: a rebound DNS name still reaches this socket carrying its own Host header, and a
         // valid token from such a host must not be honoured. Token compared in fixed time, since it is a
         // secret a local attacker could otherwise time out.
-        IsLoopbackHost(hostHeader) && TokenMatches(tokenHeader, expectedToken);
+        return IsLoopbackHost(hostHeader) && TokenMatches(tokenHeader, expectedToken);
+    }
 
     /// <summary>True when the Host header names literal loopback. The port is stripped first; for an IPv6
     /// literal (<c>[::1]:6767</c>) the closing bracket keeps the address's own colons out of the way.</summary>
