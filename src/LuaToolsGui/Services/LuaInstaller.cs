@@ -251,6 +251,11 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
     public InstallResult InstallLuaFile(string luaPath, long appId, bool forceLocked = false, string? source = null) =>
         InstallLua(luaPath, appId, forceLocked, source);
 
+    // F-03: the only manifest name InstallZip will write. [0-9] and \z, not \d and $: Unicode digits and a
+    // trailing newline would otherwise slip through.
+    [GeneratedRegex(@"^[0-9]+_[0-9]+\.manifest\z", RegexOptions.CultureInvariant)]
+    internal static partial Regex ManifestNameRegex();
+
     /// <summary>Copy a loose .manifest into depotcache, keeping its (depot_manifest).manifest name.</summary>
     public InstallResult InstallManifestFile(string manifestPath)
     {
@@ -309,6 +314,15 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
                 bool isLua = name.EndsWith(".lua", StringComparison.OrdinalIgnoreCase);
                 bool isManifest = name.EndsWith(".manifest", StringComparison.OrdinalIgnoreCase);
                 if (!isLua && !isManifest) continue; // ignore anything else
+
+                // F-03: entry.Name with a drive letter ("D:x.manifest") makes Path.Combine return the second
+                // argument, escaping depotcache. Only the real <depot>_<gid>.manifest shape is written.
+                if (isManifest && !ManifestNameRegex().IsMatch(name))
+                {
+                    rejected ??= "Refused a manifest whose file name is not <depot>_<manifest>.manifest.";
+                    failed.Add(name);
+                    continue;
+                }
 
                 // The lua is forced to <appid>.lua; manifests keep their (depot_manifest) name.
                 string dest = isLua
