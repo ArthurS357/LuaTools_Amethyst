@@ -312,6 +312,8 @@ public class LuaToolsApiClient(
     /// what no legitimate signed link is: plain http (the zip is extracted into the game folder), an IP
     /// literal (loopback, link-local, LAN), localhost, or any other scheme.
     /// </remarks>
+    // ponytail: checks the URL the API returned, not where HttpClient's auto-redirect lands, and not what a
+    // name resolves to. Pin the R2 hostname (and recheck res.RequestMessage.RequestUri) once it is known.
     internal static bool IsFollowableSignedUrl(string url) =>
         Uri.TryCreate(url, UriKind.Absolute, out var uri)
         && uri.Scheme == Uri.UriSchemeHttps
@@ -351,6 +353,9 @@ public class LuaToolsApiClient(
 
         folder ??= InterimDownloadsFolder;
         Directory.CreateDirectory(folder);
+        // ponytail: two downloads with the same name share this path (the name is build identity, so it
+        // can't be prefixed), and there is no size cap (no known maximum for a legitimate fix). Per-download
+        // subfolder + matching DeleteStaged cleanup if a collision ever shows up outside the queue's dedupe.
         string filePath = Path.Combine(folder, fileName);
 
         // HttpClient.Timeout stops covering the request once the headers arrive (ResponseHeadersRead), so
