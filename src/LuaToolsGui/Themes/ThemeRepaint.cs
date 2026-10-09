@@ -66,6 +66,36 @@ public static class ThemeRepaint
     }
 
     /// <summary>
+    /// Repaint every unfrozen brush under <paramref name="target"/> that still holds a ramp colour of ANY
+    /// palette, keeping its alpha. For WPF-UI's own derived brushes (<c>AccentButtonBackground</c>,
+    /// <c>ToggleSwitchFillOn</c>, <c>TextControlFocusedBorderBrush</c>, <c>HyperlinkButtonForeground</c>…):
+    /// they are bound to the accent colours with <c>{DynamicResource}</c>, but once a control template has
+    /// instantiated one, that binding no longer follows a switch — measured, ~38 of them. Matching on the
+    /// colour rather than listing the keys covers the whole family, and any a WPF-UI upgrade adds.
+    /// </summary>
+    public static int Retint(ResourceDictionary target, IReadOnlyDictionary<(byte R, byte G, byte B), Color> map)
+    {
+        int applied = 0;
+
+        foreach (object key in target.Keys.Cast<object>().ToList())
+        {
+            object? value;
+            try { value = target[key]; }
+            catch (Exception) { continue; } // an entry that cannot materialise is not worth a half-themed app
+
+            if (value is SolidColorBrush { IsFrozen: false } brush &&
+                map.TryGetValue((brush.Color.R, brush.Color.G, brush.Color.B), out var to))
+            {
+                brush.Color = Color.FromArgb(brush.Color.A, to.R, to.G, to.B);
+                applied++;
+            }
+        }
+
+        foreach (var merged in target.MergedDictionaries) applied += Retint(merged, map);
+        return applied;
+    }
+
+    /// <summary>
     /// Find a resource the way WPF resolves one: this dictionary first, then merged dictionaries in
     /// REVERSE order.
     ///

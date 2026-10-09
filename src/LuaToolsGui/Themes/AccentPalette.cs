@@ -234,6 +234,29 @@ public sealed record AccentPalette(
         };
     }
 
+    /// <summary>Every ramp weight of every OTHER palette, keyed by RGB, mapped to the same weight of this
+    /// one. Input to <see cref="ThemeRepaint.Retint"/>.</summary>
+    public IReadOnlyDictionary<(byte R, byte G, byte B), Color> RetintMap(IResolveColor resolve)
+    {
+        var map = new Dictionary<(byte R, byte G, byte B), Color>();
+
+        void Add(string from, string to)
+        {
+            Color f = resolve.Color(from);
+            map[(f.R, f.G, f.B)] = resolve.Color(to);
+        }
+
+        foreach (var other in All.Where(p => p.Id != Id))
+        {
+            Add(other.SoftKey, SoftKey);
+            Add(other.PrimaryKey, PrimaryKey);
+            Add(other.BorderKey, BorderKey);
+            Add(other.FillKey, FillKey);
+        }
+
+        return map;
+    }
+
     /// <summary>
     /// WPF-UI's OWN surface keys, which Themes/Colors.xaml deliberately redefines.
     ///

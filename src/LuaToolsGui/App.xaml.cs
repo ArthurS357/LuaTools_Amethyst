@@ -435,6 +435,13 @@ public partial class App : Application
             // WPF-UI's own accent brushes. Must run AFTER DropAccentBrushOverrides has taken the frozen
             // top-level copies out, or the lookup finds those and repaints something nothing is holding.
             Themes.ThemeRepaint.Apply(Current.Resources, palette.WpfUiAccentColors(resolve));
+
+            // The rest of WPF-UI's accent-derived brushes (Primary button, toggle, focus border, links…):
+            // the nine above are not all of them, and the others do not follow the colour entries once a
+            // template has used them. Repainted by the ramp colour they hold.
+            var retint = palette.RetintMap(resolve);
+            foreach (var wpfUi in Current.Resources.MergedDictionaries.OfType<Wpf.Ui.Markup.ThemesDictionary>())
+                Themes.ThemeRepaint.Retint(wpfUi, retint);
         }
         catch (KeyNotFoundException ex)
         {
