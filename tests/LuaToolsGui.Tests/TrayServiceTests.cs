@@ -1,3 +1,4 @@
+using System.IO;
 using AwesomeAssertions;
 using LuaToolsGui.Services;
 using Xunit;
@@ -283,6 +284,50 @@ public class TrayServiceTests
 
         _icon.Visible.Should().BeTrue();
         _icon.LastBalloon.Should().Be(("LuaTools Amethyst", "Installed.", false));
+    }
+
+    // ── Steam-close gate ──────────────────────────────────────────────────────
+
+    [Theory]
+    [InlineData(false, true, "launched by us")]   // user clicked Restart Steam inside LuaTools
+    [InlineData(true, false, "tray-locked")]      // loader relaunch (legacy path)
+    [InlineData(true, true, "launched by us")]    // both: the new criterion wins the log label
+    [InlineData(false, false, null)]              // Steam opened by the user: leave it running
+    public void The_steam_close_gate_fires_only_for_a_steam_we_own(
+        bool trayLocked, bool launchedByUs, string? expected) =>
+        TrayService.SteamExitReason(trayLocked, launchedByUs).Should().Be(expected);
+
+    [Fact]
+    public void A_steam_reopened_by_hand_has_another_pid_and_is_left_alone() =>
+        SteamService.IsLaunchedSteam(1234, [5678]).Should().BeFalse();
+
+    [Fact]
+    public void The_steam_we_launched_is_recognised_by_its_pid() =>
+        SteamService.IsLaunchedSteam(1234, [99, 1234]).Should().BeTrue();
+
+    [Fact]
+    public void Without_a_launched_pid_only_the_tray_locked_fallback_can_fire()
+    {
+        SteamService.IsLaunchedSteam(null, [1234]).Should().BeFalse();
+        TrayService.SteamExitReason(launchedTrayLocked: true, steamLaunchedByUs: false).Should().Be("tray-locked");
+    }
+
+    [Fact]
+    public void A_start_that_cannot_launch_never_marks_steam_as_ours()
+    {
+        // No steam.exe at the override path: StartSteam bails before Process.Start, so nothing is recorded.
+        var dir = Directory.CreateTempSubdirectory("lt-nosteam").FullName;
+        try
+        {
+            var settings = new SettingsService(Path.Combine(dir, "settings"));
+            var steam = new SteamService(settings);
+            settings.SteamPathOverride = dir;
+
+            steam.StartSteam().Should().BeFalse();
+
+            SteamService.LaunchedByUs.Should().BeFalse();
+        }
+        finally { Directory.Delete(dir, recursive: true); }
     }
 
     // ── The rule on its own ───────────────────────────────────────────────────

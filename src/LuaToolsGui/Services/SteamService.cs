@@ -173,8 +173,10 @@ public class SteamService(SettingsService settings)
         var wrapped = processes.Select(p => new SteamProcess(p)).ToList();
         try
         {
-            return SteamShutdown.Stop(
+            var outcome = SteamShutdown.Stop(
                 wrapped, RequestSteamShutdown, allowKill, grace ?? SteamShutdown.DefaultGrace);
+            if (outcome != SteamStopOutcome.StillRunning) LaunchedPid = null;
+            return outcome;
         }
         finally
         {
@@ -197,11 +199,35 @@ public class SteamService(SettingsService settings)
 
         try
         {
-            Process.Start(new ProcessStartInfo(exe) { UseShellExecute = true });
+            bool wasRunning = IsSteamRunning();
+            using var started = Process.Start(new ProcessStartInfo(exe) { UseShellExecute = true });
+            // Recorded only AFTER the launch held: a poke at an already-running Steam, or a stub that dies
+            // at once, is not a Steam this app owns. The tray "Exit" closes Steam only for one it started.
+            if (!wasRunning && started is not null && !started.WaitForExit(500)) LaunchedPid = started.Id;
             return true;
         }
         catch { return false; }
     }
+
+    /// <summary>PID of the steam.exe THIS session successfully launched (cleared when Steam is stopped by
+    /// us). Never persisted.</summary>
+    public static int? LaunchedPid { get; private set; }
+
+    /// <summary>True once THIS session launched a Steam. Not proof it is still the one running — the tray
+    /// gate uses <see cref="SteamRunningIsTheOneWeLaunched"/>.</summary>
+    public static bool LaunchedByUs => LaunchedPid is not null;
+
+    /// <summary>The tray "Exit" gate: a Steam is running AND it is the process we launched. A Steam the
+    /// user closed from inside Steam and reopened by hand has a different PID, so it is left alone.</summary>
+    public static bool SteamRunningIsTheOneWeLaunched()
+    {
+        var procs = Process.GetProcessesByName("steam");
+        try { return IsLaunchedSteam(LaunchedPid, procs.Select(p => p.Id)); }
+        finally { foreach (var p in procs) p.Dispose(); }
+    }
+
+    internal static bool IsLaunchedSteam(int? launchedPid, IEnumerable<int> runningPids) =>
+        launchedPid is { } pid && runningPids.Contains(pid);
 
     /// <summary>
     /// Kill any running steam.exe and relaunch it from the effective path. lua changes only take

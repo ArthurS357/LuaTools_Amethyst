@@ -91,6 +91,11 @@ public sealed class TrayService : IDisposable
     /// <summary>Cap on <c>beforeTrayExit</c>: the user clicked Exit, so the app must go regardless.</summary>
     internal static readonly TimeSpan BeforeTrayExitBound = TimeSpan.FromSeconds(5);
 
+    /// <summary>Why the tray "Exit" should close Steam, or null to leave it alone: this process was started
+    /// by the loader (<c>--tray-locked</c>), or this session launched the running Steam itself.</summary>
+    internal static string? SteamExitReason(bool launchedTrayLocked, bool steamLaunchedByUs) =>
+        steamLaunchedByUs ? "launched by us" : launchedTrayLocked ? "tray-locked" : null;
+
     /// <summary>True once the user picked the tray's "Exit" — the flag that lets the next close through.</summary>
     public bool ExitRequested { get; private set; }
 

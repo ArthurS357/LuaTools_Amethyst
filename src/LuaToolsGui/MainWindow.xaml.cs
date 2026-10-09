@@ -31,13 +31,20 @@ public partial class MainWindow : Wpf.Ui.Controls.FluentWindow, ITrayWindow
                 LuaToolsGui.Resources.Strings.Tray_Exit),
             this,
             closeToTrayEnabled: () => _settings.MinimizeToTray || Program.SessionTrayLock,
-            // Loader-launched session only: the tray "Exit" closes Steam first, then the app. Graceful
-            // (-shutdown) only, never a kill — Kill(entireProcessTree) on a Steam that launched this process
-            // would take this process down mid-exit, and a forced kill costs Steam its clean shutdown.
-            beforeTrayExit: Program.LaunchedTrayLocked
-                ? () => Task.Run(() => AppLog.Log(
-                    $"tray exit: Steam {steam.StopSteamGraceful(allowKill: false, grace: TimeSpan.FromSeconds(3))}"))
-                : null);
+            // Loader-launched session, or a Steam this session started: the tray "Exit" closes Steam first,
+            // then the app. Graceful (-shutdown) only, never a kill — Kill(entireProcessTree) on a Steam that
+            // launched this process would take this process down mid-exit, and a forced kill costs Steam its
+            // clean shutdown. Evaluated at Exit, not here: the launched PID changes at runtime.
+            beforeTrayExit: () =>
+            {
+                if (TrayService.SteamExitReason(Program.LaunchedTrayLocked, SteamService.SteamRunningIsTheOneWeLaunched()) is not { } why)
+                    return Task.CompletedTask;
+                return Task.Run(() =>
+                {
+                    AppLog.Log($"tray exit: killing Steam ({why})");
+                    AppLog.Log($"tray exit: Steam {steam.StopSteamGraceful(allowKill: false, grace: TimeSpan.FromSeconds(3))}");
+                });
+            });
 
         Closing += OnWindowClosing;
 
