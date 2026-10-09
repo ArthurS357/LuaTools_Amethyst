@@ -85,6 +85,11 @@ public sealed class TrayService : IDisposable
     private readonly ITrayIcon _icon;
     private readonly ITrayWindow _window;
     private readonly Func<bool> _closeToTrayEnabled;
+    private readonly Func<Task>? _beforeTrayExit;
+    private bool _trayExitStarted;
+
+    /// <summary>Cap on <c>beforeTrayExit</c>: the user clicked Exit, so the app must go regardless.</summary>
+    internal static readonly TimeSpan BeforeTrayExitBound = TimeSpan.FromSeconds(5);
 
     /// <summary>True once the user picked the tray's "Exit" — the flag that lets the next close through.</summary>
     public bool ExitRequested { get; private set; }
@@ -97,14 +102,36 @@ public sealed class TrayService : IDisposable
     /// <param name="closeToTrayEnabled">Evaluated at each close, NOT captured once: the saved
     /// "Minimize to tray" setting can be toggled while the app runs, and the loader's session tray-lock
     /// (<c>--tray-locked</c>) is set by a signal from another instance long after this is constructed.</param>
-    public TrayService(ITrayIcon icon, ITrayWindow window, Func<bool> closeToTrayEnabled)
+    /// <param name="beforeTrayExit">Runs before the tray's "Exit" closes the window — and ONLY from the tray
+    /// item, never from the window's X. Best-effort: bounded by <see cref="BeforeTrayExitBound"/>, and a
+    /// failure never stops the exit. Null skips straight to <see cref="RequestExit"/>.</param>
+    public TrayService(ITrayIcon icon, ITrayWindow window, Func<bool> closeToTrayEnabled,
+        Func<Task>? beforeTrayExit = null)
     {
         _icon = icon;
         _window = window;
         _closeToTrayEnabled = closeToTrayEnabled;
+        _beforeTrayExit = beforeTrayExit;
 
         _icon.OpenRequested += (_, _) => Restore();
-        _icon.ExitRequested += (_, _) => RequestExit();
+        _icon.ExitRequested += async (_, _) => await ExitFromTrayAsync();
+    }
+
+    /// <summary>The tray's "Exit": run <c>beforeTrayExit</c> (if any), then <see cref="RequestExit"/>. A second
+    /// click while the first is still waiting is ignored. Synchronous when there is no pre-exit step.</summary>
+    internal async Task ExitFromTrayAsync()
+    {
+        if (_trayExitStarted) return;
+        _trayExitStarted = true;
+
+        if (_beforeTrayExit is not null)
+        {
+            _icon.Visible = false;
+            try { await _beforeTrayExit().WaitAsync(BeforeTrayExitBound); }
+            catch (Exception ex) { AppLog.Log($"tray exit: pre-exit step failed, exiting anyway: {LogSanitizer.Sanitize(ex)}"); }
+        }
+
+        RequestExit();
     }
 
     /// <summary>

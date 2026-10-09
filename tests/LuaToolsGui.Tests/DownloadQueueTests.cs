@@ -608,6 +608,27 @@ public sealed class DownloadQueueTests : IDisposable
             .Which.Status.Should().Be(nameof(DownloadStatus.Cancelled));
     }
 
+    [Fact]
+    public async Task Stopping_from_a_blocked_dispatcher_thread_does_not_deadlock()
+    {
+        // App.OnExit runs on the dispatcher thread and blocks it on the host's StopAsync. StopAsync used to
+        // post back to that same thread, which never ran: the tray "Exit" left the process alive forever.
+        var queue = await StartedAsync();
+        var started = new TaskCompletionSource();
+        var item = queue.Enqueue(Job("manifest:730", download: async (_, _, ct) =>
+        {
+            started.TrySetResult();
+            await Task.Delay(Timeout, ct);
+            return Staged("never.zip");
+        }));
+        await started.Task.WaitAsync(Timeout);
+
+        bool stopped = _host.On(() => queue.StopAsync(CancellationToken.None).Wait(Timeout));
+
+        stopped.Should().BeTrue();
+        item.Status.Should().Be(DownloadStatus.Cancelled);
+    }
+
     /// <summary>Poll a dispatcher-owned condition. The pump settles state asynchronously by design.</summary>
     private async Task WaitForAsync(Func<bool> condition)
     {

@@ -99,15 +99,24 @@ public sealed class DownloadQueue : IHostedService
     {
         _shutdown.Cancel();
 
+        // App.OnExit calls this ON the dispatcher thread and blocks that thread until the host stops, so
+        // anything posted back to it would never run — the exit deadlocked. Run inline there instead.
+        Task OnDispatcher(Action work)
+        {
+            if (!_dispatcher.CheckAccess()) return _dispatcher.InvokeAsync(work).Task;
+            work();
+            return Task.CompletedTask;
+        }
+
         List<DownloadItem> active = [];
-        await _dispatcher.InvokeAsync(() => active = Items.Where(i => i.IsActive).ToList());
+        await OnDispatcher(() => active = Items.Where(i => i.IsActive).ToList());
 
         foreach (var item in active)
         {
             try { item.Cts.Cancel(); } catch (ObjectDisposedException) { /* already disposed */ }
         }
 
-        await _dispatcher.InvokeAsync(() =>
+        await OnDispatcher(() =>
         {
             foreach (var item in active)
             {
@@ -123,7 +132,8 @@ public sealed class DownloadQueue : IHostedService
 
         if (_pump is not null)
         {
-            try { await _pump.WaitAsync(TimeSpan.FromSeconds(3), ct); }
+            // ConfigureAwait(false): resuming on a blocked dispatcher thread is the same deadlock.
+            try { await _pump.WaitAsync(TimeSpan.FromSeconds(3), ct).ConfigureAwait(false); }
             catch (Exception ex) when (ex is TimeoutException or OperationCanceledException)
             {
                 // The pump is parked on _kick; shutdown proceeds regardless.

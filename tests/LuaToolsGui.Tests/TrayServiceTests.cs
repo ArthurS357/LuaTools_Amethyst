@@ -161,6 +161,64 @@ public class TrayServiceTests
         _icon.DisposeCalls.Should().Be(1);
     }
 
+    [Fact]
+    public async Task The_pre_exit_step_runs_before_the_tray_exit_closes_the_window()
+    {
+        // --tray-locked session: Steam is closed first, the app after.
+        int shutdownsSeenByStep = -1;
+        var tray = new TrayService(_icon, _window, () => true,
+            beforeTrayExit: () => { shutdownsSeenByStep = _window.Shutdowns; return Task.CompletedTask; });
+        _window.OnClose = tray.HandleCloseRequest;
+
+        await tray.ExitFromTrayAsync();
+
+        shutdownsSeenByStep.Should().Be(0);
+        _window.Shutdowns.Should().Be(1);
+    }
+
+    [Fact]
+    public void Closing_the_window_never_runs_the_pre_exit_step()
+    {
+        // Only the tray item closes Steam; the window's X — even when it quits — must not.
+        bool ran = false;
+        var tray = new TrayService(_icon, _window, () => false,
+            beforeTrayExit: () => { ran = true; return Task.CompletedTask; });
+
+        tray.HandleCloseRequest().Should().Be(WindowCloseAction.Shutdown);
+
+        ran.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task A_failing_pre_exit_step_still_exits()
+    {
+        var tray = new TrayService(_icon, _window, () => true,
+            beforeTrayExit: () => Task.FromException(new InvalidOperationException("steam said no")));
+        _window.OnClose = tray.HandleCloseRequest;
+
+        await tray.ExitFromTrayAsync();
+
+        _window.Shutdowns.Should().Be(1, "the user asked to quit; a Steam that will not close cannot veto it");
+    }
+
+    [Fact]
+    public async Task A_second_exit_click_while_the_first_waits_is_ignored()
+    {
+        var gate = new TaskCompletionSource();
+        int runs = 0;
+        var tray = new TrayService(_icon, _window, () => true,
+            beforeTrayExit: () => { runs++; return gate.Task; });
+        _window.OnClose = tray.HandleCloseRequest;
+
+        var first = tray.ExitFromTrayAsync();
+        await tray.ExitFromTrayAsync();
+        gate.SetResult();
+        await first;
+
+        runs.Should().Be(1);
+        _window.Shutdowns.Should().Be(1);
+    }
+
     // ── Restoring ─────────────────────────────────────────────────────────────
 
     [Fact]

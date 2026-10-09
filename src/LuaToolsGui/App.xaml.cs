@@ -131,6 +131,8 @@ public partial class App : Application
                 // The app-wide download queue. Registered before every page and service that enqueues into
                 // it, and started as a hosted service so the persisted history is loaded and anything left
                 // in flight at shutdown is recorded as cancelled rather than vanishing.
+                // Keep it the FIRST hosted service: hosts stop in reverse, so it stops last — reached
+                // synchronously on the UI thread from OnExit as long as the later ones stop synchronously.
                 services.AddSingleton<Services.Downloads.DownloadQueue>();
                 services.AddHostedService(sp => sp.GetRequiredService<Services.Downloads.DownloadQueue>());
                 services.AddSingleton<Services.Downloads.ManifestJobFactory>();
@@ -1104,10 +1106,12 @@ public partial class App : Application
             // Deliberate sync-over-async, and the one place it is correct here. OnExit cannot be awaited by
             // WPF, and making it `async void` (what it was) means the framework carries on tearing the
             // process down at the first await — so StopAsync often never finished and Dispose was skipped.
-            // Blocking is safe at this point specifically: the dispatcher loop has already ended, so there
-            // is no SynchronizationContext left to deadlock against. The 5s bound keeps a wedged hosted
-            // service from hanging the exit.
-            _host.StopAsync(TimeSpan.FromSeconds(5)).GetAwaiter().GetResult();
+            // CAUTION: OnExit runs on the UI thread, inside a dispatcher callback, with the dispatcher still
+            // alive — a hosted service that posts to it while this blocks deadlocks the exit (DownloadQueue
+            // did, leaving the process alive after tray "Exit"). The 5s token only reaches services that
+            // honour it, so the wait itself is bounded too.
+            if (!_host.StopAsync(TimeSpan.FromSeconds(5)).Wait(TimeSpan.FromSeconds(6)))
+                AppLog.Log("shutdown: host did not stop within 6s; exiting anyway");
         }
         catch (Exception ex) { LogCrash("OnExit/StopAsync", ex); }
 

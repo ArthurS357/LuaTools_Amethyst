@@ -487,6 +487,9 @@ public class HttpServerService : IHostedService
             _downloads[appId] = state;
             return (200, Json(new { success = true }));
         }
+        // A store-page add (/add) never enters _downloads — its state lives in PluginAddService.
+        if (_services.GetService<PluginAddService>()?.Cancel(appId) == true)
+            return (200, Json(new { success = true }));
         return (200, Json(new { success = true, message = "Nothing to cancel" }));
     }
 

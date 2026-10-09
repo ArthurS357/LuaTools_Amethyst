@@ -83,6 +83,19 @@ public class PluginAddService(
         _ = Task.Run(() => CheckAsync(appId, state));
     }
 
+    /// <summary>The plugin's cancel (<c>/cancel/{appid}</c>) for a headless add. Tears down the add's network
+    /// calls and any download it queued. False when there is no add for this app.</summary>
+    public bool Cancel(long appId)
+    {
+        if (!_states.TryGetValue(appId, out var state)) return false;
+        state.Cts.Cancel();
+        // Drop it (only if a re-Start hasn't replaced it): /add-status then reads idle, not a cancelled add
+        // that a late Pick would silently no-op on.
+        _states.TryRemove(new(appId, state));
+        AppLog.Log($"PluginAdd.Cancel appid={appId}");
+        return true;
+    }
+
     /// <summary>Plugin picked a source (FastFetch-off path) → download+install it.</summary>
     public void Pick(long appId, string sourceName)
     {
@@ -150,7 +163,7 @@ public class PluginAddService(
                 // Hubcap is out of daily quota → fall through and let a lua.tools source take over.
             }
 
-            var statuses = await api.CheckSourcesAsync(appId.ToString());
+            var statuses = await api.CheckSourcesAsync(appId.ToString(), state.Cts.Token);
 
             // Synthesize the Hubcap/Sadie row from the availability already checked above (or "unknown"
             // when no key is set, so it shows locked with the "needs a key" hint).
@@ -204,9 +217,10 @@ public class PluginAddService(
         }
         catch (OperationCanceledException)
         {
-            // Superseded by a newer Start for this app. The state object was already replaced, so there is
-            // nothing to report to — reporting an error here would surface on the NEW add.
-            AppLog.Log($"PluginAdd.Check appid={appId} cancelled (superseded)");
+            // Superseded by a newer Start (the state object was already replaced) or cancelled by the plugin.
+            // Either way no error: one would surface on the NEW add. Checking=false stops a poller spinning.
+            state.Checking = false;
+            AppLog.Log($"PluginAdd.Check appid={appId} cancelled (superseded or /cancel)");
         }
         catch (Exception ex)
         {
@@ -293,6 +307,13 @@ public class PluginAddService(
     private async Task DownloadAsync(long appId, AddState state, SourceRow row)
     {
         if (state.Busy) return;
+        // Cancelled between Check and here (FillHubcapBadgeAsync swallows the cancel, Pick can arrive late):
+        // don't enqueue at all, or the Downloads page gains a row for an add the user already called off.
+        if (state.Cts.IsCancellationRequested)
+        {
+            AppLog.Log($"PluginAdd.Download appid={appId} source='{row.Name}' skipped: add cancelled");
+            return;
+        }
         state.Busy = true;
         state.Error = null;
         state.InstallStatus = null;

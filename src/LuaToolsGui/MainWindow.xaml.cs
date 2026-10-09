@@ -10,7 +10,8 @@ public partial class MainWindow : Wpf.Ui.Controls.FluentWindow, ITrayWindow
     private readonly SettingsService _settings;
     private readonly TrayService _tray;
 
-    public MainWindow(MainViewModel viewModel, IServiceProvider services, SettingsService settings)
+    public MainWindow(MainViewModel viewModel, IServiceProvider services, SettingsService settings,
+        SteamService steam)
     {
         _settings = settings;
         InitializeComponent();
@@ -29,7 +30,14 @@ public partial class MainWindow : Wpf.Ui.Controls.FluentWindow, ITrayWindow
                 LuaToolsGui.Resources.Strings.Tray_Open,
                 LuaToolsGui.Resources.Strings.Tray_Exit),
             this,
-            closeToTrayEnabled: () => _settings.MinimizeToTray || Program.SessionTrayLock);
+            closeToTrayEnabled: () => _settings.MinimizeToTray || Program.SessionTrayLock,
+            // Loader-launched session only: the tray "Exit" closes Steam first, then the app. Graceful
+            // (-shutdown) only, never a kill — Kill(entireProcessTree) on a Steam that launched this process
+            // would take this process down mid-exit, and a forced kill costs Steam its clean shutdown.
+            beforeTrayExit: Program.LaunchedTrayLocked
+                ? () => Task.Run(() => AppLog.Log(
+                    $"tray exit: Steam {steam.StopSteamGraceful(allowKill: false, grace: TimeSpan.FromSeconds(3))}"))
+                : null);
 
         Closing += OnWindowClosing;
 

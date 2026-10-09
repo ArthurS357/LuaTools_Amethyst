@@ -127,6 +127,7 @@ public static class Program
         StartupUrl = protocolUrl;
         StartMinimized = startMinimized;
         SessionTrayLock = trayLocked;
+        LaunchedTrayLocked = trayLocked;
 
         // The live instance listens on this named event; a second launch sets it (above) to ask us to
         // restore/focus the main window. Created before App.Run so it exists before any relaunch races us.
@@ -204,6 +205,11 @@ public static class Program
     /// backend can't be killed by an accidental window close — only the tray "Exit" item fully quits. This
     /// is in-memory only and never written to settings, so a normal launch keeps the user's real setting.</summary>
     internal static bool SessionTrayLock;
+
+    /// <summary>True only when THIS process was started with --tray-locked (the loader, on Steam-open).
+    /// Unlike <see cref="SessionTrayLock"/>, a later signal never sets it: it gates the tray "Exit" closing
+    /// Steam, which must not happen to a Steam session the user opened around a manually-launched app.</summary>
+    internal static bool LaunchedTrayLocked;
 
     // Supported UI languages (a Strings.<tag>.resx exists for each). A saved/OS culture not in here
     // falls back to English. Keep in sync with the Settings language dropdown.
