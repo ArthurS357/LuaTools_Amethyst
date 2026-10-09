@@ -66,14 +66,21 @@ public static class ThemeRepaint
     }
 
     /// <summary>
-    /// <c>SetCurrentValue</c>, never <c>brush.Color = …</c>. A plain assignment replaces the brush's
-    /// <c>{DynamicResource}</c> with a local value, which makes it freezable — and the next <c>Style</c>
-    /// that uses it in a setter freezes it when sealed (27 such setters in the views). The first switch
-    /// worked, every later one skipped that brush: page text and the shell stayed on the first palette.
-    /// SetCurrentValue keeps the expression underneath, so the brush stays unfreezable.
+    /// Set the colour as a plain local value, and keep the brush UNFREEZABLE with a dynamic reference on
+    /// Opacity instead. The assignment drops the brush's <c>{DynamicResource}</c> on Color, and a brush with
+    /// no expression is freezable — the next <c>Style</c> using it in a setter (27 in the views) freezes it
+    /// when sealed, and every later switch skips it. NOT <c>SetCurrentValue</c>: a template trigger clones
+    /// the brush on hover, and Freezable.CloneCore throws InvalidCastException (Color → Expression) on a
+    /// current value laid over an expression. The key never exists, so Opacity resolves to its default 1.
     /// </summary>
-    private static void Paint(SolidColorBrush brush, Color color) =>
-        brush.SetCurrentValue(SolidColorBrush.ColorProperty, color);
+    private static void Paint(SolidColorBrush brush, Color color)
+    {
+        brush.Color = color;
+        if (!DependencyPropertyHelper.GetValueSource(brush, Brush.OpacityProperty).IsExpression)
+            brush.SetValue(Brush.OpacityProperty, new DynamicResourceExtension(KeepMutableKey).ProvideValue(null!));
+    }
+
+    private const string KeepMutableKey = "LuaTools.ThemeRepaint.KeepMutable";
 
     /// <summary>
     /// Repaint every unfrozen brush under <paramref name="target"/> that still holds a ramp colour of ANY
