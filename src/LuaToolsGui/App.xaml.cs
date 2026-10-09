@@ -74,6 +74,8 @@ public partial class App : Application
     /// too far gone to show a toast, the log write above already happened.</summary>
     private void ShowCrashNotice(Exception ex)
     {
+        if (!ClaimCrashNotice(DateTime.UtcNow)) return;
+
         try
         {
             // Sanitized for the same reason as the log — this text is shown on screen and can be
@@ -83,6 +85,20 @@ public partial class App : Application
         }
         catch { /* no UI available */ }
     }
+
+    private static DateTime _lastCrashNotice = DateTime.MinValue;
+
+    /// <summary>One crash toast per <see cref="CrashNoticeQuiet"/>. A broken template throws on every
+    /// layout pass or hover — 7 in one second when Depots failed to load — and the snackbar QUEUES them, so
+    /// a 3 s toast read as one that never went away. Every exception is still logged.</summary>
+    internal static bool ClaimCrashNotice(DateTime now)
+    {
+        if (now - _lastCrashNotice < CrashNoticeQuiet) return false;
+        _lastCrashNotice = now;
+        return true;
+    }
+
+    internal static readonly TimeSpan CrashNoticeQuiet = TimeSpan.FromSeconds(10);
 
     public App()
     {
