@@ -31,6 +31,10 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
 {
     private bool AutoUpdate => settings.AutoUpdateApps;
 
+    // F-07a: every caller (queue, drag-and-drop, Fixes, HTTP bridge) writes the same stplug-in/depotcache.
+    // The installs are synchronous, so nothing ever awaits while holding this.
+    private readonly Lock _installLock = new();
+
     /// <summary>Raised (with the appid) whenever a lua is successfully installed — via any path (plugin,
     /// drag-drop, Add page, Fixes). The UI subscribes to refresh the library live. May fire on a
     /// background thread, so handlers must marshal to the UI thread.</summary>
@@ -155,6 +159,11 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
     /// <paramref name="luaPath"/>'s own name, so a &lt;appid&gt;_&lt;buildid&gt;.lua is vaulted as that build.</summary>
     public InstallResult InstallLua(string luaPath, long appId, bool forceLocked = false, string? source = null)
     {
+        lock (_installLock) return InstallLuaLocked(luaPath, appId, forceLocked, source);
+    }
+
+    private InstallResult InstallLuaLocked(string luaPath, long appId, bool forceLocked, string? source)
+    {
         string? dir = steam.StPlugInDir;
         if (dir is null) return InstallResult.Fail("Steam location not found — set it in Settings.");
 
@@ -212,15 +221,50 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
             || ext.Equals(".zip", StringComparison.OrdinalIgnoreCase);
     }
 
+    // F-07b: same shape rule as ManifestNameRegex ([0-9], \z). Anything else — "1234_abc.lua",
+    // "3768760 (1).lua", "1234_567.manifest" — is refused rather than guessed at.
+    [GeneratedRegex(@"^([0-9]+)(?:_[0-9]+)?\.(?:lua|zip)\z", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    private static partial Regex AppIdNameRegex();
+
     /// <summary>
-    /// The appid a dropped .lua/.zip represents, taken from the leading digits of its file name.
-    /// Tolerates the browser's duplicate suffix and similar, e.g. "3768760 (1).lua" → 3768760.
+    /// The appid a .lua/.zip represents: <c>&lt;appid&gt;.lua</c> or <c>&lt;appid&gt;_&lt;buildid&gt;.lua</c>
+    /// (same for .zip). Null for any other name or an appid outside Steam's uint32 range.
     /// </summary>
     public static long? AppIdFromFileName(string path)
     {
-        string stem = Path.GetFileNameWithoutExtension(path);
-        var m = Regex.Match(stem, @"^\s*(\d+)");
-        return m.Success && long.TryParse(m.Groups[1].Value, out long id) ? id : null;
+        var m = AppIdNameRegex().Match(Path.GetFileName(path));
+        return m.Success && long.TryParse(m.Groups[1].Value, out long id) && id is > 0 and <= uint.MaxValue
+            ? id : null;
+    }
+
+    /// <summary>
+    /// The one .lua entry a zip installs for <paramref name="appId"/>. Shared by <see cref="InstallZip"/> and
+    /// <see cref="ParseZipLua"/> so the overwrite diff shows exactly what gets written (F-07b). Only canonical
+    /// names for this appid count; several → highest build id (a plain &lt;appid&gt;.lua ranks lowest),
+    /// ties by ordinal FullName. Null when none qualifies.
+    /// </summary>
+    private static ZipArchiveEntry? SelectLuaEntry(ZipArchive archive, long appId) =>
+        archive.Entries
+            .Where(e => e.Name.EndsWith(".lua", StringComparison.OrdinalIgnoreCase) && AppIdFromFileName(e.Name) == appId)
+            .OrderByDescending(e => long.TryParse(BuildIdFromFileName(e.Name), out long b) ? b : -1)
+            .ThenBy(e => e.FullName, StringComparer.Ordinal)
+            .FirstOrDefault();
+
+    /// <summary>Parse the lua <see cref="InstallZip"/> would install from this zip, without installing it.
+    /// Null if the zip can't be read or has no qualifying lua.</summary>
+    public static LuaContents? ParseZipLua(string zipPath, long appId)
+    {
+        try
+        {
+            using var archive = ZipFile.OpenRead(zipPath);
+            if (SelectLuaEntry(archive, appId) is not { } luaEntry) return null;
+
+            string tmp = Path.Combine(Path.GetTempPath(), $"luatools_diff_{appId}_{Guid.NewGuid():N}.lua");
+            luaEntry.ExtractToFile(tmp, overwrite: true);
+            try { return LuaFileParser.Parse(tmp, appId); }
+            finally { try { File.Delete(tmp); } catch { /* temp cleanup best-effort */ } }
+        }
+        catch { return null; }
     }
 
     /// <summary>
@@ -234,8 +278,8 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
         {
             using var archive = ZipFile.OpenRead(zipPath);
             foreach (var entry in archive.Entries)
-                // AppIdFromFileName (leading digits) rather than a whole-name parse, so a build-named
-                // entry like "386940_18234567.lua" still resolves to 386940.
+                // AppIdFromFileName rather than a whole-name parse, so a build-named entry like
+                // "386940_18234567.lua" still resolves to 386940.
                 if (entry.Name.EndsWith(".lua", StringComparison.OrdinalIgnoreCase) &&
                     AppIdFromFileName(entry.Name) is { } id)
                     return id;
@@ -258,6 +302,11 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
 
     /// <summary>Copy a loose .manifest into depotcache, keeping its (depot_manifest).manifest name.</summary>
     public InstallResult InstallManifestFile(string manifestPath)
+    {
+        lock (_installLock) return InstallManifestFileLocked(manifestPath);
+    }
+
+    private InstallResult InstallManifestFileLocked(string manifestPath)
     {
         string? dir = steam.DepotCacheDir;
         if (dir is null) return InstallResult.Fail("Steam location not found — set it in Settings.");
@@ -287,6 +336,11 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
     /// </summary>
     public InstallResult InstallZip(string zipPath, long appId, bool forceLocked = false, string? source = null)
     {
+        lock (_installLock) return InstallZipLocked(zipPath, appId, forceLocked, source);
+    }
+
+    private InstallResult InstallZipLocked(string zipPath, long appId, bool forceLocked, string? source)
+    {
         string? plugDir = steam.StPlugInDir;
         string? depotDir = steam.DepotCacheDir;
         if (plugDir is null || depotDir is null)
@@ -306,6 +360,18 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
             try { Directory.CreateDirectory(plugDir); } catch { /* reported per-file below */ }
             try { Directory.CreateDirectory(depotDir); } catch { }
 
+            var luaEntry = SelectLuaEntry(archive, appId);
+            if (luaEntry is null)
+            {
+                var luas = archive.Entries
+                    .Where(e => e.Name.EndsWith(".lua", StringComparison.OrdinalIgnoreCase)).Select(e => e.Name).ToList();
+                if (luas.Count > 0)
+                {
+                    rejected = $"Refused the zip's lua: no {appId}.lua or {appId}_<build>.lua in it.";
+                    failed.AddRange(luas);
+                }
+            }
+
             foreach (var entry in archive.Entries)
             {
                 if (string.IsNullOrEmpty(entry.Name)) continue; // skip directory entries
@@ -314,6 +380,7 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
                 bool isLua = name.EndsWith(".lua", StringComparison.OrdinalIgnoreCase);
                 bool isManifest = name.EndsWith(".manifest", StringComparison.OrdinalIgnoreCase);
                 if (!isLua && !isManifest) continue; // ignore anything else
+                if (isLua && entry != luaEntry) continue; // only the selected lua is ever written
 
                 // F-03: entry.Name with a drive letter ("D:x.manifest") makes Path.Combine return the second
                 // argument, escaping depotcache. Only the real <depot>_<gid>.manifest shape is written.

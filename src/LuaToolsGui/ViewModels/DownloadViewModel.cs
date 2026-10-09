@@ -810,7 +810,10 @@ public partial class DownloadViewModel : ObservableObject
         if (oldLuaPath is null) return true; // nothing to overwrite
 
         var oldLua = LuaFileParser.Parse(oldLuaPath, appId);
-        var newLua = ExtractLuaFromZip(file.FilePath, appId);
+        // Bare-lua downloads (no zip wrapper) are parsed directly so the diff still works for those sources.
+        var newLua = IsZip(file.FilePath)
+            ? LuaInstaller.ParseZipLua(file.FilePath, appId)
+            : LuaFileParser.Parse(file.FilePath, appId);
         if (newLua is null) return true; // can't diff — install rather than block on an unanswerable prompt
 
         var diff = LuaFileParser.Diff(oldLua, newLua);
@@ -954,27 +957,6 @@ public partial class DownloadViewModel : ObservableObject
         "linux" => "Linux",
         _ => os
     };
-
-    /// <summary>Extract the .lua from a manifest zip and parse it (without installing). A bare-lua
-    /// download (no zip wrapper) is parsed directly so the overwrite-diff still works for those sources.</summary>
-    private static LuaContents? ExtractLuaFromZip(string zipPath, long appId)
-    {
-        try
-        {
-            if (!IsZip(zipPath)) return LuaFileParser.Parse(zipPath, appId); // bare .lua → parse as-is
-
-            using var archive = System.IO.Compression.ZipFile.OpenRead(zipPath);
-            var luaEntry = archive.Entries.FirstOrDefault(e =>
-                e.Name.EndsWith(".lua", StringComparison.OrdinalIgnoreCase));
-            if (luaEntry is null) return null;
-
-            string tmp = Path.Combine(Path.GetTempPath(), $"luatools_diff_{appId}_{Guid.NewGuid():N}.lua");
-            luaEntry.ExtractToFile(tmp, overwrite: true);
-            try { return LuaFileParser.Parse(tmp, appId); }
-            finally { try { File.Delete(tmp); } catch { /* temp cleanup best-effort */ } }
-        }
-        catch { return null; }
-    }
 
     /// <summary>The install banner's "Reveal" → open this game in the Manage detail view.</summary>
     [RelayCommand]

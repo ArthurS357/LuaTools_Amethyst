@@ -1,5 +1,4 @@
 using System.IO;
-using System.IO.Compression;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LuaToolsGui.Services;
@@ -99,14 +98,35 @@ public partial class DropInstallViewModel : ObservableObject
             return;
         }
 
+        // F-07a: a batch is in flight (installing, building a diff, or paused on a confirm). Join it instead
+        // of replacing _queue/_tally under it; the files run after the confirm, in the same result banner.
+        if (_queue is not null)
+        {
+            foreach (string f in files) _queue.Enqueue(f);
+            return;
+        }
+
         ResultText = null;
         _tally = new InstallTally();
         _queue = new Queue<string>(files);
         await ProcessQueueAsync();
     }
 
-    /// <summary>Install queued files until one needs an overwrite confirm (then pause for the user).</summary>
     private async Task ProcessQueueAsync()
+    {
+        try { await DrainQueueAsync(); }
+        catch
+        {
+            // A non-null _queue means "batch in flight"; left set, it would swallow every later drop.
+            _queue = null;
+            _pendingLua = null;
+            IsConfirming = false;
+            throw;
+        }
+    }
+
+    /// <summary>Install queued files until one needs an overwrite confirm (then pause for the user).</summary>
+    private async Task DrainQueueAsync()
     {
         while (_queue is { Count: > 0 })
         {
@@ -115,21 +135,21 @@ public partial class DropInstallViewModel : ObservableObject
 
             if (ext.Equals(".manifest", StringComparison.OrdinalIgnoreCase))
             {
-                Apply(_installer.InstallManifestFile(path));
+                Apply(await Task.Run(() => _installer.InstallManifestFile(path)));
             }
             else if (ext.Equals(".lua", StringComparison.OrdinalIgnoreCase))
             {
                 long? appId = LuaInstaller.AppIdFromFileName(path);
                 if (appId is null) { _tally.Skipped.Add(Path.GetFileName(path)); continue; }
                 if (await ConfirmIfOverwriteAsync(path, appId.Value, isZip: false)) return; // paused
-                Apply(_installer.InstallLuaFile(path, appId.Value));
+                Apply(await Task.Run(() => _installer.InstallLuaFile(path, appId.Value)));
             }
             else // .zip
             {
                 long? appId = LuaInstaller.AppIdForZip(path);
                 if (appId is null) { _tally.Skipped.Add(Path.GetFileName(path)); continue; }
                 if (await ConfirmIfOverwriteAsync(path, appId.Value, isZip: true)) return; // paused
-                Apply(_installer.InstallZip(path, appId.Value));
+                Apply(await Task.Run(() => _installer.InstallZip(path, appId.Value)));
             }
         }
 
@@ -143,7 +163,7 @@ public partial class DropInstallViewModel : ObservableObject
         if (existing is null) return false; // fresh install — no confirm
 
         var oldLua = LuaFileParser.Parse(existing, appId);
-        var newLua = isZip ? ExtractLuaFromZip(path, appId) : LuaFileParser.Parse(path, appId);
+        var newLua = isZip ? LuaInstaller.ParseZipLua(path, appId) : LuaFileParser.Parse(path, appId);
         if (newLua is null) return false; // can't diff — just install (caller proceeds)
 
         var diff = LuaFileParser.Diff(oldLua, newLua);
@@ -198,9 +218,9 @@ public partial class DropInstallViewModel : ObservableObject
         if (_pendingLua is { } p)
         {
             string ext = Path.GetExtension(p.luaPath);
-            Apply(ext.Equals(".zip", StringComparison.OrdinalIgnoreCase)
+            Apply(await Task.Run(() => ext.Equals(".zip", StringComparison.OrdinalIgnoreCase)
                 ? _installer.InstallZip(p.luaPath, p.appId)
-                : _installer.InstallLuaFile(p.luaPath, p.appId));
+                : _installer.InstallLuaFile(p.luaPath, p.appId)));
         }
         _pendingLua = null;
         await ProcessQueueAsync(); // continue any remaining dropped files
@@ -305,23 +325,6 @@ public partial class DropInstallViewModel : ObservableObject
         "linux" => "Linux",
         _ => os
     };
-
-    private static LuaContents? ExtractLuaFromZip(string zipPath, long appId)
-    {
-        try
-        {
-            using var archive = ZipFile.OpenRead(zipPath);
-            var luaEntry = archive.Entries.FirstOrDefault(e =>
-                e.Name.EndsWith(".lua", StringComparison.OrdinalIgnoreCase));
-            if (luaEntry is null) return null;
-
-            string tmp = Path.Combine(Path.GetTempPath(), $"luatools_drop_{appId}_{Guid.NewGuid():N}.lua");
-            luaEntry.ExtractToFile(tmp, overwrite: true);
-            try { return LuaFileParser.Parse(tmp, appId); }
-            finally { try { File.Delete(tmp); } catch { /* best-effort */ } }
-        }
-        catch { return null; }
-    }
 
     private struct InstallTally
     {
