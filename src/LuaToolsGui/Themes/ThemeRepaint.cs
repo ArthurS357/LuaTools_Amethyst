@@ -49,7 +49,7 @@ public static class ThemeRepaint
             switch (Lookup(target, key))
             {
                 case SolidColorBrush { IsFrozen: false } brush:
-                    brush.Color = color;
+                    Paint(brush, color);
                     applied++;
                     break;
 
@@ -64,6 +64,16 @@ public static class ThemeRepaint
 
         return applied;
     }
+
+    /// <summary>
+    /// <c>SetCurrentValue</c>, never <c>brush.Color = …</c>. A plain assignment replaces the brush's
+    /// <c>{DynamicResource}</c> with a local value, which makes it freezable — and the next <c>Style</c>
+    /// that uses it in a setter freezes it when sealed (27 such setters in the views). The first switch
+    /// worked, every later one skipped that brush: page text and the shell stayed on the first palette.
+    /// SetCurrentValue keeps the expression underneath, so the brush stays unfreezable.
+    /// </summary>
+    private static void Paint(SolidColorBrush brush, Color color) =>
+        brush.SetCurrentValue(SolidColorBrush.ColorProperty, color);
 
     /// <summary>
     /// Repaint every unfrozen brush under <paramref name="target"/> that still holds a ramp colour of ANY
@@ -86,7 +96,7 @@ public static class ThemeRepaint
             if (value is SolidColorBrush { IsFrozen: false } brush &&
                 map.TryGetValue((brush.Color.R, brush.Color.G, brush.Color.B), out var to))
             {
-                brush.Color = Color.FromArgb(brush.Color.A, to.R, to.G, to.B);
+                Paint(brush, Color.FromArgb(brush.Color.A, to.R, to.G, to.B));
                 applied++;
             }
         }

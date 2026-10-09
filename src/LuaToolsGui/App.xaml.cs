@@ -459,11 +459,7 @@ public partial class App : Application
     {
         if (Current is null) return;
 
-        foreach (var (key, color) in palette.BrushColors(new Themes.DictionaryColors(Current.Resources)))
-        {
-            if (Current.TryFindResource(key) is System.Windows.Media.SolidColorBrush brush && !brush.IsFrozen)
-                brush.Color = color;
-        }
+        Themes.ThemeRepaint.Apply(Current.Resources, palette.BrushColors(new Themes.DictionaryColors(Current.Resources)));
     }
 
     /// <summary>Look up a <see cref="System.Windows.Media.Color"/> resource, or null if absent/wrong type.</summary>
