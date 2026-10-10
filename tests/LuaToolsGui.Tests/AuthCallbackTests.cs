@@ -45,14 +45,14 @@ public sealed class AuthCallbackTests : IDisposable
     }
 
     /// <summary>Only "good" exchanges — anything else was issued against another code_challenge.</summary>
-    private Task<SupabaseSession> Wait(CancellationToken ct = default) =>
+    private Task<SupabaseSession> Wait(CancellationToken ct = default, TimeSpan? errorGrace = null) =>
         AuthService.WaitForCallbackAsync(_listener, code =>
         {
             _exchanged.Enqueue(code);
             return code == "good"
                 ? Task.FromResult(Ours)
                 : Task.FromException<SupabaseSession>(new AuthException("Token exchange failed (400)."));
-        }, ct);
+        }, ct, errorGrace ?? TimeSpan.Zero);
 
     private Task<HttpResponseMessage> Send(string pathAndQuery, string? dest = "document", string method = "GET")
     {
@@ -118,6 +118,30 @@ public sealed class AuthCallbackTests : IDisposable
 
         await wait.Awaiting(w => w.WaitAsync(Timeout)).Should().ThrowAsync<AuthException>();
         _exchanged.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task A_provider_error_inside_the_grace_is_ignored_and_the_real_code_still_wins()
+    {
+        var wait = Wait(errorGrace: TimeSpan.FromMinutes(1));
+
+        var forged = await Send("/callback?error_description=forged");
+        wait.IsCompleted.Should().BeFalse();
+        await Send("/callback?code=good");
+
+        forged.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        (await wait.WaitAsync(Timeout)).Should().BeSameAs(Ours);
+    }
+
+    [Fact]
+    public async Task A_provider_error_after_the_grace_ends_the_attempt()
+    {
+        var wait = Wait(errorGrace: TimeSpan.FromMilliseconds(200));
+        await Task.Delay(400);   // real clock: the grace is a Stopwatch window
+
+        await Send("/callback?error_description=access_denied");
+
+        await wait.Awaiting(w => w.WaitAsync(Timeout)).Should().ThrowAsync<AuthException>();
     }
 
     [Fact]

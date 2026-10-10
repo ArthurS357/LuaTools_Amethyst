@@ -218,6 +218,9 @@ public class AuthService
         $"&redirect_to={Uri.EscapeDataString(AppConfig.OAuthCallbackUrl)}" +
         $"&code_challenge={codeChallenge}&code_challenge_method=s256";
 
+    /// <summary>Window after the listener opens in which an <c>error_description</c> callback is ignored.</summary>
+    private static readonly TimeSpan ErrorGrace = TimeSpan.FromSeconds(30);
+
     private static readonly string CallbackPath = new Uri(AppConfig.OAuthCallbackUrl).AbsolutePath;
 
     /// <summary>
@@ -225,8 +228,11 @@ public class AuthService
     /// exchange is passed in so a forged code can be told apart from ours without a network round-trip.
     /// </summary>
     internal static async Task<SupabaseSession> WaitForCallbackAsync(
-        HttpListener listener, Func<string, Task<SupabaseSession>> exchange, CancellationToken ct)
+        HttpListener listener, Func<string, Task<SupabaseSession>> exchange, CancellationToken ct,
+        TimeSpan? errorGrace = null)
     {
+        var grace = errorGrace ?? ErrorGrace;
+        var started = Stopwatch.StartNew();
         // 5 minute window for the user to complete the browser flow
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(ct);
         timeout.CancelAfter(TimeSpan.FromMinutes(5));
@@ -268,9 +274,18 @@ public class AuthService
             // sign-in outright. PKCE is what tells our code from an injected one: only ours exchanges.
             if (code is null)
             {
-                // ponytail: a forged ?error_description= still ends this attempt — without a state of ours
-                // an error cannot be authenticated, and a real denial must not hang the button for 5 min.
-                // Cost is one retry click, no takeover.
+                // Grace: a forged error can only land while the listener is open, so for the first seconds an
+                // error does not end the attempt (the real code redirect may still arrive). ponytail: a real
+                // denial inside the grace is dropped too, so the button waits for the 5 min timeout — shorten
+                // ErrorGrace if that UX bites.
+                if (started.Elapsed < grace)
+                {
+                    ctx.Response.StatusCode = 404;
+                    ctx.Response.Close();
+                    continue;
+                }
+                // After the grace the first error ends the attempt: an error cannot be authenticated without
+                // a state of ours. Cost is one retry click, no takeover.
                 await WriteResultPageAsync(ctx, false, error, timeout.Token);
                 throw new AuthException(error ?? "Sign-in was denied.");
             }
