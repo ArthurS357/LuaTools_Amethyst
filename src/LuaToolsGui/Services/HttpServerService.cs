@@ -181,17 +181,57 @@ public class HttpServerService : IHostedService
         return Task.CompletedTask;
     }
 
+    /// <summary>ERROR_OPERATION_ABORTED: what a pending <c>GetContextAsync</c> faults with when the listener is
+    /// stopped or closed under it.</summary>
+    private const int ErrorOperationAborted = 995;
+
+    internal static bool IsShutdownAbort(Exception? ex) =>
+        ex?.GetBaseException() is HttpListenerException { ErrorCode: ErrorOperationAborted };
+
+    /// <summary>Observes the fault of an abandoned accept (so it never reaches UnobservedTaskException):
+    /// 995 is silent, anything else is logged. Returns the continuation so tests can await it.</summary>
+    internal static Task ObserveAbandoned(Task pending) =>
+        pending.ContinueWith(static t =>
+        {
+            if (!IsShutdownAbort(t.Exception))
+                AppLog.Log($"HTTP accept faulted after cancel: {LogSanitizer.Sanitize(t.Exception)}");
+        }, TaskContinuationOptions.OnlyOnFaulted);
+
+    /// <summary>
+    /// <c>GetContextAsync().WaitAsync(ct)</c> that does not leak the abandoned accept. <c>WaitAsync</c> gives
+    /// up on cancel but the accept keeps running, and when the listener is later stopped it faults with 995;
+    /// nobody awaits it, so it surfaced as an UnobservedTask line in crash.log on every shutdown. The 995 is
+    /// swallowed here; any other fault of the abandoned accept is still reported.
+    /// </summary>
+    internal static async Task<HttpListenerContext> AcceptAsync(HttpListener listener, CancellationToken ct)
+    {
+        var pending = listener.GetContextAsync();
+        try
+        {
+            return await pending.WaitAsync(ct);
+        }
+        catch (OperationCanceledException)
+        {
+            _ = ObserveAbandoned(pending);
+            throw;
+        }
+    }
+
     private async Task ListenLoop(CancellationToken ct)
     {
         while (!ct.IsCancellationRequested && _listener?.IsListening == true)
         {
             try
             {
-                var ctx = await _listener.GetContextAsync().WaitAsync(ct);
+                var ctx = await AcceptAsync(_listener, ct);
                 _ = Task.Run(() => HandleRequest(ctx), ct);
             }
             catch (OperationCanceledException) { break; }
-            catch (HttpListenerException) { break; }
+            catch (HttpListenerException ex)
+            {
+                if (!IsShutdownAbort(ex)) AppLog.Log($"HTTP listener stopped: {LogSanitizer.Sanitize(ex)}");
+                break;
+            }
             catch { }
         }
     }

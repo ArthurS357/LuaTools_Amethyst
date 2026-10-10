@@ -242,7 +242,7 @@ public class AuthService
             HttpListenerContext ctx;
             try
             {
-                ctx = await listener.GetContextAsync().WaitAsync(timeout.Token);
+                ctx = await HttpServerService.AcceptAsync(listener, timeout.Token);
             }
             catch (OperationCanceledException)
             {
