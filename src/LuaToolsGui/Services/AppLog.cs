@@ -24,7 +24,8 @@ public static class AppLog
 {
     private static readonly object _lock = new();
 
-    public static readonly string FilePath = Path.Combine(
+    /// <summary>Production never reassigns this; the test assembly redirects it to a temp dir before any test runs.</summary>
+    public static string FilePath { get; internal set; } = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "LuaToolsGui", "plugin-backend.log");
 
