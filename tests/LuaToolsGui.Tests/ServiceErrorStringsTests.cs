@@ -25,6 +25,9 @@ public sealed class ServiceErrorStringsTests
         "has no published digest", "Couldn\u0027t write {",
     ];
 
+    // The dev machine runs pt-BR, which now has these keys translated: pin the UI culture the assertions assume.
+    private static void English() => System.Globalization.CultureInfo.CurrentUICulture = new System.Globalization.CultureInfo("en");
+
     private static string Root()
     {
         var dir = new DirectoryInfo(AppContext.BaseDirectory);
@@ -52,12 +55,14 @@ public sealed class ServiceErrorStringsTests
     [InlineData("App_StartupFailed", "couldn't start")]
     public void The_keys_resolve_to_their_english_text(string key, string fragment)
     {
+        English();
         Strings.Get(key).Should().Contain(fragment);   // a missing key would come back as the key name
     }
 
     [Fact]
     public void Placeholders_format_without_throwing()
     {
+        English();
         string.Format(Strings.Unlocker_Err_CliExit, "fix.exe", 3).Should().Be("fix.exe exited with code 3.");
         string.Format(Strings.App_StartupFailed, "boom", "/tmp/crash.log").Should().Contain("boom").And.Contain("/tmp/crash.log")
             .And.Contain("\n");

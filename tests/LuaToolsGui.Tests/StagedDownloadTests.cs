@@ -115,6 +115,7 @@ public sealed class StagedDownloadTests : IDisposable
     [Fact]
     public async Task SilentBody_IsAbandonedAsAStall_NotAUserCancel()
     {
+        System.Globalization.CultureInfo.CurrentUICulture = new System.Globalization.CultureInfo("en");   // asserts the English text
         using var res = Response(new ScriptedBody(2, TimeSpan.Zero, Tail.Hang), "1.zip");
 
         var act = () => LuaToolsApiClient.SaveResponseAsync(

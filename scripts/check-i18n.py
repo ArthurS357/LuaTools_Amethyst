@@ -45,7 +45,9 @@ SAMPLE_SIZE = 10
 # parity. Anything left here is untranslated in all 29 languages, with one stated exception noted
 # against the plugin-source group at the bottom.
 PENDING_TRANSLATION: frozenset[str] = frozenset({
-    # F-10: hardcoded English moved out of the services into real keys; localizable now, not yet translated.
+    # F-10: hardcoded English moved out of the services into real keys; translated to pt-BR in 1.7.8
+    # (pt-BR only, like the plugin-source group below; the other 28 files fall back to English until 1.7.9).
+    # The list is global, so these stay here: removing them would demand them in all 29 files.
     "Err_SteamNotFound",
     "Installer_Err_CouldntOpenDownload",
     "Unlocker_Err_NoLongerAvailable",
