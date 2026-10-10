@@ -225,6 +225,66 @@ public sealed class HttpServerRoutesTests : IDisposable
         wrongVerb.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
+    // ── F-11: log injection / error leakage ───────────────────────────────────
+
+    private async Task PostLog(string body)
+    {
+        using var req = new HttpRequestMessage(HttpMethod.Post, _baseUrl + "/log") { Content = new StringContent(body) };
+        req.Headers.TryAddWithoutValidation(TokenHeader, HttpServerService.SessionToken);
+        using var res = await _http.SendAsync(req);
+        res.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task Log_body_with_newlines_cannot_forge_a_log_line()
+    {
+        string id = Guid.NewGuid().ToString("N");
+
+        await PostLog($"{{\"message\":\"a-{id}\\r\\n[2026-01-01 00:00:00.000] FORGED-{id}\"}}");
+
+        var lines = File.ReadAllLines(AppLog.FilePath);
+        lines.Should().NotContain(l => l.StartsWith("[2026-01-01") && l.Contains("FORGED-" + id));
+        lines.Should().ContainSingle(l => l.Contains("a-" + id) && l.Contains("FORGED-" + id));
+    }
+
+    [Fact]
+    public async Task A_plain_log_line_is_kept_and_timestamped_with_the_date()
+    {
+        string id = Guid.NewGuid().ToString("N");
+
+        await PostLog($"{{\"message\":\"hello-{id}\"}}");
+
+        File.ReadAllLines(AppLog.FilePath).Should().ContainSingle(l =>
+            l.Contains("[plugin] hello-" + id)
+            && System.Text.RegularExpressions.Regex.IsMatch(l, @"^\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}\] "));
+    }
+
+    [Fact]
+    public async Task Remove_failure_does_not_hand_the_exception_text_to_the_caller()
+    {
+        File.WriteAllText(_luaPath, "addappid(730)");
+        File.SetAttributes(_luaPath, FileAttributes.ReadOnly);   // File.Delete throws with the full path
+        try
+        {
+            using var res = await Send(HttpMethod.Post, "/remove/730", token: true);
+
+            res.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+            string body = await res.Content.ReadAsStringAsync();
+            body.Should().Contain("Internal error").And.NotContain(_dir).And.NotContain("luatools-tests");
+        }
+        finally { File.SetAttributes(_luaPath, FileAttributes.Normal); }
+    }
+
+    [Fact]
+    public async Task CheckSources_failure_does_not_hand_the_exception_text_to_the_caller()
+    {
+        // The empty service provider makes GetRequiredService throw, naming the internal type.
+        using var res = await Send(HttpMethod.Post, "/check-sources/730", token: true);
+
+        string body = await res.Content.ReadAsStringAsync();
+        body.Should().Contain("Internal error").And.NotContain("LuaToolsApiClient");
+    }
+
     // ── Routing in isolation ──────────────────────────────────────────────────
 
     [Fact]

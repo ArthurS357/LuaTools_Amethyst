@@ -406,7 +406,7 @@ public class HttpServerService : IHostedService
         }
         catch (Exception ex)
         {
-            return (200, Json(new { success = false, error = ex.Message, results = Array.Empty<object>() }));
+            return (200, Json(new { success = false, error = Scrub("check-sources", ex), results = Array.Empty<object>() }));
         }
     }
 
@@ -510,7 +510,7 @@ public class HttpServerService : IHostedService
         }
         catch (Exception ex)
         {
-            return (500, JsonErr(ex.Message));
+            return (500, JsonErr(Scrub("remove", ex)));
         }
     }
 
@@ -579,7 +579,7 @@ public class HttpServerService : IHostedService
         }
         catch (Exception ex)
         {
-            return (500, JsonErr(ex.Message));
+            return (500, JsonErr(Scrub("open-url", ex)));
         }
     }
 
@@ -602,7 +602,7 @@ public class HttpServerService : IHostedService
         }
         catch (Exception ex)
         {
-            return Task.FromResult((200, Json(new { success = false, error = ex.Message })));
+            return Task.FromResult((200, Json(new { success = false, error = Scrub("check-updates", ex) })));
         }
     }
 
@@ -640,6 +640,9 @@ public class HttpServerService : IHostedService
         }
         catch { /* not JSON — log the raw body */ }
 
+        // CR/LF neutralized: the body is attacker-controlled (any local page can POST here), and a raw
+        // newline would let it forge what looks like a genuine log line.
+        message = message.Replace("\r", "\\r").Replace("\n", "\\n");
         if (message.Length > 2000) message = message[..2000] + "…";
         AppLog.Log("[plugin] " + message);
         return (200, Json(new { success = true }));
@@ -768,6 +771,13 @@ public class HttpServerService : IHostedService
     // ── Helpers ───────────────────────────────────────────────────────
 
     private static string Json(object obj) => JsonSerializer.Serialize(obj);
+    /// <summary>Exception text can carry local paths and tokens: log it (sanitized), hand the caller a fixed string.</summary>
+    private static string Scrub(string op, Exception ex)
+    {
+        AppLog.Log($"HTTP {op} failed: {LogSanitizer.Sanitize(ex)}");
+        return "Internal error";
+    }
+
     private static string JsonErr(string msg) => JsonSerializer.Serialize(new { success = false, error = msg });
 }
 

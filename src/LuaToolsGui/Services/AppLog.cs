@@ -45,7 +45,7 @@ public static class AppLog
                 // not guaranteed to be free of credentials.
                 File.AppendAllText(
                     FilePath,
-                    $"[{DateTime.Now:HH:mm:ss.fff}] {LogSanitizer.Sanitize(msg)}{Environment.NewLine}");
+                    $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] {LogSanitizer.Sanitize(msg)}{Environment.NewLine}");
             }
         }
         catch { /* logging must never throw */ }
