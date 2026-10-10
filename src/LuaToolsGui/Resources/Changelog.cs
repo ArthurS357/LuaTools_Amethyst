@@ -29,6 +29,21 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.7.8", "2026-10-09",
+            "Fixes a tray exit that left the process running, makes theme colour changes stick, hardens the local log and the sign-in callback, and moves the service error messages into the language files.",
+            [
+                "Quit from the tray no longer leaves the process running, and Steam is only closed on exit when LuaTools was the one that started it.",
+                "Cancel now also stops a game being added from the store page.",
+                "Changing the accent colour or the neutral palette updates the whole window, including after several changes in a row; a regression that crashed the Depots page after a theme swap is fixed.",
+                "A burst of errors now shows a single error toast instead of a queue of them.",
+                "Dropped lua files and zips install one at a time and join the batch in progress; the lua picked from a zip is chosen the same way for the preview and the install.",
+                "Sign-in no longer freezes the window while the session is saved. The local sign-in callback only accepts the real browser redirect, ignores a sign-in error for the first 30 seconds, and a forged code cannot end the attempt.",
+                "The local bridge log no longer accepts text that fakes extra log lines, log entries carry the date, and error details are kept in the log instead of being sent back to the caller.",
+                "The harmless listener-stopped error that kept appearing in crash.log on exit is gone.",
+                "Error messages from the installer, the unlocker, sign-in and downloads now come from the language files, with a Portuguese (Brazil) translation. Other languages show English for these until their translation lands.",
+                "Nothing else changed: no new setting, no new network request, and no new dependency.",
+            ]),
+
         new("1.7.7", "2026-10-08",
             "Security and reliability fixes from an internal audit: the local bridge requires its token, the store plugin no longer updates itself unless you turn that on, and downloads and saved builds are harder to damage.",
             [

@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.7.7");
+        AppVersion.Current.Should().Be("1.7.8");
     }
 
     [Fact]
@@ -51,13 +51,13 @@ public class ChangelogTests
 
         // One anchor per change the release was actually about, so an entry that got copied forward from
         // the previous version fails here rather than shipping a changelog describing the wrong release.
-        text.Should().ContainEquivalentOf("PluginAutoUpdate"); // F-01: plugin self-update gated again
-        text.Should().ContainEquivalentOf("token");            // F-02: the local bridge requires it
-        text.Should().ContainEquivalentOf("depotcache");       // F-03: only <depot>_<gid>.manifest lands there
-        text.Should().ContainEquivalentOf("atomically");       // F-05
-        text.Should().ContainEquivalentOf("%TEMP%");           // F-08: no partials left behind
-        text.Should().ContainEquivalentOf("https");            // F-09: signed fix links
-        text.Should().ContainEquivalentOf("backup");           // F-13: vault index .bak
+        text.Should().ContainEquivalentOf("tray");             // exit deadlock + Steam only closed if we started it
+        text.Should().ContainEquivalentOf("Cancel");           // /cancel reaches store-page adds
+        text.Should().ContainEquivalentOf("accent");           // theme hot swap
+        text.Should().ContainEquivalentOf("toast");            // error-toast burst limit
+        text.Should().ContainEquivalentOf("callback");         // OAuth listener hardening + grace
+        text.Should().ContainEquivalentOf("log lines");        // /log CR/LF neutralised
+        text.Should().ContainEquivalentOf("Portuguese");       // F-10 strings in .resx
     }
 
     [Fact]

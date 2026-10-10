@@ -1,5 +1,62 @@
 # Changelog
 
+## 1.7.8 — 2026-10-09
+
+Correcoes de travamento no Sair da bandeja, de tema e de instalacao por arrastar e soltar, mais o endurecimento
+do log da ponte local e do callback de login, e as mensagens de erro dos servicos movidas para os arquivos de
+idioma.
+
+Ressalva herdada da 1.7.7: o download de fix Denuvo (F-09) continua **sem** ter sido exercitado ao vivo (nao
+ha jogo Denuvo instalado para o teste).
+
+### Sair da bandeja e cancelamento
+
+- **Sair da bandeja deixava o processo vivo** (deadlock no `OnExit`). Corrigido.
+- **O Steam so fecha no Sair quando foi o LuaTools quem o subiu** (PID rastreado), em vez de por nome.
+- **`/cancel` alcanca adicoes feitas pelo `/add`** da loja, que antes seguiam ate o fim.
+
+### Tema e toasts
+
+- A cor de destaque e a rampa neutra acompanham o hot swap no conteudo central, inclusive a partir da segunda
+  troca. A regressao do `SetCurrentValue` (`InvalidCastException` na pagina Depots) foi corrigida.
+- Uma rajada de excecoes vira um unico toast de erro (limite de 10 s), em vez de uma fila.
+
+### Instalacao por arrastar e soltar (F-07a, F-07b)
+
+- Installs passam serializados pelo `LuaInstaller`; um drop durante um lote em andamento entra na fila do lote.
+- O `.lua` escolhido num zip segue o mesmo criterio na previa e na instalacao (`SelectLuaEntry`), e
+  `AppIdFromFileName` valida a forma `<appid>[_<build>].(lua|zip)`. `"3768760 (1).lua"` passou a ser recusado.
+- `_installGate` redundante da fila removido.
+
+### Login OAuth e ponte local (F-14, Option C, F-11, F-06)
+
+- `SaveStored` nao dorme mais na thread de UI. O listener do callback so atende `GET /callback` local, como
+  navegacao de documento; um codigo forjado nao derruba o login. Sem `state` proprio, porque o Supabase o
+  rejeita.
+- **Grace de 30 s:** um `error_description` nos primeiros 30 s do listener e ignorado. Ressalva: uma negacao
+  legitima nesse intervalo tambem e descartada, e o botao espera o timeout de 5 min.
+- `/log` neutraliza CR/LF (nao da mais para forjar linhas), o log passa a ter a data, e `ex.Message` nao e mais
+  devolvido ao chamador em `/remove`, `/check-sources`, `/open-url` e `/check-updates` (vai sanitizado para o log).
+- O `HttpListenerException 995` do shutdown deixou de aparecer no `crash.log`; outros erros do accept continuam
+  reportados.
+
+### Idiomas (F-10)
+
+- 30 mensagens de erro em ingles dos servicos (`LuaInstaller`, `UnlockerService`, `AuthService`,
+  `LuaToolsApiClient`, `App`) foram para `Strings.resx`, com traducao pt-BR. Os outros 28 idiomas mostram ingles
+  nessas chaves ate a traducao (lista `PENDING_TRANSLATION` do `check-i18n.py`).
+
+### Testes
+
+- A suite deixou de escrever no `plugin-backend.log` real (log redirecionado para um diretorio temporario).
+  Total: 1872, todos passando (o `ThemeRepaintTests.A_standalone_dictionary_...` e um flake conhecido).
+
+### Divida registrada para a 1.7.9
+
+- F-04: auto-update por espelhos de terceiros sem pin de origem (opt-in, desligado por padrao).
+- Traducao das 30 chaves do F-10 para os outros 28 idiomas.
+- 4 textos do HTML da pagina de resultado do login (`ResultPage`) ainda em ingles.
+
 ## 1.7.7 — 2026-10-08
 
 Correcoes dos achados da sondagem de 2026-10-03: F-01, F-02, F-03 e F-05 (seguranca), F-08, F-09 e F-13
