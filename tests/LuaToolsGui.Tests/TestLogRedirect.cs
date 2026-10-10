@@ -18,6 +18,7 @@ internal static class TestLogRedirect
     /// the writer into a sharing violation).</summary>
     internal static string ReadLog()
     {
+        if (!File.Exists(AppLog.FilePath)) return string.Empty;   // nothing logged yet: the dir is created on first write
         using var fs = new FileStream(AppLog.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         using var reader = new StreamReader(fs);
         return reader.ReadToEnd();
