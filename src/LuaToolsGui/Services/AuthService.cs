@@ -287,7 +287,7 @@ public class AuthService
                 // After the grace the first error ends the attempt: an error cannot be authenticated without
                 // a state of ours. Cost is one retry click, no takeover.
                 await WriteResultPageAsync(ctx, false, error, timeout.Token);
-                throw new AuthException(error ?? "Sign-in was denied.");
+                throw new AuthException(error ?? Resources.Strings.Auth_Err_SignInDenied);
             }
 
             try
@@ -328,10 +328,10 @@ public class AuthService
         var res = await _http.SendAsync(req, ct);
         string body = await res.Content.ReadAsStringAsync(ct);
         if (!res.IsSuccessStatusCode)
-            throw new AuthException($"Token exchange failed ({(int)res.StatusCode}): {body}");
+            throw new AuthException(string.Format(Resources.Strings.Auth_Err_TokenExchangeFailed, (int)res.StatusCode, body));
 
         return JsonSerializer.Deserialize<SupabaseSession>(body)
-               ?? throw new AuthException("Token exchange returned an empty session.");
+               ?? throw new AuthException(Resources.Strings.Auth_Err_TokenExchangeEmpty);
     }
 
     // ── Token access / refresh ──────────────────────────────────────
@@ -339,7 +339,7 @@ public class AuthService
     /// <summary>Returns a valid access token, refreshing first when close to expiry. Throws for guests.</summary>
     public async Task<string> GetValidAccessTokenAsync()
     {
-        if (_refreshToken is null) throw new AuthException("Not signed in.");
+        if (_refreshToken is null) throw new AuthException(Resources.Strings.Auth_Err_NotSignedIn);
 
         if (_expiresAt <= DateTimeOffset.UtcNow.AddMinutes(2))
         {
@@ -370,10 +370,10 @@ public class AuthService
         var res = await _http.SendAsync(req);
         string body = await res.Content.ReadAsStringAsync();
         if (!res.IsSuccessStatusCode)
-            throw new AuthException($"Session refresh failed ({(int)res.StatusCode}).");
+            throw new AuthException(string.Format(Resources.Strings.Auth_Err_RefreshFailed, (int)res.StatusCode));
 
         var session = JsonSerializer.Deserialize<SupabaseSession>(body)
-                      ?? throw new AuthException("Session refresh returned an empty session.");
+                      ?? throw new AuthException(Resources.Strings.Auth_Err_RefreshEmpty);
         await ApplySessionAsync(session);
     }
 

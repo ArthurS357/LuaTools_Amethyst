@@ -56,7 +56,7 @@ public sealed class SignedDownloadUrlTests
         var act = () => client.DownloadFromUrlAsync(url, "fix.zip", null, CancellationToken.None);
 
         await act.Should().ThrowAsync<ApiException>();
-        string log = File.ReadAllText(AppLog.FilePath);
+        string log = TestLogRedirect.ReadLog();
         log.Should().Contain($"Signed download refused: http://{host}");
         log.Should().NotContain(signature);
     }

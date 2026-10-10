@@ -242,7 +242,7 @@ public sealed class HttpServerRoutesTests : IDisposable
 
         await PostLog($"{{\"message\":\"a-{id}\\r\\n[2026-01-01 00:00:00.000] FORGED-{id}\"}}");
 
-        var lines = File.ReadAllLines(AppLog.FilePath);
+        var lines = TestLogRedirect.ReadLogLines();
         lines.Should().NotContain(l => l.StartsWith("[2026-01-01") && l.Contains("FORGED-" + id));
         lines.Should().ContainSingle(l => l.Contains("a-" + id) && l.Contains("FORGED-" + id));
     }
@@ -254,7 +254,7 @@ public sealed class HttpServerRoutesTests : IDisposable
 
         await PostLog($"{{\"message\":\"hello-{id}\"}}");
 
-        File.ReadAllLines(AppLog.FilePath).Should().ContainSingle(l =>
+        TestLogRedirect.ReadLogLines().Should().ContainSingle(l =>
             l.Contains("[plugin] hello-" + id)
             && System.Text.RegularExpressions.Regex.IsMatch(l, @"^\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}\] "));
     }

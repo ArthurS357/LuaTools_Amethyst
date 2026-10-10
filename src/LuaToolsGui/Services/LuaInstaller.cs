@@ -165,7 +165,7 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
     private InstallResult InstallLuaLocked(string luaPath, long appId, bool forceLocked, string? source)
     {
         string? dir = steam.StPlugInDir;
-        if (dir is null) return InstallResult.Fail("Steam location not found — set it in Settings.");
+        if (dir is null) return InstallResult.Fail(Resources.Strings.Err_SteamNotFound);
 
         try
         {
@@ -309,7 +309,7 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
     private InstallResult InstallManifestFileLocked(string manifestPath)
     {
         string? dir = steam.DepotCacheDir;
-        if (dir is null) return InstallResult.Fail("Steam location not found — set it in Settings.");
+        if (dir is null) return InstallResult.Fail(Resources.Strings.Err_SteamNotFound);
         try
         {
             Directory.CreateDirectory(dir);
@@ -344,11 +344,11 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
         string? plugDir = steam.StPlugInDir;
         string? depotDir = steam.DepotCacheDir;
         if (plugDir is null || depotDir is null)
-            return InstallResult.Fail("Steam location not found — set it in Settings.");
+            return InstallResult.Fail(Resources.Strings.Err_SteamNotFound);
 
         ZipArchive archive;
         try { archive = ZipFile.OpenRead(zipPath); }
-        catch (Exception ex) { return InstallResult.Fail($"Couldn't open the download: {ex.Message}"); }
+        catch (Exception ex) { return InstallResult.Fail(string.Format(Resources.Strings.Installer_Err_CouldntOpenDownload, ex.Message)); }
 
         bool luaInstalled = false;
         int manifestCount = 0;

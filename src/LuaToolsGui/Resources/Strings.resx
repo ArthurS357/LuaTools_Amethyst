@@ -782,4 +782,34 @@ Enable it?</value></data>
   <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>{0} has changed since this fix was applied, so restoring it would overwrite those changes. If you applied another fix on top, revert that one first. {1} file(s) affected.</value></data>
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Fix partially reverted</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} file(s) couldn't be restored. Close the game and try again.</value></data>
+  <data name="Err_SteamNotFound" xml:space="preserve"><value>Steam location not found — set it in Settings.</value></data>
+  <data name="Installer_Err_CouldntOpenDownload" xml:space="preserve"><value>Couldn't open the download: {0}</value></data>
+  <data name="Unlocker_Err_NoLongerAvailable" xml:space="preserve"><value>{0} is no longer available.</value></data>
+  <data name="Err_GitHubUnreachable" xml:space="preserve"><value>Couldn't reach GitHub — check your connection and try again.</value></data>
+  <data name="Unlocker_Err_ReleaseMissingDownload" xml:space="preserve"><value>Release is missing the expected download.</value></data>
+  <data name="Unlocker_Err_DownloadVerification" xml:space="preserve"><value>Download failed verification (sha256 mismatch or no published digest).</value></data>
+  <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>Download is missing: {0}.</value></data>
+  <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>Couldn't find {0} in any release.</value></data>
+  <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} failed verification (sha256 mismatch or no published digest).</value></data>
+  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Release is missing {0}.</value></data>
+  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} has no published digest to verify against.</value></data>
+  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} exited with code {1}.</value></data>
+  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} was not deployed — the fix didn't complete.</value></data>
+  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} is not the expected version — the update didn't apply.</value></data>
+  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Failed to start the fixer.</value></data>
+  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>Couldn't write cloud_redirect.dll — close Steam and try again.</value></data>
+  <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Token exchange failed ({0}): {1}</value></data>
+  <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Token exchange returned an empty session.</value></data>
+  <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Not signed in.</value></data>
+  <data name="Auth_Err_RefreshFailed" xml:space="preserve"><value>Session refresh failed ({0}).</value></data>
+  <data name="Auth_Err_RefreshEmpty" xml:space="preserve"><value>Session refresh returned an empty session.</value></data>
+  <data name="Auth_Err_SignInDenied" xml:space="preserve"><value>Sign-in was denied.</value></data>
+  <data name="Api_Err_LinkEmpty" xml:space="preserve"><value>The download link was empty — try again.</value></data>
+  <data name="Api_Err_LinkRefused" xml:space="preserve"><value>The server sent a download link this app won't follow. Please report it.</value></data>
+  <data name="Api_Err_DownloadFailed" xml:space="preserve"><value>Download failed ({0}).</value></data>
+  <data name="Api_Err_DownloadStalled" xml:space="preserve"><value>The download stopped sending data for {0} seconds — try again.</value></data>
+  <data name="App_Toast_UpdatingPlugin" xml:space="preserve"><value>Updating plugin — Steam will restart.</value></data>
+  <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools couldn't start.&#10;&#10;{0}&#10;&#10;Details were written to:&#10;{1}</value></data>
+  <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Couldn't write {0} file(s) to the Steam folder — access denied. Steam looks to be installed somewhere that needs administrator rights (e.g. Program Files). Close Steam, then run LuaTools as administrator once to apply this mode.</value></data>
+  <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Couldn't write {0} file(s) — close Steam and try again.</value></data>
 </root>

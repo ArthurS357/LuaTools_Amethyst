@@ -245,7 +245,7 @@ public class LuaToolsApiClient(
             $"/api/denuvo/download?fix={Uri.EscapeDataString(fixId)}&slot={Uri.EscapeDataString(slot)}", ct);
         var signed = await ReadJsonAsync<DenuvoDownloadResponse>(res, ct);
         if (string.IsNullOrWhiteSpace(signed?.Url))
-            throw new ApiException("The download link was empty — try again.");
+            throw new ApiException(Resources.Strings.Api_Err_LinkEmpty);
 
         // 2. Fetch the file from R2 (no auth header — the signed URL carries its own credentials).
         return await DownloadFromUrlAsync(signed.Url, fallbackName, progress, ct);
@@ -329,14 +329,14 @@ public class LuaToolsApiClient(
             // The host is logged (path and query are not: they carry the signature) so a user can report
             // a refusal that turns out to be a legitimate link.
             AppLog.Log($"Signed download refused: {GithubProxy.Redact(url)}");
-            throw new ApiException("The server sent a download link this app won't follow. Please report it.");
+            throw new ApiException(Resources.Strings.Api_Err_LinkRefused);
         }
 
         // New request (not via SendAsync) so no Bearer header and the absolute URL isn't prefixed.
         var req = new HttpRequestMessage(HttpMethod.Get, url);
         var res = await _http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, ct);
         if (!res.IsSuccessStatusCode)
-            throw new ApiException($"Download failed ({(int)res.StatusCode}).", res.StatusCode);
+            throw new ApiException(string.Format(Resources.Strings.Api_Err_DownloadFailed, (int)res.StatusCode), res.StatusCode);
         return await SaveResponseAsync(res, fallbackName, AsFraction(progress), ct);
     }
 
@@ -389,7 +389,7 @@ public class LuaToolsApiClient(
             try { File.Delete(filePath); } catch { /* best effort */ }
 
             if (ex is OperationCanceledException && !ct.IsCancellationRequested)
-                throw new ApiException($"The download stopped sending data for {stall.TotalSeconds:0} seconds — try again.");
+                throw new ApiException(string.Format(Resources.Strings.Api_Err_DownloadStalled, stall.TotalSeconds.ToString("0")));
             throw;
         }
 

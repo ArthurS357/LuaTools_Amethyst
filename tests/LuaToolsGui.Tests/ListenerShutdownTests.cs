@@ -39,7 +39,7 @@ public sealed class ListenerShutdownTests
         await Task.Delay(200);   // the abandoned accept faults on the IO completion
 
         // Shutdown is not a cancelled-accept failure: nothing is logged for it (the raw 995 text would be).
-        File.ReadAllText(AppLog.FilePath).Should().NotContain("HTTP accept faulted after cancel: System.Net.HttpListenerException (995)");
+        TestLogRedirect.ReadLog().Should().NotContain("HTTP accept faulted after cancel: System.Net.HttpListenerException (995)");
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public sealed class ListenerShutdownTests
 
         await HttpServerService.ObserveAbandoned(pending);
 
-        File.ReadAllText(AppLog.FilePath).Should().NotContain(marker);
+        TestLogRedirect.ReadLog().Should().NotContain(marker);
     }
 
     [Fact]
@@ -61,7 +61,7 @@ public sealed class ListenerShutdownTests
 
         await HttpServerService.ObserveAbandoned(pending);
 
-        File.ReadAllText(AppLog.FilePath).Should().Contain(marker);
+        TestLogRedirect.ReadLog().Should().Contain(marker);
     }
 
     [Fact]

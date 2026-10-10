@@ -253,11 +253,11 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
         // definition is still in Modes (see ModeDefinition.Retired) and a caller could still name it —
         // installing a backend that upstream no longer updates is exactly what retiring it prevents.
         if (def.Retired)
-            return ModeInstallResult.Fail($"{def.DisplayName} is no longer available.");
+            return ModeInstallResult.Fail(string.Format(Resources.Strings.Unlocker_Err_NoLongerAvailable, def.DisplayName));
 
         string? root = steam.EffectivePath;
         if (root is null || !steam.IsValid)
-            return ModeInstallResult.Fail("Steam location not found — set it in Settings.");
+            return ModeInstallResult.Fail(Resources.Strings.Err_SteamNotFound);
 
         // SteamTools: each DLL has its own per-timestamp "st-…" release → resolve each from its own
         // latest. Other modes use a single release.
@@ -267,7 +267,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
         {
             var releases = await FetchAllReleasesAsync(def.Owner, def.Repo, null, ct);
             if (releases is null)
-                return ModeInstallResult.Fail("Couldn't reach GitHub — check your connection and try again.");
+                return ModeInstallResult.Fail(Resources.Strings.Err_GitHubUnreachable);
             resolveSteamToolsAsset = file => LatestAssetFor(releases, file);
             steamToolsTag = releases
                 .Where(r => r.TagName.StartsWith("st", StringComparison.OrdinalIgnoreCase))
@@ -281,7 +281,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
             // Use the same (cached) release the card's status was based on, so install matches what was shown.
             release = await FetchReleaseAsync(def, forceRefresh: false, ct);
             if (release is null)
-                return ModeInstallResult.Fail("Couldn't reach GitHub — check your connection and try again.");
+                return ModeInstallResult.Fail(Resources.Strings.Err_GitHubUnreachable);
         }
 
         // CLI modes (CloudRedirect) have a completely different flow: download a tool, run it, verify.
@@ -300,7 +300,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
             if (def.Kind == ModeKind.Zip)
             {
                 var asset = FindZipAsset(def, release!);
-                if (asset is null) return ModeInstallResult.Fail("Release is missing the expected download.");
+                if (asset is null) return ModeInstallResult.Fail(Resources.Strings.Unlocker_Err_ReleaseMissingDownload);
                 zipAssetName = asset.Name;
 
                 string zipPath = Path.Combine(staging, asset.Name);
@@ -308,12 +308,12 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
 
                 zipDigest = AssetIntegrity.Sha256OfFile(zipPath);
                 if (!AssetIntegrity.Matches(zipPath, asset.Digest))
-                    return ModeInstallResult.Fail("Download failed verification (sha256 mismatch or no published digest).");
+                    return ModeInstallResult.Fail(Resources.Strings.Unlocker_Err_DownloadVerification);
 
                 staged = ExtractWanted(zipPath, def.PlaceFiles, staging);
                 var missing = def.PlaceFiles.Where(f => !staged.ContainsKey(f)).ToList();
                 if (missing.Count > 0)
-                    return ModeInstallResult.Fail($"Download is missing: {string.Join(", ", missing)}.");
+                    return ModeInstallResult.Fail(string.Format(Resources.Strings.Unlocker_Err_DownloadMissing, string.Join(", ", missing)));
             }
             else
             {
@@ -324,13 +324,13 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
                     var asset = resolveSteamToolsAsset is not null
                         ? resolveSteamToolsAsset(file)
                         : release!.Assets.FirstOrDefault(a => a.Name.Equals(file, StringComparison.OrdinalIgnoreCase));
-                    if (asset is null) return ModeInstallResult.Fail($"Couldn't find {file} in any release.");
+                    if (asset is null) return ModeInstallResult.Fail(string.Format(Resources.Strings.Unlocker_Err_FileNotInRelease, file));
 
                     string dest = Path.Combine(staging, file);
                     await DownloadToFileAsync(def, asset.DownloadUrl, dest, progress, ct);
 
                     if (!AssetIntegrity.Matches(dest, asset.Digest))
-                        return ModeInstallResult.Fail($"{file} failed verification (sha256 mismatch or no published digest).");
+                        return ModeInstallResult.Fail(string.Format(Resources.Strings.Unlocker_Err_FileVerification, file));
                     staged[file] = dest;
                 }
             }
@@ -395,16 +395,14 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
             // by guessing. The app deliberately does not self-elevate (see app.manifest), so the action is
             // theirs to take.
             string reason = deniedByPermissions
-                ? $"Couldn't write {failed.Count} file(s) to the Steam folder — access denied. Steam looks " +
-                  "to be installed somewhere that needs administrator rights (e.g. Program Files). Close " +
-                  "Steam, then run LuaTools as administrator once to apply this mode."
-                : $"Couldn't write {failed.Count} file(s) — close Steam and try again.";
+                ? string.Format(Resources.Strings.Unlocker_Err_WriteDenied, failed.Count)
+                : string.Format(Resources.Strings.Unlocker_Err_WriteFailed, failed.Count);
 
             return new ModeInstallResult(false, reason, failed);
         }
         catch (OperationCanceledException)
         {
-            return ModeInstallResult.Fail("Cancelled.");
+            return ModeInstallResult.Fail(Resources.Strings.Downloads_Err_Cancelled);
         }
         catch (Exception ex)
         {
@@ -424,13 +422,13 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
         ModeDefinition def, GithubRelease release, string root, IProgress<double?>? progress, CancellationToken ct)
     {
         var cliAsset = release.Assets.FirstOrDefault(a => a.Name.Equals(def.CliAssetName, StringComparison.OrdinalIgnoreCase));
-        if (cliAsset is null) return ModeInstallResult.Fail($"Release is missing {def.CliAssetName}.");
+        if (cliAsset is null) return ModeInstallResult.Fail(string.Format(Resources.Strings.Unlocker_Err_ReleaseMissingAsset, def.CliAssetName));
 
         var verifyAsset = release.Assets.FirstOrDefault(a => a.Name.Equals(def.VerifyFile, StringComparison.OrdinalIgnoreCase));
         // No published digest for the file the tool deploys ⇒ we could not confirm what it wrote. Refuse
         // up front rather than run the tool and then "verify" nothing.
         if (AssetIntegrity.ParseDigest(verifyAsset?.Digest) is null)
-            return ModeInstallResult.Fail($"{def.VerifyFile} has no published digest to verify against.");
+            return ModeInstallResult.Fail(string.Format(Resources.Strings.Unlocker_Err_NoDigest, def.VerifyFile));
 
         string staging = Path.Combine(Path.GetTempPath(), "LuaToolsGui", "mode", Guid.NewGuid().ToString("N"));
         try
@@ -443,7 +441,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
             // This binary is EXECUTED below, and may have come from a third-party mirror — a missing digest
             // must stop the install, not wave it through.
             if (!AssetIntegrity.Matches(cliPath, cliAsset.Digest))
-                return ModeInstallResult.Fail($"{def.CliAssetName} failed verification (sha256 mismatch or no published digest).");
+                return ModeInstallResult.Fail(string.Format(Resources.Strings.Unlocker_Err_FileVerification, def.CliAssetName));
 
             // 1b. This one is EXECUTED, not just placed, so disclose it before it runs.
             if (!await notice.ReviewAsync(new DownloadReview(
@@ -455,20 +453,20 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
             progress?.Report(null); // indeterminate — no progress signal from the external tool
             int exit = await RunProcessAsync(cliPath, def.CliArgs ?? "", ct);
             if (exit != 0)
-                return ModeInstallResult.Fail($"{def.CliAssetName} exited with code {exit}.");
+                return ModeInstallResult.Fail(string.Format(Resources.Strings.Unlocker_Err_CliExit, def.CliAssetName, exit));
 
             // 3. Confirm the deployed file is the expected (latest) version.
             string deployed = Path.Combine(root, def.VerifyFile!);
             if (!File.Exists(deployed))
-                return ModeInstallResult.Fail($"{def.VerifyFile} was not deployed — the fix didn't complete.");
+                return ModeInstallResult.Fail(string.Format(Resources.Strings.Unlocker_Err_NotDeployed, def.VerifyFile));
             if (!AssetIntegrity.Matches(deployed, verifyAsset?.Digest))
-                return ModeInstallResult.Fail($"{def.VerifyFile} is not the expected version — the update didn't apply.");
+                return ModeInstallResult.Fail(string.Format(Resources.Strings.Unlocker_Err_WrongVersion, def.VerifyFile));
 
             settings.SelectedMode = def.Mode.ToString(); // CloudRedirect is now the active mode
             RecordModeInstall(def, root, release.TagName, []);
             return ModeInstallResult.Ok();
         }
-        catch (OperationCanceledException) { return ModeInstallResult.Fail("Cancelled."); }
+        catch (OperationCanceledException) { return ModeInstallResult.Fail(Resources.Strings.Downloads_Err_Cancelled); }
         catch (Exception ex) { return ModeInstallResult.Fail(ex.Message); }
         finally
         {
@@ -484,7 +482,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
             CreateNoWindow = true,
             WorkingDirectory = Path.GetDirectoryName(exePath) ?? Environment.CurrentDirectory,
         };
-        using var proc = Process.Start(psi) ?? throw new InvalidOperationException("Failed to start the fixer.");
+        using var proc = Process.Start(psi) ?? throw new InvalidOperationException(Resources.Strings.Unlocker_Err_FixerStart);
         await proc.WaitForExitAsync(ct);
         return proc.ExitCode;
     }
@@ -904,7 +902,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
     {
         string? root = steam.EffectivePath;
         if (root is null || !steam.IsValid)
-            return ModeInstallResult.Fail("Steam location not found — set it in Settings.");
+            return ModeInstallResult.Fail(Resources.Strings.Err_SteamNotFound);
 
         if (!File.Exists(Path.Combine(root, CloudRedirectDll)))
         {
@@ -921,7 +919,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
     {
         string? root = steam.EffectivePath;
         if (root is null || !steam.IsValid)
-            return ModeInstallResult.Fail("Steam location not found — set it in Settings.");
+            return ModeInstallResult.Fail(Resources.Strings.Err_SteamNotFound);
         try { SetOpenSteamToolCloudEnabled(root, false); return ModeInstallResult.Ok(); }
         catch (Exception ex) { return ModeInstallResult.Fail(ex.Message); }
     }
@@ -932,16 +930,16 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
     {
         string? root = steam.EffectivePath;
         if (root is null || !steam.IsValid)
-            return ModeInstallResult.Fail("Steam location not found — set it in Settings.");
+            return ModeInstallResult.Fail(Resources.Strings.Err_SteamNotFound);
         return await DownloadCloudRedirectDllAsync(root, progress, ct);
     }
 
     private async Task<ModeInstallResult> DownloadCloudRedirectDllAsync(string root, IProgress<double?>? progress, CancellationToken ct)
     {
         var release = await FetchCloudRedirectReleaseAsync(forceRefresh: true, ct);
-        if (release is null) return ModeInstallResult.Fail("Couldn't reach GitHub — check your connection and try again.");
+        if (release is null) return ModeInstallResult.Fail(Resources.Strings.Err_GitHubUnreachable);
         var asset = FindAsset(release, CloudRedirectDll);
-        if (asset is null) return ModeInstallResult.Fail($"Release is missing {CloudRedirectDll}.");
+        if (asset is null) return ModeInstallResult.Fail(string.Format(Resources.Strings.Unlocker_Err_ReleaseMissingAsset, CloudRedirectDll));
 
         string staging = Path.Combine(Path.GetTempPath(), "LuaToolsGui", "cloud", Guid.NewGuid().ToString("N"));
         try
@@ -951,7 +949,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
             await gh.DownloadAssetAsync(asset.DownloadUrl, AppConfig.CloudRedirectOwner,
                 AppConfig.CloudRedirectRepoName, tmp, progress, ct);
             if (!AssetIntegrity.Matches(tmp, asset.Digest))
-                return ModeInstallResult.Fail($"{CloudRedirectDll} failed verification (sha256 mismatch or no published digest).");
+                return ModeInstallResult.Fail(string.Format(Resources.Strings.Unlocker_Err_FileVerification, CloudRedirectDll));
 
             if (!await notice.ReviewAsync(new DownloadReview(
                     AppConfig.CloudRedirectOwner, AppConfig.CloudRedirectRepoName, release.TagName,
@@ -967,11 +965,11 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
             catch
             {
                 // Steam has the loaded dll locked — surface a close-Steam message (same as mode install).
-                return ModeInstallResult.Fail("Couldn't write cloud_redirect.dll — close Steam and try again.");
+                return ModeInstallResult.Fail(Resources.Strings.Unlocker_Err_CloudWrite);
             }
             return ModeInstallResult.Ok();
         }
-        catch (OperationCanceledException) { return ModeInstallResult.Fail("Cancelled."); }
+        catch (OperationCanceledException) { return ModeInstallResult.Fail(Resources.Strings.Downloads_Err_Cancelled); }
         catch (Exception ex) { return ModeInstallResult.Fail(ex.Message); }
         finally { try { Directory.Delete(staging, recursive: true); } catch { /* best effort */ } }
     }

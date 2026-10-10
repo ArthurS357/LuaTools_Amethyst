@@ -744,4 +744,36 @@ public static class Strings
     public static string Downloads_Err_Cancelled => Get(nameof(Downloads_Err_Cancelled));
     public static string Downloads_Err_ClipboardBusy => Get(nameof(Downloads_Err_ClipboardBusy));
     public static string Downloads_Err_PathMissing => Get(nameof(Downloads_Err_PathMissing));
+
+    // ── Service / bootstrap errors (F-10) ──
+    public static string Err_SteamNotFound => Get(nameof(Err_SteamNotFound));
+    public static string Installer_Err_CouldntOpenDownload => Get(nameof(Installer_Err_CouldntOpenDownload));
+    public static string Unlocker_Err_NoLongerAvailable => Get(nameof(Unlocker_Err_NoLongerAvailable));
+    public static string Err_GitHubUnreachable => Get(nameof(Err_GitHubUnreachable));
+    public static string Unlocker_Err_ReleaseMissingDownload => Get(nameof(Unlocker_Err_ReleaseMissingDownload));
+    public static string Unlocker_Err_DownloadVerification => Get(nameof(Unlocker_Err_DownloadVerification));
+    public static string Unlocker_Err_DownloadMissing => Get(nameof(Unlocker_Err_DownloadMissing));
+    public static string Unlocker_Err_FileNotInRelease => Get(nameof(Unlocker_Err_FileNotInRelease));
+    public static string Unlocker_Err_FileVerification => Get(nameof(Unlocker_Err_FileVerification));
+    public static string Unlocker_Err_ReleaseMissingAsset => Get(nameof(Unlocker_Err_ReleaseMissingAsset));
+    public static string Unlocker_Err_NoDigest => Get(nameof(Unlocker_Err_NoDigest));
+    public static string Unlocker_Err_CliExit => Get(nameof(Unlocker_Err_CliExit));
+    public static string Unlocker_Err_NotDeployed => Get(nameof(Unlocker_Err_NotDeployed));
+    public static string Unlocker_Err_WrongVersion => Get(nameof(Unlocker_Err_WrongVersion));
+    public static string Unlocker_Err_FixerStart => Get(nameof(Unlocker_Err_FixerStart));
+    public static string Unlocker_Err_CloudWrite => Get(nameof(Unlocker_Err_CloudWrite));
+    public static string Auth_Err_TokenExchangeFailed => Get(nameof(Auth_Err_TokenExchangeFailed));
+    public static string Auth_Err_TokenExchangeEmpty => Get(nameof(Auth_Err_TokenExchangeEmpty));
+    public static string Auth_Err_NotSignedIn => Get(nameof(Auth_Err_NotSignedIn));
+    public static string Auth_Err_RefreshFailed => Get(nameof(Auth_Err_RefreshFailed));
+    public static string Auth_Err_RefreshEmpty => Get(nameof(Auth_Err_RefreshEmpty));
+    public static string Auth_Err_SignInDenied => Get(nameof(Auth_Err_SignInDenied));
+    public static string Api_Err_LinkEmpty => Get(nameof(Api_Err_LinkEmpty));
+    public static string Api_Err_LinkRefused => Get(nameof(Api_Err_LinkRefused));
+    public static string Api_Err_DownloadFailed => Get(nameof(Api_Err_DownloadFailed));
+    public static string Api_Err_DownloadStalled => Get(nameof(Api_Err_DownloadStalled));
+    public static string App_Toast_UpdatingPlugin => Get(nameof(App_Toast_UpdatingPlugin));
+    public static string App_StartupFailed => Get(nameof(App_StartupFailed));
+    public static string Unlocker_Err_WriteDenied => Get(nameof(Unlocker_Err_WriteDenied));
+    public static string Unlocker_Err_WriteFailed => Get(nameof(Unlocker_Err_WriteFailed));
 }

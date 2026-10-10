@@ -309,7 +309,7 @@ public partial class App : Application
                     {
                         if (st.DllMatches) return;
                         var t = _host.Services.GetRequiredService<ToastService>();
-                        Dispatcher.Invoke(() => t.Show("LuaTools", "Updating plugin — Steam will restart."));
+                        Dispatcher.Invoke(() => t.Show("LuaTools", LuaToolsGui.Resources.Strings.App_Toast_UpdatingPlugin));
                     });
             }
             catch { /* offline / install error — retry next Steam-open */ }
@@ -331,7 +331,7 @@ public partial class App : Application
         {
             LogCrash("OnStartup", ex);
             MessageBox.Show(
-                $"LuaTools couldn't start.\n\n{LogSanitizer.Sanitize(ex.Message)}\n\nDetails were written to:\n{CrashLogPath}",
+                string.Format(LuaToolsGui.Resources.Strings.App_StartupFailed, LogSanitizer.Sanitize(ex.Message), CrashLogPath),
                 "LuaTools", MessageBoxButton.OK, MessageBoxImage.Error);
             Shutdown(1);
         }

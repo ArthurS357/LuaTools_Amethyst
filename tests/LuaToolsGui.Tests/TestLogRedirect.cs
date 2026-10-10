@@ -14,6 +14,18 @@ internal static class TestLogRedirect
     internal static readonly string Dir =
         Path.Combine(Path.GetTempPath(), "luatools-tests-log", Guid.NewGuid().ToString("N"));
 
+    /// <summary>Read the log while other tests may be appending to it (FileShare.ReadWrite, or the read races
+    /// the writer into a sharing violation).</summary>
+    internal static string ReadLog()
+    {
+        using var fs = new FileStream(AppLog.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        using var reader = new StreamReader(fs);
+        return reader.ReadToEnd();
+    }
+
+    internal static string[] ReadLogLines() =>
+        ReadLog().Split("\r\n").SelectMany(s => s.Split('\n')).ToArray();
+
     [ModuleInitializer]
     internal static void Init()
     {

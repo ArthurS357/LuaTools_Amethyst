@@ -24,6 +24,6 @@ public sealed class AppLogIsolationTests
 
         AppLog.Log(marker);
 
-        File.ReadAllText(AppLog.FilePath).Should().Contain(marker);
+        TestLogRedirect.ReadLog().Should().Contain(marker);
     }
 }
