@@ -132,18 +132,17 @@ public class AuthService
 
         Process.Start(new ProcessStartInfo(authorizeUrl) { UseShellExecute = true });
 
-        string code;
+        SupabaseSession session;
         try
         {
-            code = await WaitForCallbackAsync(listener, ct);
+            session = await WaitForCallbackAsync(listener, code => ExchangeCodeAsync(code, verifier, ct), ct);
         }
         finally
         {
             listener.Stop();
         }
 
-        var session = await ExchangeCodeAsync(code, verifier, ct);
-        ApplySession(session);
+        await ApplySessionAsync(session);
         AuthStateChanged?.Invoke();
     }
 
@@ -180,7 +179,7 @@ public class AuthService
 
         // Step 2: verify the magic-link token hash into an access/refresh session.
         var session = await VerifyMagicTokenAsync(redeem.Token, ct);
-        ApplySession(session);
+        await ApplySessionAsync(session);
         AuthStateChanged?.Invoke();
     }
 
@@ -219,8 +218,14 @@ public class AuthService
         $"&redirect_to={Uri.EscapeDataString(AppConfig.OAuthCallbackUrl)}" +
         $"&code_challenge={codeChallenge}&code_challenge_method=s256";
 
-    private static async Task<string> WaitForCallbackAsync(
-        HttpListener listener, CancellationToken ct)
+    private static readonly string CallbackPath = new Uri(AppConfig.OAuthCallbackUrl).AbsolutePath;
+
+    /// <summary>
+    /// Serve the local listener until a callback code exchanges into a session. Internal for tests: the
+    /// exchange is passed in so a forged code can be told apart from ours without a network round-trip.
+    /// </summary>
+    internal static async Task<SupabaseSession> WaitForCallbackAsync(
+        HttpListener listener, Func<string, Task<SupabaseSession>> exchange, CancellationToken ct)
     {
         // 5 minute window for the user to complete the browser flow
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(ct);
@@ -241,33 +246,58 @@ public class AuthService
                 throw new AuthException(Resources.Strings.Auth_Err_SignInTimedOut);
             }
 
-            var query = HttpUtility.ParseQueryString(ctx.Request.Url?.Query ?? "");
+            var req = ctx.Request;
+            var query = HttpUtility.ParseQueryString(req.Url?.Query ?? "");
             string? code = query.Get("code");
             string? error = query.Get("error_description");
 
-            if (code is null && error is null)
+            // Only the redirect itself: a GET to the callback path, from this machine, as a page navigation.
+            // A web page firing <img src="http://localhost:53789/callback?code=x"> arrives tagged
+            // Sec-Fetch-Dest: image (fetch → empty, iframe → iframe); the real redirect is a document.
+            string? dest = req.Headers["Sec-Fetch-Dest"];
+            if (!req.IsLocal || req.HttpMethod != "GET" || req.Url?.AbsolutePath != CallbackPath
+                || (dest is not null && dest != "document") || (code is null && error is null))
             {
-                // Favicon or stray request — ignore and keep waiting
                 ctx.Response.StatusCode = 404;
                 ctx.Response.Close();
                 continue;
             }
 
             // The `state` coming back is Supabase's own and cannot be checked here — we never saw the value
-            // it minted. It is not what secures this: an injected code was issued against another client's
-            // code_challenge, so the exchange in ExchangeCodeAsync fails on the server. See the note on the
-            // authorize URL for why validating a state of our own broke sign-in outright.
+            // it minted. See the note on the authorize URL for why validating a state of our own broke
+            // sign-in outright. PKCE is what tells our code from an injected one: only ours exchanges.
+            if (code is null)
+            {
+                // ponytail: a forged ?error_description= still ends this attempt — without a state of ours
+                // an error cannot be authenticated, and a real denial must not hang the button for 5 min.
+                // Cost is one retry click, no takeover.
+                await WriteResultPageAsync(ctx, false, error, timeout.Token);
+                throw new AuthException(error ?? "Sign-in was denied.");
+            }
 
-            bool ok = code is not null;
-            byte[] page = Encoding.UTF8.GetBytes(ResultPage(ok, error));
-            ctx.Response.ContentType = "text/html; charset=utf-8";
-            ctx.Response.ContentLength64 = page.Length;
-            await ctx.Response.OutputStream.WriteAsync(page, timeout.Token);
-            ctx.Response.Close();
-
-            if (!ok) throw new AuthException(error ?? "Sign-in was denied.");
-            return code!;
+            try
+            {
+                var session = await exchange(code);
+                await WriteResultPageAsync(ctx, true, null, timeout.Token);
+                return session;
+            }
+            catch (AuthException ex)
+            {
+                // Not issued against our code_challenge (injected, or stale). Ending the sign-in here let any
+                // local request kill it; keep listening for the real redirect until the timeout.
+                AppLog.Log($"Auth: callback code rejected, still waiting: {LogSanitizer.Sanitize(ex)}");
+                await WriteResultPageAsync(ctx, false, null, timeout.Token);
+            }
         }
+    }
+
+    private static async Task WriteResultPageAsync(HttpListenerContext ctx, bool ok, string? error, CancellationToken ct)
+    {
+        byte[] page = Encoding.UTF8.GetBytes(ResultPage(ok, error));
+        ctx.Response.ContentType = "text/html; charset=utf-8";
+        ctx.Response.ContentLength64 = page.Length;
+        await ctx.Response.OutputStream.WriteAsync(page, ct);
+        ctx.Response.Close();
     }
 
     private async Task<SupabaseSession> ExchangeCodeAsync(string code, string verifier, CancellationToken ct)
@@ -329,7 +359,7 @@ public class AuthService
 
         var session = JsonSerializer.Deserialize<SupabaseSession>(body)
                       ?? throw new AuthException("Session refresh returned an empty session.");
-        ApplySession(session);
+        await ApplySessionAsync(session);
     }
 
     /// <summary>Sign out of the account and return to guest browsing (app stays usable).</summary>
@@ -341,7 +371,7 @@ public class AuthService
 
     // ── Internals ───────────────────────────────────────────────────
 
-    private void ApplySession(SupabaseSession session)
+    private async Task ApplySessionAsync(SupabaseSession session)
     {
         _accessToken = session.AccessToken;
         _refreshToken = session.RefreshToken;
@@ -355,7 +385,7 @@ public class AuthService
             AvatarUrl = meta?.AvatarUrl;
         }
 
-        SaveStored(new StoredAuth
+        await SaveStoredAsync(new StoredAuth
         {
             RefreshToken = _refreshToken,
             AccessToken = _accessToken,
@@ -389,7 +419,7 @@ public class AuthService
         }
     }
 
-    private static void SaveStored(StoredAuth auth)
+    private async Task SaveStoredAsync(StoredAuth auth)
     {
         Directory.CreateDirectory(Path.GetDirectoryName(AuthFile)!);
         byte[] enc = ProtectedData.Protect(
@@ -407,7 +437,10 @@ public class AuthService
             }
             catch (IOException) when (attempt < 3)
             {
-                Thread.Sleep(150);
+                // Callers resume on the UI thread after sign-in/refresh: a blocking sleep here froze it.
+                // Yielding lets a sign-out (or newer session) land meanwhile; never rewrite over it.
+                await Task.Delay(150);
+                if (_refreshToken != auth.RefreshToken) return;
             }
             catch
             {
