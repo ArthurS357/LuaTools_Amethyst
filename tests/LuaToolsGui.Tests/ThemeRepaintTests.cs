@@ -17,6 +17,10 @@ namespace LuaToolsGui.Tests;
 /// being fixed here. Every test below therefore asserts on instance identity, not on the dictionary value.
 /// </para>
 /// </summary>
+// Joins the live-Application collection: the loose-dictionary test below only holds while NO Application exists
+// (a loose Freezable falls back to Application.Current.Resources for {DynamicResource}), so it must not run
+// in parallel with ThemeHost.
+[Collection(ThemeHostCollection.Name)]
 public class ThemeRepaintTests
 {
     private static readonly Color Violet = Color.FromRgb(0xA7, 0x8B, 0xFA);
@@ -166,8 +170,12 @@ public class ThemeRepaintTests
         var window = (SolidColorBrush)loose["SurfaceBaseBrush"];
 
         window.IsFrozen.Should().BeFalse("loose brushes are always mutable — which is why this proves nothing");
-        window.Color.Should().Be(Colors.Transparent,
-            "the DynamicResource has no lookup chain here, so the brush kept SolidColorBrush's default");
+        // A loose Freezable falls back to Application.Current.Resources for {DynamicResource}. With the ThemeHost
+        // fixture alive (it is, for the whole collection) the brush resolves to the live app colour, so the
+        // "unresolved" half only holds when no Application exists.
+        if (Application.Current is null)
+            window.Color.Should().Be(Colors.Transparent,
+                "the DynamicResource has no lookup chain here, so the brush kept SolidColorBrush's default");
     }
 
     [Theory]
