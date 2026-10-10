@@ -75,7 +75,8 @@ public sealed record DownloadJob(
     /// </remarks>
     Func<DownloadItem, IProgress<DownloadProgress>, CancellationToken, Task<DownloadedFile>> DownloadAsync,
 
-    /// <summary>Consume the staged file (install into Steam). Runs serialized against other installs.</summary>
+    /// <summary>Consume the staged file (install into Steam). Not gated by the queue; the writes are
+    /// serialized inside <see cref="LuaInstaller"/>.</summary>
     Func<DownloadedFile, DownloadItem, CancellationToken, Task<JobResult>> InstallAsync,
 
     /// <summary>

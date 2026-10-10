@@ -177,6 +177,29 @@ public sealed class DropInstallTests : IDisposable
         shown.Should().BeEquivalentTo(LuaFileParser.Parse(Path.Combine(StPlugIn, "730.lua"), 730));
     }
 
+    [Fact]
+    public async Task Parallel_installs_are_serialized_by_the_installer()
+    {
+        // The queue no longer gates installs; LuaInstaller's lock is the only thing keeping two callers
+        // (queue, drop, Fixes, HTTP bridge) off the shared stplug-in at once. Installed fires inside it.
+        int concurrent = 0, peak = 0;
+        _installer.Installed += _ =>
+        {
+            int now = Interlocked.Increment(ref concurrent);
+            int seen;
+            while (now > (seen = Volatile.Read(ref peak)) && Interlocked.CompareExchange(ref peak, now, seen) != seen) { }
+            Thread.Sleep(40);
+            Interlocked.Decrement(ref concurrent);
+        };
+
+        var luas = Enumerable.Range(1, 4).Select(i => Loose($"{i}.lua", $"addappid({i})\n")).ToList();
+        var results = await Task.WhenAll(luas.Select((p, i) => Task.Run(() => _installer.InstallLua(p, i + 1))))
+            .WaitAsync(Timeout);
+
+        results.Should().OnlyContain(r => r.LuaInstalled);
+        peak.Should().Be(1);
+    }
+
     [Theory]
     [InlineData("game.lua")]
     [InlineData("480.lua")]          // canonical, but another game's

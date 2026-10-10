@@ -23,9 +23,9 @@ namespace LuaToolsGui.Services.Downloads;
 /// Enqueue and the pump. The depot downloader has its own app-wide serialization (see
 /// <see cref="DepotDownloaderService"/>), so parallel depot jobs still queue behind each other there.</para>
 ///
-/// <para><b>Installs are always serialized</b> behind <c>_installGate</c>: <see cref="LuaInstaller"/>
-/// writes into Steam's shared <c>depotcache</c> and <c>stplug-in</c>, which two concurrent installs would
-/// race.</para>
+/// <para><b>Installs are serialized by <see cref="LuaInstaller"/> itself</b>, not here: it writes into
+/// Steam's shared <c>depotcache</c> and <c>stplug-in</c>, and every caller (queue, drop, Fixes, HTTP
+/// bridge) goes through its lock.</para>
 ///
 /// <para><b>The queue enforces no policy of its own.</b> Integrity pinning, archive screening, staging and
 /// quarantine all stay inside the services the job delegates call — the queue never fetches a byte or
@@ -39,9 +39,6 @@ public sealed class DownloadQueue : IHostedService
 
     /// <summary>Signals the pump that the schedule may have changed.</summary>
     private readonly SemaphoreSlim _kick = new(0);
-
-    /// <summary>Serializes the install phase. See the remarks above.</summary>
-    private readonly SemaphoreSlim _installGate = new(1, 1);
 
     /// <summary>How long a successful item lingers in the queue before clearing itself.</summary>
     private static readonly TimeSpan AutoDismissDelay = TimeSpan.FromSeconds(3);
@@ -375,16 +372,10 @@ public sealed class DownloadQueue : IHostedService
                 }
             }
 
-            // ── 3. Install (always serialized) ───────────────────────
+            // ── 3. Install (serialized inside LuaInstaller) ──────────
             await _dispatcher.InvokeAsync(() => item.Status = DownloadStatus.Installing);
 
-            await _installGate.WaitAsync(CancellationToken.None);
-            JobResult result;
-            try
-            {
-                result = await Task.Run(() => item.Job.InstallAsync(file, item, ct), CancellationToken.None);
-            }
-            finally { _installGate.Release(); }
+            JobResult result = await Task.Run(() => item.Job.InstallAsync(file, item, ct), CancellationToken.None);
 
             await _dispatcher.InvokeAsync(() => Finish(
                 item,

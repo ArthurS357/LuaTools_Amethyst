@@ -232,42 +232,6 @@ public sealed class DownloadQueueTests : IDisposable
         item.Message.Should().Be("Steam is running");
     }
 
-    [Fact]
-    public async Task Installs_are_serialized_even_though_downloads_are_not()
-    {
-        var queue = await StartedAsync();
-        int concurrent = 0, peak = 0;
-
-        Func<DownloadedFile, DownloadItem, CancellationToken, Task<JobResult>> install = async (_, _, _) =>
-        {
-            int now = Interlocked.Increment(ref concurrent);
-            InterlockedMax(ref peak, now);
-            await Task.Delay(40);
-            Interlocked.Decrement(ref concurrent);
-            return new JobResult(true, "installed");
-        };
-
-        var items = Enumerable.Range(1, 4)
-            .Select(i => queue.Enqueue(Job($"manifest:{i}", install: install, appId: i)))
-            .ToList();
-
-        await Task.WhenAll(items.Select(i => i.Completion)).WaitAsync(Timeout);
-
-        // LuaInstaller writes into Steam's shared stplug-in/depotcache, which two concurrent installs race.
-        peak.Should().Be(1);
-    }
-
-    private static void InterlockedMax(ref int target, int value)
-    {
-        int seen = Volatile.Read(ref target);
-        while (value > seen)
-        {
-            int prior = Interlocked.CompareExchange(ref target, value, seen);
-            if (prior == seen) return;
-            seen = prior;
-        }
-    }
-
     // ── Confirmation gate ────────────────────────────────────────────
 
     [Fact]
