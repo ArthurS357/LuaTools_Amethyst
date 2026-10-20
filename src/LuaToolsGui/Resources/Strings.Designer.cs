@@ -599,6 +599,12 @@ public static class Strings
     public static string Auth_Err_SignInTimedOut => Get(nameof(Auth_Err_SignInTimedOut));
     public static string Auth_Err_CallbackPortBusy => Get(nameof(Auth_Err_CallbackPortBusy));
 
+    // ── Sign-in provider health check (1.7.9) ──
+    public static string Auth_ProviderUnavailable => Get(nameof(Auth_ProviderUnavailable));
+    public static string Auth_TryAnyway => Get(nameof(Auth_TryAnyway));
+    public static string Auth_UseManualCode => Get(nameof(Auth_UseManualCode));
+    public static string Auth_Cancel => Get(nameof(Auth_Cancel));
+
     // ── Protocol handler consent ──
     public static string Protocol_SilentInstall_Title => Get(nameof(Protocol_SilentInstall_Title));
     public static string Protocol_SilentInstall_Body => Get(nameof(Protocol_SilentInstall_Body));

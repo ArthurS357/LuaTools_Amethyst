@@ -164,6 +164,15 @@
                             Text="{Binding SignInError}"
                             TextWrapping="Wrap"
                             Visibility="{Binding SignInError, Converter={StaticResource NullToCollapsed}}" />
+                        <!-- Any failed browser sign-in (mostly the 5 min timeout): one click to the /login code box. -->
+                        <ui:Button
+                            Margin="0,6,0,0"
+                            HorizontalAlignment="Stretch"
+                            Appearance="Secondary"
+                            Command="{Binding UseManualCodeCommand}"
+                            Content="{x:Static res:Strings.Auth_UseManualCode}"
+                            Icon="{ui:SymbolIcon Key24}"
+                            Visibility="{Binding SignInError, Converter={StaticResource NullToCollapsed}}" />
                     </StackPanel>
 
                     <!-- Bottom line: "Signed in as …" when logged in, else the version tag. -->

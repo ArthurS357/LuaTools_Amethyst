@@ -11,6 +11,11 @@ public static class AppConfig
     public const string SupabaseAnonKey =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NzYwMzkzNzYsImV4cCI6MTg5MzQ1NjAwMCwicm9sZSI6ImFub24iLCJpc3MiOiJzdXBhYmFzZSJ9.f_-K38u3odjltP-g_67FVmG32Vg-_-k-lNBvIaVUVBM";
 
+    // GoTrue's liveness probe, checked before the browser sign-in opens. GET + apikey: HEAD is 405, and
+    // without the key Kong answers 401 itself. Short timeout — it gates a click, not a background task.
+    public const string SupabaseHealthUrl = SupabaseUrl + "/auth/v1/health";
+    public static readonly TimeSpan ProviderHealthTimeout = TimeSpan.FromSeconds(3);
+
     public const string ApiBaseUrl = "https://lua.tools";
 
     // Bot-provisioned (Discord /login placeholder) accounts use this email domain. Detecting it on

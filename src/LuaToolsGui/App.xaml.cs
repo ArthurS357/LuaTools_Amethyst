@@ -932,6 +932,28 @@ public partial class App : Application
         // Settings' own "Sign in with Discord" button → browser OAuth (unchanged).
         settingsVm.RequestSignIn = () => main.SignInCommand.ExecuteAsync(null);
 
+        // Provider down before the browser opens: offer the way around the five-minute timeout. Every sign-in
+        // entry point (nav pane, Settings, onboarding) goes through AuthService.SignInAsync, so this covers all.
+        var auth = _host.Services.GetRequiredService<AuthService>();
+        auth.OpenManualCode = () => Dispatcher.Invoke(window.NavigateToSettings);
+        auth.AskWhenProviderDown = async () =>
+        {
+            var box = new Wpf.Ui.Controls.MessageBox
+            {
+                Title = LuaToolsGui.Resources.Strings.App_DisplayName,
+                Content = LuaToolsGui.Resources.Strings.Auth_ProviderUnavailable,
+                PrimaryButtonText = LuaToolsGui.Resources.Strings.Auth_TryAnyway,
+                SecondaryButtonText = LuaToolsGui.Resources.Strings.Auth_UseManualCode,
+                CloseButtonText = LuaToolsGui.Resources.Strings.Auth_Cancel,
+            };
+            return await box.ShowDialogAsync() switch
+            {
+                Wpf.Ui.Controls.MessageBoxResult.Primary => ProviderDownChoice.TryAnyway,
+                Wpf.Ui.Controls.MessageBoxResult.Secondary => ProviderDownChoice.UseManualCode,
+                _ => ProviderDownChoice.Cancel,
+            };
+        };
+
         // Guests hitting a protected action on other pages → navigate to Settings with context banner.
         Func<Task> navigateToSignIn = () =>
         {

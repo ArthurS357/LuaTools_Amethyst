@@ -70,6 +70,11 @@ PENDING_TRANSLATION: frozenset[str] = frozenset({
     # 1.7.9: Mode page badge for BetterSteamTools (the project AmethystTool forks). A technical term,
     # kept as "UPSTREAM" in pt-BR too.
     "Mode_Badge_Upstream",
+    # 1.7.9: sign-in provider health-check dialog and the manual-code fallback (pt-BR only).
+    "Auth_ProviderUnavailable",
+    "Auth_TryAnyway",
+    "Auth_UseManualCode",
+    "Auth_Cancel",
     "Auth_Err_TokenExchangeFailed",
     "Auth_Err_TokenExchangeEmpty",
     "Auth_Err_NotSignedIn",

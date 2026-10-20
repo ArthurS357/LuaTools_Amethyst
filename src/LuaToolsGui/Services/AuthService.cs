@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.ExceptionServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -10,17 +11,63 @@ using LuaToolsGui.Models;
 
 namespace LuaToolsGui.Services;
 
+/// <summary>What the user picked when the sign-in provider did not answer its health check.</summary>
+public enum ProviderDownChoice { TryAnyway, UseManualCode, Cancel }
+
 public class AuthService
 {
-    private static readonly string AuthFile = Path.Combine(
+    private static readonly string DefaultAuthFile = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LuaToolsGui", "auth.dat");
 
-    private readonly HttpClient _http = new() { Timeout = TimeSpan.FromSeconds(30) };
+    /// <summary>
+    /// GoTrue <c>error_code</c>s that prove the refresh token itself is dead (revoked, rotated away, session
+    /// gone). GoTrue answers these as 400 — not 401, which only ever comes from the Kong gateway (missing
+    /// apikey) and says nothing about the token. Only these end the session; anything else keeps it.
+    /// </summary>
+    private static readonly HashSet<string> TokenInvalidCodes = new(StringComparer.Ordinal)
+    {
+        "refresh_token_not_found",
+        "refresh_token_already_used",
+        "session_not_found",
+        "session_expired",
+        "validation_failed",
+    };
+
+    /// <summary>After a transient refresh failure, callers inside this window get the same error without
+    /// another request — during an outage every API call would otherwise queue a 30 s refresh on the lock.</summary>
+    private static readonly TimeSpan RefreshBackoff = TimeSpan.FromSeconds(30);
+
+    private readonly string _authFile;
+    private readonly HttpClient _http;
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
 
     private string? _accessToken;
     private string? _refreshToken;
     private DateTimeOffset _expiresAt;
+    private Exception? _transientRefreshError;
+    private DateTimeOffset _refreshBackoffUntil;
+
+    public AuthService() : this(new HttpClientHandler(), DefaultAuthFile) { }
+
+    /// <summary>Test seam: a fake handler and a throwaway token file instead of the real ones.</summary>
+    internal AuthService(HttpMessageHandler handler, string authFile)
+    {
+        _http = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(30) };
+        _authFile = authFile;
+    }
+
+    /// <summary>
+    /// Set by the app: asked before the browser opens when the provider fails its health check. Null (no UI
+    /// attached) skips the check entirely and signs in as before.
+    /// </summary>
+    public Func<Task<ProviderDownChoice>>? AskWhenProviderDown { get; set; }
+
+    /// <summary>Set by the app: takes the user to the Discord <c>/login</c> code box.</summary>
+    public Action? OpenManualCode { get; set; }
+
+    /// <summary>Test seam for the browser launch.</summary>
+    internal Action<string> OpenBrowser { get; set; } =
+        url => Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
 
     public string? DisplayName { get; private set; }
     public string? Email { get; private set; }
@@ -79,11 +126,20 @@ public class AuthService
             AuthStateChanged?.Invoke();
             return true;
         }
-        catch
+        catch (SessionRevokedException)
         {
-            ClearSession(); // revoked/expired — fall back to guest
+            ClearSession(); // the server proved the refresh token dead — fall back to guest
             AuthStateChanged?.Invoke();
             return false;
+        }
+        catch (Exception ex)
+        {
+            // Not proven dead: 5xx, timeout, offline, gateway 401, an unknown 400. Deleting auth.dat here
+            // signed every user out for good during a provider outage (the access token lives ~1 h, so most
+            // launches refresh). Keep the session; the next API call retries the refresh.
+            AppLog.Log($"Auth: session kept after transient refresh failure: {ex.GetType().Name}: {ex.Message}");
+            AuthStateChanged?.Invoke();
+            throw;
         }
     }
 
@@ -95,6 +151,17 @@ public class AuthService
     /// </summary>
     public async Task SignInAsync(CancellationToken ct = default)
     {
+        // Provider down = the browser flow can only end as a five-minute timeout. Ask first; the user may
+        // still go ahead (a false negative must never lock them out) or take the /login code path.
+        if (AskWhenProviderDown is not null && !await IsProviderAvailableAsync(ct))
+        {
+            switch (await AskWhenProviderDown())
+            {
+                case ProviderDownChoice.UseManualCode: OpenManualCode?.Invoke(); return;
+                case ProviderDownChoice.Cancel: return;
+            }
+        }
+
         string verifier = CreateCodeVerifier();
         string challenge = Base64Url(SHA256.HashData(Encoding.ASCII.GetBytes(verifier)));
 
@@ -130,7 +197,7 @@ public class AuthService
             throw new AuthException(Resources.Strings.Auth_Err_CallbackPortBusy);
         }
 
-        Process.Start(new ProcessStartInfo(authorizeUrl) { UseShellExecute = true });
+        OpenBrowser(authorizeUrl);
 
         SupabaseSession session;
         try
@@ -217,6 +284,30 @@ public class AuthService
         $"{AppConfig.SupabaseUrl}/auth/v1/authorize?provider=discord" +
         $"&redirect_to={Uri.EscapeDataString(AppConfig.OAuthCallbackUrl)}" +
         $"&code_challenge={codeChallenge}&code_challenge_method=s256";
+
+    /// <summary>
+    /// True when GoTrue answers its health probe with 2xx within <see cref="AppConfig.ProviderHealthTimeout"/>.
+    /// Never throws: any failure is "unavailable". GET with the apikey — HEAD is 405 there, and without the
+    /// key Kong answers 401 itself, which proves only that the gateway is up.
+    /// </summary>
+    public async Task<bool> IsProviderAvailableAsync(CancellationToken ct = default)
+    {
+        try
+        {
+            using var timeout = CancellationTokenSource.CreateLinkedTokenSource(ct);
+            timeout.CancelAfter(AppConfig.ProviderHealthTimeout);
+            using var req = new HttpRequestMessage(HttpMethod.Get, AppConfig.SupabaseHealthUrl);
+            req.Headers.Add("apikey", AppConfig.SupabaseAnonKey);
+            using var res = await _http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, timeout.Token);
+            if (!res.IsSuccessStatusCode) AppLog.Log($"Auth: provider health check answered {(int)res.StatusCode}");
+            return res.IsSuccessStatusCode;
+        }
+        catch (Exception ex)
+        {
+            AppLog.Log($"Auth: provider health check failed: {ex.GetType().Name}");
+            return false;
+        }
+    }
 
     /// <summary>Window after the listener opens in which an <c>error_description</c> callback is ignored.</summary>
     private static readonly TimeSpan ErrorGrace = TimeSpan.FromSeconds(30);
@@ -359,22 +450,62 @@ public class AuthService
 
     private async Task RefreshAsync()
     {
-        var req = new HttpRequestMessage(HttpMethod.Post, $"{AppConfig.SupabaseUrl}/auth/v1/token?grant_type=refresh_token")
+        if (_transientRefreshError is { } prior && DateTimeOffset.UtcNow < _refreshBackoffUntil)
+            ExceptionDispatchInfo.Throw(prior);
+
+        try
         {
-            Content = new StringContent(
-                JsonSerializer.Serialize(new { refresh_token = _refreshToken }),
-                Encoding.UTF8, "application/json"),
-        };
-        req.Headers.Add("apikey", AppConfig.SupabaseAnonKey);
+            var req = new HttpRequestMessage(HttpMethod.Post, $"{AppConfig.SupabaseUrl}/auth/v1/token?grant_type=refresh_token")
+            {
+                Content = new StringContent(
+                    JsonSerializer.Serialize(new { refresh_token = _refreshToken }),
+                    Encoding.UTF8, "application/json"),
+            };
+            req.Headers.Add("apikey", AppConfig.SupabaseAnonKey);
 
-        var res = await _http.SendAsync(req);
-        string body = await res.Content.ReadAsStringAsync();
-        if (!res.IsSuccessStatusCode)
-            throw new AuthException(string.Format(Resources.Strings.Auth_Err_RefreshFailed, (int)res.StatusCode));
+            var res = await _http.SendAsync(req);
+            string body = await res.Content.ReadAsStringAsync();
+            if (!res.IsSuccessStatusCode)
+            {
+                string? code = ReadErrorCode(body);
+                AppLog.Log($"Auth: refresh failed: {(int)res.StatusCode} {code ?? "<no code>"}");
+                string message = string.Format(Resources.Strings.Auth_Err_RefreshFailed, (int)res.StatusCode);
+                if (res.StatusCode == HttpStatusCode.BadRequest && code is not null && TokenInvalidCodes.Contains(code))
+                    throw new SessionRevokedException(message);
+                throw new AuthException(message);
+            }
 
-        var session = JsonSerializer.Deserialize<SupabaseSession>(body)
-                      ?? throw new AuthException(Resources.Strings.Auth_Err_RefreshEmpty);
-        await ApplySessionAsync(session);
+            var session = JsonSerializer.Deserialize<SupabaseSession>(body)
+                          ?? throw new AuthException(Resources.Strings.Auth_Err_RefreshEmpty);
+            await ApplySessionAsync(session);
+            _transientRefreshError = null;
+        }
+        catch (Exception ex) when (ex is not SessionRevokedException)
+        {
+            _transientRefreshError = ex;
+            _refreshBackoffUntil = DateTimeOffset.UtcNow + RefreshBackoff;
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// The GoTrue <c>error_code</c> of a failed response, or null when the body is not JSON, has no code, or
+    /// the code is not the plain <c>snake_case</c> GoTrue uses. Null always means "not proven", never "revoked".
+    /// </summary>
+    internal static string? ReadErrorCode(string body)
+    {
+        try
+        {
+            using var doc = JsonDocument.Parse(body);
+            return doc.RootElement.ValueKind == JsonValueKind.Object
+                   && doc.RootElement.TryGetProperty("error_code", out var v) && v.ValueKind == JsonValueKind.String
+                   && v.GetString() is { Length: > 0 and <= 64 } s && s.All(c => c is (>= 'a' and <= 'z') or '_')
+                ? s : null;
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
     }
 
     /// <summary>Sign out of the account and return to guest browsing (app stays usable).</summary>
@@ -417,15 +548,15 @@ public class AuthService
         _refreshToken = null;
         _expiresAt = default;
         DisplayName = Email = AvatarUrl = null;
-        try { File.Delete(AuthFile); } catch { /* best effort */ }
+        try { File.Delete(_authFile); } catch { /* best effort */ }
     }
 
-    private static StoredAuth? LoadStored()
+    private StoredAuth? LoadStored()
     {
         try
         {
-            if (!File.Exists(AuthFile)) return null;
-            byte[] plain = ProtectedData.Unprotect(File.ReadAllBytes(AuthFile), null, DataProtectionScope.CurrentUser);
+            if (!File.Exists(_authFile)) return null;
+            byte[] plain = ProtectedData.Unprotect(File.ReadAllBytes(_authFile), null, DataProtectionScope.CurrentUser);
             return JsonSerializer.Deserialize<StoredAuth>(plain);
         }
         catch
@@ -436,7 +567,7 @@ public class AuthService
 
     private async Task SaveStoredAsync(StoredAuth auth)
     {
-        Directory.CreateDirectory(Path.GetDirectoryName(AuthFile)!);
+        Directory.CreateDirectory(Path.GetDirectoryName(_authFile)!);
         byte[] enc = ProtectedData.Protect(
             JsonSerializer.SerializeToUtf8Bytes(auth), null, DataProtectionScope.CurrentUser);
 
@@ -447,7 +578,7 @@ public class AuthService
         {
             try
             {
-                AtomicFile.WriteAllBytes(AuthFile, enc);
+                AtomicFile.WriteAllBytes(_authFile, enc);
                 return;
             }
             catch (IOException) when (attempt < 3)
@@ -496,3 +627,7 @@ public class AuthService
 }
 
 public class AuthException(string message) : Exception(message);
+
+/// <summary>The server proved the refresh token dead (400 with a known GoTrue code): the only refresh
+/// failure that ends a session.</summary>
+public sealed class SessionRevokedException(string message) : AuthException(message);

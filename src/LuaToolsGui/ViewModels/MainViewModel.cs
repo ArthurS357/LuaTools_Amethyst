@@ -71,6 +71,10 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
+    /// <summary>Shown under a failed sign-in (timeout, provider down): the Discord /login code path.</summary>
+    [RelayCommand]
+    private void UseManualCode() => _auth.OpenManualCode?.Invoke();
+
     /// <summary>Confirm, then kill + relaunch Steam so newly added/removed luas take effect.</summary>
     [RelayCommand]
     private void RestartSteam()

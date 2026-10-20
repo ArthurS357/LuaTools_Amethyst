@@ -594,6 +594,10 @@ Isso exclui os arquivos .lua de Steam\config\stplug-in. Reinicie o Steam depois 
   <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>Não foi possível gravar cloud_redirect.dll — feche a Steam e tente novamente.</value></data>
   <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>Recusado '{0}': o manifest deve se chamar &lt;depot&gt;_&lt;manifest&gt;.manifest (somente dígitos).</value></data>
   <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>O repositório de origem do CloudRedirect está indisponível. O recurso está temporariamente desativado.</value></data>
+  <data name="Auth_ProviderUnavailable" xml:space="preserve"><value>O servidor de login não está respondendo agora, então o login pelo navegador com o Discord provavelmente vai expirar. Você pode entrar com um código: rode /login no servidor do Discord e digite o código em Configurações.</value></data>
+  <data name="Auth_TryAnyway" xml:space="preserve"><value>Tentar mesmo assim</value></data>
+  <data name="Auth_UseManualCode" xml:space="preserve"><value>Usar código manual</value></data>
+  <data name="Auth_Cancel" xml:space="preserve"><value>Cancelar</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Falha na troca do token ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>A troca do token retornou uma sessão vazia.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Você não está conectado.</value></data>
