@@ -149,6 +149,15 @@ public class HttpServerService : IHostedService
             _log.LogWarning("HttpListener could not start on 127.0.0.1:6767 — attempting netsh reservation");
             try
             {
+                // REGISTERED EXCEPTION to the fork's "no UAC" rule (1.7.9, option A). This is the only
+                // elevation in the app: Start() above failed, so no URL ACL covers the prefix, and adding one
+                // needs admin rights. It runs once, only after that failure, only for netsh, and only for the
+                // current user; with no reservation the store-page plugin has no backend at all. Whether it
+                // ever fires on a clean machine is unconfirmed (Pendencias_e_Decisoes, "Decisões abertas"):
+                // if it does, option B moves the reservation into the installer and this block goes away.
+                // ElevationGuardTests fails on a `Verb = "runas"` anywhere else; luatools-fork-policy §4
+                // lists this line as the known exception. Do not copy it.
+                //
                 // Reserve for THIS user only. `user=Everyone` handed the reservation to every account on
                 // the machine, including other (possibly less trusted) logins — the app only ever needs to
                 // listen as the user running it.
