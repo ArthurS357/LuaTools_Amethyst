@@ -180,12 +180,17 @@ public class CefInjectorService : IHostedService
         }
     }
 
-    private async Task ProcessSingleTab(string tabId, string wsUrl, CancellationToken ct)
+    private Task ProcessSingleTab(string tabId, string wsUrl, CancellationToken ct) =>
+        DrainPendingAsync(e => EvaluateReturnAsync(tabId, wsUrl, e, ct), CallBackendMethod);
+
+    /// <summary>One drain pass over a tab's <c>_pending</c>. Static, with the page and the backend passed in,
+    /// so the suite can run it against the real polyfill without a CDP socket.</summary>
+    internal static async Task DrainPendingAsync(Func<string, Task<string>> evaluate, Func<string, string, Task<string>> callBackend)
     {
         try
         {
-            var pendingJson = await EvaluateReturnAsync(tabId, wsUrl,
-                "JSON.stringify(Object.values(window.Millennium._pending||{}).map(function(r){return{m:r.method,a:JSON.stringify(r.args)}}))", ct);
+            var pendingJson = await evaluate(
+                "JSON.stringify(Object.keys(window.Millennium._pending||{}).map(function(k){var r=window.Millennium._pending[k];return{id:k,m:r.method,a:JSON.stringify(r.args)}}))");
 
             if (string.IsNullOrWhiteSpace(pendingJson) || pendingJson == "[]" || pendingJson == "null")
                 return;
@@ -198,23 +203,30 @@ public class CefInjectorService : IHostedService
             {
                 try
                 {
-                    var result = await CallBackendMethod(req.m ?? "", req.a ?? "{}");
-                    responses.Add(new { v = JsonSerializer.Deserialize<object>(result) ?? result });
+                    var result = await callBackend(req.m ?? "", req.a ?? "{}");
+                    responses.Add(new { id = req.id, v = JsonSerializer.Deserialize<object>(result) ?? result });
                 }
                 catch (Exception ex)
                 {
-                    responses.Add(new { e = ex.Message });
+                    responses.Add(new { id = req.id, e = ex.Message });
                 }
             }
 
+            // Paired by id, not by position: a request the polyfill timed out while this batch was being
+            // served is gone from _pending, and positional pairing shifted every later answer onto the wrong
+            // id. An id no longer pending is dropped. Returns (and clears) the polyfill's timeout record.
             var respArray = JsonSerializer.Serialize(responses);
-            await EvaluateReturnAsync(tabId, wsUrl,
-                "(function(r){var ks=Object.keys(window.Millennium._pending);for(var i=0;i<ks.length&&i<r.length;i++){var id=ks[i];window.Millennium._readyResponses[id]=r[i];delete window.Millennium._pending[id];}})(" + respArray + ");", ct);
+            var timedOut = await evaluate(
+                "(function(r){var M=window.Millennium;for(var i=0;i<r.length;i++){var id=r[i].id;if(id in M._pending){M._readyResponses[id]=r[i];delete M._pending[id];}}return JSON.stringify((M._timedOut||[]).splice(0));})(" + respArray + ");");
+
+            // The page was told {success:true} for these; whatever the backend did never reached luatools.js.
+            foreach (var t in JsonSerializer.Deserialize<List<PendingRequest>>(timedOut, JsonOpts) ?? [])
+                AppLog.Log($"CEF bridge timeout: {Esc(t.id)} ({Esc(t.m)}) resolved as success by the page polyfill after ~5 s");
         }
         catch { }
     }
 
-    private async Task<string> CallBackendMethod(string method, string argsRaw)
+    internal async Task<string> CallBackendMethod(string method, string argsRaw)
     {
         var methodMap = new Dictionary<string, (string HttpMethod, string Path)>
         {
@@ -251,7 +263,10 @@ public class CefInjectorService : IHostedService
         };
 
         if (!methodMap.TryGetValue(method, out var mapping))
+        {
+            AppLog.Log($"unmapped plugin method: {Esc(method)}");
             return """{"success":true}""";
+        }
 
         var path = mapping.Path;
         if (argsRaw is not null)
@@ -283,6 +298,9 @@ public class CefInjectorService : IHostedService
         using var resp = await _http.SendAsync(request);
         return await resp.Content.ReadAsStringAsync();
     }
+
+    /// <summary>Names and ids come from the page: one log line each, like HttpServerService.HandleLog.</summary>
+    private static string Esc(string? s) => (s ?? "").Replace("\r", "\\r").Replace("\n", "\\n");
 
     /// <summary>Return the reused (or freshly opened) CDP socket for a tab. Throws if the connect fails —
     /// the caller evicts on any exception.</summary>
@@ -412,12 +430,12 @@ public class CefInjectorService : IHostedService
     /// _pending/_readyResponses are attached directly onto whichever object ends up as window.Millennium
     /// (fake or real) under their original names — ProcessSingleTab's polling reads/writes those regardless
     /// of which case this is.</summary>
-    private string BuildInlinePolyfill()
+    internal static string BuildInlinePolyfill()
     {
         return @"
 (function(){
 var real=window.Millennium;
-var pending={},ready={},reqId=0;
+var pending={},ready={},timedOut=[],reqId=0;
 function ltCall(p,m,a){
   var i='_ltr_'+(++reqId);
   pending[i]={method:m,args:a,ts:Date.now()};
@@ -426,7 +444,7 @@ function ltCall(p,m,a){
     function ck(){
       var r=ready[i];
       if(r!==undefined){delete ready[i];if(r.e){rj(new Error(r.e))}else{rv(r.v)}return}
-      if(--mx>0){setTimeout(ck,50)}else{delete pending[i];rv({success:true})}
+      if(--mx>0){setTimeout(ck,50)}else{delete pending[i];timedOut.push({id:i,m:m});rv({success:true})}
     }
     ck();
   });
@@ -436,9 +454,10 @@ if(real&&typeof real.callServerMethod==='function'){
   real.callServerMethod=function(p,m,a){return p==='luatools'?ltCall(p,m,a):realCall(p,m,a)};
   real._pending=pending;
   real._readyResponses=ready;
+  real._timedOut=timedOut;
   window.Millennium=real;
 }else{
-  window.Millennium={_pending:pending,_readyResponses:ready,callServerMethod:function(p,m,a){return ltCall(p,m,a)}};
+  window.Millennium={_pending:pending,_readyResponses:ready,_timedOut:timedOut,callServerMethod:function(p,m,a){return ltCall(p,m,a)}};
 }
 })();
 ";
@@ -459,6 +478,7 @@ internal class CefTabInfo
 
 internal class PendingRequest
 {
+    public string? id { get; set; }
     public string? m { get; set; }
     public string? a { get; set; }
 }
