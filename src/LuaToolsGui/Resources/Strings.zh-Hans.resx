@@ -575,4 +575,5 @@
   <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>自应用此修复以来，{0} 已被更改，还原会覆盖这些更改。如果你在其上应用了另一个修复，请先还原那一个。共影响 {1} 个文件。</value></data>
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>修复部分还原</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>有 {0} 个文件无法恢复。请关闭游戏后重试。</value></data>
+  <data name="Mode_Badge_Upstream" xml:space="preserve"><value>上游</value></data>
 </root>

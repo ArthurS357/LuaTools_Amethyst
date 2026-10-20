@@ -555,4 +555,5 @@ Aceasta șterge fișierele .lua din Steam\config\stplug-in. Repornește Steam du
   <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>{0} s-a modificat de la aplicarea acestui fix, așa că restaurarea ar suprascrie acele modificări. Dacă ai aplicat alt fix peste, anulează-l mai întâi pe acela. {1} fișier(e) afectate.</value></data>
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Reparație anulată parțial</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} fișier(e) nu au putut fi restaurate. Închide jocul și încearcă din nou.</value></data>
+  <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
 </root>

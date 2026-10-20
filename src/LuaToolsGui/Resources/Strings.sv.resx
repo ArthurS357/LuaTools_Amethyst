@@ -555,4 +555,5 @@ Detta tar bort .lua-filerna från Steam\config\stplug-in. Starta om Steam efter�
   <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>{0} har ändrats sedan den här fixen tillämpades, så en återställning skulle skriva över de ändringarna. Om du tillämpat en annan fix ovanpå, återställ den först. {1} fil(er) påverkas.</value></data>
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Korrigering delvis ångrad</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} fil(er) kunde inte återställas. Stäng spelet och försök igen.</value></data>
+  <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
 </root>

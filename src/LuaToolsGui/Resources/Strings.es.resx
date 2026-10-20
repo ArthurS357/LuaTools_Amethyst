@@ -555,4 +555,5 @@ Esto borra los archivos .lua de Steam\config\stplug-in. Reinicia Steam después 
   <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>{0} ha cambiado desde que se aplicó este fix, así que restaurarlo sobrescribiría esos cambios. Si aplicaste otro fix encima, revierte ese primero. {1} archivo(s) afectado(s).</value></data>
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Parche revertido parcialmente</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>No se pudieron restaurar {0} archivo(s). Cierra el juego e inténtalo de nuevo.</value></data>
+  <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
 </root>

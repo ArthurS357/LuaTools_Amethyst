@@ -555,4 +555,5 @@
   <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>Файл {0} змінився після застосування цього фікса, тож відновлення перезапише ці зміни. Якщо згори застосовано інший фікс, спершу скасуйте його. Порушено файлів: {1}.</value></data>
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Виправлення відкочено частково</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>Не вдалося відновити файлів: {0}. Закрийте гру та спробуйте ще раз.</value></data>
+  <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
 </root>

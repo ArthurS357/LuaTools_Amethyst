@@ -581,4 +581,5 @@
   <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>تغيّر {0} منذ تطبيق هذا الإصلاح، لذا فإن استعادته ستستبدل تلك التغييرات. إذا طبّقت إصلاحًا آخر فوقه، فتراجع عنه أولاً. الملفات المتأثرة: {1}.</value></data>
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>تم التراجع عن الإصلاح جزئيًا</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>تعذّرت استعادة {0} من الملفات. أغلق اللعبة وحاول مرة أخرى.</value></data>
+  <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
 </root>

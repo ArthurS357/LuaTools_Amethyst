@@ -555,4 +555,5 @@ Ez törli a .lua fájlokat a Steam\config\stplug-in mappából. Ezután indítsd
   <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>A(z) {0} megváltozott a javítás alkalmazása óta, ezért a visszaállítás felülírná ezeket a módosításokat. Ha másik javítást is alkalmaztál rá, előbb azt vond vissza. {1} fájl érintett.</value></data>
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>A javítás részben lett visszavonva</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} fájlt nem sikerült visszaállítani. Zárd be a játékot, és próbáld újra.</value></data>
+  <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
 </root>

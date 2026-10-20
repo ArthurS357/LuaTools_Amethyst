@@ -555,4 +555,5 @@ Tím se smažou soubory .lua ze Steam\config\stplug-in. Poté restartujte Steam,
   <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>Soubor {0} se od použití této opravy změnil, takže obnovení by tyto změny přepsalo. Pokud jste navrch použili jinou opravu, vraťte nejprve ji. Dotčeno {1} souborů.</value></data>
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Oprava vrácena zpět částečně</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} soubor(ů) se nepodařilo obnovit. Zavřete hru a zkuste to znovu.</value></data>
+  <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
 </root>

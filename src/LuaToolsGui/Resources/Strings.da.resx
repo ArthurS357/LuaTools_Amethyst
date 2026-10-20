@@ -555,4 +555,5 @@ Dette sletter .lua-filerne fra Steam\config\stplug-in. Genstart Steam bagefter, 
   <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>{0} er ændret, siden denne rettelse blev anvendt, så en gendannelse ville overskrive de ændringer. Hvis du har anvendt en anden rettelse ovenpå, så fortryd den først. {1} fil(er) berørt.</value></data>
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Rettelse delvist fortrudt</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} fil(er) kunne ikke gendannes. Luk spillet og prøv igen.</value></data>
+  <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
 </root>

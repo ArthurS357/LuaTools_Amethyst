@@ -555,4 +555,5 @@
   <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>{0} มีการเปลี่ยนแปลงหลังจากใช้แพตช์นี้ การกู้คืนจะเขียนทับการเปลี่ยนแปลงนั้น หากคุณใช้แพตช์อื่นทับไว้ ให้ย้อนกลับแพตช์นั้นก่อน มีไฟล์ที่ได้รับผลกระทบ {1} ไฟล์</value></data>
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>ย้อนกลับตัวแก้ไขได้บางส่วน</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>กู้คืนไฟล์ {0} รายการไม่สำเร็จ กรุณาปิดเกมแล้วลองใหม่</value></data>
+  <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
 </root>

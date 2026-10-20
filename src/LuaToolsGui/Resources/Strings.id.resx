@@ -555,4 +555,5 @@ Ini menghapus file .lua dari Steam\config\stplug-in. Mulai ulang Steam setelahny
   <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>{0} telah berubah sejak fix ini diterapkan, jadi memulihkannya akan menimpa perubahan tersebut. Jika Anda menerapkan fix lain di atasnya, kembalikan yang itu dulu. {1} berkas terpengaruh.</value></data>
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Perbaikan dikembalikan sebagian</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} berkas tidak dapat dipulihkan. Tutup game lalu coba lagi.</value></data>
+  <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
 </root>

@@ -555,4 +555,5 @@
   <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>自套用此修復以來，{0} 已被變更，還原會覆寫這些變更。如果你在其上套用了另一個修復，請先還原那一個。共影響 {1} 個檔案。</value></data>
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>修復部分還原</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>有 {0} 個檔案無法復原。請關閉遊戲後重試。</value></data>
+  <data name="Mode_Badge_Upstream" xml:space="preserve"><value>上游</value></data>
 </root>

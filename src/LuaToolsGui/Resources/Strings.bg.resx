@@ -555,4 +555,5 @@
   <data name="Fixes_Revert_Conflict_Body" xml:space="preserve"><value>{0} е променен, откакто беше приложена тази поправка, така че възстановяването ще презапише тези промени. Ако сте приложили друга поправка отгоре, първо върнете нея. Засегнати са {1} файла.</value></data>
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Корекцията е върната частично</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} файл(а) не можаха да бъдат възстановени. Затворете играта и опитайте отново.</value></data>
+  <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
 </root>
