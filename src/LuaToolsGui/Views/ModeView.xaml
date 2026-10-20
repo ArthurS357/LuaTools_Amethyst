@@ -80,6 +80,19 @@
                                     FontSize="15"
                                     FontWeight="SemiBold"
                                     Text="{x:Static res:Strings.Amethyst_CardTitle}" />
+                                <!-- Recommended: unconditional, this template is the AmethystTool card only. -->
+                                <Border
+                                    Margin="10,0,0,0"
+                                    Padding="7,2"
+                                    VerticalAlignment="Center"
+                                    Background="{StaticResource SuccessTintBrush}"
+                                    CornerRadius="4">
+                                    <TextBlock
+                                        FontSize="10.5"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource SuccessTextBrush}"
+                                        Text="{x:Static res:Strings.Mode_Recommended}" />
+                                </Border>
                                 <!-- IsActive, NOT IsInstalled: installing a Mode overwrites the two proxy
                                      DLLs but leaves AmethystTool.dll and amethysttool.toml in place, so the
                                      files stay present after the slot has moved on. Binding this badge to
@@ -245,19 +258,19 @@
                                                 FontSize="15"
                                                 FontWeight="SemiBold"
                                                 Text="{Binding Title}" />
-                                            <!-- Recommended: green badge to steer users to the best option. -->
+                                            <!-- BetterSteamTools: blue "Upstream" badge (the project AmethystTool forks). -->
                                             <Border
                                                 Margin="10,0,0,0"
                                                 Padding="7,2"
                                                 VerticalAlignment="Center"
-                                                Background="{StaticResource SuccessTintBrush}"
+                                                Background="{StaticResource InfoTintBrush}"
                                                 CornerRadius="4"
-                                                Visibility="{Binding IsRecommended, Converter={StaticResource BoolToVis}}">
+                                                Visibility="{Binding IsUpstream, Converter={StaticResource BoolToVis}}">
                                                 <TextBlock
                                                     FontSize="10.5"
                                                     FontWeight="SemiBold"
-                                                    Foreground="{StaticResource SuccessTextBrush}"
-                                                    Text="{x:Static res:Strings.Mode_Recommended}" />
+                                                    Foreground="{StaticResource InfoBrush}"
+                                                    Text="{x:Static res:Strings.Mode_Badge_Upstream}" />
                                             </Border>
                                             <!-- Nightly: amber "Experimental" badge. -->
                                             <Border
@@ -272,20 +285,6 @@
                                                     FontWeight="SemiBold"
                                                     Foreground="{StaticResource WarningBrush}"
                                                     Text="{x:Static res:Strings.Mode_Experimental}" />
-                                            </Border>
-                                            <!-- Nightly: blue "CloudRedirect Support" badge. -->
-                                            <Border
-                                                Margin="6,0,0,0"
-                                                Padding="7,2"
-                                                VerticalAlignment="Center"
-                                                Background="{StaticResource InfoTintBrush}"
-                                                CornerRadius="4"
-                                                Visibility="{Binding SupportsCloudRedirect, Converter={StaticResource BoolToVis}}">
-                                                <TextBlock
-                                                    FontSize="10.5"
-                                                    FontWeight="SemiBold"
-                                                    Foreground="{StaticResource InfoBrush}"
-                                                    Text="{x:Static res:Strings.Mode_CloudRedirectSupport}" />
                                             </Border>
                                             <Border
                                                 Margin="6,0,0,0"

@@ -164,7 +164,6 @@
   <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>Не вдалося завантажити або запустити CloudRedirect.</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>Нічна збірка BetterSteamTools (OST) із найновішого коду. Найсвіжіші виправлення, але може бути менш стабільною.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>ЕКСПЕРИМЕНТАЛЬНА</value></data>
-  <data name="Mode_CloudRedirectSupport" xml:space="preserve"><value>ПІДТРИМКА CLOUDREDIRECT</value></data>
   <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Повертає вбудовану підтримку Steam Cloud через сторонні сховища, як-от Google Drive / OneDrive / Cloudflare R2 та інші. Наразі сумісно лише з BetterSteamTools Nightly. Не забудьте налаштувати його, натиснувши "Керування" після ввімкнення, а потім перезапустіть Steam!</value></data>
   <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Виберіть BetterSteamTools Nightly, щоб використовувати CloudRedirect.</value></data>
   <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>Увімкнути</value></data>

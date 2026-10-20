@@ -164,7 +164,6 @@
   <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>CloudRedirect をダウンロードまたは起動できませんでした。</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>最新ソースからビルドされた BetterSteamTools（OST）のナイトリー版。最新の修正が入りますが、安定性は低めの場合があります。</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>実験的</value></data>
-  <data name="Mode_CloudRedirectSupport" xml:space="preserve"><value>CloudRedirect 対応</value></data>
   <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Google Drive / OneDrive / Cloudflare R2 など、サードパーティのストレージを使ってネイティブの Steam Cloud サポートを復活させます。現在は BetterSteamTools Nightly のみ対応。有効化後は「管理」をクリックして設定し、Steam を再起動するのを忘れずに！</value></data>
   <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>CloudRedirect を使うには BetterSteamTools Nightly を選択してください。</value></data>
   <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>有効化</value></data>

@@ -164,7 +164,6 @@
   <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>CloudRedirectin lataaminen tai käynnistäminen epäonnistui.</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>BetterSteamToolsin (OST) yöllinen koontiversio uusimmasta lähdekoodista. Uusimmat korjaukset, mutta voi olla epävakaampi.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>KOKEELLINEN</value></data>
-  <data name="Mode_CloudRedirectSupport" xml:space="preserve"><value>CLOUDREDIRECT-TUKI</value></data>
   <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Palauttaa natiivin Steam Cloud -tuen kolmannen osapuolen tallennuspalveluiden, kuten Google Drive / OneDrive / Cloudflare R2 ja muiden, kautta. Toistaiseksi yhteensopiva vain BetterSteamTools Nightlyn kanssa. Muista määrittää se napsauttamalla "Hallinta" käyttöönoton jälkeen ja käynnistä sitten Steam uudelleen!</value></data>
   <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Valitse BetterSteamTools Nightly käyttääksesi CloudRedirectiä.</value></data>
   <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>Ota käyttöön</value></data>

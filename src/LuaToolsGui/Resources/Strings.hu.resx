@@ -164,7 +164,6 @@
   <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>A CloudRedirect letöltése vagy indítása nem sikerült.</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>A BetterSteamTools (OST) éjszakai buildje a legújabb forrásból. A legfrissebb javítások, de kevésbé lehet stabil.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>KÍSÉRLETI</value></data>
-  <data name="Mode_CloudRedirectSupport" xml:space="preserve"><value>CLOUDREDIRECT TÁMOGATÁS</value></data>
   <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Visszahozza a natív Steam Cloud támogatást külső tárhelyszolgáltatókon keresztül, mint a Google Drive / OneDrive / Cloudflare R2 és mások. Jelenleg csak a BetterSteamTools Nightly móddal kompatibilis. Ne feledd bekapcsolás után a "Kezelés" gombra kattintva beállítani, majd indítsd újra a Steamet!</value></data>
   <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Válaszd a BetterSteamTools Nightly módot a CloudRedirect használatához.</value></data>
   <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>Bekapcsolás</value></data>

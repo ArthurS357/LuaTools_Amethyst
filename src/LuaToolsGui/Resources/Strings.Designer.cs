@@ -171,6 +171,7 @@ public static class Strings
     public static string Mode_CheckForUpdates => Get(nameof(Mode_CheckForUpdates));
     public static string Mode_Active => Get(nameof(Mode_Active));
     public static string Mode_Recommended => Get(nameof(Mode_Recommended));
+    public static string Mode_Badge_Upstream => Get(nameof(Mode_Badge_Upstream));
     public static string Mode_Confirm_Body => Get(nameof(Mode_Confirm_Body));
     public static string Mode_Cancel => Get(nameof(Mode_Cancel));
     public static string Mode_CloseSteamContinue => Get(nameof(Mode_CloseSteamContinue));
@@ -181,7 +182,6 @@ public static class Strings
     public static string Mode_CloudRedirect_LaunchFailed => Get(nameof(Mode_CloudRedirect_LaunchFailed));
     public static string Mode_Desc_OpenSteamToolsNightly => Get(nameof(Mode_Desc_OpenSteamToolsNightly));
     public static string Mode_Experimental => Get(nameof(Mode_Experimental));
-    public static string Mode_CloudRedirectSupport => Get(nameof(Mode_CloudRedirectSupport));
     public static string Mode_CloudRedirect_AddonDesc => Get(nameof(Mode_CloudRedirect_AddonDesc));
     public static string Mode_CloudRedirect_Locked => Get(nameof(Mode_CloudRedirect_Locked));
     public static string Mode_CloudRedirect_Enable => Get(nameof(Mode_CloudRedirect_Enable));

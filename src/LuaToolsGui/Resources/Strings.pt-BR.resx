@@ -154,6 +154,7 @@
   <data name="Mode_CheckForUpdates" xml:space="preserve"><value>Verificar atualizações</value></data>
   <data name="Mode_Active" xml:space="preserve"><value>ATIVO</value></data>
   <data name="Mode_Recommended" xml:space="preserve"><value>RECOMENDADO</value></data>
+  <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
   <data name="Mode_Confirm_Body" xml:space="preserve"><value>O Steam será fechado para que seus arquivos possam ser alterados e, em seguida, reiniciado automaticamente. Todos os jogos ou downloads em andamento serão interrompidos.</value></data>
   <data name="Mode_Cancel" xml:space="preserve"><value>Cancelar</value></data>
   <data name="Mode_CloseSteamContinue" xml:space="preserve"><value>Fechar Steam e continuar</value></data>
@@ -164,7 +165,6 @@
   <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>Não foi possível baixar ou iniciar o CloudRedirect.</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>Build noturno do BetterSteamTools (OST) a partir do código mais recente. As correções mais recentes, mas pode ser menos estável.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>EXPERIMENTAL</value></data>
-  <data name="Mode_CloudRedirectSupport" xml:space="preserve"><value>SUPORTE A CLOUDREDIRECT</value></data>
   <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Traz de volta o suporte nativo ao Steam Cloud por meio de provedores de armazenamento de terceiros como Google Drive / OneDrive / Cloudflare R2 e mais. No momento, compatível apenas com o BetterSteamTools Nightly. Não esqueça de configurá-lo clicando em "Gerenciar" após ativar e, em seguida, reinicie o Steam!</value></data>
   <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Selecione o BetterSteamTools Nightly para usar o CloudRedirect.</value></data>
   <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>Ativar</value></data>

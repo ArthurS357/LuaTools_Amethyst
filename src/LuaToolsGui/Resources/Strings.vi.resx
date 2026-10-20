@@ -164,7 +164,6 @@
   <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>Không thể tải xuống hoặc khởi chạy CloudRedirect.</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>Bản dựng nightly của BetterSteamTools (OST) từ mã nguồn mới nhất. Các bản sửa lỗi mới nhất, nhưng có thể kém ổn định hơn.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>THỬ NGHIỆM</value></data>
-  <data name="Mode_CloudRedirectSupport" xml:space="preserve"><value>HỖ TRỢ CLOUDREDIRECT</value></data>
   <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Mang lại hỗ trợ Steam Cloud gốc thông qua các nhà cung cấp lưu trữ bên thứ ba như Google Drive / OneDrive / Cloudflare R2 và nhiều hơn nữa. Hiện chỉ tương thích với BetterSteamTools Nightly. Đừng quên cấu hình bằng cách nhấp "Quản lý" sau khi bật, rồi khởi động lại Steam!</value></data>
   <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Chọn BetterSteamTools Nightly để dùng CloudRedirect.</value></data>
   <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>Bật</value></data>

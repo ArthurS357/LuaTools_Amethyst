@@ -43,12 +43,13 @@ public partial class ModeCardViewModel(UnlockerMode mode, string title, string d
     public bool IsCloudRedirect => Mode == UnlockerMode.CloudRedirect;
     public bool ShowManage => IsCloudRedirect && IsActive;
 
-    /// <summary>BetterSteamTools (enum still OpenSteamTools internally) gets a "Recommended" badge.</summary>
-    public bool IsRecommended => Mode == UnlockerMode.OpenSteamTools;
+    /// <summary>BetterSteamTools (enum still OpenSteamTools internally) is the project AmethystTool forks:
+    /// "Upstream" badge. "Recommended" belongs to the AmethystTool card, which has its own template.</summary>
+    public bool IsUpstream => Mode == UnlockerMode.OpenSteamTools;
 
-    /// <summary>The nightly build gets "Experimental" + "CloudRedirect Support" badges.</summary>
+    /// <summary>The nightly build gets the "Experimental" badge. It no longer claims CloudRedirect
+    /// support: that repo is gone and the add-on panel is hidden (<see cref="ModeCatalog.CloudRedirectAddonAvailable"/>).</summary>
     public bool IsExperimental => Mode == UnlockerMode.OpenSteamToolsNightly;
-    public bool SupportsCloudRedirect => Mode == UnlockerMode.OpenSteamToolsNightly;
 }
 
 /// <summary>

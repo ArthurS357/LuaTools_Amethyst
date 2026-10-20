@@ -172,7 +172,6 @@
   <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>无法下载或启动 CloudRedirect。</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>从最新源码构建的 BetterSteamTools（OST）每夜版。包含最新修复，但可能不太稳定。</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>实验性</value></data>
-  <data name="Mode_CloudRedirectSupport" xml:space="preserve"><value>支持 CloudRedirect</value></data>
   <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>通过 Google Drive / OneDrive / Cloudflare R2 等第三方存储服务，恢复原生 Steam 云存档支持。目前仅兼容 BetterSteamTools 每夜版。启用后别忘了点击“管理”进行配置，然后重启 Steam！</value></data>
   <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>选择 BetterSteamTools 每夜版以使用 CloudRedirect。</value></data>
   <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>启用</value></data>

@@ -67,6 +67,9 @@ PENDING_TRANSLATION: frozenset[str] = frozenset({
     # 1.7.9: loose-manifest name refusal and the CloudRedirect "repo is gone" message (pt-BR only).
     "Installer_Err_ManifestNameRefused",
     "CloudRedirect_Err_RepoUnavailable",
+    # 1.7.9: Mode page badge for BetterSteamTools (the project AmethystTool forks). A technical term,
+    # kept as "UPSTREAM" in pt-BR too.
+    "Mode_Badge_Upstream",
     "Auth_Err_TokenExchangeFailed",
     "Auth_Err_TokenExchangeEmpty",
     "Auth_Err_NotSignedIn",
