@@ -45,25 +45,6 @@ SAMPLE_SIZE = 10
 # parity. Anything left here is untranslated in all 29 languages, with one stated exception noted
 # against the plugin-source group at the bottom.
 PENDING_TRANSLATION: frozenset[str] = frozenset({
-    # F-10: hardcoded English moved out of the services into real keys; translated to pt-BR in 1.7.8
-    # (pt-BR only, like the plugin-source group below; the other 28 files fall back to English until 1.7.9).
-    # The list is global, so these stay here: removing them would demand them in all 29 files.
-    "Err_SteamNotFound",
-    "Installer_Err_CouldntOpenDownload",
-    "Unlocker_Err_NoLongerAvailable",
-    "Err_GitHubUnreachable",
-    "Unlocker_Err_ReleaseMissingDownload",
-    "Unlocker_Err_DownloadVerification",
-    "Unlocker_Err_DownloadMissing",
-    "Unlocker_Err_FileNotInRelease",
-    "Unlocker_Err_FileVerification",
-    "Unlocker_Err_ReleaseMissingAsset",
-    "Unlocker_Err_NoDigest",
-    "Unlocker_Err_CliExit",
-    "Unlocker_Err_NotDeployed",
-    "Unlocker_Err_WrongVersion",
-    "Unlocker_Err_FixerStart",
-    "Unlocker_Err_CloudWrite",
     # 1.7.9: loose-manifest name refusal and the CloudRedirect "repo is gone" message (pt-BR only).
     "Installer_Err_ManifestNameRefused",
     "CloudRedirect_Err_RepoUnavailable",
@@ -72,20 +53,6 @@ PENDING_TRANSLATION: frozenset[str] = frozenset({
     "Auth_TryAnyway",
     "Auth_UseManualCode",
     "Auth_Cancel",
-    "Auth_Err_TokenExchangeFailed",
-    "Auth_Err_TokenExchangeEmpty",
-    "Auth_Err_NotSignedIn",
-    "Auth_Err_RefreshFailed",
-    "Auth_Err_RefreshEmpty",
-    "Auth_Err_SignInDenied",
-    "Api_Err_LinkEmpty",
-    "Api_Err_LinkRefused",
-    "Api_Err_DownloadFailed",
-    "Api_Err_DownloadStalled",
-    "App_Toast_UpdatingPlugin",
-    "App_StartupFailed",
-    "Unlocker_Err_WriteDenied",
-    "Unlocker_Err_WriteFailed",
     # Added by the security pass that replaced hardcoded English literals in AuthService with real
     # resource keys. They are localizable now (they weren't before) but not yet translated — clear
     # these two from the list as soon as the translations land.

@@ -556,4 +556,34 @@ Ini menghapus file .lua dari Steam\config\stplug-in. Mulai ulang Steam setelahny
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Perbaikan dikembalikan sebagian</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} berkas tidak dapat dipulihkan. Tutup game lalu coba lagi.</value></data>
   <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
+  <data name="Err_SteamNotFound" xml:space="preserve"><value>Lokasi Steam tidak ditemukan — atur di Pengaturan.</value></data>
+  <data name="Installer_Err_CouldntOpenDownload" xml:space="preserve"><value>Tidak dapat membuka unduhan: {0}</value></data>
+  <data name="Unlocker_Err_NoLongerAvailable" xml:space="preserve"><value>{0} tidak lagi tersedia.</value></data>
+  <data name="Err_GitHubUnreachable" xml:space="preserve"><value>Tidak dapat menghubungi GitHub — periksa koneksi Anda dan coba lagi.</value></data>
+  <data name="Unlocker_Err_ReleaseMissingDownload" xml:space="preserve"><value>Rilis tidak berisi unduhan yang diharapkan.</value></data>
+  <data name="Unlocker_Err_DownloadVerification" xml:space="preserve"><value>Unduhan gagal diverifikasi (sha256 tidak cocok atau tidak ada digest yang dipublikasikan).</value></data>
+  <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>Unduhan tidak berisi: {0}.</value></data>
+  <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>Tidak dapat menemukan {0} di rilis mana pun.</value></data>
+  <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} gagal diverifikasi (sha256 tidak cocok atau tidak ada digest yang dipublikasikan).</value></data>
+  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Rilis tidak berisi {0}.</value></data>
+  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} tidak memiliki digest yang dipublikasikan untuk verifikasi.</value></data>
+  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} keluar dengan kode {1}.</value></data>
+  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} tidak terpasang — perbaikan tidak selesai.</value></data>
+  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} bukan versi yang diharapkan — pembaruan tidak diterapkan.</value></data>
+  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Gagal memulai fixer.</value></data>
+  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>Tidak dapat menulis cloud_redirect.dll — tutup Steam dan coba lagi.</value></data>
+  <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Pertukaran token gagal ({0}): {1}</value></data>
+  <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Pertukaran token mengembalikan sesi kosong.</value></data>
+  <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Belum masuk.</value></data>
+  <data name="Auth_Err_RefreshFailed" xml:space="preserve"><value>Pembaruan sesi gagal ({0}).</value></data>
+  <data name="Auth_Err_RefreshEmpty" xml:space="preserve"><value>Pembaruan sesi mengembalikan sesi kosong.</value></data>
+  <data name="Auth_Err_SignInDenied" xml:space="preserve"><value>Proses masuk ditolak.</value></data>
+  <data name="Api_Err_LinkEmpty" xml:space="preserve"><value>Tautan unduhan kosong — coba lagi.</value></data>
+  <data name="Api_Err_LinkRefused" xml:space="preserve"><value>Server mengirim tautan unduhan yang tidak akan diikuti aplikasi ini. Harap laporkan.</value></data>
+  <data name="Api_Err_DownloadFailed" xml:space="preserve"><value>Unduhan gagal ({0}).</value></data>
+  <data name="Api_Err_DownloadStalled" xml:space="preserve"><value>Unduhan berhenti mengirim data selama {0} detik — coba lagi.</value></data>
+  <data name="App_Toast_UpdatingPlugin" xml:space="preserve"><value>Memperbarui plugin — Steam akan dimulai ulang.</value></data>
+  <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools tidak dapat dimulai.&#10;&#10;{0}&#10;&#10;Detail ditulis ke:&#10;{1}</value></data>
+  <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Tidak dapat menulis {0} file ke folder Steam — akses ditolak. Steam tampaknya terpasang di lokasi yang memerlukan hak administrator (mis. Program Files). Tutup Steam, lalu jalankan LuaTools sebagai administrator sekali untuk menerapkan mode ini.</value></data>
+  <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Tidak dapat menulis {0} file — tutup Steam dan coba lagi.</value></data>
 </root>

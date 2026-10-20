@@ -556,4 +556,34 @@ Tím se smažou soubory .lua ze Steam\config\stplug-in. Poté restartujte Steam,
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Oprava vrácena zpět částečně</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} soubor(ů) se nepodařilo obnovit. Zavřete hru a zkuste to znovu.</value></data>
   <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
+  <data name="Err_SteamNotFound" xml:space="preserve"><value>Umístění Steamu nebylo nalezeno — nastavte ho v Nastavení.</value></data>
+  <data name="Installer_Err_CouldntOpenDownload" xml:space="preserve"><value>Stažený soubor nelze otevřít: {0}</value></data>
+  <data name="Unlocker_Err_NoLongerAvailable" xml:space="preserve"><value>{0} už není k dispozici.</value></data>
+  <data name="Err_GitHubUnreachable" xml:space="preserve"><value>GitHub není dostupný — zkontrolujte připojení a zkuste to znovu.</value></data>
+  <data name="Unlocker_Err_ReleaseMissingDownload" xml:space="preserve"><value>Ve verzi chybí očekávaný soubor ke stažení.</value></data>
+  <data name="Unlocker_Err_DownloadVerification" xml:space="preserve"><value>Stažený soubor neprošel ověřením (nesoulad sha256 nebo chybí zveřejněný digest).</value></data>
+  <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>Ve stažených souborech chybí: {0}.</value></data>
+  <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>{0} nebyl nalezen v žádné verzi.</value></data>
+  <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} neprošel ověřením (nesoulad sha256 nebo chybí zveřejněný digest).</value></data>
+  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Ve verzi chybí {0}.</value></data>
+  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} nemá zveřejněný digest, se kterým by šlo ověřit.</value></data>
+  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} skončil s kódem {1}.</value></data>
+  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} nebyl nasazen — oprava se nedokončila.</value></data>
+  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} není očekávaná verze — aktualizace se nepoužila.</value></data>
+  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Fixer se nepodařilo spustit.</value></data>
+  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>Nelze zapsat cloud_redirect.dll — zavřete Steam a zkuste to znovu.</value></data>
+  <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Výměna tokenu selhala ({0}): {1}</value></data>
+  <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Výměna tokenu vrátila prázdnou relaci.</value></data>
+  <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Nejste přihlášeni.</value></data>
+  <data name="Auth_Err_RefreshFailed" xml:space="preserve"><value>Obnovení relace selhalo ({0}).</value></data>
+  <data name="Auth_Err_RefreshEmpty" xml:space="preserve"><value>Obnovení relace vrátilo prázdnou relaci.</value></data>
+  <data name="Auth_Err_SignInDenied" xml:space="preserve"><value>Přihlášení bylo zamítnuto.</value></data>
+  <data name="Api_Err_LinkEmpty" xml:space="preserve"><value>Odkaz ke stažení byl prázdný — zkuste to znovu.</value></data>
+  <data name="Api_Err_LinkRefused" xml:space="preserve"><value>Server poslal odkaz ke stažení, který tato aplikace nebude následovat. Nahlaste to prosím.</value></data>
+  <data name="Api_Err_DownloadFailed" xml:space="preserve"><value>Stahování selhalo ({0}).</value></data>
+  <data name="Api_Err_DownloadStalled" xml:space="preserve"><value>Stahování přestalo posílat data na {0} s — zkuste to znovu.</value></data>
+  <data name="App_Toast_UpdatingPlugin" xml:space="preserve"><value>Aktualizace pluginu — Steam se restartuje.</value></data>
+  <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools se nepodařilo spustit.&#10;&#10;{0}&#10;&#10;Podrobnosti byly zapsány do:&#10;{1}</value></data>
+  <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Nelze zapsat soubory ({0}) do složky Steamu — přístup odepřen. Steam je zřejmě nainstalován v umístění, které vyžaduje oprávnění správce (např. Program Files). Zavřete Steam a jednou spusťte LuaTools jako správce, aby se tento režim použil.</value></data>
+  <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Nelze zapsat soubory ({0}) — zavřete Steam a zkuste to znovu.</value></data>
 </root>

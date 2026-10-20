@@ -556,4 +556,34 @@ Dit verwijdert de .lua-bestanden uit Steam\config\stplug-in. Herstart Steam daar
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Fix gedeeltelijk teruggedraaid</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} bestand(en) konden niet worden hersteld. Sluit de game en probeer opnieuw.</value></data>
   <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
+  <data name="Err_SteamNotFound" xml:space="preserve"><value>Steam-locatie niet gevonden — stel deze in bij Instellingen.</value></data>
+  <data name="Installer_Err_CouldntOpenDownload" xml:space="preserve"><value>Kon de download niet openen: {0}</value></data>
+  <data name="Unlocker_Err_NoLongerAvailable" xml:space="preserve"><value>{0} is niet meer beschikbaar.</value></data>
+  <data name="Err_GitHubUnreachable" xml:space="preserve"><value>Kan GitHub niet bereiken — controleer je verbinding en probeer het opnieuw.</value></data>
+  <data name="Unlocker_Err_ReleaseMissingDownload" xml:space="preserve"><value>De release mist de verwachte download.</value></data>
+  <data name="Unlocker_Err_DownloadVerification" xml:space="preserve"><value>De download heeft de verificatie niet doorstaan (sha256 komt niet overeen of geen gepubliceerde digest).</value></data>
+  <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>De download mist: {0}.</value></data>
+  <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>Kon {0} in geen enkele release vinden.</value></data>
+  <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} heeft de verificatie niet doorstaan (sha256 komt niet overeen of geen gepubliceerde digest).</value></data>
+  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>De release mist {0}.</value></data>
+  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} heeft geen gepubliceerde digest om tegen te verifiëren.</value></data>
+  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} is afgesloten met code {1}.</value></data>
+  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} is niet geïnstalleerd — de fix is niet voltooid.</value></data>
+  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} is niet de verwachte versie — de update is niet toegepast.</value></data>
+  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Kon de fixer niet starten.</value></data>
+  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>Kon cloud_redirect.dll niet schrijven — sluit Steam en probeer het opnieuw.</value></data>
+  <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Tokenuitwisseling mislukt ({0}): {1}</value></data>
+  <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>De tokenuitwisseling gaf een lege sessie terug.</value></data>
+  <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Niet aangemeld.</value></data>
+  <data name="Auth_Err_RefreshFailed" xml:space="preserve"><value>Vernieuwen van de sessie mislukt ({0}).</value></data>
+  <data name="Auth_Err_RefreshEmpty" xml:space="preserve"><value>Het vernieuwen van de sessie gaf een lege sessie terug.</value></data>
+  <data name="Auth_Err_SignInDenied" xml:space="preserve"><value>Aanmelden is geweigerd.</value></data>
+  <data name="Api_Err_LinkEmpty" xml:space="preserve"><value>De downloadlink was leeg — probeer het opnieuw.</value></data>
+  <data name="Api_Err_LinkRefused" xml:space="preserve"><value>De server stuurde een downloadlink die deze app niet volgt. Meld dit alsjeblieft.</value></data>
+  <data name="Api_Err_DownloadFailed" xml:space="preserve"><value>Download mislukt ({0}).</value></data>
+  <data name="Api_Err_DownloadStalled" xml:space="preserve"><value>De download stuurde {0} seconden lang geen gegevens — probeer het opnieuw.</value></data>
+  <data name="App_Toast_UpdatingPlugin" xml:space="preserve"><value>Plug-in wordt bijgewerkt — Steam wordt opnieuw gestart.</value></data>
+  <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools kon niet starten.&#10;&#10;{0}&#10;&#10;De details zijn weggeschreven naar:&#10;{1}</value></data>
+  <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Kon {0} bestand(en) niet naar de Steam-map schrijven — toegang geweigerd. Steam lijkt geïnstalleerd op een locatie waarvoor beheerdersrechten nodig zijn (bijv. Program Files). Sluit Steam en voer LuaTools één keer uit als beheerder om deze modus toe te passen.</value></data>
+  <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Kon {0} bestand(en) niet schrijven — sluit Steam en probeer het opnieuw.</value></data>
 </root>

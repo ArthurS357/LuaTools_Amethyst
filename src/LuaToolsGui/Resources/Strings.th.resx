@@ -556,4 +556,34 @@
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>ย้อนกลับตัวแก้ไขได้บางส่วน</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>กู้คืนไฟล์ {0} รายการไม่สำเร็จ กรุณาปิดเกมแล้วลองใหม่</value></data>
   <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
+  <data name="Err_SteamNotFound" xml:space="preserve"><value>ไม่พบตำแหน่งของ Steam — กำหนดได้ในการตั้งค่า</value></data>
+  <data name="Installer_Err_CouldntOpenDownload" xml:space="preserve"><value>ไม่สามารถเปิดไฟล์ดาวน์โหลดได้: {0}</value></data>
+  <data name="Unlocker_Err_NoLongerAvailable" xml:space="preserve"><value>{0} ไม่พร้อมใช้งานอีกต่อไป</value></data>
+  <data name="Err_GitHubUnreachable" xml:space="preserve"><value>ไม่สามารถเชื่อมต่อ GitHub ได้ — ตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง</value></data>
+  <data name="Unlocker_Err_ReleaseMissingDownload" xml:space="preserve"><value>รุ่นนี้ไม่มีไฟล์ดาวน์โหลดที่คาดไว้</value></data>
+  <data name="Unlocker_Err_DownloadVerification" xml:space="preserve"><value>การตรวจสอบไฟล์ดาวน์โหลดล้มเหลว (sha256 ไม่ตรงกันหรือไม่มี digest ที่เผยแพร่)</value></data>
+  <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>ไฟล์ดาวน์โหลดขาด: {0}</value></data>
+  <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>ไม่พบ {0} ในรุ่นใดเลย</value></data>
+  <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>การตรวจสอบ {0} ล้มเหลว (sha256 ไม่ตรงกันหรือไม่มี digest ที่เผยแพร่)</value></data>
+  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>รุ่นนี้ไม่มี {0}</value></data>
+  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} ไม่มี digest ที่เผยแพร่สำหรับตรวจสอบ</value></data>
+  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} จบการทำงานด้วยรหัส {1}</value></data>
+  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} ไม่ได้ถูกติดตั้ง — การแก้ไขไม่เสร็จสมบูรณ์</value></data>
+  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} ไม่ใช่เวอร์ชันที่คาดไว้ — ไม่ได้ใช้การอัปเดต</value></data>
+  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>ไม่สามารถเริ่ม fixer ได้</value></data>
+  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>ไม่สามารถเขียน cloud_redirect.dll ได้ — ปิด Steam แล้วลองอีกครั้ง</value></data>
+  <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>การแลกเปลี่ยนโทเค็นล้มเหลว ({0}): {1}</value></data>
+  <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>การแลกเปลี่ยนโทเค็นส่งคืนเซสชันว่าง</value></data>
+  <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>ยังไม่ได้เข้าสู่ระบบ</value></data>
+  <data name="Auth_Err_RefreshFailed" xml:space="preserve"><value>การต่ออายุเซสชันล้มเหลว ({0})</value></data>
+  <data name="Auth_Err_RefreshEmpty" xml:space="preserve"><value>การต่ออายุเซสชันส่งคืนเซสชันว่าง</value></data>
+  <data name="Auth_Err_SignInDenied" xml:space="preserve"><value>การเข้าสู่ระบบถูกปฏิเสธ</value></data>
+  <data name="Api_Err_LinkEmpty" xml:space="preserve"><value>ลิงก์ดาวน์โหลดว่างเปล่า — ลองอีกครั้ง</value></data>
+  <data name="Api_Err_LinkRefused" xml:space="preserve"><value>เซิร์ฟเวอร์ส่งลิงก์ดาวน์โหลดที่แอปนี้จะไม่เปิดตาม โปรดรายงานปัญหานี้</value></data>
+  <data name="Api_Err_DownloadFailed" xml:space="preserve"><value>การดาวน์โหลดล้มเหลว ({0})</value></data>
+  <data name="Api_Err_DownloadStalled" xml:space="preserve"><value>การดาวน์โหลดหยุดส่งข้อมูลเป็นเวลา {0} วินาที — ลองอีกครั้ง</value></data>
+  <data name="App_Toast_UpdatingPlugin" xml:space="preserve"><value>กำลังอัปเดตปลั๊กอิน — Steam จะรีสตาร์ท</value></data>
+  <data name="App_StartupFailed" xml:space="preserve"><value>ไม่สามารถเริ่ม LuaTools ได้&#10;&#10;{0}&#10;&#10;รายละเอียดถูกเขียนไว้ที่:&#10;{1}</value></data>
+  <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>ไม่สามารถเขียนไฟล์ {0} ไฟล์ลงในโฟลเดอร์ Steam ได้ — การเข้าถึงถูกปฏิเสธ ดูเหมือนว่า Steam ติดตั้งอยู่ในตำแหน่งที่ต้องใช้สิทธิ์ผู้ดูแลระบบ (เช่น Program Files) ปิด Steam แล้วเรียกใช้ LuaTools ในฐานะผู้ดูแลระบบหนึ่งครั้งเพื่อใช้โหมดนี้</value></data>
+  <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>ไม่สามารถเขียนไฟล์ {0} ไฟล์ได้ — ปิด Steam แล้วลองอีกครั้ง</value></data>
 </root>

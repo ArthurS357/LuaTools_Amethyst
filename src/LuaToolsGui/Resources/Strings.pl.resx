@@ -556,4 +556,34 @@ Spowoduje to usunięcie plików .lua z Steam\config\stplug-in. Następnie urucho
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Poprawka cofnięta częściowo</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>Nie udało się przywrócić {0} plików. Zamknij grę i spróbuj ponownie.</value></data>
   <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
+  <data name="Err_SteamNotFound" xml:space="preserve"><value>Nie znaleziono lokalizacji Steam — ustaw ją w Ustawieniach.</value></data>
+  <data name="Installer_Err_CouldntOpenDownload" xml:space="preserve"><value>Nie można otworzyć pobranego pliku: {0}</value></data>
+  <data name="Unlocker_Err_NoLongerAvailable" xml:space="preserve"><value>{0} nie jest już dostępny.</value></data>
+  <data name="Err_GitHubUnreachable" xml:space="preserve"><value>Nie można połączyć się z GitHubem — sprawdź połączenie i spróbuj ponownie.</value></data>
+  <data name="Unlocker_Err_ReleaseMissingDownload" xml:space="preserve"><value>W wydaniu brakuje oczekiwanego pliku do pobrania.</value></data>
+  <data name="Unlocker_Err_DownloadVerification" xml:space="preserve"><value>Pobrany plik nie przeszedł weryfikacji (niezgodność sha256 lub brak opublikowanego digestu).</value></data>
+  <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>W pobranych plikach brakuje: {0}.</value></data>
+  <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>Nie znaleziono {0} w żadnym wydaniu.</value></data>
+  <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} nie przeszedł weryfikacji (niezgodność sha256 lub brak opublikowanego digestu).</value></data>
+  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>W wydaniu brakuje {0}.</value></data>
+  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} nie ma opublikowanego digestu do weryfikacji.</value></data>
+  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} zakończył działanie z kodem {1}.</value></data>
+  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} nie został wdrożony — poprawka nie została ukończona.</value></data>
+  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} nie jest oczekiwaną wersją — aktualizacja nie została zastosowana.</value></data>
+  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Nie udało się uruchomić fixera.</value></data>
+  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>Nie można zapisać cloud_redirect.dll — zamknij Steam i spróbuj ponownie.</value></data>
+  <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Wymiana tokenu nie powiodła się ({0}): {1}</value></data>
+  <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Wymiana tokenu zwróciła pustą sesję.</value></data>
+  <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Nie zalogowano.</value></data>
+  <data name="Auth_Err_RefreshFailed" xml:space="preserve"><value>Odnowienie sesji nie powiodło się ({0}).</value></data>
+  <data name="Auth_Err_RefreshEmpty" xml:space="preserve"><value>Odnowienie sesji zwróciło pustą sesję.</value></data>
+  <data name="Auth_Err_SignInDenied" xml:space="preserve"><value>Logowanie zostało odrzucone.</value></data>
+  <data name="Api_Err_LinkEmpty" xml:space="preserve"><value>Link do pobrania był pusty — spróbuj ponownie.</value></data>
+  <data name="Api_Err_LinkRefused" xml:space="preserve"><value>Serwer wysłał link do pobrania, za którym ta aplikacja nie podąży. Zgłoś to.</value></data>
+  <data name="Api_Err_DownloadFailed" xml:space="preserve"><value>Pobieranie nie powiodło się ({0}).</value></data>
+  <data name="Api_Err_DownloadStalled" xml:space="preserve"><value>Pobieranie przestało przesyłać dane przez {0} s — spróbuj ponownie.</value></data>
+  <data name="App_Toast_UpdatingPlugin" xml:space="preserve"><value>Aktualizowanie wtyczki — Steam zostanie uruchomiony ponownie.</value></data>
+  <data name="App_StartupFailed" xml:space="preserve"><value>Nie udało się uruchomić LuaTools.&#10;&#10;{0}&#10;&#10;Szczegóły zapisano w:&#10;{1}</value></data>
+  <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Nie można zapisać plików ({0}) w folderze Steam — odmowa dostępu. Wygląda na to, że Steam jest zainstalowany w miejscu wymagającym uprawnień administratora (np. Program Files). Zamknij Steam, a następnie uruchom raz LuaTools jako administrator, aby zastosować ten tryb.</value></data>
+  <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Nie można zapisać plików ({0}) — zamknij Steam i spróbuj ponownie.</value></data>
 </root>

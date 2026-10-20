@@ -582,4 +582,34 @@
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>تم التراجع عن الإصلاح جزئيًا</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>تعذّرت استعادة {0} من الملفات. أغلق اللعبة وحاول مرة أخرى.</value></data>
   <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
+  <data name="Err_SteamNotFound" xml:space="preserve"><value>لم يتم العثور على موقع Steam — حدّده في الإعدادات.</value></data>
+  <data name="Installer_Err_CouldntOpenDownload" xml:space="preserve"><value>تعذّر فتح التنزيل: {0}</value></data>
+  <data name="Unlocker_Err_NoLongerAvailable" xml:space="preserve"><value>{0} لم يعد متاحًا.</value></data>
+  <data name="Err_GitHubUnreachable" xml:space="preserve"><value>تعذّر الوصول إلى GitHub — تحقّق من اتصالك وحاول مرة أخرى.</value></data>
+  <data name="Unlocker_Err_ReleaseMissingDownload" xml:space="preserve"><value>الإصدار لا يحتوي على التنزيل المتوقع.</value></data>
+  <data name="Unlocker_Err_DownloadVerification" xml:space="preserve"><value>فشل التحقق من التنزيل (عدم تطابق sha256 أو لا يوجد digest منشور).</value></data>
+  <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>التنزيل ينقصه: {0}.</value></data>
+  <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>تعذّر العثور على {0} في أي إصدار.</value></data>
+  <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>فشل التحقق من {0} (عدم تطابق sha256 أو لا يوجد digest منشور).</value></data>
+  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>الإصدار لا يحتوي على {0}.</value></data>
+  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>لا يوجد digest منشور لـ {0} للتحقق منه.</value></data>
+  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>انتهى {0} برمز الخروج {1}.</value></data>
+  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>لم يتم نشر {0} — لم يكتمل الإصلاح.</value></data>
+  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} ليس الإصدار المتوقع — لم يُطبَّق التحديث.</value></data>
+  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>تعذّر تشغيل أداة الإصلاح (fixer).</value></data>
+  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>تعذّرت كتابة cloud_redirect.dll — أغلق Steam وحاول مرة أخرى.</value></data>
+  <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>فشل تبادل الرمز المميز ({0}): {1}</value></data>
+  <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>أعاد تبادل الرمز المميز جلسة فارغة.</value></data>
+  <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>لم تسجّل الدخول.</value></data>
+  <data name="Auth_Err_RefreshFailed" xml:space="preserve"><value>فشل تجديد الجلسة ({0}).</value></data>
+  <data name="Auth_Err_RefreshEmpty" xml:space="preserve"><value>أعاد تجديد الجلسة جلسة فارغة.</value></data>
+  <data name="Auth_Err_SignInDenied" xml:space="preserve"><value>تم رفض تسجيل الدخول.</value></data>
+  <data name="Api_Err_LinkEmpty" xml:space="preserve"><value>رابط التنزيل كان فارغًا — حاول مرة أخرى.</value></data>
+  <data name="Api_Err_LinkRefused" xml:space="preserve"><value>أرسل الخادم رابط تنزيل لن يتبعه هذا التطبيق. يُرجى الإبلاغ عنه.</value></data>
+  <data name="Api_Err_DownloadFailed" xml:space="preserve"><value>فشل التنزيل ({0}).</value></data>
+  <data name="Api_Err_DownloadStalled" xml:space="preserve"><value>توقف التنزيل عن إرسال البيانات لمدة {0} ثانية — حاول مرة أخرى.</value></data>
+  <data name="App_Toast_UpdatingPlugin" xml:space="preserve"><value>جارٍ تحديث الإضافة — سيُعاد تشغيل Steam.</value></data>
+  <data name="App_StartupFailed" xml:space="preserve"><value>تعذّر تشغيل LuaTools.&#10;&#10;{0}&#10;&#10;كُتبت التفاصيل في:&#10;{1}</value></data>
+  <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>تعذّرت كتابة {0} ملف (ملفات) في مجلد Steam — تم رفض الوصول. يبدو أن Steam مثبّت في موقع يتطلب صلاحيات المسؤول (مثل Program Files). أغلق Steam، ثم شغّل LuaTools كمسؤول مرة واحدة لتطبيق هذا الوضع.</value></data>
+  <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>تعذّرت كتابة {0} ملف (ملفات) — أغلق Steam وحاول مرة أخرى.</value></data>
 </root>

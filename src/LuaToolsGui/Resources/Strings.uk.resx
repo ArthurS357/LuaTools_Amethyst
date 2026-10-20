@@ -556,4 +556,34 @@
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Виправлення відкочено частково</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>Не вдалося відновити файлів: {0}. Закрийте гру та спробуйте ще раз.</value></data>
   <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
+  <data name="Err_SteamNotFound" xml:space="preserve"><value>Розташування Steam не знайдено — укажіть його в Налаштуваннях.</value></data>
+  <data name="Installer_Err_CouldntOpenDownload" xml:space="preserve"><value>Не вдалося відкрити завантаження: {0}</value></data>
+  <data name="Unlocker_Err_NoLongerAvailable" xml:space="preserve"><value>{0} більше недоступний.</value></data>
+  <data name="Err_GitHubUnreachable" xml:space="preserve"><value>Не вдалося зв'язатися з GitHub — перевірте з'єднання та спробуйте ще раз.</value></data>
+  <data name="Unlocker_Err_ReleaseMissingDownload" xml:space="preserve"><value>У випуску немає очікуваного завантаження.</value></data>
+  <data name="Unlocker_Err_DownloadVerification" xml:space="preserve"><value>Завантаження не пройшло перевірку (невідповідність sha256 або немає опублікованого digest).</value></data>
+  <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>У завантаженні бракує: {0}.</value></data>
+  <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>Не вдалося знайти {0} у жодному випуску.</value></data>
+  <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} не пройшов перевірку (невідповідність sha256 або немає опублікованого digest).</value></data>
+  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>У випуску бракує {0}.</value></data>
+  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>Для {0} немає опублікованого digest для перевірки.</value></data>
+  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} завершився з кодом {1}.</value></data>
+  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} не розгорнуто — виправлення не завершено.</value></data>
+  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} — не очікувана версія, оновлення не застосовано.</value></data>
+  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Не вдалося запустити fixer.</value></data>
+  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>Не вдалося записати cloud_redirect.dll — закрийте Steam і спробуйте ще раз.</value></data>
+  <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Помилка обміну токена ({0}): {1}</value></data>
+  <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Обмін токена повернув порожній сеанс.</value></data>
+  <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Вхід не виконано.</value></data>
+  <data name="Auth_Err_RefreshFailed" xml:space="preserve"><value>Не вдалося оновити сеанс ({0}).</value></data>
+  <data name="Auth_Err_RefreshEmpty" xml:space="preserve"><value>Оновлення сеансу повернуло порожній сеанс.</value></data>
+  <data name="Auth_Err_SignInDenied" xml:space="preserve"><value>У вході відмовлено.</value></data>
+  <data name="Api_Err_LinkEmpty" xml:space="preserve"><value>Посилання на завантаження порожнє — спробуйте ще раз.</value></data>
+  <data name="Api_Err_LinkRefused" xml:space="preserve"><value>Сервер надіслав посилання на завантаження, за яким цей застосунок не перейде. Будь ласка, повідомте про це.</value></data>
+  <data name="Api_Err_DownloadFailed" xml:space="preserve"><value>Помилка завантаження ({0}).</value></data>
+  <data name="Api_Err_DownloadStalled" xml:space="preserve"><value>Завантаження не передавало даних {0} с — спробуйте ще раз.</value></data>
+  <data name="App_Toast_UpdatingPlugin" xml:space="preserve"><value>Оновлення плагіна — Steam буде перезапущено.</value></data>
+  <data name="App_StartupFailed" xml:space="preserve"><value>Не вдалося запустити LuaTools.&#10;&#10;{0}&#10;&#10;Подробиці записано в:&#10;{1}</value></data>
+  <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Не вдалося записати файли ({0}) у папку Steam — доступ заборонено. Схоже, Steam встановлено в розташування, яке потребує прав адміністратора (наприклад, Program Files). Закрийте Steam, а потім один раз запустіть LuaTools від імені адміністратора, щоб застосувати цей режим.</value></data>
+  <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Не вдалося записати файли ({0}) — закрийте Steam і спробуйте ще раз.</value></data>
 </root>

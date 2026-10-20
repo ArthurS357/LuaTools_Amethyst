@@ -556,4 +556,34 @@ Isto elimina os ficheiros .lua de Steam\config\stplug-in. Reinicie o Steam depoi
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Correção revertida parcialmente</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>Não foi possível restaurar {0} ficheiro(s). Feche o jogo e tente novamente.</value></data>
   <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
+  <data name="Err_SteamNotFound" xml:space="preserve"><value>Localização do Steam não encontrada — defina-a nas Definições.</value></data>
+  <data name="Installer_Err_CouldntOpenDownload" xml:space="preserve"><value>Não foi possível abrir a transferência: {0}</value></data>
+  <data name="Unlocker_Err_NoLongerAvailable" xml:space="preserve"><value>{0} já não está disponível.</value></data>
+  <data name="Err_GitHubUnreachable" xml:space="preserve"><value>Não foi possível aceder ao GitHub — verifique a sua ligação e tente novamente.</value></data>
+  <data name="Unlocker_Err_ReleaseMissingDownload" xml:space="preserve"><value>A versão não contém a transferência esperada.</value></data>
+  <data name="Unlocker_Err_DownloadVerification" xml:space="preserve"><value>A transferência falhou a verificação (sha256 divergente ou sem digest publicado).</value></data>
+  <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>Falta na transferência: {0}.</value></data>
+  <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>Não foi possível encontrar {0} em nenhuma versão.</value></data>
+  <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} falhou a verificação (sha256 divergente ou sem digest publicado).</value></data>
+  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>A versão não contém {0}.</value></data>
+  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} não tem digest publicado para verificação.</value></data>
+  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} terminou com o código {1}.</value></data>
+  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} não foi implementado — a correção não foi concluída.</value></data>
+  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} não é a versão esperada — a atualização não foi aplicada.</value></data>
+  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Não foi possível iniciar o fixer.</value></data>
+  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>Não foi possível gravar cloud_redirect.dll — feche o Steam e tente novamente.</value></data>
+  <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Falha na troca do token ({0}): {1}</value></data>
+  <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>A troca do token devolveu uma sessão vazia.</value></data>
+  <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Sessão não iniciada.</value></data>
+  <data name="Auth_Err_RefreshFailed" xml:space="preserve"><value>Falha ao renovar a sessão ({0}).</value></data>
+  <data name="Auth_Err_RefreshEmpty" xml:space="preserve"><value>A renovação da sessão devolveu uma sessão vazia.</value></data>
+  <data name="Auth_Err_SignInDenied" xml:space="preserve"><value>O início de sessão foi recusado.</value></data>
+  <data name="Api_Err_LinkEmpty" xml:space="preserve"><value>A ligação de transferência veio vazia — tente novamente.</value></data>
+  <data name="Api_Err_LinkRefused" xml:space="preserve"><value>O servidor enviou uma ligação de transferência que esta aplicação não vai seguir. Por favor, comunique-o.</value></data>
+  <data name="Api_Err_DownloadFailed" xml:space="preserve"><value>A transferência falhou ({0}).</value></data>
+  <data name="Api_Err_DownloadStalled" xml:space="preserve"><value>A transferência deixou de enviar dados durante {0} segundos — tente novamente.</value></data>
+  <data name="App_Toast_UpdatingPlugin" xml:space="preserve"><value>A atualizar o plugin — o Steam será reiniciado.</value></data>
+  <data name="App_StartupFailed" xml:space="preserve"><value>Não foi possível iniciar o LuaTools.&#10;&#10;{0}&#10;&#10;Os detalhes foram gravados em:&#10;{1}</value></data>
+  <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Não foi possível gravar {0} ficheiro(s) na pasta do Steam — acesso negado. O Steam parece estar instalado num local que exige direitos de administrador (ex.: Program Files). Feche o Steam e execute o LuaTools como administrador uma vez para aplicar este modo.</value></data>
+  <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Não foi possível gravar {0} ficheiro(s) — feche o Steam e tente novamente.</value></data>
 </root>

@@ -556,4 +556,34 @@
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>수정이 일부만 되돌려졌습니다</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0}개 파일을 복원하지 못했습니다. 게임을 닫고 다시 시도하세요.</value></data>
   <data name="Mode_Badge_Upstream" xml:space="preserve"><value>업스트림</value></data>
+  <data name="Err_SteamNotFound" xml:space="preserve"><value>Steam 위치를 찾을 수 없습니다 — 설정에서 지정하세요.</value></data>
+  <data name="Installer_Err_CouldntOpenDownload" xml:space="preserve"><value>다운로드를 열 수 없습니다: {0}</value></data>
+  <data name="Unlocker_Err_NoLongerAvailable" xml:space="preserve"><value>{0}은(는) 더 이상 사용할 수 없습니다.</value></data>
+  <data name="Err_GitHubUnreachable" xml:space="preserve"><value>GitHub에 연결할 수 없습니다 — 연결을 확인하고 다시 시도하세요.</value></data>
+  <data name="Unlocker_Err_ReleaseMissingDownload" xml:space="preserve"><value>릴리스에 예상된 다운로드가 없습니다.</value></data>
+  <data name="Unlocker_Err_DownloadVerification" xml:space="preserve"><value>다운로드 검증에 실패했습니다 (sha256 불일치 또는 게시된 digest 없음).</value></data>
+  <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>다운로드에 누락된 항목: {0}.</value></data>
+  <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>어떤 릴리스에서도 {0}을(를) 찾을 수 없습니다.</value></data>
+  <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} 검증에 실패했습니다 (sha256 불일치 또는 게시된 digest 없음).</value></data>
+  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>릴리스에 {0}이(가) 없습니다.</value></data>
+  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0}에는 검증할 게시된 digest가 없습니다.</value></data>
+  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0}이(가) 코드 {1}(으)로 종료되었습니다.</value></data>
+  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0}이(가) 배포되지 않았습니다 — 수정이 완료되지 않았습니다.</value></data>
+  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0}은(는) 예상된 버전이 아닙니다 — 업데이트가 적용되지 않았습니다.</value></data>
+  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>fixer를 시작하지 못했습니다.</value></data>
+  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>cloud_redirect.dll을 쓸 수 없습니다 — Steam을 닫고 다시 시도하세요.</value></data>
+  <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>토큰 교환 실패 ({0}): {1}</value></data>
+  <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>토큰 교환이 빈 세션을 반환했습니다.</value></data>
+  <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>로그인하지 않았습니다.</value></data>
+  <data name="Auth_Err_RefreshFailed" xml:space="preserve"><value>세션 갱신 실패 ({0}).</value></data>
+  <data name="Auth_Err_RefreshEmpty" xml:space="preserve"><value>세션 갱신이 빈 세션을 반환했습니다.</value></data>
+  <data name="Auth_Err_SignInDenied" xml:space="preserve"><value>로그인이 거부되었습니다.</value></data>
+  <data name="Api_Err_LinkEmpty" xml:space="preserve"><value>다운로드 링크가 비어 있습니다 — 다시 시도하세요.</value></data>
+  <data name="Api_Err_LinkRefused" xml:space="preserve"><value>서버가 이 앱이 따르지 않을 다운로드 링크를 보냈습니다. 신고해 주세요.</value></data>
+  <data name="Api_Err_DownloadFailed" xml:space="preserve"><value>다운로드 실패 ({0}).</value></data>
+  <data name="Api_Err_DownloadStalled" xml:space="preserve"><value>다운로드가 {0}초 동안 데이터를 보내지 않았습니다 — 다시 시도하세요.</value></data>
+  <data name="App_Toast_UpdatingPlugin" xml:space="preserve"><value>플러그인 업데이트 중 — Steam이 다시 시작됩니다.</value></data>
+  <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools를 시작할 수 없습니다.&#10;&#10;{0}&#10;&#10;자세한 내용이 기록된 위치:&#10;{1}</value></data>
+  <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Steam 폴더에 파일 {0}개를 쓸 수 없습니다 — 액세스가 거부되었습니다. Steam이 관리자 권한이 필요한 위치(예: Program Files)에 설치된 것 같습니다. Steam을 닫은 다음 LuaTools를 관리자 권한으로 한 번 실행하여 이 모드를 적용하세요.</value></data>
+  <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>파일 {0}개를 쓸 수 없습니다 — Steam을 닫고 다시 시도하세요.</value></data>
 </root>

@@ -556,4 +556,34 @@
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>修復部分還原</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>有 {0} 個檔案無法復原。請關閉遊戲後重試。</value></data>
   <data name="Mode_Badge_Upstream" xml:space="preserve"><value>上游</value></data>
+  <data name="Err_SteamNotFound" xml:space="preserve"><value>找不到 Steam 位置——請在設定中指定。</value></data>
+  <data name="Installer_Err_CouldntOpenDownload" xml:space="preserve"><value>無法開啟下載：{0}</value></data>
+  <data name="Unlocker_Err_NoLongerAvailable" xml:space="preserve"><value>{0} 已不再提供。</value></data>
+  <data name="Err_GitHubUnreachable" xml:space="preserve"><value>無法連線 GitHub——請檢查網路連線後重試。</value></data>
+  <data name="Unlocker_Err_ReleaseMissingDownload" xml:space="preserve"><value>此版本缺少預期的下載檔案。</value></data>
+  <data name="Unlocker_Err_DownloadVerification" xml:space="preserve"><value>下載未通過驗證（sha256 不符或沒有已發佈的 digest）。</value></data>
+  <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>下載缺少：{0}。</value></data>
+  <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>在任何版本中都找不到 {0}。</value></data>
+  <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} 未通過驗證（sha256 不符或沒有已發佈的 digest）。</value></data>
+  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>此版本缺少 {0}。</value></data>
+  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} 沒有可用於驗證的已發佈 digest。</value></data>
+  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} 已結束，代碼 {1}。</value></data>
+  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} 未部署——修正未完成。</value></data>
+  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} 不是預期的版本——更新未套用。</value></data>
+  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>無法啟動 fixer。</value></data>
+  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>無法寫入 cloud_redirect.dll——請關閉 Steam 後重試。</value></data>
+  <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>權杖交換失敗（{0}）：{1}</value></data>
+  <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>權杖交換傳回了空的工作階段。</value></data>
+  <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>尚未登入。</value></data>
+  <data name="Auth_Err_RefreshFailed" xml:space="preserve"><value>工作階段更新失敗（{0}）。</value></data>
+  <data name="Auth_Err_RefreshEmpty" xml:space="preserve"><value>工作階段更新傳回了空的工作階段。</value></data>
+  <data name="Auth_Err_SignInDenied" xml:space="preserve"><value>登入遭拒。</value></data>
+  <data name="Api_Err_LinkEmpty" xml:space="preserve"><value>下載連結為空——請重試。</value></data>
+  <data name="Api_Err_LinkRefused" xml:space="preserve"><value>伺服器傳送了本應用程式不會跟隨的下載連結。請回報此問題。</value></data>
+  <data name="Api_Err_DownloadFailed" xml:space="preserve"><value>下載失敗（{0}）。</value></data>
+  <data name="Api_Err_DownloadStalled" xml:space="preserve"><value>下載已連續 {0} 秒沒有傳輸資料——請重試。</value></data>
+  <data name="App_Toast_UpdatingPlugin" xml:space="preserve"><value>正在更新外掛——Steam 將重新啟動。</value></data>
+  <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools 無法啟動。&#10;&#10;{0}&#10;&#10;詳細資訊已寫入：&#10;{1}</value></data>
+  <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>無法將 {0} 個檔案寫入 Steam 資料夾——存取遭拒。Steam 似乎安裝在需要系統管理員權限的位置（例如 Program Files）。請關閉 Steam，然後以系統管理員身分執行一次 LuaTools 以套用此模式。</value></data>
+  <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>無法寫入 {0} 個檔案——請關閉 Steam 後重試。</value></data>
 </root>

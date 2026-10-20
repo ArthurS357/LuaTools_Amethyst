@@ -556,4 +556,34 @@
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>修正は一部だけ元に戻りました</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} 個のファイルを復元できませんでした。ゲームを閉じてやり直してください。</value></data>
   <data name="Mode_Badge_Upstream" xml:space="preserve"><value>アップストリーム</value></data>
+  <data name="Err_SteamNotFound" xml:space="preserve"><value>Steam の場所が見つかりません — 設定で指定してください。</value></data>
+  <data name="Installer_Err_CouldntOpenDownload" xml:space="preserve"><value>ダウンロードを開けませんでした: {0}</value></data>
+  <data name="Unlocker_Err_NoLongerAvailable" xml:space="preserve"><value>{0} は利用できなくなりました。</value></data>
+  <data name="Err_GitHubUnreachable" xml:space="preserve"><value>GitHub に接続できませんでした — 接続を確認して再試行してください。</value></data>
+  <data name="Unlocker_Err_ReleaseMissingDownload" xml:space="preserve"><value>リリースに想定されたダウンロードが含まれていません。</value></data>
+  <data name="Unlocker_Err_DownloadVerification" xml:space="preserve"><value>ダウンロードの検証に失敗しました (sha256 の不一致、または公開された digest がありません)。</value></data>
+  <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>ダウンロードに不足しているもの: {0}。</value></data>
+  <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>どのリリースにも {0} が見つかりませんでした。</value></data>
+  <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} の検証に失敗しました (sha256 の不一致、または公開された digest がありません)。</value></data>
+  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>リリースに {0} が含まれていません。</value></data>
+  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} には検証に使える公開 digest がありません。</value></data>
+  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} はコード {1} で終了しました。</value></data>
+  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} が配置されませんでした — 修正は完了していません。</value></data>
+  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} は想定されたバージョンではありません — 更新は適用されませんでした。</value></data>
+  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>fixer を起動できませんでした。</value></data>
+  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>cloud_redirect.dll を書き込めませんでした — Steam を閉じて再試行してください。</value></data>
+  <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>トークンの交換に失敗しました ({0}): {1}</value></data>
+  <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>トークンの交換で空のセッションが返されました。</value></data>
+  <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>サインインしていません。</value></data>
+  <data name="Auth_Err_RefreshFailed" xml:space="preserve"><value>セッションの更新に失敗しました ({0})。</value></data>
+  <data name="Auth_Err_RefreshEmpty" xml:space="preserve"><value>セッションの更新で空のセッションが返されました。</value></data>
+  <data name="Auth_Err_SignInDenied" xml:space="preserve"><value>サインインが拒否されました。</value></data>
+  <data name="Api_Err_LinkEmpty" xml:space="preserve"><value>ダウンロードリンクが空でした — 再試行してください。</value></data>
+  <data name="Api_Err_LinkRefused" xml:space="preserve"><value>サーバーが、このアプリが従わないダウンロードリンクを送信しました。報告してください。</value></data>
+  <data name="Api_Err_DownloadFailed" xml:space="preserve"><value>ダウンロードに失敗しました ({0})。</value></data>
+  <data name="Api_Err_DownloadStalled" xml:space="preserve"><value>ダウンロードが {0} 秒間データを送信していません — 再試行してください。</value></data>
+  <data name="App_Toast_UpdatingPlugin" xml:space="preserve"><value>プラグインを更新しています — Steam が再起動します。</value></data>
+  <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools を起動できませんでした。&#10;&#10;{0}&#10;&#10;詳細の書き込み先:&#10;{1}</value></data>
+  <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Steam フォルダーに {0} 個のファイルを書き込めませんでした — アクセスが拒否されました。Steam は管理者権限が必要な場所 (例: Program Files) にインストールされているようです。Steam を閉じてから、LuaTools を一度管理者として実行してこのモードを適用してください。</value></data>
+  <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>{0} 個のファイルを書き込めませんでした — Steam を閉じて再試行してください。</value></data>
 </root>

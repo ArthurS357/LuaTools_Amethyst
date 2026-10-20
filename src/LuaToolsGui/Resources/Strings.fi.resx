@@ -556,4 +556,34 @@ Tämä poistaa .lua-tiedostot sijainnista Steam\config\stplug-in. Käynnistä St
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Korjaus peruttu osittain</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} tiedostoa ei voitu palauttaa. Sulje peli ja yritä uudelleen.</value></data>
   <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
+  <data name="Err_SteamNotFound" xml:space="preserve"><value>Steamin sijaintia ei löytynyt — määritä se Asetuksissa.</value></data>
+  <data name="Installer_Err_CouldntOpenDownload" xml:space="preserve"><value>Latausta ei voitu avata: {0}</value></data>
+  <data name="Unlocker_Err_NoLongerAvailable" xml:space="preserve"><value>{0} ei ole enää saatavilla.</value></data>
+  <data name="Err_GitHubUnreachable" xml:space="preserve"><value>GitHubiin ei saatu yhteyttä — tarkista yhteys ja yritä uudelleen.</value></data>
+  <data name="Unlocker_Err_ReleaseMissingDownload" xml:space="preserve"><value>Julkaisusta puuttuu odotettu lataus.</value></data>
+  <data name="Unlocker_Err_DownloadVerification" xml:space="preserve"><value>Lataus ei läpäissyt tarkistusta (sha256 ei täsmää tai julkaistua digestiä ei ole).</value></data>
+  <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>Latauksesta puuttuu: {0}.</value></data>
+  <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>Kohdetta {0} ei löytynyt mistään julkaisusta.</value></data>
+  <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} ei läpäissyt tarkistusta (sha256 ei täsmää tai julkaistua digestiä ei ole).</value></data>
+  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Julkaisusta puuttuu {0}.</value></data>
+  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>Kohteelle {0} ei ole julkaistua digestiä, johon verrata.</value></data>
+  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} päättyi koodilla {1}.</value></data>
+  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} ei asentunut — korjaus ei valmistunut.</value></data>
+  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} ei ole odotettu versio — päivitystä ei otettu käyttöön.</value></data>
+  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Fixerin käynnistys epäonnistui.</value></data>
+  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>Tiedostoa cloud_redirect.dll ei voitu kirjoittaa — sulje Steam ja yritä uudelleen.</value></data>
+  <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Tokenin vaihto epäonnistui ({0}): {1}</value></data>
+  <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Tokenin vaihto palautti tyhjän istunnon.</value></data>
+  <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Et ole kirjautunut sisään.</value></data>
+  <data name="Auth_Err_RefreshFailed" xml:space="preserve"><value>Istunnon uusiminen epäonnistui ({0}).</value></data>
+  <data name="Auth_Err_RefreshEmpty" xml:space="preserve"><value>Istunnon uusiminen palautti tyhjän istunnon.</value></data>
+  <data name="Auth_Err_SignInDenied" xml:space="preserve"><value>Kirjautuminen evättiin.</value></data>
+  <data name="Api_Err_LinkEmpty" xml:space="preserve"><value>Latauslinkki oli tyhjä — yritä uudelleen.</value></data>
+  <data name="Api_Err_LinkRefused" xml:space="preserve"><value>Palvelin lähetti latauslinkin, jota tämä sovellus ei seuraa. Ilmoita siitä.</value></data>
+  <data name="Api_Err_DownloadFailed" xml:space="preserve"><value>Lataus epäonnistui ({0}).</value></data>
+  <data name="Api_Err_DownloadStalled" xml:space="preserve"><value>Lataus lakkasi lähettämästä dataa {0} sekunniksi — yritä uudelleen.</value></data>
+  <data name="App_Toast_UpdatingPlugin" xml:space="preserve"><value>Päivitetään laajennusta — Steam käynnistyy uudelleen.</value></data>
+  <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools ei käynnistynyt.&#10;&#10;{0}&#10;&#10;Tiedot kirjoitettiin kohteeseen:&#10;{1}</value></data>
+  <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Tiedostoja ({0}) ei voitu kirjoittaa Steam-kansioon — pääsy evätty. Steam näyttää olevan asennettu sijaintiin, joka vaatii järjestelmänvalvojan oikeudet (esim. Program Files). Sulje Steam ja suorita LuaTools kerran järjestelmänvalvojana ottaaksesi tämän tilan käyttöön.</value></data>
+  <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Tiedostoja ({0}) ei voitu kirjoittaa — sulje Steam ja yritä uudelleen.</value></data>
 </root>

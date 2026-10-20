@@ -556,4 +556,34 @@ Bu işlem, .lua dosyalarını Steam\config\stplug-in konumundan siler. Değişik
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Düzeltme kısmen geri alındı</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} dosya geri yüklenemedi. Oyunu kapatıp tekrar deneyin.</value></data>
   <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
+  <data name="Err_SteamNotFound" xml:space="preserve"><value>Steam konumu bulunamadı — Ayarlar'da belirtin.</value></data>
+  <data name="Installer_Err_CouldntOpenDownload" xml:space="preserve"><value>İndirme açılamadı: {0}</value></data>
+  <data name="Unlocker_Err_NoLongerAvailable" xml:space="preserve"><value>{0} artık kullanılamıyor.</value></data>
+  <data name="Err_GitHubUnreachable" xml:space="preserve"><value>GitHub'a ulaşılamadı — bağlantınızı kontrol edip tekrar deneyin.</value></data>
+  <data name="Unlocker_Err_ReleaseMissingDownload" xml:space="preserve"><value>Sürümde beklenen indirme yok.</value></data>
+  <data name="Unlocker_Err_DownloadVerification" xml:space="preserve"><value>İndirme doğrulamayı geçemedi (sha256 uyuşmazlığı veya yayımlanmış digest yok).</value></data>
+  <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>İndirmede eksik: {0}.</value></data>
+  <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>{0} hiçbir sürümde bulunamadı.</value></data>
+  <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} doğrulamayı geçemedi (sha256 uyuşmazlığı veya yayımlanmış digest yok).</value></data>
+  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Sürümde {0} eksik.</value></data>
+  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} için doğrulanacak yayımlanmış digest yok.</value></data>
+  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0}, {1} koduyla çıktı.</value></data>
+  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} dağıtılmadı — düzeltme tamamlanmadı.</value></data>
+  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} beklenen sürüm değil — güncelleme uygulanmadı.</value></data>
+  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Fixer başlatılamadı.</value></data>
+  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>cloud_redirect.dll yazılamadı — Steam'i kapatıp tekrar deneyin.</value></data>
+  <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Token değişimi başarısız ({0}): {1}</value></data>
+  <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Token değişimi boş bir oturum döndürdü.</value></data>
+  <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Giriş yapılmadı.</value></data>
+  <data name="Auth_Err_RefreshFailed" xml:space="preserve"><value>Oturum yenileme başarısız ({0}).</value></data>
+  <data name="Auth_Err_RefreshEmpty" xml:space="preserve"><value>Oturum yenileme boş bir oturum döndürdü.</value></data>
+  <data name="Auth_Err_SignInDenied" xml:space="preserve"><value>Giriş reddedildi.</value></data>
+  <data name="Api_Err_LinkEmpty" xml:space="preserve"><value>İndirme bağlantısı boştu — tekrar deneyin.</value></data>
+  <data name="Api_Err_LinkRefused" xml:space="preserve"><value>Sunucu, bu uygulamanın izlemeyeceği bir indirme bağlantısı gönderdi. Lütfen bildirin.</value></data>
+  <data name="Api_Err_DownloadFailed" xml:space="preserve"><value>İndirme başarısız ({0}).</value></data>
+  <data name="Api_Err_DownloadStalled" xml:space="preserve"><value>İndirme {0} saniye boyunca veri göndermeyi durdurdu — tekrar deneyin.</value></data>
+  <data name="App_Toast_UpdatingPlugin" xml:space="preserve"><value>Eklenti güncelleniyor — Steam yeniden başlatılacak.</value></data>
+  <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools başlatılamadı.&#10;&#10;{0}&#10;&#10;Ayrıntılar şuraya yazıldı:&#10;{1}</value></data>
+  <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Steam klasörüne {0} dosya yazılamadı — erişim reddedildi. Steam, yönetici hakları gerektiren bir konuma (ör. Program Files) kurulmuş görünüyor. Steam'i kapatın, ardından bu modu uygulamak için LuaTools'u bir kez yönetici olarak çalıştırın.</value></data>
+  <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>{0} dosya yazılamadı — Steam'i kapatıp tekrar deneyin.</value></data>
 </root>

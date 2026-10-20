@@ -556,4 +556,34 @@
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Η διόρθωση αναιρέθηκε μερικώς</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>Δεν ήταν δυνατή η επαναφορά {0} αρχείων. Κλείστε το παιχνίδι και δοκιμάστε ξανά.</value></data>
   <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
+  <data name="Err_SteamNotFound" xml:space="preserve"><value>Δεν βρέθηκε η τοποθεσία του Steam — ορίστε την στις Ρυθμίσεις.</value></data>
+  <data name="Installer_Err_CouldntOpenDownload" xml:space="preserve"><value>Δεν ήταν δυνατό το άνοιγμα της λήψης: {0}</value></data>
+  <data name="Unlocker_Err_NoLongerAvailable" xml:space="preserve"><value>Το {0} δεν είναι πλέον διαθέσιμο.</value></data>
+  <data name="Err_GitHubUnreachable" xml:space="preserve"><value>Δεν ήταν δυνατή η σύνδεση στο GitHub — ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά.</value></data>
+  <data name="Unlocker_Err_ReleaseMissingDownload" xml:space="preserve"><value>Από την έκδοση λείπει η αναμενόμενη λήψη.</value></data>
+  <data name="Unlocker_Err_DownloadVerification" xml:space="preserve"><value>Η λήψη απέτυχε στον έλεγχο (ασυμφωνία sha256 ή δεν υπάρχει δημοσιευμένο digest).</value></data>
+  <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>Από τη λήψη λείπει: {0}.</value></data>
+  <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>Δεν βρέθηκε το {0} σε καμία έκδοση.</value></data>
+  <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>Το {0} απέτυχε στον έλεγχο (ασυμφωνία sha256 ή δεν υπάρχει δημοσιευμένο digest).</value></data>
+  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Από την έκδοση λείπει το {0}.</value></data>
+  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>Το {0} δεν έχει δημοσιευμένο digest για έλεγχο.</value></data>
+  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>Το {0} τερματίστηκε με κωδικό {1}.</value></data>
+  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>Το {0} δεν εγκαταστάθηκε — η διόρθωση δεν ολοκληρώθηκε.</value></data>
+  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>Το {0} δεν είναι η αναμενόμενη έκδοση — η ενημέρωση δεν εφαρμόστηκε.</value></data>
+  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Δεν ήταν δυνατή η εκκίνηση του fixer.</value></data>
+  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>Δεν ήταν δυνατή η εγγραφή του cloud_redirect.dll — κλείστε το Steam και δοκιμάστε ξανά.</value></data>
+  <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Η ανταλλαγή token απέτυχε ({0}): {1}</value></data>
+  <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Η ανταλλαγή token επέστρεψε κενή συνεδρία.</value></data>
+  <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Δεν έχετε συνδεθεί.</value></data>
+  <data name="Auth_Err_RefreshFailed" xml:space="preserve"><value>Η ανανέωση της συνεδρίας απέτυχε ({0}).</value></data>
+  <data name="Auth_Err_RefreshEmpty" xml:space="preserve"><value>Η ανανέωση της συνεδρίας επέστρεψε κενή συνεδρία.</value></data>
+  <data name="Auth_Err_SignInDenied" xml:space="preserve"><value>Η σύνδεση απορρίφθηκε.</value></data>
+  <data name="Api_Err_LinkEmpty" xml:space="preserve"><value>Ο σύνδεσμος λήψης ήταν κενός — δοκιμάστε ξανά.</value></data>
+  <data name="Api_Err_LinkRefused" xml:space="preserve"><value>Ο διακομιστής έστειλε έναν σύνδεσμο λήψης που αυτή η εφαρμογή δεν θα ακολουθήσει. Παρακαλούμε αναφέρετέ το.</value></data>
+  <data name="Api_Err_DownloadFailed" xml:space="preserve"><value>Η λήψη απέτυχε ({0}).</value></data>
+  <data name="Api_Err_DownloadStalled" xml:space="preserve"><value>Η λήψη σταμάτησε να στέλνει δεδομένα για {0} δευτερόλεπτα — δοκιμάστε ξανά.</value></data>
+  <data name="App_Toast_UpdatingPlugin" xml:space="preserve"><value>Ενημέρωση πρόσθετου — το Steam θα επανεκκινηθεί.</value></data>
+  <data name="App_StartupFailed" xml:space="preserve"><value>Δεν ήταν δυνατή η εκκίνηση του LuaTools.&#10;&#10;{0}&#10;&#10;Οι λεπτομέρειες γράφτηκαν στο:&#10;{1}</value></data>
+  <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Δεν ήταν δυνατή η εγγραφή αρχείων ({0}) στον φάκελο του Steam — η πρόσβαση απορρίφθηκε. Το Steam φαίνεται να είναι εγκατεστημένο σε τοποθεσία που απαιτεί δικαιώματα διαχειριστή (π.χ. Program Files). Κλείστε το Steam και εκτελέστε το LuaTools ως διαχειριστής μία φορά για να εφαρμόσετε αυτή τη λειτουργία.</value></data>
+  <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Δεν ήταν δυνατή η εγγραφή αρχείων ({0}) — κλείστε το Steam και δοκιμάστε ξανά.</value></data>
 </root>

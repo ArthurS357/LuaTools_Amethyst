@@ -556,4 +556,34 @@
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Корекцията е върната частично</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} файл(а) не можаха да бъдат възстановени. Затворете играта и опитайте отново.</value></data>
   <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
+  <data name="Err_SteamNotFound" xml:space="preserve"><value>Местоположението на Steam не е намерено — задайте го в Настройки.</value></data>
+  <data name="Installer_Err_CouldntOpenDownload" xml:space="preserve"><value>Изтеглянето не може да бъде отворено: {0}</value></data>
+  <data name="Unlocker_Err_NoLongerAvailable" xml:space="preserve"><value>{0} вече не е наличен.</value></data>
+  <data name="Err_GitHubUnreachable" xml:space="preserve"><value>GitHub е недостъпен — проверете връзката си и опитайте отново.</value></data>
+  <data name="Unlocker_Err_ReleaseMissingDownload" xml:space="preserve"><value>Във версията липсва очакваното изтегляне.</value></data>
+  <data name="Unlocker_Err_DownloadVerification" xml:space="preserve"><value>Изтеглянето не премина проверката (несъответствие на sha256 или няма публикуван digest).</value></data>
+  <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>В изтеглянето липсва: {0}.</value></data>
+  <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>{0} не може да бъде намерен в нито една версия.</value></data>
+  <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} не премина проверката (несъответствие на sha256 или няма публикуван digest).</value></data>
+  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Във версията липсва {0}.</value></data>
+  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} няма публикуван digest за проверка.</value></data>
+  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} приключи с код {1}.</value></data>
+  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} не беше разположен — поправката не завърши.</value></data>
+  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} не е очакваната версия — обновлението не беше приложено.</value></data>
+  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Fixer-ът не може да бъде стартиран.</value></data>
+  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>cloud_redirect.dll не може да бъде записан — затворете Steam и опитайте отново.</value></data>
+  <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Размяната на токена е неуспешна ({0}): {1}</value></data>
+  <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Размяната на токена върна празна сесия.</value></data>
+  <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Не сте влезли.</value></data>
+  <data name="Auth_Err_RefreshFailed" xml:space="preserve"><value>Подновяването на сесията е неуспешно ({0}).</value></data>
+  <data name="Auth_Err_RefreshEmpty" xml:space="preserve"><value>Подновяването на сесията върна празна сесия.</value></data>
+  <data name="Auth_Err_SignInDenied" xml:space="preserve"><value>Входът беше отказан.</value></data>
+  <data name="Api_Err_LinkEmpty" xml:space="preserve"><value>Връзката за изтегляне беше празна — опитайте отново.</value></data>
+  <data name="Api_Err_LinkRefused" xml:space="preserve"><value>Сървърът изпрати връзка за изтегляне, която това приложение няма да последва. Моля, докладвайте го.</value></data>
+  <data name="Api_Err_DownloadFailed" xml:space="preserve"><value>Изтеглянето е неуспешно ({0}).</value></data>
+  <data name="Api_Err_DownloadStalled" xml:space="preserve"><value>Изтеглянето спря да изпраща данни за {0} секунди — опитайте отново.</value></data>
+  <data name="App_Toast_UpdatingPlugin" xml:space="preserve"><value>Плъгинът се обновява — Steam ще се рестартира.</value></data>
+  <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools не можа да стартира.&#10;&#10;{0}&#10;&#10;Подробностите са записани в:&#10;{1}</value></data>
+  <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>{0} файл(а) не можаха да бъдат записани в папката на Steam — достъпът е отказан. Изглежда Steam е инсталиран на място, което изисква администраторски права (напр. Program Files). Затворете Steam и стартирайте LuaTools веднъж като администратор, за да приложите този режим.</value></data>
+  <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>{0} файл(а) не можаха да бъдат записани — затворете Steam и опитайте отново.</value></data>
 </root>

@@ -556,4 +556,34 @@ Thao tác này sẽ xóa các tệp .lua khỏi Steam\config\stplug-in. Sau đó
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Bản sửa lỗi được hoàn tác một phần</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>Không thể khôi phục {0} tệp. Hãy đóng trò chơi và thử lại.</value></data>
   <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
+  <data name="Err_SteamNotFound" xml:space="preserve"><value>Không tìm thấy vị trí Steam — hãy đặt trong Cài đặt.</value></data>
+  <data name="Installer_Err_CouldntOpenDownload" xml:space="preserve"><value>Không thể mở bản tải xuống: {0}</value></data>
+  <data name="Unlocker_Err_NoLongerAvailable" xml:space="preserve"><value>{0} không còn khả dụng.</value></data>
+  <data name="Err_GitHubUnreachable" xml:space="preserve"><value>Không thể kết nối GitHub — hãy kiểm tra kết nối và thử lại.</value></data>
+  <data name="Unlocker_Err_ReleaseMissingDownload" xml:space="preserve"><value>Bản phát hành thiếu tệp tải xuống cần thiết.</value></data>
+  <data name="Unlocker_Err_DownloadVerification" xml:space="preserve"><value>Tệp tải xuống không vượt qua bước xác minh (sha256 không khớp hoặc không có digest được công bố).</value></data>
+  <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>Tệp tải xuống bị thiếu: {0}.</value></data>
+  <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>Không tìm thấy {0} trong bất kỳ bản phát hành nào.</value></data>
+  <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} không vượt qua bước xác minh (sha256 không khớp hoặc không có digest được công bố).</value></data>
+  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Bản phát hành thiếu {0}.</value></data>
+  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} không có digest được công bố để xác minh.</value></data>
+  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} đã thoát với mã {1}.</value></data>
+  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} chưa được triển khai — bản sửa lỗi chưa hoàn tất.</value></data>
+  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} không phải phiên bản mong đợi — bản cập nhật chưa được áp dụng.</value></data>
+  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Không thể khởi động fixer.</value></data>
+  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>Không thể ghi cloud_redirect.dll — hãy đóng Steam và thử lại.</value></data>
+  <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Trao đổi token thất bại ({0}): {1}</value></data>
+  <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Trao đổi token trả về phiên trống.</value></data>
+  <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Chưa đăng nhập.</value></data>
+  <data name="Auth_Err_RefreshFailed" xml:space="preserve"><value>Làm mới phiên thất bại ({0}).</value></data>
+  <data name="Auth_Err_RefreshEmpty" xml:space="preserve"><value>Làm mới phiên trả về phiên trống.</value></data>
+  <data name="Auth_Err_SignInDenied" xml:space="preserve"><value>Đăng nhập bị từ chối.</value></data>
+  <data name="Api_Err_LinkEmpty" xml:space="preserve"><value>Liên kết tải xuống bị trống — hãy thử lại.</value></data>
+  <data name="Api_Err_LinkRefused" xml:space="preserve"><value>Máy chủ đã gửi một liên kết tải xuống mà ứng dụng này sẽ không mở. Vui lòng báo cáo.</value></data>
+  <data name="Api_Err_DownloadFailed" xml:space="preserve"><value>Tải xuống thất bại ({0}).</value></data>
+  <data name="Api_Err_DownloadStalled" xml:space="preserve"><value>Tải xuống đã ngừng gửi dữ liệu trong {0} giây — hãy thử lại.</value></data>
+  <data name="App_Toast_UpdatingPlugin" xml:space="preserve"><value>Đang cập nhật plugin — Steam sẽ khởi động lại.</value></data>
+  <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools không thể khởi động.&#10;&#10;{0}&#10;&#10;Chi tiết đã được ghi vào:&#10;{1}</value></data>
+  <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Không thể ghi {0} tệp vào thư mục Steam — truy cập bị từ chối. Có vẻ Steam được cài ở vị trí cần quyền quản trị viên (ví dụ: Program Files). Hãy đóng Steam, sau đó chạy LuaTools với quyền quản trị viên một lần để áp dụng chế độ này.</value></data>
+  <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Không thể ghi {0} tệp — hãy đóng Steam và thử lại.</value></data>
 </root>

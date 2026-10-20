@@ -556,4 +556,34 @@ Detta tar bort .lua-filerna från Steam\config\stplug-in. Starta om Steam efter�
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Korrigering delvis ångrad</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} fil(er) kunde inte återställas. Stäng spelet och försök igen.</value></data>
   <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
+  <data name="Err_SteamNotFound" xml:space="preserve"><value>Steams plats hittades inte — ange den i Inställningar.</value></data>
+  <data name="Installer_Err_CouldntOpenDownload" xml:space="preserve"><value>Det gick inte att öppna nedladdningen: {0}</value></data>
+  <data name="Unlocker_Err_NoLongerAvailable" xml:space="preserve"><value>{0} är inte längre tillgänglig.</value></data>
+  <data name="Err_GitHubUnreachable" xml:space="preserve"><value>Det gick inte att nå GitHub — kontrollera anslutningen och försök igen.</value></data>
+  <data name="Unlocker_Err_ReleaseMissingDownload" xml:space="preserve"><value>Versionen saknar den förväntade nedladdningen.</value></data>
+  <data name="Unlocker_Err_DownloadVerification" xml:space="preserve"><value>Nedladdningen klarade inte verifieringen (sha256 stämmer inte eller ingen publicerad digest).</value></data>
+  <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>Nedladdningen saknar: {0}.</value></data>
+  <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>Det gick inte att hitta {0} i någon version.</value></data>
+  <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} klarade inte verifieringen (sha256 stämmer inte eller ingen publicerad digest).</value></data>
+  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Versionen saknar {0}.</value></data>
+  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} har ingen publicerad digest att verifiera mot.</value></data>
+  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} avslutades med kod {1}.</value></data>
+  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} distribuerades inte — korrigeringen slutfördes inte.</value></data>
+  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} är inte den förväntade versionen — uppdateringen tillämpades inte.</value></data>
+  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Det gick inte att starta fixern.</value></data>
+  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>Det gick inte att skriva cloud_redirect.dll — stäng Steam och försök igen.</value></data>
+  <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Tokenutbytet misslyckades ({0}): {1}</value></data>
+  <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Tokenutbytet returnerade en tom session.</value></data>
+  <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Inte inloggad.</value></data>
+  <data name="Auth_Err_RefreshFailed" xml:space="preserve"><value>Förnyelsen av sessionen misslyckades ({0}).</value></data>
+  <data name="Auth_Err_RefreshEmpty" xml:space="preserve"><value>Förnyelsen av sessionen returnerade en tom session.</value></data>
+  <data name="Auth_Err_SignInDenied" xml:space="preserve"><value>Inloggningen nekades.</value></data>
+  <data name="Api_Err_LinkEmpty" xml:space="preserve"><value>Nedladdningslänken var tom — försök igen.</value></data>
+  <data name="Api_Err_LinkRefused" xml:space="preserve"><value>Servern skickade en nedladdningslänk som den här appen inte följer. Rapportera det.</value></data>
+  <data name="Api_Err_DownloadFailed" xml:space="preserve"><value>Nedladdningen misslyckades ({0}).</value></data>
+  <data name="Api_Err_DownloadStalled" xml:space="preserve"><value>Nedladdningen slutade skicka data i {0} sekunder — försök igen.</value></data>
+  <data name="App_Toast_UpdatingPlugin" xml:space="preserve"><value>Uppdaterar tillägget — Steam startas om.</value></data>
+  <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools kunde inte starta.&#10;&#10;{0}&#10;&#10;Informationen skrevs till:&#10;{1}</value></data>
+  <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Det gick inte att skriva {0} fil(er) till Steam-mappen — åtkomst nekad. Steam verkar vara installerat på en plats som kräver administratörsbehörighet (t.ex. Program Files). Stäng Steam och kör sedan LuaTools som administratör en gång för att tillämpa det här läget.</value></data>
+  <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Det gick inte att skriva {0} fil(er) — stäng Steam och försök igen.</value></data>
 </root>

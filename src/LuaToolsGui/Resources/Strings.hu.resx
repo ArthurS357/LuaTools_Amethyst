@@ -556,4 +556,34 @@ Ez törli a .lua fájlokat a Steam\config\stplug-in mappából. Ezután indítsd
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>A javítás részben lett visszavonva</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} fájlt nem sikerült visszaállítani. Zárd be a játékot, és próbáld újra.</value></data>
   <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
+  <data name="Err_SteamNotFound" xml:space="preserve"><value>A Steam helye nem található — add meg a Beállításokban.</value></data>
+  <data name="Installer_Err_CouldntOpenDownload" xml:space="preserve"><value>A letöltés nem nyitható meg: {0}</value></data>
+  <data name="Unlocker_Err_NoLongerAvailable" xml:space="preserve"><value>{0} már nem érhető el.</value></data>
+  <data name="Err_GitHubUnreachable" xml:space="preserve"><value>A GitHub nem érhető el — ellenőrizd a kapcsolatot, és próbáld újra.</value></data>
+  <data name="Unlocker_Err_ReleaseMissingDownload" xml:space="preserve"><value>A kiadásból hiányzik a várt letöltés.</value></data>
+  <data name="Unlocker_Err_DownloadVerification" xml:space="preserve"><value>A letöltés nem ment át az ellenőrzésen (eltérő sha256 vagy nincs közzétett digest).</value></data>
+  <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>A letöltésből hiányzik: {0}.</value></data>
+  <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>{0} egyik kiadásban sem található.</value></data>
+  <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} nem ment át az ellenőrzésen (eltérő sha256 vagy nincs közzétett digest).</value></data>
+  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>A kiadásból hiányzik: {0}.</value></data>
+  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} esetében nincs közzétett digest az ellenőrzéshez.</value></data>
+  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} {1} kóddal lépett ki.</value></data>
+  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} nem lett telepítve — a javítás nem fejeződött be.</value></data>
+  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} nem a várt verzió — a frissítés nem lett alkalmazva.</value></data>
+  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>A fixer indítása nem sikerült.</value></data>
+  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>A cloud_redirect.dll nem írható — zárd be a Steamet, és próbáld újra.</value></data>
+  <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>A token cseréje sikertelen ({0}): {1}</value></data>
+  <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>A token cseréje üres munkamenetet adott vissza.</value></data>
+  <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Nem vagy bejelentkezve.</value></data>
+  <data name="Auth_Err_RefreshFailed" xml:space="preserve"><value>A munkamenet megújítása sikertelen ({0}).</value></data>
+  <data name="Auth_Err_RefreshEmpty" xml:space="preserve"><value>A munkamenet megújítása üres munkamenetet adott vissza.</value></data>
+  <data name="Auth_Err_SignInDenied" xml:space="preserve"><value>A bejelentkezés el lett utasítva.</value></data>
+  <data name="Api_Err_LinkEmpty" xml:space="preserve"><value>A letöltési hivatkozás üres volt — próbáld újra.</value></data>
+  <data name="Api_Err_LinkRefused" xml:space="preserve"><value>A szerver olyan letöltési hivatkozást küldött, amelyet ez az alkalmazás nem követ. Kérjük, jelentsd.</value></data>
+  <data name="Api_Err_DownloadFailed" xml:space="preserve"><value>A letöltés sikertelen ({0}).</value></data>
+  <data name="Api_Err_DownloadStalled" xml:space="preserve"><value>A letöltés {0} másodpercig nem küldött adatot — próbáld újra.</value></data>
+  <data name="App_Toast_UpdatingPlugin" xml:space="preserve"><value>A bővítmény frissítése folyamatban — a Steam újraindul.</value></data>
+  <data name="App_StartupFailed" xml:space="preserve"><value>A LuaTools nem tudott elindulni.&#10;&#10;{0}&#10;&#10;A részletek ide lettek írva:&#10;{1}</value></data>
+  <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>{0} fájl nem írható a Steam mappájába — hozzáférés megtagadva. Úgy tűnik, a Steam olyan helyre van telepítve, amely rendszergazdai jogokat igényel (pl. Program Files). Zárd be a Steamet, majd futtasd egyszer a LuaToolst rendszergazdaként a mód alkalmazásához.</value></data>
+  <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>{0} fájl nem írható — zárd be a Steamet, és próbáld újra.</value></data>
 </root>

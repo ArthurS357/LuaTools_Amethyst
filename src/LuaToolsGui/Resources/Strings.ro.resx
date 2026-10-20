@@ -556,4 +556,34 @@ Aceasta șterge fișierele .lua din Steam\config\stplug-in. Repornește Steam du
   <data name="Fixes_Revert_Partial" xml:space="preserve"><value>Reparație anulată parțial</value></data>
   <data name="Fixes_Revert_Partial_Body" xml:space="preserve"><value>{0} fișier(e) nu au putut fi restaurate. Închide jocul și încearcă din nou.</value></data>
   <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
+  <data name="Err_SteamNotFound" xml:space="preserve"><value>Locația Steam nu a fost găsită — seteaz-o în Setări.</value></data>
+  <data name="Installer_Err_CouldntOpenDownload" xml:space="preserve"><value>Descărcarea nu a putut fi deschisă: {0}</value></data>
+  <data name="Unlocker_Err_NoLongerAvailable" xml:space="preserve"><value>{0} nu mai este disponibil.</value></data>
+  <data name="Err_GitHubUnreachable" xml:space="preserve"><value>Nu s-a putut accesa GitHub — verifică-ți conexiunea și încearcă din nou.</value></data>
+  <data name="Unlocker_Err_ReleaseMissingDownload" xml:space="preserve"><value>Versiunii îi lipsește descărcarea așteptată.</value></data>
+  <data name="Unlocker_Err_DownloadVerification" xml:space="preserve"><value>Descărcarea nu a trecut verificarea (sha256 nu corespunde sau nu există digest publicat).</value></data>
+  <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>Din descărcare lipsește: {0}.</value></data>
+  <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>{0} nu a fost găsit în nicio versiune.</value></data>
+  <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} nu a trecut verificarea (sha256 nu corespunde sau nu există digest publicat).</value></data>
+  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Versiunii îi lipsește {0}.</value></data>
+  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} nu are un digest publicat cu care să fie verificat.</value></data>
+  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} s-a încheiat cu codul {1}.</value></data>
+  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} nu a fost implementat — remedierea nu s-a finalizat.</value></data>
+  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} nu este versiunea așteptată — actualizarea nu a fost aplicată.</value></data>
+  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Fixer-ul nu a putut fi pornit.</value></data>
+  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>Nu s-a putut scrie cloud_redirect.dll — închide Steam și încearcă din nou.</value></data>
+  <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Schimbul de token a eșuat ({0}): {1}</value></data>
+  <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Schimbul de token a returnat o sesiune goală.</value></data>
+  <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Nu ești conectat.</value></data>
+  <data name="Auth_Err_RefreshFailed" xml:space="preserve"><value>Reînnoirea sesiunii a eșuat ({0}).</value></data>
+  <data name="Auth_Err_RefreshEmpty" xml:space="preserve"><value>Reînnoirea sesiunii a returnat o sesiune goală.</value></data>
+  <data name="Auth_Err_SignInDenied" xml:space="preserve"><value>Conectarea a fost refuzată.</value></data>
+  <data name="Api_Err_LinkEmpty" xml:space="preserve"><value>Linkul de descărcare era gol — încearcă din nou.</value></data>
+  <data name="Api_Err_LinkRefused" xml:space="preserve"><value>Serverul a trimis un link de descărcare pe care această aplicație nu îl va urma. Te rugăm să raportezi.</value></data>
+  <data name="Api_Err_DownloadFailed" xml:space="preserve"><value>Descărcarea a eșuat ({0}).</value></data>
+  <data name="Api_Err_DownloadStalled" xml:space="preserve"><value>Descărcarea nu a mai trimis date timp de {0} secunde — încearcă din nou.</value></data>
+  <data name="App_Toast_UpdatingPlugin" xml:space="preserve"><value>Se actualizează pluginul — Steam va reporni.</value></data>
+  <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools nu a putut porni.&#10;&#10;{0}&#10;&#10;Detaliile au fost scrise în:&#10;{1}</value></data>
+  <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Nu s-au putut scrie {0} fișier(e) în folderul Steam — acces refuzat. Se pare că Steam este instalat într-o locație care necesită drepturi de administrator (de ex. Program Files). Închide Steam, apoi rulează LuaTools o dată ca administrator pentru a aplica acest mod.</value></data>
+  <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Nu s-au putut scrie {0} fișier(e) — închide Steam și încearcă din nou.</value></data>
 </root>
