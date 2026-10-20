@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.7.8");
+        AppVersion.Current.Should().Be("1.7.9");
     }
 
     [Fact]
@@ -51,13 +51,11 @@ public class ChangelogTests
 
         // One anchor per change the release was actually about, so an entry that got copied forward from
         // the previous version fails here rather than shipping a changelog describing the wrong release.
-        text.Should().ContainEquivalentOf("tray");             // exit deadlock + Steam only closed if we started it
-        text.Should().ContainEquivalentOf("Cancel");           // /cancel reaches store-page adds
-        text.Should().ContainEquivalentOf("accent");           // theme hot swap
-        text.Should().ContainEquivalentOf("toast");            // error-toast burst limit
-        text.Should().ContainEquivalentOf("callback");         // OAuth listener hardening + grace
-        text.Should().ContainEquivalentOf("log lines");        // /log CR/LF neutralised
-        text.Should().ContainEquivalentOf("Portuguese");       // F-10 strings in .resx
+        text.Should().ContainEquivalentOf("matched to their request by id"); // CEF injector reply pairing
+        text.Should().ContainEquivalentOf("depotcache");       // InstallManifestFile applies ManifestNameRegex
+        text.Should().ContainEquivalentOf("CloudRedirect");    // honest message + add-on panel hidden
+        text.Should().ContainEquivalentOf("Upstream");         // Mode tab badges
+        text.Should().ContainEquivalentOf("Experimental");     // Nightly is Experimental only
     }
 
     [Fact]

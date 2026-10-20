@@ -1,5 +1,50 @@
 # Changelog
 
+## 1.7.9 — 2026-10-20
+
+Correcao do pareamento de respostas do injetor CEF, regra de nome do manifest aplicada tambem ao arrastar e soltar,
+mensagem honesta quando o CloudRedirect nao pode ser baixado, e badges da aba Modo corrigidos.
+
+Ressalva herdada da 1.7.7: o download de fix Denuvo (F-09) continua **sem** ter sido exercitado ao vivo (nao
+ha jogo Denuvo instalado para o teste).
+
+### Correcoes
+
+- **Injetor CEF:** as respostas das chamadas da pagina da loja sao pareadas ao pedido por `id`, em vez de por
+  ordem de chegada; uma resposta lenta ou perdida nao pode mais ser entregue a outro pedido. Timeout e `methodMap`
+  miss agora vao para o log (`72778c7`).
+- **`InstallManifestFile`:** `InstallManifestFileLocked` aplica `ManifestNameRegex` antes de escrever. Recusa
+  `1234.manifest` e duplicatas do navegador (`123_456 (1).manifest`) com erro legivel. O caso legitimo
+  (`<depot>_<gid>.manifest` montado pelo `DepotDownloaderService`) segue funcionando (`ea0459a`).
+
+### Seguranca
+
+- A regra de nome do manifest passa a valer tambem na entrada por arrastar e soltar: nada fora de
+  `<depot>_<manifest>.manifest` e escrito no depotcache.
+
+### UI
+
+- **CloudRedirect:** quando o repositorio de origem esta indisponivel, a mensagem diz isso (chave
+  `CloudRedirect_Err_RepoUnavailable`, EN e pt-BR) em vez de culpar o GitHub, e o painel add-on fica escondido
+  (`ModeCatalog.CloudRedirectAddonAvailable`). A URL em `AppConfig` nao mudou (`e97282e`).
+- **Badges da aba Modo:** AmethystTool RECOMENDADO, BetterSteamTools UPSTREAM, BetterSteamTools Nightly so
+  EXPERIMENTAL (perde o selo de suporte a CloudRedirect) (`fbaa4b0`).
+
+### Testes
+
+- Total: 1904, todos passando (1872 na 1.7.8). Testes novos para o regex do manifest, a mensagem do CloudRedirect e os
+  badges (`ModeBadgeTests`).
+
+### Divida registrada para a 1.7.10
+
+- `Mode_Badge_Upstream` sem traducao nos 28 idiomas (EN e pt-BR = "UPSTREAM"; os demais caem no ingles).
+- Popups do BetterSteamTools Nightly na instalacao (`IPC spec not found`, `signature file not found`): bug do
+  upstream (`OpenSteamTool` de julho/2026).
+- CloudRedirect: trocar a fonte para um fork anonimo (decisao pendente).
+- Polyfill: timeout virar falha explicita (depende de ver `success:false` no `luatools.js`).
+- `Verb = "runas"` em `HttpServerService` (decisao pendente).
+- F-04 (auto-update por espelhos), F-09 (Denuvo sem teste ao vivo) e traducoes do F-10.
+
 ## 1.7.8 — 2026-10-09
 
 Correcoes de travamento no Sair da bandeja, de tema e de instalacao por arrastar e soltar, mais o endurecimento
