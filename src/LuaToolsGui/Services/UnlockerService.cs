@@ -937,7 +937,8 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
     private async Task<ModeInstallResult> DownloadCloudRedirectDllAsync(string root, IProgress<double?>? progress, CancellationToken ct)
     {
         var release = await FetchCloudRedirectReleaseAsync(forceRefresh: true, ct);
-        if (release is null) return ModeInstallResult.Fail(Resources.Strings.Err_GitHubUnreachable);
+        // The upstream repo (and its whole account) 404s: say so rather than blame the user's connection.
+        if (release is null) return ModeInstallResult.Fail(Resources.Strings.CloudRedirect_Err_RepoUnavailable);
         var asset = FindAsset(release, CloudRedirectDll);
         if (asset is null) return ModeInstallResult.Fail(string.Format(Resources.Strings.Unlocker_Err_ReleaseMissingAsset, CloudRedirectDll));
 

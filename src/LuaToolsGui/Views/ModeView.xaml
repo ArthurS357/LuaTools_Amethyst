@@ -367,7 +367,8 @@
         <StackPanel Grid.Row="1" MaxWidth="760" Margin="8,0,16,16">
 
                 <!-- Divider between the scrolling mode cards and the docked add-on. -->
-                <Border Height="1" Margin="0,0,0,14" Background="{StaticResource SurfaceStrongBrush}" />
+                <Border Height="1" Margin="0,0,0,14" Background="{StaticResource SurfaceStrongBrush}"
+                        Visibility="{Binding IsCloudRedirectAddonVisible, Converter={StaticResource BoolToVis}}" />
 
                 <!-- CloudRedirect add-on: a feature of the Nightly BST build. Locked (dimmed, buttons
                      disabled) unless BetterSteamTools Nightly is the active mode. -->
@@ -377,7 +378,8 @@
                     Background="{StaticResource SurfaceCardBrush}"
                     BorderBrush="{StaticResource BorderStrongBrush}"
                     BorderThickness="1"
-                    CornerRadius="10">
+                    CornerRadius="10"
+                    Visibility="{Binding IsCloudRedirectAddonVisible, Converter={StaticResource BoolToVis}}">
                     <Border.Style>
                         <Style TargetType="Border">
                             <Style.Triggers>

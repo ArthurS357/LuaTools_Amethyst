@@ -194,6 +194,9 @@ public partial class ModeViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(CanUseCloudRedirect))]
     private bool _cloudRedirectUnlocked;
 
+    /// <summary>Whether the add-on panel is shown at all (see <see cref="ModeCatalog.CloudRedirectAddonAvailable"/>).</summary>
+    public bool IsCloudRedirectAddonVisible => ModeCatalog.CloudRedirectAddonAvailable;
+
     /// <summary>Buttons on the add-on panel are usable only when unlocked (Nightly active) and idle.</summary>
     public bool CanUseCloudRedirect => CloudRedirectUnlocked && !IsBusy;
 
@@ -220,6 +223,7 @@ public partial class ModeViewModel : ObservableObject
     /// update only when unlocked (Nightly active), respecting forceRefresh.</summary>
     private async Task RefreshCloudRedirectAsync(bool forceRefresh)
     {
+        if (!ModeCatalog.CloudRedirectAddonAvailable) return; // panel hidden, commands stay locked — no pointless 404 call
         CloudRedirectUnlocked = _unlocker.SelectedMode == UnlockerMode.OpenSteamToolsNightly;
         var s = await _unlocker.GetCloudRedirectStateAsync(checkUpdate: CloudRedirectUnlocked, forceRefresh);
         CloudRedirectInstalled = s.Installed;
