@@ -232,6 +232,12 @@
                         Text="{Binding VariantBadge}"
                         TextTrimming="CharacterEllipsis"
                         Visibility="{Binding VariantBadge, Converter={StaticResource NullToCollapsed}}" />
+                    <TextBlock
+                        FontSize="10"
+                        Foreground="{StaticResource TextDimBrush}"
+                        Text="{x:Static res:Strings.Builds_SavedBuildsNoLua}"
+                        TextTrimming="CharacterEllipsis"
+                        Visibility="{Binding SavedBuildsOnly, Converter={StaticResource BoolToVis}}" />
                 </StackPanel>
 
                 <!-- Remove-game affordance. Deliberately quiet: it deletes files, so it must not sit at

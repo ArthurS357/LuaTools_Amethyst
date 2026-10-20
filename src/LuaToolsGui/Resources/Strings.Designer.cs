@@ -542,6 +542,7 @@ public static class Strings
     public static string Builds_RemoveGame_Done => Get(nameof(Builds_RemoveGame_Done));
     public static string Builds_RemoveGame_Gone => Get(nameof(Builds_RemoveGame_Gone));
     public static string Builds_RemoveGame_Failed => Get(nameof(Builds_RemoveGame_Failed));
+    public static string Builds_SavedBuildsNoLua => Get(nameof(Builds_SavedBuildsNoLua));
     public static string Builds_Apply_Done => Get(nameof(Builds_Apply_Done));
     public static string Builds_Apply_Failed => Get(nameof(Builds_Apply_Failed));
     public static string Builds_Save_Done => Get(nameof(Builds_Save_Done));

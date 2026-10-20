@@ -149,6 +149,8 @@ PENDING_TRANSLATION: frozenset[str] = frozenset({
     "Builds_RemoveGame_Done",
     "Builds_RemoveGame_Gone",
     "Builds_RemoveGame_Failed",
+    # 1.7.9: hint on a Depots row whose live lua is gone but whose stored builds keep it listed (pt-BR only).
+    "Builds_SavedBuildsNoLua",
     # Hubcap download failures, promoted out of hardcoded English literals in HubcapErrorText. The wait
     # units are separate keys so a language that inflects by count can translate them properly, rather
     # than having a number glued to a bare noun.

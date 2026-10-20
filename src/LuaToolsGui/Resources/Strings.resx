@@ -818,4 +818,5 @@ Enable it?</value></data>
   <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools couldn't start.&#10;&#10;{0}&#10;&#10;Details were written to:&#10;{1}</value></data>
   <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Couldn't write {0} file(s) to the Steam folder — access denied. Steam looks to be installed somewhere that needs administrator rights (e.g. Program Files). Close Steam, then run LuaTools as administrator once to apply this mode.</value></data>
   <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Couldn't write {0} file(s) — close Steam and try again.</value></data>
+  <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Saved builds (no active lua)</value></data>
 </root>

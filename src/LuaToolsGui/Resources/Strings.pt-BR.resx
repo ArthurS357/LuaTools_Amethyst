@@ -612,4 +612,5 @@ Isso exclui os arquivos .lua de Steam\config\stplug-in. Reinicie o Steam depois 
   <data name="App_StartupFailed" xml:space="preserve"><value>O LuaTools não conseguiu iniciar.&#10;&#10;{0}&#10;&#10;Os detalhes foram gravados em:&#10;{1}</value></data>
   <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Não foi possível gravar {0} arquivo(s) na pasta da Steam — acesso negado. A Steam parece estar instalada em um local que exige direitos de administrador (ex.: Program Files). Feche a Steam e execute o LuaTools como administrador uma vez para aplicar este modo.</value></data>
   <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Não foi possível gravar {0} arquivo(s) — feche a Steam e tente novamente.</value></data>
+  <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Builds guardadas (sem lua ativa)</value></data>
 </root>

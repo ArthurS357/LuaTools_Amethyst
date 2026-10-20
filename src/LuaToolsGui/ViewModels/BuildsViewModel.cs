@@ -414,10 +414,16 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
     private async Task RefreshBadgesAsync()
     {
         var games = _allGames.ToList();
-        var badges = await Task.Run(() => games.ToDictionary(g => g.AppId, g => BadgeFor(g.AppId)));
+        var badges = await Task.Run(() => games.ToDictionary(
+            g => g.AppId, g => (Badge: BadgeFor(g.AppId), SavedOnly: HasSavedBuildsOnly(_vault, g.AppId))));
         foreach (var g in games)
-            if (badges.TryGetValue(g.AppId, out string? badge)) g.VariantBadge = badge;
+            if (badges.TryGetValue(g.AppId, out var b)) (g.VariantBadge, g.SavedBuildsOnly) = (b.Badge, b.SavedOnly);
     }
+
+    /// <summary>Stored builds but no live lua: the vault-only source of the list, which deleting the lua on
+    /// the Manage page leaves behind.</summary>
+    internal static bool HasSavedBuildsOnly(LuaVault vault, long appId) =>
+        vault.HasVariants(appId) && vault.GetActiveHash(appId) is null;
 
     /// <summary>
     /// The label shown next to a game in the list — what it's currently running. A game with nothing
@@ -591,7 +597,8 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
         SelectedVariant = Variants.FirstOrDefault(v => v.IsActive) ?? Variants.FirstOrDefault();
 
         string? badge = BadgeFor(game.AppId);
-        foreach (var g in _allGames.Where(g => g.AppId == game.AppId)) g.VariantBadge = badge;
+        bool savedOnly = HasSavedBuildsOnly(_vault, game.AppId);
+        foreach (var g in _allGames.Where(g => g.AppId == game.AppId)) (g.VariantBadge, g.SavedBuildsOnly) = (badge, savedOnly);
 
         // Computed from the vault, so they only change when it does.
         OnPropertyChanged(nameof(EditBaseVariant));

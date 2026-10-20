@@ -1,6 +1,7 @@
 using System.IO;
 using AwesomeAssertions;
 using LuaToolsGui.Services;
+using LuaToolsGui.ViewModels;
 using Xunit;
 
 namespace LuaToolsGui.Tests;
@@ -207,6 +208,48 @@ public class GameRemovalTests : IDisposable
 
         seen.Should().BeEmpty("nothing changed, so nothing should redraw");
     }
+
+    // ── The "saved builds, no active lua" hint ────────────────────────────────
+
+    [Fact]
+    public void A_game_kept_only_by_its_stored_builds_gets_the_hint()
+    {
+        // The Manage-page delete: live lua gone, vault left behind.
+        File.WriteAllText(LivePath(AppId), Lua);
+        _vault.SyncDefaultFromLive(AppId);
+        File.Delete(LivePath(AppId));
+
+        BuildsViewModel.HasSavedBuildsOnly(_vault, AppId).Should().BeTrue();
+    }
+
+    [Fact]
+    public void An_installed_game_with_stored_builds_does_not_get_the_hint()
+    {
+        SeedFullyPresent(AppId);
+
+        BuildsViewModel.HasSavedBuildsOnly(_vault, AppId).Should().BeFalse();
+    }
+
+    [Fact]
+    public void A_live_lua_the_vault_has_not_captured_yet_does_not_get_the_hint()
+    {
+        // False-positive guard: no vault folder means nothing stored, whatever the live file says.
+        File.WriteAllText(LivePath(AppId), Lua);
+
+        BuildsViewModel.HasSavedBuildsOnly(_vault, AppId).Should().BeFalse();
+    }
+
+    [Fact]
+    public void A_removed_game_no_longer_gets_the_hint()
+    {
+        File.WriteAllText(LivePath(AppId), Lua);
+        _vault.SyncDefaultFromLive(AppId);
+        File.Delete(LivePath(AppId));
+
+        _vault.ForgetGame(AppId);
+
+        BuildsViewModel.HasSavedBuildsOnly(_vault, AppId).Should().BeFalse();
+    }
 }
 
 /// <summary>
@@ -249,5 +292,14 @@ public class BuildsRemoveGameMarkupTests
         // The button is held at 0 opacity until the row is hovered. Focus has to reveal it as well, or it
         // is tab-reachable and invisible at the same time — worse than not being focusable at all.
         BuildsViewXaml().Should().Contain("IsKeyboardFocusWithin");
+    }
+
+    [Fact]
+    public void A_row_kept_only_by_stored_builds_says_so()
+    {
+        string xaml = BuildsViewXaml();
+
+        xaml.Should().Contain("{x:Static res:Strings.Builds_SavedBuildsNoLua}");
+        xaml.Should().Contain("Visibility=\"{Binding SavedBuildsOnly, Converter={StaticResource BoolToVis}}\"");
     }
 }

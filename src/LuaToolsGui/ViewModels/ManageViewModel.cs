@@ -46,6 +46,10 @@ public partial class LuaTileViewModel : ObservableObject
     /// on the Builds page's game list. Null on the Manage page, which doesn't display it.</summary>
     [ObservableProperty] private string? _variantBadge;
 
+    /// <summary>Builds page only: the live lua is gone but stored builds keep the game listed. Shown as a
+    /// hint so the row does not look like an installed game; "Remove game" stays the way to drop it.</summary>
+    [ObservableProperty] private bool _savedBuildsOnly;
+
     /// <summary>Whether Steam has this game's files. Starts Unknown and is filled in by
     /// <see cref="ManageViewModel.RefreshInstallStatesAsync"/>; Unknown is a usable state, not a broken one
     /// (see <see cref="SteamLaunchPolicy"/>), so the Play button works before it resolves.</summary>
