@@ -56,6 +56,7 @@ public class ChangelogTests
         text.Should().ContainEquivalentOf("CloudRedirect");    // honest message + add-on panel hidden
         text.Should().ContainEquivalentOf("Upstream");         // Mode tab badges
         text.Should().ContainEquivalentOf("Experimental");     // Nightly is Experimental only
+        text.Should().ContainEquivalentOf("sign-in server");   // OAuth provider defences
     }
 
     [Fact]
