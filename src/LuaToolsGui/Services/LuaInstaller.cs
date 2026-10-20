@@ -310,10 +310,15 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
     {
         string? dir = steam.DepotCacheDir;
         if (dir is null) return InstallResult.Fail(Resources.Strings.Err_SteamNotFound);
+        // Same shape rule as InstallZip (F-03): Steam only reads <depot>_<gid>.manifest, so anything else
+        // ("1234.manifest", a browser's "123_456 (1).manifest") would be a dead file. Refuse, never rename.
+        string name = Path.GetFileName(manifestPath);
+        if (!ManifestNameRegex().IsMatch(name))
+            return InstallResult.Fail(string.Format(Resources.Strings.Installer_Err_ManifestNameRefused, name));
         try
         {
             Directory.CreateDirectory(dir);
-            string dest = Path.Combine(dir, Path.GetFileName(manifestPath));
+            string dest = Path.Combine(dir, name);
             // Content-addressed name → identical bytes if it already exists. Skip (counts as installed)
             // rather than overwrite, which would needlessly fail when Steam has the file open.
             if (!File.Exists(dest))

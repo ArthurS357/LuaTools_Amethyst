@@ -762,6 +762,7 @@ public static class Strings
     public static string Unlocker_Err_WrongVersion => Get(nameof(Unlocker_Err_WrongVersion));
     public static string Unlocker_Err_FixerStart => Get(nameof(Unlocker_Err_FixerStart));
     public static string Unlocker_Err_CloudWrite => Get(nameof(Unlocker_Err_CloudWrite));
+    public static string Installer_Err_ManifestNameRefused => Get(nameof(Installer_Err_ManifestNameRefused));
     public static string Auth_Err_TokenExchangeFailed => Get(nameof(Auth_Err_TokenExchangeFailed));
     public static string Auth_Err_TokenExchangeEmpty => Get(nameof(Auth_Err_TokenExchangeEmpty));
     public static string Auth_Err_NotSignedIn => Get(nameof(Auth_Err_NotSignedIn));

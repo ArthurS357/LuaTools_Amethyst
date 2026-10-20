@@ -798,6 +798,7 @@ Enable it?</value></data>
   <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} is not the expected version — the update didn't apply.</value></data>
   <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Failed to start the fixer.</value></data>
   <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>Couldn't write cloud_redirect.dll — close Steam and try again.</value></data>
+  <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>Refused '{0}': a manifest must be named &lt;depot&gt;_&lt;manifest&gt;.manifest (digits only).</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Token exchange failed ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Token exchange returned an empty session.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Not signed in.</value></data>

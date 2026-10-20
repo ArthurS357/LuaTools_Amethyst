@@ -64,6 +64,8 @@ PENDING_TRANSLATION: frozenset[str] = frozenset({
     "Unlocker_Err_WrongVersion",
     "Unlocker_Err_FixerStart",
     "Unlocker_Err_CloudWrite",
+    # 1.7.9: loose-manifest name refusal and the CloudRedirect "repo is gone" message (pt-BR only).
+    "Installer_Err_ManifestNameRefused",
     "Auth_Err_TokenExchangeFailed",
     "Auth_Err_TokenExchangeEmpty",
     "Auth_Err_NotSignedIn",
