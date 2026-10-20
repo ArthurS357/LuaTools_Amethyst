@@ -78,6 +78,15 @@
                         Text="{Binding StatusLine}"
                         TextWrapping="Wrap"
                         Visibility="{Binding StatusLine, Converter={StaticResource NullToCollapsed}}" />
+                    <!-- Any failed browser sign-in: one click to the /login code box (same as MainWindow). -->
+                    <ui:Button
+                        Margin="0,6,0,0"
+                        HorizontalAlignment="Left"
+                        Appearance="Secondary"
+                        Command="{Binding UseManualCodeCommand}"
+                        Content="{x:Static res:Strings.Auth_UseManualCode}"
+                        Icon="{ui:SymbolIcon Key24}"
+                        Visibility="{Binding StatusLine, Converter={StaticResource NullToCollapsed}}" />
                 </StackPanel>
                 <!-- Signed-in confirmation -->
                 <TextBlock

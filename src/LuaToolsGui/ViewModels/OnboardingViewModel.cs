@@ -77,6 +77,16 @@ public partial class OnboardingViewModel : ObservableObject
         finally { IsSigningIn = false; }
     }
 
+    /// <summary>Shown under a failed sign-in: the Discord /login code box in Settings, the same path as the
+    /// nav pane's button. The overlay covers the whole window, so it is closed first, but onboarding is NOT
+    /// marked complete: the choices below were never applied, so it comes back on the next launch.</summary>
+    [RelayCommand]
+    private void UseManualCode()
+    {
+        IsOpen = false;
+        _auth.OpenManualCode?.Invoke();
+    }
+
     /// <summary>"Let's go!" — mark onboarding done, close the overlay immediately, then apply the chosen
     /// actions in the background. Closing first means a long-running (Steam-restarting) install can never
     /// leave the welcome dialog stuck.</summary>
