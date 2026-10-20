@@ -1,5 +1,6 @@
 using System.IO;
 using AwesomeAssertions;
+using LuaToolsGui.Resources;
 using LuaToolsGui.Services;
 using Xunit;
 
@@ -76,19 +77,35 @@ public sealed class LuaInstallerManifestFileTests : IDisposable
     {
         var result = _installer.InstallManifestFile(Drop(name));
 
-        result.Error.Should().NotBeNullOrWhiteSpace().And.Contain(name);
+        // The name rule's own message, not whatever a later step happened to throw.
+        result.Error.Should().Be(string.Format(Strings.Installer_Err_ManifestNameRefused, name));
         result.ManifestCount.Should().Be(0);
         Directory.GetFiles(DepotCache).Should().BeEmpty();
     }
 
     [Fact]
-    public void A_traversal_looking_path_is_refused_by_name_not_trusted_to_GetFileName()
+    public void A_traversal_path_to_a_real_file_is_refused_by_the_name_rule_not_by_a_failing_copy()
     {
-        string path = Path.Combine(_dropDir, "..", "etc", "passwd");
+        // The old version pointed at a file that did not exist, so File.Copy failed and the test passed with
+        // the regex removed. This file is real: only the name rule stands between it and depotcache.
+        File.WriteAllText(Path.Combine(_dir, "evil.manifest"), "BYTES");
+        string path = Path.Combine(_dropDir, "..", "evil.manifest");
 
         var result = _installer.InstallManifestFile(path);
 
-        result.Error.Should().NotBeNullOrWhiteSpace();
+        result.Error.Should().Be(string.Format(Strings.Installer_Err_ManifestNameRefused, "evil.manifest"));
+        Directory.GetFiles(DepotCache).Should().BeEmpty();
+    }
+
+    [Fact]
+    public void A_drive_relative_source_is_judged_by_its_file_name_and_passes_the_name_rule()
+    {
+        // Documented behaviour: Path.GetFileName("D:1234_567.manifest") is "1234_567.manifest", which is a
+        // valid name, and the destination is built from it, so nothing can land outside depotcache. The copy
+        // itself then fails (no such file on D:), which is an I/O error, not a refusal by name.
+        var result = _installer.InstallManifestFile("D:1234_567.manifest");
+
+        result.Error.Should().NotBe(string.Format(Strings.Installer_Err_ManifestNameRefused, "1234_567.manifest"));
         Directory.GetFiles(DepotCache).Should().BeEmpty();
     }
 
