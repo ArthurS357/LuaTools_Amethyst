@@ -30,13 +30,16 @@ public static class Changelog
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
         new("1.7.9", "2026-10-20",
-            "Fixes store-page replies that could be matched to the wrong request, makes dropped manifest files follow the same name rule as every other install path, tells you honestly when CloudRedirect cannot be downloaded, and corrects the badges on the Mode tab.",
+            "Fixes store-page replies that could be matched to the wrong request, makes dropped manifest files follow the same name rule as every other install path, tells you honestly when CloudRedirect cannot be downloaded, corrects the badges on the Mode tab, and keeps sign-in usable when the sign-in server is down.",
             [
                 "Replies to store-page requests are now matched to their request by id, so a slow or lost reply can no longer be answered with another request's result. Timeouts and unknown methods are now written to the log.",
                 "A dropped manifest file is only accepted when it is named <depot>_<manifest>.manifest. A bare 1234.manifest or a browser duplicate such as 123_456 (1).manifest is refused with a readable error instead of being written into Steam's depotcache.",
                 "CloudRedirect: when its download source is unavailable the app now says so, instead of blaming GitHub, and hides the add-on panel until the source is back.",
                 "Mode tab badges corrected: AmethystTool is Recommended, BetterSteamTools is Upstream, and BetterSteamTools Nightly is only Experimental.",
-                "Nothing else changed: no new setting, no new network request, and no new dependency.",
+                "Sign-in: before the browser opens, the app checks that the sign-in server is answering. If it is not, a dialog says so and offers Try anyway, Use manual code or Cancel, instead of a silent five-minute wait.",
+                "Sign-in: when a browser sign-in fails or times out, a Use manual code button takes you straight to the Discord /login code box in Settings.",
+                "Sign-in: you stay signed in when the sign-in server is down, slow or unreachable. Only a token the server proves revoked ends the session; before, any failed refresh at startup signed you out for good.",
+                "Nothing else changed: no new setting and no new dependency. The only new network request is the sign-in server check, sent when you click Sign in.",
             ]),
 
         new("1.7.8", "2026-10-09",

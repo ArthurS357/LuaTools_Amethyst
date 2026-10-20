@@ -3,7 +3,8 @@
 ## 1.7.9 — 2026-10-20
 
 Correcao do pareamento de respostas do injetor CEF, regra de nome do manifest aplicada tambem ao arrastar e soltar,
-mensagem honesta quando o CloudRedirect nao pode ser baixado, e badges da aba Modo corrigidos.
+mensagem honesta quando o CloudRedirect nao pode ser baixado, badges da aba Modo corrigidos, e defesas contra queda
+do provider de login (Supabase).
 
 Ressalva herdada da 1.7.7: o download de fix Denuvo (F-09) continua **sem** ter sido exercitado ao vivo (nao
 ha jogo Denuvo instalado para o teste).
@@ -30,10 +31,27 @@ ha jogo Denuvo instalado para o teste).
 - **Badges da aba Modo:** AmethystTool RECOMENDADO, BetterSteamTools UPSTREAM, BetterSteamTools Nightly so
   EXPERIMENTAL (perde o selo de suporte a CloudRedirect) (`fbaa4b0`).
 
+### Login e autenticacao
+
+Motivo: queda do Supabase em 2026-10-20 (pico de usuarios).
+
+- **Health check pre-login:** antes de abrir o navegador, `AuthService.IsProviderAvailableAsync` faz `GET
+  /auth/v1/health` com `apikey` (timeout 3s, `AppConfig.SupabaseHealthUrl`). HEAD da 405 e sem `apikey` o Kong
+  responde 401 sozinho. Se falhar: dialogo com *Tentar mesmo assim* / *Usar codigo manual* / *Cancelar*. Soft
+  block: um falso negativo nunca impede o login.
+- **Fallback manual visivel:** botao "Usar codigo manual" embaixo do erro de login na barra lateral (timeout de 5 min
+  incluso) e no dialogo do health check. Leva ao campo do codigo `/login` em Configuracoes (fluxo existente).
+- **Sessao preservada em falha transiente do refresh (5xx, timeout, rede).** So token revogado (400 com error_code
+  conhecido) encerra a sessao. Antes, qualquer falha do refresh no startup apagava o `auth.dat`. O GoTrue sinaliza
+  token invalido com 400 + `error_code` (`refresh_token_not_found`, `refresh_token_already_used`,
+  `session_not_found`, `session_expired`, `validation_failed`); 401 vem do Kong. Codigo desconhecido, corpo nao-JSON
+  ou 401 mantem a sessao. Backoff de 30s apos falha transiente evita martelar o servidor.
+- **Refresh condicional no startup:** ja existia (folga de 2 min sobre `expires_at`); nao mexido.
+
 ### Testes
 
-- Total: 1904, todos passando (1872 na 1.7.8). Testes novos para o regex do manifest, a mensagem do CloudRedirect e os
-  badges (`ModeBadgeTests`).
+- Total: 1941, todos passando (1872 na 1.7.8). Testes novos para o regex do manifest, a mensagem do CloudRedirect, os
+  badges (`ModeBadgeTests`) e as defesas de login (`AuthProviderDefenseTests`, 37 casos, mutacao verificada).
 
 ### Divida registrada para a 1.7.10
 
@@ -44,6 +62,9 @@ ha jogo Denuvo instalado para o teste).
 - Polyfill: timeout virar falha explicita (depende de ver `success:false` no `luatools.js`).
 - `Verb = "runas"` em `HttpServerService` (decisao pendente).
 - F-04 (auto-update por espelhos), F-09 (Denuvo sem teste ao vivo) e traducoes do F-10.
+- Chaves `Auth_ProviderUnavailable`, `Auth_TryAnyway`, `Auth_UseManualCode`, `Auth_Cancel` sem traducao nos 28
+  idiomas (so EN e pt-BR).
+- Onboarding: o erro de login la nao tem o botao "Usar codigo manual" (o dialogo do health check vale ali tambem).
 
 ## 1.7.8 — 2026-10-09
 

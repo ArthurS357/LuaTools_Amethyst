@@ -1,6 +1,6 @@
 Versão de correções: as respostas da página da loja deixam de poder ser entregues ao pedido errado, o arrastar e soltar
 de manifest segue a mesma regra de nome das outras entradas, o CloudRedirect avisa com honestidade quando não pode
-ser baixado, e os selos da aba Modo foram corrigidos.
+ser baixado, os selos da aba Modo foram corrigidos, e o login resiste a quedas do servidor de autenticação.
 
 ## Correções
 
@@ -23,6 +23,19 @@ ser baixado, e os selos da aba Modo foram corrigidos.
 - **Selos da aba Modo:** AmethystTool aparece como **RECOMENDADO**, BetterSteamTools como **UPSTREAM**, e o
   BetterSteamTools Nightly só como **EXPERIMENTAL** (perdeu o selo de suporte a CloudRedirect).
 
+## Login e autenticação
+
+Em 20/10/2026 o servidor de autenticação (Supabase) caiu por excesso de acessos. Esta versão adiciona três defesas:
+
+- **Aviso antes de abrir o navegador.** O app confere se o servidor de login está respondendo. Se não estiver, um
+  diálogo explica e oferece **Tentar mesmo assim**, **Usar código manual** ou **Cancelar**, em vez de esperar 5
+  minutos em silêncio.
+- **Código manual à vista.** Quando o login pelo navegador falha ou expira, o botão **Usar código manual** leva direto
+  ao campo do código `/login` do Discord em Configurações.
+- **Sessões ativas sobrevivem a falhas transientes do provider** (5xx, timeout, queda de rede). Só tokens
+  comprovadamente revogados (`refresh_token_not_found`, `session_expired` etc.) encerram a sessão. O health check
+  pré-login e o fallback por código manual evitam o timeout de 5 min durante indisponibilidade.
+
 ## Ressalva
 
 - O download de fix Denuvo (checagem de link da 1.7.7) **continua sem ter sido exercitado ao vivo**: não há jogo
@@ -38,13 +51,15 @@ ser baixado, e os selos da aba Modo foram corrigidos.
 - Polyfill: o timeout virar falha explícita (depende de ver `success:false` no `luatools.js`).
 - `Verb = "runas"` em `HttpServerService` (decisão pendente).
 - F-04 (auto-update por espelhos de terceiros), F-09 (Denuvo sem teste ao vivo) e as traduções do F-10.
+- Tradução das mensagens novas de login para os 28 idiomas (hoje só inglês e pt-BR).
 
 ## Testes
 
-- Total: 1904, todos passando (1872 na 1.7.8). Testes novos para o regex do manifest, a mensagem do CloudRedirect e os
-  selos da aba Modo.
+- Total: 1941, todos passando (1872 na 1.7.8). Testes novos para o regex do manifest, a mensagem do CloudRedirect, os
+  selos da aba Modo e as defesas de login (37 casos, com teste de mutação).
 
 ## Segurança do fork
 
 - Nenhuma telemetria, elevação UAC ou envio de chaves. A atualização automática do app continua desligada por
-  padrão. Formato de `settings.json` inalterado, nenhuma dependência NuGet nova, nenhuma requisição de rede nova.
+  padrão. Formato de `settings.json` inalterado, nenhuma dependência NuGet nova. A única requisição de rede nova é a
+  checagem do servidor de login (`GET /auth/v1/health`), feita só quando você clica em entrar.
