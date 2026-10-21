@@ -24,6 +24,9 @@ public class ToastService
     /// <summary>Show a transient toast (auto-dismiss). Marshals to the UI thread; no-ops if unattached.</summary>
     public void Show(string title, string message, bool error = false)
     {
+        // Same guard as ShowAction: SnackbarService throws "presenter was never set" otherwise, which a live
+        // Application without the main window (startup, or the test suite's theme host) used to surface.
+        if (_presenter is null) return;
         var dispatcher = Application.Current?.Dispatcher;
         if (dispatcher is null) return;
 
