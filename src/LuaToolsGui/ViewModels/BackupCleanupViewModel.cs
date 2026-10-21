@@ -18,7 +18,18 @@ public partial class BackupEntryViewModel(BackupEntry entry) : ObservableObject
     public string Name => Entry.Name;
     public string CreatedLabel => Entry.CreatedUtc.ToLocalTime().ToString("g", CultureInfo.CurrentCulture);
     public string SizeLabel => ByteSize.Format(Entry.SizeBytes);
-    public int FileCount => Entry.FileCount;
+
+    /// <summary>File count for a folder; a dash for a loose file, which has none.</summary>
+    public string FileCountLabel => Entry.FileCount?.ToString(CultureInfo.CurrentCulture) ?? "—";
+
+    public bool IsFile => Entry.IsFile;
+
+    public string TypeLabel => Entry.IsFile
+        ? Resources.Strings.Settings_Backups_Type_File
+        : Resources.Strings.Settings_Backups_Type_Folder;
+
+    /// <summary>A .bak this app does not recognise: shown with a warning, never bulk-deleted.</summary>
+    public bool IsUnknown => Entry.Kind == BackupKind.UnknownFile;
 }
 
 /// <summary>

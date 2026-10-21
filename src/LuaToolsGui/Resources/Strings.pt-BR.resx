@@ -622,12 +622,16 @@ Isso exclui os arquivos .lua de Steam\config\stplug-in. Reinicie o Steam depois 
   <data name="Settings_Backups_DeleteSelected" xml:space="preserve"><value>Apagar selecionadas</value></data>
   <data name="Settings_Backups_DeleteOlder" xml:space="preserve"><value>Apagar com mais de 30 dias</value></data>
   <data name="Settings_Backups_Confirm_Title" xml:space="preserve"><value>Apagar backups?</value></data>
-  <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>Apagar {0} pasta(s) ({1}) permanentemente? Você não poderá reverter instalações anteriores do AmethystTool ou remoções de plugin.</value></data>
+  <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>Apagar {0} item(ns) ({1}) permanentemente? Você não poderá reverter instalações anteriores do AmethystTool ou remoções de plugin.</value></data>
   <data name="Settings_Backups_Confirm_Delete" xml:space="preserve"><value>Apagar</value></data>
   <data name="Settings_Backups_Cancel" xml:space="preserve"><value>Cancelar</value></data>
-  <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>{0} pasta(s) apagada(s) ({1} liberados)</value></data>
-  <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>{0} pasta(s) não puderam ser apagadas. Feche a Steam e tente novamente.</value></data>
-  <data name="Settings_Backups_Column_Folder" xml:space="preserve"><value>Pasta</value></data>
+  <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>{0} item(ns) apagado(s) ({1} liberados)</value></data>
+  <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>{0} item(ns) não puderam ser apagados. Feche a Steam e tente novamente.</value></data>
+  <data name="Settings_Backups_Column_Name" xml:space="preserve"><value>Nome</value></data>
+  <data name="Settings_Backups_Column_Type" xml:space="preserve"><value>Tipo</value></data>
+  <data name="Settings_Backups_Type_Folder" xml:space="preserve"><value>Pasta</value></data>
+  <data name="Settings_Backups_Type_File" xml:space="preserve"><value>Arquivo</value></data>
+  <data name="Settings_Backups_UnknownWarning" xml:space="preserve"><value>Backup desconhecido, verifique antes</value></data>
   <data name="Settings_Backups_Column_Date" xml:space="preserve"><value>Criada em</value></data>
   <data name="Settings_Backups_Column_Size" xml:space="preserve"><value>Tamanho</value></data>
   <data name="Settings_Backups_Column_Files" xml:space="preserve"><value>Arquivos</value></data>

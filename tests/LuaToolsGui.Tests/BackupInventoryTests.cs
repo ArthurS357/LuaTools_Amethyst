@@ -76,7 +76,70 @@ public class BackupInventoryTests
     public void Anything_else_is_refused(string fullPath) =>
         BackupInventory.MayDelete(Entry(fullPath), Root).Should().BeFalse();
 
+    // ── Loose .bak files in the root ─────────────────────────────────
+
+    [Theory]
+    [InlineData("AmethystTool-v1.2.0.dll.bak")]
+    [InlineData("AmethystTool-v1.2.0-20260913-230011.dll.bak")]
+    [InlineData("AmethystTool-v1.3.0.dll.bak")]
+    public void An_AmethystTool_updater_leftover_is_recognised(string name) =>
+        BackupInventory.ClassifyFile(name).Should().Be(BackupKind.AmethystToolFile);
+
+    [Theory]
+    [InlineData("winmm.dll.bak")]
+    [InlineData("steam.exe.BAK")]                        // case-insensitive extension
+    [InlineData("AmethystTool-v1.0.0-test.dll.bak")]     // looks like ours, suffix is not a stamp
+    [InlineData("AmethystTool.dll.bak")]                 // no version
+    public void Any_other_bak_is_listed_as_unknown(string name) =>
+        BackupInventory.ClassifyFile(name).Should().Be(BackupKind.UnknownFile);
+
+    [Theory]
+    [InlineData("AmethystTool.dll")]
+    [InlineData("AmethystTool-v1.2.0.dll")]              // the live DLL, not its backup
+    [InlineData("crashhandler64.dll.old")]               // Steam's own leftover, not a .bak
+    [InlineData("AmethystTool-v1.2.0.dll.bak.txt")]
+    [InlineData(".bak")]
+    public void A_file_that_is_not_a_bak_is_ignored(string name) =>
+        BackupInventory.ClassifyFile(name).Should().BeNull();
+
+    private static BackupEntry FileEntry(string fullPath, BackupKind kind) =>
+        new(Path.GetFileName(fullPath), fullPath, DateTime.UtcNow, 1, null, kind);
+
+    [Fact]
+    public void A_bak_file_directly_under_the_root_may_be_deleted() =>
+        BackupInventory.MayDelete(FileEntry(@"D:\Steam\AmethystTool-v1.3.0.dll.bak", BackupKind.AmethystToolFile), Root)
+            .Should().BeTrue();
+
+    [Theory]
+    [InlineData(@"D:\Steam\winmm.dll.bak", BackupKind.AmethystToolFile)]                      // claims a kind its name isn't
+    [InlineData(@"D:\Steam\AmethystTool-backup-20261020-141123", BackupKind.AmethystToolFile)] // a folder name posing as a file
+    [InlineData(@"D:\Steam\steamapps\common\Game\game.exe.bak", BackupKind.UnknownFile)]      // Denuvo revert copy: not a child
+    [InlineData(@"D:\Steam2\AmethystTool-v1.3.0.dll.bak", BackupKind.AmethystToolFile)]       // lookalike sibling root
+    [InlineData(@"D:\Steam\steam.exe", BackupKind.UnknownFile)]                               // not a .bak at all
+    public void A_file_entry_that_is_not_what_it_claims_is_refused(string fullPath, BackupKind kind) =>
+        BackupInventory.MayDelete(FileEntry(fullPath, kind), Root).Should().BeFalse();
+
+    [Fact]
+    public void A_folder_entry_claiming_a_file_name_is_refused() =>
+        BackupInventory.MayDelete(
+            new BackupEntry("AmethystTool-v1.3.0.dll.bak", @"D:\Steam\AmethystTool-v1.3.0.dll.bak", DateTime.UtcNow, 1, 1,
+                BackupKind.AmethystTool), Root).Should().BeFalse();
+
     // ── Age filter ───────────────────────────────────────────────────
+
+    [Fact]
+    public void An_unknown_bak_is_never_picked_up_by_the_age_filter()
+    {
+        var now = new DateTime(2026, 10, 20, 12, 0, 0, DateTimeKind.Utc);
+        var entries = new[]
+        {
+            new BackupEntry("winmm.dll.bak", @"D:\Steam\winmm.dll.bak", now.AddDays(-90), 1, null, BackupKind.UnknownFile),
+            new BackupEntry("AmethystTool-v1.2.0.dll.bak", @"D:\Steam\AmethystTool-v1.2.0.dll.bak", now.AddDays(-90), 1, null,
+                BackupKind.AmethystToolFile),
+        };
+
+        BackupInventory.OlderThan(entries, now, 30).Select(e => e.Name).Should().Equal("AmethystTool-v1.2.0.dll.bak");
+    }
 
     [Fact]
     public void Older_than_means_strictly_older_than_the_cutoff()

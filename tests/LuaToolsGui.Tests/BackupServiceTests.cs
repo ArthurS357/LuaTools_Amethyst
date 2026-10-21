@@ -209,6 +209,136 @@ public sealed class BackupServiceTests : IDisposable
         File.Exists(Path.Combine(target, "keep.txt")).Should().BeTrue();
     }
 
+    // ── Loose .bak files ──────────────────────────────────────────────
+
+    private static string MakeFile(string parent, string name, int bytes = 1)
+    {
+        Directory.CreateDirectory(parent);
+        string path = Path.Combine(parent, name);
+        File.WriteAllBytes(path, new byte[bytes]);
+        return path;
+    }
+
+    [Fact]
+    public async Task Scan_finds_backup_folders_and_bak_files()
+    {
+        MakeFolder(_root, $"Removal-backup-{Stamp}", ("a", 1));
+        MakeFile(_root, "AmethystTool-v1.3.0.dll.bak", 42);
+        MakeFile(_root, "AmethystTool.dll");     // live DLL: not a backup
+        MakeFile(_root, "steam.exe");
+
+        var found = await _service.ScanAsync(_root);
+
+        found.Select(e => e.Name).Should().BeEquivalentTo([$"Removal-backup-{Stamp}", "AmethystTool-v1.3.0.dll.bak"]);
+        var bak = found.Single(e => e.IsFile);
+        bak.Should().Be(bak with { Kind = BackupKind.AmethystToolFile, SizeBytes = 42, FileCount = null });
+    }
+
+    [Fact]
+    public async Task Scan_ignores_bak_in_subdirectory()
+    {
+        // A .bak inside a game folder is a Denuvo fix's revert copy; one level down is already out of scope.
+        MakeFile(Path.Combine(_root, "steamapps", "common", "Game"), "game.exe.bak");
+        MakeFile(Path.Combine(_root, "amethysttool"), "AmethystTool-v1.2.0.dll.bak");
+
+        (await _service.ScanAsync(_root)).Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Scan_marks_unknown_bak_as_unknown_file()
+    {
+        MakeFile(_root, "winmm.dll.bak");
+
+        (await ScanOne("winmm.dll.bak")).Kind.Should().Be(BackupKind.UnknownFile);
+    }
+
+    [Fact]
+    public async Task Delete_file_works()
+    {
+        string bak = MakeFile(_root, "AmethystTool-v1.2.0.dll.bak", 9);
+        string other = MakeFile(_root, "AmethystTool-v1.3.0.dll.bak", 3);
+        var entry = await ScanOne("AmethystTool-v1.2.0.dll.bak");
+
+        var result = await _service.DeleteAsync([entry], _root);
+
+        result.Should().Be(result with { DeletedCount = 1, BytesFreed = 9, Refused = false });
+        File.Exists(bak).Should().BeFalse();
+        File.Exists(other).Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Delete_removes_a_mixed_selection_of_folders_and_files()
+    {
+        string folder = MakeFolder(_root, $"AmethystTool-backup-{Stamp}", ("a", 5));
+        string bak = MakeFile(_root, "AmethystTool-v1.2.0.dll.bak", 7);
+        var entries = await _service.ScanAsync(_root);
+
+        var result = await _service.DeleteAsync(entries, _root);
+
+        result.DeletedCount.Should().Be(2);
+        result.BytesFreed.Should().Be(12);
+        Directory.Exists(folder).Should().BeFalse();
+        File.Exists(bak).Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task Delete_refuses_symlink_bak()
+    {
+        // A reparse point named like a backup file. A junction stands in for a file symlink: creating a real
+        // symlink needs admin rights or Developer Mode, a junction does not, and both carry ReparsePoint.
+        string target = MakeFolder(_tmp, "precious", ("keep.txt", 5));
+        string link = Path.Combine(_root, "AmethystTool-v1.2.0.dll.bak");
+        Junction(link, target);
+        var forged = new BackupEntry(Path.GetFileName(link), link, DateTime.UtcNow, 1, null, BackupKind.AmethystToolFile);
+
+        var result = await _service.DeleteAsync([forged], _root);
+
+        result.Refused.Should().BeTrue();
+        File.Exists(Path.Combine(target, "keep.txt")).Should().BeTrue();
+    }
+
+    [Fact]
+    public void A_bak_swapped_for_a_reparse_point_after_validation_is_not_deleted()
+    {
+        // TOCTOU on the file path: DeleteBakFile re-reads the attributes right before deleting.
+        string target = MakeFolder(_tmp, "precious", ("keep.txt", 5));
+        string link = Path.Combine(_root, "AmethystTool-v1.2.0.dll.bak");
+        Junction(link, target);
+
+        var act = () => BackupService.DeleteBakFile(link);
+
+        act.Should().Throw<IOException>();
+        File.Exists(Path.Combine(target, "keep.txt")).Should().BeTrue();
+        Directory.Exists(link).Should().BeTrue("the link itself is left alone too");
+    }
+
+    [Fact]
+    public async Task Delete_refuses_file_outside_steam_root()
+    {
+        string good = MakeFile(_root, "AmethystTool-v1.3.0.dll.bak");
+        string evil = MakeFile(Path.Combine(_tmp, "Steam2"), "AmethystTool-v1.3.0.dll.bak");
+        var goodEntry = await ScanOne("AmethystTool-v1.3.0.dll.bak");
+
+        var result = await _service.DeleteAsync([goodEntry, goodEntry with { FullPath = evil }], _root);
+
+        result.Refused.Should().BeTrue();
+        File.Exists(good).Should().BeTrue();
+        File.Exists(evil).Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Delete_handles_file_already_deleted()
+    {
+        string bak = MakeFile(_root, "AmethystTool-v1.2.0.dll.bak");
+        var entry = await ScanOne("AmethystTool-v1.2.0.dll.bak");
+        File.Delete(bak); // removed by hand after the scan
+
+        var result = await _service.DeleteAsync([entry], _root);
+
+        result.Should().Be(result with { DeletedCount = 0, BytesFreed = 0, Refused = false });
+        result.Errors.Should().BeEmpty();
+    }
+
     [Fact]
     public async Task Delete_handles_folder_already_deleted()
     {

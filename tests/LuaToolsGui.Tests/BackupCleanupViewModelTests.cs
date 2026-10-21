@@ -150,6 +150,62 @@ public sealed class BackupCleanupViewModelTests : IDisposable
         vm.Entries.Should().ContainSingle();
     }
 
+    private string Bak(string name, DateTime localWrite, int bytes = 1)
+    {
+        string path = Path.Combine(_root, name);
+        File.WriteAllBytes(path, new byte[bytes]);
+        File.SetLastWriteTimeUtc(path, localWrite.ToUniversalTime());
+        return path;
+    }
+
+    [Fact]
+    public async Task Delete_older_than_30_days_handles_mixed_folders_and_files()
+    {
+        string oldFolder = Backup("Removal-backup-", Now.AddDays(-40));
+        string oldBak = Bak("AmethystTool-v1.2.0.dll.bak", Now.AddDays(-40));
+        string recentBak = Bak("AmethystTool-v1.3.0.dll.bak", Now.AddDays(-5));
+        string unknownOld = Bak("winmm.dll.bak", Now.AddDays(-90));
+        var vm = Vm(_root);
+        await vm.RefreshCommand.ExecuteAsync(null);
+
+        await vm.DeleteOlderThan30DaysCommand.ExecuteAsync(null);
+
+        Directory.Exists(oldFolder).Should().BeFalse();
+        File.Exists(oldBak).Should().BeFalse();
+        File.Exists(recentBak).Should().BeTrue();
+        File.Exists(unknownOld).Should().BeTrue("an unknown .bak only goes when ticked on purpose");
+    }
+
+    [Fact]
+    public async Task A_loose_file_row_says_what_it_is()
+    {
+        Bak("AmethystTool-v1.3.0.dll.bak", Now.AddDays(-1));
+        Bak("winmm.dll.bak", Now.AddDays(-1));
+        var vm = Vm(_root);
+
+        await vm.RefreshCommand.ExecuteAsync(null);
+
+        var known = vm.Entries.Single(e => e.Name == "AmethystTool-v1.3.0.dll.bak");
+        known.IsFile.Should().BeTrue();
+        known.FileCountLabel.Should().Be("—");
+        known.IsUnknown.Should().BeFalse();
+        vm.Entries.Single(e => e.Name == "winmm.dll.bak").IsUnknown.Should().BeTrue();
+    }
+
+    [Fact]
+    public void IsSelected_toggles_correctly()
+    {
+        var row = new BackupEntryViewModel(new BackupEntry("x", @"D:\Steam\x", DateTime.UtcNow, 0, 0, BackupKind.Removal));
+        var raised = new List<string?>();
+        row.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
+
+        row.IsSelected = true;
+        row.IsSelected = false;
+
+        row.IsSelected.Should().BeFalse();
+        raised.Should().Equal(nameof(BackupEntryViewModel.IsSelected), nameof(BackupEntryViewModel.IsSelected));
+    }
+
     [Fact]
     public async Task Nothing_selected_asks_nothing_and_deletes_nothing()
     {
@@ -163,4 +219,38 @@ public sealed class BackupCleanupViewModelTests : IDisposable
         asked.Should().BeFalse();
         vm.Entries.Should().ContainSingle();
     }
+}
+
+/// <summary>
+/// Pins the row's selection box. WPF-UI's implicit CheckBox style sets MinWidth=120 and an 11 px left
+/// padding; inside the row's 28 px column that pushed the box out and left a sliver of accent fill that read
+/// as a solid pink block, checked or not. Read as markup, like <see cref="OnboardingManualCodeTests"/>.
+/// </summary>
+public class BackupCleanupMarkupTests
+{
+    private static System.Xml.Linq.XElement RowCheckBox()
+    {
+        var dir = new DirectoryInfo(AppContext.BaseDirectory);
+        while (dir is not null && !File.Exists(Path.Combine(dir.FullName, "LuaToolsGui.sln")))
+            dir = dir.Parent;
+        string root = dir?.FullName
+            ?? throw new DirectoryNotFoundException("LuaToolsGui.sln not found above the test output.");
+        var doc = System.Xml.Linq.XDocument.Load(Path.Combine(root, "src", "LuaToolsGui", "Views", "SettingsView.xaml"));
+        System.Xml.Linq.XNamespace wpf = "http://schemas.microsoft.com/winfx/2006/xaml/presentation";
+        return doc.Descendants(wpf + "CheckBox")
+            .Single(c => (string?)c.Attribute("IsChecked") == "{Binding IsSelected, Mode=TwoWay}");
+    }
+
+    [Fact]
+    public void The_row_checkbox_fits_its_column()
+    {
+        var box = RowCheckBox();
+
+        ((string?)box.Attribute("MinWidth")).Should().Be("0");
+        ((string?)box.Attribute("Padding")).Should().Be("0");
+    }
+
+    [Fact]
+    public void The_row_checkbox_is_named_for_screen_readers() =>
+        ((string?)RowCheckBox().Attribute("AutomationProperties.Name")).Should().Be("{Binding Name}");
 }

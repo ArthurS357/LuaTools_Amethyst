@@ -644,14 +644,16 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="28" />
                                     <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="80" />
                                     <ColumnDefinition Width="140" />
                                     <ColumnDefinition Width="90" />
                                     <ColumnDefinition Width="60" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="1" FontSize="11" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Settings_Backups_Column_Folder}" />
-                                <TextBlock Grid.Column="2" FontSize="11" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Settings_Backups_Column_Date}" />
-                                <TextBlock Grid.Column="3" FontSize="11" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Settings_Backups_Column_Size}" />
-                                <TextBlock Grid.Column="4" FontSize="11" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Settings_Backups_Column_Files}" />
+                                <TextBlock Grid.Column="1" FontSize="11" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Settings_Backups_Column_Name}" />
+                                <TextBlock Grid.Column="2" FontSize="11" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Settings_Backups_Column_Type}" />
+                                <TextBlock Grid.Column="3" FontSize="11" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Settings_Backups_Column_Date}" />
+                                <TextBlock Grid.Column="4" FontSize="11" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Settings_Backups_Column_Size}" />
+                                <TextBlock Grid.Column="5" FontSize="11" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Settings_Backups_Column_Files}" />
                             </Grid>
                             <ScrollViewer MaxHeight="240" VerticalScrollBarVisibility="Auto">
                                 <ItemsControl ItemsSource="{Binding Entries}">
@@ -661,18 +663,37 @@
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="28" />
                                                     <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="80" />
                                                     <ColumnDefinition Width="140" />
                                                     <ColumnDefinition Width="90" />
                                                     <ColumnDefinition Width="60" />
                                                 </Grid.ColumnDefinitions>
+                                                <!-- WPF-UI's implicit CheckBox style sets MinWidth=120 and Padding 11: in a
+                                                     28 px column that pushed the box out and left a sliver of accent fill.
+                                                     Same fix as BuildsView's Lock box. -->
                                                 <CheckBox
+                                                    MinWidth="0"
+                                                    Padding="0"
                                                     VerticalAlignment="Center"
                                                     AutomationProperties.Name="{Binding Name}"
                                                     IsChecked="{Binding IsSelected, Mode=TwoWay}" />
-                                                <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="12" Text="{Binding Name}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Entry.FullPath}" />
-                                                <TextBlock Grid.Column="2" VerticalAlignment="Center" FontSize="12" Text="{Binding CreatedLabel}" />
-                                                <TextBlock Grid.Column="3" VerticalAlignment="Center" FontSize="12" Text="{Binding SizeLabel}" />
-                                                <TextBlock Grid.Column="4" VerticalAlignment="Center" FontSize="12" Text="{Binding FileCount}" />
+                                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                    <TextBlock FontSize="12" Text="{Binding Name}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Entry.FullPath}" />
+                                                    <TextBlock
+                                                        FontSize="10.5"
+                                                        Foreground="{StaticResource DangerBrush}"
+                                                        Text="{x:Static res:Strings.Settings_Backups_UnknownWarning}"
+                                                        TextWrapping="Wrap"
+                                                        Visibility="{Binding IsUnknown, Converter={StaticResource BoolToVis}}" />
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2" VerticalAlignment="Center" Orientation="Horizontal">
+                                                    <ui:SymbolIcon FontSize="14" Symbol="Document24" Visibility="{Binding IsFile, Converter={StaticResource BoolToVis}}" />
+                                                    <ui:SymbolIcon FontSize="14" Symbol="Folder24" Visibility="{Binding IsFile, Converter={StaticResource InverseBoolToVis}}" />
+                                                    <TextBlock Margin="4,0,0,0" VerticalAlignment="Center" FontSize="12" Text="{Binding TypeLabel}" />
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="3" VerticalAlignment="Center" FontSize="12" Text="{Binding CreatedLabel}" />
+                                                <TextBlock Grid.Column="4" VerticalAlignment="Center" FontSize="12" Text="{Binding SizeLabel}" />
+                                                <TextBlock Grid.Column="5" VerticalAlignment="Center" FontSize="12" Text="{Binding FileCountLabel}" />
                                             </Grid>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>

@@ -7,8 +7,8 @@ namespace LuaToolsGui.Services.Backups;
 public sealed record BackupDeleteResult(int DeletedCount, long BytesFreed, IReadOnlyList<string> Errors, bool Refused);
 
 /// <summary>
-/// Finds and deletes the backup folders <see cref="BackupInventory"/> recognises, directly under the Steam
-/// root and nowhere else.
+/// Finds and deletes the backup folders and loose .bak files <see cref="BackupInventory"/> recognises,
+/// directly under the Steam root and nowhere else.
 ///
 /// <para>
 /// <b>Never follows a reparse point.</b> A junction or symlink named like a backup is skipped on scan and
@@ -26,14 +26,19 @@ public sealed class BackupService
         IgnoreInaccessible = true,
     };
 
-    /// <summary>Every recognised backup folder directly under <paramref name="steamRoot"/>, newest first.</summary>
+    /// <summary>
+    /// Every recognised backup folder and loose <c>.bak</c> file directly under <paramref name="steamRoot"/>,
+    /// newest first. Files are looked for in the root ONLY: a .bak inside a game folder is a Denuvo fix's
+    /// revert copy and must never be offered here.
+    /// </summary>
     public Task<IReadOnlyList<BackupEntry>> ScanAsync(string steamRoot, CancellationToken ct = default) =>
         Task.Run<IReadOnlyList<BackupEntry>>(() =>
         {
             if (!Directory.Exists(steamRoot)) return [];
 
+            var root = new DirectoryInfo(steamRoot);
             var found = new List<BackupEntry>();
-            foreach (var dir in new DirectoryInfo(steamRoot).EnumerateDirectories())
+            foreach (var dir in root.EnumerateDirectories())
             {
                 ct.ThrowIfCancellationRequested();
                 if (IsLink(dir)
@@ -43,13 +48,22 @@ public sealed class BackupService
                 var (size, files) = Measure(dir, ct);
                 found.Add(new BackupEntry(dir.Name, dir.FullName, createdUtc, size, files, kind));
             }
+            foreach (var file in root.EnumerateFiles("*.bak", SearchOption.TopDirectoryOnly))
+            {
+                ct.ThrowIfCancellationRequested();
+                if (IsLink(file)
+                    || BackupInventory.ClassifyFile(file.Name) is not { } kind
+                    || !BackupInventory.IsInsideSteamRoot(file.FullName, steamRoot)) continue;
+
+                found.Add(new BackupEntry(file.Name, file.FullName, file.LastWriteTimeUtc, file.Length, null, kind));
+            }
             return [.. found.OrderByDescending(e => e.CreatedUtc)];
         }, ct);
 
     /// <summary>
-    /// Delete <paramref name="entries"/>. Every one is re-validated first (recognised name, direct child of
-    /// <paramref name="steamRoot"/>, not a link); if any fails, NOTHING is deleted. A folder already gone is
-    /// skipped, not an error.
+    /// Delete <paramref name="entries"/>. Every one is re-validated first (name classifies as the kind it
+    /// claims, direct child of <paramref name="steamRoot"/>, not a link); if any fails, NOTHING is deleted.
+    /// A folder or file already gone is skipped, not an error.
     /// </summary>
     public Task<BackupDeleteResult> DeleteAsync(
         IReadOnlyList<BackupEntry> entries, string steamRoot, CancellationToken ct = default) =>
@@ -57,10 +71,9 @@ public sealed class BackupService
         {
             foreach (var e in entries)
             {
-                if (!BackupInventory.MayDelete(e, steamRoot)
-                    || (Directory.Exists(e.FullPath) && IsLink(new DirectoryInfo(e.FullPath))))
+                if (!BackupInventory.MayDelete(e, steamRoot) || IsUnsafeOnDisk(e))
                 {
-                    AppLog.Log($"backup cleanup: refused, {e.FullPath} is not a backup folder in {steamRoot}");
+                    AppLog.Log($"backup cleanup: refused, {e.FullPath} is not a backup in {steamRoot}");
                     return new BackupDeleteResult(0, 0, [e.Name], Refused: true);
                 }
             }
@@ -71,10 +84,17 @@ public sealed class BackupService
             foreach (var e in entries)
             {
                 ct.ThrowIfCancellationRequested();
-                if (!Directory.Exists(e.FullPath)) continue; // removed by hand since the scan
                 try
                 {
-                    DeleteTree(new DirectoryInfo(e.FullPath));
+                    if (e.IsFile)
+                    {
+                        if (!DeleteBakFile(e.FullPath)) continue; // removed by hand since the scan
+                    }
+                    else
+                    {
+                        if (!Directory.Exists(e.FullPath)) continue;
+                        DeleteTree(new DirectoryInfo(e.FullPath));
+                    }
                     deleted++;
                     freed += e.SizeBytes;
                     AppLog.Log($"backup cleanup: deleted {e.Name} ({ByteSize.Format(e.SizeBytes)})");
@@ -116,6 +136,32 @@ public sealed class BackupService
         }
         dir.Delete(recursive: false);
     }
+
+    /// <summary>
+    /// Delete one loose .bak, re-reading its attributes immediately before: gone = false (nothing to do), a
+    /// reparse point or a directory in its place = refused (it changed since validation).
+    /// </summary>
+    internal static bool DeleteBakFile(string path)
+    {
+        FileAttributes attributes;
+        try { attributes = File.GetAttributes(path); }
+        catch (Exception ex) when (ex is FileNotFoundException or DirectoryNotFoundException) { return false; }
+
+        if (attributes.HasFlag(FileAttributes.ReparsePoint) || attributes.HasFlag(FileAttributes.Directory))
+            throw new IOException($"{Path.GetFileName(path)} is no longer a plain file; not deleted");
+        if (attributes.HasFlag(FileAttributes.ReadOnly))
+            File.SetAttributes(path, attributes & ~FileAttributes.ReadOnly);
+        File.Delete(path);
+        return true;
+    }
+
+    /// <summary>
+    /// The entry is on disk as something other than what it claims: a link, or a directory where a file was
+    /// listed (a junction named like a .bak) and vice versa. Missing is fine: that is "already deleted".
+    /// </summary>
+    private static bool IsUnsafeOnDisk(BackupEntry e) => e.IsFile
+        ? Directory.Exists(e.FullPath) || (File.Exists(e.FullPath) && IsLink(new FileInfo(e.FullPath)))
+        : File.Exists(e.FullPath) || (Directory.Exists(e.FullPath) && IsLink(new DirectoryInfo(e.FullPath)));
 
     private static bool IsLink(FileSystemInfo info) =>
         info.Attributes.HasFlag(FileAttributes.ReparsePoint) || info.LinkTarget is not null;

@@ -828,12 +828,16 @@ Enable it?</value></data>
   <data name="Settings_Backups_DeleteSelected" xml:space="preserve"><value>Delete selected</value></data>
   <data name="Settings_Backups_DeleteOlder" xml:space="preserve"><value>Delete older than 30 days</value></data>
   <data name="Settings_Backups_Confirm_Title" xml:space="preserve"><value>Delete backups?</value></data>
-  <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>Permanently delete {0} folder(s) ({1})? You won't be able to roll back earlier AmethystTool installs or plugin removals.</value></data>
+  <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>Permanently delete {0} item(s) ({1})? You won't be able to roll back earlier AmethystTool installs or plugin removals.</value></data>
   <data name="Settings_Backups_Confirm_Delete" xml:space="preserve"><value>Delete</value></data>
   <data name="Settings_Backups_Cancel" xml:space="preserve"><value>Cancel</value></data>
-  <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>{0} folder(s) deleted ({1} freed)</value></data>
-  <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>{0} folder(s) could not be deleted. Close Steam and try again.</value></data>
-  <data name="Settings_Backups_Column_Folder" xml:space="preserve"><value>Folder</value></data>
+  <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>{0} item(s) deleted ({1} freed)</value></data>
+  <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>{0} item(s) could not be deleted. Close Steam and try again.</value></data>
+  <data name="Settings_Backups_Column_Name" xml:space="preserve"><value>Name</value></data>
+  <data name="Settings_Backups_Column_Type" xml:space="preserve"><value>Type</value></data>
+  <data name="Settings_Backups_Type_Folder" xml:space="preserve"><value>Folder</value></data>
+  <data name="Settings_Backups_Type_File" xml:space="preserve"><value>File</value></data>
+  <data name="Settings_Backups_UnknownWarning" xml:space="preserve"><value>Unknown backup, verify before deleting</value></data>
   <data name="Settings_Backups_Column_Date" xml:space="preserve"><value>Created</value></data>
   <data name="Settings_Backups_Column_Size" xml:space="preserve"><value>Size</value></data>
   <data name="Settings_Backups_Column_Files" xml:space="preserve"><value>Files</value></data>
