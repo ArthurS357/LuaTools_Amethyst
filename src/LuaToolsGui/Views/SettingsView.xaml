@@ -611,6 +611,94 @@
                 </StackPanel>
             </Border>
 
+            <!-- Maintenance: backup folders the app left in the Steam root. Own view-model (BackupCleanupViewModel),
+                 set as this section's DataContext from code-behind. -->
+            <StackPanel x:Name="BackupsSection">
+                <TextBlock Style="{StaticResource SectionHeader}" Text="{x:Static res:Strings.Settings_Maintenance_Title}" />
+                <Border Style="{StaticResource SettingsCard}">
+                    <StackPanel Margin="14,12">
+                        <TextBlock
+                            FontSize="13"
+                            FontWeight="Medium"
+                            Text="{x:Static res:Strings.Settings_Backups_Title}" />
+                        <TextBlock
+                            Margin="0,4,0,0"
+                            FontSize="12"
+                            Foreground="{StaticResource TextDimBrush}"
+                            Text="{x:Static res:Strings.Settings_Backups_Subtitle}"
+                            TextWrapping="Wrap" />
+                        <TextBlock
+                            Margin="0,8,0,0"
+                            FontSize="12"
+                            Foreground="{StaticResource DangerBrush}"
+                            Text="{x:Static res:Strings.Settings_Backups_NoSteam}"
+                            TextWrapping="Wrap"
+                            Visibility="{Binding HasNoSteam, Converter={StaticResource BoolToVis}}" />
+                        <StackPanel Margin="0,10,0,0" IsEnabled="{Binding HasSteamConfigured}">
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{StaticResource TextDimBrush}"
+                                Text="{x:Static res:Strings.Settings_Backups_Empty}"
+                                Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}" />
+                            <Grid Margin="0,0,0,4" Visibility="{Binding HasEntries, Converter={StaticResource BoolToVis}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="28" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="140" />
+                                    <ColumnDefinition Width="90" />
+                                    <ColumnDefinition Width="60" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="1" FontSize="11" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Settings_Backups_Column_Folder}" />
+                                <TextBlock Grid.Column="2" FontSize="11" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Settings_Backups_Column_Date}" />
+                                <TextBlock Grid.Column="3" FontSize="11" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Settings_Backups_Column_Size}" />
+                                <TextBlock Grid.Column="4" FontSize="11" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Settings_Backups_Column_Files}" />
+                            </Grid>
+                            <ScrollViewer MaxHeight="240" VerticalScrollBarVisibility="Auto">
+                                <ItemsControl ItemsSource="{Binding Entries}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0,2">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="28" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="140" />
+                                                    <ColumnDefinition Width="90" />
+                                                    <ColumnDefinition Width="60" />
+                                                </Grid.ColumnDefinitions>
+                                                <CheckBox
+                                                    VerticalAlignment="Center"
+                                                    AutomationProperties.Name="{Binding Name}"
+                                                    IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                                                <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="12" Text="{Binding Name}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Entry.FullPath}" />
+                                                <TextBlock Grid.Column="2" VerticalAlignment="Center" FontSize="12" Text="{Binding CreatedLabel}" />
+                                                <TextBlock Grid.Column="3" VerticalAlignment="Center" FontSize="12" Text="{Binding SizeLabel}" />
+                                                <TextBlock Grid.Column="4" VerticalAlignment="Center" FontSize="12" Text="{Binding FileCount}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                            <WrapPanel Margin="0,10,0,0">
+                                <ui:Button
+                                    Command="{Binding RefreshCommand}"
+                                    Content="{x:Static res:Strings.Settings_Backups_Refresh}"
+                                    Icon="{ui:SymbolIcon ArrowSync24}" />
+                                <ui:Button
+                                    Margin="8,0,0,0"
+                                    Command="{Binding DeleteSelectedCommand}"
+                                    Content="{x:Static res:Strings.Settings_Backups_DeleteSelected}"
+                                    Icon="{ui:SymbolIcon Delete24}" />
+                                <ui:Button
+                                    Margin="8,0,0,0"
+                                    Command="{Binding DeleteOlderThan30DaysCommand}"
+                                    Content="{x:Static res:Strings.Settings_Backups_DeleteOlder}"
+                                    IsEnabled="{Binding HasOld}" />
+                            </WrapPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
             <!-- The "Community" section held a single toggle: donate Steam decryption keys. That feature
                  was removed (it uploaded keys over plain HTTP and defaulted to on), so the whole section
                  goes with it rather than leaving an empty card. -->

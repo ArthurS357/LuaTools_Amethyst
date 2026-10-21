@@ -115,6 +115,26 @@ PENDING_TRANSLATION: frozenset[str] = frozenset({
     "Builds_RemoveGame_Failed",
     # 1.7.9: hint on a Depots row whose live lua is gone but whose stored builds keep it listed (pt-BR only).
     "Builds_SavedBuildsNoLua",
+    # 1.7.9: Settings -> Maintenance, cleanup of the AmethystTool / plugin-removal backup folders in the
+    # Steam root (pt-BR only; the other 28 files fall back to English until the 1.7.10 translation pass).
+    "Settings_Maintenance_Title",
+    "Settings_Backups_Title",
+    "Settings_Backups_Subtitle",
+    "Settings_Backups_Empty",
+    "Settings_Backups_NoSteam",
+    "Settings_Backups_Refresh",
+    "Settings_Backups_DeleteSelected",
+    "Settings_Backups_DeleteOlder",
+    "Settings_Backups_Confirm_Title",
+    "Settings_Backups_Confirm_Body",
+    "Settings_Backups_Confirm_Delete",
+    "Settings_Backups_Cancel",
+    "Settings_Backups_Toast_Deleted",
+    "Settings_Backups_Toast_Failed",
+    "Settings_Backups_Column_Folder",
+    "Settings_Backups_Column_Date",
+    "Settings_Backups_Column_Size",
+    "Settings_Backups_Column_Files",
     # Hubcap download failures, promoted out of hardcoded English literals in HubcapErrorText. The wait
     # units are separate keys so a language that inflects by count can translate them properly, rather
     # than having a number glued to a bare noun.

@@ -819,4 +819,22 @@ Enable it?</value></data>
   <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Couldn't write {0} file(s) to the Steam folder — access denied. Steam looks to be installed somewhere that needs administrator rights (e.g. Program Files). Close Steam, then run LuaTools as administrator once to apply this mode.</value></data>
   <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Couldn't write {0} file(s) — close Steam and try again.</value></data>
   <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Saved builds (no active lua)</value></data>
+  <data name="Settings_Maintenance_Title" xml:space="preserve"><value>MAINTENANCE</value></data>
+  <data name="Settings_Backups_Title" xml:space="preserve"><value>Accumulated backups</value></data>
+  <data name="Settings_Backups_Subtitle" xml:space="preserve"><value>Backup folders created when installing AmethystTool or removing plugins. Deleting them frees space in the Steam folder.</value></data>
+  <data name="Settings_Backups_Empty" xml:space="preserve"><value>No backups found.</value></data>
+  <data name="Settings_Backups_NoSteam" xml:space="preserve"><value>Configure the Steam location in Settings to see backups.</value></data>
+  <data name="Settings_Backups_Refresh" xml:space="preserve"><value>Refresh</value></data>
+  <data name="Settings_Backups_DeleteSelected" xml:space="preserve"><value>Delete selected</value></data>
+  <data name="Settings_Backups_DeleteOlder" xml:space="preserve"><value>Delete older than 30 days</value></data>
+  <data name="Settings_Backups_Confirm_Title" xml:space="preserve"><value>Delete backups?</value></data>
+  <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>Permanently delete {0} folder(s) ({1})? You won't be able to roll back earlier AmethystTool installs or plugin removals.</value></data>
+  <data name="Settings_Backups_Confirm_Delete" xml:space="preserve"><value>Delete</value></data>
+  <data name="Settings_Backups_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>{0} folder(s) deleted ({1} freed)</value></data>
+  <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>{0} folder(s) could not be deleted. Close Steam and try again.</value></data>
+  <data name="Settings_Backups_Column_Folder" xml:space="preserve"><value>Folder</value></data>
+  <data name="Settings_Backups_Column_Date" xml:space="preserve"><value>Created</value></data>
+  <data name="Settings_Backups_Column_Size" xml:space="preserve"><value>Size</value></data>
+  <data name="Settings_Backups_Column_Files" xml:space="preserve"><value>Files</value></data>
 </root>

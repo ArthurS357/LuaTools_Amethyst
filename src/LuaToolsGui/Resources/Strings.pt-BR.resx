@@ -613,4 +613,22 @@ Isso exclui os arquivos .lua de Steam\config\stplug-in. Reinicie o Steam depois 
   <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Não foi possível gravar {0} arquivo(s) na pasta da Steam — acesso negado. A Steam parece estar instalada em um local que exige direitos de administrador (ex.: Program Files). Feche a Steam e execute o LuaTools como administrador uma vez para aplicar este modo.</value></data>
   <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Não foi possível gravar {0} arquivo(s) — feche a Steam e tente novamente.</value></data>
   <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Builds guardadas (sem lua ativa)</value></data>
+  <data name="Settings_Maintenance_Title" xml:space="preserve"><value>MANUTENÇÃO</value></data>
+  <data name="Settings_Backups_Title" xml:space="preserve"><value>Backups acumulados</value></data>
+  <data name="Settings_Backups_Subtitle" xml:space="preserve"><value>Pastas de backup criadas ao instalar o AmethystTool ou remover plugins. Apagar libera espaço na pasta da Steam.</value></data>
+  <data name="Settings_Backups_Empty" xml:space="preserve"><value>Nenhum backup encontrado.</value></data>
+  <data name="Settings_Backups_NoSteam" xml:space="preserve"><value>Configure o local da Steam em Configurações para ver os backups.</value></data>
+  <data name="Settings_Backups_Refresh" xml:space="preserve"><value>Atualizar lista</value></data>
+  <data name="Settings_Backups_DeleteSelected" xml:space="preserve"><value>Apagar selecionadas</value></data>
+  <data name="Settings_Backups_DeleteOlder" xml:space="preserve"><value>Apagar com mais de 30 dias</value></data>
+  <data name="Settings_Backups_Confirm_Title" xml:space="preserve"><value>Apagar backups?</value></data>
+  <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>Apagar {0} pasta(s) ({1}) permanentemente? Você não poderá reverter instalações anteriores do AmethystTool ou remoções de plugin.</value></data>
+  <data name="Settings_Backups_Confirm_Delete" xml:space="preserve"><value>Apagar</value></data>
+  <data name="Settings_Backups_Cancel" xml:space="preserve"><value>Cancelar</value></data>
+  <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>{0} pasta(s) apagada(s) ({1} liberados)</value></data>
+  <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>{0} pasta(s) não puderam ser apagadas. Feche a Steam e tente novamente.</value></data>
+  <data name="Settings_Backups_Column_Folder" xml:space="preserve"><value>Pasta</value></data>
+  <data name="Settings_Backups_Column_Date" xml:space="preserve"><value>Criada em</value></data>
+  <data name="Settings_Backups_Column_Size" xml:space="preserve"><value>Tamanho</value></data>
+  <data name="Settings_Backups_Column_Files" xml:space="preserve"><value>Arquivos</value></data>
 </root>

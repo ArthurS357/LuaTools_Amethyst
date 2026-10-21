@@ -163,6 +163,8 @@ public partial class App : Application
                 services.AddSingleton<DownloadViewModel>();
                 services.AddSingleton<DownloadsViewModel>();
                 services.AddSingleton<SettingsViewModel>();
+                services.AddSingleton<Services.Backups.BackupService>();
+                services.AddSingleton<BackupCleanupViewModel>();
                 services.AddSingleton<ManageViewModel>();
                 services.AddSingleton<BuildsViewModel>();
                 services.AddTransient<LaunchOptionsViewModel>(); // one per dialog
