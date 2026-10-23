@@ -106,6 +106,19 @@ public sealed partial class AmethystToolViewModel(AmethystToolService installer,
 
     private async Task RefreshAsync(bool force, CancellationToken ct)
     {
+        // Paint what the disk says BEFORE waiting on the network. The answer below can take its whole timeout
+        // when the machine is connected but offline, and until it lands the card sits on its defaults — which
+        // read "not installed, Install" for files that are right there. Only the installed case is painted:
+        // "not installed" is already the default, so the pre-paint never claims more than the disk proved.
+        if (installer.IsInstalledLocally())
+        {
+            IsInstalled = true;
+            StatusOk = true;
+            StatusOutOfDate = false;
+            StatusNotInstalled = false;
+            Status = Resources.Strings.Mode_Checking;
+        }
+
         var st = await installer.GetStatusAsync(force, ct);
 
         IsInstalled = st.Installed;
@@ -118,13 +131,18 @@ public sealed partial class AmethystToolViewModel(AmethystToolService installer,
         StatusOk = st.Installed && !st.UpdateAvailable;
         StatusOutOfDate = st.Installed && st.UpdateAvailable;
         StatusNotInstalled = !st.Installed;
+        // Offline + installed: the files are the only evidence, so say "local version" rather than "up to
+        // date" — nothing checked that. Offline + not installed keeps the generic "couldn't reach GitHub".
         Status = !st.Installed
             ? Resources.Strings.Mode_NotInstalled
+            : st.Offline ? Resources.Strings.Settings_AmethystTool_OfflineStatus
             : st.UpdateAvailable ? Resources.Strings.Mode_UpdateAvailable
                                  : Resources.Strings.Mode_UpToDate;
 
         HasInstallRecord = installer.CanUninstall;
-        StatusLine = st.Offline ? Resources.Strings.Plugin_Status_OfflineCheck : null;
+        StatusLine = !st.Offline ? null
+            : st.Installed ? Resources.Strings.Settings_AmethystTool_OfflineHint
+            : Resources.Strings.Plugin_Status_OfflineCheck;
         BackupLine = installer.LastBackupDirectory is { } dir
             ? string.Format(Resources.Strings.Amethyst_Backup_Line, dir)
             : null;

@@ -841,4 +841,7 @@ Enable it?</value></data>
   <data name="Settings_Backups_Column_Date" xml:space="preserve"><value>Created</value></data>
   <data name="Settings_Backups_Column_Size" xml:space="preserve"><value>Size</value></data>
   <data name="Settings_Backups_Column_Files" xml:space="preserve"><value>Files</value></data>
+  <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Local version (Offline)</value></data>
+  <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>No internet connection. Using locally installed version.</value></data>
+  <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Cannot download a new version without internet.</value></data>
 </root>

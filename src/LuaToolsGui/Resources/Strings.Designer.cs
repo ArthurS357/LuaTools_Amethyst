@@ -500,6 +500,9 @@ public static class Strings
         public static string Plugin_Version_Unknown => Get(nameof(Plugin_Version_Unknown));
         public static string Plugin_Version_Offline => Get(nameof(Plugin_Version_Offline));
         public static string Plugin_Status_OfflineCheck => Get(nameof(Plugin_Status_OfflineCheck));
+    public static string Settings_AmethystTool_OfflineStatus => Get(nameof(Settings_AmethystTool_OfflineStatus));
+    public static string Settings_AmethystTool_OfflineHint => Get(nameof(Settings_AmethystTool_OfflineHint));
+    public static string Settings_AmethystTool_OfflineDownloadError => Get(nameof(Settings_AmethystTool_OfflineDownloadError));
         public static string Plugin_Status_Port8080Busy => Get(nameof(Plugin_Status_Port8080Busy));
         public static string Plugin_Confirm_RestartBody => Get(nameof(Plugin_Confirm_RestartBody));
         public static string Plugin_Confirm_RestartCaption => Get(nameof(Plugin_Confirm_RestartCaption));

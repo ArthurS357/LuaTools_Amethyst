@@ -1,5 +1,36 @@
 # Changelog
 
+## 1.7.9.1 — 2026-10-23
+
+Hotfix do card do AmethystTool na aba Modo quando o PC liga numa rede conectada mas sem internet.
+
+### Correcoes
+
+- **Card do AmethystTool:** `AmethystToolViewModel.RefreshAsync` pinta o estado local (`IsInstalledLocally`) antes
+  de esperar `GetStatusAsync`. Antes, o card ficava nos valores iniciais ("Instalar", nao instalado) durante toda a
+  consulta ao GitHub, que numa rede sem internet trava em vez de recusar (`GithubProxy` tenta direto e cada espelho,
+  com `HttpClient.Timeout` de 5 min).
+- **Timeout curto so no status:** `AmethystToolService.FetchLatestAsync` usa um `CancellationTokenSource` de 8 s
+  (`StatusTimeout`). Estouro = "nao sei a ultima versao" (`Offline: true`); cancelamento do chamador continua
+  propagando. O download do ZIP segue com o timeout de 5 min do `GithubProxy`.
+- **Texto offline:** com `Offline && Installed` o card mostra "Versao local (Offline)" (nao mais "Em dia", que nada
+  verificou) e o aviso "Sem conexao. Usando a versao instalada localmente." no lugar de "Nao foi possivel acessar o
+  GitHub". Offline sem arquivos mantem a mensagem generica.
+- **Instalar/atualizar sem rede:** `InstallAsync` devolve `Settings_AmethystTool_OfflineDownloadError` no lugar de
+  `Plugin_Err_GithubUnreachable`; o `finally` do view model ja devolvia `IsBusy` para `false`.
+
+### Testes
+
+- `AmethystToolOfflineTests` (9): pre-pintura com rede pendurada, falso positivo sem arquivos, textos offline,
+  regressao online, timeout de 8 s, cancelamento do chamador, erro de install offline e `IsBusy` apos falha.
+  Mutacao: sem o `catch` do timeout e com a string antiga no install, os testes correspondentes falham; sem a
+  pre-pintura, os dois testes de estado local falham.
+
+### Strings
+
+- Novas: `Settings_AmethystTool_OfflineStatus`, `Settings_AmethystTool_OfflineHint`,
+  `Settings_AmethystTool_OfflineDownloadError` (en + pt-BR; as outras 28 linguas em `PENDING_TRANSLATION`).
+
 ## 1.7.9 — 2026-10-20
 
 Correcao do pareamento de respostas do injetor CEF, regra de nome do manifest aplicada tambem ao arrastar e soltar,

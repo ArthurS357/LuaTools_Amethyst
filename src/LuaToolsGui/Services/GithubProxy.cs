@@ -126,7 +126,7 @@ public class GithubProxy
     /// SUCCESSFUL response (caller owns/disposes it), or null if every candidate failed. Use for the
     /// GitHub API (releases JSON, etc.).
     /// </summary>
-    public async Task<HttpResponseMessage?> SendAsync(string url, CancellationToken ct = default)
+    public virtual async Task<HttpResponseMessage?> SendAsync(string url, CancellationToken ct = default)
     {
         HttpResponseMessage? lastResponse = null;
         foreach (var candidate in Candidates(url))

@@ -57,6 +57,9 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
 
     private GithubRelease? _cachedLatest;
 
+    /// <summary>How long the release lookup may take. Settable for tests only.</summary>
+    internal TimeSpan StatusTimeout { get; init; } = TimeSpan.FromSeconds(8);
+
     private sealed class Manifest
     {
         /// <summary>Release tag the payload in the Steam root came from — what makes an update detectable.</summary>
@@ -126,7 +129,7 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
     /// files in the root are the best evidence there is. Only a Mode actively owning it demotes this.
     /// </para>
     /// </summary>
-    public bool IsInstalledLocally() =>
+    public virtual bool IsInstalledLocally() =>
         AmethystToolPlan.IsInstalled(SteamRootFiles())
         && ActiveBackendPolicy.StillOwnsItsFiles(unlocker.ActiveBackend, ActiveBackend.AmethystTool);
 
@@ -140,10 +143,10 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
     /// this app leaves a selection pointing at nothing, and a badge saying otherwise would be a guess.
     /// </para>
     /// </summary>
-    public bool IsActive => unlocker.ActiveBackend == ActiveBackend.AmethystTool && IsInstalledLocally();
+    public virtual bool IsActive => unlocker.ActiveBackend == ActiveBackend.AmethystTool && IsInstalledLocally();
 
     /// <summary>Where the last install put the files it displaced, or null if it displaced none.</summary>
-    public string? LastBackupDirectory => ReadManifest()?.BackupDirectory;
+    public virtual string? LastBackupDirectory => ReadManifest()?.BackupDirectory;
 
     /// <summary>
     /// Whether Uninstall has something to work from — an install record, or the local state file that
@@ -161,7 +164,7 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
     /// files actually found, and removal still skips any name a live install claims.
     /// </para>
     /// </summary>
-    public bool CanUninstall =>
+    public virtual bool CanUninstall =>
         removal.HasRecordFor(PluginIds.AmethystTool)
         || (ReadManifest() is not null && AmethystToolPlan.IsInstalled(SteamRootFiles()));
 
@@ -171,9 +174,14 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
 
         string url =
             $"https://api.github.com/repos/{AppConfig.AmethystToolOwner}/{AppConfig.AmethystToolRepo}/releases/latest";
+        // Bounded, unlike the 5-minute HttpClient timeout that suits the archive download: this call only
+        // asks "what is the latest tag?", and a network that is connected but has no internet stalls
+        // instead of refusing. The card waits on this answer, so a stall used to hold it on its defaults.
+        using var bounded = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        bounded.CancelAfter(StatusTimeout);
         try
         {
-            using var res = await gh.SendAsync(url, ct);
+            using var res = await gh.SendAsync(url, bounded.Token);
             // Covers rate limiting (403/429) as well as an unreachable host: both are "we don't know what
             // the latest release is", which the UI reports as offline rather than as a failed install.
             if (res is null || !res.IsSuccessStatusCode) return null;
@@ -182,6 +190,8 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
             if (rel is not null) _cachedLatest = rel;
             return rel;
         }
+        // Only the CALLER's cancellation propagates; our own timeout is "we don't know", same as a failure.
+        catch (OperationCanceledException) when (!ct.IsCancellationRequested) { return null; }
         catch (OperationCanceledException) { throw; }
         catch (Exception e) when (e is HttpRequestException or JsonException or IOException)
         {
@@ -189,7 +199,7 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
         }
     }
 
-    public async Task<AmethystToolStatus> GetStatusAsync(bool force = false, CancellationToken ct = default)
+    public virtual async Task<AmethystToolStatus> GetStatusAsync(bool force = false, CancellationToken ct = default)
     {
         bool installed = IsInstalledLocally();
         var manifest = ReadManifest();
@@ -210,13 +220,13 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
     /// Install or re-install AmethystTool into the Steam root. Idempotent: running it again on an
     /// up-to-date install replaces the same four files, preserving what was there first.
     /// </summary>
-    public async Task<(bool ok, string? error)> InstallAsync(
+    public virtual async Task<(bool ok, string? error)> InstallAsync(
         IProgress<double?>? progress, CancellationToken ct = default)
     {
         if (SteamDir is not { } steamDir) return (false, Resources.Strings.Plugin_Err_SteamNotFound);
 
         var latest = await FetchLatestAsync(force: true, ct);
-        if (latest is null) return (false, Resources.Strings.Plugin_Err_GithubUnreachable);
+        if (latest is null) return (false, Resources.Strings.Settings_AmethystTool_OfflineDownloadError);
 
         if (FindArchiveAsset(latest) is not { } asset)
             return (false, string.Format(

@@ -635,4 +635,7 @@ Isso exclui os arquivos .lua de Steam\config\stplug-in. Reinicie o Steam depois 
   <data name="Settings_Backups_Column_Date" xml:space="preserve"><value>Criada em</value></data>
   <data name="Settings_Backups_Column_Size" xml:space="preserve"><value>Tamanho</value></data>
   <data name="Settings_Backups_Column_Files" xml:space="preserve"><value>Arquivos</value></data>
+  <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Versão local (Offline)</value></data>
+  <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Sem conexão. Usando a versão instalada localmente.</value></data>
+  <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Sem conexão com a internet. Não é possível baixar uma nova versão.</value></data>
 </root>
