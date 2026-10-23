@@ -45,7 +45,7 @@ SAMPLE_SIZE = 10
 # parity. Anything left here is untranslated in all 29 languages, with one stated exception noted
 # against the plugin-source group at the bottom.
 PENDING_TRANSLATION: frozenset[str] = frozenset({
-    # 1.7.9.1: AmethystTool offline card text and offline download error (en + pt-BR only).
+    # 1.7.10: AmethystTool offline card text and offline download error (en + pt-BR only).
     "Settings_AmethystTool_OfflineStatus",
     "Settings_AmethystTool_OfflineHint",
     "Settings_AmethystTool_OfflineDownloadError",

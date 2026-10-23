@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.7.9.1 — 2026-10-23
+## 1.7.10 — 2026-10-23
 
 Hotfix do card do AmethystTool na aba Modo quando o PC liga numa rede conectada mas sem internet.
 

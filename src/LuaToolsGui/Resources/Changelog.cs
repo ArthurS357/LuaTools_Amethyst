@@ -29,7 +29,7 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
-        new("1.7.9.1", "2026-10-23",
+        new("1.7.10", "2026-10-23",
             "Hotfix: the AmethystTool card no longer shows Install for a copy that is already on disk when the PC has no usable internet, and says so plainly instead of claiming it is up to date.",
             [
                 "AmethystTool card: an installed copy is now shown as installed straight away, from the files in the Steam folder, instead of waiting for the update lookup. On a network that is connected but offline the card used to sit on Install for minutes.",

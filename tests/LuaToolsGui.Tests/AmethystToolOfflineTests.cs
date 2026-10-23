@@ -10,7 +10,7 @@ using Xunit;
 namespace LuaToolsGui.Tests;
 
 /// <summary>
-/// The AmethystTool card with no usable internet — the 1.7.9.1 hotfix. A PC that boots on a network that is
+/// The AmethystTool card with no usable internet — the 1.7.10 hotfix. A PC that boots on a network that is
 /// connected but has no internet does not refuse the release lookup, it STALLS, and the card used to sit on
 /// its defaults ("Install", not installed) for the whole wait even though the files were on disk.
 ///

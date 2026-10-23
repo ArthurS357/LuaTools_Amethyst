@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.7.9.1");
+        AppVersion.Current.Should().Be("1.7.10");
     }
 
     [Fact]
@@ -73,7 +73,7 @@ public class ChangelogTests
         // that survives review precisely because nothing throws.
         Changelog.Entries.Should().AllSatisfy(e =>
         {
-            e.Version.Should().MatchRegex(@"^\d+\.\d+\.\d+(\.\d+)?$"); // optional 4th part: hotfix releases such as 1.7.9.1
+            e.Version.Should().MatchRegex(@"^\d+\.\d+\.\d+$");
             e.Released.Should().MatchRegex(@"^\d{4}-\d{2}-\d{2}$");
             e.Summary.Should().NotBeNullOrWhiteSpace();
             e.Highlights.Should().NotBeEmpty();
