@@ -444,6 +444,8 @@ public static class Strings
     public static string Add_FastFetch_Hint => Get(nameof(Add_FastFetch_Hint));
     public static string Add_FastFetch_NoSource => Get(nameof(Add_FastFetch_NoSource));
     public static string Add_FastFetch_Via => Get(nameof(Add_FastFetch_Via));
+    public static string Add_Warn_NoManifests_Title => Get(nameof(Add_Warn_NoManifests_Title));
+    public static string Add_Warn_NoManifests => Get(nameof(Add_Warn_NoManifests));
 
     // ── Confirm overlay ──
     public static string Confirm_OpenSteamDb => Get(nameof(Confirm_OpenSteamDb));

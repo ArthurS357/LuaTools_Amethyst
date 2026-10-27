@@ -387,6 +387,8 @@ Isso exclui os arquivos .lua de Steam\config\stplug-in. Reinicie o Steam depois 
   <data name="Add_FastFetch_Hint" xml:space="preserve"><value>Baixar automaticamente da primeira fonte disponível</value></data>
   <data name="Add_FastFetch_NoSource" xml:space="preserve"><value>Nenhuma fonte disponível encontrada para este jogo</value></data>
   <data name="Add_FastFetch_Via" xml:space="preserve"><value>· via {0}</value></data>
+  <data name="Add_Warn_NoManifests_Title" xml:space="preserve"><value>Aviso</value></data>
+  <data name="Add_Warn_NoManifests" xml:space="preserve"><value>Esta fonte não entregou manifestos para {0}. O download na Steam pode falhar. Recomendamos usar a fonte {1}.</value></data>
   <data name="Plugin_Title" xml:space="preserve"><value>Plugin LuaTools</value></data>
   <data name="Plugin_Subtitle" xml:space="preserve"><value>O plugin LuaTools para Steam! — Agora usando LuaLoader em vez de Shittenium</value></data>
   <data name="Plugin_CardTitle" xml:space="preserve"><value>Status</value></data>

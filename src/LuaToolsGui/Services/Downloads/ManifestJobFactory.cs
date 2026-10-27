@@ -27,8 +27,11 @@ public sealed class ManifestJobFactory(
     LuaInstaller installer,
     CacheService cache,
     CoverCache covers,
-    DepotDownloaderService depots)
+    DepotDownloaderService depots,
+    ToastService toasts)
 {
+    private static readonly string SadieDisplay = SourceMeta.Get("Sadie (Morrenus)").DisplayName!;
+
     /// <summary>Dedupe key for a game's manifest download, shared by all three entry points.</summary>
     /// <remarks>
     /// Deliberately keyed on the APPID alone, not on the source: two sources for one game are two ways to
@@ -160,6 +163,8 @@ public sealed class ManifestJobFactory(
             return new JobResult(false, string.Format(CultureInfo.CurrentCulture,
                 Resources.Strings.Add_Status_InstallFailed, result.Failed.Count));
 
+        if (LacksManifests(result.ManifestCount, source)) WarnNoManifests(appId, title, source!);
+
         string message = result.ManifestCount > 0
             ? string.Format(CultureInfo.CurrentCulture,
                 Resources.Strings.Add_Status_AddedManifests, title, result.ManifestCount)
@@ -170,6 +175,33 @@ public sealed class ManifestJobFactory(
             message += " " + string.Format(CultureInfo.CurrentCulture, Resources.Strings.Add_FastFetch_Via, source);
 
         return new JobResult(true, message, installer.ReadInstalledLua(appId));
+    }
+
+    /// <summary>
+    /// A fetched source delivered a lua and no manifests. A DLC unlock (<paramref name="source"/> null) is
+    /// generated, never fetched, and has none by design.
+    /// </summary>
+    internal static bool LacksManifests(int manifestCount, string? source) =>
+        source is not null && manifestCount == 0;
+
+    /// <summary>
+    /// Steam has to fetch the manifests itself, and since its September 2026 maintenance it cannot for a game
+    /// the account doesn't own: the Downloads tab then reads "no internet connection" although the network is
+    /// fine. The install succeeded, so this warns and never fails it.
+    /// </summary>
+    private void WarnNoManifests(long appId, string title, string source)
+    {
+        AppLog.Log($"WARN manifest-install appid={appId} source='{source}': no manifests delivered (lua only). " +
+                   "Steam must fetch them itself and may fail with a false \"no internet\" error.");
+
+        // Sadie is the recommendation; telling someone who just used it to use it is noise. The log line stays.
+        if (source == SadieDisplay) return;
+
+        toasts.Show(
+            Resources.Strings.Add_Warn_NoManifests_Title,
+            string.Format(CultureInfo.CurrentCulture, Resources.Strings.Add_Warn_NoManifests, title, SadieDisplay),
+            error: true,
+            duration: TimeSpan.FromSeconds(12));
     }
 
     /// <summary>

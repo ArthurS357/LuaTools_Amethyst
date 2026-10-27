@@ -22,7 +22,7 @@ public class ToastService
     }
 
     /// <summary>Show a transient toast (auto-dismiss). Marshals to the UI thread; no-ops if unattached.</summary>
-    public void Show(string title, string message, bool error = false)
+    public void Show(string title, string message, bool error = false, TimeSpan? duration = null)
     {
         // Same guard as ShowAction: SnackbarService throws "presenter was never set" otherwise, which a live
         // Application without the main window (startup, or the test suite's theme host) used to surface.
@@ -34,7 +34,7 @@ public class ToastService
             title, message,
             error ? ControlAppearance.Caution : ControlAppearance.Secondary,
             null,
-            TimeSpan.FromSeconds(3));
+            duration ?? TimeSpan.FromSeconds(3));
 
         if (dispatcher.CheckAccess()) Post();
         else dispatcher.Invoke(Post);
