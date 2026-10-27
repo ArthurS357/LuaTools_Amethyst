@@ -29,6 +29,16 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.7.10.1", "2026-10-27",
+            "Local build: warns when a source installs a lua without manifests, because Steam may then fail the download and blame your internet.",
+            [
+                "When a source installs a lua without manifests, a yellow warning now says the download in Steam may fail and recommends the Sadie (Hubcap) source.",
+                "Steam shows a false \"No internet connection\" in its own Downloads tab in that case; the network is fine, Steam just cannot fetch the manifests itself.",
+                "The same condition is written to the log as a WARN line, with the appid and the source.",
+                "The warning is skipped for DLC unlocks, and the toast is skipped when the source already is Sadie (Hubcap).",
+                "Nothing else changed: no new setting, no new dependency and no new network request.",
+            ]),
+
         new("1.7.10", "2026-10-23",
             "Hotfix: the AmethystTool card no longer shows Install for a copy that is already on disk when the PC has no usable internet, and says so plainly instead of claiming it is up to date.",
             [

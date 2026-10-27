@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.7.10");
+        AppVersion.Current.Should().Be("1.7.10.1");
     }
 
     [Fact]
@@ -51,10 +51,10 @@ public class ChangelogTests
 
         // One anchor per change the release was actually about, so an entry that got copied forward from
         // the previous version fails here rather than shipping a changelog describing the wrong release.
-        text.Should().ContainEquivalentOf("AmethystTool card");              // the card the hotfix is about
-        text.Should().ContainEquivalentOf("8 seconds");                      // bounded release lookup
-        text.Should().ContainEquivalentOf("Local version (Offline)");        // offline wording, not "Up to date"
-        text.Should().ContainEquivalentOf("without internet");               // offline download error
+        text.Should().ContainEquivalentOf("without manifests");              // the condition the warning is about
+        text.Should().ContainEquivalentOf("Sadie (Hubcap)");                 // the recommended source
+        text.Should().ContainEquivalentOf("No internet connection");         // the false Steam error it explains
+        text.Should().ContainEquivalentOf("WARN");                           // the log line
     }
 
     [Fact]
@@ -73,7 +73,7 @@ public class ChangelogTests
         // that survives review precisely because nothing throws.
         Changelog.Entries.Should().AllSatisfy(e =>
         {
-            e.Version.Should().MatchRegex(@"^\d+\.\d+\.\d+$");
+            e.Version.Should().MatchRegex(@"^\d+\.\d+\.\d+(\.\d+)?$");
             e.Released.Should().MatchRegex(@"^\d{4}-\d{2}-\d{2}$");
             e.Summary.Should().NotBeNullOrWhiteSpace();
             e.Highlights.Should().NotBeEmpty();
