@@ -437,6 +437,13 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
     [RelayCommand]
     private void EditLaunchOptions(LuaTileViewModel tile) => OpenLaunchOptions?.Invoke(tile.AppId, tile.Name);
 
+    /// <summary>Set by App — opens the save-backup dialog for a game (appid, name).</summary>
+    public Action<long, string>? OpenSaveBackup { get; set; }
+
+    /// <summary>Back up / restore this game's Steam <c>userdata</c> saves.</summary>
+    [RelayCommand]
+    private void SaveBackup(LuaTileViewModel tile) => OpenSaveBackup?.Invoke(tile.AppId, tile.Name);
+
     [RelayCommand]
     private static void OpenStorePage(LuaTileViewModel tile) =>
         SteamService.OpenUrl($"steam://store/{tile.AppId}");

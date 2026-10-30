@@ -640,4 +640,27 @@ Isso exclui os arquivos .lua de Steam\config\stplug-in. Reinicie o Steam depois 
   <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Versão local (Offline)</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Sem conexão. Usando a versão instalada localmente.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Sem conexão com a internet. Não é possível baixar uma nova versão.</value></data>
+  <data name="Guard_Title" xml:space="preserve"><value>O Steam já está em execução</value></data>
+  <data name="Guard_Body" xml:space="preserve"><value>O LuaTools precisa iniciar o Steam por conta própria (ou encontrá-lo fechado) para o hook funcionar. Reiniciar o Steam agora?</value></data>
+  <data name="Guard_Restart" xml:space="preserve"><value>Reiniciar Steam</value></data>
+  <data name="Guard_Exit" xml:space="preserve"><value>Sair</value></data>
+  <data name="Guard_Continue" xml:space="preserve"><value>Continuar mesmo assim (não recomendado)</value></data>
+  <data name="Guard_ContinueWarning" xml:space="preserve"><value>O Steam foi mantido aberto, então o hook pode falhar. Reinicie o Steam pelo LuaTools se isso acontecer.</value></data>
+  <data name="Manage_Action_SaveBackup" xml:space="preserve"><value>Backup de saves…</value></data>
+  <data name="Saves_Title" xml:space="preserve"><value>Backups de saves</value></data>
+  <data name="Saves_Create" xml:space="preserve"><value>Criar novo backup</value></data>
+  <data name="Saves_Restore" xml:space="preserve"><value>Restaurar</value></data>
+  <data name="Saves_Delete" xml:space="preserve"><value>Excluir</value></data>
+  <data name="Saves_Close" xml:space="preserve"><value>Fechar</value></data>
+  <data name="Saves_Empty" xml:space="preserve"><value>Ainda não há backups deste jogo.</value></data>
+  <data name="Saves_Note" xml:space="preserve"><value>Faz backup da pasta do jogo no Steam (userdata). Jogos que guardam o save em Documentos ou AppData não são incluídos.</value></data>
+  <data name="Saves_Toast_Created" xml:space="preserve"><value>Backup criado: {0} arquivo(s), {1}.</value></data>
+  <data name="Saves_Toast_Restored" xml:space="preserve"><value>{0} arquivo(s) restaurado(s). Uma cópia dos saves anteriores foi mantida.</value></data>
+  <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Backup excluído.</value></data>
+  <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Não há pasta de save deste jogo no userdata do Steam. Ele provavelmente guarda o save em outro lugar (Documentos / AppData).</value></data>
+  <data name="Saves_Toast_SteamNotFound" xml:space="preserve"><value>Pasta do Steam não encontrada. Defina o local nas Configurações.</value></data>
+  <data name="Saves_Toast_Refused" xml:space="preserve"><value>Recusado: o backup não corresponde a este jogo ou contém caminhos inseguros. Nada foi alterado.</value></data>
+  <data name="Saves_Toast_Failed" xml:space="preserve"><value>A operação falhou. Veja o log para detalhes.</value></data>
+  <data name="Saves_Confirm_Restore" xml:space="preserve"><value>Restaurar {0}? Os saves atuais deste jogo serão sobrescritos; uma cópia deles é guardada antes.</value></data>
+  <data name="Saves_Confirm_Delete" xml:space="preserve"><value>Excluir {0}? Isso não pode ser desfeito.</value></data>
 </root>

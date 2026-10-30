@@ -139,6 +139,29 @@ Force it to close? Anything Steam has not saved yet may be lost. Choose No to le
   <data name="Startup_Steam_Reopen_Body" xml:space="preserve"><value>LuaTools is done. Open Steam again?</value></data>
   <data name="Startup_Steam_Reopen_Action" xml:space="preserve"><value>Open Steam</value></data>
   <data name="Startup_Steam_ReopenFailed" xml:space="preserve"><value>Couldn't start Steam — open it from its own shortcut.</value></data>
+  <data name="Guard_Title" xml:space="preserve"><value>Steam is already running</value></data>
+  <data name="Guard_Body" xml:space="preserve"><value>LuaTools needs to start Steam itself (or find it closed) for the hook to attach. Restart Steam now?</value></data>
+  <data name="Guard_Restart" xml:space="preserve"><value>Restart Steam</value></data>
+  <data name="Guard_Exit" xml:space="preserve"><value>Exit</value></data>
+  <data name="Guard_Continue" xml:space="preserve"><value>Continue anyway (not recommended)</value></data>
+  <data name="Guard_ContinueWarning" xml:space="preserve"><value>Steam was left running, so the hook may fail to attach. Restart Steam from LuaTools if it does.</value></data>
+  <data name="Manage_Action_SaveBackup" xml:space="preserve"><value>Save backup…</value></data>
+  <data name="Saves_Title" xml:space="preserve"><value>Save backups</value></data>
+  <data name="Saves_Create" xml:space="preserve"><value>Create new backup</value></data>
+  <data name="Saves_Restore" xml:space="preserve"><value>Restore</value></data>
+  <data name="Saves_Delete" xml:space="preserve"><value>Delete</value></data>
+  <data name="Saves_Close" xml:space="preserve"><value>Close</value></data>
+  <data name="Saves_Empty" xml:space="preserve"><value>No backups of this game yet.</value></data>
+  <data name="Saves_Note" xml:space="preserve"><value>Backs up Steam's per-game folder (userdata). Games that keep saves in Documents or AppData are not included.</value></data>
+  <data name="Saves_Toast_Created" xml:space="preserve"><value>Backed up {0} file(s), {1}.</value></data>
+  <data name="Saves_Toast_Restored" xml:space="preserve"><value>Restored {0} file(s). A copy of the previous saves was kept.</value></data>
+  <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Backup deleted.</value></data>
+  <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>No save folder for this game under Steam's userdata. It probably keeps its saves elsewhere (Documents / AppData).</value></data>
+  <data name="Saves_Toast_SteamNotFound" xml:space="preserve"><value>Steam folder not found. Set its location in Settings.</value></data>
+  <data name="Saves_Toast_Refused" xml:space="preserve"><value>Refused: the backup does not match this game or contains unsafe paths. Nothing was changed.</value></data>
+  <data name="Saves_Toast_Failed" xml:space="preserve"><value>The operation failed. See the log for details.</value></data>
+  <data name="Saves_Confirm_Restore" xml:space="preserve"><value>Restore {0}? This game's current saves are overwritten; a copy of them is kept first.</value></data>
+  <data name="Saves_Confirm_Delete" xml:space="preserve"><value>Delete {0}? This cannot be undone.</value></data>
   <data name="About_Changelog_Title" xml:space="preserve"><value>What's new</value></data>
   <data name="About_Changelog_Show" xml:space="preserve"><value>Show changelog</value></data>
   <data name="About_Changelog_Hide" xml:space="preserve"><value>Hide changelog</value></data>

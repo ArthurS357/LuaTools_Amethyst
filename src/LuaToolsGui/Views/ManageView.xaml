@@ -208,6 +208,11 @@
                                     CommandParameter="{Binding}"
                                     Header="{x:Static res:Strings.Manage_Action_RemoveDrm}"
                                     Icon="{ui:SymbolIcon WrenchScrewdriver24}" />
+                                <MenuItem
+                                    Command="{Binding PlacementTarget.Tag.SaveBackupCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                    CommandParameter="{Binding}"
+                                    Header="{x:Static res:Strings.Manage_Action_SaveBackup}"
+                                    Icon="{ui:SymbolIcon FolderZip24}" />
                                 <Separator />
                                 <MenuItem
                                     Command="{Binding PlacementTarget.Tag.OpenStorePageCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
@@ -754,6 +759,13 @@
                             CommandParameter="{Binding}"
                             Content="{x:Static res:Strings.Manage_Action_LaunchOptions}"
                             Icon="{ui:SymbolIcon Play24}" />
+                        <ui:Button
+                            Margin="0,8,0,0"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding DataContext.SaveBackupCommand, ElementName=Root}"
+                            CommandParameter="{Binding}"
+                            Content="{x:Static res:Strings.Manage_Action_SaveBackup}"
+                            Icon="{ui:SymbolIcon FolderZip24}" />
                         <ui:Button
                             Margin="0,8,0,0"
                             HorizontalAlignment="Stretch"

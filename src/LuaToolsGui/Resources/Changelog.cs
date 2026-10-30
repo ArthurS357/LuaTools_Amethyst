@@ -29,6 +29,16 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.7.10.2", "2026-10-29",
+            "Local build: asks before touching a Steam that is already running, and adds per-game save backups to the Manage page.",
+            [
+                "Startup Guard: if Steam is already running when LuaTools opens, a dialog offers Restart Steam, Exit, or Continue anyway (not recommended), instead of closing Steam without asking.",
+                "Continuing anyway leaves Steam alone and shows a warning, because the hook may fail to attach to a Steam LuaTools did not start.",
+                "Save backups: the Manage page has a new \"Save backup…\" action that zips a game's Steam userdata folder to %AppData%\\LuaToolsGui\\SaveBackups, with Restore and Delete for each backup.",
+                "Restoring validates the whole archive first (zip-slip, links, other games, size) and zips the current saves before overwriting them.",
+                "Only Steam's own per-game folder is covered; games that keep saves in Documents or AppData are reported as not found.",
+            ]),
+
         new("1.7.10.1", "2026-10-27",
             "Local build: warns when a source installs a lua without manifests, because Steam may then fail the download and blame your internet.",
             [

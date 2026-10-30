@@ -168,6 +168,8 @@ public partial class App : Application
                 services.AddSingleton<ManageViewModel>();
                 services.AddSingleton<BuildsViewModel>();
                 services.AddTransient<LaunchOptionsViewModel>(); // one per dialog
+                services.AddSingleton<Services.Backups.SaveBackupService>();
+                services.AddTransient<SaveBackupViewModel>(); // one per dialog
                 services.AddSingleton<HomeViewModel>();
                 // Registered before ModeViewModel, which now hosts the AmethystTool card.
                 services.AddSingleton<AmethystToolViewModel>();
@@ -754,6 +756,31 @@ public partial class App : Application
             // one-time decision, so switching mode later never brings the overlay back.
             if (!plan.ShowSetup) cache.OnboardingComplete = true;
 
+            // Startup Guard: a Steam that is already up is ASKED about rather than closed silently. The
+            // hook only attaches to a Steam LuaTools closed or started, so the user picks the way out.
+            bool restartChosen = false;
+            if (plan.CloseSteam)
+            {
+                var guard = await StartupGuard.RunAsync(
+                    SteamService.IsSteamRunning, () => AskStartupGuardAsync(window));
+                switch (guard)
+                {
+                    case StartupGuardOutcome.Exit:
+                        Shutdown();
+                        return;
+                    case StartupGuardOutcome.ContinueAnyway:
+                        toasts.Show(LuaToolsGui.Resources.Strings.Guard_Title,
+                                    LuaToolsGui.Resources.Strings.Guard_ContinueWarning, error: true);
+                        // Steam stays as it is: no stop, nothing to offer back. Setup (which does its own
+                        // stop and start) still opens if it is due.
+                        plan = plan with { CloseSteam = false, OfferReopen = false };
+                        break;
+                    case StartupGuardOutcome.Restart:
+                        restartChosen = true;
+                        break;
+                }
+            }
+
             if (plan.IsSilent) return;
 
             if (plan.CloseSteam)
@@ -801,7 +828,14 @@ public partial class App : Application
                 return;
             }
 
-            if (plan.OfferReopen)
+            if (plan.OfferReopen && restartChosen)
+            {
+                // "Restart Steam" was the user's own choice, so there is nothing left to offer: start it.
+                if (!await Task.Run(steam.StartSteam))
+                    toasts.Show(LuaToolsGui.Resources.Strings.Startup_Title,
+                                LuaToolsGui.Resources.Strings.Startup_Steam_ReopenFailed, error: true);
+            }
+            else if (plan.OfferReopen)
                 toasts.ShowAction(
                     LuaToolsGui.Resources.Strings.Startup_Title,
                     LuaToolsGui.Resources.Strings.Startup_Steam_Reopen_Body,
@@ -818,6 +852,27 @@ public partial class App : Application
             // Convenience, not correctness. Log it and leave Steam to the user.
             LogStartupProblem($"Steam flow failed: {LogSanitizer.Sanitize(ex)}");
         }
+    }
+
+    private static async Task<StartupGuardChoice> AskStartupGuardAsync(Window owner)
+    {
+        // Primary is the safe, recommended way out. The close button is "Exit", so Esc / the X quit
+        // rather than silently pick the risky "continue".
+        var box = new Wpf.Ui.Controls.MessageBox
+        {
+            Title = LuaToolsGui.Resources.Strings.Guard_Title,
+            Content = LuaToolsGui.Resources.Strings.Guard_Body,
+            PrimaryButtonText = LuaToolsGui.Resources.Strings.Guard_Restart,
+            SecondaryButtonText = LuaToolsGui.Resources.Strings.Guard_Continue,
+            CloseButtonText = LuaToolsGui.Resources.Strings.Guard_Exit,
+        };
+        if (owner.IsVisible) box.Owner = owner;
+        return await box.ShowDialogAsync() switch
+        {
+            Wpf.Ui.Controls.MessageBoxResult.Primary => StartupGuardChoice.Restart,
+            Wpf.Ui.Controls.MessageBoxResult.Secondary => StartupGuardChoice.ContinueAnyway,
+            _ => StartupGuardChoice.Exit,
+        };
     }
 
     /// <summary>The real startup sequence, split out of the <c>async void</c>
@@ -1016,6 +1071,15 @@ public partial class App : Application
         {
             var dialog = new LaunchOptionsDialog(
                 _host.Services.GetRequiredService<LaunchOptionsViewModel>(), appId, name)
+            { Owner = window };
+            dialog.ShowDialog();
+        });
+
+        // Manage "Save backup…" → list/create/restore/delete the game's userdata zips.
+        manage.OpenSaveBackup = (appId, name) => Dispatcher.Invoke(() =>
+        {
+            var dialog = new SaveBackupDialog(
+                _host.Services.GetRequiredService<SaveBackupViewModel>(), appId, name)
             { Owner = window };
             dialog.ShowDialog();
         });
