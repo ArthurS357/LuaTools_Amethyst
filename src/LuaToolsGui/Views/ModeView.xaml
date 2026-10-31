@@ -370,7 +370,7 @@
                         Visibility="{Binding IsCloudRedirectAddonVisible, Converter={StaticResource BoolToVis}}" />
 
                 <!-- CloudRedirect add-on: a feature of the Nightly BST build. Locked (dimmed, buttons
-                     disabled) unless BetterSteamTools Nightly is the active mode. -->
+                     disabled) unless OpenSteamTool Nightly is the active mode. -->
                 <Border
                     Margin="0,0,0,0"
                     Padding="18"

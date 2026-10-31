@@ -163,10 +163,10 @@
   <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>SteamTools com alguns patches engenhosos — uma tonelada de correções e melhorias. Traz de volta o Steam Cloud nativo via Google Drive / OneDrive!</value></data>
   <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>Gerenciar</value></data>
   <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>Não foi possível baixar ou iniciar o CloudRedirect.</value></data>
-  <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>Build noturno do BetterSteamTools (OST) a partir do código mais recente. As correções mais recentes, mas pode ser menos estável.</value></data>
+  <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>Build noturno do OpenSteamTool (OST) a partir do código mais recente. As correções mais recentes, mas pode ser menos estável.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>EXPERIMENTAL</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Traz de volta o suporte nativo ao Steam Cloud por meio de provedores de armazenamento de terceiros como Google Drive / OneDrive / Cloudflare R2 e mais. No momento, compatível apenas com o BetterSteamTools Nightly. Não esqueça de configurá-lo clicando em "Gerenciar" após ativar e, em seguida, reinicie o Steam!</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Selecione o BetterSteamTools Nightly para usar o CloudRedirect.</value></data>
+  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Traz de volta o suporte nativo ao Steam Cloud por meio de provedores de armazenamento de terceiros como Google Drive / OneDrive / Cloudflare R2 e mais. No momento, compatível apenas com o OpenSteamTool Nightly. Não esqueça de configurá-lo clicando em "Gerenciar" após ativar e, em seguida, reinicie o Steam!</value></data>
+  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Selecione o OpenSteamTool Nightly para usar o CloudRedirect.</value></data>
   <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>Ativar</value></data>
   <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>Desativar</value></data>
   <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>Ativado.</value></data>
@@ -180,7 +180,7 @@
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>Faça login para desbloquear a adição de jogos e correções.</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>Conectado ✓</value></data>
   <data name="Onboarding_Recommended_Title" xml:space="preserve"><value>Aplicar configurações recomendadas</value></data>
-  <data name="Onboarding_Recommended_Detail" xml:space="preserve"><value>Modo: BetterSteamTools · FastFetch ativado</value></data>
+  <data name="Onboarding_Recommended_Detail" xml:space="preserve"><value>Modo: OpenSteamTool · FastFetch ativado</value></data>
   <data name="Onboarding_Plugin_Title" xml:space="preserve"><value>Instalar nosso famoso plugin</value></data>
   <data name="Onboarding_Plugin_Detail" xml:space="preserve"><value>Adiciona o botão "Add via LuaTools" às páginas da loja da Steam.</value></data>
   <data name="Onboarding_Yes" xml:space="preserve"><value>Sim, por favor</value></data>

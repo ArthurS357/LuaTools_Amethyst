@@ -53,9 +53,10 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
             // will not be fixed. See ModeDefinition.Retired for why the definition stays behind.
             Retired: true),
 
-        // DisplayName "BetterSteamTools" is the user-facing brand; the repo/dll/zip identifiers below stay
-        // the upstream "OpenSteamTool" names (real download targets — renaming them breaks install).
-        new(UnlockerMode.OpenSteamTools, "BetterSteamTools",
+        // DisplayName is the real project name. This card installs OpenSteamTool, not madoiscool's
+        // BetterSteamTools fork (donor/updater code the fork's policy excludes), so it must not say otherwise.
+        // The repo/dll/zip identifiers below are the real download targets; renaming them breaks install.
+        new(UnlockerMode.OpenSteamTools, "OpenSteamTool",
             Description: Resources.Strings.Mode_Desc_OpenSteamTools,
             Kind: ModeKind.Zip,
             Owner: AppConfig.OpenSteamToolsOwner, Repo: AppConfig.OpenSteamToolsRepo,
@@ -67,7 +68,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
         // Nightly build of OpenSteamTool (our own madoiscool/OST-Nightly, built from upstream main) —
         // kept as its own mode because it adds native CloudRedirect support (see the add-on below).
         // Same install/config shape as stable BST (same binary, same opensteamtool.toml).
-        new(UnlockerMode.OpenSteamToolsNightly, "BetterSteamTools Nightly",
+        new(UnlockerMode.OpenSteamToolsNightly, "OpenSteamTool Nightly",
             Description: Resources.Strings.Mode_Desc_OpenSteamToolsNightly,
             Kind: ModeKind.Zip,
             Owner: AppConfig.OstNightlyOwner, Repo: AppConfig.OstNightlyRepo,

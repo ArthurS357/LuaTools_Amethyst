@@ -162,10 +162,10 @@
   <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>SteamTools із кількома вправними патчами — купа виправлень і покращень. Повертає рідний Steam Cloud через Google Drive / OneDrive!</value></data>
   <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>Керування</value></data>
   <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>Не вдалося завантажити або запустити CloudRedirect.</value></data>
-  <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>Нічна збірка BetterSteamTools (OST) із найновішого коду. Найсвіжіші виправлення, але може бути менш стабільною.</value></data>
+  <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>Нічна збірка OpenSteamTool (OST) із найновішого коду. Найсвіжіші виправлення, але може бути менш стабільною.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>ЕКСПЕРИМЕНТАЛЬНА</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Повертає вбудовану підтримку Steam Cloud через сторонні сховища, як-от Google Drive / OneDrive / Cloudflare R2 та інші. Наразі сумісно лише з BetterSteamTools Nightly. Не забудьте налаштувати його, натиснувши "Керування" після ввімкнення, а потім перезапустіть Steam!</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Виберіть BetterSteamTools Nightly, щоб використовувати CloudRedirect.</value></data>
+  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Повертає вбудовану підтримку Steam Cloud через сторонні сховища, як-от Google Drive / OneDrive / Cloudflare R2 та інші. Наразі сумісно лише з OpenSteamTool Nightly. Не забудьте налаштувати його, натиснувши "Керування" після ввімкнення, а потім перезапустіть Steam!</value></data>
+  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Виберіть OpenSteamTool Nightly, щоб використовувати CloudRedirect.</value></data>
   <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>Увімкнути</value></data>
   <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>Вимкнути</value></data>
   <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>Увімкнено.</value></data>
@@ -179,7 +179,7 @@
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>Увійдіть, щоб розблокувати додавання ігор і фіксів.</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>Вхід виконано ✓</value></data>
   <data name="Onboarding_Recommended_Title" xml:space="preserve"><value>Застосувати рекомендовані налаштування</value></data>
-  <data name="Onboarding_Recommended_Detail" xml:space="preserve"><value>Режим: BetterSteamTools · FastFetch увімкнено</value></data>
+  <data name="Onboarding_Recommended_Detail" xml:space="preserve"><value>Режим: OpenSteamTool · FastFetch увімкнено</value></data>
   <data name="Onboarding_Plugin_Title" xml:space="preserve"><value>Установити наш знаменитий плагін</value></data>
   <data name="Onboarding_Plugin_Detail" xml:space="preserve"><value>Додає кнопку «Add via LuaTools» на сторінки крамниці Steam.</value></data>
   <data name="Onboarding_Yes" xml:space="preserve"><value>Так, будь ласка</value></data>

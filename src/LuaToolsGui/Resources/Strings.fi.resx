@@ -162,10 +162,10 @@
   <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>SteamTools muutamalla näppärällä paikalla — valtavasti korjauksia ja parannuksia. Tuo natiivin Steam Cloudin takaisin Google Driven / OneDriven kautta!</value></data>
   <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>Hallinta</value></data>
   <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>CloudRedirectin lataaminen tai käynnistäminen epäonnistui.</value></data>
-  <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>BetterSteamToolsin (OST) yöllinen koontiversio uusimmasta lähdekoodista. Uusimmat korjaukset, mutta voi olla epävakaampi.</value></data>
+  <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>OpenSteamToolin (OST) yöllinen koontiversio uusimmasta lähdekoodista. Uusimmat korjaukset, mutta voi olla epävakaampi.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>KOKEELLINEN</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Palauttaa natiivin Steam Cloud -tuen kolmannen osapuolen tallennuspalveluiden, kuten Google Drive / OneDrive / Cloudflare R2 ja muiden, kautta. Toistaiseksi yhteensopiva vain BetterSteamTools Nightlyn kanssa. Muista määrittää se napsauttamalla "Hallinta" käyttöönoton jälkeen ja käynnistä sitten Steam uudelleen!</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Valitse BetterSteamTools Nightly käyttääksesi CloudRedirectiä.</value></data>
+  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Palauttaa natiivin Steam Cloud -tuen kolmannen osapuolen tallennuspalveluiden, kuten Google Drive / OneDrive / Cloudflare R2 ja muiden, kautta. Toistaiseksi yhteensopiva vain OpenSteamTool Nightlyn kanssa. Muista määrittää se napsauttamalla "Hallinta" käyttöönoton jälkeen ja käynnistä sitten Steam uudelleen!</value></data>
+  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Valitse OpenSteamTool Nightly käyttääksesi CloudRedirectiä.</value></data>
   <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>Ota käyttöön</value></data>
   <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>Poista käytöstä</value></data>
   <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>Käytössä.</value></data>
@@ -179,7 +179,7 @@
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>Kirjaudu sisään avataksesi pelien ja korjausten lisäämisen.</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>Kirjauduttu sisään ✓</value></data>
   <data name="Onboarding_Recommended_Title" xml:space="preserve"><value>Ota suositellut asetukset käyttöön</value></data>
-  <data name="Onboarding_Recommended_Detail" xml:space="preserve"><value>Tila: BetterSteamTools · FastFetch päällä</value></data>
+  <data name="Onboarding_Recommended_Detail" xml:space="preserve"><value>Tila: OpenSteamTool · FastFetch päällä</value></data>
   <data name="Onboarding_Plugin_Title" xml:space="preserve"><value>Asenna kuuluisa lisäosamme</value></data>
   <data name="Onboarding_Plugin_Detail" xml:space="preserve"><value>Lisää "Add via LuaTools" -painikkeen Steamin kauppasivuille.</value></data>
   <data name="Onboarding_Yes" xml:space="preserve"><value>Kyllä kiitos</value></data>
