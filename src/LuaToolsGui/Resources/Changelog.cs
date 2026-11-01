@@ -29,6 +29,26 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.7.12.2", "2026-11-01",
+            "Local test build: save backups are now filed in one folder per game, and the success message shows where the zip went.",
+            [
+                "Save backups: each game gets its own folder inside the backup folder, named after the game (Batman: Arkham becomes Batman_ Arkham). The first backup of a game asks before creating that folder; later ones do not.",
+                "After a backup, the message shows the full path of the zip and stays on screen for 8 seconds.",
+                "Restore, Delete and Import list the zips of every game folder plus the loose zips older versions left in the backup folder, so no history is lost, and a game that gets renamed keeps its backups.",
+                "The same safety checks apply as before: a folder that is a link is refused, restore only reads zips directly in the backup folder or in one game folder, and the archive is still validated whole before anything is written.",
+                "No new setting, no new dependency and no new network request.",
+            ]),
+
+        new("1.7.12.1", "2026-11-01",
+            "Local test build: Manage cards show an Installed badge, save backups can go to a folder you choose, and a save can be imported from any .zip.",
+            [
+                "Manage: a green Installed badge appears on a game's card and in its detail panel when Steam's manifest says the game is fully on disk. The Play button still says Install for a game Steam does not have.",
+                "Settings: the new Save backup folder setting lets you point backups at OneDrive or another drive with Change…, and Reset to auto returns to %AppData%\\LuaToolsGui\\SaveBackups. A folder that is not a full path is ignored.",
+                "Import save (.zip)…: new action in the Manage game menu, the detail panel and the Save backups window. Pick a save zip from anywhere, for example after downloading the game again; it goes through the same checks as a restore (zip-slip, links, other games, size).",
+                "Importing zips the current saves first so nothing is lost, and asks to close Steam if it is running. Only zips laid out as account/appid/files are accepted.",
+                "No new dependency and no new network request.",
+            ]),
+
         new("1.7.12", "2026-11-01",
             "Cancelling the Discord sign-in is handled at once, the welcome screen stops coming back after you sign in, and save backups check disk space and a running Steam.",
             [

@@ -669,4 +669,17 @@ Isso exclui os arquivos .lua de Steam\config\stplug-in. Reinicie o Steam depois 
   <data name="Saves_CloseSteamContinue" xml:space="preserve"><value>Fechar Steam e continuar</value></data>
   <data name="Saves_Toast_SteamStillRunning" xml:space="preserve"><value>O Steam não fechou. Feche-o manualmente e tente de novo. Nada foi restaurado.</value></data>
   <data name="Saves_Confirm_Delete" xml:space="preserve"><value>Excluir {0}? Isso não pode ser desfeito.</value></data>
+  <data name="Manage_Badge_Installed" xml:space="preserve"><value>Instalado</value></data>
+  <data name="Manage_Action_ImportSave" xml:space="preserve"><value>Importar save (.zip)…</value></data>
+  <data name="Saves_Import" xml:space="preserve"><value>Importar save…</value></data>
+  <data name="Saves_Import_PickTitle" xml:space="preserve"><value>Escolha um backup de save (.zip)</value></data>
+  <data name="Saves_Import_Filter" xml:space="preserve"><value>Backup de save (*.zip)|*.zip</value></data>
+  <data name="Saves_Confirm_Import" xml:space="preserve"><value>Importar {0}? Os saves atuais deste jogo são sobrescritos; uma cópia deles é guardada antes.</value></data>
+  <data name="Saves_Toast_Imported" xml:space="preserve"><value>{0} arquivo(s) importado(s). Uma cópia dos saves anteriores foi guardada.</value></data>
+  <data name="Saves_Confirm_NewFolder" xml:space="preserve"><value>O sistema vai gerar uma pasta com o nome deste jogo para organizar os saves. Deseja continuar?</value></data>
+  <data name="Saves_Confirm_Ok" xml:space="preserve"><value>OK</value></data>
+  <data name="Saves_Toast_SavedAt" xml:space="preserve"><value>Backup salvo com sucesso em: {0}</value></data>
+  <data name="Settings_SaveBackupFolder" xml:space="preserve"><value>Pasta dos backups de save</value></data>
+  <data name="Settings_SaveBackupFolder_Hint" xml:space="preserve"><value>Onde "Backup de saves…" grava os zips. Padrão: %AppData%\LuaToolsGui\SaveBackups.</value></data>
+  <data name="Settings_ChooseSaveBackupFolder" xml:space="preserve"><value>Escolha a pasta dos backups de save</value></data>
 </root>

@@ -14,6 +14,7 @@ namespace LuaToolsGui.Tests;
 public sealed class SaveBackupViewModelTests : IDisposable
 {
     private const long App = 730;
+    private const string Game = "Game";
 
     private readonly string _dir = Path.Combine(Path.GetTempPath(), "luatools-tests", Guid.NewGuid().ToString("N"));
     private readonly string _live;
@@ -47,9 +48,44 @@ public sealed class SaveBackupViewModelTests : IDisposable
     /// <summary>Back the save up, then change it, so a restore is visible as "backed up" coming back.</summary>
     private async Task<SaveBackupRow> BackedUpThenChanged()
     {
-        (await _svc.BackupSavesAsync(App)).Outcome.Should().Be(SaveBackupOutcome.Ok);
+        (await _svc.BackupSavesAsync(App, Game)).Outcome.Should().Be(SaveBackupOutcome.Ok);
         File.WriteAllText(_live, "changed");
         return new SaveBackupRow(_svc.ListBackups(App).Single());
+    }
+
+    [Fact]
+    public async Task The_first_backup_of_a_game_asks_before_creating_its_folder_and_later_ones_do_not()
+    {
+        await _vm.CreateCommand.ExecuteAsync(null);
+
+        _asked.Should().ContainSingle().Which.Should().Be(Resources.Strings.Saves_Confirm_NewFolder);
+        _svc.GameFolderExists(App, "Game").Should().BeTrue();
+        _svc.ListBackups(App).Should().ContainSingle();
+
+        _asked.Clear();
+        await _vm.CreateCommand.ExecuteAsync(null);
+
+        _asked.Should().BeEmpty("the folder exists now");
+        _svc.ListBackups(App).Should().HaveCount(2);
+    }
+
+    [Fact]
+    public async Task Declining_the_new_folder_prompt_writes_nothing()
+    {
+        _vm.Confirm = (body, _) => { _asked.Add(body); return Task.FromResult(false); };
+
+        await _vm.CreateCommand.ExecuteAsync(null);
+
+        _svc.GameFolderExists(App, "Game").Should().BeFalse();
+        _svc.ListBackups(App).Should().BeEmpty();
+        Directory.Exists(Path.Combine(_dir, "backups")).Should().BeFalse();
+        _vm.IsBusy.Should().BeFalse();
+    }
+
+    [Fact]
+    public void The_success_toast_stays_up_for_eight_seconds()
+    {
+        SaveBackupViewModel.SavedToastDuration.Should().Be(TimeSpan.FromSeconds(8));
     }
 
     [Fact]
@@ -90,6 +126,66 @@ public sealed class SaveBackupViewModelTests : IDisposable
         File.ReadAllText(_live).Should().Be("changed");
         _svc.ListBackups(App).Should().ContainSingle("no safety copy for a restore that did not run");
         _vm.IsBusy.Should().BeFalse();
+    }
+
+    private string ExternalZip(string body)
+    {
+        string path = Path.Combine(_dir, "external.zip");
+        using var zip = System.IO.Compression.ZipFile.Open(path, System.IO.Compression.ZipArchiveMode.Create);
+        using var w = new StreamWriter(zip.CreateEntry($"111/{App}/slot1.sav").Open());
+        w.Write(body);
+        return path;
+    }
+
+    [Fact]
+    public async Task Import_asks_then_restores_and_keeps_a_copy_of_the_current_save()
+    {
+        string zip = ExternalZip("imported");
+        _vm.PickZip = () => zip;
+
+        await _vm.ImportCommand.ExecuteAsync(null);
+
+        File.ReadAllText(_live).Should().Be("imported");
+        _asked.Should().ContainSingle(a => a.Contains("external.zip"));
+        _svc.ListBackups(App).Should().ContainSingle("the save that was there is zipped first");
+        _vm.IsBusy.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task Cancelling_the_file_picker_does_nothing()
+    {
+        _vm.PickZip = () => null;
+
+        await _vm.ImportCommand.ExecuteAsync(null);
+
+        _asked.Should().BeEmpty();
+        File.ReadAllText(_live).Should().Be("backed up");
+        _svc.ListBackups(App).Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Declining_the_import_confirmation_touches_nothing()
+    {
+        _vm.PickZip = () => ExternalZip("imported");
+        _vm.Confirm = (body, _) => { _asked.Add(body); return Task.FromResult(false); };
+
+        await _vm.ImportCommand.ExecuteAsync(null);
+
+        File.ReadAllText(_live).Should().Be("backed up");
+        _svc.ListBackups(App).Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Import_with_Steam_open_waits_for_it_to_close()
+    {
+        _vm.PickZip = () => ExternalZip("imported");
+        _vm.IsSteamRunning = () => true;
+        _vm.StopSteam = () => { _stopCalls++; return SteamStopOutcome.StillRunning; };
+
+        await _vm.ImportCommand.ExecuteAsync(null);
+
+        _stopCalls.Should().Be(1);
+        File.ReadAllText(_live).Should().Be("backed up", "a Steam that will not close blocks the import");
     }
 
     [Fact]

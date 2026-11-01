@@ -10,6 +10,7 @@ namespace LuaToolsGui.Tests;
 public sealed class SaveBackupServiceTests : IDisposable
 {
     private const long App = 730;
+    private const string Game = "Game";
 
     private readonly string _dir = Path.Combine(Path.GetTempPath(), "luatools-tests", Guid.NewGuid().ToString("N"));
     private readonly string _steam;
@@ -65,7 +66,7 @@ public sealed class SaveBackupServiceTests : IDisposable
         Save("0", App, "anon.sav", "never");          // Steam's anonymous placeholder
         Save("333", 440, "other.sav", "other game");
 
-        var r = await _svc.BackupSavesAsync(App);
+        var r = await _svc.BackupSavesAsync(App, Game);
 
         r.Outcome.Should().Be(SaveBackupOutcome.Ok);
         r.Files.Should().Be(2);
@@ -76,7 +77,7 @@ public sealed class SaveBackupServiceTests : IDisposable
     [Fact]
     public async Task Backup_with_no_game_folder_says_so_and_writes_nothing()
     {
-        var r = await _svc.BackupSavesAsync(App);
+        var r = await _svc.BackupSavesAsync(App, Game);
 
         r.Outcome.Should().Be(SaveBackupOutcome.NoSaves);
         Directory.Exists(_backups).Should().BeFalse();
@@ -87,17 +88,17 @@ public sealed class SaveBackupServiceTests : IDisposable
     {
         var svc = new SaveBackupService(() => null, _backups);
 
-        (await svc.BackupSavesAsync(App)).Outcome.Should().Be(SaveBackupOutcome.SteamNotFound);
+        (await svc.BackupSavesAsync(App, Game)).Outcome.Should().Be(SaveBackupOutcome.SteamNotFound);
     }
 
     [Fact]
     public async Task Restore_puts_the_files_back_and_keeps_a_copy_of_what_it_overwrote()
     {
         string file = Save("111", App, @"remote\slot1.sav", "good");
-        var made = await _svc.BackupSavesAsync(App);
+        var made = await _svc.BackupSavesAsync(App, Game);
         File.WriteAllText(file, "corrupted");
 
-        var r = await _svc.RestoreBackupAsync(made.Path!, App);
+        var r = await _svc.RestoreBackupAsync(made.Path!, App, Game);
 
         r.Outcome.Should().Be(SaveBackupOutcome.Ok);
         File.ReadAllText(file).Should().Be("good");
@@ -125,7 +126,7 @@ public sealed class SaveBackupServiceTests : IDisposable
         string fine = Save("111", App, "keep.sav", "original");
         string zip = CraftZip(App, ("111/730/keep.sav", "overwritten?"), (badName, "evil"));
 
-        var r = await _svc.RestoreBackupAsync(zip, App);
+        var r = await _svc.RestoreBackupAsync(zip, App, Game);
 
         r.Outcome.Should().Be(SaveBackupOutcome.Refused);
         File.ReadAllText(fine).Should().Be("original", "validation runs before any entry is extracted");
@@ -144,7 +145,7 @@ public sealed class SaveBackupServiceTests : IDisposable
         DirectoryJunction.Create(link, outside).Should().BeTrue();
         string zip = CraftZip(App, ("111/730/remote/slot1.sav", "evil"));
 
-        var r = await _svc.RestoreBackupAsync(zip, App);
+        var r = await _svc.RestoreBackupAsync(zip, App, Game);
 
         r.Outcome.Should().Be(SaveBackupOutcome.Refused);
         Directory.GetFiles(outside).Should().BeEmpty();
@@ -162,8 +163,8 @@ public sealed class SaveBackupServiceTests : IDisposable
         string stray = Path.Combine(_backups, "notes.txt");
         File.WriteAllText(stray, "x");
 
-        (await _svc.RestoreBackupAsync(outside, App)).Outcome.Should().Be(SaveBackupOutcome.Refused);
-        (await _svc.RestoreBackupAsync(otherGame, App)).Outcome.Should().Be(SaveBackupOutcome.Refused);
+        (await _svc.RestoreBackupAsync(outside, App, Game)).Outcome.Should().Be(SaveBackupOutcome.Refused);
+        (await _svc.RestoreBackupAsync(otherGame, App, Game)).Outcome.Should().Be(SaveBackupOutcome.Refused);
         _svc.DeleteBackup(outside, App).Should().BeFalse();
         _svc.DeleteBackup(otherGame, App).Should().BeFalse();
         _svc.DeleteBackup(stray, App).Should().BeFalse();
@@ -179,7 +180,7 @@ public sealed class SaveBackupServiceTests : IDisposable
         string zip = CraftZip(App, ("111/730/slot1.sav", "restored"), ("111/730/slot2.sav", "restored"));
         var full = new SaveBackupService(() => _steam, _backups, freeBytes: _ => 1);
 
-        var r = await full.RestoreBackupAsync(zip, App);
+        var r = await full.RestoreBackupAsync(zip, App, Game);
 
         r.Outcome.Should().Be(SaveBackupOutcome.Failed);
         File.ReadAllText(live).Should().Be("current");
@@ -204,7 +205,7 @@ public sealed class SaveBackupServiceTests : IDisposable
         string? asked = null;
         var tight = new SaveBackupService(() => _steam, _backups, freeBytes: dir => { asked = dir; return required - 1; });
 
-        var r = await tight.BackupSavesAsync(App);
+        var r = await tight.BackupSavesAsync(App, Game);
 
         r.Outcome.Should().Be(SaveBackupOutcome.NoSpace);
         r.Bytes.Should().Be(required);
@@ -219,7 +220,7 @@ public sealed class SaveBackupServiceTests : IDisposable
         long required = SaveBackupService.RequiredFreeBytes(1000);
         var exact = new SaveBackupService(() => _steam, _backups, freeBytes: _ => required);
 
-        (await exact.BackupSavesAsync(App)).Outcome.Should().Be(SaveBackupOutcome.Ok);
+        (await exact.BackupSavesAsync(App, Game)).Outcome.Should().Be(SaveBackupOutcome.Ok);
     }
 
     [Fact]
@@ -230,7 +231,7 @@ public sealed class SaveBackupServiceTests : IDisposable
         // Room for the extraction, none for the 50 MB margin the safety copy needs.
         var tight = new SaveBackupService(() => _steam, _backups, freeBytes: _ => 1_000_000);
 
-        (await tight.RestoreBackupAsync(zip, App)).Outcome.Should().Be(SaveBackupOutcome.Failed);
+        (await tight.RestoreBackupAsync(zip, App, Game)).Outcome.Should().Be(SaveBackupOutcome.Failed);
 
         File.ReadAllText(live).Should().Be("current");
     }
@@ -243,10 +244,355 @@ public sealed class SaveBackupServiceTests : IDisposable
         string live = Save("111", App, "slot1.sav", "a");
         _svc.HasSavesOrBackups(App).Should().BeTrue();
 
-        (await _svc.BackupSavesAsync(App)).Outcome.Should().Be(SaveBackupOutcome.Ok);
+        (await _svc.BackupSavesAsync(App, Game)).Outcome.Should().Be(SaveBackupOutcome.Ok);
         Directory.Delete(Path.GetDirectoryName(live)!, recursive: true);
         _svc.HasSavesOrBackups(App).Should().BeTrue();
         _svc.HasSavesOrBackups(440).Should().BeFalse();
+    }
+
+    /// <summary>A zip with an arbitrary name OUTSIDE the backups folder, as a user would keep on another drive.</summary>
+    private string ExternalZip(string fileName, params (string Name, string Body)[] entries)
+    {
+        string dir = Path.Combine(_dir, "external");
+        Directory.CreateDirectory(dir);
+        string path = Path.Combine(dir, fileName);
+        using var zip = ZipFile.Open(path, ZipArchiveMode.Create);
+        foreach (var (name, body) in entries)
+        {
+            using var w = new StreamWriter(zip.CreateEntry(name).Open());
+            w.Write(body);
+        }
+        return path;
+    }
+
+    [Fact]
+    public async Task Import_restores_a_zip_from_outside_the_backups_folder_into_a_game_with_no_saves()
+    {
+        string zip = ExternalZip("my-old-save.zip", ("111/730/remote/slot1.sav", "from the zip"));
+
+        var r = await _svc.ImportSaveAsync(zip, App, Game);
+
+        r.Outcome.Should().Be(SaveBackupOutcome.Ok);
+        File.ReadAllText(Path.Combine(_steam, "userdata", "111", "730", "remote", "slot1.sav")).Should().Be("from the zip");
+        _svc.ListBackups(App).Should().BeEmpty("a fresh install has nothing to keep a safety copy of");
+    }
+
+    [Fact]
+    public async Task Import_zips_the_current_saves_before_overwriting_them()
+    {
+        string live = Save("111", App, "slot1.sav", "current progress");
+        string zip = ExternalZip("old.zip", ("111/730/slot1.sav", "older"));
+
+        var r = await _svc.ImportSaveAsync(zip, App, Game);
+
+        r.Outcome.Should().Be(SaveBackupOutcome.Ok);
+        File.ReadAllText(live).Should().Be("older");
+        var kept = _svc.ListBackups(App).Should().ContainSingle().Subject;
+        using var safety = ZipFile.OpenRead(kept.FullPath);
+        new StreamReader(safety.Entries.Single().Open()).ReadToEnd().Should().Be("current progress");
+    }
+
+    [Fact]
+    public async Task Import_survives_a_game_folder_that_exists_but_is_empty()
+    {
+        Directory.CreateDirectory(Path.Combine(_steam, "userdata", "111", "730")); // fresh install, no files yet
+        string zip = ExternalZip("old.zip", ("111/730/slot1.sav", "older"));
+
+        (await _svc.ImportSaveAsync(zip, App, Game)).Outcome.Should().Be(SaveBackupOutcome.Ok);
+    }
+
+    [Theory]
+    [InlineData("111/730/../../../escaped.txt")]
+    [InlineData(@"111\730\..\..\..\escaped.txt")]
+    [InlineData("C:/Windows/escaped.txt")]
+    [InlineData("//server/share/escaped.txt")]
+    [InlineData("111/730/save.dat:evil")]
+    [InlineData("111/731/other-game.sav")]
+    [InlineData("0/730/anon.sav")]
+    public async Task Import_refuses_the_whole_external_archive_when_one_entry_is_unsafe(string badName)
+    {
+        string fine = Save("111", App, "keep.sav", "original");
+        string zip = ExternalZip("evil.zip", ("111/730/keep.sav", "overwritten?"), (badName, "evil"));
+
+        var r = await _svc.ImportSaveAsync(zip, App, Game);
+
+        r.Outcome.Should().Be(SaveBackupOutcome.Refused);
+        File.ReadAllText(fine).Should().Be("original");
+        File.Exists(Path.Combine(_dir, "escaped.txt")).Should().BeFalse();
+        File.Exists(Path.Combine(_steam, "escaped.txt")).Should().BeFalse();
+        _svc.ListBackups(App).Should().BeEmpty("no safety copy for a refused import");
+    }
+
+    [Fact]
+    public async Task Import_refuses_to_write_through_a_junction_inside_the_game_folder()
+    {
+        string outside = Path.Combine(_dir, "outside");
+        Directory.CreateDirectory(outside);
+        Save("111", App, "keep.sav", "x");
+        DirectoryJunction.Create(Path.Combine(_steam, "userdata", "111", "730", "remote"), outside).Should().BeTrue();
+        string zip = ExternalZip("evil.zip", ("111/730/remote/slot1.sav", "evil"));
+
+        (await _svc.ImportSaveAsync(zip, App, Game)).Outcome.Should().Be(SaveBackupOutcome.Refused);
+
+        Directory.GetFiles(outside).Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Import_refuses_what_is_not_a_plain_zip_file_path()
+    {
+        Save("111", App, "keep.sav", "original");
+        string notZipExt = ExternalZip("save.txt", ("111/730/keep.sav", "x"));
+        string good = ExternalZip("ok.zip", ("111/730/keep.sav", "x"));
+
+        (await _svc.ImportSaveAsync(notZipExt, App, Game)).Outcome.Should().Be(SaveBackupOutcome.Refused);
+        (await _svc.ImportSaveAsync(Path.Combine(_dir, "missing.zip"), App, Game)).Outcome.Should().Be(SaveBackupOutcome.Refused);
+        (await _svc.ImportSaveAsync(@"external\ok.zip", App, Game)).Outcome.Should().Be(SaveBackupOutcome.Refused, "a relative path depends on the working directory");
+        (await _svc.ImportSaveAsync(good, 0, Game)).Outcome.Should().Be(SaveBackupOutcome.Refused);
+        (await _svc.ImportSaveAsync(Path.Combine(_dir, "external"), App, Game)).Outcome.Should().Be(SaveBackupOutcome.Refused, "a directory is not a file");
+    }
+
+    [Fact]
+    public async Task Import_of_a_file_that_is_not_really_a_zip_fails_without_touching_the_saves()
+    {
+        string live = Save("111", App, "keep.sav", "original");
+        Directory.CreateDirectory(Path.Combine(_dir, "external"));
+        string fake = Path.Combine(_dir, "external", "fake.zip");
+        File.WriteAllText(fake, "this is not a zip");
+
+        (await _svc.ImportSaveAsync(fake, App, Game)).Outcome.Should().Be(SaveBackupOutcome.Failed);
+
+        File.ReadAllText(live).Should().Be("original");
+    }
+
+    [Fact]
+    public async Task Import_without_a_steam_install_reports_it()
+    {
+        var svc = new SaveBackupService(() => null, _backups);
+        string zip = ExternalZip("old.zip", ("111/730/a.sav", "x"));
+
+        (await svc.ImportSaveAsync(zip, App, Game)).Outcome.Should().Be(SaveBackupOutcome.SteamNotFound);
+    }
+
+    [Fact]
+    public async Task The_backups_folder_is_read_on_every_call_so_a_settings_change_applies_at_once()
+    {
+        Save("111", App, "slot1.sav", "a");
+        string first = Path.Combine(_dir, "first");
+        string second = Path.Combine(_dir, "second");
+        string current = first;
+        var svc = new SaveBackupService(() => _steam, () => current);
+
+        var a = await svc.BackupSavesAsync(App, Game);
+        current = second;
+        var b = await svc.BackupSavesAsync(App, Game);
+
+        Path.GetDirectoryName(a.Path).Should().Be(Path.Combine(first, Game));
+        Path.GetDirectoryName(b.Path).Should().Be(Path.Combine(second, Game));
+        svc.ListBackups(App).Select(e => e.FullPath).Should().Equal(b.Path); // only the folder in effect is listed
+        svc.DeleteBackup(a.Path!, App).Should().BeFalse("a backup in the old folder is no longer ours to delete");
+    }
+
+    // ── Per-game folder ──────────────────────────────────────────────────────
+
+    /// <summary>A zip named like one of our backups, placed in <paramref name="folder"/> (created if needed).</summary>
+    private string ZipIn(string folder, long app, string stamp = "20260101-000000", string body = "x")
+    {
+        Directory.CreateDirectory(folder);
+        string path = Path.Combine(folder, $"{app}_{stamp}.zip");
+        using var zip = ZipFile.Open(path, ZipArchiveMode.Create);
+        using var w = new StreamWriter(zip.CreateEntry($"111/{app}/slot1.sav").Open());
+        w.Write(body);
+        return path;
+    }
+
+    [Theory]
+    [InlineData("Batman: Arkham", "Batman_ Arkham")]
+    [InlineData("Half-Life 2", "Half-Life 2")]
+    [InlineData("a?b*c\"d<e>f|g:h", "a_b_c_d_e_f_g_h")]
+    [InlineData("A/B\\C", "A_B_C")]
+    [InlineData("Name.  .", "Name")]
+    [InlineData("  Padded  ", "Padded")]
+    [InlineData("CON", "_CON")]
+    [InlineData("nul.txt", "_nul.txt")]
+    [InlineData("Console", "Console")]
+    [InlineData("..", "")]
+    [InlineData("...", "")]
+    [InlineData("   ", "")]
+    [InlineData("", "")]
+    [InlineData(null, "")]
+    public void Folder_names_are_one_safe_path_segment(string? name, string expected)
+    {
+        SaveBackupService.SanitizeFolderName(name).Should().Be(expected);
+    }
+
+    [Fact]
+    public void A_long_name_is_cut_and_never_ends_in_a_dot_or_space()
+    {
+        string name = new string('a', 79) + ". more";
+
+        var safe = SaveBackupService.SanitizeFolderName(name);
+
+        safe.Length.Should().BeLessThanOrEqualTo(80);
+        safe.Should().NotEndWith(".").And.NotEndWith(" ");
+    }
+
+    [Fact]
+    public async Task Backup_goes_into_a_folder_named_after_the_game_with_invalid_characters_replaced()
+    {
+        Save("111", App, "slot1.sav", "a");
+
+        var r = await _svc.BackupSavesAsync(App, "Batman: Arkham");
+
+        r.Outcome.Should().Be(SaveBackupOutcome.Ok);
+        Directory.Exists(Path.Combine(_backups, "Batman_ Arkham")).Should().BeTrue();
+        Path.GetDirectoryName(r.Path).Should().Be(Path.Combine(_backups, "Batman_ Arkham"));
+        Directory.GetFiles(_backups).Should().BeEmpty("nothing is written loose in the root any more");
+    }
+
+    [Fact]
+    public async Task The_folder_check_is_false_until_the_first_backup_creates_it()
+    {
+        Save("111", App, "slot1.sav", "a");
+
+        _svc.GameFolderExists(App, "Batman: Arkham").Should().BeFalse();
+        await _svc.BackupSavesAsync(App, "Batman: Arkham");
+        _svc.GameFolderExists(App, "Batman: Arkham").Should().BeTrue();
+        _svc.GameFolderExists(App, "Another Game").Should().BeFalse();
+    }
+
+    [Theory]
+    [InlineData("...")]
+    [InlineData("")]
+    public async Task A_name_with_nothing_usable_falls_back_to_the_appid(string name)
+    {
+        Save("111", App, "slot1.sav", "a");
+
+        var r = await _svc.BackupSavesAsync(App, name);
+
+        Path.GetDirectoryName(r.Path).Should().Be(Path.Combine(_backups, "App_730"));
+    }
+
+    [Theory]
+    [InlineData(@"..\..\evil")]
+    [InlineData("../../evil")]
+    [InlineData(@"C:\Windows\evil")]
+    [InlineData(@"\\server\share\evil")]
+    public async Task A_hostile_game_name_cannot_place_the_zip_outside_the_backups_folder(string name)
+    {
+        Save("111", App, "slot1.sav", "a");
+
+        var r = await _svc.BackupSavesAsync(App, name);
+
+        r.Outcome.Should().Be(SaveBackupOutcome.Ok);
+        string parent = Path.GetDirectoryName(Path.GetDirectoryName(r.Path))!;
+        parent.Should().Be(Path.GetFullPath(_backups), "the game folder is always a direct child of the backups folder");
+        Directory.Exists(Path.Combine(_dir, "evil")).Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task Backup_refuses_when_the_game_folder_is_a_junction()
+    {
+        Save("111", App, "slot1.sav", "a");
+        string outside = Path.Combine(_dir, "outside");
+        Directory.CreateDirectory(outside);
+        Directory.CreateDirectory(_backups);
+        DirectoryJunction.Create(Path.Combine(_backups, "Game"), outside).Should().BeTrue();
+
+        var r = await _svc.BackupSavesAsync(App, Game);
+
+        r.Outcome.Should().Be(SaveBackupOutcome.Refused);
+        Directory.GetFiles(outside).Should().BeEmpty();
+    }
+
+    [Fact]
+    public void List_finds_zips_inside_the_game_folder_and_the_loose_ones_older_versions_left()
+    {
+        string inGame = ZipIn(Path.Combine(_backups, "Batman_ Arkham"), App, "20260102-000000");
+        string loose = ZipIn(_backups, App, "20260101-000000");
+        ZipIn(Path.Combine(_backups, "Batman_ Arkham"), 440);              // another game's zip
+        ZipIn(Path.Combine(_backups, "Batman_ Arkham", "deeper"), App);    // too deep: not ours to list
+        File.SetLastWriteTimeUtc(loose, DateTime.UtcNow.AddDays(-2));
+
+        var list = _svc.ListBackups(App);
+
+        list.Select(e => e.FullPath).Should().Equal(inGame, loose);
+        _svc.HasSavesOrBackups(App).Should().BeTrue("a backup in a game folder counts, even with no live saves");
+    }
+
+    [Fact]
+    public void List_still_finds_the_history_when_the_game_was_renamed()
+    {
+        string old = ZipIn(Path.Combine(_backups, "App 730"), App);
+        string current = ZipIn(Path.Combine(_backups, "Counter-Strike 2"), App, "20260105-000000");
+        File.SetLastWriteTimeUtc(old, DateTime.UtcNow.AddDays(-3));
+
+        _svc.ListBackups(App).Select(e => e.FullPath).Should().Equal(current, old);
+    }
+
+    [Fact]
+    public void List_does_not_follow_a_junction_folder()
+    {
+        string outside = Path.Combine(_dir, "outside");
+        ZipIn(outside, App);
+        Directory.CreateDirectory(_backups);
+        DirectoryJunction.Create(Path.Combine(_backups, "Linked"), outside).Should().BeTrue();
+
+        _svc.ListBackups(App).Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Restore_and_delete_work_on_a_zip_in_the_game_folder_and_the_safety_copy_lands_there_too()
+    {
+        string live = Save("111", App, "slot1.sav", "good");
+        var made = await _svc.BackupSavesAsync(App, Game);
+        File.WriteAllText(live, "corrupted");
+
+        var r = await _svc.RestoreBackupAsync(made.Path!, App, Game);
+
+        r.Outcome.Should().Be(SaveBackupOutcome.Ok);
+        File.ReadAllText(live).Should().Be("good");
+        var all = _svc.ListBackups(App);
+        all.Should().HaveCount(2);
+        all.Should().OnlyContain(e => Path.GetDirectoryName(e.FullPath) == Path.Combine(_backups, Game));
+
+        _svc.DeleteBackup(made.Path!, App).Should().BeTrue();
+        File.Exists(made.Path).Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task Restore_and_delete_refuse_a_zip_nested_deeper_or_behind_a_junction()
+    {
+        Save("111", App, "slot1.sav", "keep");
+        string deep = ZipIn(Path.Combine(_backups, "Game", "deeper"), App);
+        string outside = Path.Combine(_dir, "outside");
+        string viaLink = ZipIn(outside, App);
+        DirectoryJunction.Create(Path.Combine(_backups, "Linked"), outside).Should().BeTrue();
+        string throughJunction = Path.Combine(_backups, "Linked", Path.GetFileName(viaLink));
+
+        foreach (string zip in new[] { deep, throughJunction })
+        {
+            (await _svc.RestoreBackupAsync(zip, App, Game)).Outcome.Should().Be(SaveBackupOutcome.Refused);
+            _svc.DeleteBackup(zip, App).Should().BeFalse();
+            File.Exists(zip).Should().BeTrue();
+        }
+    }
+
+    [Fact]
+    public async Task Restore_from_the_game_folder_still_refuses_an_unsafe_archive()
+    {
+        string fine = Save("111", App, "keep.sav", "original");
+        Directory.CreateDirectory(Path.Combine(_backups, Game));
+        string zip = Path.Combine(_backups, Game, $"{App}_20260101-000000.zip");
+        using (var z = ZipFile.Open(zip, ZipArchiveMode.Create))
+        {
+            using (var w = new StreamWriter(z.CreateEntry("111/730/keep.sav").Open())) w.Write("overwritten?");
+            using (var w = new StreamWriter(z.CreateEntry("111/730/../../../escaped.txt").Open())) w.Write("evil");
+        }
+
+        (await _svc.RestoreBackupAsync(zip, App, Game)).Outcome.Should().Be(SaveBackupOutcome.Refused);
+
+        File.ReadAllText(fine).Should().Be("original");
+        File.Exists(Path.Combine(_dir, "escaped.txt")).Should().BeFalse();
     }
 
     [Fact]
@@ -254,10 +600,10 @@ public sealed class SaveBackupServiceTests : IDisposable
     {
         Save("111", 1, "a.sav", "a");
         Save("111", 10, "a.sav", "b");   // "10_…" must not show up under app 1
-        var one = await _svc.BackupSavesAsync(1);
-        await _svc.BackupSavesAsync(10);
+        var one = await _svc.BackupSavesAsync(1, Game);
+        await _svc.BackupSavesAsync(10, Game);
         File.SetLastWriteTimeUtc(one.Path!, DateTime.UtcNow.AddDays(-1));
-        var second = await _svc.BackupSavesAsync(1);
+        var second = await _svc.BackupSavesAsync(1, Game);
 
         _svc.ListBackups(1).Select(e => e.FullPath).Should().Equal(second.Path, one.Path);
         _svc.ListBackups(10).Should().HaveCount(1);

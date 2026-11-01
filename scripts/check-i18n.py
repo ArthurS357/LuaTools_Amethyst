@@ -45,6 +45,21 @@ SAMPLE_SIZE = 10
 # parity. Anything left here is untranslated in all 29 languages, with one stated exception noted
 # against the plugin-source group at the bottom.
 PENDING_TRANSLATION: frozenset[str] = frozenset({
+    # 1.7.12.2: per-game save-backup folder (en + pt-BR only).
+    "Saves_Confirm_NewFolder",
+    "Saves_Confirm_Ok",
+    "Saves_Toast_SavedAt",
+    # 1.7.12.1: installed badge, save import and save-backup folder (en + pt-BR only).
+    "Manage_Badge_Installed",
+    "Manage_Action_ImportSave",
+    "Saves_Import",
+    "Saves_Import_PickTitle",
+    "Saves_Import_Filter",
+    "Saves_Confirm_Import",
+    "Saves_Toast_Imported",
+    "Settings_SaveBackupFolder",
+    "Settings_SaveBackupFolder_Hint",
+    "Settings_ChooseSaveBackupFolder",
     # 1.7.10: AmethystTool offline card text and offline download error (en + pt-BR only).
     "Settings_AmethystTool_OfflineStatus",
     "Settings_AmethystTool_OfflineHint",

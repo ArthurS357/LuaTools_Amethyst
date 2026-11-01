@@ -553,6 +553,46 @@
                         Text="{Binding SteamWarning}"
                         TextWrapping="Wrap"
                         Visibility="{Binding SteamWarning, Converter={StaticResource NullToCollapsed}}" />
+
+                    <TextBlock
+                        Margin="0,16,0,0"
+                        FontSize="13"
+                        FontWeight="Medium"
+                        Text="{x:Static res:Strings.Settings_SaveBackupFolder}" />
+                    <Grid Margin="0,8,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ui:TextBox
+                            IsReadOnly="True"
+                            Text="{Binding SaveBackupFolder, Mode=OneWay}" />
+                        <ui:Button
+                            Grid.Column="1"
+                            Margin="8,0,0,0"
+                            Command="{Binding ChangeSaveBackupFolderCommand}"
+                            Content="{x:Static res:Strings.Settings_Change}" />
+                        <ui:Button
+                            Grid.Column="2"
+                            Margin="8,0,0,0"
+                            Command="{Binding OpenSaveBackupFolderCommand}"
+                            Content="{x:Static res:Strings.Settings_Open}"
+                            Icon="{ui:SymbolIcon FolderOpen24}" />
+                        <ui:Button
+                            Grid.Column="3"
+                            Margin="8,0,0,0"
+                            Command="{Binding ResetSaveBackupFolderCommand}"
+                            Content="{x:Static res:Strings.Settings_ResetToAuto}"
+                            Visibility="{Binding IsSaveBackupFolderCustom, Converter={StaticResource BoolToVis}}" />
+                    </Grid>
+                    <TextBlock
+                        Margin="0,8,0,0"
+                        FontSize="12"
+                        Foreground="{StaticResource TextDimBrush}"
+                        Text="{x:Static res:Strings.Settings_SaveBackupFolder_Hint}"
+                        TextWrapping="Wrap" />
                 </StackPanel>
             </Border>
 

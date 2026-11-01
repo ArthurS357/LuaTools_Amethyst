@@ -314,6 +314,7 @@ public partial class SettingsViewModel : ObservableObject
         _auth.AuthStateChanged += RefreshAccount;
         RefreshAccount();
         RefreshSteam();
+        RefreshSaveBackupFolder();
         _autoUpdateApps = settings.AutoUpdateApps; // init from saved value (default ON) without triggering Save
         _fastFetch = settings.FastFetch;
         _startWithWindows = settings.StartWithWindows; // default OFF — init without triggering the registry write
@@ -437,6 +438,45 @@ public partial class SettingsViewModel : ObservableObject
             _settings.SteamPathOverride = dialog.FolderName;
             RefreshSteam();
         }
+    }
+
+    /// <summary>Where save backups are written: the custom folder or the %AppData% default.</summary>
+    [ObservableProperty] private string _saveBackupFolder = "";
+    [ObservableProperty] private bool _isSaveBackupFolderCustom;
+
+    private void RefreshSaveBackupFolder()
+    {
+        SaveBackupFolder = _settings.EffectiveSaveBackupFolder;
+        IsSaveBackupFolderCustom = _settings.SaveBackupFolder is not null;
+    }
+
+    [RelayCommand]
+    private void ChangeSaveBackupFolder()
+    {
+        var dialog = new OpenFolderDialog
+        {
+            Title = Resources.Strings.Settings_ChooseSaveBackupFolder,
+            InitialDirectory = System.IO.Directory.Exists(SaveBackupFolder) ? SaveBackupFolder : "",
+        };
+        if (dialog.ShowDialog() != true) return;
+
+        _settings.SaveBackupFolder = dialog.FolderName;
+        RefreshSaveBackupFolder();
+    }
+
+    [RelayCommand]
+    private void ResetSaveBackupFolder()
+    {
+        _settings.SaveBackupFolder = null;
+        RefreshSaveBackupFolder();
+    }
+
+    [RelayCommand]
+    private void OpenSaveBackupFolder()
+    {
+        string dir = _settings.EffectiveSaveBackupFolder;
+        System.IO.Directory.CreateDirectory(dir);
+        Process.Start(new ProcessStartInfo(dir) { UseShellExecute = true });
     }
 
     [RelayCommand]

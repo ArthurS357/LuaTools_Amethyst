@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LuaToolsGui.Services;
@@ -24,6 +25,8 @@ public sealed partial class SaveBackupViewModel(SaveBackupService backups, Toast
     internal Func<bool> IsSteamRunning { get; set; } = SteamService.IsSteamRunning;
     internal Func<SteamStopOutcome> StopSteam { get; set; } = () => steam.StopSteamGraceful(allowKill: false);
     internal Func<string, string, Task<bool>> Confirm { get; set; } = ConfirmAsync;
+    /// <summary>Asks the user for a save zip; null when they cancel.</summary>
+    internal Func<string?> PickZip { get; set; } = PickZipFile;
 
     public long AppId { get; private set; }
     public string GameName { get; private set; } = "";
@@ -57,12 +60,16 @@ public sealed partial class SaveBackupViewModel(SaveBackupService backups, Toast
     private async Task CreateAsync()
     {
         if (IsBusy) return;
+        // First backup of this game: say that a folder named after it is about to be created.
+        if (!backups.GameFolderExists(AppId, GameName)
+            && !await Confirm(Resources.Strings.Saves_Confirm_NewFolder, Resources.Strings.Saves_Confirm_Ok)) return;
+
         IsBusy = true;
         try
         {
-            var r = await backups.BackupSavesAsync(AppId);
-            if (!Report(r, string.Format(CultureInfo.CurrentCulture,
-                    Resources.Strings.Saves_Toast_Created, r.Files, ByteSize.Format(r.Bytes))))
+            var r = await backups.BackupSavesAsync(AppId, GameName);
+            if (!Report(r, string.Format(CultureInfo.CurrentCulture, Resources.Strings.Saves_Toast_SavedAt, r.Path),
+                    SavedToastDuration))
                 return;
             Reload();
         }
@@ -80,11 +87,43 @@ public sealed partial class SaveBackupViewModel(SaveBackupService backups, Toast
         try
         {
             if (!await EnsureSteamClosedAsync()) return;
-            var r = await backups.RestoreBackupAsync(row.Entry.FullPath, AppId);
+            var r = await backups.RestoreBackupAsync(row.Entry.FullPath, AppId, GameName);
             Report(r, string.Format(CultureInfo.CurrentCulture, Resources.Strings.Saves_Toast_Restored, r.Files));
             Reload(); // the safety copy taken before the restore is a new entry
         }
         finally { IsBusy = false; }
+    }
+
+    /// <summary>Restore a save zip from outside the backups folder (e.g. after re-downloading the game).
+    /// <see cref="SaveBackupService.ImportSaveAsync"/> does the validation and the safety copy.</summary>
+    [RelayCommand]
+    private async Task ImportAsync()
+    {
+        if (IsBusy || PickZip() is not { } path) return;
+        if (!await Confirm(string.Format(CultureInfo.CurrentCulture,
+                Resources.Strings.Saves_Confirm_Import, Path.GetFileName(path)), Resources.Strings.Saves_Import)) return;
+
+        IsBusy = true;
+        try
+        {
+            if (!await EnsureSteamClosedAsync()) return;
+            var r = await backups.ImportSaveAsync(path, AppId, GameName);
+            Report(r, string.Format(CultureInfo.CurrentCulture, Resources.Strings.Saves_Toast_Imported, r.Files));
+            Reload(); // the safety copy taken before the import is a new entry
+        }
+        finally { IsBusy = false; }
+    }
+
+    private static string? PickZipFile()
+    {
+        var dialog = new Microsoft.Win32.OpenFileDialog
+        {
+            Title = Resources.Strings.Saves_Import_PickTitle,
+            Filter = Resources.Strings.Saves_Import_Filter,
+            CheckFileExists = true,
+            Multiselect = false,
+        };
+        return dialog.ShowDialog() == true ? dialog.FileName : null;
     }
 
     /// <summary>A running Steam syncs Cloud over the files a restore just wrote. Offers to close it (no kill:
@@ -114,7 +153,10 @@ public sealed partial class SaveBackupViewModel(SaveBackupService backups, Toast
     }
 
     /// <summary>Toast the outcome. True when it succeeded.</summary>
-    private bool Report(SaveBackupResult r, string okMessage)
+    /// <summary>The success toast carries a full path, so it stays up longer than the default.</summary>
+    internal static readonly TimeSpan SavedToastDuration = TimeSpan.FromSeconds(8);
+
+    private bool Report(SaveBackupResult r, string okMessage, TimeSpan? okDuration = null)
     {
         string? error = r.Outcome switch
         {
@@ -126,7 +168,8 @@ public sealed partial class SaveBackupViewModel(SaveBackupService backups, Toast
                 Resources.Strings.Saves_Toast_NoSpace, ByteSize.Format(r.Bytes)),
             _ => Resources.Strings.Saves_Toast_Failed,
         };
-        toast.Show(Resources.Strings.Saves_Title, error ?? okMessage, error: error is not null);
+        toast.Show(Resources.Strings.Saves_Title, error ?? okMessage, error: error is not null,
+            duration: error is null ? okDuration : null);
         return error is null;
     }
 

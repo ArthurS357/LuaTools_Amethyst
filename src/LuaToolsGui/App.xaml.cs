@@ -1111,6 +1111,13 @@ public partial class App : Application
             // Backups were created or deleted in there: the action's enabled state may have flipped.
             manage.SaveBackupCommand.NotifyCanExecuteChanged();
         });
+        // Manage "Import save (.zip)…" → no dialog: pick a file, confirm, restore, toast.
+        manage.OpenSaveImport = (appId, name) => Dispatcher.Invoke(() =>
+        {
+            var vm = _host.Services.GetRequiredService<SaveBackupViewModel>();
+            vm.Load(appId, name);
+            _ = vm.ImportCommand.ExecuteAsync(null);
+        });
 
         // Steam regenerates appinfo.vdf from PICS, wiping launch edits. Check once at startup and
         // OFFER to re-apply — never silently, since applying closes Steam.

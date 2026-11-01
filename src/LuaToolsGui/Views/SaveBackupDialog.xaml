@@ -58,6 +58,13 @@
                     Content="{x:Static res:Strings.Saves_Create}"
                     Icon="{ui:SymbolIcon FolderZip24}"
                     IsEnabled="{Binding NotBusy}" />
+                <ui:Button
+                    Margin="0,8,0,0"
+                    HorizontalAlignment="Stretch"
+                    Command="{Binding ImportCommand}"
+                    Content="{x:Static res:Strings.Saves_Import}"
+                    Icon="{ui:SymbolIcon ArrowImport24}"
+                    IsEnabled="{Binding NotBusy}" />
             </StackPanel>
 
             <TextBlock

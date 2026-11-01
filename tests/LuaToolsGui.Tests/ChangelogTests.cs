@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.7.12");
+        AppVersion.Current.Should().Be("1.7.12.2");
     }
 
     [Fact]
@@ -51,12 +51,10 @@ public class ChangelogTests
 
         // One anchor per change the release was actually about, so an entry that got copied forward from
         // the previous version fails here rather than shipping a changelog describing the wrong release.
-        text.Should().ContainEquivalentOf("Cancel on the Discord page");     // the sign-in cancel trigger
-        text.Should().ContainEquivalentOf("Try again");                      // the dialog's retry button
-        text.Should().ContainEquivalentOf("30 seconds");                     // the grace kept for other errors
-        text.Should().ContainEquivalentOf("Welcome screen");                 // the onboarding fix
-        text.Should().ContainEquivalentOf("plus 50 MB");                     // the backup space margin
-        text.Should().ContainEquivalentOf("Close Steam and continue");       // the restore-with-Steam-open dialog
+        text.Should().ContainEquivalentOf("its own folder");              // the per-game folder
+        text.Should().ContainEquivalentOf("Batman_ Arkham");                 // the sanitised-name example
+        text.Should().ContainEquivalentOf("8 seconds");                      // the success toast
+        text.Should().ContainEquivalentOf("loose zips");                     // the legacy fallback
     }
 
     [Fact]

@@ -64,13 +64,44 @@ public partial class SteamLibraryService(SteamService steam)
     /// that would only re-open a dialog for something Steam is already fetching.
     /// </para>
     /// </summary>
-    public HashSet<long> GetInstalledAppIds()
+    public HashSet<long> GetInstalledAppIds() => [.. EnumerateManifests().Select(static m => m.AppId)];
+
+    /// <summary>
+    /// Appids whose manifest says the game is fully on disk: <c>StateFlags</c> has the "fully installed" bit
+    /// (4). Stricter than <see cref="GetInstalledAppIds"/>, which also counts a game still downloading; this
+    /// is what the "Installed" badge on a card means. A manifest that cannot be read is simply not listed.
+    /// </summary>
+    public HashSet<long> GetFullyInstalledAppIds()
     {
         var ids = new HashSet<long>();
+        foreach (var (appId, acf) in EnumerateManifests())
+        {
+            try
+            {
+                if (StateFlagsRegex().Match(File.ReadAllText(acf)) is { Success: true } m
+                    && long.TryParse(m.Groups[1].Value, out long flags)
+                    && (flags & FullyInstalledFlag) != 0)
+                    ids.Add(appId);
+            }
+            catch (IOException) { /* Steam is rewriting it right now — next refresh will see it */ }
+            catch (UnauthorizedAccessException) { }
+        }
+        return ids;
+    }
+
+    private const long FullyInstalledFlag = 4; // StateFlags bit: k_EAppStateFullyInstalled
+
+    [GeneratedRegex(@"""StateFlags""\s*""(\d+)""", RegexOptions.IgnoreCase)]
+    private static partial Regex StateFlagsRegex();
+
+    /// <summary>Every <c>appmanifest_&lt;appid&gt;.acf</c> across the libraries, with its path.</summary>
+    private IEnumerable<(long AppId, string Path)> EnumerateManifests()
+    {
         const string prefix = "appmanifest_";
+        var found = new List<(long, string)>();
         try
         {
-            if (steam.EffectivePath is not { } steamRoot) return ids;
+            if (steam.EffectivePath is not { } steamRoot) return found;
 
             foreach (string library in GetLibraryRoots(steamRoot))
             {
@@ -82,12 +113,12 @@ public partial class SteamLibraryService(SteamService steam)
                     string name = Path.GetFileNameWithoutExtension(acf);
                     if (name.Length > prefix.Length
                         && long.TryParse(name.AsSpan(prefix.Length), out long appId))
-                        ids.Add(appId);
+                        found.Add((appId, acf));
                 }
             }
         }
         catch { /* unreadable library or odd path — report what was collected, not a failure */ }
-        return ids;
+        return found;
     }
 
     /// <summary>Every Steam library root (the main install plus any added libraries).</summary>

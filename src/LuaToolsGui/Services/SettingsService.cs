@@ -26,6 +26,9 @@ public class AppSettings
     // (→ default 24) is distinguishable from an explicit choice.
     public int? ManagePageSize { get; set; }
 
+    // Folder the save-backup zips are written to. Null = %AppData%\LuaToolsGui\SaveBackups.
+    public string? SaveBackupFolder { get; set; }
+
     // Fixes-page results-per-page. 0 = "All" (single infinite scroll). Nullable so "never set"
     // (→ default 24) is distinguishable from an explicit choice.
     public int? FixesPageSize { get; set; }
@@ -215,6 +218,26 @@ public sealed class SettingsService
         get => _settings.ManagePageSize ?? 24; // default 24
         set { _settings.ManagePageSize = value; Save(); }
     }
+
+    /// <summary>The built-in save-backup folder, used when <see cref="SaveBackupFolder"/> is unset or unusable.</summary>
+    internal static string DefaultSaveBackupFolder { get; } = Path.Combine(DefaultDirectory, "SaveBackups");
+
+    /// <summary>User-chosen save-backup folder. Null = <see cref="DefaultSaveBackupFolder"/>. Only a
+    /// fully-qualified path is kept: settings.json is writable by any process running as the user, and a
+    /// relative value would resolve against whatever the working directory happens to be.</summary>
+    public string? SaveBackupFolder
+    {
+        get => _settings.SaveBackupFolder;
+        set
+        {
+            _settings.SaveBackupFolder = !string.IsNullOrWhiteSpace(value) && Path.IsPathFullyQualified(value) ? value : null;
+            Save();
+        }
+    }
+
+    /// <summary>The folder backups actually go to: the custom one when set and still fully qualified, else the default.</summary>
+    public string EffectiveSaveBackupFolder =>
+        _settings.SaveBackupFolder is { } f && Path.IsPathFullyQualified(f) ? f : DefaultSaveBackupFolder;
 
     /// <summary>Fixes-page results-per-page (default 24). 0 = "All" (single infinite scroll).</summary>
     public int FixesPageSize
@@ -488,6 +511,7 @@ public sealed class SettingsService
             && _settings.SelectedMode is null
             && _settings.AutoUpdateApps is null
             && _settings.ManagePageSize is null
+            && _settings.SaveBackupFolder is null
             && _settings.FixesPageSize is null
             && _settings.BuildsPageSize is null
             && _settings.Language is null

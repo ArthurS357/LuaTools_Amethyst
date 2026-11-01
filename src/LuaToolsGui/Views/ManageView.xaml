@@ -213,6 +213,11 @@
                                     CommandParameter="{Binding}"
                                     Header="{x:Static res:Strings.Manage_Action_SaveBackup}"
                                     Icon="{ui:SymbolIcon FolderZip24}" />
+                                <MenuItem
+                                    Command="{Binding PlacementTarget.Tag.ImportSaveCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                    CommandParameter="{Binding}"
+                                    Header="{x:Static res:Strings.Manage_Action_ImportSave}"
+                                    Icon="{ui:SymbolIcon ArrowImport24}" />
                                 <Separator />
                                 <MenuItem
                                     Command="{Binding PlacementTarget.Tag.OpenStorePageCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
@@ -256,6 +261,30 @@
                                 ClipToBounds="True">
                                 <Grid>
                                     <Image Source="{Binding Cover}" Stretch="UniformToFill" />
+                                    <!-- Installed badge: Steam's manifest says the game is fully on disk -->
+                                    <Border
+                                        Margin="6,0,0,6"
+                                        Padding="6,2"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Bottom"
+                                        Background="{StaticResource SuccessScrimBrush}"
+                                        CornerRadius="4"
+                                        Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <ui:SymbolIcon
+                                                VerticalAlignment="Center"
+                                                FontSize="11"
+                                                Foreground="White"
+                                                Symbol="CheckmarkCircle24" />
+                                            <TextBlock
+                                                Margin="4,0,0,0"
+                                                VerticalAlignment="Center"
+                                                FontSize="10.5"
+                                                FontWeight="SemiBold"
+                                                Foreground="White"
+                                                Text="{x:Static res:Strings.Manage_Badge_Installed}" />
+                                        </StackPanel>
+                                    </Border>
                                     <!-- Selection toggle: matches the delete button; shows on hover or while selected -->
                                     <ui:Button
                                         Margin="6,6,0,0"
@@ -574,6 +603,23 @@
                             FontWeight="Bold"
                             Text="{Binding Name}"
                             TextWrapping="Wrap" />
+                        <StackPanel
+                            Margin="0,4,0,0"
+                            Orientation="Horizontal"
+                            Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
+                            <ui:SymbolIcon
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="{StaticResource SuccessTextBrush}"
+                                Symbol="CheckmarkCircle24" />
+                            <TextBlock
+                                Margin="4,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource SuccessTextBrush}"
+                                Text="{x:Static res:Strings.Manage_Badge_Installed}" />
+                        </StackPanel>
                         <Button
                             Margin="0,4,0,0"
                             HorizontalAlignment="Left"
@@ -766,6 +812,13 @@
                             CommandParameter="{Binding}"
                             Content="{x:Static res:Strings.Manage_Action_SaveBackup}"
                             Icon="{ui:SymbolIcon FolderZip24}" />
+                        <ui:Button
+                            Margin="0,8,0,0"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding DataContext.ImportSaveCommand, ElementName=Root}"
+                            CommandParameter="{Binding}"
+                            Content="{x:Static res:Strings.Manage_Action_ImportSave}"
+                            Icon="{ui:SymbolIcon ArrowImport24}" />
                         <ui:Button
                             Margin="0,8,0,0"
                             HorizontalAlignment="Stretch"

@@ -52,6 +52,46 @@ public sealed class PersistenceTests : IDisposable
     }
 
     [Fact]
+    public void Save_backup_folder_defaults_to_appdata_and_survives_a_reload()
+    {
+        var fresh = new SettingsService(_dir);
+        fresh.SaveBackupFolder.Should().BeNull();
+        fresh.EffectiveSaveBackupFolder.Should().Be(SettingsService.DefaultSaveBackupFolder);
+        SettingsService.DefaultSaveBackupFolder.Should().EndWith(Path.Combine("LuaToolsGui", "SaveBackups"));
+
+        string custom = Path.Combine(_dir, "OneDrive", "saves");
+        fresh.SaveBackupFolder = custom;
+
+        var reloaded = new SettingsService(_dir);
+        reloaded.SaveBackupFolder.Should().Be(custom);
+        reloaded.EffectiveSaveBackupFolder.Should().Be(custom);
+
+        reloaded.SaveBackupFolder = null;
+        new SettingsService(_dir).EffectiveSaveBackupFolder.Should().Be(SettingsService.DefaultSaveBackupFolder);
+    }
+
+    [Theory]
+    [InlineData(@"relative\saves")]
+    [InlineData("saves")]
+    [InlineData("   ")]
+    [InlineData("")]
+    public void Save_backup_folder_ignores_anything_that_is_not_a_fully_qualified_path(string value)
+    {
+        var settings = new SettingsService(_dir) { SaveBackupFolder = value };
+
+        settings.SaveBackupFolder.Should().BeNull();
+        settings.EffectiveSaveBackupFolder.Should().Be(SettingsService.DefaultSaveBackupFolder);
+    }
+
+    [Fact]
+    public void A_relative_save_backup_folder_edited_into_settings_json_falls_back_to_the_default()
+    {
+        File.WriteAllText(SettingsFile, """{ "SaveBackupFolder": "..\\..\\somewhere" }""");
+
+        new SettingsService(_dir).EffectiveSaveBackupFolder.Should().Be(SettingsService.DefaultSaveBackupFolder);
+    }
+
+    [Fact]
     public void Defaults_apply_when_nothing_was_ever_set()
     {
         var settings = new SettingsService(_dir);

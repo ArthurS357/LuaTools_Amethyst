@@ -166,6 +166,19 @@ Force it to close? Anything Steam has not saved yet may be lost. Choose No to le
   <data name="Saves_CloseSteamContinue" xml:space="preserve"><value>Close Steam and continue</value></data>
   <data name="Saves_Toast_SteamStillRunning" xml:space="preserve"><value>Steam did not close. Close it manually and try again. Nothing was restored.</value></data>
   <data name="Saves_Confirm_Delete" xml:space="preserve"><value>Delete {0}? This cannot be undone.</value></data>
+  <data name="Manage_Badge_Installed" xml:space="preserve"><value>Installed</value></data>
+  <data name="Manage_Action_ImportSave" xml:space="preserve"><value>Import save (.zip)…</value></data>
+  <data name="Saves_Import" xml:space="preserve"><value>Import save…</value></data>
+  <data name="Saves_Import_PickTitle" xml:space="preserve"><value>Choose a save backup (.zip)</value></data>
+  <data name="Saves_Import_Filter" xml:space="preserve"><value>Save backup (*.zip)|*.zip</value></data>
+  <data name="Saves_Confirm_Import" xml:space="preserve"><value>Import {0}? This game's current saves are overwritten; a copy of them is kept first.</value></data>
+  <data name="Saves_Toast_Imported" xml:space="preserve"><value>Imported {0} file(s). A copy of the previous saves was kept.</value></data>
+  <data name="Saves_Confirm_NewFolder" xml:space="preserve"><value>The app will create a folder named after this game to organize its saves. Continue?</value></data>
+  <data name="Saves_Confirm_Ok" xml:space="preserve"><value>OK</value></data>
+  <data name="Saves_Toast_SavedAt" xml:space="preserve"><value>Backup saved successfully at: {0}</value></data>
+  <data name="Settings_SaveBackupFolder" xml:space="preserve"><value>Save backup folder</value></data>
+  <data name="Settings_SaveBackupFolder_Hint" xml:space="preserve"><value>Where "Save backup…" writes its zips. Default: %AppData%\LuaToolsGui\SaveBackups.</value></data>
+  <data name="Settings_ChooseSaveBackupFolder" xml:space="preserve"><value>Choose the save backup folder</value></data>
   <data name="About_Changelog_Title" xml:space="preserve"><value>What's new</value></data>
   <data name="About_Changelog_Show" xml:space="preserve"><value>Show changelog</value></data>
   <data name="About_Changelog_Hide" xml:space="preserve"><value>Hide changelog</value></data>

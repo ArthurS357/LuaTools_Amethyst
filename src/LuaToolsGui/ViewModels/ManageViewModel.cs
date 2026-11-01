@@ -57,6 +57,10 @@ public partial class LuaTileViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(PlayLabel))]
     private SteamGameInstallState _installState = SteamGameInstallState.Unknown;
 
+    /// <summary>True when Steam's manifest says the game is fully on disk (drives the green "Installed"
+    /// badge). Stricter than <see cref="InstallState"/>, which also counts a game mid-download.</summary>
+    [ObservableProperty] private bool _isInstalled;
+
     /// <summary>"Play" or "Install", whichever the button is actually going to do. Read from
     /// <see cref="SteamLaunchPolicy.IntentFor"/> rather than restated here, so the label cannot promise one
     /// verb while the command performs the other.</summary>
@@ -418,12 +422,15 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
         var tiles = _all;
         if (tiles.Count == 0) return;
 
-        var installed = await Task.Run(_library.GetInstalledAppIds);
+        var (installed, fully) = await Task.Run(() => (_library.GetInstalledAppIds(), _library.GetFullyInstalledAppIds()));
 
         foreach (var tile in tiles)
+        {
             tile.InstallState = installed.Contains(tile.AppId)
                 ? SteamGameInstallState.Installed
                 : SteamGameInstallState.NotInstalled;
+            tile.IsInstalled = fully.Contains(tile.AppId);
+        }
     }
 
     /// <summary>Open this game on the Builds page (switch build, inspect depots/manifests, edit).</summary>
@@ -449,6 +456,14 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
     private void SaveBackup(LuaTileViewModel tile) => OpenSaveBackup?.Invoke(tile.AppId, tile.Name);
 
     private bool CanSaveBackup(LuaTileViewModel? tile) => tile is not null && HasSaveData?.Invoke(tile.AppId) == true;
+
+    /// <summary>Set by App — runs the "import a save zip" flow for a game (appid, name).</summary>
+    public Action<long, string>? OpenSaveImport { get; set; }
+
+    /// <summary>Restore a save from an external .zip. Always available: the typical case is a game that was
+    /// just downloaded again, so it has no saves or backups yet.</summary>
+    [RelayCommand]
+    private void ImportSave(LuaTileViewModel tile) => OpenSaveImport?.Invoke(tile.AppId, tile.Name);
 
     [RelayCommand]
     private static void OpenStorePage(LuaTileViewModel tile) =>

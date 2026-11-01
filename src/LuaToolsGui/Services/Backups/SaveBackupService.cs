@@ -61,18 +61,25 @@ public sealed partial class SaveBackupService
     private static partial Regex DigitsRegex();
 
     private readonly Func<string?> _steamRoot;
-    private readonly string _backupsDir;
+    private readonly Func<string> _backupsDirSource;
     private readonly Func<string, long> _freeBytes;
 
-    public SaveBackupService(SteamService steam)
-        : this(() => steam.EffectivePath, Path.Combine(SettingsService.DefaultDirectory, "SaveBackups")) { }
+    /// <summary>Read from settings on every use, so changing the folder takes effect without a restart.</summary>
+    public SaveBackupService(SteamService steam, SettingsService settings)
+        : this(() => steam.EffectivePath, () => settings.EffectiveSaveBackupFolder) { }
 
     internal SaveBackupService(Func<string?> steamRoot, string backupsDir, Func<string, long>? freeBytes = null)
+        : this(steamRoot, () => backupsDir, freeBytes) { }
+
+    internal SaveBackupService(Func<string?> steamRoot, Func<string> backupsDirSource, Func<string, long>? freeBytes = null)
     {
         _steamRoot = steamRoot;
-        _backupsDir = Path.GetFullPath(backupsDir);
+        _backupsDirSource = backupsDirSource;
         _freeBytes = freeBytes ?? FreeBytesOnDrive;
     }
+
+    /// <summary>The folder backups are written to and listed from, without a trailing separator.</summary>
+    private string BackupsDir => Path.GetFullPath(_backupsDirSource()).TrimEnd('\\');
 
     /// <summary>Free space on the drive holding <paramref name="dir"/>. A root DriveInfo cannot read (UNC share)
     /// reports unlimited: the check is a guard against the common case, not a guarantee.</summary>
@@ -104,7 +111,62 @@ public sealed partial class SaveBackupService
         return found;
     }
 
-    public Task<SaveBackupResult> BackupSavesAsync(long appId, CancellationToken ct = default) =>
+    private static readonly char[] ExtraInvalidNameChars = [':', '?', '*', '"', '<', '>', '|', '/', '\\'];
+
+    private static readonly HashSet<string> ReservedDeviceNames = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "CON", "PRN", "AUX", "NUL",
+        "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
+        "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9",
+    };
+
+    private const int MaxFolderNameLength = 80;
+
+    /// <summary>
+    /// A game name made safe to be ONE folder name: invalid characters (<c>: ? * " &lt; &gt; | / \</c> and
+    /// control characters) become <c>_</c>, trailing dots/spaces go (Windows drops them silently), a reserved
+    /// device name (<c>CON</c>, <c>NUL</c>…) gets a <c>_</c> prefix, and the length is capped. Returns an empty
+    /// string when nothing usable is left; the caller falls back to the appid. Never contains a separator,
+    /// so the result cannot climb out of the backups folder.
+    /// </summary>
+    internal static string SanitizeFolderName(string? name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return "";
+
+        var invalid = Path.GetInvalidFileNameChars();
+        var sb = new System.Text.StringBuilder(name.Length);
+        foreach (char c in name.Trim())
+            sb.Append(char.IsControl(c) || Array.IndexOf(invalid, c) >= 0 || Array.IndexOf(ExtraInvalidNameChars, c) >= 0 ? '_' : c);
+
+        string s = sb.ToString();
+        if (s.Length > MaxFolderNameLength) s = s[..MaxFolderNameLength];
+        s = s.TrimEnd('.', ' ');
+        if (s.Length == 0) return "";
+
+        // "CON" and "CON.txt" are both the console device; the part before the first dot decides.
+        string stem = s.Contains('.') ? s[..s.IndexOf('.')] : s;
+        return ReservedDeviceNames.Contains(stem.TrimEnd(' ')) ? "_" + s : s;
+    }
+
+    /// <summary><c>&lt;backups&gt;\&lt;sanitized game name&gt;</c>, falling back to <c>App_&lt;appid&gt;</c> when
+    /// the name leaves nothing usable. Null if the result would not be a direct child of the backups folder.</summary>
+    private string? GameFolderPath(long appId, string? gameName)
+    {
+        string safe = SanitizeFolderName(gameName);
+        if (safe.Length == 0) safe = "App_" + appId.ToString(CultureInfo.InvariantCulture);
+
+        string backupsDir = BackupsDir;
+        string folder = Path.GetFullPath(Path.Combine(backupsDir, safe));
+        return string.Equals(Path.GetDirectoryName(folder), backupsDir, StringComparison.OrdinalIgnoreCase) ? folder : null;
+    }
+
+    /// <summary>True when the game's own backup folder already exists. False means the next backup creates it,
+    /// which is what the UI asks the user about once.</summary>
+    public bool GameFolderExists(long appId, string? gameName) =>
+        GameFolderPath(appId, gameName) is { } folder && Directory.Exists(folder);
+
+    /// <summary>Zip the game's <c>userdata</c> saves into <c>&lt;backups&gt;\&lt;game name&gt;\</c>.</summary>
+    public Task<SaveBackupResult> BackupSavesAsync(long appId, string gameName, CancellationToken ct = default) =>
         Task.Run(() =>
         {
             if (appId <= 0) return new SaveBackupResult(SaveBackupOutcome.Refused);
@@ -115,7 +177,8 @@ public sealed partial class SaveBackupService
             if (files.Count == 0) return new SaveBackupResult(SaveBackupOutcome.NoSaves);
 
             long required = RequiredFreeBytes(files.Sum(static f => f.File.Length));
-            long free = _freeBytes(_backupsDir);
+            string backupsDir = BackupsDir;
+            long free = _freeBytes(backupsDir);
             if (free < required)
             {
                 AppLog.Log($"save backup: {appId} refused: needs {ByteSize.Format(required)}, {ByteSize.Format(free)} free");
@@ -124,8 +187,12 @@ public sealed partial class SaveBackupService
 
             try
             {
-                Directory.CreateDirectory(_backupsDir);
-                string zipPath = NextBackupPath(appId);
+                if (GameFolderPath(appId, gameName) is not { } gameDir) return new SaveBackupResult(SaveBackupOutcome.Refused);
+                // A link standing where the game folder should be would redirect the zip somewhere else.
+                if (Directory.Exists(gameDir) && IsLink(new DirectoryInfo(gameDir))) return new SaveBackupResult(SaveBackupOutcome.Refused);
+
+                Directory.CreateDirectory(gameDir);
+                string zipPath = NextBackupPath(gameDir, appId);
                 long bytes = 0;
 
                 AtomicFile.Write(zipPath, tmp =>
@@ -157,21 +224,41 @@ public sealed partial class SaveBackupService
             }
         }, ct);
 
+    /// <summary>
+    /// Every backup zip of <paramref name="appId"/>: those inside the per-game folders (<c>&lt;backups&gt;\&lt;game&gt;\</c>)
+    /// and the loose ones older versions left in the backups root. Every direct subfolder is searched, not only the
+    /// one for today's game name, so history survives a game being renamed (or listed under a placeholder name
+    /// before its real one was known). Links are never followed, and the appid is matched by file name.
+    /// </summary>
     public IReadOnlyList<SaveBackupEntry> ListBackups(long appId)
     {
-        if (!Directory.Exists(_backupsDir)) return [];
+        string backupsDir = BackupsDir;
+        if (!Directory.Exists(backupsDir)) return [];
 
+        string pattern = $"{appId.ToString(CultureInfo.InvariantCulture)}_*.zip";
         var list = new List<SaveBackupEntry>();
-        foreach (var f in new DirectoryInfo(_backupsDir).EnumerateFiles($"{appId.ToString(CultureInfo.InvariantCulture)}_*.zip"))
+        var root = new DirectoryInfo(backupsDir);
+        try
         {
-            if (IsLink(f) || !OwnsName(f.Name, appId)) continue;
-            list.Add(new SaveBackupEntry(f.Name, f.FullName, f.LastWriteTimeUtc, f.Length));
+            foreach (var dir in new[] { root }.Concat(root.EnumerateDirectories().Where(static d => !IsLink(d))))
+            {
+                try
+                {
+                    foreach (var f in dir.EnumerateFiles(pattern))
+                    {
+                        if (IsLink(f) || !OwnsName(f.Name, appId)) continue;
+                        list.Add(new SaveBackupEntry(f.Name, f.FullName, f.LastWriteTimeUtc, f.Length));
+                    }
+                }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { /* one unreadable folder is skipped, not fatal */ }
+            }
         }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { /* root unreadable: list what was found */ }
         return [.. list.OrderByDescending(e => e.CreatedUtc)];
     }
 
     /// <summary>Delete one backup of <paramref name="appId"/>. Refuses anything that is not a plain file
-    /// named like our backups, directly inside the backups folder.</summary>
+    /// named like our backups, directly inside the backups folder or one of its game folders.</summary>
     public bool DeleteBackup(string zipPath, long appId)
     {
         if (!IsOurBackup(zipPath, appId)) return false;
@@ -188,10 +275,38 @@ public sealed partial class SaveBackupService
     /// restore overwrites files, and that has to be undoable), and if that safety copy fails the restore
     /// does not run.
     /// </summary>
-    public Task<SaveBackupResult> RestoreBackupAsync(string zipPath, long appId, CancellationToken ct = default) =>
+    public Task<SaveBackupResult> RestoreBackupAsync(string zipPath, long appId, string gameName, CancellationToken ct = default) =>
+        appId <= 0 || !IsOurBackup(zipPath, appId)
+            ? Task.FromResult(new SaveBackupResult(SaveBackupOutcome.Refused))
+            : ExtractAsync(zipPath, appId, gameName, ct);
+
+    /// <summary>
+    /// Restore a save zip from ANYWHERE (another drive, a download, a copy kept after the game was removed)
+    /// into <c>userdata</c>. The archive is outside our backups folder, so it is untrusted: it must be a
+    /// plain <c>.zip</c> file (no link) and goes through the same all-or-nothing <see cref="Validate"/> as
+    /// a restore — account/appid layout, zip-slip, links, size — and the current saves are zipped first.
+    /// </summary>
+    public Task<SaveBackupResult> ImportSaveAsync(string zipPath, long appId, string gameName, CancellationToken ct = default) =>
+        appId <= 0 || !IsPlainZipFile(zipPath)
+            ? Task.FromResult(new SaveBackupResult(SaveBackupOutcome.Refused))
+            : ExtractAsync(zipPath, appId, gameName, ct);
+
+    private static bool IsPlainZipFile(string zipPath)
+    {
+        try
+        {
+            if (!Path.IsPathFullyQualified(zipPath)
+                || !string.Equals(Path.GetExtension(zipPath), ".zip", StringComparison.OrdinalIgnoreCase)) return false;
+            var info = new FileInfo(zipPath);
+            return info.Exists && !IsLink(info);
+        }
+        catch (ArgumentException) { return false; }
+        catch (NotSupportedException) { return false; }
+    }
+
+    private Task<SaveBackupResult> ExtractAsync(string zipPath, long appId, string gameName, CancellationToken ct) =>
         Task.Run(async () =>
         {
-            if (appId <= 0 || !IsOurBackup(zipPath, appId)) return new SaveBackupResult(SaveBackupOutcome.Refused);
             if (UserdataDir is not { } userdata) return new SaveBackupResult(SaveBackupOutcome.SteamNotFound);
 
             string? safetyCopy = null;
@@ -215,8 +330,10 @@ public sealed partial class SaveBackupService
                 // Only worth a safety copy when there is something to lose.
                 if (FindSaveDirs(appId).Count > 0)
                 {
-                    var safety = await BackupSavesAsync(appId, ct);
-                    if (safety.Outcome is not SaveBackupOutcome.Ok) return new SaveBackupResult(SaveBackupOutcome.Failed);
+                    var safety = await BackupSavesAsync(appId, gameName, ct);
+                    // NoSaves = the folder exists but holds no files (a fresh install): nothing to lose.
+                    if (safety.Outcome is not (SaveBackupOutcome.Ok or SaveBackupOutcome.NoSaves))
+                        return new SaveBackupResult(SaveBackupOutcome.Failed);
                     safetyCopy = safety.Path;
                 }
 
@@ -293,7 +410,15 @@ public sealed partial class SaveBackupService
         try
         {
             string full = Path.GetFullPath(zipPath);
-            return string.Equals(Path.GetDirectoryName(full), _backupsDir.TrimEnd('\\'), StringComparison.OrdinalIgnoreCase)
+            string root = BackupsDir;
+            string? parent = Path.GetDirectoryName(full);
+            // Directly in the backups folder (older versions), or in ONE game folder under it, never deeper
+            // and never through a link: the game folder is the only extra place a zip of ours may sit.
+            bool placed = string.Equals(parent, root, StringComparison.OrdinalIgnoreCase)
+                || (parent is not null
+                    && string.Equals(Path.GetDirectoryName(parent), root, StringComparison.OrdinalIgnoreCase)
+                    && !IsLink(new DirectoryInfo(parent)));
+            return placed
                 && OwnsName(Path.GetFileName(full), appId)
                 && File.Exists(full)
                 && !IsLink(new FileInfo(full));
@@ -306,11 +431,11 @@ public sealed partial class SaveBackupService
         BackupNameRegex().Match(fileName) is { Success: true } m
         && m.Groups["app"].Value == appId.ToString(CultureInfo.InvariantCulture);
 
-    private string NextBackupPath(long appId)
+    private static string NextBackupPath(string backupsDir, long appId)
     {
         string stem = $"{appId.ToString(CultureInfo.InvariantCulture)}_{DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}";
-        string path = Path.Combine(_backupsDir, stem + ".zip");
-        for (int n = 2; File.Exists(path); n++) path = Path.Combine(_backupsDir, $"{stem}_{n}.zip");
+        string path = Path.Combine(backupsDir, stem + ".zip");
+        for (int n = 2; File.Exists(path); n++) path = Path.Combine(backupsDir, $"{stem}_{n}.zip");
         return path;
     }
 
