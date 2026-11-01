@@ -1,5 +1,40 @@
 # Changelog
 
+## 1.7.11 — 2026-10-31
+
+Startup Guard, backup de saves por jogo, aviso de lua sem manifestos e renomeacao do card do modo. Consolida as builds
+locais 1.7.10.1 e 1.7.10.2, que nao foram publicadas.
+
+### Novidades
+
+- **Startup Guard:** `StartupGuard.RunAsync` (chamado em `App.RunStartupSteamFlowAsync` quando `plan.CloseSteam`)
+  pergunta Reiniciar / Sair / Continuar mesmo assim. Esc/X = Sair. Continuar zera `CloseSteam` e `OfferReopen` e
+  mostra aviso; Reiniciar religa a Steam sem oferecer o toast. O stop roda em `Task.Run` (UI nao trava). A escolha
+  vai para o `AppLog` (`startup guard: Steam already running, user chose X`).
+- **Backup de saves:** `SaveBackupService` zipa `userdata\<conta>\<appid>` (conta `0` ignorada, links ignorados) em
+  `%AppData%\LuaToolsGui\SaveBackups\<appid>_<data>.zip` via `AtomicFile`, em `Task.Run`. Restaurar valida tudo antes
+  (raiz/`:`/ADS, `FixAnalyzer.IsContained`, conta e appid, links no caminho, 4 GB), confere espaco livre no drive do
+  `userdata` (falta de espaco = `Failed` antes de tocar em qualquer arquivo) e faz copia de seguranca dos saves atuais;
+  se a copia falhar, a restauracao nao roda. Log de falha no meio cita a copia de seguranca.
+- **Botao na aba Gerenciar:** `SaveBackupCommand` com `CanExecute` = `SaveBackupService.HasSavesOrBackups` (pasta de
+  saves OU backup existente, para restaurar depois de apagar a pasta). Reavaliado ao fechar o dialogo.
+- **Aviso de manifestos:** `ManifestJobFactory.InstallManifest` loga `WARN manifest-install` e mostra toast de 12 s
+  quando `ManifestCount == 0` numa fonte buscada. Pula DLC (fonte nula) e toast quando a fonte e a Sadie. Um toast por
+  job: o install roda uma vez por item e `Retry` so existe para Failed/Cancelled.
+
+### Mudancas
+
+- **Card do modo:** `DisplayName` passa de "BetterSteamTools" para "OpenSteamTool" (e Nightly), strings ajustadas em
+  todos os idiomas. Ids de repo/dll/zip inalterados.
+- **CheckSources:** cada retorno vazio de `LuaToolsApiClient.CheckSources` e logado com o motivo.
+- `ToastService.Show` ganhou `duration` opcional.
+
+### Testes
+
+- `SaveBackupServiceTests`, `StartupGuardTests`, `NoManifestWarningTests`. Na RC: restauracao sem espaco nao toca nos
+  saves nem cria copia de seguranca, `HasSavesOrBackups` com a pasta apagada, log da escolha do guard. Mutacao
+  validada nos tres.
+
 ## 1.7.10 — 2026-10-23
 
 Hotfix do card do AmethystTool na aba Modo quando o PC liga numa rede conectada mas sem internet.

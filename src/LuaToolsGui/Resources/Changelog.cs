@@ -29,24 +29,14 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
-        new("1.7.10.2", "2026-10-29",
-            "Local build: asks before touching a Steam that is already running, and adds per-game save backups to the Manage page.",
+        new("1.7.11", "2026-10-31",
+            "Asks before touching a Steam that is already running, adds per-game save backups, and warns when a source delivers no manifests.",
             [
-                "Startup Guard: if Steam is already running when LuaTools opens, a dialog offers Restart Steam, Exit, or Continue anyway (not recommended), instead of closing Steam without asking.",
-                "Continuing anyway leaves Steam alone and shows a warning, because the hook may fail to attach to a Steam LuaTools did not start.",
-                "Save backups: the Manage page has a new \"Save backup…\" action that zips a game's Steam userdata folder to %AppData%\\LuaToolsGui\\SaveBackups, with Restore and Delete for each backup.",
-                "Restoring validates the whole archive first (zip-slip, links, other games, size) and zips the current saves before overwriting them.",
-                "Only Steam's own per-game folder is covered; games that keep saves in Documents or AppData are reported as not found.",
-            ]),
-
-        new("1.7.10.1", "2026-10-27",
-            "Local build: warns when a source installs a lua without manifests, because Steam may then fail the download and blame your internet.",
-            [
-                "When a source installs a lua without manifests, a yellow warning now says the download in Steam may fail and recommends the Sadie (Hubcap) source.",
-                "Steam shows a false \"No internet connection\" in its own Downloads tab in that case; the network is fine, Steam just cannot fetch the manifests itself.",
-                "The same condition is written to the log as a WARN line, with the appid and the source.",
-                "The warning is skipped for DLC unlocks, and the toast is skipped when the source already is Sadie (Hubcap).",
-                "Nothing else changed: no new setting, no new dependency and no new network request.",
+                "Startup Guard: if Steam is already running when LuaTools opens, a dialog offers Restart Steam, Exit, or Continue anyway (not recommended), instead of closing Steam without asking. Continuing leaves Steam alone and warns that the hook may not attach.",
+                "Save backups: the Manage page has a new \"Save backup…\" action that zips a game's Steam userdata folder to %AppData%\\LuaToolsGui\\SaveBackups, with Restore and Delete for each backup. It is greyed out for a game with neither saves nor backups.",
+                "Restoring validates the whole archive first (zip-slip, links, other games, size), checks there is room on the disk for all of it, and zips the current saves before overwriting them. Only Steam's own per-game folder is covered.",
+                "No-manifests warning: when a source installs a lua without manifests, a yellow warning says the download in Steam may fail with a false \"No internet connection\" and recommends the Sadie (Hubcap) source. Skipped for DLC unlocks and when the source already is Sadie.",
+                "The Mode page card now uses the real project name, OpenSteamTool (and OpenSteamTool Nightly), instead of BetterSteamTools, which is a different fork.",
             ]),
 
         new("1.7.10", "2026-10-23",

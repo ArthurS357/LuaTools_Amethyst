@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.7.10.2");
+        AppVersion.Current.Should().Be("1.7.11");
     }
 
     [Fact]
@@ -55,6 +55,8 @@ public class ChangelogTests
         text.Should().ContainEquivalentOf("Continue anyway");                // its escape hatch
         text.Should().ContainEquivalentOf("Save backup");                    // the Manage action
         text.Should().ContainEquivalentOf("zip-slip");                       // the restore validation
+        text.Should().ContainEquivalentOf("without manifests");              // the no-manifests warning
+        text.Should().ContainEquivalentOf("OpenSteamTool");                  // the card rename
     }
 
     [Fact]
