@@ -29,19 +29,12 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
-        new("1.7.11.2", "2026-11-01",
-            "Local test build: pressing Cancel on the Discord page now ends the sign-in at once and offers Try again or a manual code.",
+        new("1.7.12", "2026-11-01",
+            "Cancelling the Discord sign-in is handled at once, the welcome screen stops coming back after you sign in, and save backups check disk space and a running Steam.",
             [
                 "Sign-in: if you press Cancel on the Discord page, the app notices immediately instead of sitting on the five-minute timeout, and asks whether to Try again or Use manual code. Closing the browser window without answering still waits for the timeout, then asks the same question.",
-                "Use manual code closes the welcome screen if it is open, opens Settings and puts the cursor in the code box.",
-                "Any other error the sign-in server reports is still ignored for the first 30 seconds, so a stray page cannot cancel a sign-in you just started.",
-                "No new setting, no new dependency and no new network request.",
-            ]),
-
-        new("1.7.11.1", "2026-11-01",
-            "Local test build: the welcome screen stops coming back after a manual-code sign-in, and save backups check disk space and a running Steam.",
-            [
-                "Welcome screen: after Use manual code, the welcome screen still comes back on the next launch until a sign-in succeeds (browser or manual code). Once you are signed in it no longer reappears. Giving up halfway keeps it.",
+                "Use manual code closes the welcome screen if it is open, opens Settings and puts the cursor in the code box. Any other error the sign-in server reports is still ignored for the first 30 seconds, so a stray page cannot cancel a sign-in you just started.",
+                "Welcome screen: after Use manual code it still comes back on the next launch until a sign-in succeeds (browser or manual code). Once you are signed in it no longer reappears. Giving up halfway keeps it.",
                 "Save backups: creating a backup now needs the raw size of the saves plus 10% plus 50 MB free on the drive that holds the backups, and says how much it needs when there is not enough. Nothing is written in that case.",
                 "Restoring a save backup while Steam is running now asks first: Close Steam and continue, or Cancel. Steam is asked to exit cleanly and never killed; if it does not close, nothing is restored.",
                 "No new setting, no new dependency and no new network request.",

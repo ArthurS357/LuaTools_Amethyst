@@ -1,5 +1,43 @@
 # Changelog
 
+## 1.7.12 — 2026-11-01
+
+Login cancelado tratado na hora, onboarding que para de voltar depois do login, e backup de saves que confere espaco e
+Steam aberta. Consolida as builds locais 1.7.11.1 e 1.7.11.2, que nao foram publicadas.
+
+### Novidades
+
+- **Cancelar no Discord encerra o login na hora:** `WaitForCallbackAsync` trata `error=access_denied` (RFC 6749
+  §4.1.2.1, so o parametro `error`, nao a palavra em `error_description`) como cancelamento explicito e lanca
+  `SignInCancelledException` sem esperar o `ErrorGrace` de 30 s; o navegador recebe a pagina de falha. Os gates de
+  `IsLocal`, verbo `GET`, caminho `/callback` e `Sec-Fetch-Dest` vem antes. O grace continua valendo para os demais
+  erros (`server_error`, `temporarily_unavailable`...). Custo aceito: uma pagina local que navegue para
+  `/callback?error=access_denied` cancela um login recem-iniciado tambem nos primeiros 30 s; custo de um clique.
+- **Dialogo de login cancelado:** `AuthService.AskWhenSignInCancelled` (negacao ou timeout, `SignInCancelledException`)
+  abre "Usar codigo manual" / "Tentar novamente" / Cancelar. Codigo manual fecha o overlay do onboarding, vai a
+  Configuracoes e foca o campo do codigo (`SettingsViewModel.RequestCodeFocus`); Tentar novamente reinicia o fluxo
+  depois de liberar a porta do listener. Vale para nav pane, Configuracoes e onboarding (todos passam por
+  `AuthService.SignInAsync`). Fechar a janela do navegador nao e detectavel: continua sendo o timeout de 5 min.
+
+### Correcoes
+
+- **Onboarding:** `OnboardingComplete` passa a ser gravado quando um login tem sucesso (navegador ou codigo manual).
+  "Usar codigo manual" sozinho continua sem marcar, entao desistir no meio mantem o onboarding.
+- **Backup de saves, espaco:** criar backup exige tamanho bruto + 10% + 50 MB livres na unidade de `SaveBackups`
+  (`RequiredFreeBytes`); sem espaco recusa antes de gravar (`SaveBackupOutcome.NoSpace`, toast com o valor). A copia de
+  seguranca do restore herda a checagem. A conta do restore (soma exata) nao mudou.
+- **Backup de saves, Steam aberta:** restaurar com a Steam rodando pergunta "Fechar Steam e continuar" / "Cancelar" e
+  usa `StopSteamGraceful(allowKill: false)`; Steam que nao fecha deixa os saves intactos e avisa.
+
+### Testes
+
+- `OnboardingCompletionTests`, `SaveBackupViewModelTests`, novos casos em `SaveBackupServiceTests`,
+  `AuthProviderDefenseTests` e `AuthCallbackTests`. Mutacao validada em cada item. Suite: 2107.
+
+### Strings
+
+- Novas chaves `Saves_*`, `Auth_SignInCancelled` e `Auth_TryAgain` so em en e pt-BR (`PENDING_TRANSLATION`).
+
 ## 1.7.11 — 2026-10-31
 
 Startup Guard, backup de saves por jogo, aviso de lua sem manifestos e renomeacao do card do modo. Consolida as builds
