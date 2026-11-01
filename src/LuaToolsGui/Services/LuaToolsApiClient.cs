@@ -107,7 +107,14 @@ public class LuaToolsApiClient(
         // on this lookup — Hubcap with the user's own key, drag-and-drop, luatools:// links — instead of
         // erroring. Downloading itself never goes through this host: DownloadManifestAsync resolves a
         // source by NAME against lua.tools and fetches a signed HTTPS URL.
-        if (!settings.EnableSourceAvailabilityChecks) return [];
+        //
+        // Every empty return is logged with its cause: an empty list is indistinguishable, in the UI, from
+        // "no source has this game" — the picker just shows Hubcap alone.
+        if (!settings.EnableSourceAvailabilityChecks)
+        {
+            AppLog.Log($"CheckSources appid={appid} -> EMPTY: EnableSourceAvailabilityChecks is off in settings.json");
+            return [];
+        }
 
         // Disclosure before the request, at the configured cadence. Never blocks, never gates.
         notice.NotifyMetadataOverHttp(new Uri(AppConfig.ManifestBackendUrl).Host);
@@ -115,8 +122,15 @@ public class LuaToolsApiClient(
         var req = new HttpRequestMessage(HttpMethod.Get, $"{AppConfig.ManifestBackendUrl}/check_apis?appid={appid}");
         req.Headers.TryAddWithoutValidation("User-Agent", AppConfig.ManifestBackendUserAgent);
         var res = await _http.SendAsync(req, ct);
-        if (!res.IsSuccessStatusCode) return [];
-        return await ReadJsonAsync<Dictionary<string, string>>(res, ct) ?? [];
+        if (!res.IsSuccessStatusCode)
+        {
+            AppLog.Log($"CheckSources appid={appid} -> EMPTY: backend answered HTTP {(int)res.StatusCode}");
+            return [];
+        }
+        var statuses = await ReadJsonAsync<Dictionary<string, string>>(res, ct) ?? [];
+        if (statuses.Count == 0)
+            AppLog.Log($"CheckSources appid={appid} -> EMPTY: HTTP 200 but no sources in the body");
+        return statuses;
     }
 
     /// <summary>
