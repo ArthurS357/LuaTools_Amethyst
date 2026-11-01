@@ -372,13 +372,15 @@ public class AuthService
             var query = HttpUtility.ParseQueryString(req.Url?.Query ?? "");
             string? code = query.Get("code");
             string? error = query.Get("error_description");
+            // RFC 6749 §4.1.2.1: `error=access_denied` is the provider reporting that the user pressed Cancel.
+            bool denied = query.Get("error") == "access_denied";
 
             // Only the redirect itself: a GET to the callback path, from this machine, as a page navigation.
             // A web page firing <img src="http://localhost:53789/callback?code=x"> arrives tagged
             // Sec-Fetch-Dest: image (fetch → empty, iframe → iframe); the real redirect is a document.
             string? dest = req.Headers["Sec-Fetch-Dest"];
             if (!req.IsLocal || req.HttpMethod != "GET" || req.Url?.AbsolutePath != CallbackPath
-                || (dest is not null && dest != "document") || (code is null && error is null))
+                || (dest is not null && dest != "document") || (code is null && error is null && !denied))
             {
                 ctx.Response.StatusCode = 404;
                 ctx.Response.Close();
@@ -391,10 +393,11 @@ public class AuthService
             if (code is null)
             {
                 // Grace: a forged error can only land while the listener is open, so for the first seconds an
-                // error does not end the attempt (the real code redirect may still arrive). ponytail: a real
-                // denial inside the grace is dropped too, so the button waits for the 5 min timeout — shorten
-                // ErrorGrace if that UX bites.
-                if (started.Elapsed < grace)
+                // error does not end the attempt (the real code redirect may still arrive). The user's own
+                // Cancel (`error=access_denied`) is exempt: waiting out the grace left the app on the 5 min
+                // timeout. Cost: a page that navigates here with that exact error cancels a sign-in the user
+                // started, which after the grace it could already do — one retry click, no takeover.
+                if (!denied && started.Elapsed < grace)
                 {
                     ctx.Response.StatusCode = 404;
                     ctx.Response.Close();

@@ -134,6 +134,60 @@ public sealed class AuthCallbackTests : IDisposable
     }
 
     [Fact]
+    public async Task The_users_own_cancel_ends_the_attempt_at_once_even_inside_the_grace()
+    {
+        var wait = Wait(errorGrace: TimeSpan.FromMinutes(1));
+
+        var res = await Send("/callback?error=access_denied&error_code=bad_oauth_callback&error_description=The+resource+owner+denied+the+request");
+
+        await wait.Awaiting(w => w.WaitAsync(Timeout)).Should().ThrowAsync<SignInCancelledException>();
+        res.StatusCode.Should().Be(HttpStatusCode.OK, "the browser gets the failure page, not a dead tab");
+        _exchanged.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task A_bare_access_denied_without_a_description_still_cancels_with_the_default_message()
+    {
+        var wait = Wait(errorGrace: TimeSpan.FromMinutes(1));
+
+        await Send("/callback?error=access_denied");
+
+        await wait.Awaiting(w => w.WaitAsync(Timeout)).Should().ThrowAsync<SignInCancelledException>()
+            .WithMessage(Resources.Strings.Auth_Err_SignInDenied);
+    }
+
+    [Theory]
+    [InlineData("/callback?error=server_error&error_description=boom")]
+    [InlineData("/callback?error=temporarily_unavailable&error_description=later")]
+    [InlineData("/callback?error_description=access_denied")]   // the word in the description is not the error code
+    public async Task Any_other_error_inside_the_grace_is_still_ignored(string forgedUrl)
+    {
+        var wait = Wait(errorGrace: TimeSpan.FromMinutes(1));
+
+        var forged = await Send(forgedUrl);
+        wait.IsCompleted.Should().BeFalse();
+        await Send("/callback?code=good");
+
+        forged.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        (await wait.WaitAsync(Timeout)).Should().BeSameAs(Ours);
+    }
+
+    [Theory]
+    [InlineData("image")]
+    [InlineData("empty")]
+    [InlineData("iframe")]
+    public async Task A_cancel_that_is_not_a_page_navigation_is_still_404(string dest)
+    {
+        var wait = Wait(errorGrace: TimeSpan.FromMinutes(1));
+
+        var res = await Send("/callback?error=access_denied", dest);
+        await Send("/callback?code=good");
+
+        res.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        (await wait.WaitAsync(Timeout)).Should().BeSameAs(Ours);
+    }
+
+    [Fact]
     public async Task A_provider_error_after_the_grace_ends_the_attempt()
     {
         var wait = Wait(errorGrace: TimeSpan.FromMilliseconds(200));
