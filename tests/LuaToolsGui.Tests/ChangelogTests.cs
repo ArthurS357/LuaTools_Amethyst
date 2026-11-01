@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.7.12.2");
+        AppVersion.Current.Should().Be("1.7.12.4");
     }
 
     [Fact]
@@ -51,10 +51,10 @@ public class ChangelogTests
 
         // One anchor per change the release was actually about, so an entry that got copied forward from
         // the previous version fails here rather than shipping a changelog describing the wrong release.
-        text.Should().ContainEquivalentOf("its own folder");              // the per-game folder
-        text.Should().ContainEquivalentOf("Batman_ Arkham");                 // the sanitised-name example
-        text.Should().ContainEquivalentOf("8 seconds");                      // the success toast
-        text.Should().ContainEquivalentOf("loose zips");                     // the legacy fallback
+        text.Should().ContainEquivalentOf(@"Documents\Saved Games\Hades");   // the exact-path detection
+        text.Should().ContainEquivalentOf("Add folder manually");            // the fallback
+        text.Should().ContainEquivalentOf("saves folder with a subfolder");  // the multi-location zip layout
+        text.Should().ContainEquivalentOf("Links are never followed");       // the restore guard
     }
 
     [Fact]

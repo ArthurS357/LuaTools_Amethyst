@@ -29,6 +29,10 @@ public class AppSettings
     // Folder the save-backup zips are written to. Null = %AppData%\LuaToolsGui\SaveBackups.
     public string? SaveBackupFolder { get; set; }
 
+    // Save folders the user registered by hand, per appid. Together with the known Windows roots these are
+    // the only places a save restore may write to.
+    public Dictionary<long, List<string>>? CustomSaveFolders { get; set; }
+
     // Fixes-page results-per-page. 0 = "All" (single infinite scroll). Nullable so "never set"
     // (→ default 24) is distinguishable from an explicit choice.
     public int? FixesPageSize { get; set; }
@@ -238,6 +242,50 @@ public sealed class SettingsService
     /// <summary>The folder backups actually go to: the custom one when set and still fully qualified, else the default.</summary>
     public string EffectiveSaveBackupFolder =>
         _settings.SaveBackupFolder is { } f && Path.IsPathFullyQualified(f) ? f : DefaultSaveBackupFolder;
+
+    /// <summary>The folders registered for <paramref name="appId"/>. Re-validated by every consumer: settings.json
+    /// is writable by any process of the user.</summary>
+    public IReadOnlyList<string> GetCustomSaveFolders(long appId)
+    {
+        lock (_saveLock)
+            return _settings.CustomSaveFolders is { } all && all.TryGetValue(appId, out var list) ? [.. list] : [];
+    }
+
+    /// <summary>Every registered (appid, folder) pair, for the Settings page.</summary>
+    public IReadOnlyList<(long AppId, string Path)> AllCustomSaveFolders()
+    {
+        lock (_saveLock)
+            return [.. (_settings.CustomSaveFolders ?? []).OrderBy(static kv => kv.Key)
+                .SelectMany(static kv => kv.Value.Select(path => (kv.Key, path)))];
+    }
+
+    /// <summary>Register <paramref name="path"/> as a save folder of <paramref name="appId"/>. False when it is not an
+    /// acceptable folder (relative, drive root, Windows, Program Files); true also when it was already there.</summary>
+    public bool AddCustomSaveFolder(long appId, string path)
+    {
+        if (appId <= 0 || !Backups.SaveLocationCatalog.IsAcceptableCustomFolder(path)) return false;
+        string full = Path.GetFullPath(path).TrimEnd('\\');
+        lock (_saveLock)
+        {
+            var all = _settings.CustomSaveFolders ??= [];
+            if (!all.TryGetValue(appId, out var list)) all[appId] = list = [];
+            if (!list.Contains(full, StringComparer.OrdinalIgnoreCase)) list.Add(full);
+            Save();
+        }
+        return true;
+    }
+
+    public void RemoveCustomSaveFolder(long appId, string path)
+    {
+        lock (_saveLock)
+        {
+            if (_settings.CustomSaveFolders is not { } all || !all.TryGetValue(appId, out var list)) return;
+            list.RemoveAll(p => string.Equals(p, path, StringComparison.OrdinalIgnoreCase));
+            if (list.Count == 0) all.Remove(appId);
+            if (all.Count == 0) _settings.CustomSaveFolders = null;
+            Save();
+        }
+    }
 
     /// <summary>Fixes-page results-per-page (default 24). 0 = "All" (single infinite scroll).</summary>
     public int FixesPageSize
@@ -512,6 +560,7 @@ public sealed class SettingsService
             && _settings.AutoUpdateApps is null
             && _settings.ManagePageSize is null
             && _settings.SaveBackupFolder is null
+            && _settings.CustomSaveFolders is null
             && _settings.FixesPageSize is null
             && _settings.BuildsPageSize is null
             && _settings.Language is null

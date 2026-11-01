@@ -17,10 +17,23 @@ public sealed class SaveBackupRow(SaveBackupEntry entry)
         $"{Entry.CreatedUtc.ToLocalTime():g} · {ByteSize.Format(Entry.SizeBytes)}");
 }
 
-/// <summary>Dialog behind the Manage page's "Save backup…" action: create, restore and delete the zips of
-/// one game's <c>userdata</c> folder.</summary>
+/// <summary>One place the game keeps saves, with the checkbox that includes it in the next backup.</summary>
+public sealed partial class SaveLocationRow(SaveLocation location) : ObservableObject
+{
+    public SaveLocation Location { get; } = location;
+    [ObservableProperty] private bool _isSelected = true;
+    public string Title => Location.DisplayName;
+    public string Subtitle => string.Format(CultureInfo.CurrentCulture,
+        Resources.Strings.Saves_Location_Subtitle, ByteSize.Format(Location.SizeBytes), Location.FileCount);
+}
+
+/// <summary>Dialog behind the Manage page's "Save backup…" action: pick which save locations to include
+/// (Steam <c>userdata</c>, Documents, AppData…), then create, restore and delete the zips.</summary>
 public sealed partial class SaveBackupViewModel(SaveBackupService backups, ToastService toast, SteamService steam) : ObservableObject
 {
+    /// <summary>Asks the user for a save folder; null when they cancel.</summary>
+    internal Func<string?> PickFolder { get; set; } = PickFolderDialog;
+
     // Seams for the parts that touch processes and a modal dialog.
     internal Func<bool> IsSteamRunning { get; set; } = SteamService.IsSteamRunning;
     internal Func<SteamStopOutcome> StopSteam { get; set; } = () => steam.StopSteamGraceful(allowKill: false);
@@ -32,6 +45,11 @@ public sealed partial class SaveBackupViewModel(SaveBackupService backups, Toast
     public string GameName { get; private set; } = "";
 
     public ObservableCollection<SaveBackupRow> Items { get; } = [];
+
+    /// <summary>Where saves were found for this game. Every row starts included.</summary>
+    public ObservableCollection<SaveLocationRow> Locations { get; } = [];
+
+    public bool HasNoLocations => Locations.Count == 0;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(NotBusy))]
@@ -46,7 +64,43 @@ public sealed partial class SaveBackupViewModel(SaveBackupService backups, Toast
         GameName = gameName;
         OnPropertyChanged(nameof(AppId));
         OnPropertyChanged(nameof(GameName));
+        ReloadLocations();
         Reload();
+    }
+
+    private void ReloadLocations()
+    {
+        Locations.Clear();
+        foreach (var l in backups.DetectSaveLocations(GameName, AppId)) Locations.Add(new SaveLocationRow(l));
+        OnPropertyChanged(nameof(HasNoLocations));
+    }
+
+    /// <summary>Let the user pick a folder by hand and register it for this game. False when they cancel, the
+    /// folder is not acceptable, or it holds no files (nothing to show for it).</summary>
+    private bool TryAddFolder()
+    {
+        if (PickFolder() is not { } path) return false;
+        if (!backups.AddCustomFolder(AppId, path))
+        {
+            toast.Show(Resources.Strings.Saves_Title, Resources.Strings.Saves_Toast_FolderRefused, error: true);
+            return false;
+        }
+        ReloadLocations();
+        bool shown = Locations.Any(r => string.Equals(r.Location.Path, Path.GetFullPath(path).TrimEnd('\\'), StringComparison.OrdinalIgnoreCase));
+        if (!shown) toast.Show(Resources.Strings.Saves_Title, Resources.Strings.Saves_Toast_NoSaves, error: true);
+        return shown;
+    }
+
+    [RelayCommand]
+    private void AddFolder()
+    {
+        if (!IsBusy) TryAddFolder();
+    }
+
+    private static string? PickFolderDialog()
+    {
+        var dialog = new Microsoft.Win32.OpenFolderDialog { Title = Resources.Strings.Saves_PickFolderTitle };
+        return dialog.ShowDialog() == true ? dialog.FolderName : null;
     }
 
     private void Reload()
@@ -60,6 +114,18 @@ public sealed partial class SaveBackupViewModel(SaveBackupService backups, Toast
     private async Task CreateAsync()
     {
         if (IsBusy) return;
+
+        // Nothing found anywhere: offer the folder picker instead of a dead end.
+        if (Locations.Count == 0
+            && (!await Confirm(Resources.Strings.Saves_Confirm_NoneFound, Resources.Strings.Saves_PickFolder) || !TryAddFolder())) return;
+
+        var chosen = Locations.Where(static r => r.IsSelected).Select(static r => r.Location).ToList();
+        if (chosen.Count == 0)
+        {
+            toast.Show(Resources.Strings.Saves_Title, Resources.Strings.Saves_Toast_PickOne, error: true);
+            return;
+        }
+
         // First backup of this game: say that a folder named after it is about to be created.
         if (!backups.GameFolderExists(AppId, GameName)
             && !await Confirm(Resources.Strings.Saves_Confirm_NewFolder, Resources.Strings.Saves_Confirm_Ok)) return;
@@ -67,7 +133,7 @@ public sealed partial class SaveBackupViewModel(SaveBackupService backups, Toast
         IsBusy = true;
         try
         {
-            var r = await backups.BackupSavesAsync(AppId, GameName);
+            var r = await backups.BackupSavesAsync(AppId, GameName, chosen);
             if (!Report(r, string.Format(CultureInfo.CurrentCulture, Resources.Strings.Saves_Toast_SavedAt, r.Path),
                     SavedToastDuration))
                 return;
@@ -90,6 +156,7 @@ public sealed partial class SaveBackupViewModel(SaveBackupService backups, Toast
             var r = await backups.RestoreBackupAsync(row.Entry.FullPath, AppId, GameName);
             Report(r, string.Format(CultureInfo.CurrentCulture, Resources.Strings.Saves_Toast_Restored, r.Files));
             Reload(); // the safety copy taken before the restore is a new entry
+            ReloadLocations(); // a restore can fill a location that was empty
         }
         finally { IsBusy = false; }
     }
@@ -110,6 +177,7 @@ public sealed partial class SaveBackupViewModel(SaveBackupService backups, Toast
             var r = await backups.ImportSaveAsync(path, AppId, GameName);
             Report(r, string.Format(CultureInfo.CurrentCulture, Resources.Strings.Saves_Toast_Imported, r.Files));
             Reload(); // the safety copy taken before the import is a new entry
+            ReloadLocations();
         }
         finally { IsBusy = false; }
     }

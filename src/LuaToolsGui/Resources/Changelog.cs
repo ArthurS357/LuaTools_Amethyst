@@ -29,6 +29,26 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.7.12.4", "2026-11-01",
+            "Local test build: save backups now cover games that keep their saves in Documents, Saved Games or AppData, not only in Steam's userdata.",
+            [
+                "Save backup: the window lists every place the game keeps saves (Steam userdata, Documents, My Games, Saved Games, AppData Local, LocalLow and Roaming) with its size, and you tick which ones go into the backup.",
+                "Only exact folder names are checked, for example Documents\\Saved Games\\Hades. When nothing is found, the app offers to pick the folder by hand, and Add folder manually… registers it for that game.",
+                "One zip now holds a saves folder with a subfolder per location, and Restore puts each one back where it came from. Zips made by older versions still restore.",
+                "A restore only writes to the game's own known folders or to folders you registered. Links are never followed, and a zip that tries to leave those folders is refused whole before anything is written.",
+                "Manage: a game with detected saves shows a save icon on its card, and the tooltip says where. Settings: Custom save folders registers a folder for an AppID.",
+                "No new dependency and no new network request.",
+            ]),
+
+        new("1.7.12.3", "2026-11-01",
+            "Local test build: the Manage list now shows installed games first, in alphabetical order.",
+            [
+                "Manage: the default sort is the new Installed first option. Games with the green Installed badge come first, then the rest, each group in A–Z order by name.",
+                "The order is kept when you search, press Refresh, or add or remove a game, and it updates by itself once Steam's install scan finishes.",
+                "The other sort options (Recently added, Name, Release date, Metacritic, Most reviewed) are still in the Sort menu.",
+                "No new setting, no new dependency and no new network request.",
+            ]),
+
         new("1.7.12.2", "2026-11-01",
             "Local test build: save backups are now filed in one folder per game, and the success message shows where the zip went.",
             [

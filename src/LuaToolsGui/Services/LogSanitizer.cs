@@ -85,6 +85,15 @@ internal static partial class LogSanitizer
         }
     }
 
+    /// <summary>Like <see cref="Sanitize(string?)"/>, and also hides the Windows user-profile folder
+    /// (<c>C:\Users\&lt;name&gt;</c> → <c>%USERPROFILE%</c>) so a log shared for support does not name the user.</summary>
+    public static string SanitizePath(string? text)
+    {
+        string result = Sanitize(text);
+        string profile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).TrimEnd('\\');
+        return profile.Length == 0 ? result : result.Replace(profile, "%USERPROFILE%", StringComparison.OrdinalIgnoreCase);
+    }
+
     /// <summary>Sanitize an exception for logging, including its full chain of inner exceptions.</summary>
     public static string Sanitize(Exception? ex) =>
         ex is null ? "(no exception)" : Sanitize(ex.ToString());

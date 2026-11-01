@@ -61,6 +61,14 @@ public partial class LuaTileViewModel : ObservableObject
     /// badge). Stricter than <see cref="InstallState"/>, which also counts a game mid-download.</summary>
     [ObservableProperty] private bool _isInstalled;
 
+    /// <summary>Tooltip of the save icon ("Saves detected in: …"), or null while no save location is known.
+    /// Filled in by <see cref="ManageViewModel.RefreshSaveLocationsAsync"/>.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasSaveLocations))]
+    private string? _saveLocationsTooltip;
+
+    public bool HasSaveLocations => !string.IsNullOrEmpty(SaveLocationsTooltip);
+
     /// <summary>"Play" or "Install", whichever the button is actually going to do. Read from
     /// <see cref="SteamLaunchPolicy.IntentFor"/> rather than restated here, so the label cannot promise one
     /// verb while the command performs the other.</summary>
@@ -238,15 +246,17 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
     public ObservableCollection<string> PriceOptions { get; } = [AnyOption, "Free", "Paid"];
     // Static like Price: stored VALUES stay English (localized for display via FilterOptionDisplayConverter).
     public ObservableCollection<string> ContentOptions { get; } = [AnyOption, "Hide adult", "Adult only"];
+    public const string InstalledFirstOption = "Installed first";
+
     public ObservableCollection<string> SortOptions { get; } =
-        ["Recently added", "Name (A–Z)", "Release date (newest)", "Metacritic", "Most reviewed"];
+        [InstalledFirstOption, "Recently added", "Name (A–Z)", "Release date (newest)", "Metacritic", "Most reviewed"];
 
     [ObservableProperty][NotifyPropertyChangedFor(nameof(HasActiveFilters))] private string _selectedType = AnyOption;
     [ObservableProperty][NotifyPropertyChangedFor(nameof(HasActiveFilters))] private string _selectedGenre = AnyOption;
     [ObservableProperty][NotifyPropertyChangedFor(nameof(HasActiveFilters))] private string _selectedYear = AnyOption;
     [ObservableProperty][NotifyPropertyChangedFor(nameof(HasActiveFilters))] private string _selectedPrice = AnyOption;
     [ObservableProperty][NotifyPropertyChangedFor(nameof(HasActiveFilters))] private string _selectedContent = AnyOption;
-    [ObservableProperty] private string _selectedSort = "Recently added";
+    [ObservableProperty] private string _selectedSort = InstalledFirstOption;
 
     // Pagination (PageSizeOptions/SelectedPageSize/CurrentPage/PageNumbers/Prev-Next-GoToPage/…) is
     // inherited from PagedListViewModel<LuaTileViewModel>; page size persists via SavePageSizeSetting below.
@@ -431,6 +441,12 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
                 : SteamGameInstallState.NotInstalled;
             tile.IsInstalled = fully.Contains(tile.AppId);
         }
+
+        // The scan lands after LoadAsync already rendered the list, and the default sort keys on
+        // IsInstalled — re-sort now, staying on the user's current page.
+        OnUi(() => ApplyFilter(resetPage: false));
+
+        await RefreshSaveLocationsAsync();
     }
 
     /// <summary>Open this game on the Builds page (switch build, inspect depots/manifests, edit).</summary>
@@ -447,15 +463,33 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
     /// <summary>Set by App — opens the save-backup dialog for a game (appid, name).</summary>
     public Action<long, string>? OpenSaveBackup { get; set; }
 
-    /// <summary>Set by App — true when the game has a <c>userdata</c> folder or a backup, so the action never
-    /// opens an empty dialog.</summary>
-    public Func<long, bool>? HasSaveData { get; set; }
+    /// <summary>Set by App — friendly names of the places this game keeps saves (game name, appid), empty when
+    /// none. Runs on a background thread, once per card.</summary>
+    public Func<string, long, IReadOnlyList<string>>? DetectSaveNames { get; set; }
 
-    /// <summary>Back up / restore this game's Steam <c>userdata</c> saves.</summary>
-    [RelayCommand(CanExecute = nameof(CanSaveBackup))]
+    /// <summary>Back up / restore this game's saves. Always available: with nothing detected, the dialog is where a
+    /// folder is added by hand.</summary>
+    [RelayCommand]
     private void SaveBackup(LuaTileViewModel tile) => OpenSaveBackup?.Invoke(tile.AppId, tile.Name);
 
-    private bool CanSaveBackup(LuaTileViewModel? tile) => tile is not null && HasSaveData?.Invoke(tile.AppId) == true;
+    /// <summary>Fill each card's save icon from <see cref="DetectSaveNames"/>. Best-effort, off the UI thread.</summary>
+    public async Task RefreshSaveLocationsAsync()
+    {
+        var detect = DetectSaveNames;
+        var tiles = _all;
+        if (detect is null || tiles.Count == 0) return;
+
+        var games = tiles.Select(static t => (Tile: t, t.Name, t.AppId)).ToList();
+        var found = await Task.Run(() => games.Select(g => (g.Tile, Names: detect(g.Name, g.AppId))).ToList());
+
+        OnUi(() =>
+        {
+            foreach (var (tile, names) in found)
+                tile.SaveLocationsTooltip = names.Count == 0
+                    ? null
+                    : string.Format(Resources.Strings.Manage_SaveIcon_Tooltip, string.Join(", ", names));
+        });
+    }
 
     /// <summary>Set by App — runs the "import a save zip" flow for a game (appid, name).</summary>
     public Action<long, string>? OpenSaveImport { get; set; }
@@ -845,8 +879,15 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
         return true;
     }
 
+    /// <summary>Default order: fully installed games first (green badge), then A–Z by name within each group.</summary>
+    public static List<LuaTileViewModel> SortInstalledFirst(IEnumerable<LuaTileViewModel> tiles) =>
+        tiles.OrderByDescending(t => t.IsInstalled)
+             .ThenBy(t => t.Name, StringComparer.CurrentCultureIgnoreCase)
+             .ToList();
+
     private List<LuaTileViewModel> SortTiles(List<LuaTileViewModel> tiles) => SelectedSort switch
     {
+        InstalledFirstOption => SortInstalledFirst(tiles),
         "Name (A–Z)" => tiles.OrderBy(t => t.Name, StringComparer.OrdinalIgnoreCase).ToList(),
         "Release date (newest)" => tiles
             .OrderByDescending(t => _appInfo.GetFilterData(t.AppId)?.ReleaseDate ?? DateTime.MinValue).ToList(),

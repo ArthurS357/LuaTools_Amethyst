@@ -110,6 +110,7 @@ public class FilterOptionDisplayConverter : IValueConverter
             "Paid" => Resources.Strings.Manage_Opt_Paid,
             "Hide adult" => Resources.Strings.Manage_Content_HideAdult,
             "Adult only" => Resources.Strings.Manage_Content_AdultOnly,
+            "Installed first" => Resources.Strings.Manage_Sort_InstalledFirst,
             "Recently added" => Resources.Strings.Manage_Sort_RecentlyAdded,
             "Name (A–Z)" => Resources.Strings.Manage_Sort_NameAZ,
             "Release date (newest)" => Resources.Strings.Manage_Sort_ReleaseNewest,

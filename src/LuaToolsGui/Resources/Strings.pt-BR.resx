@@ -267,6 +267,7 @@
   <data name="Manage_Opt_Paid" xml:space="preserve"><value>Pago</value></data>
   <data name="Manage_Sort_RecentlyAdded" xml:space="preserve"><value>Adicionados recentemente</value></data>
   <data name="Manage_Sort_NameAZ" xml:space="preserve"><value>Nome (A–Z)</value></data>
+  <data name="Manage_Sort_InstalledFirst" xml:space="preserve"><value>Instalados primeiro</value></data>
   <data name="Manage_Sort_ReleaseNewest" xml:space="preserve"><value>Data de lançamento (mais recente)</value></data>
   <data name="Manage_Sort_Metacritic" xml:space="preserve"><value>Metacritic</value></data>
   <data name="Manage_Sort_MostReviewed" xml:space="preserve"><value>Mais avaliados</value></data>
@@ -655,11 +656,26 @@ Isso exclui os arquivos .lua de Steam\config\stplug-in. Reinicie o Steam depois 
   <data name="Saves_Delete" xml:space="preserve"><value>Excluir</value></data>
   <data name="Saves_Close" xml:space="preserve"><value>Fechar</value></data>
   <data name="Saves_Empty" xml:space="preserve"><value>Ainda não há backups deste jogo.</value></data>
+  <data name="Saves_Locations_Title" xml:space="preserve"><value>Locais de save encontrados</value></data>
+  <data name="Saves_Locations_None" xml:space="preserve"><value>Nenhuma pasta de save detectada para este jogo.</value></data>
+  <data name="Saves_Location_Subtitle" xml:space="preserve"><value>{0} · {1} arquivo(s)</value></data>
+  <data name="Saves_AddFolder" xml:space="preserve"><value>Adicionar pasta manualmente…</value></data>
+  <data name="Saves_Confirm_NoneFound" xml:space="preserve"><value>Não encontramos saves para este jogo. Deseja selecionar uma pasta manualmente?</value></data>
+  <data name="Saves_PickFolder" xml:space="preserve"><value>Selecionar pasta</value></data>
+  <data name="Saves_PickFolderTitle" xml:space="preserve"><value>Escolha a pasta onde este jogo guarda os saves</value></data>
+  <data name="Saves_Toast_PickOne" xml:space="preserve"><value>Marque ao menos um local de save para o backup.</value></data>
+  <data name="Saves_Toast_FolderRefused" xml:space="preserve"><value>Essa pasta não pode ser usada (raiz de disco, pasta do Windows ou Arquivos de Programas, ou caminho incompleto).</value></data>
+  <data name="Manage_SaveIcon_Tooltip" xml:space="preserve"><value>Saves detectados em: {0}</value></data>
+  <data name="Settings_CustomSaveFolders" xml:space="preserve"><value>Pastas de save personalizadas</value></data>
+  <data name="Settings_CustomSaveFolders_Hint" xml:space="preserve"><value>Para jogos cujos saves o app não encontra sozinho. Informe o AppID do jogo e escolha a pasta; ela entra no backup desse jogo e é o único lugar extra onde um restore pode gravar.</value></data>
+  <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
+  <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Adicionar pasta…</value></data>
+  <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Remover</value></data>
   <data name="Saves_Note" xml:space="preserve"><value>Faz backup da pasta do jogo no Steam (userdata). Jogos que guardam o save em Documentos ou AppData não são incluídos.</value></data>
   <data name="Saves_Toast_Created" xml:space="preserve"><value>Backup criado: {0} arquivo(s), {1}.</value></data>
   <data name="Saves_Toast_Restored" xml:space="preserve"><value>{0} arquivo(s) restaurado(s). Uma cópia dos saves anteriores foi mantida.</value></data>
   <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Backup excluído.</value></data>
-  <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Não há pasta de save deste jogo no userdata do Steam. Ele provavelmente guarda o save em outro lugar (Documentos / AppData).</value></data>
+  <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Nenhum save foi encontrado para este jogo. Adicione a pasta onde ele guarda os saves em “Adicionar pasta manualmente…”.</value></data>
   <data name="Saves_Toast_SteamNotFound" xml:space="preserve"><value>Pasta do Steam não encontrada. Defina o local nas Configurações.</value></data>
   <data name="Saves_Toast_Refused" xml:space="preserve"><value>Recusado: o backup não corresponde a este jogo ou contém caminhos inseguros. Nada foi alterado.</value></data>
   <data name="Saves_Toast_Failed" xml:space="preserve"><value>A operação falhou. Veja o log para detalhes.</value></data>

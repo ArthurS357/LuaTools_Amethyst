@@ -1100,16 +1100,14 @@ public partial class App : Application
 
         // Manage "Save backup…" → list/create/restore/delete the game's userdata zips.
         var saveBackups = _host.Services.GetRequiredService<Services.Backups.SaveBackupService>();
-        manage.HasSaveData = saveBackups.HasSavesOrBackups;
-        manage.SaveBackupCommand.NotifyCanExecuteChanged(); // the view may have bound before this was set
+        manage.DetectSaveNames = saveBackups.DetectNames;
         manage.OpenSaveBackup = (appId, name) => Dispatcher.Invoke(() =>
         {
             var dialog = new SaveBackupDialog(
                 _host.Services.GetRequiredService<SaveBackupViewModel>(), appId, name)
             { Owner = window };
             dialog.ShowDialog();
-            // Backups were created or deleted in there: the action's enabled state may have flipped.
-            manage.SaveBackupCommand.NotifyCanExecuteChanged();
+            _ = manage.RefreshSaveLocationsAsync(); // a folder may have been added in there
         });
         // Manage "Import save (.zip)…" → no dialog: pick a file, confirm, restore, toast.
         manage.OpenSaveImport = (appId, name) => Dispatcher.Invoke(() =>

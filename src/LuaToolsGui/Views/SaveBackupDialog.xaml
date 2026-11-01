@@ -9,7 +9,7 @@
     xmlns:vm="clr-namespace:LuaToolsGui.ViewModels"
     Title="{x:Static res:Strings.Saves_Title}"
     Width="560"
-    Height="520"
+    Height="660"
     d:DataContext="{d:DesignInstance Type=vm:SaveBackupViewModel}"
     ExtendsContentIntoTitleBar="True"
     ResizeMode="CanResize"
@@ -45,11 +45,49 @@
                     Foreground="{StaticResource TextMutedBrush}"
                     Text="{Binding AppId, StringFormat={x:Static res:Strings.Common_AppId}}" />
                 <TextBlock
+                    Margin="0,12,0,0"
+                    FontSize="12.5"
+                    FontWeight="SemiBold"
+                    Text="{x:Static res:Strings.Saves_Locations_Title}" />
+                <TextBlock
+                    Margin="0,4,0,0"
+                    FontSize="11.5"
+                    Foreground="{StaticResource TextMutedBrush}"
+                    Text="{x:Static res:Strings.Saves_Locations_None}"
+                    TextWrapping="Wrap"
+                    Visibility="{Binding HasNoLocations, Converter={StaticResource BoolToVis}}" />
+                <ItemsControl
+                    MaxHeight="130"
+                    Margin="0,4,0,0"
+                    ItemsSource="{Binding Locations}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <CheckBox
+                                Margin="0,2,0,0"
+                                IsChecked="{Binding IsSelected}"
+                                IsEnabled="{Binding DataContext.NotBusy, ElementName=Root}">
+                                <StackPanel>
+                                    <TextBlock
+                                        FontSize="12.5"
+                                        Text="{Binding Title}"
+                                        TextTrimming="CharacterEllipsis"
+                                        ToolTip="{Binding Location.Path}" />
+                                    <TextBlock
+                                        FontSize="10.5"
+                                        Foreground="{StaticResource TextDimBrush}"
+                                        Text="{Binding Subtitle}" />
+                                </StackPanel>
+                            </CheckBox>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ui:Button
                     Margin="0,8,0,0"
-                    FontSize="11"
-                    Foreground="{StaticResource WarningSoftBrush}"
-                    Text="{x:Static res:Strings.Saves_Note}"
-                    TextWrapping="Wrap" />
+                    HorizontalAlignment="Left"
+                    Command="{Binding AddFolderCommand}"
+                    Content="{x:Static res:Strings.Saves_AddFolder}"
+                    Icon="{ui:SymbolIcon FolderAdd24}"
+                    IsEnabled="{Binding NotBusy}" />
                 <ui:Button
                     Margin="0,12,0,0"
                     HorizontalAlignment="Stretch"

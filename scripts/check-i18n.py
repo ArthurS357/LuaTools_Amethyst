@@ -45,6 +45,24 @@ SAMPLE_SIZE = 10
 # parity. Anything left here is untranslated in all 29 languages, with one stated exception noted
 # against the plugin-source group at the bottom.
 PENDING_TRANSLATION: frozenset[str] = frozenset({
+    # 1.7.12.3: default "Installed first" sort option (en + pt-BR only).
+    "Manage_Sort_InstalledFirst",
+    # 1.7.12.4: save backup in several locations (en + pt-BR only).
+    "Saves_Locations_Title",
+    "Saves_Locations_None",
+    "Saves_Location_Subtitle",
+    "Saves_AddFolder",
+    "Saves_Confirm_NoneFound",
+    "Saves_PickFolder",
+    "Saves_PickFolderTitle",
+    "Saves_Toast_PickOne",
+    "Saves_Toast_FolderRefused",
+    "Manage_SaveIcon_Tooltip",
+    "Settings_CustomSaveFolders",
+    "Settings_CustomSaveFolders_Hint",
+    "Settings_CustomSaveFolders_AppId",
+    "Settings_CustomSaveFolders_Add",
+    "Settings_CustomSaveFolders_Remove",
     # 1.7.12.2: per-game save-backup folder (en + pt-BR only).
     "Saves_Confirm_NewFolder",
     "Saves_Confirm_Ok",

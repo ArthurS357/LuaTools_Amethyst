@@ -152,11 +152,26 @@ Force it to close? Anything Steam has not saved yet may be lost. Choose No to le
   <data name="Saves_Delete" xml:space="preserve"><value>Delete</value></data>
   <data name="Saves_Close" xml:space="preserve"><value>Close</value></data>
   <data name="Saves_Empty" xml:space="preserve"><value>No backups of this game yet.</value></data>
+  <data name="Saves_Locations_Title" xml:space="preserve"><value>Save locations found</value></data>
+  <data name="Saves_Locations_None" xml:space="preserve"><value>No save folder detected for this game.</value></data>
+  <data name="Saves_Location_Subtitle" xml:space="preserve"><value>{0} · {1} file(s)</value></data>
+  <data name="Saves_AddFolder" xml:space="preserve"><value>Add folder manually…</value></data>
+  <data name="Saves_Confirm_NoneFound" xml:space="preserve"><value>We could not find saves for this game. Do you want to select a folder manually?</value></data>
+  <data name="Saves_PickFolder" xml:space="preserve"><value>Select folder</value></data>
+  <data name="Saves_PickFolderTitle" xml:space="preserve"><value>Choose the folder where this game keeps its saves</value></data>
+  <data name="Saves_Toast_PickOne" xml:space="preserve"><value>Tick at least one save location to back up.</value></data>
+  <data name="Saves_Toast_FolderRefused" xml:space="preserve"><value>That folder cannot be used (a drive root, a Windows or Program Files folder, or not a full path).</value></data>
+  <data name="Manage_SaveIcon_Tooltip" xml:space="preserve"><value>Saves detected in: {0}</value></data>
+  <data name="Settings_CustomSaveFolders" xml:space="preserve"><value>Custom save folders</value></data>
+  <data name="Settings_CustomSaveFolders_Hint" xml:space="preserve"><value>For games whose saves the app cannot find on its own. Enter the game's AppID and pick the folder; it is then backed up with that game and is the only extra place a restore may write to.</value></data>
+  <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
+  <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Add folder…</value></data>
+  <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Remove</value></data>
   <data name="Saves_Note" xml:space="preserve"><value>Backs up Steam's per-game folder (userdata). Games that keep saves in Documents or AppData are not included.</value></data>
   <data name="Saves_Toast_Created" xml:space="preserve"><value>Backed up {0} file(s), {1}.</value></data>
   <data name="Saves_Toast_Restored" xml:space="preserve"><value>Restored {0} file(s). A copy of the previous saves was kept.</value></data>
   <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Backup deleted.</value></data>
-  <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>No save folder for this game under Steam's userdata. It probably keeps its saves elsewhere (Documents / AppData).</value></data>
+  <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>No saves were found for this game. Add the folder where it keeps them with “Add folder manually…”.</value></data>
   <data name="Saves_Toast_SteamNotFound" xml:space="preserve"><value>Steam folder not found. Set its location in Settings.</value></data>
   <data name="Saves_Toast_Refused" xml:space="preserve"><value>Refused: the backup does not match this game or contains unsafe paths. Nothing was changed.</value></data>
   <data name="Saves_Toast_Failed" xml:space="preserve"><value>The operation failed. See the log for details.</value></data>
@@ -387,6 +402,7 @@ Force it to close? Anything Steam has not saved yet may be lost. Choose No to le
   <data name="Manage_Opt_Paid" xml:space="preserve"><value>Paid</value></data>
   <data name="Manage_Sort_RecentlyAdded" xml:space="preserve"><value>Recently added</value></data>
   <data name="Manage_Sort_NameAZ" xml:space="preserve"><value>Name (A–Z)</value></data>
+  <data name="Manage_Sort_InstalledFirst" xml:space="preserve"><value>Installed first</value></data>
   <data name="Manage_Sort_ReleaseNewest" xml:space="preserve"><value>Release date (newest)</value></data>
   <data name="Manage_Sort_Metacritic" xml:space="preserve"><value>Metacritic</value></data>
   <data name="Manage_Sort_MostReviewed" xml:space="preserve"><value>Most reviewed</value></data>

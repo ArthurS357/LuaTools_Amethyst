@@ -593,6 +593,71 @@
                         Foreground="{StaticResource TextDimBrush}"
                         Text="{x:Static res:Strings.Settings_SaveBackupFolder_Hint}"
                         TextWrapping="Wrap" />
+
+                    <TextBlock
+                        Margin="0,16,0,0"
+                        FontSize="13"
+                        FontWeight="Medium"
+                        Text="{x:Static res:Strings.Settings_CustomSaveFolders}" />
+                    <TextBlock
+                        Margin="0,4,0,0"
+                        FontSize="12"
+                        Foreground="{StaticResource TextDimBrush}"
+                        Text="{x:Static res:Strings.Settings_CustomSaveFolders_Hint}"
+                        TextWrapping="Wrap" />
+                    <ItemsControl Margin="0,8,0,0" ItemsSource="{Binding CustomSaveFolders}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,2,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        MinWidth="80"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Text="{Binding AppId}" />
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Text="{Binding Path}"
+                                        TextTrimming="CharacterEllipsis"
+                                        ToolTip="{Binding Path}" />
+                                    <ui:Button
+                                        Grid.Column="2"
+                                        Margin="8,0,0,0"
+                                        Command="{Binding DataContext.RemoveCustomSaveFolderCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        CommandParameter="{Binding}"
+                                        Content="{x:Static res:Strings.Settings_CustomSaveFolders_Remove}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Grid Margin="0,8,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ui:TextBox
+                            PlaceholderText="{x:Static res:Strings.Settings_CustomSaveFolders_AppId}"
+                            Text="{Binding NewCustomSaveAppId, UpdateSourceTrigger=PropertyChanged}" />
+                        <ui:Button
+                            Grid.Column="1"
+                            Margin="8,0,0,0"
+                            Command="{Binding AddCustomSaveFolderCommand}"
+                            Content="{x:Static res:Strings.Settings_CustomSaveFolders_Add}"
+                            Icon="{ui:SymbolIcon FolderAdd24}" />
+                    </Grid>
+                    <TextBlock
+                        Margin="0,6,0,0"
+                        FontSize="12"
+                        Foreground="{StaticResource DangerBrush}"
+                        Text="{Binding CustomSaveFolderError}"
+                        TextWrapping="Wrap"
+                        Visibility="{Binding CustomSaveFolderError, Converter={StaticResource NullToCollapsed}}" />
                 </StackPanel>
             </Border>
 

@@ -315,6 +315,7 @@ public partial class SettingsViewModel : ObservableObject
         RefreshAccount();
         RefreshSteam();
         RefreshSaveBackupFolder();
+        RefreshCustomSaveFolders();
         _autoUpdateApps = settings.AutoUpdateApps; // init from saved value (default ON) without triggering Save
         _fastFetch = settings.FastFetch;
         _startWithWindows = settings.StartWithWindows; // default OFF — init without triggering the registry write
@@ -477,6 +478,45 @@ public partial class SettingsViewModel : ObservableObject
         string dir = _settings.EffectiveSaveBackupFolder;
         System.IO.Directory.CreateDirectory(dir);
         Process.Start(new ProcessStartInfo(dir) { UseShellExecute = true });
+    }
+
+    // ── Custom save folders (per appid) ─────────────────────────────
+    /// <summary>One folder registered for a game whose saves the automatic detection cannot find.</summary>
+    public sealed record CustomSaveFolderRow(long AppId, string Path);
+
+    public ObservableCollection<CustomSaveFolderRow> CustomSaveFolders { get; } = [];
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(AddCustomSaveFolderCommand))]
+    private string _newCustomSaveAppId = "";
+
+    [ObservableProperty] private string? _customSaveFolderError;
+
+    private void RefreshCustomSaveFolders()
+    {
+        CustomSaveFolders.Clear();
+        foreach (var (appId, path) in _settings.AllCustomSaveFolders()) CustomSaveFolders.Add(new CustomSaveFolderRow(appId, path));
+    }
+
+    private bool CanAddCustomSaveFolder() => long.TryParse(NewCustomSaveAppId.Trim(), out long id) && id > 0;
+
+    [RelayCommand(CanExecute = nameof(CanAddCustomSaveFolder))]
+    private void AddCustomSaveFolder()
+    {
+        var dialog = new OpenFolderDialog { Title = Resources.Strings.Saves_PickFolderTitle };
+        if (dialog.ShowDialog() != true) return;
+
+        bool added = _settings.AddCustomSaveFolder(long.Parse(NewCustomSaveAppId.Trim()), dialog.FolderName);
+        CustomSaveFolderError = added ? null : Resources.Strings.Saves_Toast_FolderRefused;
+        if (added) NewCustomSaveAppId = "";
+        RefreshCustomSaveFolders();
+    }
+
+    [RelayCommand]
+    private void RemoveCustomSaveFolder(CustomSaveFolderRow row)
+    {
+        _settings.RemoveCustomSaveFolder(row.AppId, row.Path);
+        RefreshCustomSaveFolders();
     }
 
     [RelayCommand]
