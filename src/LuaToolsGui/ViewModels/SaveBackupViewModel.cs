@@ -104,6 +104,8 @@ public sealed partial class SaveBackupViewModel(SaveBackupService backups, Toast
             SaveBackupOutcome.SteamNotFound => Resources.Strings.Saves_Toast_SteamNotFound,
             SaveBackupOutcome.NoSaves => Resources.Strings.Saves_Toast_NoSaves,
             SaveBackupOutcome.Refused => Resources.Strings.Saves_Toast_Refused,
+            SaveBackupOutcome.NoSpace => string.Format(CultureInfo.CurrentCulture,
+                Resources.Strings.Saves_Toast_NoSpace, ByteSize.Format(r.Bytes)),
             _ => Resources.Strings.Saves_Toast_Failed,
         };
         toast.Show(Resources.Strings.Saves_Title, error ?? okMessage, error: error is not null);

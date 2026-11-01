@@ -188,6 +188,54 @@ public sealed class SaveBackupServiceTests : IDisposable
     }
 
     [Fact]
+    public void Required_space_is_the_raw_size_plus_ten_percent_plus_50_MB()
+    {
+        const long MB = 1024 * 1024;
+
+        SaveBackupService.RequiredFreeBytes(0).Should().Be(50 * MB);
+        SaveBackupService.RequiredFreeBytes(100 * MB).Should().Be(160 * MB);
+    }
+
+    [Fact]
+    public async Task Backup_asks_the_backups_drive_and_refuses_one_byte_short_of_the_margin()
+    {
+        Save("111", App, "slot1.sav", new string('x', 1000));
+        long required = SaveBackupService.RequiredFreeBytes(1000);
+        string? asked = null;
+        var tight = new SaveBackupService(() => _steam, _backups, freeBytes: dir => { asked = dir; return required - 1; });
+
+        var r = await tight.BackupSavesAsync(App);
+
+        r.Outcome.Should().Be(SaveBackupOutcome.NoSpace);
+        r.Bytes.Should().Be(required);
+        asked.Should().Be(Path.GetFullPath(_backups), "the zip lands in the backups folder, not under userdata");
+        tight.ListBackups(App).Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Backup_runs_when_the_drive_holds_exactly_the_margin()
+    {
+        Save("111", App, "slot1.sav", new string('x', 1000));
+        long required = SaveBackupService.RequiredFreeBytes(1000);
+        var exact = new SaveBackupService(() => _steam, _backups, freeBytes: _ => required);
+
+        (await exact.BackupSavesAsync(App)).Outcome.Should().Be(SaveBackupOutcome.Ok);
+    }
+
+    [Fact]
+    public async Task Restore_does_not_start_when_the_safety_copy_has_no_room()
+    {
+        string live = Save("111", App, "slot1.sav", "current");
+        string zip = CraftZip(App, ("111/730/slot1.sav", "restored"));
+        // Room for the extraction, none for the 50 MB margin the safety copy needs.
+        var tight = new SaveBackupService(() => _steam, _backups, freeBytes: _ => 1_000_000);
+
+        (await tight.RestoreBackupAsync(zip, App)).Outcome.Should().Be(SaveBackupOutcome.Failed);
+
+        File.ReadAllText(live).Should().Be("current");
+    }
+
+    [Fact]
     public async Task Has_saves_or_backups_covers_a_restore_after_the_folder_was_deleted()
     {
         _svc.HasSavesOrBackups(App).Should().BeFalse();

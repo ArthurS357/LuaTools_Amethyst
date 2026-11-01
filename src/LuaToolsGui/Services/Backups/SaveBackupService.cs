@@ -15,6 +15,8 @@ public enum SaveBackupOutcome
     NoSaves,
     /// <summary>The archive or the target failed validation (zip-slip, link, wrong game, too large). Nothing was extracted.</summary>
     Refused,
+    /// <summary>The backups drive cannot hold the zip plus a safety margin. Nothing was written; <see cref="SaveBackupResult.Bytes"/> is the space asked for.</summary>
+    NoSpace,
     Failed,
 }
 
@@ -47,6 +49,10 @@ public sealed partial class SaveBackupService
         AttributesToSkip = FileAttributes.ReparsePoint, // a skipped directory is also not recursed into
         IgnoreInaccessible = true,
     };
+
+    /// <summary>Free space a backup of <paramref name="rawBytes"/> must find: the raw size (an upper bound for the
+    /// zip, which only shrinks it) plus 10% and a flat 50 MB, so the drive is not left at zero.</summary>
+    internal static long RequiredFreeBytes(long rawBytes) => rawBytes + rawBytes / 10 + 50L * 1024 * 1024;
 
     [GeneratedRegex(@"^(?<app>[0-9]+)_[0-9]{8}-[0-9]{6}(_[0-9]+)?\.zip\z")]
     private static partial Regex BackupNameRegex();
@@ -107,6 +113,14 @@ public sealed partial class SaveBackupService
             var dirs = FindSaveDirs(appId);
             var files = dirs.SelectMany(d => EnumerateFiles(d.Dir).Select(f => (d.Account, d.Dir, File: f))).ToList();
             if (files.Count == 0) return new SaveBackupResult(SaveBackupOutcome.NoSaves);
+
+            long required = RequiredFreeBytes(files.Sum(static f => f.File.Length));
+            long free = _freeBytes(_backupsDir);
+            if (free < required)
+            {
+                AppLog.Log($"save backup: {appId} refused: needs {ByteSize.Format(required)}, {ByteSize.Format(free)} free");
+                return new SaveBackupResult(SaveBackupOutcome.NoSpace, Bytes: required);
+            }
 
             try
             {
