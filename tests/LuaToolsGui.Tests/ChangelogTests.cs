@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.7.11.1");
+        AppVersion.Current.Should().Be("1.7.11.2");
     }
 
     [Fact]
@@ -51,10 +51,10 @@ public class ChangelogTests
 
         // One anchor per change the release was actually about, so an entry that got copied forward from
         // the previous version fails here rather than shipping a changelog describing the wrong release.
-        text.Should().ContainEquivalentOf("Welcome screen");                 // the onboarding fix
-        text.Should().ContainEquivalentOf("manual code");                    // its trigger
-        text.Should().ContainEquivalentOf("plus 50 MB");                     // the backup space margin
-        text.Should().ContainEquivalentOf("Close Steam and continue");       // the restore-with-Steam-open dialog
+        text.Should().ContainEquivalentOf("Cancel on the Discord page");     // the trigger
+        text.Should().ContainEquivalentOf("Try again");                      // the dialog's retry button
+        text.Should().ContainEquivalentOf("Use manual code");                // the dialog's code button
+        text.Should().ContainEquivalentOf("30 seconds");                     // the grace kept for other errors
     }
 
     [Fact]
