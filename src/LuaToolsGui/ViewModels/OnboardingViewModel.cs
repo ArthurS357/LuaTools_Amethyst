@@ -30,7 +30,13 @@ public partial class OnboardingViewModel : ObservableObject
         _steam = steam;
         _installer = installer;
         _toast = toast;
-        _auth.AuthStateChanged += () => IsSignedIn = _auth.IsSignedIn;
+        _auth.AuthStateChanged += () =>
+        {
+            IsSignedIn = _auth.IsSignedIn;
+            // A successful sign-in (browser or manual code) settles onboarding even when the overlay was
+            // dismissed through "Use manual code"; quitting before that keeps it coming back.
+            if (IsSignedIn) _cache.OnboardingComplete = true;
+        };
         IsSignedIn = _auth.IsSignedIn;
     }
 
@@ -79,7 +85,8 @@ public partial class OnboardingViewModel : ObservableObject
 
     /// <summary>Shown under a failed sign-in: the Discord /login code box in Settings, the same path as the
     /// nav pane's button. The overlay covers the whole window, so it is closed first, but onboarding is NOT
-    /// marked complete: the choices below were never applied, so it comes back on the next launch.</summary>
+    /// marked complete here: the choices below were never applied, so it comes back on the next launch unless
+    /// a sign-in succeeds first (see the <c>AuthStateChanged</c> handler).</summary>
     [RelayCommand]
     private void UseManualCode()
     {
