@@ -29,6 +29,15 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.7.11.1", "2026-11-01",
+            "Local test build: the welcome screen stops coming back after a manual-code sign-in, and save backups check disk space and a running Steam.",
+            [
+                "Welcome screen: after Use manual code, the welcome screen still comes back on the next launch until a sign-in succeeds (browser or manual code). Once you are signed in it no longer reappears. Giving up halfway keeps it.",
+                "Save backups: creating a backup now needs the raw size of the saves plus 10% plus 50 MB free on the drive that holds the backups, and says how much it needs when there is not enough. Nothing is written in that case.",
+                "Restoring a save backup while Steam is running now asks first: Close Steam and continue, or Cancel. Steam is asked to exit cleanly and never killed; if it does not close, nothing is restored.",
+                "No new setting, no new dependency and no new network request.",
+            ]),
+
         new("1.7.11", "2026-10-31",
             "Asks before touching a Steam that is already running, adds per-game save backups, and warns when a source delivers no manifests.",
             [
