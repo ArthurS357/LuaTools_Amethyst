@@ -524,6 +524,16 @@ provably a well-formed `steam://` URL. An appid that fails validation starts no 
 no raw-string fallback. See `SteamLaunchPolicy` (the decision, pure and tested) and `SteamGameLauncher`
 (the I/O).
 
+## Recent features
+
+- **Install status.** The Manage tab shows which games are already installed on disk.
+- **Save backup.** Back up and restore game progress, with custom folders supported and backups organised
+  in one folder per game name.
+- **Startup guard.** The app refuses to open while Steam is already running, so AmethystTool is injected
+  correctly.
+- **Manifest warning.** You are notified when a source does not deliver the manifests needed for the
+  download.
+
 ## Configuration
 
 Settings live in `%AppData%\LuaToolsGui\settings.json`. Most are managed from the Settings page; the
@@ -846,6 +856,9 @@ the Steam directory cannot be detected.
 ---
 
 ## Credits / Adjacent software
+
+This project is a fork of [LuaTools](https://github.com/madoiscool/LuaTools), originally created by
+madoiscool. Thanks for the excellent original work.
 
 - [LuaTools](https://lua.tools) — the upstream project this is forked from
 - [Millennium](https://steambrew.app/) — the Steam plugin framework whose injection API this app
