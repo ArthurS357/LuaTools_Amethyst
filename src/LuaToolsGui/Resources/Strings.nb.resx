@@ -162,10 +162,10 @@
   <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>SteamTools med noen smarte patcher — en haug med fikser og forbedringer. Bringer tilbake innebygd Steam Cloud via Google Drive / OneDrive!</value></data>
   <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>Administrer</value></data>
   <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>Kunne ikke laste ned eller starte CloudRedirect.</value></data>
-  <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>Nattlig bygg av OpenSteamTool (OST) fra nyeste kildekode. De nyeste rettelsene, men kan være mindre stabil.</value></data>
+  <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>Nattlig bygg av BetterSteamTools (OST) fra nyeste kildekode. De nyeste rettelsene, men kan være mindre stabil.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>EKSPERIMENTELL</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Bringer tilbake innebygd Steam Cloud-støtte via tredjeparts lagringsleverandører som Google Drive / OneDrive / Cloudflare R2 med flere. Foreløpig bare kompatibel med OpenSteamTool Nightly. Ikke glem å konfigurere den ved å klikke "Administrer" etter aktivering, og start deretter Steam på nytt!</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Velg OpenSteamTool Nightly for å bruke CloudRedirect.</value></data>
+  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Bringer tilbake innebygd Steam Cloud-støtte via tredjeparts lagringsleverandører som Google Drive / OneDrive / Cloudflare R2 med flere. Foreløpig bare kompatibel med BetterSteamTools Nightly. Ikke glem å konfigurere den ved å klikke "Administrer" etter aktivering, og start deretter Steam på nytt!</value></data>
+  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Velg BetterSteamTools Nightly for å bruke CloudRedirect.</value></data>
   <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>Aktiver</value></data>
   <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>Deaktiver</value></data>
   <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>Aktivert.</value></data>
@@ -179,7 +179,7 @@
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>Logg inn for å låse opp tillegg av spill og fikser.</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>Logget inn ✓</value></data>
   <data name="Onboarding_Recommended_Title" xml:space="preserve"><value>Bruk anbefalte innstillinger</value></data>
-  <data name="Onboarding_Recommended_Detail" xml:space="preserve"><value>Modus: OpenSteamTool · FastFetch på</value></data>
+  <data name="Onboarding_Recommended_Detail" xml:space="preserve"><value>Modus: AmethystTool · FastFetch på</value></data>
   <data name="Onboarding_Plugin_Title" xml:space="preserve"><value>Installer vår berømte plugin</value></data>
   <data name="Onboarding_Plugin_Detail" xml:space="preserve"><value>Legger til «Add via LuaTools»-knappen på Steam-butikksider.</value></data>
   <data name="Onboarding_Yes" xml:space="preserve"><value>Ja takk</value></data>

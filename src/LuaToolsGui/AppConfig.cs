@@ -85,8 +85,11 @@ public static class AppConfig
     // separate times before this.
     public const string SteamToolsOwner = "mendy-tools";
     public const string SteamToolsRepo = "verynotsusdllsthataredefnotstrelated";
-    public const string OpenSteamToolsOwner = "OpenSteam001";
-    public const string OpenSteamToolsRepo = "OpenSteamTool";
+    // The "BetterSteamTools" card. This is madoiscool's fork, NOT the OpenSteam001 original it was built from:
+    // the owner decided (1.7.12.5) the Mode tab offers the project under its own name, with a visible
+    // privacy warning, and never from Onboarding (which installs only the Amethyst ecosystem).
+    public const string OpenSteamToolsOwner = "madoiscool";
+    public const string OpenSteamToolsRepo = "BetterSteamTools";
     public const string OstNightlyOwner = "madoiscool";
     public const string OstNightlyRepo = "OST-Nightly";
 

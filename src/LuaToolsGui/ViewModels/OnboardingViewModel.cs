@@ -7,26 +7,32 @@ namespace LuaToolsGui.ViewModels;
 
 /// <summary>
 /// First-run welcome overlay. Shown once (gated by <see cref="CacheService.OnboardingComplete"/>) over the
-/// whole app: offers Discord sign-in, "apply recommended settings" (BetterSteamTools + FastFetch) and
+/// whole app: offers Discord sign-in, "apply recommended settings" (AmethystTool + FastFetch) and
 /// "install the plugin", then applies the chosen actions on "Let's go!" and dismisses.
+///
+/// <para>
+/// Onboarding installs ONLY the Amethyst ecosystem (ArthurS357/BetterSteamTools-Amethyst and
+/// ArthurS357/Front-end-Amethyst). Third-party backends such as madoiscool/BetterSteamTools are an explicit,
+/// warned choice on the Mode page and are never fetched here.
+/// </para>
 /// </summary>
 public partial class OnboardingViewModel : ObservableObject
 {
     private readonly AuthService _auth;
     private readonly CacheService _cache;
     private readonly SettingsService _settings;
-    private readonly UnlockerService _unlocker;
+    private readonly AmethystToolService _amethyst;
     private readonly SteamService _steam;
     private readonly PluginInstallerService _installer;
     private readonly ToastService _toast;
 
     public OnboardingViewModel(AuthService auth, CacheService cache, SettingsService settings,
-        UnlockerService unlocker, SteamService steam, PluginInstallerService installer, ToastService toast)
+        AmethystToolService amethyst, SteamService steam, PluginInstallerService installer, ToastService toast)
     {
         _auth = auth;
         _cache = cache;
         _settings = settings;
-        _unlocker = unlocker;
+        _amethyst = amethyst;
         _steam = steam;
         _installer = installer;
         _toast = toast;
@@ -128,14 +134,16 @@ public partial class OnboardingViewModel : ObservableObject
             if (applyRecommended)
             {
                 _settings.FastFetch = true;
-                var result = await _unlocker.InstallAsync(UnlockerMode.OpenSteamTools);
-                if (!result.Success)
-                    _toast.Show(Resources.Strings.Onboarding_Title, result.Error ?? "", error: true);
+                var (ok, error) = await _amethyst.InstallAsync(null);
+                if (!ok)
+                    _toast.Show(Resources.Strings.Onboarding_Title, error ?? "", error: true);
             }
 
             if (installPlugin)
             {
-                var (ok, error) = await _installer.InstallAsync(null);
+                // The fork's own frontend, named explicitly: InstallAsync(null) would follow the ACTIVE source,
+                // which is madoiscool/LTSP for anyone with an older install or a stored choice.
+                var (ok, error) = await _installer.InstallSourceAsync(AppConfig.DefaultPluginSource, null);
                 if (!ok)
                     _toast.Show(Resources.Strings.Onboarding_Title, error ?? "", error: true);
             }

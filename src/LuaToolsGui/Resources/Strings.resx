@@ -268,6 +268,7 @@ Force it to close? Anything Steam has not saved yet may be lost. Choose No to le
   <data name="Mode_Active" xml:space="preserve"><value>ACTIVE</value></data>
   <data name="Mode_Recommended" xml:space="preserve"><value>RECOMMENDED</value></data>
   <data name="Mode_Badge_Upstream" xml:space="preserve"><value>UPSTREAM</value></data>
+  <data name="Mode_Warn_Telemetry" xml:space="preserve"><value>Original project (madoiscool). Warning: contains telemetry and DonateKeys system.</value></data>
   <data name="Mode_Confirm_Body" xml:space="preserve"><value>Steam will be closed so its files can be changed, then restarted automatically. Any running games or downloads will stop.</value></data>
   <data name="Mode_Cancel" xml:space="preserve"><value>Cancel</value></data>
   <data name="Mode_CloseSteamContinue" xml:space="preserve"><value>Close Steam &amp; continue</value></data>
@@ -277,10 +278,10 @@ Force it to close? Anything Steam has not saved yet may be lost. Choose No to le
   <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>SteamTools with a few nifty patches — a ton of fixes and improvements. Brings back native Steam Cloud via Google Drive / OneDrive!</value></data>
   <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>Manage</value></data>
   <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>Couldn't download or launch CloudRedirect.</value></data>
-  <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>Nightly build of OpenSteamTool (OST) from the latest source. Newest fixes, but may be less stable.</value></data>
+  <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>Nightly build of BetterSteamTools (OST) from the latest source. Newest fixes, but may be less stable.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>EXPERIMENTAL</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Brings back native Steam Cloud support via third-party storage providers such as Google Drive / OneDrive / Cloudflare R2 + more. Only compatible with OpenSteamTool Nightly at the moment. Don't forget to configure it by clicking "Manage" after enabling, then restart Steam!</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Select OpenSteamTool Nightly to use CloudRedirect.</value></data>
+  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Brings back native Steam Cloud support via third-party storage providers such as Google Drive / OneDrive / Cloudflare R2 + more. Only compatible with BetterSteamTools Nightly at the moment. Don't forget to configure it by clicking "Manage" after enabling, then restart Steam!</value></data>
+  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Select BetterSteamTools Nightly to use CloudRedirect.</value></data>
   <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>Enable</value></data>
   <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>Disable</value></data>
   <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>Enabled.</value></data>
@@ -295,7 +296,7 @@ Force it to close? Anything Steam has not saved yet may be lost. Choose No to le
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>Sign in to unlock adding games and fixes.</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>Signed in ✓</value></data>
   <data name="Onboarding_Recommended_Title" xml:space="preserve"><value>Apply recommended settings</value></data>
-  <data name="Onboarding_Recommended_Detail" xml:space="preserve"><value>Mode: OpenSteamTool · FastFetch on</value></data>
+  <data name="Onboarding_Recommended_Detail" xml:space="preserve"><value>Mode: AmethystTool · FastFetch on</value></data>
   <data name="Onboarding_Plugin_Title" xml:space="preserve"><value>Install our famous plugin</value></data>
   <data name="Onboarding_Plugin_Detail" xml:space="preserve"><value>Adds the "Add via LuaTools" button to Steam store pages.</value></data>
   <data name="Onboarding_Yes" xml:space="preserve"><value>Yes please</value></data>

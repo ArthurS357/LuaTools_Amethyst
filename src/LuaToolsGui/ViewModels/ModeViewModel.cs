@@ -47,6 +47,10 @@ public partial class ModeCardViewModel(UnlockerMode mode, string title, string d
     /// "Upstream" badge. "Recommended" belongs to the AmethystTool card, which has its own template.</summary>
     public bool IsUpstream => Mode == UnlockerMode.OpenSteamTools;
 
+    /// <summary>The BetterSteamTools card is a third-party project with telemetry and DonateKeys; the card
+    /// says so (<c>Mode_Warn_Telemetry</c>) rather than leaving it to the release notes.</summary>
+    public bool ShowPrivacyWarning => IsUpstream;
+
     /// <summary>The nightly build gets the "Experimental" badge. It no longer claims CloudRedirect
     /// support: that repo is gone and the add-on panel is hidden (<see cref="ModeCatalog.CloudRedirectAddonAvailable"/>).</summary>
     public bool IsExperimental => Mode == UnlockerMode.OpenSteamToolsNightly;

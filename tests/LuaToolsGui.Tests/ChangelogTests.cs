@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.7.12.4");
+        AppVersion.Current.Should().Be("1.7.12.5");
     }
 
     [Fact]
@@ -51,10 +51,10 @@ public class ChangelogTests
 
         // One anchor per change the release was actually about, so an entry that got copied forward from
         // the previous version fails here rather than shipping a changelog describing the wrong release.
-        text.Should().ContainEquivalentOf(@"Documents\Saved Games\Hades");   // the exact-path detection
-        text.Should().ContainEquivalentOf("Add folder manually");            // the fallback
-        text.Should().ContainEquivalentOf("saves folder with a subfolder");  // the multi-location zip layout
-        text.Should().ContainEquivalentOf("Links are never followed");       // the restore guard
+        text.Should().ContainEquivalentOf("madoiscool/BetterSteamTools");    // the Mode card's source
+        text.Should().ContainEquivalentOf("telemetry and the DonateKeys");   // the privacy warning
+        text.Should().ContainEquivalentOf("installs AmethystTool");          // onboarding: Amethyst only
+        text.Should().ContainEquivalentOf("Amethyst frontend");              // onboarding: plugin source
     }
 
     [Fact]

@@ -45,6 +45,8 @@ SAMPLE_SIZE = 10
 # parity. Anything left here is untranslated in all 29 languages, with one stated exception noted
 # against the plugin-source group at the bottom.
 PENDING_TRANSLATION: frozenset[str] = frozenset({
+    # 1.7.12.5: privacy warning on the BetterSteamTools Mode card (en + pt-BR only).
+    "Mode_Warn_Telemetry",
     # 1.7.12.3: default "Installed first" sort option (en + pt-BR only).
     "Manage_Sort_InstalledFirst",
     # 1.7.12.4: save backup in several locations (en + pt-BR only).

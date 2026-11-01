@@ -171,10 +171,10 @@
   <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>‏SteamTools مع بعض التحسينات الذكية — كمٌّ هائل من الإصلاحات والتحسينات. يعيد دعم Steam Cloud الأصلي عبر Google Drive / OneDrive!</value></data>
   <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>إدارة</value></data>
   <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>تعذّر تنزيل CloudRedirect أو تشغيله.</value></data>
-  <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>إصدار ليلي من OpenSteamTool (OST) مبني من أحدث المصادر. أحدث الإصلاحات، لكنه قد يكون أقل استقرارًا.</value></data>
+  <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>إصدار ليلي من BetterSteamTools (OST) مبني من أحدث المصادر. أحدث الإصلاحات، لكنه قد يكون أقل استقرارًا.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>تجريبي</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>يعيد دعم Steam Cloud الأصلي عبر مزوّدي تخزين خارجيين مثل Google Drive / OneDrive / Cloudflare R2 وغيرها. متوافق حاليًا مع OpenSteamTool Nightly فقط. لا تنسَ إعداده بالضغط على "إدارة" بعد التفعيل، ثم أعد تشغيل Steam!</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>اختر OpenSteamTool Nightly لاستخدام CloudRedirect.</value></data>
+  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>يعيد دعم Steam Cloud الأصلي عبر مزوّدي تخزين خارجيين مثل Google Drive / OneDrive / Cloudflare R2 وغيرها. متوافق حاليًا مع BetterSteamTools Nightly فقط. لا تنسَ إعداده بالضغط على "إدارة" بعد التفعيل، ثم أعد تشغيل Steam!</value></data>
+  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>اختر BetterSteamTools Nightly لاستخدام CloudRedirect.</value></data>
   <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>تفعيل</value></data>
   <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>تعطيل</value></data>
   <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>مُفعَّل.</value></data>
@@ -188,7 +188,7 @@
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>سجّل الدخول لفتح إضافة الألعاب والإصلاحات.</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>تم تسجيل الدخول ✓</value></data>
   <data name="Onboarding_Recommended_Title" xml:space="preserve"><value>تطبيق الإعدادات الموصى بها</value></data>
-  <data name="Onboarding_Recommended_Detail" xml:space="preserve"><value>الوضع: OpenSteamTool · تشغيل FastFetch</value></data>
+  <data name="Onboarding_Recommended_Detail" xml:space="preserve"><value>الوضع: AmethystTool · تشغيل FastFetch</value></data>
   <data name="Onboarding_Plugin_Title" xml:space="preserve"><value>تثبيت إضافتنا الشهيرة</value></data>
   <data name="Onboarding_Plugin_Detail" xml:space="preserve"><value>يضيف زر "Add via LuaTools" إلى صفحات متجر Steam.</value></data>
   <data name="Onboarding_Yes" xml:space="preserve"><value>نعم من فضلك</value></data>

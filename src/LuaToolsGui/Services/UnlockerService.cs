@@ -53,10 +53,11 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
             // will not be fixed. See ModeDefinition.Retired for why the definition stays behind.
             Retired: true),
 
-        // DisplayName is the real project name. This card installs OpenSteamTool, not madoiscool's
-        // BetterSteamTools fork (donor/updater code the fork's policy excludes), so it must not say otherwise.
-        // The repo/dll/zip identifiers below are the real download targets; renaming them breaks install.
-        new(UnlockerMode.OpenSteamTools, "OpenSteamTool",
+        // madoiscool/BetterSteamTools, shown under that name. It carries telemetry and the DonateKeys
+        // system, so the card shows a privacy warning (Mode_Warn_Telemetry) and only the Mode tab offers it:
+        // Onboarding installs AmethystTool. The dll/zip identifiers below are the real names inside the
+        // release archive; renaming them breaks install.
+        new(UnlockerMode.OpenSteamTools, "BetterSteamTools",
             Description: Resources.Strings.Mode_Desc_OpenSteamTools,
             Kind: ModeKind.Zip,
             Owner: AppConfig.OpenSteamToolsOwner, Repo: AppConfig.OpenSteamToolsRepo,
@@ -68,7 +69,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
         // Nightly build of OpenSteamTool (our own madoiscool/OST-Nightly, built from upstream main) —
         // kept as its own mode because it adds native CloudRedirect support (see the add-on below).
         // Same install/config shape as stable BST (same binary, same opensteamtool.toml).
-        new(UnlockerMode.OpenSteamToolsNightly, "OpenSteamTool Nightly",
+        new(UnlockerMode.OpenSteamToolsNightly, "BetterSteamTools Nightly",
             Description: Resources.Strings.Mode_Desc_OpenSteamToolsNightly,
             Kind: ModeKind.Zip,
             Owner: AppConfig.OstNightlyOwner, Repo: AppConfig.OstNightlyRepo,
@@ -130,7 +131,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
             return new ModeState(mode, ModeStatus.Unknown, active, null);
 
         // AmethystTool holds the slot, so dwmapi.dll and xinput1_4.dll in the root are ITS bytes. Every
-        // status path below decides "is this Mode installed?" from those two files — OstMirrorStatusAsync
+        // status path below decides "is this Mode installed?" from those two files — ZipStatusAsync
         // reports NotInstalled only when dwmapi.dll is ABSENT, and anything present it cannot recognise it
         // calls UpdateAvailable. AmethystTool always leaves that file present, so every Mode card read as
         // installed beside it, offering an Update button that would silently hand the slot back. A Mode
@@ -138,12 +139,13 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
         if (!ActiveBackendPolicy.StillOwnsItsFiles(ActiveBackend, ActiveBackend.Mode))
             return new ModeState(mode, ModeStatus.NotInstalled, active, null);
 
-        // OpenSteamTools status uses our mendy-tools "ost-" mirror (real per-DLL hashes), since the
-        // upstream OST release only publishes a zip digest, not per-file hashes.
+        // BetterSteamTools publishes only a zip, with no per-DLL digests, and its build is not the one the
+        // mendy-tools "ost-" mirror holds hashes for — so status is judged on the zip digest recorded at
+        // install time against the latest release's.
         if (mode == UnlockerMode.OpenSteamTools)
         {
-            var (ostStatus, latestTag) = await OstMirrorStatusAsync(root, ct);
-            return new ModeState(mode, ostStatus, active, latestTag);
+            var (zipStatus, latestTag) = await ZipStatusAsync(def, root, forceRefresh, ct);
+            return new ModeState(mode, zipStatus, active, latestTag);
         }
 
         // SteamTools: each DLL has its own per-timestamp "st-…" release, so resolve the latest of each
@@ -212,30 +214,28 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
     }
 
     /// <summary>
-    /// OpenSteamTools status via the mendy-tools "ost-" mirror (real per-DLL hashes). Hash the on-disk
-    /// dwmapi.dll against the mirror: matches the LATEST ost- release (by published_at) → UpToDate;
-    /// matches an older ost- release (or files present but no match) → UpdateAvailable; absent → NotInstalled.
-    /// Returns the latest ost- tag for display.
+    /// BetterSteamTools status: dwmapi.dll absent → NotInstalled; the zip digest recorded at install equals
+    /// the latest release's zip digest → UpToDate; anything else (an older build, or files this app did not
+    /// place, so nothing is recorded) → UpdateAvailable. Returns the latest tag for display.
     /// </summary>
-    private async Task<(ModeStatus status, string? latestTag)> OstMirrorStatusAsync(string root, CancellationToken ct)
+    private async Task<(ModeStatus status, string? latestTag)> ZipStatusAsync(
+        ModeDefinition def, string root, bool forceRefresh, CancellationToken ct)
     {
-        string dwmapi = Path.Combine(root, "dwmapi.dll");
-        if (!File.Exists(dwmapi)) return (ModeStatus.NotInstalled, null);
+        if (!File.Exists(Path.Combine(root, "dwmapi.dll"))) return (ModeStatus.NotInstalled, null);
 
-        var releases = await FetchAllReleasesAsync(AppConfig.SteamToolsOwner, AppConfig.SteamToolsRepo, null, ct);
-        if (releases is null) return (ModeStatus.Unknown, null);
+        GithubRelease? release = await FetchReleaseAsync(def, forceRefresh, ct);
+        if (release is null) return (ModeStatus.Unknown, null);
 
-        var ost = releases.Where(r => r.TagName.StartsWith("ost-", StringComparison.OrdinalIgnoreCase))
-            .OrderByDescending(r => r.PublishedAt ?? DateTimeOffset.MinValue).ToList();
-        if (ost.Count == 0) return (ModeStatus.Unknown, null);
-
-        var latest = ost[0];
-        string dwmHash = AssetIntegrity.Sha256OfFile(dwmapi);
-
-        if (AssetDigest(latest, "dwmapi.dll") == dwmHash) return (ModeStatus.UpToDate, latest.TagName);
-        // Matches an older ost- release, or is present but unrecognized → an update exists.
-        return (ModeStatus.UpdateAvailable, latest.TagName);
+        string? wanted = AssetIntegrity.ParseDigest(FindZipAsset(def, release)?.Digest);
+        return (ZipInstallStatus(wanted, cache.OpenSteamToolsInstalledZipDigest), release.TagName);
     }
+
+    /// <summary>Pure half of <see cref="ZipStatusAsync"/>: current only when a published digest exists and
+    /// equals the recorded one. A release with no digest never reads as up to date.</summary>
+    internal static ModeStatus ZipInstallStatus(string? releaseZipDigest, string? installedZipDigest) =>
+        releaseZipDigest is not null && releaseZipDigest.Equals(installedZipDigest, StringComparison.OrdinalIgnoreCase)
+            ? ModeStatus.UpToDate
+            : ModeStatus.UpdateAvailable;
 
     // ── Install / switch ─────────────────────────────────────────────
 

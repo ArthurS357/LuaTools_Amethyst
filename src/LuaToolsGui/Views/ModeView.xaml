@@ -306,6 +306,23 @@
                                             Foreground="{StaticResource TextDimBrush}"
                                             Text="{Binding Description}"
                                             TextWrapping="Wrap" />
+                                        <!-- Third-party warning: telemetry + DonateKeys (BetterSteamTools card only). -->
+                                        <StackPanel
+                                            Margin="0,6,0,0"
+                                            Orientation="Horizontal"
+                                            Visibility="{Binding ShowPrivacyWarning, Converter={StaticResource BoolToVis}}">
+                                            <ui:SymbolIcon
+                                                VerticalAlignment="Top"
+                                                Foreground="{StaticResource WarningBrush}"
+                                                Symbol="Warning24" />
+                                            <TextBlock
+                                                MaxWidth="560"
+                                                Margin="6,0,0,0"
+                                                FontSize="12"
+                                                Foreground="{StaticResource WarningBrush}"
+                                                Text="{x:Static res:Strings.Mode_Warn_Telemetry}"
+                                                TextWrapping="Wrap" />
+                                        </StackPanel>
                                         <TextBlock
                                             Margin="0,6,0,0"
                                             FontSize="12.5"

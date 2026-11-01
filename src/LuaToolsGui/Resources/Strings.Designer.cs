@@ -234,6 +234,7 @@ public static class Strings
     public static string Mode_Active => Get(nameof(Mode_Active));
     public static string Mode_Recommended => Get(nameof(Mode_Recommended));
     public static string Mode_Badge_Upstream => Get(nameof(Mode_Badge_Upstream));
+    public static string Mode_Warn_Telemetry => Get(nameof(Mode_Warn_Telemetry));
     public static string Mode_Confirm_Body => Get(nameof(Mode_Confirm_Body));
     public static string Mode_Cancel => Get(nameof(Mode_Cancel));
     public static string Mode_CloseSteamContinue => Get(nameof(Mode_CloseSteamContinue));

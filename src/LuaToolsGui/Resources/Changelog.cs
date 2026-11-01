@@ -29,6 +29,16 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.7.12.5", "2026-11-01",
+            "Local test build: the Mode tab offers BetterSteamTools again, with a privacy warning, and the welcome screen installs only the Amethyst projects.",
+            [
+                "Mode tab: the card is called BetterSteamTools (and BetterSteamTools Nightly) again and downloads from madoiscool/BetterSteamTools. The download is still checked against that repository and its published sha256 before anything is written.",
+                "The card now shows a warning: original project (madoiscool), with telemetry and the DonateKeys system. Pick it only if you accept that.",
+                "Welcome screen: Apply recommended settings installs AmethystTool, and Install our famous plugin installs the Amethyst frontend. Neither ever downloads from madoiscool.",
+                "The BetterSteamTools card now reads as up to date when the installed zip matches the latest release, instead of comparing against a mirror of a different build.",
+                "No new dependency and no new network request.",
+            ]),
+
         new("1.7.12.4", "2026-11-01",
             "Local test build: save backups now cover games that keep their saves in Documents, Saved Games or AppData, not only in Steam's userdata.",
             [

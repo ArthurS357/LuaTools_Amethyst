@@ -170,10 +170,10 @@
   <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>带有若干巧妙补丁的 SteamTools——大量修复与改进。 通过 Google Drive / OneDrive 恢复原生 Steam 云存档！</value></data>
   <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>管理</value></data>
   <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>无法下载或启动 CloudRedirect。</value></data>
-  <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>从最新源码构建的 OpenSteamTool（OST）每夜版。包含最新修复，但可能不太稳定。</value></data>
+  <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>从最新源码构建的 BetterSteamTools（OST）每夜版。包含最新修复，但可能不太稳定。</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>实验性</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>通过 Google Drive / OneDrive / Cloudflare R2 等第三方存储服务，恢复原生 Steam 云存档支持。目前仅兼容 OpenSteamTool 每夜版。启用后别忘了点击“管理”进行配置，然后重启 Steam！</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>选择 OpenSteamTool 每夜版以使用 CloudRedirect。</value></data>
+  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>通过 Google Drive / OneDrive / Cloudflare R2 等第三方存储服务，恢复原生 Steam 云存档支持。目前仅兼容 BetterSteamTools 每夜版。启用后别忘了点击“管理”进行配置，然后重启 Steam！</value></data>
+  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>选择 BetterSteamTools 每夜版以使用 CloudRedirect。</value></data>
   <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>启用</value></data>
   <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>禁用</value></data>
   <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>已启用。</value></data>
@@ -187,7 +187,7 @@
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>登录以解锁添加游戏和修复。</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>已登录 ✓</value></data>
   <data name="Onboarding_Recommended_Title" xml:space="preserve"><value>应用推荐设置</value></data>
-  <data name="Onboarding_Recommended_Detail" xml:space="preserve"><value>模式：OpenSteamTool · 开启 FastFetch</value></data>
+  <data name="Onboarding_Recommended_Detail" xml:space="preserve"><value>模式：AmethystTool · 开启 FastFetch</value></data>
   <data name="Onboarding_Plugin_Title" xml:space="preserve"><value>安装我们著名的插件</value></data>
   <data name="Onboarding_Plugin_Detail" xml:space="preserve"><value>在 Steam 商店页面添加“Add via LuaTools”按钮。</value></data>
   <data name="Onboarding_Yes" xml:space="preserve"><value>好的</value></data>
