@@ -656,6 +656,8 @@ public static class Strings
 
     // ── Sign-in provider health check (1.7.9) ──
     public static string Auth_ProviderUnavailable => Get(nameof(Auth_ProviderUnavailable));
+    public static string Auth_SignInCancelled => Get(nameof(Auth_SignInCancelled));
+    public static string Auth_TryAgain => Get(nameof(Auth_TryAgain));
     public static string Auth_TryAnyway => Get(nameof(Auth_TryAnyway));
     public static string Auth_UseManualCode => Get(nameof(Auth_UseManualCode));
     public static string Auth_Cancel => Get(nameof(Auth_Cancel));

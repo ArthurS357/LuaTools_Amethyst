@@ -217,6 +217,7 @@
                             Text="{x:Static res:Strings.Settings_BotCode_Hint}" />
                         <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
                             <ui:TextBox
+                                x:Name="CodeBox"
                                 Width="120"
                                 CharacterCasing="Upper"
                                 MaxLength="6"

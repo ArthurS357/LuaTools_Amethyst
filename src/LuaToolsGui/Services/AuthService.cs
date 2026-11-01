@@ -14,6 +14,10 @@ namespace LuaToolsGui.Services;
 /// <summary>What the user picked when the sign-in provider did not answer its health check.</summary>
 public enum ProviderDownChoice { TryAnyway, UseManualCode, Cancel }
 
+/// <summary>What the user picked after the browser sign-in ended without a session (denied, or the window was
+/// closed and the wait timed out). <c>Dismiss</c> leaves the error where it was.</summary>
+public enum SignInCancelChoice { TryAgain, UseManualCode, Dismiss }
+
 public class AuthService
 {
     private static readonly string DefaultAuthFile = Path.Combine(
@@ -61,6 +65,13 @@ public class AuthService
     /// attached) skips the check entirely and signs in as before.
     /// </summary>
     public Func<Task<ProviderDownChoice>>? AskWhenProviderDown { get; set; }
+
+    /// <summary>
+    /// Set by the app: asked when the browser sign-in is denied or abandoned, so the way out (try again, or
+    /// the <c>/login</c> code) is put to the user instead of left as a passive error line. Null = the
+    /// exception propagates as before.
+    /// </summary>
+    public Func<Task<SignInCancelChoice>>? AskWhenSignInCancelled { get; set; }
 
     /// <summary>Set by the app: takes the user to the Discord <c>/login</c> code box.</summary>
     public Action? OpenManualCode { get; set; }
@@ -197,19 +208,33 @@ public class AuthService
             throw new AuthException(Resources.Strings.Auth_Err_CallbackPortBusy);
         }
 
-        OpenBrowser(authorizeUrl);
-
-        SupabaseSession session;
+        SupabaseSession? session = null;
+        SignInCancelledException? cancelled = null;
         try
         {
+            OpenBrowser(authorizeUrl);
             session = await WaitForCallbackAsync(listener, code => ExchangeCodeAsync(code, verifier, ct), ct);
+        }
+        catch (SignInCancelledException ex) when (AskWhenSignInCancelled is not null)
+        {
+            cancelled = ex; // asked below, once the listener has released its port
         }
         finally
         {
             listener.Stop();
         }
 
-        await ApplySessionAsync(session);
+        if (cancelled is not null)
+        {
+            switch (await AskWhenSignInCancelled!())
+            {
+                case SignInCancelChoice.TryAgain: await SignInAsync(ct); return;
+                case SignInCancelChoice.UseManualCode: OpenManualCode?.Invoke(); return;
+                default: throw cancelled;
+            }
+        }
+
+        await ApplySessionAsync(session!);
         AuthStateChanged?.Invoke();
     }
 
@@ -340,7 +365,7 @@ public class AuthService
                 // Browser sign-in can fail for reasons this app cannot see or fix — a provider outage, a
                 // redirect not allow-listed on the server. The Discord /login code path does not depend on
                 // any of that, so the message names it rather than leaving the user with a dead end.
-                throw new AuthException(Resources.Strings.Auth_Err_SignInTimedOut);
+                throw new SignInCancelledException(Resources.Strings.Auth_Err_SignInTimedOut);
             }
 
             var req = ctx.Request;
@@ -378,7 +403,7 @@ public class AuthService
                 // After the grace the first error ends the attempt: an error cannot be authenticated without
                 // a state of ours. Cost is one retry click, no takeover.
                 await WriteResultPageAsync(ctx, false, error, timeout.Token);
-                throw new AuthException(error ?? Resources.Strings.Auth_Err_SignInDenied);
+                throw new SignInCancelledException(error ?? Resources.Strings.Auth_Err_SignInDenied);
             }
 
             try
@@ -627,6 +652,10 @@ public class AuthService
 }
 
 public class AuthException(string message) : Exception(message);
+
+/// <summary>The browser sign-in ended without a session because the user denied it or never finished it
+/// (timeout). Not a server or exchange failure; those stay plain <see cref="AuthException"/>.</summary>
+public sealed class SignInCancelledException(string message) : AuthException(message);
 
 /// <summary>The server proved the refresh token dead (400 with a known GoTrue code): the only refresh
 /// failure that ends a session.</summary>

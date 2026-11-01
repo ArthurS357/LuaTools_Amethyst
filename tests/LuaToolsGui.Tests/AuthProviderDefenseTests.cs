@@ -267,6 +267,85 @@ public sealed class AuthProviderDefenseTests : IDisposable
         File.ReadAllBytes(_authFile).Should().Equal(before, "nothing proved the refresh token dead");
     }
 
+    // ── Browser sign-in denied or abandoned ──────────────────────────
+
+    // The first browser launch "ends" the way a denial or a timeout does; a second one (Try again) stops the
+    // flow right where it would hand off to the browser again.
+    private (AuthService Auth, List<string> Browser, List<int> Manual, List<int> Asked) Cancelled(
+        SignInCancelChoice? choice, Exception? firstFailure = null)
+    {
+        var browser = new List<string>();
+        var manual = new List<int>();
+        var asked = new List<int>();
+        var auth = new AuthService(new FakeProvider(), _authFile)
+        {
+            OpenManualCode = () => manual.Add(1),
+            OpenBrowser = url =>
+            {
+                browser.Add(url);
+                throw browser.Count == 1 ? firstFailure ?? new SignInCancelledException("denied") : new BrowserOpened();
+            },
+        };
+        if (choice is { } c)
+            auth.AskWhenSignInCancelled = () => { asked.Add(1); return Task.FromResult(c); };
+        return (auth, browser, manual, asked);
+    }
+
+    [Fact]
+    public async Task Cancelled_sign_in_with_Use_manual_code_opens_the_code_box_and_raises_no_error()
+    {
+        var (auth, browser, manual, asked) = Cancelled(SignInCancelChoice.UseManualCode);
+
+        await auth.SignInAsync();
+
+        asked.Should().HaveCount(1);
+        manual.Should().HaveCount(1);
+        browser.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public async Task Cancelled_sign_in_with_Try_again_starts_the_browser_flow_again()
+    {
+        var (auth, browser, manual, asked) = Cancelled(SignInCancelChoice.TryAgain);
+
+        await auth.Invoking(a => a.SignInAsync()).Should().ThrowAsync<BrowserOpened>("the second launch is the retry");
+
+        asked.Should().HaveCount(1);
+        browser.Should().HaveCount(2);
+        manual.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Dismissing_the_cancelled_dialog_keeps_the_error()
+    {
+        var (auth, _, manual, asked) = Cancelled(SignInCancelChoice.Dismiss);
+
+        await auth.Invoking(a => a.SignInAsync()).Should().ThrowAsync<SignInCancelledException>();
+
+        asked.Should().HaveCount(1);
+        manual.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Without_a_dialog_attached_a_cancelled_sign_in_propagates_as_before()
+    {
+        var (auth, _, manual, _) = Cancelled(choice: null);
+
+        await auth.Invoking(a => a.SignInAsync()).Should().ThrowAsync<SignInCancelledException>();
+
+        manual.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task A_failure_that_is_not_a_cancellation_does_not_ask()
+    {
+        var (auth, _, _, asked) = Cancelled(SignInCancelChoice.TryAgain, firstFailure: new AuthException("exchange failed"));
+
+        await auth.Invoking(a => a.SignInAsync()).Should().ThrowAsync<AuthException>().WithMessage("exchange failed");
+
+        asked.Should().BeEmpty("only a denied or abandoned sign-in gets the retry-or-code question");
+    }
+
     private (AuthService Auth, List<int> Asked, List<string> Browser, List<int> Manual) Gate(
         HttpStatusCode health, ProviderDownChoice choice)
     {

@@ -992,7 +992,30 @@ public partial class App : Application
         // Provider down before the browser opens: offer the way around the five-minute timeout. Every sign-in
         // entry point (nav pane, Settings, onboarding) goes through AuthService.SignInAsync, so this covers all.
         var auth = _host.Services.GetRequiredService<AuthService>();
-        auth.OpenManualCode = () => Dispatcher.Invoke(window.NavigateToSettings);
+        var onboardingVm = _host.Services.GetRequiredService<OnboardingViewModel>();
+        auth.OpenManualCode = () => Dispatcher.Invoke(() =>
+        {
+            onboardingVm.IsOpen = false; // its overlay covers the whole window, Settings would be hidden behind it
+            window.NavigateToSettings();
+            settingsVm.RequestCodeFocus();
+        });
+        auth.AskWhenSignInCancelled = async () =>
+        {
+            var box = new Wpf.Ui.Controls.MessageBox
+            {
+                Title = LuaToolsGui.Resources.Strings.App_DisplayName,
+                Content = LuaToolsGui.Resources.Strings.Auth_SignInCancelled,
+                PrimaryButtonText = LuaToolsGui.Resources.Strings.Auth_UseManualCode,
+                SecondaryButtonText = LuaToolsGui.Resources.Strings.Auth_TryAgain,
+                CloseButtonText = LuaToolsGui.Resources.Strings.Auth_Cancel,
+            };
+            return await box.ShowDialogAsync() switch
+            {
+                Wpf.Ui.Controls.MessageBoxResult.Primary => SignInCancelChoice.UseManualCode,
+                Wpf.Ui.Controls.MessageBoxResult.Secondary => SignInCancelChoice.TryAgain,
+                _ => SignInCancelChoice.Dismiss,
+            };
+        };
         auth.AskWhenProviderDown = async () =>
         {
             var box = new Wpf.Ui.Controls.MessageBox

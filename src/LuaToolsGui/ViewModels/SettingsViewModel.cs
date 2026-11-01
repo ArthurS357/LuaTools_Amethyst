@@ -380,6 +380,26 @@ public partial class SettingsViewModel : ObservableObject
 
     public bool CanRedeemCode => !IsRedeemingCode;
 
+    /// <summary>Raised when something sent the user here for the code box (a cancelled browser sign-in).
+    /// The view may not exist yet, so the request is also kept until the view takes it.</summary>
+    public event Action? FocusCodeRequested;
+
+    private bool _focusCodePending;
+
+    public void RequestCodeFocus()
+    {
+        _focusCodePending = true;
+        FocusCodeRequested?.Invoke();
+    }
+
+    /// <summary>True once per request; the view calls it when it is ready to move focus.</summary>
+    public bool TakeCodeFocusRequest()
+    {
+        bool pending = _focusCodePending;
+        _focusCodePending = false;
+        return pending;
+    }
+
     /// <summary>Redeem the Discord bot code for a session (no browser needed).</summary>
     [RelayCommand]
     private async Task SignInWithCodeAsync()

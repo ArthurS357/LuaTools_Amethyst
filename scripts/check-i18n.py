@@ -54,6 +54,8 @@ PENDING_TRANSLATION: frozenset[str] = frozenset({
     "CloudRedirect_Err_RepoUnavailable",
     # 1.7.9: sign-in provider health-check dialog and the manual-code fallback (pt-BR only).
     "Auth_ProviderUnavailable",
+    "Auth_SignInCancelled",
+    "Auth_TryAgain",
     "Auth_TryAnyway",
     "Auth_UseManualCode",
     "Auth_Cancel",
