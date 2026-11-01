@@ -162,6 +162,9 @@ Force it to close? Anything Steam has not saved yet may be lost. Choose No to le
   <data name="Saves_Toast_Failed" xml:space="preserve"><value>The operation failed. See the log for details.</value></data>
   <data name="Saves_Toast_NoSpace" xml:space="preserve"><value>Not enough free disk space for the backup ({0} needed, margin included). Nothing was written.</value></data>
   <data name="Saves_Confirm_Restore" xml:space="preserve"><value>Restore {0}? This game's current saves are overwritten; a copy of them is kept first.</value></data>
+  <data name="Saves_Confirm_SteamOpen" xml:space="preserve"><value>Steam is open. To restore safely (and keep Steam Cloud from overwriting the files), Steam must be closed.</value></data>
+  <data name="Saves_CloseSteamContinue" xml:space="preserve"><value>Close Steam and continue</value></data>
+  <data name="Saves_Toast_SteamStillRunning" xml:space="preserve"><value>Steam did not close. Close it manually and try again. Nothing was restored.</value></data>
   <data name="Saves_Confirm_Delete" xml:space="preserve"><value>Delete {0}? This cannot be undone.</value></data>
   <data name="About_Changelog_Title" xml:space="preserve"><value>What's new</value></data>
   <data name="About_Changelog_Show" xml:space="preserve"><value>Show changelog</value></data>

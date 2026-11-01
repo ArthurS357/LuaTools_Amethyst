@@ -204,6 +204,9 @@ PENDING_TRANSLATION: frozenset[str] = frozenset({
     "Saves_Toast_Failed",
     "Saves_Toast_NoSpace",
     "Saves_Confirm_Restore",
+    "Saves_Confirm_SteamOpen",
+    "Saves_CloseSteamContinue",
+    "Saves_Toast_SteamStillRunning",
     "Saves_Confirm_Delete",
     # In-app changelog on the About page, added in 1.5.0. The entry TEXT is not localised at all — it
     # lives in Resources/Changelog.cs, like release notes generally do; only the chrome is a resource.

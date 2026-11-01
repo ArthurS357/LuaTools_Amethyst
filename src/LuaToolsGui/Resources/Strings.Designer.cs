@@ -121,7 +121,10 @@ public static class Strings
     public static string Saves_Toast_Failed => Get(nameof(Saves_Toast_Failed));
     public static string Saves_Toast_NoSpace => Get(nameof(Saves_Toast_NoSpace));
     public static string Saves_Confirm_Restore => Get(nameof(Saves_Confirm_Restore));
-    public static string Saves_Confirm_Delete => Get(nameof(Saves_Confirm_Delete));
+    public static string Saves_Confirm_SteamOpen => Get(nameof(Saves_Confirm_SteamOpen));
+    public static string Saves_CloseSteamContinue => Get(nameof(Saves_CloseSteamContinue));
+    public static string Saves_Toast_SteamStillRunning => Get(nameof(Saves_Toast_SteamStillRunning));
+    public static string Saves_Confirm_Delete =>Get(nameof(Saves_Confirm_Delete));
     public static string About_Changelog_Title => Get(nameof(About_Changelog_Title));
     public static string About_Changelog_Show => Get(nameof(About_Changelog_Show));
     public static string About_Changelog_Hide => Get(nameof(About_Changelog_Hide));

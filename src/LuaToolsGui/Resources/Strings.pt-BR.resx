@@ -663,5 +663,8 @@ Isso exclui os arquivos .lua de Steam\config\stplug-in. Reinicie o Steam depois 
   <data name="Saves_Toast_Failed" xml:space="preserve"><value>A operação falhou. Veja o log para detalhes.</value></data>
   <data name="Saves_Toast_NoSpace" xml:space="preserve"><value>Sem espaço livre em disco para o backup ({0} necessários, com margem). Nada foi gravado.</value></data>
   <data name="Saves_Confirm_Restore" xml:space="preserve"><value>Restaurar {0}? Os saves atuais deste jogo serão sobrescritos; uma cópia deles é guardada antes.</value></data>
+  <data name="Saves_Confirm_SteamOpen" xml:space="preserve"><value>O Steam está aberto. Para restaurar com segurança (e evitar que o Steam Cloud sobrescreva os arquivos), o Steam precisa ser fechado.</value></data>
+  <data name="Saves_CloseSteamContinue" xml:space="preserve"><value>Fechar Steam e continuar</value></data>
+  <data name="Saves_Toast_SteamStillRunning" xml:space="preserve"><value>O Steam não fechou. Feche-o manualmente e tente de novo. Nada foi restaurado.</value></data>
   <data name="Saves_Confirm_Delete" xml:space="preserve"><value>Excluir {0}? Isso não pode ser desfeito.</value></data>
 </root>

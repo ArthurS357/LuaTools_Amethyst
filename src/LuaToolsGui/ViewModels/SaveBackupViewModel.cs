@@ -18,8 +18,13 @@ public sealed class SaveBackupRow(SaveBackupEntry entry)
 
 /// <summary>Dialog behind the Manage page's "Save backup…" action: create, restore and delete the zips of
 /// one game's <c>userdata</c> folder.</summary>
-public sealed partial class SaveBackupViewModel(SaveBackupService backups, ToastService toast) : ObservableObject
+public sealed partial class SaveBackupViewModel(SaveBackupService backups, ToastService toast, SteamService steam) : ObservableObject
 {
+    // Seams for the parts that touch processes and a modal dialog.
+    internal Func<bool> IsSteamRunning { get; set; } = SteamService.IsSteamRunning;
+    internal Func<SteamStopOutcome> StopSteam { get; set; } = () => steam.StopSteamGraceful(allowKill: false);
+    internal Func<string, string, Task<bool>> Confirm { get; set; } = ConfirmAsync;
+
     public long AppId { get; private set; }
     public string GameName { get; private set; } = "";
 
@@ -68,12 +73,13 @@ public sealed partial class SaveBackupViewModel(SaveBackupService backups, Toast
     private async Task RestoreAsync(SaveBackupRow row)
     {
         if (IsBusy) return;
-        if (!await ConfirmAsync(string.Format(CultureInfo.CurrentCulture,
+        if (!await Confirm(string.Format(CultureInfo.CurrentCulture,
                 Resources.Strings.Saves_Confirm_Restore, row.Title), Resources.Strings.Saves_Restore)) return;
 
         IsBusy = true;
         try
         {
+            if (!await EnsureSteamClosedAsync()) return;
             var r = await backups.RestoreBackupAsync(row.Entry.FullPath, AppId);
             Report(r, string.Format(CultureInfo.CurrentCulture, Resources.Strings.Saves_Toast_Restored, r.Files));
             Reload(); // the safety copy taken before the restore is a new entry
@@ -81,11 +87,23 @@ public sealed partial class SaveBackupViewModel(SaveBackupService backups, Toast
         finally { IsBusy = false; }
     }
 
+    /// <summary>A running Steam syncs Cloud over the files a restore just wrote. Offers to close it (no kill:
+    /// a clean exit only); false when the user declines or Steam refuses to go.</summary>
+    private async Task<bool> EnsureSteamClosedAsync()
+    {
+        if (!IsSteamRunning()) return true;
+        if (!await Confirm(Resources.Strings.Saves_Confirm_SteamOpen, Resources.Strings.Saves_CloseSteamContinue)) return false;
+        if (await Task.Run(StopSteam) != SteamStopOutcome.StillRunning) return true;
+
+        toast.Show(Resources.Strings.Saves_Title, Resources.Strings.Saves_Toast_SteamStillRunning, error: true);
+        return false;
+    }
+
     [RelayCommand]
     private async Task DeleteAsync(SaveBackupRow row)
     {
         if (IsBusy) return;
-        if (!await ConfirmAsync(string.Format(CultureInfo.CurrentCulture,
+        if (!await Confirm(string.Format(CultureInfo.CurrentCulture,
                 Resources.Strings.Saves_Confirm_Delete, row.Title), Resources.Strings.Saves_Delete)) return;
 
         if (backups.DeleteBackup(row.Entry.FullPath, AppId))
