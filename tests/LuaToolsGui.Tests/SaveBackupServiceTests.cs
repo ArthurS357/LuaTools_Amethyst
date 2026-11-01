@@ -173,6 +173,35 @@ public sealed class SaveBackupServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task Restore_without_room_for_the_whole_archive_touches_nothing()
+    {
+        string live = Save("111", App, "slot1.sav", "current");
+        string zip = CraftZip(App, ("111/730/slot1.sav", "restored"), ("111/730/slot2.sav", "restored"));
+        var full = new SaveBackupService(() => _steam, _backups, freeBytes: _ => 1);
+
+        var r = await full.RestoreBackupAsync(zip, App);
+
+        r.Outcome.Should().Be(SaveBackupOutcome.Failed);
+        File.ReadAllText(live).Should().Be("current");
+        File.Exists(Path.Combine(Path.GetDirectoryName(live)!, "slot2.sav")).Should().BeFalse();
+        full.ListBackups(App).Should().ContainSingle("no safety copy is taken for a restore that will not run");
+    }
+
+    [Fact]
+    public async Task Has_saves_or_backups_covers_a_restore_after_the_folder_was_deleted()
+    {
+        _svc.HasSavesOrBackups(App).Should().BeFalse();
+
+        string live = Save("111", App, "slot1.sav", "a");
+        _svc.HasSavesOrBackups(App).Should().BeTrue();
+
+        (await _svc.BackupSavesAsync(App)).Outcome.Should().Be(SaveBackupOutcome.Ok);
+        Directory.Delete(Path.GetDirectoryName(live)!, recursive: true);
+        _svc.HasSavesOrBackups(App).Should().BeTrue();
+        _svc.HasSavesOrBackups(440).Should().BeFalse();
+    }
+
+    [Fact]
     public async Task List_is_per_game_newest_first_and_delete_removes_the_file()
     {
         Save("111", 1, "a.sav", "a");
@@ -212,6 +241,14 @@ public class StartupGuardTests
     public async Task A_running_steam_follows_the_users_choice(StartupGuardChoice choice, StartupGuardOutcome expected)
     {
         (await StartupGuard.RunAsync(() => true, () => Task.FromResult(choice))).Should().Be(expected);
+    }
+
+    [Fact]
+    public async Task The_users_choice_is_logged()
+    {
+        await StartupGuard.RunAsync(() => true, () => Task.FromResult(StartupGuardChoice.ContinueAnyway));
+
+        TestLogRedirect.ReadLog().Should().Contain("startup guard: Steam already running, user chose ContinueAnyway");
     }
 
     [Fact]

@@ -440,9 +440,15 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
     /// <summary>Set by App — opens the save-backup dialog for a game (appid, name).</summary>
     public Action<long, string>? OpenSaveBackup { get; set; }
 
+    /// <summary>Set by App — true when the game has a <c>userdata</c> folder or a backup, so the action never
+    /// opens an empty dialog.</summary>
+    public Func<long, bool>? HasSaveData { get; set; }
+
     /// <summary>Back up / restore this game's Steam <c>userdata</c> saves.</summary>
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanSaveBackup))]
     private void SaveBackup(LuaTileViewModel tile) => OpenSaveBackup?.Invoke(tile.AppId, tile.Name);
+
+    private bool CanSaveBackup(LuaTileViewModel? tile) => tile is not null && HasSaveData?.Invoke(tile.AppId) == true;
 
     [RelayCommand]
     private static void OpenStorePage(LuaTileViewModel tile) =>

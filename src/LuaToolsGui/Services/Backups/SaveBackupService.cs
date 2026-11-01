@@ -56,15 +56,29 @@ public sealed partial class SaveBackupService
 
     private readonly Func<string?> _steamRoot;
     private readonly string _backupsDir;
+    private readonly Func<string, long> _freeBytes;
 
     public SaveBackupService(SteamService steam)
         : this(() => steam.EffectivePath, Path.Combine(SettingsService.DefaultDirectory, "SaveBackups")) { }
 
-    internal SaveBackupService(Func<string?> steamRoot, string backupsDir)
+    internal SaveBackupService(Func<string?> steamRoot, string backupsDir, Func<string, long>? freeBytes = null)
     {
         _steamRoot = steamRoot;
         _backupsDir = Path.GetFullPath(backupsDir);
+        _freeBytes = freeBytes ?? FreeBytesOnDrive;
     }
+
+    /// <summary>Free space on the drive holding <paramref name="dir"/>. A root DriveInfo cannot read (UNC share)
+    /// reports unlimited: the check is a guard against the common case, not a guarantee.</summary>
+    private static long FreeBytesOnDrive(string dir)
+    {
+        try { return new DriveInfo(Path.GetPathRoot(Path.GetFullPath(dir))!).AvailableFreeSpace; }
+        catch (Exception ex) when (ex is ArgumentException or IOException or UnauthorizedAccessException) { return long.MaxValue; }
+    }
+
+    /// <summary>True when the dialog has something to act on: a <c>userdata</c> folder to back up, or a backup
+    /// to restore (the folder may be gone — that is when a restore matters most).</summary>
+    public bool HasSavesOrBackups(long appId) => FindSaveDirs(appId).Count > 0 || ListBackups(appId).Count > 0;
 
     private string? UserdataDir => _steamRoot() is { } root ? Path.Combine(root, "userdata") : null;
 
@@ -166,16 +180,31 @@ public sealed partial class SaveBackupService
             if (appId <= 0 || !IsOurBackup(zipPath, appId)) return new SaveBackupResult(SaveBackupOutcome.Refused);
             if (UserdataDir is not { } userdata) return new SaveBackupResult(SaveBackupOutcome.SteamNotFound);
 
+            string? safetyCopy = null;
             try
             {
                 using var zip = ZipFile.OpenRead(zipPath);
                 var plan = Validate(zip, userdata, appId);
                 if (plan is null) return new SaveBackupResult(SaveBackupOutcome.Refused);
 
-                // Only worth a safety copy when there is something to lose.
-                if (FindSaveDirs(appId).Count > 0
-                    && (await BackupSavesAsync(appId, ct)).Outcome is not SaveBackupOutcome.Ok)
+                // Each file is written atomically, but a disk that fills up halfway would still leave half the
+                // saves restored and half not. Refuse up front instead; nothing has been touched yet.
+                // ponytail: summed size over-counts files that get replaced; per-file accounting if it ever bites.
+                long need = plan.Sum(static p => p.Entry.Length);
+                long free = _freeBytes(userdata);
+                if (free < need)
+                {
+                    AppLog.Log($"save backup: restore of {Path.GetFileName(zipPath)} refused: needs {ByteSize.Format(need)}, {ByteSize.Format(free)} free");
                     return new SaveBackupResult(SaveBackupOutcome.Failed);
+                }
+
+                // Only worth a safety copy when there is something to lose.
+                if (FindSaveDirs(appId).Count > 0)
+                {
+                    var safety = await BackupSavesAsync(appId, ct);
+                    if (safety.Outcome is not SaveBackupOutcome.Ok) return new SaveBackupResult(SaveBackupOutcome.Failed);
+                    safetyCopy = safety.Path;
+                }
 
                 long bytes = 0;
                 foreach (var (entry, dest) in plan)
@@ -193,7 +222,8 @@ public sealed partial class SaveBackupService
             catch (OperationCanceledException) { throw; }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidDataException)
             {
-                AppLog.Log($"save backup: restore of {Path.GetFileName(zipPath)} failed: {LogSanitizer.Sanitize(ex)}");
+                AppLog.Log($"save backup: restore of {Path.GetFileName(zipPath)} failed: {LogSanitizer.Sanitize(ex)}; " +
+                           $"saves before the restore: {(safetyCopy is null ? "none existed" : Path.GetFileName(safetyCopy))}");
                 return new SaveBackupResult(SaveBackupOutcome.Failed);
             }
         }, ct);

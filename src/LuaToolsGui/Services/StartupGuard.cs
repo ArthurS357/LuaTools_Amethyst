@@ -31,11 +31,14 @@ internal static class StartupGuard
 
         if (!isSteamRunning()) return StartupGuardOutcome.SteamNotRunning;
 
-        return await ask() switch
+        var outcome = await ask() switch
         {
             StartupGuardChoice.Restart => StartupGuardOutcome.Restart,
             StartupGuardChoice.ContinueAnyway => StartupGuardOutcome.ContinueAnyway,
             _ => StartupGuardOutcome.Exit,
         };
+        // "The hook did not attach" reports start here: ContinueAnyway is the user opting out of it.
+        AppLog.Log($"startup guard: Steam already running, user chose {outcome}");
+        return outcome;
     }
 }
