@@ -23,12 +23,14 @@ namespace LuaToolsGui.Themes;
 /// </para>
 ///
 /// <para>
-/// <b>The overlay.</b> The shell is SurfaceBase at <see cref="ShellAlpha"/> (80%) over the backdrop. Dark
-/// Acrylic measured #929292 over a white window and #989800 over yellow (luminance 0.287 / 0.291), so the
-/// contrast guarantee is computed against <see cref="WorstCaseBackdropGrey"/> = #989898, which covers both.
-/// Against that, 50% leaves accent text at 2.8:1 and 70% at 4.4:1; 80% is the lowest step that keeps every
-/// shell text token (nav labels, TextMuted, TextDim footer, Danger, accent) at AA in all three palettes
-/// (<c>GlassmorphismTests</c>). Over a dark desktop the blur still shows through the remaining 20%.
+/// <b>The overlay.</b> The shell is SurfaceBase at <see cref="ShellAlpha"/> (65%, 1.7.12.10) over the backdrop.
+/// Dark Acrylic measured #929292 over a white window and #989800 over yellow (luminance 0.287 / 0.291), so the
+/// worst-case backdrop is <see cref="WorstCaseBackdropGrey"/> = #989898, which covers both. Against that, 50%
+/// leaves accent text at 2.8:1, 70% at 4.4:1 and 80% is the lowest step that is AA for every shell text token
+/// in all three palettes. 80% shipped in 1.7.12.9 and the effect was real (the shell colour followed the
+/// desktop behind the window: #2B2627 over white, #191415 over black) but read as a solid window, so 1.7.12.10
+/// trades contrast for looks on purpose: 65% keeps the texts readable (<see cref="MinShellTextContrast"/>) but
+/// no longer guarantees AA over a bright desktop. Over a dark desktop it stays AA (<c>GlassmorphismTests</c>).
 /// </para>
 /// </summary>
 public static class GlassPolicy
@@ -39,8 +41,17 @@ public static class GlassPolicy
     /// <summary>The shell fill otherwise: the solid window colour, exactly as before the glass existed.</summary>
     public const string SolidShellBrushKey = "SurfaceBaseBrush";
 
-    /// <summary>Alpha of SurfaceBase over the Acrylic backdrop. 0xCC = 80%.</summary>
-    public const byte ShellAlpha = 0xCC;
+    /// <summary>Alpha of SurfaceBase over the Acrylic backdrop. 0xA6 = 65%.</summary>
+    public const byte ShellAlpha = 0xA6;
+
+    /// <summary>
+    /// Floor for shell text contrast over <see cref="WorstCaseBackdropGrey"/>. Below AA (4.5:1) on purpose,
+    /// see the overlay note above; it is the large-text / UI-component level, so nothing becomes unreadable.
+    /// </summary>
+    public const double MinShellTextContrast = 3.0;
+
+    /// <summary>A typical dark desktop under dark Acrylic (measured #363636 over black), where AA still holds.</summary>
+    public const byte DarkDesktopBackdropGrey = 0x36;
 
     /// <summary>
     /// The backdrop the contrast guarantee is computed against: dark Acrylic over the brightest desktop.

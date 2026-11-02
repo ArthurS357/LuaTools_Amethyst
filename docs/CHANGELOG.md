@@ -1,9 +1,17 @@
 # Changelog
 
-## Nao lancado (build local 1.7.12.9)
+## Nao lancado (build local 1.7.12.10)
 
 Auto-update so pelo GitHub com SHA-256 fixado, backup de saves fora da Steam, badge "Instalado", app inteiro traduzido e
-build padronizado. Junta as builds locais 1.7.12.1 a 1.7.12.9, ainda em teste (sem release publicada).
+build padronizado. Junta as builds locais 1.7.12.1 a 1.7.12.10, ainda em teste (sem release publicada).
+
+### 1.7.12.10 — shell do vidro a 65%
+
+- **Shell de 80% (`0xCC`) para 65% (`0xA6`).** Medido na 1.7.12.9: o Acrylic funcionava (cor do shell seguia o fundo:
+  `#2B2627` sobre branco, `#2C270A` sobre amarelo, `#191415` sobre preto; paginas constantes em `#231A1C`), mas a tinta
+  de 80% o deixava com cara de janela solida. Troca deliberada de contraste por visual: o texto do shell mantem 3:1 sobre
+  o pior fundo (`#989898`, desktop claro) e AA (4,5:1) sobre desktop escuro (`#363636`). `GlassmorphismTests` reflete os
+  dois patamares; o AA sobre desktop claro deixou de ser garantido.
 
 ### 1.7.12.9 — vidro com Acrylic
 

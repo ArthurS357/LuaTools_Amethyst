@@ -40,7 +40,7 @@
     Filled accent buttons pair white text with AccentFill #7C3AED (5.7:1) — NOT with #8B5CF6,
     which only reaches 4.2:1 against white and would fail AA.
     Glass effect: only the shell (title bar, nav rail) goes translucent — GlassShellBrush, the window
-    colour at 80% over Acrylic. Every shell text token stays AA over a #989898 backdrop (dark Acrylic
+    colour at 65% over Acrylic. Shell text stays >= 3:1 over a #989898 backdrop, AA over a dark desktop (dark Acrylic
     measures #929292 over white); pages keep their opaque fill, so the ratios above are unchanged
     (Themes/GlassPolicy.cs).
 -->
@@ -176,7 +176,7 @@
     <Color x:Key="ScrimSoftColor">#8C0E0B14</Color>
     <Color x:Key="ScrimLightColor">#730E0B14</Color>
     <Color x:Key="ScrimPanelColor">#CC17122A</Color>
-    <Color x:Key="GlassShellColor">#CC0E0B14</Color>  <!-- window colour @ 80%: the glass shell (GlassPolicy.ShellAlpha) -->
+    <Color x:Key="GlassShellColor">#A60E0B14</Color>  <!-- window colour @ 65%: the glass shell (GlassPolicy.ShellAlpha) -->
     <Color x:Key="CardBackgroundDisabledColor">#0BEDE9FE</Color>
 
     <!-- Status ramp. Deliberately kept on their own hues: colour-coding that means
@@ -412,10 +412,10 @@
 
     <!-- ── Glass shell ──────────────────────────────────────────────────────────── -->
     <!-- Title bar + nav rail fill while the glass effect is on (Settings → General). The window colour at
-         80% over the Windows 11 Acrylic backdrop: the shell keeps the palette hue and lets the blur
-         through, and every shell text token stays AA over a #989898 backdrop (dark Acrylic measures #929292
-         over a white window). Pages never sit on this: WPF-UI draws the page area as its own opaque
-         NavigationViewContentBackground. Why Acrylic, why 80%: Themes/GlassPolicy.cs.
+         65% over the Windows 11 Acrylic backdrop: the shell keeps the palette hue and lets the blur
+         through; shell text stays >= 3:1 over a #989898 backdrop and AA over a dark desktop (dark Acrylic
+         measures #929292 over a white window). Pages never sit on this: WPF-UI draws the page area as its own opaque
+         NavigationViewContentBackground. Why Acrylic, why 65%: Themes/GlassPolicy.cs.
          Declared through {DynamicResource} like every other brush here, so it stays unfrozen and the
          accent switch can repaint it (AccentPalette.SurfaceColors). -->
     <SolidColorBrush x:Key="GlassShellBrush" Color="{DynamicResource GlassShellColor}" />

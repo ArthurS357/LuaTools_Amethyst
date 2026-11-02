@@ -29,7 +29,7 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
-        new("1.7.12.9", "2026-11-02",
+        new("1.7.12.10", "2026-11-02",
             "Save backups for saves outside Steam, an Installed badge, a self-update that only trusts GitHub and checks the file's SHA-256, and the whole app translated.",
             [
                 "App update: the new version is downloaded only from this project's GitHub releases, never through a mirror, and its SHA-256 must match the digest GitHub publishes for that file. Any mismatch, missing digest or unreachable GitHub refuses the update and leaves the current version in place. Where github.com is blocked, update by hand from the releases page (About).",
@@ -38,7 +38,7 @@ public static class Changelog
                 "Manage: a green Installed badge on games Steam has fully on disk, and the new default sort Installed first.",
                 "CloudRedirect was removed: its project no longer exists and it is outside this fork's privacy and trust policy. The app no longer downloads, runs, detects or offers it. If an older build left cloud_redirect.dll next to steam.exe, it stays there untouched; delete it by hand if you do not want it.",
                 "Performance: game covers are decoded at the size they are shown (Downloads, Fixes), the 341k-name game list and the cached Steam details are read as a stream instead of one huge string, and the store-page script is no longer rebuilt every second.",
-                "Glass effect (Settings → General): on Windows 11 the title bar and side menu turn into frosted glass over a blurred Acrylic backdrop, while pages stay solid so text keeps its contrast. On by default; it uses more GPU, so turn it off on slower PCs. Windows 10 and high contrast keep the solid window.",
+                "Glass effect (Settings → General): on Windows 11 the title bar and side menu turn into frosted glass over a blurred Acrylic backdrop (the shell is 65% opaque so the blur shows), while pages stay solid so text keeps its contrast. On by default; it uses more GPU, so turn it off on slower PCs. Windows 10 and high contrast keep the solid window.",
                 "Mode tab: the card is BetterSteamTools again (madoiscool/BetterSteamTools), with a warning about its telemetry and the DonateKeys system. The welcome screen installs only AmethystTool and the Amethyst frontend.",
                 "Settings → Maintenance: a backup less than 5 minutes old is no longer deleted (an install may still be writing it), a refused batch now says that nothing was deleted and names the item, and the Mode card stops showing a backup folder that was already deleted.",
                 "Translations: the 273 strings that were still English-only are now translated in all 29 languages (AI-assisted, awaiting review by native speakers).",

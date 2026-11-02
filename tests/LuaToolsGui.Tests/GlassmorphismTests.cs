@@ -182,24 +182,35 @@ public class GlassmorphismTests : IDisposable
 
     [Theory]
     [MemberData(nameof(EveryPalette))]
-    public void Shell_text_stays_AA_on_glass_over_the_worst_case_backdrop(string id)
+    public void Shell_text_stays_readable_on_glass_over_the_worst_case_backdrop_and_AA_over_a_dark_desktop(string id)
     {
+        // 1.7.12.10 priority call: the shell is 65% so the blur is visible (80% read as a solid window). That
+        // gives up the AA guarantee over a bright desktop, so the strict 4.5:1 is checked over a dark desktop
+        // (#363636, dark Acrylic over black) and only the 3:1 floor over the worst case (#989898).
         var p = AccentPalette.FromId(id);
         var n = p.Neutrals;
         var surfaces = p.SurfaceColors(new DictionaryColors(Palette));
-        byte g = GlassPolicy.WorstCaseBackdropGrey;
-        var shell = Over(surfaces[GlassPolicy.GlassShellBrushKey], Color.FromRgb(g, g, g));
 
         // On the bare shell: nav labels, the footer's version/"signed in as" line (TextDim), the sign-in
         // wait text (TextMuted), the sign-in error (Danger), accent text.
-        foreach (string key in new[] { n.TextPrimaryKey, n.TextSecondaryKey, n.TextMutedKey, n.TextDimKey,
-                                       "Danger400Color", p.SoftKey })
-            Contrast(Get(key), shell).Should().BeGreaterThanOrEqualTo(4.5, $"'{key}' on the glass shell ({id})");
-
+        var bare = new[] { n.TextPrimaryKey, n.TextSecondaryKey, n.TextMutedKey, n.TextDimKey, "Danger400Color", p.SoftKey };
         // Nav labels also sit on the hover/selected wash, the lightest fill in the rail.
-        var hovered = Over(surfaces["SurfaceElevatedBrush"], shell);
-        foreach (string key in new[] { n.TextPrimaryKey, n.TextSecondaryKey })
-            Contrast(Get(key), hovered).Should().BeGreaterThanOrEqualTo(4.5, $"'{key}' on a hovered nav item ({id})");
+        var nav = new[] { n.TextPrimaryKey, n.TextSecondaryKey };
+
+        foreach ((byte g, double min, string where) in new[]
+        {
+            (GlassPolicy.WorstCaseBackdropGrey, GlassPolicy.MinShellTextContrast, "worst-case backdrop"),
+            (GlassPolicy.DarkDesktopBackdropGrey, 4.5, "dark desktop"),
+        })
+        {
+            var shell = Over(surfaces[GlassPolicy.GlassShellBrushKey], Color.FromRgb(g, g, g));
+            foreach (string key in bare)
+                Contrast(Get(key), shell).Should().BeGreaterThanOrEqualTo(min, $"'{key}' on the glass shell, {where} ({id})");
+
+            var hovered = Over(surfaces["SurfaceElevatedBrush"], shell);
+            foreach (string key in nav)
+                Contrast(Get(key), hovered).Should().BeGreaterThanOrEqualTo(min, $"'{key}' on a hovered nav item, {where} ({id})");
+        }
     }
 
     [Fact]
