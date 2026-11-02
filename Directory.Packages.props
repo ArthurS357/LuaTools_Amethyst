@@ -1,0 +1,37 @@
+<Project>
+
+  <!-- Central Package Management: every NuGet version in the solution lives HERE and nowhere else.
+       <PackageReference> items in the .csproj files carry the package name only; a Version= on one of them
+       is an error (NU1008), which is the point — two projects can no longer drift onto different versions
+       of the same package, and a bump is one line in one file. -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <!-- App -->
+  <ItemGroup>
+    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageVersion Include="Markdig.Wpf" Version="0.5.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.11" />
+    <PackageVersion Include="Velopack" Version="1.2.0" />
+    <PackageVersion Include="VirtualizingWrapPanel" Version="2.5.1" />
+
+    <!-- PINNED EXACTLY ([4.3.0], not 4.3.0). The Amethyst theme depends on WPF-UI's INTERNAL resource key
+         names — SystemAccentColorPrimary plus the surface keys remapped in Themes/Colors.xaml — which are
+         not a public contract and can change in any release. A floating version would let a restore pull a
+         build where those keys moved: nothing fails to compile, nothing throws, and the app just quietly
+         reverts to grey chrome. The bracket form makes NuGet refuse to substitute another version rather
+         than resolve one silently. On a deliberate upgrade, run the app once and check the startup guard
+         (App.VerifyAccentApplied), which documents how to remap the keys. -->
+    <PackageVersion Include="WPF-UI" Version="[4.3.0]" />
+  </ItemGroup>
+
+  <!-- Tests -->
+  <ItemGroup>
+    <PackageVersion Include="AwesomeAssertions" Version="9.5.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageVersion Include="xunit" Version="2.9.2" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+
+</Project>

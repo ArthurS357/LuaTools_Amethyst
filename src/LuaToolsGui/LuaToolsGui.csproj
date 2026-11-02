@@ -67,9 +67,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
-    <PackageReference Include="Markdig.Wpf" Version="0.5.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.11" />
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Markdig.Wpf" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
     <!-- System.Security.Cryptography.ProtectedData is NOT referenced here on purpose. Under net10.0-windows
          it arrives with the framework, and NuGet raises NU1510 for the now-redundant reference — which
          TreatWarningsAsErrors turns into a failed restore. DPAPI (AuthService, SettingsService) is
@@ -82,16 +82,10 @@
          "type forwarded to System.Security.Cryptography.ProtectedData"). So dropping UseWPF or
          UseWindowsForms from this project would break the credential store, not just the UI. Re-add the
          PackageReference in that case; do not re-add it while both are on. -->
-    <PackageReference Include="Velopack" Version="1.2.0" />
-    <PackageReference Include="VirtualizingWrapPanel" Version="2.5.1" />
-    <!-- PINNED EXACTLY ([4.3.0], not 4.3.0). The Amethyst theme depends on WPF-UI's INTERNAL resource key
-         names — SystemAccentColorPrimary plus the surface keys remapped in Themes/Colors.xaml — which are
-         not a public contract and can change in any release. A floating version would let a restore pull a
-         build where those keys moved: nothing fails to compile, nothing throws, and the app just quietly
-         reverts to grey chrome. The bracket form makes NuGet refuse to substitute another version rather
-         than resolve one silently. On a deliberate upgrade, run the app once and check the startup guard
-         (App.VerifyAccentApplied), which documents how to remap the keys. -->
-    <PackageReference Include="WPF-UI" Version="[4.3.0]" />
+    <PackageReference Include="Velopack" />
+    <PackageReference Include="VirtualizingWrapPanel" />
+    <!-- WPF-UI is pinned EXACTLY ([4.3.0]) in Directory.Packages.props — read the reason there before bumping. -->
+    <PackageReference Include="WPF-UI" />
   </ItemGroup>
 
 </Project>

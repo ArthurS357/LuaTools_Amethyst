@@ -1,0 +1,25 @@
+# Line endings. The repository stores text as LF (that is what is in the index today, so adding this file
+# renormalizes nothing); `text=auto` lets Git decide per file whether it is text and check it out with the
+# platform's native ending, so a Windows checkout and a Linux/CI checkout stop producing whole-file CRLF/LF
+# diffs for the same content.
+* text=auto
+
+# Always LF: executed by Linux shells / CI, or compared byte-for-byte by tooling.
+*.sh   text eol=lf
+*.py   text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+
+# Visual Studio and PowerShell expect CRLF on disk.
+*.sln  text eol=crlf
+*.ps1  text eol=crlf
+
+# Never touch binaries.
+*.ico  binary
+*.png  binary
+*.jpg  binary
+*.gif  binary
+*.dll  binary
+*.exe  binary
+*.zip  binary
+*.nupkg binary
