@@ -159,22 +159,8 @@
   <data name="Mode_CloseSteamContinue" xml:space="preserve"><value>ปิด Steam และดำเนินการต่อ</value></data>
   <data name="Mode_Desc_SteamTools" xml:space="preserve"><value>SteamTools ตัวเก่าแก่ — สร้างโดยชาวจีน เป็นที่รักทั่วโลก ตัวปลดล็อกที่จุดกระแสทั้งหมด (GreenLuma ไม่มีอยู่จริง จุ๊ ๆ) ⚠️ ขณะนี้ใช้ไม่ได้ ให้ใช้ BETTERSTEAMTOOLS</value></data>
   <data name="Mode_Desc_OpenSteamTools" xml:space="preserve"><value>เวอร์ชันสร้างใหม่จากศูนย์ของ SteamTools ดีกว่า SteamTools แทบทุกด้าน</value></data>
-  <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>SteamTools พร้อมแพตช์เจ๋ง ๆ ไม่กี่ตัว — การแก้ไขและการปรับปรุงมากมาย นำ Steam Cloud ดั้งเดิมกลับมาผ่าน Google Drive / OneDrive!</value></data>
-  <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>จัดการ</value></data>
-  <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>ไม่สามารถดาวน์โหลดหรือเปิด CloudRedirect ได้</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>บิลด์รายคืนของ BetterSteamTools (OST) จากซอร์สล่าสุด มีการแก้ไขล่าสุด แต่อาจเสถียรน้อยกว่า</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>ทดลอง</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>นำการรองรับ Steam Cloud ในตัวกลับมาผ่านผู้ให้บริการพื้นที่จัดเก็บภายนอก เช่น Google Drive / OneDrive / Cloudflare R2 และอื่น ๆ ขณะนี้ใช้ได้กับ BetterSteamTools Nightly เท่านั้น อย่าลืมตั้งค่าด้วยการคลิก "จัดการ" หลังเปิดใช้งาน แล้วรีสตาร์ท Steam!</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>เลือก BetterSteamTools Nightly เพื่อใช้ CloudRedirect</value></data>
-  <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>เปิดใช้งาน</value></data>
-  <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>ปิดใช้งาน</value></data>
-  <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>เปิดใช้งานอยู่</value></data>
-  <data name="Mode_CloudRedirect_Status_Disabled" xml:space="preserve"><value>ติดตั้งแล้วแต่ปิดใช้งาน</value></data>
-  <data name="Mode_CloudRedirect_Status_NotInstalled" xml:space="preserve"><value>ยังไม่ได้ติดตั้ง</value></data>
-  <data name="Mode_CloudRedirect_Status_UpdateAvailable" xml:space="preserve"><value>มีอัปเดต</value></data>
-  <data name="Mode_CloudRedirect_Toast_Enabled" xml:space="preserve"><value>เปิดใช้งานแล้ว — รีสตาร์ท Steam เพื่อให้มีผล</value></data>
-  <data name="Mode_CloudRedirect_Toast_Disabled" xml:space="preserve"><value>ปิดใช้งานแล้ว — รีสตาร์ท Steam เพื่อให้มีผล</value></data>
-  <data name="Mode_CloudRedirect_Toast_Updated" xml:space="preserve"><value>อัปเดตแล้ว — รีสตาร์ท Steam เพื่อให้มีผล</value></data>
   <data name="Onboarding_Title" xml:space="preserve"><value>ยินดีต้อนรับสู่แอป LuaTools!</value></data>
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>ลงชื่อเข้าใช้เพื่อปลดล็อกการเพิ่มเกมและแพตช์แก้ไข</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>ลงชื่อเข้าใช้แล้ว ✓</value></data>
@@ -566,12 +552,6 @@
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>ไม่พบ {0} ในรุ่นใดเลย</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>การตรวจสอบ {0} ล้มเหลว (sha256 ไม่ตรงกันหรือไม่มี digest ที่เผยแพร่)</value></data>
   <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>รุ่นนี้ไม่มี {0}</value></data>
-  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} ไม่มี digest ที่เผยแพร่สำหรับตรวจสอบ</value></data>
-  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} จบการทำงานด้วยรหัส {1}</value></data>
-  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} ไม่ได้ถูกติดตั้ง — การแก้ไขไม่เสร็จสมบูรณ์</value></data>
-  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} ไม่ใช่เวอร์ชันที่คาดไว้ — ไม่ได้ใช้การอัปเดต</value></data>
-  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>ไม่สามารถเริ่ม fixer ได้</value></data>
-  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>ไม่สามารถเขียน cloud_redirect.dll ได้ — ปิด Steam แล้วลองอีกครั้ง</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>การแลกเปลี่ยนโทเค็นล้มเหลว ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>การแลกเปลี่ยนโทเค็นส่งคืนเซสชันว่าง</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>ยังไม่ได้เข้าสู่ระบบ</value></data>
@@ -843,7 +823,6 @@ SHA-256 {3}
   <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>คลิปบอร์ดถูกใช้โดยโปรแกรมอื่น — ไม่ได้คัดลอกอะไร</value></data>
   <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>ตำแหน่งนั้นไม่มีอยู่แล้ว: {0}</value></data>
   <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>ปฏิเสธ “{0}”: manifest ต้องตั้งชื่อว่า &lt;depot&gt;_&lt;manifest&gt;.manifest (ตัวเลขเท่านั้น)</value></data>
-  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>ที่เก็บต้นทางของ CloudRedirect ไม่พร้อมใช้งาน ฟีเจอร์ถูกปิดชั่วคราว</value></data>
   <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>บิลด์ที่เก็บไว้ (ไม่มี lua ที่ใช้งาน)</value></data>
   <data name="Settings_Maintenance_Title" xml:space="preserve"><value>การบำรุงรักษา</value></data>
   <data name="Settings_Backups_Title" xml:space="preserve"><value>ข้อมูลสำรองที่สะสม</value></data>

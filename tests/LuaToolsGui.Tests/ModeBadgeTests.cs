@@ -116,7 +116,6 @@ public class ModeBadgeTests
     [Theory]
     [InlineData(UnlockerMode.SteamTools, false, false)]
     [InlineData(UnlockerMode.OpenSteamTools, true, false)]
-    [InlineData(UnlockerMode.CloudRedirect, false, false)]
     [InlineData(UnlockerMode.OpenSteamToolsNightly, false, true)]
     public void Each_badge_lights_only_its_own_card(UnlockerMode mode, bool upstream, bool experimental)
     {

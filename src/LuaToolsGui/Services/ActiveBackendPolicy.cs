@@ -64,7 +64,11 @@ public static class ActiveBackendPolicy
     {
         // Checked before the enum parse so the token wins even if a Mode is ever named after it.
         if (IsAmethystTool(selectedMode)) return null;
-        return Enum.TryParse(selectedMode, out UnlockerMode mode) && Enum.IsDefined(mode) ? mode : null;
+        if (!Enum.TryParse(selectedMode, out UnlockerMode mode) || !Enum.IsDefined(mode)) return null;
+
+        // CloudRedirect was removed: a settings.json that still names it (by name or by its number) means
+        // "nothing selected", never a mode this build would try to look up, check or install.
+        return mode == UnlockerMode.CloudRedirect ? null : mode;
     }
 
     /// <summary>Whether AmethystTool is the selected backend.</summary>

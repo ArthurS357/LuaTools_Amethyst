@@ -159,22 +159,8 @@
   <data name="Mode_CloseSteamContinue" xml:space="preserve"><value>Steam sluiten en doorgaan</value></data>
   <data name="Mode_Desc_SteamTools" xml:space="preserve"><value>De goede oude SteamTools — gemaakt door de Chinezen, geliefd door de wereld. De ontgrendelaar die de hele trend startte (GreenLuma bestaat niet, sst). ⚠️ WERKT MOMENTEEL NIET, GEBRUIK BETTERSTEAMTOOLS</value></data>
   <data name="Mode_Desc_OpenSteamTools" xml:space="preserve"><value>Volledig nieuw opgebouwde remake van SteamTools. In vrijwel elk opzicht beter dan SteamTools.</value></data>
-  <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>SteamTools met een paar handige patches — een hoop fixes en verbeteringen. Brengt native Steam Cloud terug via Google Drive / OneDrive!</value></data>
-  <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>Beheren</value></data>
-  <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>Kan CloudRedirect niet downloaden of starten.</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>Nightly-build van BetterSteamTools (OST) uit de nieuwste broncode. De nieuwste fixes, maar mogelijk minder stabiel.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>EXPERIMENTEEL</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Brengt native Steam Cloud-ondersteuning terug via externe opslagproviders zoals Google Drive / OneDrive / Cloudflare R2 en meer. Momenteel alleen compatibel met BetterSteamTools Nightly. Vergeet niet om het na het inschakelen te configureren via "Beheren" en start daarna Steam opnieuw op!</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Selecteer BetterSteamTools Nightly om CloudRedirect te gebruiken.</value></data>
-  <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>Inschakelen</value></data>
-  <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>Uitschakelen</value></data>
-  <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>Ingeschakeld.</value></data>
-  <data name="Mode_CloudRedirect_Status_Disabled" xml:space="preserve"><value>Geïnstalleerd, maar uitgeschakeld.</value></data>
-  <data name="Mode_CloudRedirect_Status_NotInstalled" xml:space="preserve"><value>Nog niet geïnstalleerd.</value></data>
-  <data name="Mode_CloudRedirect_Status_UpdateAvailable" xml:space="preserve"><value>Update beschikbaar.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Enabled" xml:space="preserve"><value>Ingeschakeld — herstart Steam om toe te passen.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Disabled" xml:space="preserve"><value>Uitgeschakeld — herstart Steam om toe te passen.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Updated" xml:space="preserve"><value>Bijgewerkt — herstart Steam om toe te passen.</value></data>
   <data name="Onboarding_Title" xml:space="preserve"><value>Welkom bij de LuaTools-app!</value></data>
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>Meld je aan om het toevoegen van games en fixes te ontgrendelen.</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>Aangemeld ✓</value></data>
@@ -566,12 +552,6 @@ Dit verwijdert de .lua-bestanden uit Steam\config\stplug-in. Herstart Steam daar
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>Kon {0} in geen enkele release vinden.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} heeft de verificatie niet doorstaan (sha256 komt niet overeen of geen gepubliceerde digest).</value></data>
   <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>De release mist {0}.</value></data>
-  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} heeft geen gepubliceerde digest om tegen te verifiëren.</value></data>
-  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} is afgesloten met code {1}.</value></data>
-  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} is niet geïnstalleerd — de fix is niet voltooid.</value></data>
-  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} is niet de verwachte versie — de update is niet toegepast.</value></data>
-  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Kon de fixer niet starten.</value></data>
-  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>Kon cloud_redirect.dll niet schrijven — sluit Steam en probeer het opnieuw.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Tokenuitwisseling mislukt ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>De tokenuitwisseling gaf een lege sessie terug.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Niet aangemeld.</value></data>
@@ -843,7 +823,6 @@ Inschakelen?</value></data>
   <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>Het klembord wordt door een ander programma gebruikt — er is niets gekopieerd.</value></data>
   <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Die locatie bestaat niet meer: {0}</value></data>
   <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>'{0}' geweigerd: een manifest moet &lt;depot&gt;_&lt;manifest&gt;.manifest heten (alleen cijfers).</value></data>
-  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>De bronrepository van CloudRedirect is niet beschikbaar. De functie is tijdelijk uitgeschakeld.</value></data>
   <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Opgeslagen builds (geen actieve lua)</value></data>
   <data name="Settings_Maintenance_Title" xml:space="preserve"><value>ONDERHOUD</value></data>
   <data name="Settings_Backups_Title" xml:space="preserve"><value>Opgebouwde back-ups</value></data>

@@ -159,22 +159,8 @@
   <data name="Mode_CloseSteamContinue" xml:space="preserve"><value>Steam'i kapat ve devam et</value></data>
   <data name="Mode_Desc_SteamTools" xml:space="preserve"><value>Eski güzel SteamTools — Çinliler tarafından yapıldı, dünya tarafından sevildi. Tüm bu akımı başlatan kilit açıcı (GreenLuma diye bir şey yok, şşş). ⚠️ ŞU AN ÇALIŞMIYOR, AŞAĞIDAKİ BETTERSTEAMTOOLS'Yİ KULLANIN</value></data>
   <data name="Mode_Desc_OpenSteamTools" xml:space="preserve"><value>SteamTools'un sıfırdan yeniden yapımı. Neredeyse her açıdan SteamTools'tan daha iyi.</value></data>
-  <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>Birkaç şık yama eklenmiş SteamTools — bir sürü düzeltme ve iyileştirme. Google Drive / OneDrive ile yerel Steam Cloud'u geri getirir!</value></data>
-  <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>Yönet</value></data>
-  <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>CloudRedirect indirilemedi veya başlatılamadı.</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>BetterSteamTools'un (OST) en son kaynaktan alınan gecelik derlemesi. En yeni düzeltmeler, ancak daha az kararlı olabilir.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>DENEYSEL</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Google Drive / OneDrive / Cloudflare R2 gibi üçüncü taraf depolama sağlayıcıları aracılığıyla yerleşik Steam Cloud desteğini geri getirir. Şu anda yalnızca BetterSteamTools Nightly ile uyumludur. Etkinleştirdikten sonra "Yönet"e tıklayarak yapılandırmayı ve ardından Steam'i yeniden başlatmayı unutmayın!</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>CloudRedirect'i kullanmak için BetterSteamTools Nightly'yi seçin.</value></data>
-  <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>Etkinleştir</value></data>
-  <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>Devre dışı bırak</value></data>
-  <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>Etkin.</value></data>
-  <data name="Mode_CloudRedirect_Status_Disabled" xml:space="preserve"><value>Yüklü ama devre dışı.</value></data>
-  <data name="Mode_CloudRedirect_Status_NotInstalled" xml:space="preserve"><value>Henüz yüklü değil.</value></data>
-  <data name="Mode_CloudRedirect_Status_UpdateAvailable" xml:space="preserve"><value>Güncelleme mevcut.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Enabled" xml:space="preserve"><value>Etkinleştirildi — uygulamak için Steam'i yeniden başlatın.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Disabled" xml:space="preserve"><value>Devre dışı bırakıldı — uygulamak için Steam'i yeniden başlatın.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Updated" xml:space="preserve"><value>Güncellendi — uygulamak için Steam'i yeniden başlatın.</value></data>
   <data name="Onboarding_Title" xml:space="preserve"><value>LuaTools uygulamasına hoş geldiniz!</value></data>
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>Oyun ve düzeltme eklemeyi açmak için giriş yapın.</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>Giriş yapıldı ✓</value></data>
@@ -566,12 +552,6 @@ Bu işlem, .lua dosyalarını Steam\config\stplug-in konumundan siler. Değişik
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>{0} hiçbir sürümde bulunamadı.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} doğrulamayı geçemedi (sha256 uyuşmazlığı veya yayımlanmış digest yok).</value></data>
   <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Sürümde {0} eksik.</value></data>
-  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} için doğrulanacak yayımlanmış digest yok.</value></data>
-  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0}, {1} koduyla çıktı.</value></data>
-  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} dağıtılmadı — düzeltme tamamlanmadı.</value></data>
-  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} beklenen sürüm değil — güncelleme uygulanmadı.</value></data>
-  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Fixer başlatılamadı.</value></data>
-  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>cloud_redirect.dll yazılamadı — Steam'i kapatıp tekrar deneyin.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Token değişimi başarısız ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Token değişimi boş bir oturum döndürdü.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Giriş yapılmadı.</value></data>
@@ -843,7 +823,6 @@ Etkinleştirilsin mi?</value></data>
   <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>Pano başka bir program tarafından kullanılıyor — hiçbir şey kopyalanmadı.</value></data>
   <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Bu konum artık yok: {0}</value></data>
   <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>“{0}” reddedildi: bir manifest'in adı &lt;depot&gt;_&lt;manifest&gt;.manifest olmalıdır (yalnızca rakamlar).</value></data>
-  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>CloudRedirect kaynak deposu kullanılamıyor. Özellik geçici olarak devre dışı.</value></data>
   <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Kayıtlı sürümler (etkin lua yok)</value></data>
   <data name="Settings_Maintenance_Title" xml:space="preserve"><value>BAKIM</value></data>
   <data name="Settings_Backups_Title" xml:space="preserve"><value>Biriken yedekler</value></data>

@@ -159,22 +159,8 @@
   <data name="Mode_CloseSteamContinue" xml:space="preserve"><value>關閉 Steam 並繼續</value></data>
   <data name="Mode_Desc_SteamTools" xml:space="preserve"><value>經典的 SteamTools——由中國人打造，受全世界喜愛。開啟整個潮流的解鎖工具（GreenLuma 並不存在，噓）。⚠️ 目前無法使用，請使用下方的 BETTERSTEAMTOOLS</value></data>
   <data name="Mode_Desc_OpenSteamTools" xml:space="preserve"><value>從零打造的 SteamTools 重製版。幾乎在各方面都優於 SteamTools。</value></data>
-  <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>帶有若干巧妙修補的 SteamTools——大量修正與改進。 透過 Google Drive / OneDrive 恢復原生 Steam 雲端存檔！</value></data>
-  <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>管理</value></data>
-  <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>無法下載或啟動 CloudRedirect。</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>從最新原始碼建置的 BetterSteamTools（OST）每夜版。包含最新修正，但可能較不穩定。</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>實驗性</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>透過 Google Drive / OneDrive / Cloudflare R2 等第三方儲存服務，恢復原生 Steam 雲端存檔支援。目前僅相容於 BetterSteamTools 每夜版。啟用後別忘了點擊「管理」進行設定，然後重新啟動 Steam！</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>選擇 BetterSteamTools 每夜版以使用 CloudRedirect。</value></data>
-  <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>啟用</value></data>
-  <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>停用</value></data>
-  <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>已啟用。</value></data>
-  <data name="Mode_CloudRedirect_Status_Disabled" xml:space="preserve"><value>已安裝，但已停用。</value></data>
-  <data name="Mode_CloudRedirect_Status_NotInstalled" xml:space="preserve"><value>尚未安裝。</value></data>
-  <data name="Mode_CloudRedirect_Status_UpdateAvailable" xml:space="preserve"><value>有可用更新。</value></data>
-  <data name="Mode_CloudRedirect_Toast_Enabled" xml:space="preserve"><value>已啟用 — 重新啟動 Steam 以生效。</value></data>
-  <data name="Mode_CloudRedirect_Toast_Disabled" xml:space="preserve"><value>已停用 — 重新啟動 Steam 以生效。</value></data>
-  <data name="Mode_CloudRedirect_Toast_Updated" xml:space="preserve"><value>已更新 — 重新啟動 Steam 以生效。</value></data>
   <data name="Onboarding_Title" xml:space="preserve"><value>歡迎使用 LuaTools 應用程式！</value></data>
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>登入以解鎖新增遊戲與修正。</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>已登入 ✓</value></data>
@@ -566,12 +552,6 @@
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>在任何版本中都找不到 {0}。</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} 未通過驗證（sha256 不符或沒有已發佈的 digest）。</value></data>
   <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>此版本缺少 {0}。</value></data>
-  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} 沒有可用於驗證的已發佈 digest。</value></data>
-  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} 已結束，代碼 {1}。</value></data>
-  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} 未部署——修正未完成。</value></data>
-  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} 不是預期的版本——更新未套用。</value></data>
-  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>無法啟動 fixer。</value></data>
-  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>無法寫入 cloud_redirect.dll——請關閉 Steam 後重試。</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>權杖交換失敗（{0}）：{1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>權杖交換傳回了空的工作階段。</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>尚未登入。</value></data>
@@ -843,7 +823,6 @@ SHA-256 {3}
   <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>剪貼簿正被其他程式使用——未複製任何內容。</value></data>
   <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>該位置已不存在：{0}</value></data>
   <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>已拒絕「{0}」：資訊清單必須命名為 &lt;depot&gt;_&lt;manifest&gt;.manifest（僅限數字）。</value></data>
-  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>CloudRedirect 來源儲存庫無法使用。此功能已暫時停用。</value></data>
   <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>已儲存的組建（無作用中的 lua）</value></data>
   <data name="Settings_Maintenance_Title" xml:space="preserve"><value>維護</value></data>
   <data name="Settings_Backups_Title" xml:space="preserve"><value>累積的備份</value></data>

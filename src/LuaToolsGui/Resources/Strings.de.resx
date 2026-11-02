@@ -159,22 +159,8 @@
   <data name="Mode_CloseSteamContinue" xml:space="preserve"><value>Steam schließen &amp; fortfahren</value></data>
   <data name="Mode_Desc_SteamTools" xml:space="preserve"><value>Das gute alte SteamTools — von Chinesen gebaut, von der Welt geliebt. Der Unlocker, der den ganzen Trend gestartet hat (GreenLuma existiert nicht, pssst). ⚠️ FUNKTIONIERT DERZEIT NICHT, NUTZE BETTERSTEAMTOOLS</value></data>
   <data name="Mode_Desc_OpenSteamTools" xml:space="preserve"><value>Von Grund auf neu entwickelte Neuauflage von SteamTools. In praktisch jeder Hinsicht besser als SteamTools.</value></data>
-  <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>SteamTools mit ein paar raffinierten Patches — jede Menge Fixes und Verbesserungen. Bringt natives Steam Cloud über Google Drive / OneDrive zurück!</value></data>
-  <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>Verwalten</value></data>
-  <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>CloudRedirect konnte nicht heruntergeladen oder gestartet werden.</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>Nightly-Build von BetterSteamTools (OST) aus dem neuesten Quellcode. Neueste Fixes, aber möglicherweise weniger stabil.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>EXPERIMENTELL</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Bringt native Steam-Cloud-Unterstützung über Drittanbieter-Speicher wie Google Drive / OneDrive / Cloudflare R2 und mehr zurück. Derzeit nur mit BetterSteamTools Nightly kompatibel. Vergiss nicht, es nach dem Aktivieren über "Verwalten" zu konfigurieren, und starte dann Steam neu!</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Wähle BetterSteamTools Nightly, um CloudRedirect zu nutzen.</value></data>
-  <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>Aktivieren</value></data>
-  <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>Deaktivieren</value></data>
-  <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>Aktiviert.</value></data>
-  <data name="Mode_CloudRedirect_Status_Disabled" xml:space="preserve"><value>Installiert, aber deaktiviert.</value></data>
-  <data name="Mode_CloudRedirect_Status_NotInstalled" xml:space="preserve"><value>Noch nicht installiert.</value></data>
-  <data name="Mode_CloudRedirect_Status_UpdateAvailable" xml:space="preserve"><value>Update verfügbar.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Enabled" xml:space="preserve"><value>Aktiviert — Steam neu starten, um zu übernehmen.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Disabled" xml:space="preserve"><value>Deaktiviert — Steam neu starten, um zu übernehmen.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Updated" xml:space="preserve"><value>Aktualisiert — Steam neu starten, um zu übernehmen.</value></data>
   <data name="Onboarding_Title" xml:space="preserve"><value>Willkommen in der LuaTools-App!</value></data>
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>Melde dich an, um das Hinzufügen von Spielen und Fixes freizuschalten.</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>Angemeldet ✓</value></data>
@@ -566,12 +552,6 @@ Dadurch werden die .lua-Dateien aus Steam\config\stplug-in gelöscht. Starte Ste
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>{0} wurde in keinem Release gefunden.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} hat die Prüfung nicht bestanden (sha256 stimmt nicht überein oder kein veröffentlichter Digest).</value></data>
   <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Dem Release fehlt {0}.</value></data>
-  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>Für {0} gibt es keinen veröffentlichten Digest zum Prüfen.</value></data>
-  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} wurde mit Code {1} beendet.</value></data>
-  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} wurde nicht bereitgestellt — der Fix wurde nicht abgeschlossen.</value></data>
-  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} ist nicht die erwartete Version — das Update wurde nicht angewendet.</value></data>
-  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Der Fixer konnte nicht gestartet werden.</value></data>
-  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>cloud_redirect.dll konnte nicht geschrieben werden — schließe Steam und versuche es erneut.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Token-Austausch fehlgeschlagen ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Der Token-Austausch lieferte eine leere Sitzung.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Nicht angemeldet.</value></data>
@@ -843,7 +823,6 @@ Aktivieren?</value></data>
   <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>Die Zwischenablage wird von einem anderen Programm verwendet — es wurde nichts kopiert.</value></data>
   <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Dieser Speicherort existiert nicht mehr: {0}</value></data>
   <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>„{0}“ abgelehnt: Ein Manifest muss &lt;depot&gt;_&lt;manifest&gt;.manifest heißen (nur Ziffern).</value></data>
-  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>Das Quell-Repository von CloudRedirect ist nicht verfügbar. Die Funktion ist vorübergehend deaktiviert.</value></data>
   <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Gespeicherte Builds (kein aktives Lua)</value></data>
   <data name="Settings_Maintenance_Title" xml:space="preserve"><value>WARTUNG</value></data>
   <data name="Settings_Backups_Title" xml:space="preserve"><value>Angesammelte Backups</value></data>

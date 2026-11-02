@@ -159,22 +159,8 @@
   <data name="Mode_CloseSteamContinue" xml:space="preserve"><value>Tutup Steam dan lanjutkan</value></data>
   <data name="Mode_Desc_SteamTools" xml:space="preserve"><value>SteamTools yang melegenda — dibuat oleh orang Tiongkok, dicintai dunia. Pembuka kunci yang memulai seluruh tren ini (GreenLuma tidak ada, sst). ⚠️ SAAT INI TIDAK BERFUNGSI, GUNAKAN BETTERSTEAMTOOLS</value></data>
   <data name="Mode_Desc_OpenSteamTools" xml:space="preserve"><value>Remake SteamTools yang dibuat dari nol. Lebih baik daripada SteamTools dalam hampir segala hal.</value></data>
-  <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>SteamTools dengan beberapa patch cerdas — banyak perbaikan dan peningkatan. Mengembalikan Steam Cloud asli melalui Google Drive / OneDrive!</value></data>
-  <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>Kelola</value></data>
-  <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>Tidak dapat mengunduh atau menjalankan CloudRedirect.</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>Build nightly BetterSteamTools (OST) dari sumber terbaru. Perbaikan terbaru, tetapi mungkin kurang stabil.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>EKSPERIMENTAL</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Menghadirkan kembali dukungan Steam Cloud bawaan melalui penyedia penyimpanan pihak ketiga seperti Google Drive / OneDrive / Cloudflare R2 dan lainnya. Saat ini hanya kompatibel dengan BetterSteamTools Nightly. Jangan lupa mengonfigurasinya dengan mengeklik "Kelola" setelah mengaktifkan, lalu mulai ulang Steam!</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Pilih BetterSteamTools Nightly untuk menggunakan CloudRedirect.</value></data>
-  <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>Aktifkan</value></data>
-  <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>Nonaktifkan</value></data>
-  <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>Aktif.</value></data>
-  <data name="Mode_CloudRedirect_Status_Disabled" xml:space="preserve"><value>Terpasang, tetapi nonaktif.</value></data>
-  <data name="Mode_CloudRedirect_Status_NotInstalled" xml:space="preserve"><value>Belum terpasang.</value></data>
-  <data name="Mode_CloudRedirect_Status_UpdateAvailable" xml:space="preserve"><value>Pembaruan tersedia.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Enabled" xml:space="preserve"><value>Diaktifkan — mulai ulang Steam untuk menerapkan.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Disabled" xml:space="preserve"><value>Dinonaktifkan — mulai ulang Steam untuk menerapkan.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Updated" xml:space="preserve"><value>Diperbarui — mulai ulang Steam untuk menerapkan.</value></data>
   <data name="Onboarding_Title" xml:space="preserve"><value>Selamat datang di aplikasi LuaTools!</value></data>
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>Masuk untuk membuka fitur menambahkan game dan perbaikan.</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>Sudah masuk ✓</value></data>
@@ -566,12 +552,6 @@ Ini menghapus file .lua dari Steam\config\stplug-in. Mulai ulang Steam setelahny
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>Tidak dapat menemukan {0} di rilis mana pun.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} gagal diverifikasi (sha256 tidak cocok atau tidak ada digest yang dipublikasikan).</value></data>
   <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Rilis tidak berisi {0}.</value></data>
-  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} tidak memiliki digest yang dipublikasikan untuk verifikasi.</value></data>
-  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} keluar dengan kode {1}.</value></data>
-  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} tidak terpasang — perbaikan tidak selesai.</value></data>
-  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} bukan versi yang diharapkan — pembaruan tidak diterapkan.</value></data>
-  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Gagal memulai fixer.</value></data>
-  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>Tidak dapat menulis cloud_redirect.dll — tutup Steam dan coba lagi.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Pertukaran token gagal ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Pertukaran token mengembalikan sesi kosong.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Belum masuk.</value></data>
@@ -843,7 +823,6 @@ Aktifkan?</value></data>
   <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>Clipboard sedang digunakan program lain — tidak ada yang disalin.</value></data>
   <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Lokasi itu tidak ada lagi: {0}</value></data>
   <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>Menolak “{0}”: manifest harus bernama &lt;depot&gt;_&lt;manifest&gt;.manifest (hanya angka).</value></data>
-  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>Repositori sumber CloudRedirect tidak tersedia. Fitur dinonaktifkan sementara.</value></data>
   <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Build tersimpan (tanpa lua aktif)</value></data>
   <data name="Settings_Maintenance_Title" xml:space="preserve"><value>PEMELIHARAAN</value></data>
   <data name="Settings_Backups_Title" xml:space="preserve"><value>Cadangan yang menumpuk</value></data>

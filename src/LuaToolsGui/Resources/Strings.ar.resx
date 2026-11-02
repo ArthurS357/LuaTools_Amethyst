@@ -168,22 +168,8 @@
   <!-- Mode descriptions + C# strings -->
   <data name="Mode_Desc_SteamTools" xml:space="preserve"><value>‏SteamTools العريق — صنعه الصينيون وأحبّه العالم. الأداة التي بدأت الموجة كلها (GreenLuma غير موجود، صهْ). ⚠️ لا يعمل حاليًا، استخدم BETTERSTEAMTOOLS</value></data>
   <data name="Mode_Desc_OpenSteamTools" xml:space="preserve"><value>نسخة معاد بناؤها من الصفر من SteamTools. أفضل من SteamTools في كل شيء تقريبًا.</value></data>
-  <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>‏SteamTools مع بعض التحسينات الذكية — كمٌّ هائل من الإصلاحات والتحسينات. يعيد دعم Steam Cloud الأصلي عبر Google Drive / OneDrive!</value></data>
-  <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>إدارة</value></data>
-  <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>تعذّر تنزيل CloudRedirect أو تشغيله.</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>إصدار ليلي من BetterSteamTools (OST) مبني من أحدث المصادر. أحدث الإصلاحات، لكنه قد يكون أقل استقرارًا.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>تجريبي</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>يعيد دعم Steam Cloud الأصلي عبر مزوّدي تخزين خارجيين مثل Google Drive / OneDrive / Cloudflare R2 وغيرها. متوافق حاليًا مع BetterSteamTools Nightly فقط. لا تنسَ إعداده بالضغط على "إدارة" بعد التفعيل، ثم أعد تشغيل Steam!</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>اختر BetterSteamTools Nightly لاستخدام CloudRedirect.</value></data>
-  <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>تفعيل</value></data>
-  <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>تعطيل</value></data>
-  <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>مُفعَّل.</value></data>
-  <data name="Mode_CloudRedirect_Status_Disabled" xml:space="preserve"><value>مثبّت لكنه معطّل.</value></data>
-  <data name="Mode_CloudRedirect_Status_NotInstalled" xml:space="preserve"><value>غير مثبّت بعد.</value></data>
-  <data name="Mode_CloudRedirect_Status_UpdateAvailable" xml:space="preserve"><value>يتوفّر تحديث.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Enabled" xml:space="preserve"><value>تم التفعيل — أعد تشغيل Steam للتطبيق.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Disabled" xml:space="preserve"><value>تم التعطيل — أعد تشغيل Steam للتطبيق.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Updated" xml:space="preserve"><value>تم التحديث — أعد تشغيل Steam للتطبيق.</value></data>
   <data name="Onboarding_Title" xml:space="preserve"><value>مرحبًا بك في تطبيق LuaTools!</value></data>
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>سجّل الدخول لفتح إضافة الألعاب والإصلاحات.</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>تم تسجيل الدخول ✓</value></data>
@@ -592,12 +578,6 @@
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>تعذّر العثور على {0} في أي إصدار.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>فشل التحقق من {0} (عدم تطابق sha256 أو لا يوجد digest منشور).</value></data>
   <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>الإصدار لا يحتوي على {0}.</value></data>
-  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>لا يوجد digest منشور لـ {0} للتحقق منه.</value></data>
-  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>انتهى {0} برمز الخروج {1}.</value></data>
-  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>لم يتم نشر {0} — لم يكتمل الإصلاح.</value></data>
-  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} ليس الإصدار المتوقع — لم يُطبَّق التحديث.</value></data>
-  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>تعذّر تشغيل أداة الإصلاح (fixer).</value></data>
-  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>تعذّرت كتابة cloud_redirect.dll — أغلق Steam وحاول مرة أخرى.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>فشل تبادل الرمز المميز ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>أعاد تبادل الرمز المميز جلسة فارغة.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>لم تسجّل الدخول.</value></data>
@@ -869,7 +849,6 @@ SHA-256 {3}
   <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>الحافظة قيد الاستخدام من برنامج آخر — لم يُنسخ شيء.</value></data>
   <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>ذلك الموقع لم يعد موجوداً: {0}</value></data>
   <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>رُفض «{0}»: يجب أن يُسمّى الـ manifest بالصيغة &lt;depot&gt;_&lt;manifest&gt;.manifest (أرقام فقط).</value></data>
-  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>مستودع مصدر CloudRedirect غير متاح. الميزة معطّلة مؤقتاً.</value></data>
   <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>الإصدارات المخزّنة (لا يوجد lua نشط)</value></data>
   <data name="Settings_Maintenance_Title" xml:space="preserve"><value>الصيانة</value></data>
   <data name="Settings_Backups_Title" xml:space="preserve"><value>النسخ الاحتياطية المتراكمة</value></data>

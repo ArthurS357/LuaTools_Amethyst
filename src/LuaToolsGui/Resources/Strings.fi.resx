@@ -159,22 +159,8 @@
   <data name="Mode_CloseSteamContinue" xml:space="preserve"><value>Sulje Steam ja jatka</value></data>
   <data name="Mode_Desc_SteamTools" xml:space="preserve"><value>Hyvä vanha SteamTools — kiinalaisten rakentama, maailman rakastama. Avaaja, joka aloitti koko trendin (GreenLumaa ei ole olemassa, shh). ⚠️ EI TOIMI TÄLLÄ HETKELLÄ, KÄYTÄ ALLA OLEVAA BETTERSTEAMTOOLS:TÄ</value></data>
   <data name="Mode_Desc_OpenSteamTools" xml:space="preserve"><value>Alusta asti uudelleenrakennettu versio SteamToolsista. Parempi kuin SteamTools käytännössä kaikin tavoin.</value></data>
-  <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>SteamTools muutamalla näppärällä paikalla — valtavasti korjauksia ja parannuksia. Tuo natiivin Steam Cloudin takaisin Google Driven / OneDriven kautta!</value></data>
-  <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>Hallinta</value></data>
-  <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>CloudRedirectin lataaminen tai käynnistäminen epäonnistui.</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>BetterSteamToolsin (OST) yöllinen koontiversio uusimmasta lähdekoodista. Uusimmat korjaukset, mutta voi olla epävakaampi.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>KOKEELLINEN</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Palauttaa natiivin Steam Cloud -tuen kolmannen osapuolen tallennuspalveluiden, kuten Google Drive / OneDrive / Cloudflare R2 ja muiden, kautta. Toistaiseksi yhteensopiva vain BetterSteamTools Nightlyn kanssa. Muista määrittää se napsauttamalla "Hallinta" käyttöönoton jälkeen ja käynnistä sitten Steam uudelleen!</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Valitse BetterSteamTools Nightly käyttääksesi CloudRedirectiä.</value></data>
-  <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>Ota käyttöön</value></data>
-  <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>Poista käytöstä</value></data>
-  <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>Käytössä.</value></data>
-  <data name="Mode_CloudRedirect_Status_Disabled" xml:space="preserve"><value>Asennettu, mutta pois käytöstä.</value></data>
-  <data name="Mode_CloudRedirect_Status_NotInstalled" xml:space="preserve"><value>Ei vielä asennettu.</value></data>
-  <data name="Mode_CloudRedirect_Status_UpdateAvailable" xml:space="preserve"><value>Päivitys saatavilla.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Enabled" xml:space="preserve"><value>Otettu käyttöön — käynnistä Steam uudelleen ottaaksesi käyttöön.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Disabled" xml:space="preserve"><value>Poistettu käytöstä — käynnistä Steam uudelleen ottaaksesi käyttöön.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Updated" xml:space="preserve"><value>Päivitetty — käynnistä Steam uudelleen ottaaksesi käyttöön.</value></data>
   <data name="Onboarding_Title" xml:space="preserve"><value>Tervetuloa LuaTools-sovellukseen!</value></data>
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>Kirjaudu sisään avataksesi pelien ja korjausten lisäämisen.</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>Kirjauduttu sisään ✓</value></data>
@@ -566,12 +552,6 @@ Tämä poistaa .lua-tiedostot sijainnista Steam\config\stplug-in. Käynnistä St
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>Kohdetta {0} ei löytynyt mistään julkaisusta.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} ei läpäissyt tarkistusta (sha256 ei täsmää tai julkaistua digestiä ei ole).</value></data>
   <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Julkaisusta puuttuu {0}.</value></data>
-  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>Kohteelle {0} ei ole julkaistua digestiä, johon verrata.</value></data>
-  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} päättyi koodilla {1}.</value></data>
-  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} ei asentunut — korjaus ei valmistunut.</value></data>
-  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} ei ole odotettu versio — päivitystä ei otettu käyttöön.</value></data>
-  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Fixerin käynnistys epäonnistui.</value></data>
-  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>Tiedostoa cloud_redirect.dll ei voitu kirjoittaa — sulje Steam ja yritä uudelleen.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Tokenin vaihto epäonnistui ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Tokenin vaihto palautti tyhjän istunnon.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Et ole kirjautunut sisään.</value></data>
@@ -843,7 +823,6 @@ Otetaanko käyttöön?</value></data>
   <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>Leikepöytä on toisen ohjelman käytössä — mitään ei kopioitu.</value></data>
   <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Sijaintia ei enää ole: {0}</value></data>
   <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>Hylätty ”{0}”: manifestin nimen on oltava &lt;depot&gt;_&lt;manifest&gt;.manifest (vain numeroita).</value></data>
-  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>CloudRedirectin lähdearkisto ei ole saatavilla. Ominaisuus on tilapäisesti pois käytöstä.</value></data>
   <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Tallennetut koosteet (ei aktiivista luaa)</value></data>
   <data name="Settings_Maintenance_Title" xml:space="preserve"><value>YLLÄPITO</value></data>
   <data name="Settings_Backups_Title" xml:space="preserve"><value>Kertyneet varmuuskopiot</value></data>

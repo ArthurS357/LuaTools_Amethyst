@@ -159,22 +159,8 @@
   <data name="Mode_CloseSteamContinue" xml:space="preserve"><value>Đóng Steam và tiếp tục</value></data>
   <data name="Mode_Desc_SteamTools" xml:space="preserve"><value>SteamTools quen thuộc — do người Trung Quốc tạo ra, được cả thế giới yêu thích. Công cụ mở khóa đã khởi đầu cả xu hướng (GreenLuma không tồn tại đâu, suỵt). ⚠️ HIỆN KHÔNG HOẠT ĐỘNG, HÃY DÙNG BETTERSTEAMTOOLS</value></data>
   <data name="Mode_Desc_OpenSteamTools" xml:space="preserve"><value>Bản làm lại từ đầu của SteamTools. Tốt hơn SteamTools ở gần như mọi mặt.</value></data>
-  <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>SteamTools với một vài bản vá khéo léo — vô số bản sửa lỗi và cải tiến. Khôi phục Steam Cloud gốc qua Google Drive / OneDrive!</value></data>
-  <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>Quản lý</value></data>
-  <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>Không thể tải xuống hoặc khởi chạy CloudRedirect.</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>Bản dựng nightly của BetterSteamTools (OST) từ mã nguồn mới nhất. Các bản sửa lỗi mới nhất, nhưng có thể kém ổn định hơn.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>THỬ NGHIỆM</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Mang lại hỗ trợ Steam Cloud gốc thông qua các nhà cung cấp lưu trữ bên thứ ba như Google Drive / OneDrive / Cloudflare R2 và nhiều hơn nữa. Hiện chỉ tương thích với BetterSteamTools Nightly. Đừng quên cấu hình bằng cách nhấp "Quản lý" sau khi bật, rồi khởi động lại Steam!</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Chọn BetterSteamTools Nightly để dùng CloudRedirect.</value></data>
-  <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>Bật</value></data>
-  <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>Tắt</value></data>
-  <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>Đã bật.</value></data>
-  <data name="Mode_CloudRedirect_Status_Disabled" xml:space="preserve"><value>Đã cài nhưng đang tắt.</value></data>
-  <data name="Mode_CloudRedirect_Status_NotInstalled" xml:space="preserve"><value>Chưa cài đặt.</value></data>
-  <data name="Mode_CloudRedirect_Status_UpdateAvailable" xml:space="preserve"><value>Có bản cập nhật.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Enabled" xml:space="preserve"><value>Đã bật — khởi động lại Steam để áp dụng.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Disabled" xml:space="preserve"><value>Đã tắt — khởi động lại Steam để áp dụng.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Updated" xml:space="preserve"><value>Đã cập nhật — khởi động lại Steam để áp dụng.</value></data>
   <data name="Onboarding_Title" xml:space="preserve"><value>Chào mừng đến với ứng dụng LuaTools!</value></data>
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>Đăng nhập để mở khóa thêm trò chơi và bản sửa lỗi.</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>Đã đăng nhập ✓</value></data>
@@ -566,12 +552,6 @@ Thao tác này sẽ xóa các tệp .lua khỏi Steam\config\stplug-in. Sau đó
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>Không tìm thấy {0} trong bất kỳ bản phát hành nào.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} không vượt qua bước xác minh (sha256 không khớp hoặc không có digest được công bố).</value></data>
   <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Bản phát hành thiếu {0}.</value></data>
-  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} không có digest được công bố để xác minh.</value></data>
-  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} đã thoát với mã {1}.</value></data>
-  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} chưa được triển khai — bản sửa lỗi chưa hoàn tất.</value></data>
-  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} không phải phiên bản mong đợi — bản cập nhật chưa được áp dụng.</value></data>
-  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Không thể khởi động fixer.</value></data>
-  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>Không thể ghi cloud_redirect.dll — hãy đóng Steam và thử lại.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Trao đổi token thất bại ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Trao đổi token trả về phiên trống.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Chưa đăng nhập.</value></data>
@@ -843,7 +823,6 @@ Bật nó?</value></data>
   <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>Bộ nhớ tạm đang được chương trình khác dùng — chưa sao chép gì.</value></data>
   <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Vị trí đó không còn tồn tại: {0}</value></data>
   <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>Đã từ chối “{0}”: manifest phải được đặt tên &lt;depot&gt;_&lt;manifest&gt;.manifest (chỉ gồm chữ số).</value></data>
-  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>Kho nguồn của CloudRedirect không khả dụng. Tính năng tạm thời bị tắt.</value></data>
   <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Bản dựng đã lưu (không có lua đang dùng)</value></data>
   <data name="Settings_Maintenance_Title" xml:space="preserve"><value>BẢO TRÌ</value></data>
   <data name="Settings_Backups_Title" xml:space="preserve"><value>Bản sao lưu tích lũy</value></data>

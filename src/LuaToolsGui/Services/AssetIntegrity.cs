@@ -24,7 +24,7 @@ namespace LuaToolsGui.Services;
 ///
 /// <para>
 /// Centralised here because four services had their own private copies of the same two helpers
-/// (SteamlessService, CloudRedirectService, UnlockerService, PluginInstallerService). Duplicated security
+/// (SteamlessService, UnlockerService, PluginInstallerService). Duplicated security
 /// checks drift: three of the four had the fail-open bug and one did no verification at all.
 /// </para>
 /// </summary>

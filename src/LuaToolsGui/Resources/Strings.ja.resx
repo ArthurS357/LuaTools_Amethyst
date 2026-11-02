@@ -159,22 +159,8 @@
   <data name="Mode_CloseSteamContinue" xml:space="preserve"><value>Steamを閉じて続行</value></data>
   <data name="Mode_Desc_SteamTools" xml:space="preserve"><value>おなじみのSteamTools — 中国製で、世界中に愛されています。このトレンド全体を生み出したアンロッカーです（GreenLumaは存在しません、しー）。⚠️ 現在動作しません。OSTを使用してください</value></data>
   <data name="Mode_Desc_OpenSteamTools" xml:space="preserve"><value>SteamToolsをゼロから作り直したリメイク版。ほぼあらゆる面でSteamToolsより優れています。</value></data>
-  <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>気の利いたパッチをいくつか加えたSteamTools — 大量の修正と改善が施されています。 Google Drive / OneDrive 経由でネイティブの Steam Cloud を復活させます！</value></data>
-  <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>管理</value></data>
-  <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>CloudRedirect をダウンロードまたは起動できませんでした。</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>最新ソースからビルドされた BetterSteamTools（OST）のナイトリー版。最新の修正が入りますが、安定性は低めの場合があります。</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>実験的</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Google Drive / OneDrive / Cloudflare R2 など、サードパーティのストレージを使ってネイティブの Steam Cloud サポートを復活させます。現在は BetterSteamTools Nightly のみ対応。有効化後は「管理」をクリックして設定し、Steam を再起動するのを忘れずに！</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>CloudRedirect を使うには BetterSteamTools Nightly を選択してください。</value></data>
-  <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>有効化</value></data>
-  <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>無効化</value></data>
-  <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>有効です。</value></data>
-  <data name="Mode_CloudRedirect_Status_Disabled" xml:space="preserve"><value>インストール済みですが無効です。</value></data>
-  <data name="Mode_CloudRedirect_Status_NotInstalled" xml:space="preserve"><value>まだインストールされていません。</value></data>
-  <data name="Mode_CloudRedirect_Status_UpdateAvailable" xml:space="preserve"><value>アップデートがあります。</value></data>
-  <data name="Mode_CloudRedirect_Toast_Enabled" xml:space="preserve"><value>有効化しました — 適用するには Steam を再起動してください。</value></data>
-  <data name="Mode_CloudRedirect_Toast_Disabled" xml:space="preserve"><value>無効化しました — 適用するには Steam を再起動してください。</value></data>
-  <data name="Mode_CloudRedirect_Toast_Updated" xml:space="preserve"><value>更新しました — 適用するには Steam を再起動してください。</value></data>
   <data name="Onboarding_Title" xml:space="preserve"><value>LuaTools アプリへようこそ！</value></data>
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>サインインして、ゲームや修正の追加を解放しましょう。</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>サインイン済み ✓</value></data>
@@ -566,12 +552,6 @@
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>どのリリースにも {0} が見つかりませんでした。</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} の検証に失敗しました (sha256 の不一致、または公開された digest がありません)。</value></data>
   <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>リリースに {0} が含まれていません。</value></data>
-  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} には検証に使える公開 digest がありません。</value></data>
-  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} はコード {1} で終了しました。</value></data>
-  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} が配置されませんでした — 修正は完了していません。</value></data>
-  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} は想定されたバージョンではありません — 更新は適用されませんでした。</value></data>
-  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>fixer を起動できませんでした。</value></data>
-  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>cloud_redirect.dll を書き込めませんでした — Steam を閉じて再試行してください。</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>トークンの交換に失敗しました ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>トークンの交換で空のセッションが返されました。</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>サインインしていません。</value></data>
@@ -843,7 +823,6 @@ lua ファイル、その横にあるビルドの lua、保存済みのビルド
   <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>クリップボードが別のプログラムで使用中です — 何もコピーされませんでした。</value></data>
   <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>その場所はもう存在しません: {0}</value></data>
   <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>「{0}」を拒否しました: マニフェストの名前は &lt;depot&gt;_&lt;manifest&gt;.manifest（数字のみ）である必要があります。</value></data>
-  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>CloudRedirect のソースリポジトリは利用できません。この機能は一時的に無効です。</value></data>
   <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>保存済みのビルド（有効な lua なし）</value></data>
   <data name="Settings_Maintenance_Title" xml:space="preserve"><value>メンテナンス</value></data>
   <data name="Settings_Backups_Title" xml:space="preserve"><value>たまったバックアップ</value></data>

@@ -159,22 +159,8 @@
   <data name="Mode_CloseSteamContinue" xml:space="preserve"><value>Закрыть Steam и продолжить</value></data>
   <data name="Mode_Desc_SteamTools" xml:space="preserve"><value>Старый добрый SteamTools — создан китайцами, любим всем миром. Разблокировщик, с которого началась вся эта мода (GreenLuma не существует, тсс). ⚠️ В ДАННЫЙ МОМЕНТ НЕ РАБОТАЕТ, ИСПОЛЬЗУЙТЕ BETTERSTEAMTOOLS</value></data>
   <data name="Mode_Desc_OpenSteamTools" xml:space="preserve"><value>Полностью переработанная версия SteamTools, созданная с нуля. Лучше SteamTools практически во всём.</value></data>
-  <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>SteamTools с парой ловких патчей — куча исправлений и улучшений. Возвращает родной Steam Cloud через Google Drive / OneDrive!</value></data>
-  <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>Управление</value></data>
-  <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>Не удалось загрузить или запустить CloudRedirect.</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>Ночная сборка BetterSteamTools (OST) из свежего исходного кода. Самые свежие исправления, но может быть менее стабильной.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>ЭКСПЕРИМЕНТАЛЬНАЯ</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Возвращает встроенную поддержку Steam Cloud через сторонние хранилища, такие как Google Drive / OneDrive / Cloudflare R2 и другие. Пока совместимо только с BetterSteamTools Nightly. Не забудьте настроить его, нажав "Управление" после включения, а затем перезапустите Steam!</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Выберите BetterSteamTools Nightly, чтобы использовать CloudRedirect.</value></data>
-  <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>Включить</value></data>
-  <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>Выключить</value></data>
-  <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>Включено.</value></data>
-  <data name="Mode_CloudRedirect_Status_Disabled" xml:space="preserve"><value>Установлено, но выключено.</value></data>
-  <data name="Mode_CloudRedirect_Status_NotInstalled" xml:space="preserve"><value>Ещё не установлено.</value></data>
-  <data name="Mode_CloudRedirect_Status_UpdateAvailable" xml:space="preserve"><value>Доступно обновление.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Enabled" xml:space="preserve"><value>Включено — перезапустите Steam, чтобы применить.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Disabled" xml:space="preserve"><value>Выключено — перезапустите Steam, чтобы применить.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Updated" xml:space="preserve"><value>Обновлено — перезапустите Steam, чтобы применить.</value></data>
   <data name="Onboarding_Title" xml:space="preserve"><value>Добро пожаловать в приложение LuaTools!</value></data>
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>Войдите, чтобы разблокировать добавление игр и фиксов.</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>Выполнен вход ✓</value></data>
@@ -566,12 +552,6 @@
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>Не удалось найти {0} ни в одном выпуске.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} не прошёл проверку (несовпадение sha256 или нет опубликованного digest).</value></data>
   <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>В выпуске отсутствует {0}.</value></data>
-  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>Для {0} нет опубликованного digest для проверки.</value></data>
-  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} завершился с кодом {1}.</value></data>
-  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} не развёрнут — исправление не завершено.</value></data>
-  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} — не ожидаемая версия, обновление не применено.</value></data>
-  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Не удалось запустить fixer.</value></data>
-  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>Не удалось записать cloud_redirect.dll — закройте Steam и повторите попытку.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Ошибка обмена токена ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Обмен токена вернул пустой сеанс.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Вход не выполнен.</value></data>
@@ -843,7 +823,6 @@ SHA-256 {3}
   <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>Буфер обмена занят другой программой — ничего не скопировано.</value></data>
   <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Этого расположения больше не существует: {0}</value></data>
   <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>Отклонено «{0}»: манифест должен называться &lt;depot&gt;_&lt;manifest&gt;.manifest (только цифры).</value></data>
-  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>Исходный репозиторий CloudRedirect недоступен. Функция временно отключена.</value></data>
   <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Сохранённые сборки (нет активного lua)</value></data>
   <data name="Settings_Maintenance_Title" xml:space="preserve"><value>ОБСЛУЖИВАНИЕ</value></data>
   <data name="Settings_Backups_Title" xml:space="preserve"><value>Накопленные резервные копии</value></data>

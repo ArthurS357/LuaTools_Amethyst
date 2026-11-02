@@ -159,22 +159,8 @@
   <data name="Mode_CloseSteamContinue" xml:space="preserve"><value>Zavřít Steam a pokračovat</value></data>
   <data name="Mode_Desc_SteamTools" xml:space="preserve"><value>Starý dobrý SteamTools — vytvořený Číňany, milovaný celým světem. Odemykač, který odstartoval celý ten trend (GreenLuma neexistuje, pšt). ⚠️ AKTUÁLNĚ NEFUNGUJE, POUŽIJTE BETTERSTEAMTOOLS</value></data>
   <data name="Mode_Desc_OpenSteamTools" xml:space="preserve"><value>Od základu předělaná verze SteamTools. Lepší než SteamTools prakticky ve všem.</value></data>
-  <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>SteamTools s několika šikovnými záplatami — spousta oprav a vylepšení. Vrací nativní Steam Cloud přes Google Drive / OneDrive!</value></data>
-  <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>Spravovat</value></data>
-  <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>Nepodařilo se stáhnout ani spustit CloudRedirect.</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>Noční sestavení BetterSteamTools (OST) z nejnovějšího zdroje. Nejnovější opravy, ale může být méně stabilní.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>EXPERIMENTÁLNÍ</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Vrací nativní podporu Steam Cloud přes poskytovatele úložišť třetích stran, jako jsou Google Drive / OneDrive / Cloudflare R2 a další. Zatím kompatibilní pouze s BetterSteamTools Nightly. Nezapomeňte jej po zapnutí nastavit kliknutím na "Spravovat" a poté restartujte Steam!</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Vyberte BetterSteamTools Nightly, abyste mohli použít CloudRedirect.</value></data>
-  <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>Zapnout</value></data>
-  <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>Vypnout</value></data>
-  <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>Zapnuto.</value></data>
-  <data name="Mode_CloudRedirect_Status_Disabled" xml:space="preserve"><value>Nainstalováno, ale vypnuto.</value></data>
-  <data name="Mode_CloudRedirect_Status_NotInstalled" xml:space="preserve"><value>Zatím nenainstalováno.</value></data>
-  <data name="Mode_CloudRedirect_Status_UpdateAvailable" xml:space="preserve"><value>K dispozici je aktualizace.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Enabled" xml:space="preserve"><value>Zapnuto — restartujte Steam pro použití.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Disabled" xml:space="preserve"><value>Vypnuto — restartujte Steam pro použití.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Updated" xml:space="preserve"><value>Aktualizováno — restartujte Steam pro použití.</value></data>
   <data name="Onboarding_Title" xml:space="preserve"><value>Vítejte v aplikaci LuaTools!</value></data>
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>Přihlaste se a odemkněte přidávání her a oprav.</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>Přihlášeno ✓</value></data>
@@ -566,12 +552,6 @@ Tím se smažou soubory .lua ze Steam\config\stplug-in. Poté restartujte Steam,
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>{0} nebyl nalezen v žádné verzi.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} neprošel ověřením (nesoulad sha256 nebo chybí zveřejněný digest).</value></data>
   <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Ve verzi chybí {0}.</value></data>
-  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} nemá zveřejněný digest, se kterým by šlo ověřit.</value></data>
-  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} skončil s kódem {1}.</value></data>
-  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} nebyl nasazen — oprava se nedokončila.</value></data>
-  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} není očekávaná verze — aktualizace se nepoužila.</value></data>
-  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Fixer se nepodařilo spustit.</value></data>
-  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>Nelze zapsat cloud_redirect.dll — zavřete Steam a zkuste to znovu.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Výměna tokenu selhala ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Výměna tokenu vrátila prázdnou relaci.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Nejste přihlášeni.</value></data>
@@ -843,7 +823,6 @@ Zapnout?</value></data>
   <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>Schránku právě používá jiný program — nic se nezkopírovalo.</value></data>
   <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Toto umístění už neexistuje: {0}</value></data>
   <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>Odmítnuto „{0}“: manifest se musí jmenovat &lt;depot&gt;_&lt;manifest&gt;.manifest (jen číslice).</value></data>
-  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>Zdrojový repozitář CloudRedirect není dostupný. Funkce je dočasně vypnuta.</value></data>
   <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Uložené buildy (bez aktivního lua)</value></data>
   <data name="Settings_Maintenance_Title" xml:space="preserve"><value>ÚDRŽBA</value></data>
   <data name="Settings_Backups_Title" xml:space="preserve"><value>Nahromaděné zálohy</value></data>

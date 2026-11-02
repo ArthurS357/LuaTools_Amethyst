@@ -49,7 +49,7 @@ public sealed class ServiceErrorStringsTests
 
     [Theory]
     [InlineData("Err_SteamNotFound", "Steam location not found")]
-    [InlineData("Unlocker_Err_CliExit", "exited with code")]
+    [InlineData("Unlocker_Err_ReleaseMissingAsset", "Release is missing")]
     [InlineData("Auth_Err_TokenExchangeFailed", "Token exchange failed")]
     [InlineData("Api_Err_DownloadStalled", "stopped sending data")]
     [InlineData("App_StartupFailed", "couldn't start")]
@@ -63,7 +63,7 @@ public sealed class ServiceErrorStringsTests
     public void Placeholders_format_without_throwing()
     {
         English();
-        string.Format(Strings.Unlocker_Err_CliExit, "fix.exe", 3).Should().Be("fix.exe exited with code 3.");
+        string.Format(Strings.Unlocker_Err_ReleaseMissingAsset, "dwmapi.dll").Should().Be("Release is missing dwmapi.dll.");
         string.Format(Strings.App_StartupFailed, "boom", "/tmp/crash.log").Should().Contain("boom").And.Contain("/tmp/crash.log")
             .And.Contain("\n");
     }

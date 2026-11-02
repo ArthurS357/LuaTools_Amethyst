@@ -159,22 +159,8 @@
   <data name="Mode_CloseSteamContinue" xml:space="preserve"><value>Κλείσιμο Steam και συνέχεια</value></data>
   <data name="Mode_Desc_SteamTools" xml:space="preserve"><value>Το παλιό καλό SteamTools — φτιαγμένο από τους Κινέζους, αγαπημένο σε όλον τον κόσμο. Ο unlocker που ξεκίνησε όλη την τάση (το GreenLuma δεν υπάρχει, σσς). ⚠️ ΔΕΝ ΛΕΙΤΟΥΡΓΕΙ ΑΥΤΗ ΤΗ ΣΤΙΓΜΗ, ΧΡΗΣΙΜΟΠΟΙΗΣΤΕ ΤΟ BETTERSTEAMTOOLS</value></data>
   <data name="Mode_Desc_OpenSteamTools" xml:space="preserve"><value>Πλήρης ανακατασκευή του SteamTools από την αρχή. Καλύτερο από το SteamTools σχεδόν σε κάθε τομέα.</value></data>
-  <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>SteamTools με μερικά έξυπνα patch — ένα σωρό διορθώσεις και βελτιώσεις. Επαναφέρει το εγγενές Steam Cloud μέσω Google Drive / OneDrive!</value></data>
-  <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>Διαχείριση</value></data>
-  <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>Δεν ήταν δυνατή η λήψη ή η εκκίνηση του CloudRedirect.</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>Νυχτερινή έκδοση του BetterSteamTools (OST) από τον πιο πρόσφατο κώδικα. Οι νεότερες διορθώσεις, αλλά ίσως λιγότερο σταθερή.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>ΠΕΙΡΑΜΑΤΙΚΟ</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Επαναφέρει την εγγενή υποστήριξη Steam Cloud μέσω παρόχων αποθήκευσης τρίτων, όπως Google Drive / OneDrive / Cloudflare R2 και άλλων. Προς το παρόν συμβατό μόνο με το BetterSteamTools Nightly. Μην ξεχάσετε να το ρυθμίσετε κάνοντας κλικ στο "Διαχείριση" μετά την ενεργοποίηση και έπειτα επανεκκινήστε το Steam!</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Επιλέξτε BetterSteamTools Nightly για να χρησιμοποιήσετε το CloudRedirect.</value></data>
-  <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>Ενεργοποίηση</value></data>
-  <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>Απενεργοποίηση</value></data>
-  <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>Ενεργοποιημένο.</value></data>
-  <data name="Mode_CloudRedirect_Status_Disabled" xml:space="preserve"><value>Εγκατεστημένο, αλλά απενεργοποιημένο.</value></data>
-  <data name="Mode_CloudRedirect_Status_NotInstalled" xml:space="preserve"><value>Δεν έχει εγκατασταθεί ακόμη.</value></data>
-  <data name="Mode_CloudRedirect_Status_UpdateAvailable" xml:space="preserve"><value>Διαθέσιμη ενημέρωση.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Enabled" xml:space="preserve"><value>Ενεργοποιήθηκε — επανεκκινήστε το Steam για εφαρμογή.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Disabled" xml:space="preserve"><value>Απενεργοποιήθηκε — επανεκκινήστε το Steam για εφαρμογή.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Updated" xml:space="preserve"><value>Ενημερώθηκε — επανεκκινήστε το Steam για εφαρμογή.</value></data>
   <data name="Onboarding_Title" xml:space="preserve"><value>Καλώς ήρθατε στην εφαρμογή LuaTools!</value></data>
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>Συνδεθείτε για να ξεκλειδώσετε την προσθήκη παιχνιδιών και διορθώσεων.</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>Συνδεθήκατε ✓</value></data>
@@ -566,12 +552,6 @@
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>Δεν βρέθηκε το {0} σε καμία έκδοση.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>Το {0} απέτυχε στον έλεγχο (ασυμφωνία sha256 ή δεν υπάρχει δημοσιευμένο digest).</value></data>
   <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Από την έκδοση λείπει το {0}.</value></data>
-  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>Το {0} δεν έχει δημοσιευμένο digest για έλεγχο.</value></data>
-  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>Το {0} τερματίστηκε με κωδικό {1}.</value></data>
-  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>Το {0} δεν εγκαταστάθηκε — η διόρθωση δεν ολοκληρώθηκε.</value></data>
-  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>Το {0} δεν είναι η αναμενόμενη έκδοση — η ενημέρωση δεν εφαρμόστηκε.</value></data>
-  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Δεν ήταν δυνατή η εκκίνηση του fixer.</value></data>
-  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>Δεν ήταν δυνατή η εγγραφή του cloud_redirect.dll — κλείστε το Steam και δοκιμάστε ξανά.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Η ανταλλαγή token απέτυχε ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Η ανταλλαγή token επέστρεψε κενή συνεδρία.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Δεν έχετε συνδεθεί.</value></data>
@@ -843,7 +823,6 @@ SHA-256 {3}
   <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>Το πρόχειρο χρησιμοποιείται από άλλο πρόγραμμα — δεν αντιγράφηκε τίποτα.</value></data>
   <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Αυτή η τοποθεσία δεν υπάρχει πια: {0}</value></data>
   <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>Απορρίφθηκε το «{0}»: ένα manifest πρέπει να ονομάζεται &lt;depot&gt;_&lt;manifest&gt;.manifest (μόνο ψηφία).</value></data>
-  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>Το αποθετήριο πηγής του CloudRedirect δεν είναι διαθέσιμο. Η λειτουργία είναι προσωρινά απενεργοποιημένη.</value></data>
   <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Αποθηκευμένα builds (χωρίς ενεργό lua)</value></data>
   <data name="Settings_Maintenance_Title" xml:space="preserve"><value>ΣΥΝΤΗΡΗΣΗ</value></data>
   <data name="Settings_Backups_Title" xml:space="preserve"><value>Συσσωρευμένα αντίγραφα ασφαλείας</value></data>

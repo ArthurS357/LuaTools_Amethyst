@@ -14,14 +14,6 @@ namespace LuaToolsGui.Services;
 public static class ModeCatalog
 {
     /// <summary>
-    /// Whether the CloudRedirect add-on panel (bottom dock of the Mode page) is offered. TEMPORARILY false:
-    /// the upstream repo and its account 404, so the DLL cannot be fetched or updated. Same terms as the
-    /// standalone CloudRedirect mode in <see cref="Offered"/>. A DLL already on disk keeps working; this
-    /// only hides the panel. ponytail: a constant, not a live probe — flip it when the source is decided.
-    /// </summary>
-    public static bool CloudRedirectAddonAvailable => false;
-
-    /// <summary>
     /// The definitions to show, in page order.
     /// </summary>
     /// <param name="all">Every known definition (<see cref="UnlockerService.Modes"/>).</param>
@@ -37,11 +29,7 @@ public static class ModeCatalog
 
         return
         [
-            .. all
-                // CloudRedirect is TEMPORARILY hidden (the mode is currently broken) and is expected back,
-                // so it is hidden unconditionally rather than retired — including when it is active.
-                .Where(d => d.Mode != UnlockerMode.CloudRedirect)
-                .Where(d => !d.Retired || active == d.Mode)
+            .. all.Where(d => !d.Retired || active == d.Mode)
         ];
     }
 }

@@ -51,7 +51,7 @@ and reference it. That way the later pass only touches the `Strings.<tag>.resx` 
    Keep the same `{0}`/`{1}` in your translation; you may reorder them. Dropping one crashes that screen.
    - `"Page {0} of {1}"` → German `"Seite {0} von {1}"` ✓
 2. **Don't translate these.** Leave them as-is:
-   - Product names: **SteamTools**, **OpenSteamTools**, **CloudRedirect**, **Steam**, **Discord**, **Hubcap**.
+   - Product names: **SteamTools**, **OpenSteamTools**, **AmethystTool**, **Steam**, **Discord**, **Hubcap**.
    - Technical tokens: **App ID**, **DLC**, file paths like `steam\config\stplug-in`, extensions `.lua` / `.manifest` / `.zip`.
    - The picker filter string `Lua / manifest / zip|*.lua;...`: only translate the human labels
      ("All files"), never the `|` parts or `*.ext` patterns.

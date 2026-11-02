@@ -142,15 +142,9 @@ public class DownloadTrustTests
             AppConfig.SteamToolsOwner, AppConfig.SteamToolsRepo,
             AppConfig.OpenSteamToolsOwner, AppConfig.OpenSteamToolsRepo,
             AppConfig.OstNightlyOwner, AppConfig.OstNightlyRepo,
-            AppConfig.CloudRedirectOwner, AppConfig.CloudRedirectRepoName,
             AppConfig.PluginReleasesOwner, AppConfig.PluginReleasesRepo,
         }.Should().OnlyContain(s => !string.IsNullOrWhiteSpace(s) && !s.Contains('/'),
             "a blank or slash-bearing half would make the pin match nothing, or the wrong thing");
-
-    [Fact]
-    public void The_combined_cloudredirect_slug_matches_its_two_halves() =>
-        AppConfig.CloudRedirectRepo.Should()
-            .Be($"{AppConfig.CloudRedirectOwner}/{AppConfig.CloudRedirectRepoName}");
 
     // ── Mirror candidates ─────────────────────────────────────────────────────
 

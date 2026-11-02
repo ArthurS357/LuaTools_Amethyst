@@ -71,8 +71,8 @@ public class GithubProxy
     /// <c>browser_download_url</c> and <c>digest</c> are read out of the SAME release JSON, and that JSON
     /// can be served by an API mirror. A hostile mirror therefore only has to name a DIFFERENT github.com
     /// repository and supply that payload's hash: the host check passes, the hash check passes, and the
-    /// bytes it chose are copied into the Steam root where steam.exe loads them (or, for the CloudRedirect
-    /// CLI, executed outright). Pinning owner/repo removes the mirror's ability to choose the repository,
+    /// bytes it chose are copied into the Steam root where steam.exe loads them (or, for a
+    /// downloaded tool, executed outright). Pinning owner/repo removes the mirror's ability to choose the repository,
     /// leaving it able only to pick among releases the real project actually published.
     /// </para>
     ///

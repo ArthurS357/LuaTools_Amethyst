@@ -82,7 +82,6 @@ public class BetterSteamToolsCardTests
         new ModeCardViewModel(UnlockerMode.OpenSteamTools, "BetterSteamTools", "d").ShowPrivacyWarning.Should().BeTrue();
 
         new ModeCardViewModel(UnlockerMode.OpenSteamToolsNightly, "n", "d").ShowPrivacyWarning.Should().BeFalse();
-        new ModeCardViewModel(UnlockerMode.CloudRedirect, "c", "d").ShowPrivacyWarning.Should().BeFalse();
     }
 
     [Fact]

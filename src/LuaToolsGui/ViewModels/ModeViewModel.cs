@@ -18,7 +18,6 @@ public partial class ModeCardViewModel(UnlockerMode mode, string title, string d
     [ObservableProperty] private string _buttonText = Resources.Strings.Mode_Btn_Install;
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(ShowManage))]
     [NotifyPropertyChangedFor(nameof(ShowUninstall))]
     [NotifyPropertyChangedFor(nameof(ShowNoRecordHint))]
     private bool _isActive;
@@ -39,10 +38,6 @@ public partial class ModeCardViewModel(UnlockerMode mode, string title, string d
     /// a dead button with no reason attached.</summary>
     public bool ShowNoRecordHint => IsActive && !HasInstallRecord;
 
-    /// <summary>The CloudRedirect "Manage" button shows only on the CloudRedirect card while it's active.</summary>
-    public bool IsCloudRedirect => Mode == UnlockerMode.CloudRedirect;
-    public bool ShowManage => IsCloudRedirect && IsActive;
-
     /// <summary>BetterSteamTools (enum still OpenSteamTools internally) is the project AmethystTool forks:
     /// "Upstream" badge. "Recommended" belongs to the AmethystTool card, which has its own template.</summary>
     public bool IsUpstream => Mode == UnlockerMode.OpenSteamTools;
@@ -51,8 +46,7 @@ public partial class ModeCardViewModel(UnlockerMode mode, string title, string d
     /// says so (<c>Mode_Warn_Telemetry</c>) rather than leaving it to the release notes.</summary>
     public bool ShowPrivacyWarning => IsUpstream;
 
-    /// <summary>The nightly build gets the "Experimental" badge. It no longer claims CloudRedirect
-    /// support: that repo is gone and the add-on panel is hidden (<see cref="ModeCatalog.CloudRedirectAddonAvailable"/>).</summary>
+    /// <summary>The nightly build gets the "Experimental" badge.</summary>
     public bool IsExperimental => Mode == UnlockerMode.OpenSteamToolsNightly;
 }
 
@@ -73,14 +67,12 @@ public partial class ModeViewModel : ObservableObject
     private readonly UnlockerService _unlocker;
     private readonly ToastService _toast;
     private readonly SteamService _steam;
-    private readonly CloudRedirectService _cloudRedirect;
     private readonly ModeRemovalService _modeRemoval;
 
     public ObservableCollection<ModeCardViewModel> Cards { get; } = [];
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(NotBusy))]
-    [NotifyPropertyChangedFor(nameof(CanUseCloudRedirect))]
     [NotifyPropertyChangedFor(nameof(CanUninstallMode))]
     [NotifyPropertyChangedFor(nameof(CanUninstallAmethyst))]
     private bool _isBusy;
@@ -112,13 +104,11 @@ public partial class ModeViewModel : ObservableObject
     private PendingAction _pending;
 
     public ModeViewModel(UnlockerService unlocker, ToastService toast, SteamService steam,
-        CloudRedirectService cloudRedirect, ModeRemovalService modeRemoval,
-        AmethystToolViewModel amethyst)
+        ModeRemovalService modeRemoval, AmethystToolViewModel amethyst)
     {
         _unlocker = unlocker;
         _toast = toast;
         _steam = steam;
-        _cloudRedirect = cloudRedirect;
         _modeRemoval = modeRemoval;
         Amethyst = amethyst;
 
@@ -162,155 +152,6 @@ public partial class ModeViewModel : ObservableObject
     /// </summary>
     public bool CanUninstallAmethyst => Amethyst.HasInstallRecord && !IsBusy;
 
-    /// <summary>CloudRedirect "Manage": download (cache) the CloudRedirect GUI and launch it.</summary>
-    [RelayCommand]
-    private async Task ManageCloudRedirect()
-    {
-        if (IsBusy) return;
-        IsBusy = true;
-        IsProgressIndeterminate = true;
-        Progress = 0;
-        try
-        {
-            var prog = new Progress<double?>(p =>
-            {
-                IsProgressIndeterminate = p is null;
-                if (p is not null) Progress = p.Value * 100;
-            });
-
-            bool ok = await _cloudRedirect.LaunchAsync(prog);
-            if (!ok)
-                _toast.Show(Resources.Strings.Mode_CloudRedirect_Manage,
-                    Resources.Strings.Mode_CloudRedirect_LaunchFailed, error: true);
-        }
-        finally
-        {
-            IsBusy = false;
-            IsProgressIndeterminate = false;
-        }
-    }
-
-    // ── CloudRedirect add-on (bottom panel; usable only when Nightly BST is active) ───
-    private const string CloudRedirectTitle = "CloudRedirect"; // product name — not localized
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(ShowCloudRedirectManage))]
-    [NotifyPropertyChangedFor(nameof(ShowCloudRedirectUpdate))]
-    [NotifyPropertyChangedFor(nameof(CanUseCloudRedirect))]
-    private bool _cloudRedirectUnlocked;
-
-    /// <summary>Whether the add-on panel is shown at all (see <see cref="ModeCatalog.CloudRedirectAddonAvailable"/>).</summary>
-    public bool IsCloudRedirectAddonVisible => ModeCatalog.CloudRedirectAddonAvailable;
-
-    /// <summary>Buttons on the add-on panel are usable only when unlocked (Nightly active) and idle.</summary>
-    public bool CanUseCloudRedirect => CloudRedirectUnlocked && !IsBusy;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(CloudRedirectToggleText))]
-    [NotifyPropertyChangedFor(nameof(ShowCloudRedirectManage))]
-    private bool _cloudRedirectEnabled;
-
-    [ObservableProperty] private bool _cloudRedirectInstalled;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(ShowCloudRedirectUpdate))]
-    private bool _cloudRedirectUpdateAvailable;
-
-    [ObservableProperty] private string _cloudRedirectStatusText = "";
-
-    public string CloudRedirectToggleText => CloudRedirectEnabled
-        ? Resources.Strings.Mode_CloudRedirect_Disable
-        : Resources.Strings.Mode_CloudRedirect_Enable;
-    public bool ShowCloudRedirectUpdate => CloudRedirectUnlocked && CloudRedirectUpdateAvailable;
-    public bool ShowCloudRedirectManage => CloudRedirectUnlocked && CloudRedirectEnabled;
-
-    /// <summary>Refresh the add-on panel state. Reads dll/toml from disk (cheap); checks GitHub for an
-    /// update only when unlocked (Nightly active), respecting forceRefresh.</summary>
-    private async Task RefreshCloudRedirectAsync(bool forceRefresh)
-    {
-        if (!ModeCatalog.CloudRedirectAddonAvailable) return; // panel hidden, commands stay locked — no pointless 404 call
-        CloudRedirectUnlocked = _unlocker.SelectedMode == UnlockerMode.OpenSteamToolsNightly;
-        var s = await _unlocker.GetCloudRedirectStateAsync(checkUpdate: CloudRedirectUnlocked, forceRefresh);
-        CloudRedirectInstalled = s.Installed;
-        CloudRedirectEnabled = s.Enabled;
-        CloudRedirectUpdateAvailable = s.UpdateAvailable;
-
-        CloudRedirectStatusText = !CloudRedirectUnlocked ? Resources.Strings.Mode_CloudRedirect_Locked
-            : !s.Installed ? Resources.Strings.Mode_CloudRedirect_Status_NotInstalled
-            : s.UpdateAvailable ? Resources.Strings.Mode_CloudRedirect_Status_UpdateAvailable
-            : s.Enabled ? Resources.Strings.Mode_CloudRedirect_Status_Enabled
-            : Resources.Strings.Mode_CloudRedirect_Status_Disabled;
-    }
-
-    /// <summary>Enable/disable the add-on (edits opensteamtool.toml; first enable also downloads the dll).
-    /// Lightweight — no Steam close; the change applies on the next Steam launch.</summary>
-    [RelayCommand]
-    private async Task ToggleCloudRedirect()
-    {
-        if (IsBusy || !CloudRedirectUnlocked) return;
-        bool enabling = !CloudRedirectEnabled;
-        IsBusy = true;
-        IsProgressIndeterminate = true;
-        Progress = 0;
-        try
-        {
-            var prog = new Progress<double?>(p =>
-            {
-                IsProgressIndeterminate = p is null;
-                if (p is not null) Progress = p.Value * 100;
-            });
-
-            var result = enabling
-                ? await _unlocker.EnableCloudRedirectAsync(prog)
-                : _unlocker.DisableCloudRedirect();
-
-            if (result.Success)
-                _toast.Show(CloudRedirectTitle, enabling
-                    ? Resources.Strings.Mode_CloudRedirect_Toast_Enabled
-                    : Resources.Strings.Mode_CloudRedirect_Toast_Disabled);
-            else
-                _toast.Show(CloudRedirectTitle, result.Error ?? "", error: true);
-
-            await LoadAsync();
-        }
-        finally
-        {
-            IsBusy = false;
-            IsProgressIndeterminate = false;
-        }
-    }
-
-    /// <summary>Replace cloud_redirect.dll with the latest. Reports "close Steam" if it's locked.</summary>
-    [RelayCommand]
-    private async Task UpdateCloudRedirect()
-    {
-        if (IsBusy || !CloudRedirectUnlocked) return;
-        IsBusy = true;
-        IsProgressIndeterminate = true;
-        Progress = 0;
-        try
-        {
-            var prog = new Progress<double?>(p =>
-            {
-                IsProgressIndeterminate = p is null;
-                if (p is not null) Progress = p.Value * 100;
-            });
-
-            var result = await _unlocker.UpdateCloudRedirectAsync(prog);
-            if (result.Success)
-                _toast.Show(CloudRedirectTitle, Resources.Strings.Mode_CloudRedirect_Toast_Updated);
-            else
-                _toast.Show(CloudRedirectTitle, result.Error ?? "", error: true);
-
-            await LoadAsync();
-        }
-        finally
-        {
-            IsBusy = false;
-            IsProgressIndeterminate = false;
-        }
-    }
-
     /// <summary>True if a hidden mode should be shown: its reveal-file exists, or it's the active mode.</summary>
     private bool IsModeVisible(ModeDefinition def)
     {
@@ -324,9 +165,8 @@ public partial class ModeViewModel : ObservableObject
     /// existing cards so their bound state isn't reset; adds/removes as visibility changes.</summary>
     private void SyncCards()
     {
-        // Which modes are offered at all is ModeCatalog's decision, not this page's — see there for why
-        // CloudRedirect and a retired mode are hidden on different terms. IsModeVisible is the separate,
-        // per-install question of whether a reveal-file is present.
+        // Which modes are offered at all is ModeCatalog's decision, not this page's — see there.
+        // IsModeVisible is the separate, per-install question of whether a reveal-file is present.
         var visible = ModeCatalog.Offered(_unlocker.Modes, _unlocker.SelectedMode)
             .Where(IsModeVisible)
             .ToList();
@@ -386,9 +226,6 @@ public partial class ModeViewModel : ObservableObject
         // AmethystTool sits with the Mode cards and refreshes with them.
         await Amethyst.LoadAsync(forceRefresh);
         OnPropertyChanged(nameof(CanUninstallAmethyst));
-
-        // Bottom CloudRedirect add-on panel (locked unless Nightly BST is the active mode).
-        await RefreshCloudRedirectAsync(forceRefresh);
     }
 
     private DateTime _lastCheck;
@@ -616,8 +453,7 @@ public partial class ModeViewModel : ObservableObject
             });
 
             // Correct order: kill Steam → write the files → relaunch Steam.
-            // (Files can't be overwritten while Steam holds them open. CloudRedirect's CLI also closes
-            //  Steam itself, but stopping first is harmless and keeps all modes consistent.)
+            // (Files can't be overwritten while Steam holds them open.)
             await Task.Run(_steam.StopSteam);
 
             var result = await _unlocker.InstallAsync(mode, prog);

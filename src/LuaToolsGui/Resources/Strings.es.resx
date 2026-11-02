@@ -159,22 +159,8 @@
   <data name="Mode_CloseSteamContinue" xml:space="preserve"><value>Cerrar Steam y continuar</value></data>
   <data name="Mode_Desc_SteamTools" xml:space="preserve"><value>El viejo y querido SteamTools: hecho por los chinos, amado por el mundo. El desbloqueador que inició toda la tendencia (GreenLuma no existe, shh). ⚠️ ACTUALMENTE NO FUNCIONA, USA BETTERSTEAMTOOLS</value></data>
   <data name="Mode_Desc_OpenSteamTools" xml:space="preserve"><value>Remake desde cero de SteamTools. Mejor que SteamTools en prácticamente todo.</value></data>
-  <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>SteamTools con algunos parches ingeniosos: un montón de correcciones y mejoras. ¡Recupera el Steam Cloud nativo mediante Google Drive / OneDrive!</value></data>
-  <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>Gestionar</value></data>
-  <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>No se pudo descargar ni iniciar CloudRedirect.</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>Compilación nocturna de BetterSteamTools (OST) desde el código más reciente. Las correcciones más recientes, pero puede ser menos estable.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>EXPERIMENTAL</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Recupera la compatibilidad nativa con Steam Cloud mediante proveedores de almacenamiento externos como Google Drive / OneDrive / Cloudflare R2 y más. Por ahora, solo es compatible con BetterSteamTools Nightly. No olvides configurarlo haciendo clic en "Gestionar" después de activarlo y, luego, reinicia Steam.</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Selecciona BetterSteamTools Nightly para usar CloudRedirect.</value></data>
-  <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>Activar</value></data>
-  <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>Desactivar</value></data>
-  <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>Activado.</value></data>
-  <data name="Mode_CloudRedirect_Status_Disabled" xml:space="preserve"><value>Instalado, pero desactivado.</value></data>
-  <data name="Mode_CloudRedirect_Status_NotInstalled" xml:space="preserve"><value>Aún no instalado.</value></data>
-  <data name="Mode_CloudRedirect_Status_UpdateAvailable" xml:space="preserve"><value>Actualización disponible.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Enabled" xml:space="preserve"><value>Activado: reinicia Steam para aplicar.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Disabled" xml:space="preserve"><value>Desactivado: reinicia Steam para aplicar.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Updated" xml:space="preserve"><value>Actualizado: reinicia Steam para aplicar.</value></data>
   <data name="Onboarding_Title" xml:space="preserve"><value>¡Bienvenido a la app LuaTools!</value></data>
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>Inicia sesión para desbloquear añadir juegos y arreglos.</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>Sesión iniciada ✓</value></data>
@@ -566,12 +552,6 @@ Esto borra los archivos .lua de Steam\config\stplug-in. Reinicia Steam después 
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>No se encontró {0} en ninguna versión.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} no superó la verificación (sha256 no coincide o no hay digest publicado).</value></data>
   <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>A la versión le falta {0}.</value></data>
-  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} no tiene un digest publicado con el que verificarlo.</value></data>
-  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} terminó con el código {1}.</value></data>
-  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} no se implementó: la corrección no se completó.</value></data>
-  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} no es la versión esperada: la actualización no se aplicó.</value></data>
-  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>No se pudo iniciar el fixer.</value></data>
-  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>No se pudo escribir cloud_redirect.dll: cierra Steam e inténtalo de nuevo.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Falló el intercambio del token ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>El intercambio del token devolvió una sesión vacía.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>No has iniciado sesión.</value></data>
@@ -843,7 +823,6 @@ Puedes rechazarlo y seguir usando el resto de LuaTools; solo el botón «Add via
   <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>El portapapeles está en uso por otro programa — no se copió nada.</value></data>
   <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Esa ubicación ya no existe: {0}</value></data>
   <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>Rechazado '{0}': un manifest debe llamarse &lt;depot&gt;_&lt;manifest&gt;.manifest (solo dígitos).</value></data>
-  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>El repositorio de origen de CloudRedirect no está disponible. La función está desactivada temporalmente.</value></data>
   <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Builds guardadas (sin lua activo)</value></data>
   <data name="Settings_Maintenance_Title" xml:space="preserve"><value>MANTENIMIENTO</value></data>
   <data name="Settings_Backups_Title" xml:space="preserve"><value>Copias de seguridad acumuladas</value></data>

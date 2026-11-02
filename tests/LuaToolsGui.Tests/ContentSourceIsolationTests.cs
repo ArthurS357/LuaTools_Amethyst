@@ -42,13 +42,11 @@ public class ContentSourceIsolationTests
             foreach (var source in AppConfig.PluginSources)
                 Assert.DoesNotContain(source.Slug, feed, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain(AppConfig.SteamlessRepo, feed, StringComparison.OrdinalIgnoreCase);
-            Assert.DoesNotContain(AppConfig.CloudRedirectRepo, feed, StringComparison.OrdinalIgnoreCase);
         }
 
         // ...while every content source stays configured.
         Assert.False(string.IsNullOrWhiteSpace(AppConfig.PluginReleasesRepo));
         Assert.False(string.IsNullOrWhiteSpace(AppConfig.SteamlessRepo));
-        Assert.False(string.IsNullOrWhiteSpace(AppConfig.CloudRedirectRepo));
         Assert.False(string.IsNullOrWhiteSpace(AppConfig.ManifestBackendUrl));
         Assert.False(string.IsNullOrWhiteSpace(AppConfig.ApiBaseUrl));
     }
@@ -79,6 +77,5 @@ public class ContentSourceIsolationTests
         foreach (var source in AppConfig.PluginSources)
             Assert.DoesNotContain(source.Slug, AppConfig.UpstreamReleaseRepos, StringComparer.OrdinalIgnoreCase);
         Assert.DoesNotContain(AppConfig.SteamlessRepo, AppConfig.UpstreamReleaseRepos, StringComparer.OrdinalIgnoreCase);
-        Assert.DoesNotContain(AppConfig.CloudRedirectRepo, AppConfig.UpstreamReleaseRepos, StringComparer.OrdinalIgnoreCase);
     }
 }

@@ -36,7 +36,6 @@ public class ActiveBackendTests
     [InlineData(UnlockerMode.SteamTools)]
     [InlineData(UnlockerMode.OpenSteamTools)]
     [InlineData(UnlockerMode.OpenSteamToolsNightly)]
-    [InlineData(UnlockerMode.CloudRedirect)]
     public void A_mode_holding_the_slot_leaves_AmethystTool_inactive(UnlockerMode mode)
     {
         string persisted = mode.ToString();
@@ -147,6 +146,27 @@ public class ActiveBackendTests
     }
 
     [Theory]
+    [InlineData("CloudRedirect")]
+    [InlineData("2")]
+    public void A_CloudRedirect_choice_left_by_an_older_build_selects_nothing(string persisted)
+    {
+        // CloudRedirect was removed. Its name (or number) can still be in a user's settings.json: it must
+        // read as "no backend", never as a mode this build would look up, check or reinstall.
+        ActiveBackendPolicy.ActiveMode(persisted).Should().BeNull();
+        ActiveBackendPolicy.Resolve(persisted).Should().Be(ActiveBackend.None);
+    }
+
+    [Fact]
+    public void The_CloudRedirect_member_stays_as_a_tombstone_so_old_values_keep_their_meaning()
+    {
+        // Deleting it would renumber OpenSteamToolsNightly (3 -> 2) under any record that stored the number.
+        ((int)UnlockerMode.CloudRedirect).Should().Be(2);
+        ((int)UnlockerMode.OpenSteamToolsNightly).Should().Be(3);
+        UnlockerService.AllModes.Should().NotContain(d => d.Mode == UnlockerMode.CloudRedirect,
+            "nothing may install, detect or offer it");
+    }
+
+    [Theory]
     [InlineData("42")]
     [InlineData("-1")]
     public void A_numeric_value_outside_the_enum_selects_nothing(string persisted) =>
@@ -157,14 +177,13 @@ public class ActiveBackendTests
 
     private static ModeDefinition Def(UnlockerMode mode, bool retired = false) =>
         new(mode, mode.ToString(), "desc", ModeKind.Loose, "owner", "repo", null,
-            ["dwmapi.dll"], null, null, null, null, HiddenUnlessFile: null, Retired: retired);
+            ["dwmapi.dll"], null, HiddenUnlessFile: null, Retired: retired);
 
     private static readonly ModeDefinition[] Catalogue =
     [
         Def(UnlockerMode.SteamTools, retired: true),
         Def(UnlockerMode.OpenSteamTools),
         Def(UnlockerMode.OpenSteamToolsNightly),
-        Def(UnlockerMode.CloudRedirect),
     ];
 
     [Fact]
@@ -181,14 +200,6 @@ public class ActiveBackendTests
         // Its files are next to steam.exe right now, and that card is the only route to Uninstall.
         ModeCatalog.Offered(Catalogue, active: UnlockerMode.SteamTools)
             .Select(d => d.Mode).Should().Contain(UnlockerMode.SteamTools);
-    }
-
-    [Fact]
-    public void CloudRedirect_stays_hidden_even_when_it_is_active()
-    {
-        // Unlike retirement, this one is temporary and unconditional — the existing behaviour, unchanged.
-        ModeCatalog.Offered(Catalogue, active: UnlockerMode.CloudRedirect)
-            .Select(d => d.Mode).Should().NotContain(UnlockerMode.CloudRedirect);
     }
 
     [Fact]

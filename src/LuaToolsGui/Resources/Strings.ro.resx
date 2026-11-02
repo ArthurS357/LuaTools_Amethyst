@@ -159,22 +159,8 @@
   <data name="Mode_CloseSteamContinue" xml:space="preserve"><value>Închide Steam și continuă</value></data>
   <data name="Mode_Desc_SteamTools" xml:space="preserve"><value>Bunul și vechiul SteamTools — făcut de chinezi, iubit de întreaga lume. Deblocatorul care a pornit întregul trend (GreenLuma nu există, șșș). ⚠️ NU FUNCȚIONEAZĂ ÎN PREZENT, FOLOSEȘTE BETTERSTEAMTOOLS</value></data>
   <data name="Mode_Desc_OpenSteamTools" xml:space="preserve"><value>Remake de la zero al SteamTools. Mai bun decât SteamTools în aproape toate privințele.</value></data>
-  <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>SteamTools cu câteva patch-uri ingenioase — o grămadă de remedieri și îmbunătățiri. Readuce Steam Cloud nativ prin Google Drive / OneDrive!</value></data>
-  <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>Gestionează</value></data>
-  <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>Nu s-a putut descărca sau lansa CloudRedirect.</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>Versiune nightly a BetterSteamTools (OST) din cel mai recent cod sursă. Cele mai noi remedieri, dar poate fi mai puțin stabilă.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>EXPERIMENTAL</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Readuce suportul nativ Steam Cloud prin furnizori de stocare terți precum Google Drive / OneDrive / Cloudflare R2 și altele. Momentan compatibil doar cu BetterSteamTools Nightly. Nu uita să îl configurezi apăsând pe "Gestionează" după activare, apoi repornește Steam!</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Selectează BetterSteamTools Nightly pentru a folosi CloudRedirect.</value></data>
-  <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>Activează</value></data>
-  <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>Dezactivează</value></data>
-  <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>Activat.</value></data>
-  <data name="Mode_CloudRedirect_Status_Disabled" xml:space="preserve"><value>Instalat, dar dezactivat.</value></data>
-  <data name="Mode_CloudRedirect_Status_NotInstalled" xml:space="preserve"><value>Încă neinstalat.</value></data>
-  <data name="Mode_CloudRedirect_Status_UpdateAvailable" xml:space="preserve"><value>Actualizare disponibilă.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Enabled" xml:space="preserve"><value>Activat — repornește Steam pentru a aplica.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Disabled" xml:space="preserve"><value>Dezactivat — repornește Steam pentru a aplica.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Updated" xml:space="preserve"><value>Actualizat — repornește Steam pentru a aplica.</value></data>
   <data name="Onboarding_Title" xml:space="preserve"><value>Bine ai venit în aplicația LuaTools!</value></data>
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>Conectează-te pentru a debloca adăugarea de jocuri și remedieri.</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>Conectat ✓</value></data>
@@ -566,12 +552,6 @@ Aceasta șterge fișierele .lua din Steam\config\stplug-in. Repornește Steam du
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>{0} nu a fost găsit în nicio versiune.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} nu a trecut verificarea (sha256 nu corespunde sau nu există digest publicat).</value></data>
   <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Versiunii îi lipsește {0}.</value></data>
-  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} nu are un digest publicat cu care să fie verificat.</value></data>
-  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} s-a încheiat cu codul {1}.</value></data>
-  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} nu a fost implementat — remedierea nu s-a finalizat.</value></data>
-  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} nu este versiunea așteptată — actualizarea nu a fost aplicată.</value></data>
-  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Fixer-ul nu a putut fi pornit.</value></data>
-  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>Nu s-a putut scrie cloud_redirect.dll — închide Steam și încearcă din nou.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Schimbul de token a eșuat ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Schimbul de token a returnat o sesiune goală.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Nu ești conectat.</value></data>
@@ -843,7 +823,6 @@ O activezi?</value></data>
   <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>Clipboardul este folosit de alt program — nu s-a copiat nimic.</value></data>
   <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Acea locație nu mai există: {0}</value></data>
   <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>Refuzat „{0}”: un manifest trebuie numit &lt;depot&gt;_&lt;manifest&gt;.manifest (doar cifre).</value></data>
-  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>Depozitul sursă CloudRedirect nu este disponibil. Funcția este dezactivată temporar.</value></data>
   <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Build-uri salvate (niciun lua activ)</value></data>
   <data name="Settings_Maintenance_Title" xml:space="preserve"><value>ÎNTREȚINERE</value></data>
   <data name="Settings_Backups_Title" xml:space="preserve"><value>Copii de siguranță acumulate</value></data>

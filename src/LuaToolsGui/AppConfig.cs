@@ -93,12 +93,6 @@ public static class AppConfig
     public const string OstNightlyOwner = "madoiscool";
     public const string OstNightlyRepo = "OST-Nightly";
 
-    // CloudRedirect (Selectively11) — the Mode page "Manage" button downloads the latest CloudRedirect.exe
-    // GUI manager from here and launches it. (Separate from the CLI fixer used by the mode install flow.)
-    public const string CloudRedirectOwner = "Selectively11";
-    public const string CloudRedirectRepoName = "CloudRedirect";
-    public const string CloudRedirectRepo = CloudRedirectOwner + "/" + CloudRedirectRepoName;
-
     // ── DepotDownloaderMod: the depot-download engine ────────────────
     // DepotDownloaderService downloads this zip, extracts it, and RUNS the exe inside it to pull raw depot
     // content from Steam's CDN. It is the single highest-trust third-party artifact this app touches.

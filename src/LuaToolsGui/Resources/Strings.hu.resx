@@ -159,22 +159,8 @@
   <data name="Mode_CloseSteamContinue" xml:space="preserve"><value>Steam bezárása és folytatás</value></data>
   <data name="Mode_Desc_SteamTools" xml:space="preserve"><value>A jó öreg SteamTools — kínaiak készítették, a világ szereti. A feloldó, amely elindította az egész trendet (a GreenLuma nem létezik, pszt). ⚠️ JELENLEG NEM MŰKÖDIK, HASZNÁLD AZ ALÁBBI BETTERSTEAMTOOLS-T</value></data>
   <data name="Mode_Desc_OpenSteamTools" xml:space="preserve"><value>A SteamTools alapoktól újraépített változata. Gyakorlatilag minden téren jobb a SteamToolsnál.</value></data>
-  <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>SteamTools néhány ügyes javítással — rengeteg javítás és fejlesztés. Visszahozza a natív Steam Cloudot Google Drive / OneDrive segítségével!</value></data>
-  <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>Kezelés</value></data>
-  <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>A CloudRedirect letöltése vagy indítása nem sikerült.</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>A BetterSteamTools (OST) éjszakai buildje a legújabb forrásból. A legfrissebb javítások, de kevésbé lehet stabil.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>KÍSÉRLETI</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Visszahozza a natív Steam Cloud támogatást külső tárhelyszolgáltatókon keresztül, mint a Google Drive / OneDrive / Cloudflare R2 és mások. Jelenleg csak a BetterSteamTools Nightly móddal kompatibilis. Ne feledd bekapcsolás után a "Kezelés" gombra kattintva beállítani, majd indítsd újra a Steamet!</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Válaszd a BetterSteamTools Nightly módot a CloudRedirect használatához.</value></data>
-  <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>Bekapcsolás</value></data>
-  <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>Kikapcsolás</value></data>
-  <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>Bekapcsolva.</value></data>
-  <data name="Mode_CloudRedirect_Status_Disabled" xml:space="preserve"><value>Telepítve, de kikapcsolva.</value></data>
-  <data name="Mode_CloudRedirect_Status_NotInstalled" xml:space="preserve"><value>Még nincs telepítve.</value></data>
-  <data name="Mode_CloudRedirect_Status_UpdateAvailable" xml:space="preserve"><value>Frissítés érhető el.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Enabled" xml:space="preserve"><value>Bekapcsolva — indítsd újra a Steamet az alkalmazáshoz.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Disabled" xml:space="preserve"><value>Kikapcsolva — indítsd újra a Steamet az alkalmazáshoz.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Updated" xml:space="preserve"><value>Frissítve — indítsd újra a Steamet az alkalmazáshoz.</value></data>
   <data name="Onboarding_Title" xml:space="preserve"><value>Üdvözlünk a LuaTools alkalmazásban!</value></data>
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>Jelentkezz be a játékok és javítások hozzáadásának feloldásához.</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>Bejelentkezve ✓</value></data>
@@ -566,12 +552,6 @@ Ez törli a .lua fájlokat a Steam\config\stplug-in mappából. Ezután indítsd
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>{0} egyik kiadásban sem található.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} nem ment át az ellenőrzésen (eltérő sha256 vagy nincs közzétett digest).</value></data>
   <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>A kiadásból hiányzik: {0}.</value></data>
-  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} esetében nincs közzétett digest az ellenőrzéshez.</value></data>
-  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} {1} kóddal lépett ki.</value></data>
-  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} nem lett telepítve — a javítás nem fejeződött be.</value></data>
-  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} nem a várt verzió — a frissítés nem lett alkalmazva.</value></data>
-  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>A fixer indítása nem sikerült.</value></data>
-  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>A cloud_redirect.dll nem írható — zárd be a Steamet, és próbáld újra.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>A token cseréje sikertelen ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>A token cseréje üres munkamenetet adott vissza.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Nem vagy bejelentkezve.</value></data>
@@ -843,7 +823,6 @@ Bekapcsolod?</value></data>
   <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>A vágólapot egy másik program használja — semmi nem lett másolva.</value></data>
   <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Ez a hely már nem létezik: {0}</value></data>
   <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>Elutasítva: „{0}”: a manifest nevének &lt;depot&gt;_&lt;manifest&gt;.manifest alakúnak kell lennie (csak számjegyek).</value></data>
-  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>A CloudRedirect forrástárolója nem érhető el. A funkció ideiglenesen ki van kapcsolva.</value></data>
   <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Mentett buildek (nincs aktív lua)</value></data>
   <data name="Settings_Maintenance_Title" xml:space="preserve"><value>KARBANTARTÁS</value></data>
   <data name="Settings_Backups_Title" xml:space="preserve"><value>Felgyűlt biztonsági másolatok</value></data>

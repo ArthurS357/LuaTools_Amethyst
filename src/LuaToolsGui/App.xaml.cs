@@ -129,7 +129,6 @@ public partial class App : Application
                 services.AddSingleton<HardwareAppIdService>();
                 services.AddSingleton<SteamlessService>();
                 services.AddSingleton<DepotDownloaderService>();
-                services.AddSingleton<CloudRedirectService>();
                 // Install record + removal: registered before everything that takes them as deps.
                 services.AddSingleton<InstallManifestService>();
                 services.AddSingleton<UnlockerService>();

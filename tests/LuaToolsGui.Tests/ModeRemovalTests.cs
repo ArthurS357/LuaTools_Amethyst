@@ -60,6 +60,7 @@ public class ModeRemovalTests : IDisposable
     [InlineData(UnlockerMode.SteamTools, "mode-steamtools")]
     [InlineData(UnlockerMode.OpenSteamTools, "mode-opensteamtools")]
     [InlineData(UnlockerMode.OpenSteamToolsNightly, "mode-opensteamtoolsnightly")]
+    // CloudRedirect was removed, but install records written by older builds still carry this id.
     [InlineData(UnlockerMode.CloudRedirect, "mode-cloudredirect")]
     public void Each_mode_has_its_own_stable_id(UnlockerMode mode, string expected) =>
         PluginIds.ForMode(mode).Should().Be(expected);
@@ -76,7 +77,6 @@ public class ModeRemovalTests : IDisposable
     [InlineData(UnlockerMode.SteamTools)]
     [InlineData(UnlockerMode.OpenSteamTools)]
     [InlineData(UnlockerMode.OpenSteamToolsNightly)]
-    [InlineData(UnlockerMode.CloudRedirect)]
     public void A_mode_id_is_usable_as_a_backup_folder_name(UnlockerMode mode)
     {
         // The id becomes a directory inside the user's Steam root. A separator the removal policy refuses

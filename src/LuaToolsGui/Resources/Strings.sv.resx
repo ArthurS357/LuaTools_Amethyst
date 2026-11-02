@@ -159,22 +159,8 @@
   <data name="Mode_CloseSteamContinue" xml:space="preserve"><value>Stäng Steam och fortsätt</value></data>
   <data name="Mode_Desc_SteamTools" xml:space="preserve"><value>Gamla goda SteamTools — byggt av kineserna, älskat av världen. Upplåsaren som startade hela trenden (GreenLuma finns inte, schh). ⚠️ FUNGERAR INTE FÖR TILLFÄLLET, ANVÄND BETTERSTEAMTOOLS</value></data>
   <data name="Mode_Desc_OpenSteamTools" xml:space="preserve"><value>Helt nybyggd remake av SteamTools. Bättre än SteamTools på i stort sett alla sätt.</value></data>
-  <data name="Mode_Desc_CloudRedirect" xml:space="preserve"><value>SteamTools med några smarta patchar — massor av fixar och förbättringar. Återställer inbyggd Steam Cloud via Google Drive / OneDrive!</value></data>
-  <data name="Mode_CloudRedirect_Manage" xml:space="preserve"><value>Hantera</value></data>
-  <data name="Mode_CloudRedirect_LaunchFailed" xml:space="preserve"><value>Det gick inte att ladda ner eller starta CloudRedirect.</value></data>
   <data name="Mode_Desc_OpenSteamToolsNightly" xml:space="preserve"><value>Nightly-bygge av BetterSteamTools (OST) från den senaste källkoden. De senaste fixarna, men kan vara mindre stabil.</value></data>
   <data name="Mode_Experimental" xml:space="preserve"><value>EXPERIMENTELL</value></data>
-  <data name="Mode_CloudRedirect_AddonDesc" xml:space="preserve"><value>Återinför inbyggt Steam Cloud-stöd via tredjeparts lagringsleverantörer som Google Drive / OneDrive / Cloudflare R2 med flera. För närvarande endast kompatibelt med BetterSteamTools Nightly. Glöm inte att konfigurera det genom att klicka på "Hantera" efter aktivering och starta sedan om Steam!</value></data>
-  <data name="Mode_CloudRedirect_Locked" xml:space="preserve"><value>Välj BetterSteamTools Nightly för att använda CloudRedirect.</value></data>
-  <data name="Mode_CloudRedirect_Enable" xml:space="preserve"><value>Aktivera</value></data>
-  <data name="Mode_CloudRedirect_Disable" xml:space="preserve"><value>Inaktivera</value></data>
-  <data name="Mode_CloudRedirect_Status_Enabled" xml:space="preserve"><value>Aktiverat.</value></data>
-  <data name="Mode_CloudRedirect_Status_Disabled" xml:space="preserve"><value>Installerat, men inaktiverat.</value></data>
-  <data name="Mode_CloudRedirect_Status_NotInstalled" xml:space="preserve"><value>Inte installerat än.</value></data>
-  <data name="Mode_CloudRedirect_Status_UpdateAvailable" xml:space="preserve"><value>Uppdatering tillgänglig.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Enabled" xml:space="preserve"><value>Aktiverat — starta om Steam för att tillämpa.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Disabled" xml:space="preserve"><value>Inaktiverat — starta om Steam för att tillämpa.</value></data>
-  <data name="Mode_CloudRedirect_Toast_Updated" xml:space="preserve"><value>Uppdaterat — starta om Steam för att tillämpa.</value></data>
   <data name="Onboarding_Title" xml:space="preserve"><value>Välkommen till LuaTools-appen!</value></data>
   <data name="Onboarding_SignIn_Blurb" xml:space="preserve"><value>Logga in för att låsa upp att lägga till spel och fixar.</value></data>
   <data name="Onboarding_SignedIn" xml:space="preserve"><value>Inloggad ✓</value></data>
@@ -566,12 +552,6 @@ Detta tar bort .lua-filerna från Steam\config\stplug-in. Starta om Steam efter�
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>Det gick inte att hitta {0} i någon version.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} klarade inte verifieringen (sha256 stämmer inte eller ingen publicerad digest).</value></data>
   <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Versionen saknar {0}.</value></data>
-  <data name="Unlocker_Err_NoDigest" xml:space="preserve"><value>{0} har ingen publicerad digest att verifiera mot.</value></data>
-  <data name="Unlocker_Err_CliExit" xml:space="preserve"><value>{0} avslutades med kod {1}.</value></data>
-  <data name="Unlocker_Err_NotDeployed" xml:space="preserve"><value>{0} distribuerades inte — korrigeringen slutfördes inte.</value></data>
-  <data name="Unlocker_Err_WrongVersion" xml:space="preserve"><value>{0} är inte den förväntade versionen — uppdateringen tillämpades inte.</value></data>
-  <data name="Unlocker_Err_FixerStart" xml:space="preserve"><value>Det gick inte att starta fixern.</value></data>
-  <data name="Unlocker_Err_CloudWrite" xml:space="preserve"><value>Det gick inte att skriva cloud_redirect.dll — stäng Steam och försök igen.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Tokenutbytet misslyckades ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Tokenutbytet returnerade en tom session.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Inte inloggad.</value></data>
@@ -843,7 +823,6 @@ Aktivera?</value></data>
   <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>Urklippet används av ett annat program — inget kopierades.</value></data>
   <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Den platsen finns inte längre: {0}</value></data>
   <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>Avvisade ”{0}”: ett manifest måste heta &lt;depot&gt;_&lt;manifest&gt;.manifest (endast siffror).</value></data>
-  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>CloudRedirects källarkiv är inte tillgängligt. Funktionen är tillfälligt avstängd.</value></data>
   <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Sparade byggen (ingen aktiv lua)</value></data>
   <data name="Settings_Maintenance_Title" xml:space="preserve"><value>UNDERHÅLL</value></data>
   <data name="Settings_Backups_Title" xml:space="preserve"><value>Ackumulerade säkerhetskopior</value></data>

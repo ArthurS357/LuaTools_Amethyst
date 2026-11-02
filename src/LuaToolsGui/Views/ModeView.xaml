@@ -14,7 +14,7 @@
     <Grid x:Name="Root">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <!-- Fixed bottom dock (separator + CloudRedirect add-on + progress) -->
+            <!-- Fixed bottom dock (shared progress) -->
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
@@ -359,16 +359,6 @@
                                             Icon="{ui:SymbolIcon Delete24}"
                                             IsEnabled="{Binding DataContext.CanUninstallMode, ElementName=Root}"
                                             Visibility="{Binding ShowUninstall, Converter={StaticResource BoolToVis}}" />
-                                        <!-- CloudRedirect-only: opens its GUI manager (active mode only). -->
-                                        <ui:Button
-                                            Margin="0,8,0,0"
-                                            HorizontalAlignment="Stretch"
-                                            HorizontalContentAlignment="Center"
-                                            Command="{Binding DataContext.ManageCloudRedirectCommand, ElementName=Root}"
-                                            Content="{x:Static res:Strings.Mode_CloudRedirect_Manage}"
-                                            Icon="{ui:SymbolIcon Cloud24}"
-                                            IsEnabled="{Binding DataContext.NotBusy, ElementName=Root}"
-                                            Visibility="{Binding ShowManage, Converter={StaticResource BoolToVis}}" />
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -379,92 +369,8 @@
             </StackPanel>
         </ScrollViewer>
 
-        <!-- Fixed bottom dock: separator + CloudRedirect add-on + shared progress. -->
+        <!-- Fixed bottom dock: shared progress. -->
         <StackPanel Grid.Row="1" MaxWidth="760" Margin="8,0,16,16">
-
-                <!-- Divider between the scrolling mode cards and the docked add-on. -->
-                <Border Height="1" Margin="0,0,0,14" Background="{StaticResource SurfaceStrongBrush}"
-                        Visibility="{Binding IsCloudRedirectAddonVisible, Converter={StaticResource BoolToVis}}" />
-
-                <!-- CloudRedirect add-on: a feature of the Nightly BST build. Locked (dimmed, buttons
-                     disabled) unless OpenSteamTool Nightly is the active mode. -->
-                <Border
-                    Margin="0,0,0,0"
-                    Padding="18"
-                    Background="{StaticResource SurfaceCardBrush}"
-                    BorderBrush="{StaticResource BorderStrongBrush}"
-                    BorderThickness="1"
-                    CornerRadius="10"
-                    Visibility="{Binding IsCloudRedirectAddonVisible, Converter={StaticResource BoolToVis}}">
-                    <Border.Style>
-                        <Style TargetType="Border">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding CloudRedirectUnlocked}" Value="False">
-                                    <Setter Property="Opacity" Value="0.55" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Border.Style>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <ui:SymbolIcon
-                                    VerticalAlignment="Center"
-                                    Foreground="{StaticResource InfoBrush}"
-                                    Symbol="Cloud24" />
-                                <TextBlock
-                                    Margin="10,0,0,0"
-                                    VerticalAlignment="Center"
-                                    FontSize="15"
-                                    FontWeight="SemiBold"
-                                    Text="CloudRedirect" />
-                            </StackPanel>
-                            <TextBlock
-                                Margin="0,6,0,0"
-                                FontSize="12"
-                                Foreground="{StaticResource TextDimBrush}"
-                                Text="{x:Static res:Strings.Mode_CloudRedirect_AddonDesc}"
-                                TextWrapping="Wrap" />
-                            <TextBlock
-                                Margin="0,6,0,0"
-                                FontSize="12.5"
-                                Foreground="{StaticResource TextMutedBrush}"
-                                Text="{Binding CloudRedirectStatusText}"
-                                TextWrapping="Wrap" />
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <ui:Button
-                                MinWidth="96"
-                                HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Center"
-                                Command="{Binding ToggleCloudRedirectCommand}"
-                                Content="{Binding CloudRedirectToggleText}"
-                                IsEnabled="{Binding CanUseCloudRedirect}" />
-                            <ui:Button
-                                Margin="0,8,0,0"
-                                HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Center"
-                                Command="{Binding UpdateCloudRedirectCommand}"
-                                Content="{x:Static res:Strings.Mode_Btn_Update}"
-                                Icon="{ui:SymbolIcon ArrowSync24}"
-                                IsEnabled="{Binding CanUseCloudRedirect}"
-                                Visibility="{Binding ShowCloudRedirectUpdate, Converter={StaticResource BoolToVis}}" />
-                            <ui:Button
-                                Margin="0,8,0,0"
-                                HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Center"
-                                Command="{Binding ManageCloudRedirectCommand}"
-                                Content="{x:Static res:Strings.Mode_CloudRedirect_Manage}"
-                                Icon="{ui:SymbolIcon Cloud24}"
-                                IsEnabled="{Binding CanUseCloudRedirect}"
-                                Visibility="{Binding ShowCloudRedirectManage, Converter={StaticResource BoolToVis}}" />
-                        </StackPanel>
-                    </Grid>
-                </Border>
 
                 <!-- Shared progress while installing/switching -->
                 <ProgressBar

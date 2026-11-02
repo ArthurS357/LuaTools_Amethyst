@@ -214,12 +214,16 @@ one fetches a GitHub release, verifies it, and places the result. These are the 
 | Plugin — madoiscool | `madoiscool/LTSP` | `plugin.zip`, `winmm.dll` | `%AppData%`, Steam root |
 | Manage — Remove Steam DRM | `atom0s/Steamless` | `Steamless.CLI.exe` (**executed**) | cache |
 
-Two Modes are no longer offered on the page. **SteamTools** (`mendy-tools/verynotsusdllsthataredefnotstrelated`,
-`dwmapi.dll` + `xinput1_4.dll`) is retired: upstream stopped publishing updates for it, so LuaTools will not
-install it any more. **CloudRedirect** (`Selectively11/CloudRedirect`) is hidden while the mode is broken.
-Both definitions stay in the app so that an existing install of either keeps its uninstall record and keeps
-its proxy DLLs protected from being removed by something else — and if SteamTools is still your active Mode,
-its card stays on the page so you can uninstall it.
+**SteamTools** (`mendy-tools/verynotsusdllsthataredefnotstrelated`, `dwmapi.dll` + `xinput1_4.dll`) is no
+longer offered: upstream stopped publishing updates for it, so LuaTools will not install it any more. Its
+definition stays in the app so an existing install keeps its uninstall record and keeps its proxy DLLs protected
+from being removed by something else — and if SteamTools is still your active Mode, its card stays on the page so
+you can uninstall it.
+
+**CloudRedirect** was removed entirely: its repository and account no longer exist, and it is outside this fork's
+privacy and trust policy. LuaTools does not download, run, detect or offer it, and contacts no CloudRedirect
+server. A `cloud_redirect.dll` an older build placed in the Steam root is left where it is; delete it by hand if you
+no longer want it.
 
 ### The Plugin has two sources, and you pick one
 

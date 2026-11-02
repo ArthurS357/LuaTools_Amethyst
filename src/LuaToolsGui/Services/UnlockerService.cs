@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Text.Json;
@@ -8,10 +7,16 @@ using LuaToolsGui.Models;
 namespace LuaToolsGui.Services;
 
 /// <summary>
-/// Manages the mutually-exclusive Steam fixes (SteamTools / OpenSteamTools / CloudRedirect). Only one
-/// is active at a time. Each fetches its own GitHub release, verifies files by sha256, and installs
-/// into the Steam root (CloudRedirect runs a CLI that patches + deploys itself). Switching overwrites
-/// shared files but doesn't delete the previous mode's leftovers. The active mode persists in settings.
+/// Manages the mutually-exclusive Steam fixes (SteamTools / BetterSteamTools / BetterSteamTools Nightly).
+/// Only one is active at a time. Each fetches its own GitHub release, verifies files by sha256, and
+/// installs into the Steam root. Switching overwrites shared files but doesn't delete the previous mode's
+/// leftovers. The active mode persists in settings.
+///
+/// <para>
+/// CloudRedirect was removed (its repository and account are gone, and it is outside this fork's privacy
+/// policy). The <see cref="UnlockerMode.CloudRedirect"/> member stays only so an old settings.json still
+/// parses; <see cref="ActiveBackendPolicy.ActiveMode"/> reads it as "no mode".
+/// </para>
 ///
 /// <para>
 /// Every install also writes an <see cref="InstallManifest"/> entry naming the files it placed, which is
@@ -48,7 +53,6 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
             FixedTag: null,
             PlaceFiles: ["dwmapi.dll", "xinput1_4.dll"],
             ZipAssetPattern: null,
-            CliAssetName: null, CliArgs: null, VerifyFile: null,
             // Retired: upstream stopped publishing updates, so offering it steers users onto a backend that
             // will not be fixed. See ModeDefinition.Retired for why the definition stays behind.
             Retired: true),
@@ -63,11 +67,9 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
             Owner: AppConfig.OpenSteamToolsOwner, Repo: AppConfig.OpenSteamToolsRepo,
             FixedTag: null,
             PlaceFiles: ["dwmapi.dll", "xinput1_4.dll", "OpenSteamTool.dll"],
-            ZipAssetPattern: "OpenSteamTool-{version}-Release.zip",
-            CliAssetName: null, CliArgs: null, VerifyFile: null),
+            ZipAssetPattern: "OpenSteamTool-{version}-Release.zip"),
 
-        // Nightly build of OpenSteamTool (our own madoiscool/OST-Nightly, built from upstream main) —
-        // kept as its own mode because it adds native CloudRedirect support (see the add-on below).
+        // Nightly build of OpenSteamTool (our own madoiscool/OST-Nightly, built from upstream main).
         // Same install/config shape as stable BST (same binary, same opensteamtool.toml).
         new(UnlockerMode.OpenSteamToolsNightly, "BetterSteamTools Nightly",
             Description: Resources.Strings.Mode_Desc_OpenSteamToolsNightly,
@@ -75,17 +77,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
             Owner: AppConfig.OstNightlyOwner, Repo: AppConfig.OstNightlyRepo,
             FixedTag: null,
             PlaceFiles: ["dwmapi.dll", "xinput1_4.dll", "OpenSteamTool.dll"],
-            ZipAssetPattern: "OpenSteamTool-{version}-Release.zip",
-            CliAssetName: null, CliArgs: null, VerifyFile: null),
-
-        new(UnlockerMode.CloudRedirect, "CloudRedirect (SteamTools Fix)",
-            Description: Resources.Strings.Mode_Desc_CloudRedirect,
-            Kind: ModeKind.Cli,
-            Owner: AppConfig.CloudRedirectOwner, Repo: AppConfig.CloudRedirectRepoName,
-            FixedTag: null,
-            PlaceFiles: ["cloud_redirect.dll"],
-            ZipAssetPattern: null,
-            CliAssetName: "CloudRedirectCLI.exe", CliArgs: "/stfixer", VerifyFile: "cloud_redirect.dll"),
+            ZipAssetPattern: "OpenSteamTool-{version}-Release.zip"),
     ];
 
     /// <inheritdoc cref="AllModes"/>
@@ -158,7 +150,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
             return new ModeState(mode, stStatus, active, latestTag);
         }
 
-        // CloudRedirect (CLI) verifies its placed file by digest off a single release.
+        // Nightly BST verifies its placed files by digest off a single release.
         GithubRelease? release = await FetchReleaseAsync(def, forceRefresh, ct);
         if (release is null)
             return new ModeState(mode, ModeStatus.Unknown, active, null);
@@ -284,10 +276,6 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
             if (release is null)
                 return ModeInstallResult.Fail(Resources.Strings.Err_GitHubUnreachable);
         }
-
-        // CLI modes (CloudRedirect) have a completely different flow: download a tool, run it, verify.
-        if (def.Kind == ModeKind.Cli)
-            return await InstallViaCliAsync(def, release!, root, progress, ct);
 
         string staging = Path.Combine(Path.GetTempPath(), "LuaToolsGui", "mode", Guid.NewGuid().ToString("N"));
         try
@@ -415,79 +403,6 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
         }
     }
 
-    /// <summary>
-    /// CLI mode (CloudRedirect): download the latest fixer tool, run it (it closes Steam, patches, and
-    /// deploys cloud_redirect.dll itself), then confirm the deployed dll matches the latest release hash.
-    /// </summary>
-    private async Task<ModeInstallResult> InstallViaCliAsync(
-        ModeDefinition def, GithubRelease release, string root, IProgress<double?>? progress, CancellationToken ct)
-    {
-        var cliAsset = release.Assets.FirstOrDefault(a => a.Name.Equals(def.CliAssetName, StringComparison.OrdinalIgnoreCase));
-        if (cliAsset is null) return ModeInstallResult.Fail(string.Format(Resources.Strings.Unlocker_Err_ReleaseMissingAsset, def.CliAssetName));
-
-        var verifyAsset = release.Assets.FirstOrDefault(a => a.Name.Equals(def.VerifyFile, StringComparison.OrdinalIgnoreCase));
-        // No published digest for the file the tool deploys ⇒ we could not confirm what it wrote. Refuse
-        // up front rather than run the tool and then "verify" nothing.
-        if (AssetIntegrity.ParseDigest(verifyAsset?.Digest) is null)
-            return ModeInstallResult.Fail(string.Format(Resources.Strings.Unlocker_Err_NoDigest, def.VerifyFile));
-
-        string staging = Path.Combine(Path.GetTempPath(), "LuaToolsGui", "mode", Guid.NewGuid().ToString("N"));
-        try
-        {
-            Directory.CreateDirectory(staging);
-
-            // 1. Download + verify the CLI tool.
-            string cliPath = Path.Combine(staging, def.CliAssetName!);
-            await DownloadToFileAsync(def, cliAsset.DownloadUrl, cliPath, progress, ct);
-            // This binary is EXECUTED below, and may have come from a third-party mirror — a missing digest
-            // must stop the install, not wave it through.
-            if (!AssetIntegrity.Matches(cliPath, cliAsset.Digest))
-                return ModeInstallResult.Fail(string.Format(Resources.Strings.Unlocker_Err_FileVerification, def.CliAssetName));
-
-            // 1b. This one is EXECUTED, not just placed, so disclose it before it runs.
-            if (!await notice.ReviewAsync(new DownloadReview(
-                    def.Owner, def.Repo, release.TagName, cliAsset.Name,
-                    AssetIntegrity.Sha256OfFile(cliPath)), ct))
-                return ModeInstallResult.Fail(Resources.Strings.Download_Notice_Cancelled);
-
-            // 2. Run it. It closes Steam, patches SteamTools, and deploys the dll on its own.
-            progress?.Report(null); // indeterminate — no progress signal from the external tool
-            int exit = await RunProcessAsync(cliPath, def.CliArgs ?? "", ct);
-            if (exit != 0)
-                return ModeInstallResult.Fail(string.Format(Resources.Strings.Unlocker_Err_CliExit, def.CliAssetName, exit));
-
-            // 3. Confirm the deployed file is the expected (latest) version.
-            string deployed = Path.Combine(root, def.VerifyFile!);
-            if (!File.Exists(deployed))
-                return ModeInstallResult.Fail(string.Format(Resources.Strings.Unlocker_Err_NotDeployed, def.VerifyFile));
-            if (!AssetIntegrity.Matches(deployed, verifyAsset?.Digest))
-                return ModeInstallResult.Fail(string.Format(Resources.Strings.Unlocker_Err_WrongVersion, def.VerifyFile));
-
-            settings.SelectedMode = def.Mode.ToString(); // CloudRedirect is now the active mode
-            RecordModeInstall(def, root, release.TagName, []);
-            return ModeInstallResult.Ok();
-        }
-        catch (OperationCanceledException) { return ModeInstallResult.Fail(Resources.Strings.Downloads_Err_Cancelled); }
-        catch (Exception ex) { return ModeInstallResult.Fail(ex.Message); }
-        finally
-        {
-            try { Directory.Delete(staging, recursive: true); } catch { /* best effort */ }
-        }
-    }
-
-    private static async Task<int> RunProcessAsync(string exePath, string args, CancellationToken ct)
-    {
-        var psi = new ProcessStartInfo(exePath, args)
-        {
-            UseShellExecute = false,
-            CreateNoWindow = true,
-            WorkingDirectory = Path.GetDirectoryName(exePath) ?? Environment.CurrentDirectory,
-        };
-        using var proc = Process.Start(psi) ?? throw new InvalidOperationException(Resources.Strings.Unlocker_Err_FixerStart);
-        await proc.WaitForExitAsync(ct);
-        return proc.ExitCode;
-    }
-
     // ── First-run auto-detect ────────────────────────────────────────
 
     /// <summary>
@@ -496,13 +411,12 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
     ///   1. OpenSteamTools — dwmapi.dll AND xinput1_4.dll vs mendy-tools tag "ost-" (loose-DLL mirror;
     ///      OST ships a zip whose API digest isn't per-DLL, so we mirror the DLLs for hash-matching).
     ///   2. SteamTools — same two DLLs vs mendy-tools tag "st" (ST/st-*).
-    ///   3. CloudRedirect — cloud_redirect.dll vs Selectively11/CloudRedirect (only if 1+2 miss).
     /// Both DLLs must be present and each must hash-match SOME release with the right tag prefix — the
     /// two DLLs ship in SEPARATE releases (they aren't published together), so each is matched
     /// independently across all releases, not against one single release.
     /// Persists the match as the active mode. Returns the detected mode, or null if nothing matched — or
     /// if the root is AmethystTool's, in which case it abstains without selecting anything.
-    /// 1 guaranteed API call (one repo serves both ost-/st), plus 1 conditional (CloudRedirect).
+    /// 1 guaranteed API call (one repo serves both ost-/st), plus 1 conditional (Nightly).
     /// </summary>
     public async Task<UnlockerMode?> DetectActiveModeAsync(CancellationToken ct = default)
     {
@@ -572,18 +486,6 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
                     detected = UnlockerMode.OpenSteamTools;
                 else if (BothDllsMatchPrefix(stRepoReleases, "st"))  // matches "ST" and "st-*"
                     detected = UnlockerMode.SteamTools;
-            }
-        }
-
-        if (detected is null)
-        {
-            string crDll = Path.Combine(root, "cloud_redirect.dll");
-            if (File.Exists(crDll))
-            {
-                var releases = await FetchAllReleasesAsync(AppConfig.CloudRedirectOwner, AppConfig.CloudRedirectRepoName, null, ct);
-                string crHash = AssetIntegrity.Sha256OfFile(crDll);
-                if (releases is not null && releases.Any(r => AssetDigest(r, "cloud_redirect.dll") == crHash))
-                    detected = UnlockerMode.CloudRedirect;
             }
         }
 
@@ -841,207 +743,6 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
     {
         string t = line.TrimStart();
         return !t.StartsWith('#') && Regex.IsMatch(t, @"^\[[^\[].*\]");
-    }
-
-    // ── CloudRedirect add-on (a feature of the OpenSteamTool Nightly build) ──────────
-    // Not a mutually-exclusive mode: it drops cloud_redirect.dll into the Steam root and toggles
-    // [cloud] enabled in opensteamtool.toml (parallel to how BST install writes [lua] paths). Only
-    // meaningful when the Nightly BST mode is active.
-
-    private const string CloudRedirectDll = "cloud_redirect.dll";
-    private (GithubRelease release, DateTime fetchedAt)? _crReleaseCache;
-
-    private async Task<GithubRelease?> FetchCloudRedirectReleaseAsync(bool forceRefresh, CancellationToken ct)
-    {
-        if (!forceRefresh && _crReleaseCache is { } c && DateTime.UtcNow - c.fetchedAt < CacheTtl)
-            return c.release;
-
-        string url = $"https://api.github.com/repos/{AppConfig.CloudRedirectRepo}/releases/latest";
-        try
-        {
-            using var res = await gh.SendAsync(url, ct);
-            if (res is null || !res.IsSuccessStatusCode) return null;
-            var release = JsonSerializer.Deserialize<GithubRelease>(await res.Content.ReadAsStringAsync(ct), JsonOpts);
-            if (release is not null) _crReleaseCache = (release, DateTime.UtcNow);
-            return release;
-        }
-        catch { return null; }
-    }
-
-    /// <summary>Add-on state from disk (dll present + [cloud] enabled) plus, when <paramref name="checkUpdate"/>
-    /// and installed, whether a newer cloud_redirect.dll is published.</summary>
-    public async Task<CloudRedirectAddonState> GetCloudRedirectStateAsync(
-        bool checkUpdate, bool forceRefresh = false, CancellationToken ct = default)
-    {
-        string? root = steam.EffectivePath;
-        if (root is null || !steam.IsValid)
-            return new CloudRedirectAddonState(false, false, false, null);
-
-        string dll = Path.Combine(root, CloudRedirectDll);
-        bool installed = File.Exists(dll);
-        bool enabled = ReadOpenSteamToolCloudEnabled(root);
-
-        bool updateAvailable = false;
-        string? latest = null;
-        if (checkUpdate && installed)
-        {
-            var release = await FetchCloudRedirectReleaseAsync(forceRefresh, ct);
-            if (release is not null)
-            {
-                latest = release.TagName;
-                string? wanted = AssetDigest(release, CloudRedirectDll);
-                if (wanted is not null && !AssetIntegrity.Sha256OfFile(dll).Equals(wanted, StringComparison.OrdinalIgnoreCase))
-                    updateAvailable = true;
-            }
-        }
-        return new CloudRedirectAddonState(installed, enabled, updateAvailable, latest);
-    }
-
-    /// <summary>Enable: download cloud_redirect.dll if missing (verified), then set [cloud] enabled = true.
-    /// Takes effect on the next Steam launch.</summary>
-    public async Task<ModeInstallResult> EnableCloudRedirectAsync(IProgress<double?>? progress = null, CancellationToken ct = default)
-    {
-        string? root = steam.EffectivePath;
-        if (root is null || !steam.IsValid)
-            return ModeInstallResult.Fail(Resources.Strings.Err_SteamNotFound);
-
-        if (!File.Exists(Path.Combine(root, CloudRedirectDll)))
-        {
-            var dl = await DownloadCloudRedirectDllAsync(root, progress, ct);
-            if (!dl.Success) return dl;
-        }
-        try { SetOpenSteamToolCloudEnabled(root, true); }
-        catch (Exception ex) { return ModeInstallResult.Fail(ex.Message); }
-        return ModeInstallResult.Ok();
-    }
-
-    /// <summary>Disable: flip [cloud] enabled = false (keeps the dll on disk).</summary>
-    public ModeInstallResult DisableCloudRedirect()
-    {
-        string? root = steam.EffectivePath;
-        if (root is null || !steam.IsValid)
-            return ModeInstallResult.Fail(Resources.Strings.Err_SteamNotFound);
-        try { SetOpenSteamToolCloudEnabled(root, false); return ModeInstallResult.Ok(); }
-        catch (Exception ex) { return ModeInstallResult.Fail(ex.Message); }
-    }
-
-    /// <summary>Update: replace cloud_redirect.dll with the latest (verified). Fails with a "close Steam"
-    /// message if Steam holds the existing dll open.</summary>
-    public async Task<ModeInstallResult> UpdateCloudRedirectAsync(IProgress<double?>? progress = null, CancellationToken ct = default)
-    {
-        string? root = steam.EffectivePath;
-        if (root is null || !steam.IsValid)
-            return ModeInstallResult.Fail(Resources.Strings.Err_SteamNotFound);
-        return await DownloadCloudRedirectDllAsync(root, progress, ct);
-    }
-
-    private async Task<ModeInstallResult> DownloadCloudRedirectDllAsync(string root, IProgress<double?>? progress, CancellationToken ct)
-    {
-        var release = await FetchCloudRedirectReleaseAsync(forceRefresh: true, ct);
-        // The upstream repo (and its whole account) 404s: say so rather than blame the user's connection.
-        if (release is null) return ModeInstallResult.Fail(Resources.Strings.CloudRedirect_Err_RepoUnavailable);
-        var asset = FindAsset(release, CloudRedirectDll);
-        if (asset is null) return ModeInstallResult.Fail(string.Format(Resources.Strings.Unlocker_Err_ReleaseMissingAsset, CloudRedirectDll));
-
-        string staging = Path.Combine(Path.GetTempPath(), "LuaToolsGui", "cloud", Guid.NewGuid().ToString("N"));
-        try
-        {
-            Directory.CreateDirectory(staging);
-            string tmp = Path.Combine(staging, CloudRedirectDll);
-            await gh.DownloadAssetAsync(asset.DownloadUrl, AppConfig.CloudRedirectOwner,
-                AppConfig.CloudRedirectRepoName, tmp, progress, ct);
-            if (!AssetIntegrity.Matches(tmp, asset.Digest))
-                return ModeInstallResult.Fail(string.Format(Resources.Strings.Unlocker_Err_FileVerification, CloudRedirectDll));
-
-            if (!await notice.ReviewAsync(new DownloadReview(
-                    AppConfig.CloudRedirectOwner, AppConfig.CloudRedirectRepoName, release.TagName,
-                    CloudRedirectDll, AssetIntegrity.Sha256OfFile(tmp)), ct))
-                return ModeInstallResult.Fail(Resources.Strings.Download_Notice_Cancelled);
-
-            try
-            {
-                string dest = Path.Combine(root, CloudRedirectDll);
-                File.Copy(tmp, dest, overwrite: true);
-                StampNow(dest);
-            }
-            catch
-            {
-                // Steam has the loaded dll locked — surface a close-Steam message (same as mode install).
-                return ModeInstallResult.Fail(Resources.Strings.Unlocker_Err_CloudWrite);
-            }
-            return ModeInstallResult.Ok();
-        }
-        catch (OperationCanceledException) { return ModeInstallResult.Fail(Resources.Strings.Downloads_Err_Cancelled); }
-        catch (Exception ex) { return ModeInstallResult.Fail(ex.Message); }
-        finally { try { Directory.Delete(staging, recursive: true); } catch { /* best effort */ } }
-    }
-
-    /// <summary>Ensure opensteamtool.toml has an active [cloud] section with enabled = true|false. Mirrors
-    /// EnsureOpenSteamToolLuaPath's targeted, comment-preserving editing.</summary>
-    private static void SetOpenSteamToolCloudEnabled(string steamRoot, bool enabled)
-    {
-        string tomlPath = Path.Combine(steamRoot, "opensteamtool.toml");
-        string val = enabled ? "true" : "false";
-
-        if (!File.Exists(tomlPath))
-        {
-            File.WriteAllText(tomlPath, $"[cloud]\nenabled = {val}\n");
-            return;
-        }
-
-        var lines = File.ReadAllLines(tomlPath).ToList();
-
-        int header = lines.FindIndex(l => IsActiveTableHeader(l, "cloud"));
-        if (header < 0)
-        {
-            if (lines.Count > 0 && lines[^1].Trim().Length > 0) lines.Add("");
-            lines.Add("[cloud]");
-            lines.Add($"enabled = {val}");
-            File.WriteAllLines(tomlPath, lines);
-            return;
-        }
-
-        int sectionEnd = lines.FindIndex(header + 1, IsActiveAnyTableHeader);
-        if (sectionEnd < 0) sectionEnd = lines.Count;
-
-        for (int i = header + 1; i < sectionEnd; i++)
-        {
-            string t = lines[i].TrimStart();
-            if (t.StartsWith('#')) continue;                       // commented → ignore
-            if (Regex.IsMatch(t, @"^enabled\s*="))
-            {
-                string indent = lines[i][..(lines[i].Length - lines[i].TrimStart().Length)];
-                lines[i] = $"{indent}enabled = {val}";
-                File.WriteAllLines(tomlPath, lines);
-                return;
-            }
-        }
-
-        // [cloud] exists but no active enabled key → insert one under the header.
-        lines.Insert(header + 1, $"enabled = {val}");
-        File.WriteAllLines(tomlPath, lines);
-    }
-
-    /// <summary>Read opensteamtool.toml's active [cloud] enabled value (false if the file/section/key is
-    /// absent).</summary>
-    private static bool ReadOpenSteamToolCloudEnabled(string steamRoot)
-    {
-        string tomlPath = Path.Combine(steamRoot, "opensteamtool.toml");
-        if (!File.Exists(tomlPath)) return false;
-
-        var lines = File.ReadAllLines(tomlPath);
-        int header = Array.FindIndex(lines, l => IsActiveTableHeader(l, "cloud"));
-        if (header < 0) return false;
-
-        for (int i = header + 1; i < lines.Length; i++)
-        {
-            if (IsActiveAnyTableHeader(lines[i])) break;            // next section → done
-            string t = lines[i].TrimStart();
-            if (t.StartsWith('#')) continue;                       // commented → ignore
-            var m = Regex.Match(t, @"^enabled\s*=\s*(\w+)");
-            if (m.Success) return m.Groups[1].Value.Equals("true", StringComparison.OrdinalIgnoreCase);
-        }
-        return false;
     }
 
     // ── Helpers ──────────────────────────────────────────────────────
