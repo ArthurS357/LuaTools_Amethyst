@@ -19,6 +19,18 @@ public sealed record BackupDeleteResult(int DeletedCount, long BytesFreed, IRead
 /// </summary>
 public sealed class BackupService
 {
+    /// <summary>
+    /// A backup younger than this is refused on delete. An AmethystTool install creates its backup folder and
+    /// then moves the displaced files into it, and AmethystTool's updater writes its .bak while it runs, so a
+    /// very recent entry may belong to an install still in progress; deleting it would lose the only copy of
+    /// what was replaced. Five minutes is far longer than any install and costs a user who really wants it
+    /// gone one short wait.
+    /// </summary>
+    internal static readonly TimeSpan MinimumAge = TimeSpan.FromMinutes(5);
+
+    /// <summary>Test seam: the "now" for <see cref="MinimumAge"/>.</summary>
+    internal TimeProvider Clock { get; init; } = TimeProvider.System;
+
     private static readonly EnumerationOptions NoLinks = new()
     {
         RecurseSubdirectories = true,
@@ -62,18 +74,25 @@ public sealed class BackupService
 
     /// <summary>
     /// Delete <paramref name="entries"/>. Every one is re-validated first (name classifies as the kind it
-    /// claims, direct child of <paramref name="steamRoot"/>, not a link); if any fails, NOTHING is deleted.
-    /// A folder or file already gone is skipped, not an error.
+    /// claims, direct child of <paramref name="steamRoot"/>, not a link, at least <see cref="MinimumAge"/>
+    /// old); if any fails, NOTHING is deleted. A folder or file already gone is skipped, not an error.
     /// </summary>
     public Task<BackupDeleteResult> DeleteAsync(
         IReadOnlyList<BackupEntry> entries, string steamRoot, CancellationToken ct = default) =>
         Task.Run(() =>
         {
+            DateTime nowUtc = Clock.GetUtcNow().UtcDateTime;
             foreach (var e in entries)
             {
                 if (!BackupInventory.MayDelete(e, steamRoot) || IsUnsafeOnDisk(e))
                 {
                     AppLog.Log($"backup cleanup: refused, {e.FullPath} is not a backup in {steamRoot}");
+                    return new BackupDeleteResult(0, 0, [e.Name], Refused: true);
+                }
+                if (IsTooRecent(e, nowUtc))
+                {
+                    AppLog.Log($"backup cleanup: refused, {e.Name} is less than {MinimumAge.TotalMinutes:0} minutes old "
+                        + "(an install may still be writing it)");
                     return new BackupDeleteResult(0, 0, [e.Name], Refused: true);
                 }
             }
@@ -162,6 +181,27 @@ public sealed class BackupService
     private static bool IsUnsafeOnDisk(BackupEntry e) => e.IsFile
         ? Directory.Exists(e.FullPath) || (File.Exists(e.FullPath) && IsLink(new FileInfo(e.FullPath)))
         : File.Exists(e.FullPath) || (Directory.Exists(e.FullPath) && IsLink(new DirectoryInfo(e.FullPath)));
+
+    /// <summary>
+    /// Younger than <see cref="MinimumAge"/>, or dated in the future (a clock that moved back since). Read from
+    /// the source again rather than from <see cref="BackupEntry.CreatedUtc"/>, which came from a scan that may
+    /// be minutes old: a folder's timestamp is in its own name, a .bak's is its last write. A .bak written to
+    /// after the scan is exactly the case this exists for.
+    /// </summary>
+    private static bool IsTooRecent(BackupEntry e, DateTime nowUtc)
+    {
+        DateTime createdUtc;
+        if (e.IsFile)
+        {
+            if (!File.Exists(e.FullPath)) return false; // already gone: skipped by the delete loop
+            createdUtc = File.GetLastWriteTimeUtc(e.FullPath);
+        }
+        else if (!BackupInventory.TryParse(Path.GetFileName(e.FullPath), out _, out createdUtc))
+        {
+            return true; // MayDelete already parsed this name; unreachable, but never a reason to delete
+        }
+        return createdUtc > nowUtc - MinimumAge;
+    }
 
     private static bool IsLink(FileSystemInfo info) =>
         info.Attributes.HasFlag(FileAttributes.ReparsePoint) || info.LinkTarget is not null;

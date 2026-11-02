@@ -211,11 +211,14 @@ public sealed class BackupServiceTests : IDisposable
 
     // ── Loose .bak files ──────────────────────────────────────────────
 
+    /// <summary>A file dated a day back, so the delete tests are about their own gate and not about
+    /// <see cref="BackupService.MinimumAge"/>, which has its own section below.</summary>
     private static string MakeFile(string parent, string name, int bytes = 1)
     {
         Directory.CreateDirectory(parent);
         string path = Path.Combine(parent, name);
         File.WriteAllBytes(path, new byte[bytes]);
+        File.SetLastWriteTimeUtc(path, DateTime.UtcNow.AddDays(-1));
         return path;
     }
 
@@ -350,5 +353,79 @@ public sealed class BackupServiceTests : IDisposable
 
         result.Should().Be(result with { DeletedCount = 0, BytesFreed = 0, Refused = false });
         result.Errors.Should().BeEmpty();
+    }
+
+    // ── Minimum age (an install may still be writing it) ─────────────
+
+    private static string StampAt(DateTime local) => local.ToString("yyyyMMdd-HHmmss");
+
+    [Fact]
+    public async Task A_folder_made_a_minute_ago_is_refused_and_the_batch_is_untouched()
+    {
+        string fresh = MakeFolder(_root, $"AmethystTool-backup-{StampAt(DateTime.Now.AddMinutes(-1))}", ("dwmapi.dll", 4));
+        string old = MakeFolder(_root, $"Removal-backup-{Stamp}", ("a", 1));
+        var entries = await _service.ScanAsync(_root);
+
+        var result = await _service.DeleteAsync(entries, _root);
+
+        result.Refused.Should().BeTrue();
+        result.Errors.Should().Equal(Path.GetFileName(fresh));
+        result.DeletedCount.Should().Be(0);
+        Directory.Exists(fresh).Should().BeTrue();
+        Directory.Exists(old).Should().BeTrue("a refused batch deletes nothing");
+    }
+
+    [Fact]
+    public async Task A_folder_older_than_the_minimum_age_is_deleted()
+    {
+        string dir = MakeFolder(_root, $"AmethystTool-backup-{StampAt(DateTime.Now.AddMinutes(-6))}", ("a", 1));
+        var entries = await _service.ScanAsync(_root);
+
+        var result = await _service.DeleteAsync(entries, _root);
+
+        result.Refused.Should().BeFalse();
+        result.DeletedCount.Should().Be(1);
+        Directory.Exists(dir).Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task A_folder_dated_in_the_future_is_refused()
+    {
+        // The clock moved back since the install: its age is unknown, so it counts as recent.
+        string dir = MakeFolder(_root, $"AmethystTool-backup-{StampAt(DateTime.Now.AddHours(2))}", ("a", 1));
+        var entries = await _service.ScanAsync(_root);
+
+        (await _service.DeleteAsync(entries, _root)).Refused.Should().BeTrue();
+        Directory.Exists(dir).Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task A_bak_written_after_the_scan_is_refused()
+    {
+        // The scan saw a day-old file; AmethystTool's updater then wrote to it. The age is read again at delete.
+        string bak = MakeFile(_root, "AmethystTool-v1.2.0.dll.bak", 9);
+        var entry = await ScanOne("AmethystTool-v1.2.0.dll.bak");
+        File.SetLastWriteTimeUtc(bak, DateTime.UtcNow.AddMinutes(-1));
+
+        var result = await _service.DeleteAsync([entry], _root);
+
+        result.Refused.Should().BeTrue();
+        File.Exists(bak).Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task The_age_is_measured_against_the_injected_clock()
+    {
+        string dir = MakeFolder(_root, $"AmethystTool-backup-{Stamp}", ("a", 1));
+        var created = (await ScanOne($"AmethystTool-backup-{Stamp}")).CreatedUtc;
+        var service = new BackupService { Clock = new FixedClock(new DateTimeOffset(created.AddMinutes(4), TimeSpan.Zero)) };
+
+        (await service.DeleteAsync(await service.ScanAsync(_root), _root)).Refused.Should().BeTrue();
+        Directory.Exists(dir).Should().BeTrue();
+    }
+
+    private sealed class FixedClock(DateTimeOffset now) : TimeProvider
+    {
+        public override DateTimeOffset GetUtcNow() => now;
     }
 }
