@@ -851,5 +851,5 @@ Aktivieren?</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Ohne Internet kann keine neue Version heruntergeladen werden.</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Es wurde nichts gelöscht: „{0}“ konnte nicht als sicher löschbares Backup bestätigt werden (es hat sich geändert, ist ein Link oder ist jünger als 5 Minuten). Aktualisiere die Liste und versuche es erneut.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Glaseffekt (Glassmorphism)</value></data>
-  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Durchscheinende Titelleiste und Seitenleiste über dem Mica-Hintergrund von Windows 11. Die Seiten bleiben deckend, damit der Text seinen Kontrast behält. Auf langsameren PCs ausschalten. Unter Windows 10 und bei hohem Kontrast ist der Hintergrund immer deckend.</value></data>
+  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Durchscheinende Titelleiste und Seitenleiste über dem Acrylic-Hintergrund von Windows 11. Die Seiten bleiben deckend, damit der Text seinen Kontrast behält. Auf langsameren PCs ausschalten. Unter Windows 10 und bei hohem Kontrast ist der Hintergrund immer deckend.</value></data>
 </root>

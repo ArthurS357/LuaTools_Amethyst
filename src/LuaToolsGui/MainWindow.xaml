@@ -22,11 +22,12 @@
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <!-- Backdrop starts as None and is set from code (MainWindow.ApplyGlass), driven by the "Glass effect"
-         setting. Plain Mica alone was rejected before: it derives its tint from the user's WALLPAPER and
-         measured #272727 grey here, so the app read as a grey shell with purple accents. With the glass on,
-         Mica sits UNDER the shell grid painted GlassShellBrush (the window colour at 60%), so the shell
-         stays amethyst and only the wallpaper's hue shows through; the pages keep their opaque fill. With
-         it off, or where Mica is unavailable, this is exactly the solid window it always was. -->
+         setting; it stays None here so Windows 10 and high contrast never see a backdrop at all. With the
+         glass on, Acrylic (a live blur of what is behind the window) sits UNDER the shell grid painted
+         GlassShellBrush (the window colour at 80%), so the shell stays in the palette's hue and the blur
+         shows through; the pages keep their opaque fill. Mica was tried in 1.7.12.8 and dropped: on a dark
+         window it is one flat neutral grey, no blur, and read as no effect. With the glass off, or on
+         Windows 10, this is exactly the solid window it always was (Themes/GlassPolicy.cs). -->
 
 
     <!-- The root grid carries the background rather than the Window: WPF-UI's FluentWindow template

@@ -80,6 +80,14 @@ public partial class MainWindow : Wpf.Ui.Controls.FluentWindow, ITrayWindow
     /// accent switch repaints in place. Turning glass OFF also puts the Window's own Background back, because
     /// WPF-UI's RemoveBackdrop replaces it with its fallback grey, which shows on resize before the grid paints.
     /// </para>
+    ///
+    /// <para>
+    /// Runs only at construction, on the Settings toggle and when Windows toggles high contrast — never on
+    /// navigation — and WPF-UI ignores a set to the value it already has, so the DWM backdrop is set once.
+    /// The Windows 11 gate is <c>IsSupported(Mica)</c> on purpose: WPF-UI reports Acrylic as supported back
+    /// to Windows 7. On the original Windows 11 release (21H2, before DWMSBT) WPF-UI falls back to its legacy
+    /// Mica attribute for any backdrop, which is darker than Acrylic, so the contrast guarantee still holds.
+    /// </para>
     /// </summary>
     public void ApplyGlass(bool enabled)
     {
@@ -88,12 +96,12 @@ public partial class MainWindow : Wpf.Ui.Controls.FluentWindow, ITrayWindow
             Wpf.Ui.Controls.WindowBackdrop.IsSupported(Wpf.Ui.Controls.WindowBackdropType.Mica),
             SystemParameters.HighContrast);
 
-        WindowBackdropType = active ? Wpf.Ui.Controls.WindowBackdropType.Mica : Wpf.Ui.Controls.WindowBackdropType.None;
+        WindowBackdropType = active ? Wpf.Ui.Controls.WindowBackdropType.Acrylic : Wpf.Ui.Controls.WindowBackdropType.None;
         ShellRoot.SetResourceReference(Panel.BackgroundProperty, GlassPolicy.ShellBrushKey(active));
         if (!active) SetResourceReference(BackgroundProperty, GlassPolicy.SolidShellBrushKey);
 
         if (enabled && !active)
-            AppLog.Log("glass: requested but not shown (Mica needs Windows 11 and no high contrast); solid window");
+            AppLog.Log("glass: requested but not shown (Acrylic needs Windows 11 and no high contrast); solid window");
     }
 
     // ── System tray ─────────────────────────────────────────────────

@@ -851,5 +851,5 @@ Inschakelen?</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Zonder internet kan geen nieuwe versie worden gedownload.</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Er is niets verwijderd: "{0}" kon niet worden bevestigd als een back-up die veilig verwijderd kan worden (het is gewijzigd, is een koppeling of is jonger dan 5 minuten). Vernieuw de lijst en probeer het opnieuw.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Glaseffect (Glassmorphism)</value></data>
-  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Doorschijnende titelbalk en zijmenu boven de Mica-achtergrond van Windows 11. Pagina's blijven ondoorzichtig zodat tekst zijn contrast houdt. Schakel het uit op tragere pc's. Onder Windows 10 en bij hoog contrast is de achtergrond altijd effen.</value></data>
+  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Doorschijnende titelbalk en zijmenu boven de Acrylic-achtergrond van Windows 11. Pagina's blijven ondoorzichtig zodat tekst zijn contrast houdt. Schakel het uit op tragere pc's. Onder Windows 10 en bij hoog contrast is de achtergrond altijd effen.</value></data>
 </root>

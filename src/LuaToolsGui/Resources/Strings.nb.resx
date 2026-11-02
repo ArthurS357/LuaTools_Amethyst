@@ -851,5 +851,5 @@ Aktivere?</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Kan ikke laste ned en ny versjon uten internett.</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Ingenting ble slettet: "{0}" kunne ikke bekreftes som en sikkerhetskopi som trygt kan fjernes (den er endret, er en lenke eller er under 5 minutter gammel). Oppdater listen og prøv igjen.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Glasseffekt (Glassmorphism)</value></data>
-  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Gjennomsiktig tittellinje og sidemeny over Mica-bakgrunnen i Windows 11. Sidene forblir ugjennomsiktige slik at teksten beholder kontrasten. Slå det av på tregere PC-er. I Windows 10 og med høy kontrast er bakgrunnen alltid ensfarget.</value></data>
+  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Gjennomsiktig tittellinje og sidemeny over Acrylic-bakgrunnen i Windows 11. Sidene forblir ugjennomsiktige slik at teksten beholder kontrasten. Slå det av på tregere PC-er. I Windows 10 og med høy kontrast er bakgrunnen alltid ensfarget.</value></data>
 </root>

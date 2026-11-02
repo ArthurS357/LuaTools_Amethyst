@@ -108,7 +108,7 @@ public partial class SettingsViewModel : ObservableObject
     public Action? RequestShowWindow { get; set; }
 
     // ── Appearance ──────────────────────────────────────────────────
-    /// <summary>Glass effect on the main window (Mica behind the title bar and nav rail). Persisted via
+    /// <summary>Glass effect on the main window (Acrylic behind the title bar and nav rail). Persisted via
     /// SettingsService; applied live through <see cref="ApplyGlass"/>, no relaunch.</summary>
     [ObservableProperty] private bool _enableGlassmorphism;
 

@@ -851,5 +851,5 @@ SHA-256 {3}
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>ดาวน์โหลดเวอร์ชันใหม่ไม่ได้หากไม่มีอินเทอร์เน็ต</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>ไม่มีการลบสิ่งใด: ยืนยันไม่ได้ว่า "{0}" เป็นข้อมูลสำรองที่ลบได้อย่างปลอดภัย (มีการเปลี่ยนแปลง เป็นลิงก์ หรือสร้างมาไม่ถึง 5 นาที) รีเฟรชรายการแล้วลองอีกครั้ง</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>เอฟเฟกต์กระจก (Glassmorphism)</value></data>
-  <data name="Settings_Glass_Hint" xml:space="preserve"><value>แถบชื่อเรื่องและเมนูด้านข้างแบบโปร่งแสงบนพื้นหลัง Mica ของ Windows 11 หน้าต่าง ๆ ยังคงทึบเพื่อให้ข้อความคงความคมชัด ปิดไว้บนพีซีที่ช้ากว่า บน Windows 10 และโหมดคอนทราสต์สูงจะใช้พื้นหลังทึบเสมอ</value></data>
+  <data name="Settings_Glass_Hint" xml:space="preserve"><value>แถบชื่อเรื่องและเมนูด้านข้างแบบโปร่งแสงบนพื้นหลัง Acrylic ของ Windows 11 หน้าต่าง ๆ ยังคงทึบเพื่อให้ข้อความคงความคมชัด ปิดไว้บนพีซีที่ช้ากว่า บน Windows 10 และโหมดคอนทราสต์สูงจะใช้พื้นหลังทึบเสมอ</value></data>
 </root>

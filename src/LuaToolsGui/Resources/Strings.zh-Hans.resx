@@ -871,5 +871,5 @@ SHA-256 {3}
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>没有互联网无法下载新版本。</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>未删除任何内容：无法确认“{0}”是可以安全删除的备份（它已更改、是链接，或创建不到 5 分钟）。请刷新列表后重试。</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>玻璃效果 (Glassmorphism)</value></data>
-  <data name="Settings_Glass_Hint" xml:space="preserve"><value>在 Windows 11 的 Mica 背景上显示半透明的标题栏和侧边菜单。页面保持不透明，以保证文字对比度。较慢的电脑上请关闭。Windows 10 和高对比度模式下始终使用不透明背景。</value></data>
+  <data name="Settings_Glass_Hint" xml:space="preserve"><value>在 Windows 11 的 Acrylic 背景上显示半透明的标题栏和侧边菜单。页面保持不透明，以保证文字对比度。较慢的电脑上请关闭。Windows 10 和高对比度模式下始终使用不透明背景。</value></data>
 </root>

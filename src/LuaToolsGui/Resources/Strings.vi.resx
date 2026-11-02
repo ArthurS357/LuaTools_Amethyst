@@ -851,5 +851,5 @@ Bật nó?</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Không thể tải phiên bản mới khi không có internet.</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Không có gì bị xóa: không thể xác nhận "{0}" là bản sao lưu có thể xóa an toàn (đã thay đổi, là liên kết hoặc được tạo chưa đến 5 phút). Hãy làm mới danh sách rồi thử lại.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Hiệu ứng kính (Glassmorphism)</value></data>
-  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Thanh tiêu đề và menu bên mờ trong suốt trên nền Mica của Windows 11. Các trang vẫn đặc để chữ giữ được độ tương phản. Hãy tắt trên máy chậm hơn. Trên Windows 10 và chế độ tương phản cao, nền luôn đặc.</value></data>
+  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Thanh tiêu đề và menu bên mờ trong suốt trên nền Acrylic của Windows 11. Các trang vẫn đặc để chữ giữ được độ tương phản. Hãy tắt trên máy chậm hơn. Trên Windows 10 và chế độ tương phản cao, nền luôn đặc.</value></data>
 </root>

@@ -49,7 +49,7 @@ public class AppSettings
     // and a future tweak to a ramp reaches everyone who picked it.
     public string? AccentColor { get; set; }
 
-    // Glass effect (Mica backdrop behind a translucent title bar and nav rail). Nullable so "never set"
+    // Glass effect (Acrylic backdrop behind a translucent title bar and nav rail). Nullable so "never set"
     // (→ default ON) is distinguishable from an explicit choice; the off switch is for slower PCs.
     public bool? EnableGlassmorphism { get; set; }
 
@@ -406,8 +406,8 @@ public sealed class SettingsService
     }
 
     /// <summary>
-    /// Glass effect on the main window (default ON): Windows 11 Mica behind a translucent title bar and nav
-    /// rail. Pages stay on their solid background. Where Mica is unavailable (Windows 10, high contrast) the
+    /// Glass effect on the main window (default ON): Windows 11 Acrylic behind a translucent title bar and nav
+    /// rail. Pages stay on their solid background. Where it is unavailable (Windows 10, high contrast) the
     /// window is solid whatever this says; see <see cref="Themes.GlassPolicy"/>.
     /// </summary>
     public bool EnableGlassmorphism

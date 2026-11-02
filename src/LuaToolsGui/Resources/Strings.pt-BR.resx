@@ -851,5 +851,5 @@ Ativar?</value></data>
   <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Esse local não existe mais: {0}</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Nada foi apagado: não foi possível confirmar que "{0}" é um backup seguro para remover (ele mudou, é um link ou tem menos de 5 minutos). Atualize a lista e tente novamente.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Efeito Vidro (Glassmorphism)</value></data>
-  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Barra de título e menu lateral translúcidos sobre o fundo Mica do Windows 11. As páginas continuam sólidas para o texto manter o contraste. Desative em PCs mais lentos. No Windows 10 e no alto contraste o fundo é sempre sólido.</value></data>
+  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Barra de título e menu lateral translúcidos sobre o fundo Acrylic do Windows 11. As páginas continuam sólidas para o texto manter o contraste. Desative em PCs mais lentos. No Windows 10 e no alto contraste o fundo é sempre sólido.</value></data>
 </root>

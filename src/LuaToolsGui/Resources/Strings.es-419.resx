@@ -851,5 +851,5 @@ Puedes rechazarlo y seguir usando el resto de LuaTools; solo el botón «Add via
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>No se puede descargar una nueva versión sin Internet.</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>No se eliminó nada: no se pudo confirmar que "{0}" sea un respaldo que se pueda borrar con seguridad (cambió, es un enlace o tiene menos de 5 minutos). Actualiza la lista e inténtalo de nuevo.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Efecto cristal (Glassmorphism)</value></data>
-  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Barra de título y menú lateral translúcidos sobre el fondo Mica de Windows 11. Las páginas siguen siendo sólidas para que el texto mantenga el contraste. Desactívalo en PC más lentas. En Windows 10 y con contraste alto el fondo es siempre sólido.</value></data>
+  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Barra de título y menú lateral translúcidos sobre el fondo Acrylic de Windows 11. Las páginas siguen siendo sólidas para que el texto mantenga el contraste. Desactívalo en PC más lentas. En Windows 10 y con contraste alto el fondo es siempre sólido.</value></data>
 </root>

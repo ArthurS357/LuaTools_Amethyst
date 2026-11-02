@@ -851,5 +851,5 @@ Ativar?</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Não é possível transferir uma nova versão sem Internet.</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Nada foi eliminado: não foi possível confirmar que "{0}" é uma cópia de segurança segura para remover (foi alterada, é uma ligação ou tem menos de 5 minutos). Atualize a lista e tente novamente.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Efeito Vidro (Glassmorphism)</value></data>
-  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Barra de título e menu lateral translúcidos sobre o fundo Mica do Windows 11. As páginas mantêm-se sólidas para o texto manter o contraste. Desative em PCs mais lentos. No Windows 10 e em alto contraste o fundo é sempre sólido.</value></data>
+  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Barra de título e menu lateral translúcidos sobre o fundo Acrylic do Windows 11. As páginas mantêm-se sólidas para o texto manter o contraste. Desative em PCs mais lentos. No Windows 10 e em alto contraste o fundo é sempre sólido.</value></data>
 </root>

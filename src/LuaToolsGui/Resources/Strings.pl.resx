@@ -851,5 +851,5 @@ Włączyć?</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Bez internetu nie można pobrać nowej wersji.</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Nic nie zostało usunięte: nie udało się potwierdzić, że „{0}” to kopia zapasowa, którą można bezpiecznie usunąć (zmieniła się, jest dowiązaniem lub ma mniej niż 5 minut). Odśwież listę i spróbuj ponownie.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Efekt szkła (Glassmorphism)</value></data>
-  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Półprzezroczysty pasek tytułu i menu boczne na tle Mica systemu Windows 11. Strony pozostają nieprzezroczyste, aby tekst zachował kontrast. Wyłącz na wolniejszych komputerach. W Windows 10 i w trybie dużego kontrastu tło jest zawsze jednolite.</value></data>
+  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Półprzezroczysty pasek tytułu i menu boczne na tle Acrylic systemu Windows 11. Strony pozostają nieprzezroczyste, aby tekst zachował kontrast. Wyłącz na wolniejszych komputerach. W Windows 10 i w trybie dużego kontrastu tło jest zawsze jednolite.</value></data>
 </root>

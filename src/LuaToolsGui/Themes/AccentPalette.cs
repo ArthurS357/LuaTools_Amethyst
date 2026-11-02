@@ -184,7 +184,7 @@ public sealed record AccentPalette(
             ["ScrimLightBrush"] = At(surfaceBase, 0x73),
             ["ScrimPanelBrush"] = At(raised, 0xCC),
 
-            // Glass shell: the window colour over the Mica backdrop (see GlassPolicy)
+            // Glass shell: the window colour over the Acrylic backdrop (see GlassPolicy)
             [GlassPolicy.GlassShellBrushKey] = At(surfaceBase, GlassPolicy.ShellAlpha),
         };
     }

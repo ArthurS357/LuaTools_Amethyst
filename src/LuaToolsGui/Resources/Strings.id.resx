@@ -851,5 +851,5 @@ Aktifkan?</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Tidak dapat mengunduh versi baru tanpa internet.</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Tidak ada yang dihapus: "{0}" tidak dapat dipastikan sebagai cadangan yang aman untuk dihapus (berubah, berupa tautan, atau berumur kurang dari 5 menit). Segarkan daftar lalu coba lagi.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Efek kaca (Glassmorphism)</value></data>
-  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Bilah judul dan menu samping tembus pandang di atas latar Mica Windows 11. Halaman tetap padat agar teks tetap kontras. Matikan di PC yang lebih lambat. Di Windows 10 dan mode kontras tinggi, latar selalu padat.</value></data>
+  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Bilah judul dan menu samping tembus pandang di atas latar Acrylic Windows 11. Halaman tetap padat agar teks tetap kontras. Matikan di PC yang lebih lambat. Di Windows 10 dan mode kontras tinggi, latar selalu padat.</value></data>
 </root>

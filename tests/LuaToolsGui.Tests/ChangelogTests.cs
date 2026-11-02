@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.7.12.8");
+        AppVersion.Current.Should().Be("1.7.12.9");
     }
 
     [Fact]
@@ -59,7 +59,8 @@ public class ChangelogTests
         text.Should().ContainEquivalentOf("less than 5 minutes old");        // backup cleanup age gate
         text.Should().ContainEquivalentOf("all 29 languages");               // translation pass
         text.Should().ContainEquivalentOf("Central Package Management");     // F-17
-        text.Should().ContainEquivalentOf("Glass effect");                   // Mica shell toggle
+        text.Should().ContainEquivalentOf("Glass effect");                   // glass shell toggle
+        text.Should().ContainEquivalentOf("Acrylic");                        // 1.7.12.9: Mica read as no effect
         text.Should().ContainEquivalentOf("CloudRedirect was removed");       // backend removal
         text.Should().ContainEquivalentOf("decoded at the size");            // performance audit
     }

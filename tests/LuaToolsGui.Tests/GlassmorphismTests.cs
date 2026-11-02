@@ -116,7 +116,7 @@ public class GlassmorphismTests : IDisposable
     [Theory]
     [InlineData(true, true, false, true)]
     [InlineData(false, true, false, false)]  // the user turned it off
-    [InlineData(true, false, false, false)]  // Windows 10: no Mica → solid
+    [InlineData(true, false, false, false)]  // Windows 10: not Windows 11 → solid, no Acrylic
     [InlineData(true, true, true, false)]    // high contrast always wins
     public void Glass_shows_only_when_wanted_supported_and_not_high_contrast(
         bool enabled, bool micaSupported, bool highContrast, bool expected)
@@ -203,10 +203,12 @@ public class GlassmorphismTests : IDisposable
     }
 
     [Fact]
-    public void The_worst_case_backdrop_is_brighter_than_measured_Mica()
+    public void The_worst_case_backdrop_covers_measured_dark_Acrylic()
     {
-        // #272727 is what Mica measured on a dark window here; the margin is the point of the constant.
-        GlassPolicy.WorstCaseBackdropGrey.Should().BeGreaterThan(0x27);
+        // Dark Acrylic measured #929292 over a white window (Windows 11 26200). The 1.7.12.8 constant was
+        // #3A3A3A, sized for Mica (#202020 whatever is behind it), and would have passed a 50% shell whose
+        // accent text drops to 2.8:1 over a bright desktop.
+        GlassPolicy.WorstCaseBackdropGrey.Should().BeGreaterThanOrEqualTo(0x92);
     }
 
     // ── Markup ──────────────────────────────────────────────────────
@@ -243,5 +245,18 @@ public class GlassmorphismTests : IDisposable
             .Single(e => (string?)e.Attribute(X + "Name") == "ShellRoot");
 
         ((string?)shell.Attribute("Background")).Should().StartWith("{DynamicResource ");
+    }
+
+    [Fact]
+    public void The_window_starts_without_a_backdrop_and_glass_asks_for_Acrylic()
+    {
+        // The XAML must stay None so Windows 10 and high contrast never get one; the code picks Acrylic, the
+        // backdrop WorstCaseBackdropGrey was measured for. Mica is a flat grey on a dark window (1.7.12.8).
+        ((string?)Load("MainWindow.xaml").Root!.Attribute("WindowBackdropType")).Should().Be("None");
+
+        var dir = new DirectoryInfo(AppContext.BaseDirectory);
+        while (!File.Exists(Path.Combine(dir!.FullName, "LuaToolsGui.sln"))) dir = dir.Parent;
+        string code = File.ReadAllText(Path.Combine(dir.FullName, "src", "LuaToolsGui", "MainWindow.xaml.cs"));
+        code.Should().Contain("active ? Wpf.Ui.Controls.WindowBackdropType.Acrylic : Wpf.Ui.Controls.WindowBackdropType.None");
     }
 }

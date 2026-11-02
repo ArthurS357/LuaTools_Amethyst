@@ -1,9 +1,20 @@
 # Changelog
 
-## Nao lancado (build local 1.7.12.8)
+## Nao lancado (build local 1.7.12.9)
 
 Auto-update so pelo GitHub com SHA-256 fixado, backup de saves fora da Steam, badge "Instalado", app inteiro traduzido e
-build padronizado. Junta as builds locais 1.7.12.1 a 1.7.12.8, ainda em teste (sem release publicada).
+build padronizado. Junta as builds locais 1.7.12.1 a 1.7.12.9, ainda em teste (sem release publicada).
+
+### 1.7.12.9 — vidro com Acrylic
+
+- **Mica trocado por Acrylic.** Na 1.7.12.8 o vidro estava ativo (DWM `SYSTEMBACKDROP_TYPE` = 2 na janela real) mas era
+  invisivel: Mica em janela escura e uma cor lisa, sem desfoque, medida `#202020` sobre branco, preto e amarelo, e sob o
+  shell a 60% ficava a poucos niveis do solido. Acrylic (`DWMSBT_TRANSIENTWINDOW`) desfoca o que esta atras.
+- **Shell a 80% (`0xCC`).** Acrylic escuro mede `#929292` sobre janela branca e `#989800` sobre amarela, entao o pior
+  caso do teste de contraste subiu de `#3A3A3A` para `#989898`. Contra ele, 50% deixa texto de destaque a 2,8:1 e 70% a
+  4,4:1; 80% e o menor degrau AA nas tres paletas. Gate inalterado: Windows 11 (`IsSupported(Mica)`, porque o WPF-UI diz
+  que Acrylic existe desde o Windows 7) e sem alto contraste. Texto de ajuda (`Settings_Glass_Hint`) atualizado nos 30
+  idiomas (so o nome do material).
 
 ### Novidades (builds locais 1.7.12.1 a 1.7.12.5)
 
@@ -21,9 +32,8 @@ build padronizado. Junta as builds locais 1.7.12.1 a 1.7.12.8, ainda em teste (s
 - **Efeito vidro (Configuracoes > Geral, padrao ligado):** no Windows 11 a barra de titulo e o menu lateral ficam
   translucidos sobre o backdrop Mica (`GlassShellBrush` = cor da janela a 60%); as paginas continuam opacas
   (`NavigationViewContentBackground` do WPF-UI), entao nenhum token de texto perde contraste. Troca ao vivo, sem
-  reiniciar. Windows 10, alto contraste ou toggle desligado = janela solida como antes. Mica e nao Acrylic: fixa a
-  luminancia no escuro e nao borra a cada frame. `GlassmorphismTests` checa AA de todo texto do shell sobre um
-  backdrop `#3A3A3A` (Mica mede `#272727`) nas tres paletas.
+  reiniciar. Windows 10, alto contraste ou toggle desligado = janela solida como antes. *(Substituido na 1.7.12.9:
+  Acrylic a 80%, ver acima.)*
 - **Aba Modo e onboarding:** o card volta a ser BetterSteamTools / BetterSteamTools Nightly (`madoiscool/BetterSteamTools`)
   com aviso de telemetria e DonateKeys; o onboarding instala so AmethystTool e o frontend Amethyst.
 

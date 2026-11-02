@@ -851,5 +851,5 @@ SHA-256 {3}
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Δεν είναι δυνατή η λήψη νέας έκδοσης χωρίς internet.</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Δεν διαγράφηκε τίποτα: δεν ήταν δυνατό να επιβεβαιωθεί ότι το «{0}» είναι αντίγραφο ασφαλείας που μπορεί να αφαιρεθεί με ασφάλεια (άλλαξε, είναι σύνδεσμος ή είναι νεότερο από 5 λεπτά). Ανανέωσε τη λίστα και δοκίμασε ξανά.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Εφέ γυαλιού (Glassmorphism)</value></data>
-  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Ημιδιαφανής γραμμή τίτλου και πλευρικό μενού πάνω από το φόντο Mica των Windows 11. Οι σελίδες μένουν αδιαφανείς ώστε το κείμενο να κρατά την αντίθεσή του. Απενεργοποίησέ το σε πιο αργούς υπολογιστές. Στα Windows 10 και σε υψηλή αντίθεση το φόντο είναι πάντα συμπαγές.</value></data>
+  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Ημιδιαφανής γραμμή τίτλου και πλευρικό μενού πάνω από το φόντο Acrylic των Windows 11. Οι σελίδες μένουν αδιαφανείς ώστε το κείμενο να κρατά την αντίθεσή του. Απενεργοποίησέ το σε πιο αργούς υπολογιστές. Στα Windows 10 και σε υψηλή αντίθεση το φόντο είναι πάντα συμπαγές.</value></data>
 </root>
