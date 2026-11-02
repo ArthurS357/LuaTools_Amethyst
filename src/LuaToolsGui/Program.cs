@@ -240,8 +240,9 @@ public static class Program
                 typeof(FrameworkElement),
                 new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(culture.IetfLanguageTag)));
         }
-        catch
+        catch (Exception ex)
         {
+            LuaToolsGui.Services.AppLog.Log($"Program: could not apply the UI culture to WPF (falling back to default): {ex.GetType().Name}: {ex.Message}");
             // Never let a culture problem stop the app from launching — fall through to default (English).
         }
     }
@@ -315,7 +316,7 @@ public static class Program
                 return string.IsNullOrWhiteSpace(v) ? null : v;
             }
         }
-        catch { /* corrupt/missing → fall back to OS */ }
+        catch (Exception ex) { LuaToolsGui.Services.AppLog.Log($"Program: language setting unreadable (falling back to OS language): {ex.GetType().Name}: {ex.Message}"); /* corrupt/missing → fall back to OS */ }
         return null;
     }
 }

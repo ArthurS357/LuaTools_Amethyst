@@ -240,7 +240,7 @@ public class PluginAddService(
 
     private async Task<string?> SafeGetGameNameAsync(long appId)
     {
-        try { return (await api.GetDetailsAsync(appId.ToString()))?.Name; } catch { return null; }
+        try { return (await api.GetDetailsAsync(appId.ToString()))?.Name; } catch (Exception ex) { AppLog.Log($"PluginAdd: game-name lookup failed: {ex.GetType().Name}: {ex.Message}"); return null; }
     }
 
     /// <summary>Fill the usage-counter badges on the (already-published) rows, best-effort and
@@ -274,7 +274,7 @@ public class PluginAddService(
                 if (result is HubcapResult<HubcapStats>.Ok s) r.Stats = $"{s.Value.DailyUsage}/{s.Value.DailyLimit}";
             }
         }
-        catch { }
+        catch (Exception ex) { AppLog.Log($"PluginAdd: Hubcap stats unavailable: {ex.GetType().Name}: {ex.Message}"); }
     }
 
     /// <summary>Standard "X/25" (or "X/Unlimited" for supporters) usage badge on the non-key rows.</summary>
@@ -285,13 +285,13 @@ public class PluginAddService(
             var usageTask = api.GetStandardUsageAsync();
             var supporterTask = api.GetSupporterStatusAsync();
             await Task.WhenAll(usageTask, supporterTask);
-            var usage = usageTask.Result;
-            bool isSupporter = supporterTask.Result?.IsSupporter == true;
+            var usage = await usageTask;
+            bool isSupporter = (await supporterTask)?.IsSupporter == true;
             foreach (var r in rows.Where(r => !r.NeedsKey))
                 if (usage is not null)
                     r.Stats = isSupporter ? $"{usage.Used} / Unlimited" : $"{usage.Used}/{usage.Limit}";
         }
-        catch { }
+        catch (Exception ex) { AppLog.Log($"PluginAdd: usage stats unavailable: {ex.GetType().Name}: {ex.Message}"); }
     }
 
     /// <summary>

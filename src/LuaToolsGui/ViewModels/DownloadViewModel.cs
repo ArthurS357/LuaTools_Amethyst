@@ -211,8 +211,9 @@ public partial class DownloadViewModel : ObservableObject
             Details = await _api.GetDetailsAsync(appId.ToString());
             OnPropertyChanged(nameof(GenresText));
         }
-        catch
+        catch (Exception ex)
         {
+            AppLog.Log($"Download: loading app details failed (silent install): {ex.GetType().Name}: {ex.Message}");
             onComplete?.Invoke(Resources.Strings.Add_Err_Generic, true);
             _silentInstall = false;
             return;
@@ -255,8 +256,9 @@ public partial class DownloadViewModel : ObservableObject
             Details = await _api.GetDetailsAsync(appId.ToString());
             OnPropertyChanged(nameof(GenresText));
         }
-        catch
+        catch (Exception ex)
         {
+            AppLog.Log($"Download: loading app details failed: {ex.GetType().Name}: {ex.Message}");
             Error = Resources.Strings.Add_Err_Generic;
             return;
         }
@@ -581,8 +583,9 @@ public partial class DownloadViewModel : ObservableObject
             // Superseded by a newer fetch, or the user moved to another app. Not a failure — leave the
             // error line alone so a stale check can't paint a message over the current selection.
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            AppLog.Log($"Download: source check failed: {ex.GetType().Name}: {ex.Message}");
             Error = Resources.Strings.Add_Err_Generic;
         }
         finally
@@ -677,8 +680,10 @@ public partial class DownloadViewModel : ObservableObject
         var supporterTask = _api.GetSupporterStatusAsync();
         await Task.WhenAll(usageTask, supporterTask);
 
-        var usage = usageTask.Result;
-        bool isSupporter = supporterTask.Result?.IsSupporter == true;
+        // Both already completed by WhenAll; awaiting (rather than .Result) keeps the exception shape
+        // identical and leaves no blocking accessor behind.
+        var usage = await usageTask;
+        bool isSupporter = (await supporterTask)?.IsSupporter == true;
 
         foreach (var row in standardRows)
         {

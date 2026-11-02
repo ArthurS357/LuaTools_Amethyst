@@ -58,8 +58,9 @@ public class HardwareAppIdService
             foreach (long id in ids) _ids.Add(id);
             _cache.SaveHardwareAppIds(ids, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
         }
-        catch
+        catch (Exception ex)
         {
+            AppLog.Log($"HardwareAppIds: refresh failed (keeping the existing set): {ex.GetType().Name}: {ex.Message}");
             // Offline / all mirrors down / parse error → keep the existing set. Best-effort, like the
             // other caches; the blacklist is a nicety, never a hard dependency.
         }

@@ -241,7 +241,7 @@ public class HttpServerService : IHostedService
                 if (!IsShutdownAbort(ex)) AppLog.Log($"HTTP listener stopped: {LogSanitizer.Sanitize(ex)}");
                 break;
             }
-            catch { }
+            catch (Exception ex) { AppLog.Log($"HTTP listener: unexpected error in the accept loop: {ex.GetType().Name}: {ex.Message}"); }
         }
     }
 
@@ -374,7 +374,7 @@ public class HttpServerService : IHostedService
             if (json.ValueKind == JsonValueKind.Object && json.TryGetProperty("name", out var n))
                 name = n.GetString();
         }
-        catch { }
+        catch (Exception ex) { AppLog.Log($"HTTP /add: request body is not valid JSON (name ignored): {ex.GetType().Name}: {ex.Message}"); }
         _services.GetRequiredService<PluginAddService>().Start(appId, name);
         return (200, Json(new { success = true }));
     }
@@ -431,7 +431,7 @@ public class HttpServerService : IHostedService
             if (json.ValueKind == JsonValueKind.Object && json.TryGetProperty("source", out var s))
                 source = s.GetString() ?? "";
         }
-        catch { }
+        catch (Exception ex) { AppLog.Log($"HTTP /add-source: request body is not valid JSON: {ex.GetType().Name}: {ex.Message}"); }
         AppLog.Log($"/add-source/{appId} body='{body}' parsed source='{source}'");
         if (string.IsNullOrWhiteSpace(source)) return (400, JsonErr("source is required"));
 
@@ -735,8 +735,9 @@ public class HttpServerService : IHostedService
             var mime = iconPath.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ? "image/png" : "image/x-icon";
             return (200, Json(new { success = true, dataUrl = $"data:{mime};base64,{b64}" }));
         }
-        catch
+        catch (Exception ex)
         {
+            AppLog.Log($"HTTP: could not build the image data URL: {ex.GetType().Name}: {ex.Message}");
             return (200, Json(new { success = false, dataUrl = "" }));
         }
     }

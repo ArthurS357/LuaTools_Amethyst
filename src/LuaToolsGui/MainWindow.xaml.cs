@@ -52,7 +52,7 @@ public partial class MainWindow : Wpf.Ui.Controls.FluentWindow, ITrayWindow
         {
             RootNavigation.Navigate(typeof(HomeView));
             try { await viewModel.InitializeAsync(); }
-            catch { /* auth restore failed (e.g. offline) — UI still loads as guest */ }
+            catch (Exception ex) { AppLog.Log($"MainWindow: InitializeAsync failed (continuing as guest): {ex.GetType().Name}: {ex.Message}"); /* auth restore failed (e.g. offline) — UI still loads as guest */ }
         };
     }
 

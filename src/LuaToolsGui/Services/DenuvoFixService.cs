@@ -206,7 +206,7 @@ public class DenuvoFixService
                         HashAfter = FileHash.Sha256(dest),
                     });
                 }
-                catch { failed++; } // entry stays OUT of `applied`, so the settled record won't claim it
+                catch (Exception ex) { AppLog.Log($"DenuvoFix: applying one entry failed: {ex.GetType().Name}: {ex.Message}"); failed++; } // entry stays OUT of `applied`, so the settled record won't claim it
             }
 
             // ── Phase 4: settle. Replace the promise with the facts. ───────────────────────────────
@@ -338,7 +338,7 @@ public class DenuvoFixService
                         deleted++;
                     }
                 }
-                catch { errors++; }
+                catch (Exception ex) { AppLog.Log($"DenuvoFix: reverting one entry failed: {ex.GetType().Name}: {ex.Message}"); errors++; }
             }
 
             // Reported before plain errors because it is the only outcome the user can act on, and the
@@ -357,8 +357,8 @@ public class DenuvoFixService
             // Fully reverted, so the backups have served their purpose and the record is what makes the
             // Revert button appear — both go, and the fix reads as un-applied again.
             string backupDir = Path.Combine(installDir, FixRecordDir, SafeFixKey(fixId));
-            try { if (Directory.Exists(backupDir)) Directory.Delete(backupDir, recursive: true); } catch { }
-            try { if (File.Exists(recordPath)) File.Delete(recordPath); } catch { }
+            try { if (Directory.Exists(backupDir)) Directory.Delete(backupDir, recursive: true); } catch (Exception ex) { AppLog.Log($"DenuvoFix: could not delete the backup folder after revert: {ex.GetType().Name}: {ex.Message}"); }
+            try { if (File.Exists(recordPath)) File.Delete(recordPath); } catch (Exception ex) { AppLog.Log($"DenuvoFix: could not delete the fix record after revert: {ex.GetType().Name}: {ex.Message}"); }
 
             return new FixRevertResult(FixRevertOutcome.Done, restored, deleted, 0, 0, null, null);
         }
@@ -391,7 +391,7 @@ public class DenuvoFixService
             if (!File.Exists(recordPath)) return null;
             return JsonSerializer.Deserialize<DenuvoFixRecord>(File.ReadAllText(recordPath), ReadOpts);
         }
-        catch { return null; }
+        catch (Exception ex) { AppLog.Log($"DenuvoFix: fix record unreadable: {ex.GetType().Name}: {ex.Message}"); return null; }
     }
 
     /// <summary>True when this fix has a revert record in the game folder — i.e. it is applied.</summary>

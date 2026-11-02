@@ -217,7 +217,7 @@ public partial class HomeViewModel : ObservableObject
                       ? $"{Resources.Strings.Plugin_Status_Installed} · {tag}"
                       : Resources.Strings.Plugin_Status_Installed, "SuccessTextBrush");
         }
-        catch { /* leave the prior value (e.g. "Checking…") on any failure */ }
+        catch (Exception ex) { AppLog.Log($"Home: plugin status refresh failed: {ex.GetType().Name}: {ex.Message}"); /* leave the prior value (e.g. "Checking…") on any failure */ }
     }
 
     /// <summary>

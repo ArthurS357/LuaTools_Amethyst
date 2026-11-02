@@ -296,7 +296,7 @@ public partial class App : Application
             //    ApplyAndRestart() terminates this process; the relaunched instance (launched with
             //    --tray-locked) re-enters this same flow via OnStartup once it's already current, so this
             //    run's job ends here — there is nothing safe left for THIS process to do.
-            try { await Updates.CheckAndStageAsync(); } catch { /* offline / not installed */ }
+            try { await Updates.CheckAndStageAsync(); } catch (Exception ex) { AppLog.Log($"startup: app-update check failed: {ex.GetType().Name}: {ex.Message}"); /* offline / not installed */ }
             if (Updates.HasStagedUpdate)
             {
                 Dispatcher.Invoke(() => Updates.ApplyAndRestart(new[] { "--minimized", "--tray-locked" }));
@@ -316,7 +316,7 @@ public partial class App : Application
                         Dispatcher.Invoke(() => t.Show("LuaTools", LuaToolsGui.Resources.Strings.App_Toast_UpdatingPlugin));
                     });
             }
-            catch { /* offline / install error — retry next Steam-open */ }
+            catch (Exception ex) { AppLog.Log($"startup: plugin update flow failed (retry next Steam-open): {ex.GetType().Name}: {ex.Message}"); /* offline / install error — retry next Steam-open */ }
         }
         finally { _updateFlowGate.Release(); }
     }
@@ -1193,7 +1193,7 @@ public partial class App : Application
         if (silentStartup)
         {
             window.StartSilent();
-            try { await main.InitializeAsync(); } catch { /* offline → install proceeds as guest */ }
+            try { await main.InitializeAsync(); } catch (Exception ex) { AppLog.Log($"startup: main.InitializeAsync failed (continuing as guest): {ex.GetType().Name}: {ex.Message}"); /* offline → install proceeds as guest */ }
         }
         else
         {

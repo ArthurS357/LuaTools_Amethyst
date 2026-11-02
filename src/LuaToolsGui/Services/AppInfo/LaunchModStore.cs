@@ -125,8 +125,9 @@ public class LaunchModStore
             var loaded = JsonSerializer.Deserialize<List<LaunchMod>>(File.ReadAllText(_path), JsonOpts);
             if (loaded is not null) _mods = loaded.ToDictionary(m => m.AppId);
         }
-        catch
+        catch (Exception ex)
         {
+            AppLog.Log($"LaunchModStore: existing file unreadable (kept for manual recovery): {ex.GetType().Name}: {ex.Message}");
             // Present but unreadable → keep the file for manual recovery rather than starting empty and
             // overwriting it on the next save.
             try { File.Move(_path, _path + ".corrupt", overwrite: true); } catch { /* best effort */ }
@@ -153,8 +154,9 @@ public class LaunchModStore
             catch { /* best effort */ }
             File.Move(tmp, _path, overwrite: true);
         }
-        catch
+        catch (Exception ex)
         {
+            AppLog.Log($"LaunchModStore: save failed: {ex.GetType().Name}: {ex.Message}");
             // Losing the record is bad but must never take the app down mid-edit.
         }
     }

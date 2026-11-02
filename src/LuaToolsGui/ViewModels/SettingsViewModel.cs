@@ -92,7 +92,7 @@ public partial class SettingsViewModel : ObservableObject
             else
                 key.DeleteValue(RunValueName, throwOnMissingValue: false);
         }
-        catch { /* registry write blocked — setting is still saved, just not applied this run */ }
+        catch (Exception ex) { AppLog.Log($"Settings: run-at-startup registry write failed: {ex.GetType().Name}: {ex.Message}"); /* registry write blocked — setting is still saved, just not applied this run */ }
     }
 
     /// <summary>Minimize to the system tray instead of the taskbar. Persisted via SettingsService.</summary>
@@ -577,8 +577,9 @@ public partial class SettingsViewModel : ObservableObject
         {
             // Command re-run or cancelled — keep whatever stats are on screen rather than blanking them.
         }
-        catch
+        catch (Exception ex)
         {
+            AppLog.Log($"Settings: Hubcap stats load failed: {ex.GetType().Name}: {ex.Message}");
             HubcapStats = null;
         }
         finally

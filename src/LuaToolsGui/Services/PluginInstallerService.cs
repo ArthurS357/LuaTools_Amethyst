@@ -285,7 +285,7 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
                 ? JsonSerializer.Deserialize<Manifest>(File.ReadAllText(ManifestPath), JsonOpts)
                 : null;
         }
-        catch { return null; }
+        catch (Exception ex) { AppLog.Log($"PluginInstaller: manifest unreadable: {ex.GetType().Name}: {ex.Message}"); return null; }
     }
 
     private static void WriteManifest(Manifest m)
@@ -964,7 +964,7 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
 
                 if (changed) File.WriteAllText(path, root.ToJsonString(ConfigWriteOpts));
             }
-            catch { /* best effort per file — a locked/invalid config must not fail install/uninstall */ }
+            catch (Exception ex) { AppLog.Log($"PluginInstaller: patching a plugin config failed: {ex.GetType().Name}: {ex.Message}"); /* best effort per file — a locked/invalid config must not fail install/uninstall */ }
         }
         return removedMap;
     }

@@ -248,8 +248,9 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
             ApplyFilter();
             if (_allGames.Count == 0) EmptyMessage = Resources.Strings.Fixes_Empty_None;
         }
-        catch
+        catch (Exception ex)
         {
+            AppLog.Log($"Fixes: game list load failed: {ex.GetType().Name}: {ex.Message}");
             EmptyMessage = Resources.Strings.Fixes_Err_Load;
         }
         finally
@@ -355,7 +356,7 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
                 ApplyFixFilter();
             }
         }
-        catch { /* leave empty — flyout shows "no fixes" */ }
+        catch (Exception ex) { AppLog.Log($"Fixes: fix list load failed: {ex.GetType().Name}: {ex.Message}"); /* leave empty — flyout shows "no fixes" */ }
         finally { IsLoadingFixes = false; }
     }
 

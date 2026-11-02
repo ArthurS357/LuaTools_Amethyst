@@ -25,7 +25,7 @@ public static class ProtocolService
             protoKey.SetValue("", "URL:LuaTools Protocol");
             protoKey.SetValue("URL Protocol", "");
         }
-        catch { }
+        catch (Exception ex) { AppLog.Log($"protocol: registry registration failed: {ex.GetType().Name}: {ex.Message}"); }
     }
 
     public static (string? Action, long? AppId, bool Silent) Parse(string url)
@@ -64,7 +64,7 @@ public static class ProtocolService
             Directory.CreateDirectory(Path.GetDirectoryName(PendingFile)!);
             File.WriteAllText(PendingFile, url);
         }
-        catch { }
+        catch (Exception ex) { AppLog.Log($"protocol: could not write the pending URL: {ex.GetType().Name}: {ex.Message}"); }
     }
 
     public static string? TryReadPending()
@@ -78,7 +78,7 @@ public static class ProtocolService
                 return string.IsNullOrEmpty(url) ? null : url;
             }
         }
-        catch { }
+        catch (Exception ex) { AppLog.Log($"protocol: could not read the pending URL: {ex.GetType().Name}: {ex.Message}"); }
         return null;
     }
 }

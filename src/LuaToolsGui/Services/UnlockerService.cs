@@ -388,7 +388,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
                 cache.OpenSteamToolsInstalledVersion = release!.TagName; // Zip ⇒ OST ⇒ release fetched above
             }
             if (mode is UnlockerMode.OpenSteamTools or UnlockerMode.OpenSteamToolsNightly)
-                try { EnsureOpenSteamToolLuaPath(root); } catch { /* config tweak is best-effort */ }
+                try { EnsureOpenSteamToolLuaPath(root); } catch (Exception ex) { AppLog.Log($"Unlocker: EnsureOpenSteamToolLuaPath failed: {ex.GetType().Name}: {ex.Message}"); /* config tweak is best-effort */ }
 
             if (failed.Count == 0) return ModeInstallResult.Ok();
 

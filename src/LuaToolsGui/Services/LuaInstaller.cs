@@ -83,7 +83,7 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
             else
                 vault.SyncDefaultFromLive(appId);
         }
-        catch { /* the vault is a convenience — a hiccup here must never fail an install */ }
+        catch (Exception ex) { AppLog.Log($"install: lua vault capture failed (install continues): {ex.GetType().Name}: {ex.Message}"); /* the vault is a convenience — a hiccup here must never fail an install */ }
     }
 
     /// <summary>Record a just-installed appid in the "recently added" list (cache.json's LoadedAppIds), so
@@ -93,9 +93,9 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
     private void RecordLoaded(long appId)
     {
         try { cache.SaveLoadedAppIds(cache.GetLoadedAppIds().Append(appId)); }
-        catch { /* the notification is cosmetic */ }
+        catch (Exception ex) { AppLog.Log($"install: could not record the loaded app id: {ex.GetType().Name}: {ex.Message}"); /* the notification is cosmetic */ }
         try { Installed?.Invoke(appId); }
-        catch { /* a subscriber blowing up must never fail an install */ }
+        catch (Exception ex) { AppLog.Log($"install: an Installed subscriber threw: {ex.GetType().Name}: {ex.Message}"); /* a subscriber blowing up must never fail an install */ }
     }
 
     // setManifestid(depot, "manifestid", ...) — pins a depot to a fixed version. Commenting it out
@@ -197,7 +197,7 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
             File.SetCreationTime(path, now);
             File.SetLastWriteTime(path, now);
         }
-        catch { /* timestamp is cosmetic — never fail an install over it */ }
+        catch (Exception ex) { AppLog.Log($"install: could not stamp the file time: {ex.GetType().Name}: {ex.Message}"); /* timestamp is cosmetic — never fail an install over it */ }
     }
 
     /// <summary>
@@ -363,7 +363,7 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
         using (archive)
         {
             try { Directory.CreateDirectory(plugDir); } catch { /* reported per-file below */ }
-            try { Directory.CreateDirectory(depotDir); } catch { }
+            try { Directory.CreateDirectory(depotDir); } catch (Exception ex) { AppLog.Log($"install: could not create the depotcache folder: {ex.GetType().Name}: {ex.Message}"); }
 
             var luaEntry = SelectLuaEntry(archive, appId);
             if (luaEntry is null)

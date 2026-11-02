@@ -223,7 +223,7 @@ public class CefInjectorService : IHostedService
             foreach (var t in JsonSerializer.Deserialize<List<PendingRequest>>(timedOut, JsonOpts) ?? [])
                 AppLog.Log($"CEF bridge timeout: {Esc(t.id)} ({Esc(t.m)}) resolved as success by the page polyfill after ~5 s");
         }
-        catch { }
+        catch (Exception ex) { AppLog.Log($"CEF bridge: could not read the timed-out request list: {ex.GetType().Name}: {ex.Message}"); }
     }
 
     internal async Task<string> CallBackendMethod(string method, string argsRaw)
@@ -280,7 +280,7 @@ public class CefInjectorService : IHostedService
                     path = path.Replace($"{{{prop.Name}}}", Uri.EscapeDataString(prop.Value.ToString()));
                 }
             }
-            catch { }
+            catch (Exception ex) { AppLog.Log($"CEF bridge: could not substitute path parameters: {ex.GetType().Name}: {ex.Message}"); }
         }
 
         var url = BaseUrl + path;
