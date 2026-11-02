@@ -102,6 +102,56 @@ public sealed class PerformanceAuditTests : IDisposable
             .BeEquivalentTo(new Dictionary<long, string> { [480] = "Spacewar", [730] = "Counter-Strike 2" });
     }
 
+    // ── App list I/O: failure modes ─────────────────────────────────
+    //
+    // LoadAsync recovers from all of these the same way (its catch falls through to a fresh download, then to
+    // a stale cache): what it relies on is that a bad or busy file THROWS, never returns a half-read list.
+
+    [Theory]
+    [InlineData("{\"480\":\"Spacewar\",\"730\":")]   // truncated mid-write (what the old non-atomic save could leave)
+    [InlineData("not json at all")]
+    [InlineData("[1,2,3]")]                          // valid JSON, wrong shape
+    public async Task A_corrupt_list_throws_instead_of_loading_half_of_it(string content)
+    {
+        string path = Path.Combine(_dir, "steam-applist.json");
+        await File.WriteAllTextAsync(path, content, Encoding.UTF8);
+
+        Func<Task> read = () => SteamAppListCache.ReadListAsync(path);
+
+        await read.Should().ThrowAsync<System.Text.Json.JsonException>();
+    }
+
+    [Fact]
+    public async Task A_list_locked_by_another_process_throws_an_IOException_the_loader_catches()
+    {
+        string path = Path.Combine(_dir, "steam-applist.json");
+        await SteamAppListCache.WriteListAsync(path, new Dictionary<long, string> { [480] = "Spacewar" });
+
+        using (new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+        {
+            Func<Task> read = () => SteamAppListCache.ReadListAsync(path);
+            await read.Should().ThrowAsync<IOException>();
+        }
+
+        (await SteamAppListCache.ReadListAsync(path)).Should().ContainKey(480, "the handle is released after the read");
+    }
+
+    [Fact]
+    public async Task A_failed_save_leaves_the_previous_list_and_no_temp_file()
+    {
+        string path = Path.Combine(_dir, "steam-applist.json");
+        await SteamAppListCache.WriteListAsync(path, new Dictionary<long, string> { [1] = "kept" });
+
+        using (new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None)) // blocks the final move
+        {
+            Func<Task> save = () => SteamAppListCache.WriteListAsync(path, new Dictionary<long, string> { [2] = "lost" });
+            await save.Should().ThrowAsync<Exception>();
+        }
+
+        (await SteamAppListCache.ReadListAsync(path)).Should().BeEquivalentTo(new Dictionary<long, string> { [1] = "kept" });
+        File.Exists(path + ".tmp").Should().BeFalse();
+    }
+
     [Fact]
     public async Task Saving_replaces_the_previous_list_whole()
     {
