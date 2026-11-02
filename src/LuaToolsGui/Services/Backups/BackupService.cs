@@ -136,8 +136,16 @@ public sealed class BackupService
     internal static void DeleteTree(DirectoryInfo dir)
     {
         // Re-read the disk right before entering: the batch was validated earlier, and a folder swapped for
-        // a junction since then must not be walked. ponytail: narrows the window to microseconds; pinning
-        // the directory with an open FILE_FLAG_OPEN_REPARSE_POINT handle would close it, if ever needed.
+        // a junction since then must not be walked.
+        //
+        // ponytail: residual TOCTOU, accepted. Between this Refresh/IsLink and EnumerateFileSystemInfos (and,
+        // per entry, between IsLink(entry) and its Delete) a same-user process could still swap a folder for a
+        // junction. The window is microseconds, the swap has to win that race on purpose, and the backups live
+        // in the Steam root, which that process can already write. Closing it 100% means holding the directory
+        // open for the whole walk: CreateFile with FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OPEN_REPARSE_POINT
+        // and no FILE_SHARE_DELETE, so it cannot be renamed or replaced, then enumerating and deleting relative
+        // to that handle. Same idea as AssetIntegrity.OpenPinned, which pins a FILE between hash and use; a
+        // directory needs P/Invoke (no managed API opens one). Not done: documented, not implemented.
         dir.Refresh();
         if (IsLink(dir)) throw new IOException($"{dir.Name} became a link after validation; not entered");
 
