@@ -67,8 +67,11 @@ await gh.SendAsync(url, ct);                          // API / metadata
 await gh.DownloadAsync(url, dest, progress, ct);      // release-asset binaries
 ```
 
-The Velopack auto-updater is covered too. `UpdateService` passes a `ProxiedFileDownloader` that
-reuses `GithubProxy.Candidates`, so the update feed and `.nupkg` fall back to mirrors as well.
+The one exception is the app's own Velopack auto-updater: it replaces the running executable, so
+`UpdateService` passes an `OfficialGithubDownloader` that goes **direct to github.com only** (no
+mirrors), is pinned to the configured repo, and refuses any `.nupkg` whose SHA-256 differs from the
+`digest` GitHub's API publishes for that asset (fail-closed, logged to `AppLog`). Do not add mirror
+fallback back to it.
 
 ### 3. Store-page plugin calls go through `callServerMethod`
 

@@ -106,8 +106,8 @@ public class GithubProxy
     /// <summary>Candidate URLs to try in order: the direct URL, then each CAPABILITY-MATCHED mirror-prefixed
     /// variant. api.github.com URLs get the API mirror(s); everything else (github.com downloads, raw,
     /// objects) gets the download mirror(s) — never the wrong class, which would be a guaranteed-wasted hop
-    /// (an API mirror 400s a download; a download mirror 403s the API). Public so the Velopack auto-update
-    /// downloader can reuse the same direct→mirror fallback.</summary>
+    /// (an API mirror 400s a download; a download mirror 403s the API). NOT used by the app's own self-update:
+    /// <see cref="OfficialGithubDownloader"/> goes direct to GitHub and never consults a mirror.</summary>
     public static IEnumerable<string> Candidates(string url)
     {
         yield return url; // direct first — fastest when GitHub is reachable

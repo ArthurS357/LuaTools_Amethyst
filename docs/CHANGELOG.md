@@ -1,5 +1,20 @@
 # Changelog
 
+## Nao lancado
+
+### Seguranca
+
+- **F-04, auto-update sem mirrors e com hash fixado:** `ProxiedFileDownloader` virou `OfficialGithubDownloader`. O feed
+  e o `.nupkg` do proprio app deixam de passar pelos mirrors de terceiros (ghproxy, ghfast, ddlc, `lua.tools/api/gh`):
+  so `github.com`/`api.github.com` por https, preso ao repo configurado (URL de outro repo, host, `http://` ou prefixo de
+  mirror e recusada antes de qualquer requisicao). Antes de aceitar o pacote, o SHA-256 dele e comparado com o `digest`
+  que a API do GitHub publica para aquele asset (`AssetIntegrity`, fail-closed): sem digest, API inacessivel, asset
+  nao listado ou hash diferente = atualizacao recusada, arquivo apagado e linha `app-update: REFUSED ...` no `AppLog`.
+  Falha de integridade encerra a checagem (nao tenta repo de backup); falha de rede ainda cai para o proximo repo.
+- Os mirrors continuam valendo para manifests, plugin, unlockers e Steamless (cada um com seu proprio digest); so o
+  auto-update do app mudou. Onde o github.com e bloqueado, atualizar a mao pela pagina de releases (aba Sobre).
+- Testes: `OfficialGithubDownloaderTests` (mutacao validada: desligar a comparacao do hash derruba os testes).
+
 ## 1.7.12 — 2026-11-01
 
 Login cancelado tratado na hora, onboarding que para de voltar depois do login, e backup de saves que confere espaco e

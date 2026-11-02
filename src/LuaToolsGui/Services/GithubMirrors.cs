@@ -23,10 +23,15 @@ namespace LuaToolsGui.Services;
 /// </para>
 ///
 /// <para>
-/// Held statically because <see cref="GithubProxy.Candidates"/> is static — Velopack's
-/// <see cref="ProxiedFileDownloader"/> calls it from inside the updater, where there is no DI scope to
-/// resolve settings from. <see cref="SettingsService"/> pushes the effective lists here once at startup.
-/// Reads are lock-free: reference assignment of the array is atomic, and callers only enumerate.
+/// These mirrors do NOT apply to the app's own self-update: <see cref="OfficialGithubDownloader"/> talks
+/// to github.com directly and verifies the package against the digest GitHub publishes, because that
+/// download replaces the running executable. Manifests, plugins, unlockers and the like are unaffected and
+/// keep their mirror fallback (each with its own digest check).
+///
+/// Held statically because <see cref="GithubProxy.Candidates"/> is static and reachable from places with
+/// no DI scope to resolve settings from. <see cref="SettingsService"/> pushes the effective lists here
+/// once at startup. Reads are lock-free: reference assignment of the array is atomic, and callers only
+/// enumerate.
 /// </para>
 /// </summary>
 internal static class GithubMirrors

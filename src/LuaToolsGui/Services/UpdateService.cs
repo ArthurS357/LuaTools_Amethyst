@@ -22,18 +22,22 @@ namespace LuaToolsGui.Services;
 /// </para>
 ///
 /// <para>
-/// When a feed IS configured, resilience is two-layered: (1) <see cref="ProxiedFileDownloader"/> routes
-/// each repo's feed + package downloads through GitHub mirrors for blocked/throttled regions (e.g. China);
-/// (2) it tries each configured repo in order, so if the PRIMARY repo is gone entirely (banned / DMCA'd /
-/// account removed — something the mirrors can't fix) it falls through to a backup repo.
+/// When a feed IS configured, every request goes DIRECT to github.com / api.github.com through
+/// <see cref="OfficialGithubDownloader"/> — no third-party mirrors, because this download replaces the
+/// running executable. The package is accepted only if its SHA-256 equals the digest GitHub's API publishes
+/// for that release asset; otherwise the update is refused (fail-closed) and logged. Resilience is one
+/// layer: it tries each configured repo in order, so if the PRIMARY repo is unreachable or gone entirely
+/// (banned / DMCA'd / account removed) it falls through to a backup repo. A package that fails verification
+/// is different — that stops the check outright instead of shopping for another source.
 /// </para>
 /// </summary>
 public class UpdateService
 {
-    // One UpdateManager per configured repo, in priority order (primary first). All share the proxied
-    // downloader so every repo is also mirror-resilient. Built once at construction: the update feed is
-    // not something that should change under a running check.
+    // One UpdateManager per configured repo, in priority order (primary first), each with its own downloader
+    // pinned to that repo. Built once at construction: the update feed is not something that should change
+    // under a running check.
     private readonly UpdateManager[] _managers;
+    private readonly string[] _repoNames; // parallel to _managers, for log lines
 
     /// <summary>The feed this instance resolved, for the About page to display.</summary>
     public UpdateSourceResolution Sources { get; }
@@ -54,14 +58,21 @@ public class UpdateService
         {
             AppLog.Log("app-update: no usable repo configured — self-update is OFF (no request will be made)");
             _managers = [];
+            _repoNames = [];
             return;
         }
 
         _managers = resolution.Repos
-            .Select(repo => new UpdateManager(
-                new GithubSource(repo, accessToken: null, prerelease: false,
-                    downloader: new ProxiedFileDownloader())))
+            .Select(repo =>
+            {
+                // Repos were normalised to https://github.com/<owner>/<repo> by AppUpdateSources.
+                var (owner, name) = AppUpdateSources.OwnerRepoOf(repo);
+                return new UpdateManager(
+                    new GithubSource(repo, accessToken: null, prerelease: false,
+                        downloader: new OfficialGithubDownloader(owner, name)));
+            })
             .ToArray();
+        _repoNames = [.. resolution.Repos];
 
         AppLog.Log($"app-update: enabled against {string.Join(", ", resolution.Repos)}");
     }
@@ -83,8 +94,9 @@ public class UpdateService
         // IsInstalled is a property of the Velopack install, not the repo, so any manager answers it.
         if (_managers.Length == 0 || !_managers[0].IsInstalled) return; // `dotnet run` / unpacked builds
 
-        foreach (var mgr in _managers)
+        for (int i = 0; i < _managers.Length; i++)
         {
+            var mgr = _managers[i];
             try
             {
                 var info = await mgr.CheckForUpdatesAsync();
@@ -99,12 +111,23 @@ public class UpdateService
                 UpdateReady?.Invoke();
                 return; // staged from this repo — done
             }
-            catch
+            catch (Exception ex) when (UpdateIntegrityException.FindIn(ex) is { } failure)
+            {
+                // The package could not be proven to be what GitHub published. Refuse outright: nothing is
+                // staged, and no backup repo is consulted — a failed check is not a reason to go looking
+                // for a source that will say yes. The downloader has already logged the details.
+                _stagedMgr = null;
+                _staged = null;
+                AppLog.Log($"app-update: update REFUSED (integrity check failed) — {failure.Message}");
+                return;
+            }
+            catch (Exception ex)
             {
                 // This repo is unreachable/gone (or a download failed) — fall through to the next backup.
+                AppLog.Log($"app-update: {_repoNames[i]} check failed — {ex.Message}");
             }
         }
-        // Every repo failed (offline, or all repos down) — fail silently, retry next launch.
+        // Every repo failed (offline, or all repos down) — retry next launch.
     }
 
     /// <summary>Apply the staged update now and relaunch into the new version. <paramref name="restartArgs"/>

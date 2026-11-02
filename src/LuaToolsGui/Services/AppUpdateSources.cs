@@ -134,6 +134,20 @@ public static class AppUpdateSources
         return new UpdateSourceResolution(accepted, rejected);
     }
 
+    /// <summary>
+    /// Split one of the normalised repo URLs <see cref="Resolve"/> returns (<c>https://github.com/owner/repo</c>)
+    /// into its owner and repo. Throws on anything else: callers only ever hand it validated output, so a
+    /// failure here is a programming error, not user input.
+    /// </summary>
+    public static (string Owner, string Repo) OwnerRepoOf(string normalisedRepoUrl)
+    {
+        if (!Uri.TryCreate(normalisedRepoUrl, UriKind.Absolute, out var uri) || !TryParseOwnerRepo(uri, out string ownerRepo))
+            throw new ArgumentException($"Not a normalised GitHub repo URL: {normalisedRepoUrl}", nameof(normalisedRepoUrl));
+
+        int slash = ownerRepo.IndexOf('/');
+        return (ownerRepo[..slash], ownerRepo[(slash + 1)..]);
+    }
+
     private static bool IsGitHubHost(string host) =>
         host.Equals("github.com", StringComparison.OrdinalIgnoreCase) ||
         host.Equals("www.github.com", StringComparison.OrdinalIgnoreCase);
