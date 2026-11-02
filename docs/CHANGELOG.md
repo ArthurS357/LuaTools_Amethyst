@@ -29,6 +29,13 @@ build padronizado. Junta as builds locais 1.7.12.1 a 1.7.12.8, ainda em teste (s
 
 ### Seguranca
 
+- **CloudRedirect removido por completo:** repositorio e conta nao existem mais, e ele esta fora da politica de
+  privacidade e confianca do fork. Sairam `CloudRedirectService` (baixava e executava `CloudRedirect.exe`), o modo e o
+  fluxo CLI (`CloudRedirectCLI.exe /stfixer`), a deteccao por hash de `cloud_redirect.dll`, o add-on do Nightly
+  (edicao de `[cloud]` no `opensteamtool.toml`), o botao "Manage", as constantes do `AppConfig` e 21 chaves de string
+  nos 29 idiomas. `ModeKind.Cli` saiu junto: nenhum Mode executa mais binario baixado. `UnlockerMode.CloudRedirect`
+  fica como tumulo (settings.json antigo continua parseando; `ActiveBackendPolicy` le o valor como "nenhum modo").
+  Nao destrutivo: `cloud_redirect.dll` e o registro de instalacao antigos ficam no disco.
 - **F-04, auto-update sem mirrors e com hash fixado:** `ProxiedFileDownloader` virou `OfficialGithubDownloader`. O feed
   e o `.nupkg` do proprio app deixam de passar pelos mirrors de terceiros (ghproxy, ghfast, ddlc, `lua.tools/api/gh`):
   so `github.com`/`api.github.com` por https, preso ao repo configurado (URL de outro repo, host, `http://` ou prefixo de
@@ -48,6 +55,15 @@ build padronizado. Junta as builds locais 1.7.12.1 a 1.7.12.8, ainda em teste (s
   ficaram intactas). Placeholders `{0}`/`{1}` e termos tecnicos (Hubcap, CloudRedirect, AmethystTool, SHA-256, `/login`,
   AppID, lua, manifest) preservados; "depot" segue o termo que cada idioma ja usa na pagina Depots.
   `PENDING_TRANSLATION` ficou vazio e `scripts/check-i18n.py` voltou a exigir paridade total (791 chaves em 29 arquivos).
+
+### Performance
+
+- Auditoria em `docs/performance-audit-2026-11-02.md` (o que foi corrigido e dividas D1-D5 com motivo).
+- `SteamAppListCache`: lista de ~341k nomes lida/gravada por stream (antes: string do arquivo inteiro), gravacao
+  atomica (.tmp + move). `SteamAppInfoCache`: blobs `details/<appid>.json` parseados direto do `FileStream`.
+- `ImagePathToSourceConverter`: `DecodePixelWidth` por `ConverterParameter` + `Freeze()`; Downloads decodifica a
+  184 px (era 460), tile do Fixes limitado a 460.
+- `CefInjectorService`: script injetado composto uma vez por mudanca, nao mais a cada ~1 s.
 
 ### Build
 

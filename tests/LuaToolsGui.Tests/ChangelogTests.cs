@@ -60,6 +60,8 @@ public class ChangelogTests
         text.Should().ContainEquivalentOf("all 29 languages");               // translation pass
         text.Should().ContainEquivalentOf("Central Package Management");     // F-17
         text.Should().ContainEquivalentOf("Glass effect");                   // Mica shell toggle
+        text.Should().ContainEquivalentOf("CloudRedirect was removed");       // backend removal
+        text.Should().ContainEquivalentOf("decoded at the size");            // performance audit
     }
 
     [Fact]
