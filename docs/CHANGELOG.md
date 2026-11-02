@@ -18,6 +18,12 @@ build padronizado. Junta as builds locais 1.7.12.1 a 1.7.12.8, ainda em teste (s
   pasta de backups configuravel (OneDrive, outro drive; "Resetar para auto" volta a `%AppData%\LuaToolsGui\SaveBackups`)
   e "Importar save (.zip)..." de qualquer lugar, com as mesmas checagens do restore (zip-slip, links, outros jogos,
   tamanho) e copia dos saves atuais antes.
+- **Efeito vidro (Configuracoes > Geral, padrao ligado):** no Windows 11 a barra de titulo e o menu lateral ficam
+  translucidos sobre o backdrop Mica (`GlassShellBrush` = cor da janela a 60%); as paginas continuam opacas
+  (`NavigationViewContentBackground` do WPF-UI), entao nenhum token de texto perde contraste. Troca ao vivo, sem
+  reiniciar. Windows 10, alto contraste ou toggle desligado = janela solida como antes. Mica e nao Acrylic: fixa a
+  luminancia no escuro e nao borra a cada frame. `GlassmorphismTests` checa AA de todo texto do shell sobre um
+  backdrop `#3A3A3A` (Mica mede `#272727`) nas tres paletas.
 - **Aba Modo e onboarding:** o card volta a ser BetterSteamTools / BetterSteamTools Nightly (`madoiscool/BetterSteamTools`)
   com aviso de telemetria e DonateKeys; o onboarding instala so AmethystTool e o frontend Amethyst.
 

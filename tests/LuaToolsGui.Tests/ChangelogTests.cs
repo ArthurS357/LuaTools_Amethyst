@@ -59,6 +59,7 @@ public class ChangelogTests
         text.Should().ContainEquivalentOf("less than 5 minutes old");        // backup cleanup age gate
         text.Should().ContainEquivalentOf("all 29 languages");               // translation pass
         text.Should().ContainEquivalentOf("Central Package Management");     // F-17
+        text.Should().ContainEquivalentOf("Glass effect");                   // Mica shell toggle
     }
 
     [Fact]

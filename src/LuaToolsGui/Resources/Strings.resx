@@ -906,4 +906,6 @@ Enable it?</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>No internet connection. Using locally installed version.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Cannot download a new version without internet.</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Nothing was deleted: "{0}" could not be confirmed as a backup that is safe to remove (it changed, is a link, or is less than 5 minutes old). Refresh the list and try again.</value></data>
+  <data name="Settings_Glass" xml:space="preserve"><value>Glass effect (Glassmorphism)</value></data>
+  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Translucent title bar and side menu over the Windows 11 Mica backdrop. Pages stay solid so text keeps its contrast. Turn it off on slower PCs. Windows 10 and high contrast always use the solid background.</value></data>
 </root>

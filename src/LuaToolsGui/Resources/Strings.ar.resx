@@ -897,4 +897,6 @@ SHA-256 {3}
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>لا يوجد اتصال بالإنترنت. يُستخدم الإصدار المثبّت محلياً.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>لا يمكن تنزيل إصدار جديد دون إنترنت.</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>لم يُحذف أي شيء: تعذّر التأكد من أن "{0}" نسخة احتياطية يمكن إزالتها بأمان (تغيّرت، أو هي رابط، أو عمرها أقل من 5 دقائق). حدّث القائمة وحاول مجدداً.</value></data>
+  <data name="Settings_Glass" xml:space="preserve"><value>تأثير الزجاج (Glassmorphism)</value></data>
+  <data name="Settings_Glass_Hint" xml:space="preserve"><value>شريط عنوان وقائمة جانبية شبه شفافين فوق خلفية Mica في Windows 11. تبقى الصفحات معتمة ليحتفظ النص بتباينه. أوقفه على الأجهزة الأبطأ. في Windows 10 ووضع التباين العالي تكون الخلفية معتمة دائماً.</value></data>
 </root>

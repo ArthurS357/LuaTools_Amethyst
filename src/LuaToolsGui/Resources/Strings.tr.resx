@@ -871,4 +871,6 @@ Etkinleştirilsin mi?</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>İnternet bağlantısı yok. Yerel olarak yüklü sürüm kullanılıyor.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>İnternet olmadan yeni sürüm indirilemez.</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Hiçbir şey silinmedi: "{0}" öğesinin güvenle kaldırılabilecek bir yedek olduğu doğrulanamadı (değişti, bir bağlantı ya da 5 dakikadan yeni). Listeyi yenileyip tekrar dene.</value></data>
+  <data name="Settings_Glass" xml:space="preserve"><value>Cam efekti (Glassmorphism)</value></data>
+  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Windows 11 Mica arka planı üzerinde yarı saydam başlık çubuğu ve yan menü. Metin kontrastını korusun diye sayfalar opak kalır. Daha yavaş bilgisayarlarda kapat. Windows 10'da ve yüksek karşıtlıkta arka plan her zaman düz renktir.</value></data>
 </root>

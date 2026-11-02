@@ -85,6 +85,8 @@ public static class Strings
     public static string Hubcap_Wait_Hours => Get(nameof(Hubcap_Wait_Hours));
     public static string Settings_Accent => Get(nameof(Settings_Accent));
     public static string Settings_Accent_Hint => Get(nameof(Settings_Accent_Hint));
+    public static string Settings_Glass => Get(nameof(Settings_Glass));
+    public static string Settings_Glass_Hint => Get(nameof(Settings_Glass_Hint));
     public static string Settings_Accent_Amethyst => Get(nameof(Settings_Accent_Amethyst));
     public static string Settings_Accent_Green => Get(nameof(Settings_Accent_Green));
     public static string Settings_Accent_Red => Get(nameof(Settings_Accent_Red));

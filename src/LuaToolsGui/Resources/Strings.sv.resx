@@ -871,4 +871,6 @@ Aktivera?</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Ingen internetanslutning. Använder den lokalt installerade versionen.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Det går inte att ladda ned en ny version utan internet.</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Inget togs bort: "{0}" kunde inte bekräftas som en säkerhetskopia som säkert kan tas bort (den har ändrats, är en länk eller är yngre än 5 minuter). Uppdatera listan och försök igen.</value></data>
+  <data name="Settings_Glass" xml:space="preserve"><value>Glaseffekt (Glassmorphism)</value></data>
+  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Genomskinlig namnlist och sidomeny över Mica-bakgrunden i Windows 11. Sidorna förblir ogenomskinliga så att texten behåller sin kontrast. Stäng av på långsammare datorer. I Windows 10 och med hög kontrast är bakgrunden alltid enfärgad.</value></data>
 </root>

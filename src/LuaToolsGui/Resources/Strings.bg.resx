@@ -871,4 +871,6 @@ SHA-256 {3}
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Няма интернет връзка. Използва се локално инсталираната версия.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Без интернет не може да се изтегли нова версия.</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Нищо не беше изтрито: не може да се потвърди, че „{0}“ е резервно копие, което може безопасно да се премахне (променено е, връзка е или е по-ново от 5 минути). Опреснете списъка и опитайте отново.</value></data>
+  <data name="Settings_Glass" xml:space="preserve"><value>Стъклен ефект (Glassmorphism)</value></data>
+  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Полупрозрачна заглавна лента и странично меню върху фона Mica на Windows 11. Страниците остават плътни, за да запази текстът контраста си. Изключете го на по-бавни компютри. В Windows 10 и при висок контраст фонът винаги е плътен.</value></data>
 </root>

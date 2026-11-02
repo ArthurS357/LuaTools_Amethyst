@@ -871,4 +871,6 @@ SHA-256 {3}
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Нет подключения к интернету. Используется установленная локально версия.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Без интернета нельзя скачать новую версию.</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Ничего не удалено: не удалось подтвердить, что «{0}» — резервная копия, которую можно безопасно удалить (она изменилась, является ссылкой или создана менее 5 минут назад). Обновите список и повторите попытку.</value></data>
+  <data name="Settings_Glass" xml:space="preserve"><value>Эффект стекла (Glassmorphism)</value></data>
+  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Полупрозрачные заголовок окна и боковое меню поверх фона Mica в Windows 11. Страницы остаются непрозрачными, чтобы текст сохранял контраст. Отключите на медленных ПК. В Windows 10 и в режиме высокой контрастности фон всегда сплошной.</value></data>
 </root>

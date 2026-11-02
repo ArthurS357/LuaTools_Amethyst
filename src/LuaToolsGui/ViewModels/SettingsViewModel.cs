@@ -107,6 +107,22 @@ public partial class SettingsViewModel : ObservableObject
     /// <summary>Set by App: restore the main window from the tray (used when Minimize-to-tray is turned off).</summary>
     public Action? RequestShowWindow { get; set; }
 
+    // ── Appearance ──────────────────────────────────────────────────
+    /// <summary>Glass effect on the main window (Mica behind the title bar and nav rail). Persisted via
+    /// SettingsService; applied live through <see cref="ApplyGlass"/>, no relaunch.</summary>
+    [ObservableProperty] private bool _enableGlassmorphism;
+
+    partial void OnEnableGlassmorphismChanged(bool value)
+    {
+        // Persist BEFORE applying, same order as the accent: if the window call throws, the choice is kept.
+        _settings.EnableGlassmorphism = value;
+        ApplyGlass?.Invoke(value);
+    }
+
+    /// <summary>Set by App to the main window's ApplyGlass. Left null in tests, which is what lets the
+    /// persistence above be exercised without a window.</summary>
+    public Action<bool>? ApplyGlass { get; set; }
+
     // ── Language ────────────────────────────────────────────────────
     /// <summary>Available UI languages (native endonyms, matching Steam's list). "System default"
     /// (null tag) follows Windows. Languages whose .resx isn't present fall back to English.</summary>
@@ -320,6 +336,7 @@ public partial class SettingsViewModel : ObservableObject
         _fastFetch = settings.FastFetch;
         _startWithWindows = settings.StartWithWindows; // default OFF — init without triggering the registry write
         _minimizeToTray = settings.MinimizeToTray;
+        _enableGlassmorphism = settings.EnableGlassmorphism; // default ON — init without re-applying or saving
         _hubcapIsKeyConfigured = !string.IsNullOrEmpty(settings.HubcapApiKey);
 
         // Select the saved language (or "System default") without firing the restart prompt.

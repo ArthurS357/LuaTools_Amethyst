@@ -502,6 +502,33 @@
                         Foreground="{StaticResource TextDimBrush}"
                         Text="{x:Static res:Strings.Settings_Accent_Hint}"
                         TextWrapping="Wrap" />
+
+                    <!-- Glass effect. Applies live, like the accent (MainWindow.ApplyGlass); off = the solid
+                         window, also what Windows 10 and high contrast always get (Themes/GlassPolicy.cs). -->
+                    <Grid Margin="0,18,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock
+                                FontSize="13"
+                                FontWeight="Medium"
+                                Text="{x:Static res:Strings.Settings_Glass}" />
+                            <TextBlock
+                                Margin="0,4,0,0"
+                                FontSize="12"
+                                Foreground="{StaticResource TextDimBrush}"
+                                Text="{x:Static res:Strings.Settings_Glass_Hint}"
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+                        <ui:ToggleSwitch
+                            Grid.Column="1"
+                            Margin="12,0,0,0"
+                            VerticalAlignment="Center"
+                            AutomationProperties.Name="{x:Static res:Strings.Settings_Glass}"
+                            IsChecked="{Binding EnableGlassmorphism, Mode=TwoWay}" />
+                    </Grid>
                 </StackPanel>
             </Border>
 

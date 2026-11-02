@@ -871,4 +871,6 @@ Otetaanko käyttöön?</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Ei internetyhteyttä. Käytetään paikallisesti asennettua versiota.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Uutta versiota ei voi ladata ilman internetiä.</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Mitään ei poistettu: kohdetta "{0}" ei voitu vahvistaa turvallisesti poistettavaksi varmuuskopioksi (se on muuttunut, se on linkki tai alle 5 minuuttia vanha). Päivitä luettelo ja yritä uudelleen.</value></data>
+  <data name="Settings_Glass" xml:space="preserve"><value>Lasiefekti (Glassmorphism)</value></data>
+  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Läpikuultava otsikkopalkki ja sivuvalikko Windows 11:n Mica-taustan päällä. Sivut pysyvät peittävinä, jotta tekstin kontrasti säilyy. Poista käytöstä hitaammissa tietokoneissa. Windows 10:ssä ja suuren kontrastin tilassa tausta on aina yhtenäinen.</value></data>
 </root>

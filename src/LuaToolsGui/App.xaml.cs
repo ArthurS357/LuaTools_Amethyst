@@ -919,6 +919,9 @@ public partial class App : Application
 
         var window = _host.Services.GetRequiredService<MainWindow>();
 
+        // The glass effect switches live, like the accent: the window re-applies its backdrop in place.
+        settingsVm.ApplyGlass = enabled => Dispatcher.Invoke(() => window.ApplyGlass(enabled));
+
         // Turning off "Minimize to tray" while hidden in the tray → bring the window back.
         settingsVm.RequestShowWindow = () => Dispatcher.Invoke(window.RestoreFromTray);
 

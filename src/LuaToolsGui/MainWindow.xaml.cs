@@ -1,5 +1,7 @@
 using System.Windows;
+using System.Windows.Controls;
 using LuaToolsGui.Services;
+using LuaToolsGui.Themes;
 using LuaToolsGui.ViewModels;
 using LuaToolsGui.Views;
 
@@ -48,12 +50,50 @@ public partial class MainWindow : Wpf.Ui.Controls.FluentWindow, ITrayWindow
 
         Closing += OnWindowClosing;
 
+        // Before the window has a handle: WPF-UI applies the backdrop in OnSourceInitialized, so the first
+        // frame is already the right one. Re-run when Windows toggles high contrast, which turns glass off.
+        ApplyGlass(_settings.EnableGlassmorphism);
+        SystemParameters.StaticPropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(SystemParameters.HighContrast))
+                Dispatcher.BeginInvoke(() => ApplyGlass(_settings.EnableGlassmorphism));
+        };
+
         Loaded += async (_, _) =>
         {
             RootNavigation.Navigate(typeof(HomeView));
             try { await viewModel.InitializeAsync(); }
             catch (Exception ex) { AppLog.Log($"MainWindow: InitializeAsync failed (continuing as guest): {ex.GetType().Name}: {ex.Message}"); /* auth restore failed (e.g. offline) — UI still loads as guest */ }
         };
+    }
+
+    // ── Glass effect ────────────────────────────────────────────────
+
+    /// <summary>
+    /// Show or drop the glass effect, live (Settings → General). <see cref="GlassPolicy"/> decides; this only
+    /// applies the decision. Setting <see cref="Wpf.Ui.Controls.FluentWindow.WindowBackdropType"/> at runtime
+    /// goes through WPF-UI's own change handler, which applies or removes the DWM backdrop on the live handle.
+    ///
+    /// <para>
+    /// Backgrounds are attached with <see cref="FrameworkElement.SetResourceReference"/> (the code form of
+    /// {DynamicResource}), never by assigning a brush object: the brushes stay the shared, unfrozen ones the
+    /// accent switch repaints in place. Turning glass OFF also puts the Window's own Background back, because
+    /// WPF-UI's RemoveBackdrop replaces it with its fallback grey, which shows on resize before the grid paints.
+    /// </para>
+    /// </summary>
+    public void ApplyGlass(bool enabled)
+    {
+        bool active = GlassPolicy.IsActive(
+            enabled,
+            Wpf.Ui.Controls.WindowBackdrop.IsSupported(Wpf.Ui.Controls.WindowBackdropType.Mica),
+            SystemParameters.HighContrast);
+
+        WindowBackdropType = active ? Wpf.Ui.Controls.WindowBackdropType.Mica : Wpf.Ui.Controls.WindowBackdropType.None;
+        ShellRoot.SetResourceReference(Panel.BackgroundProperty, GlassPolicy.ShellBrushKey(active));
+        if (!active) SetResourceReference(BackgroundProperty, GlassPolicy.SolidShellBrushKey);
+
+        if (enabled && !active)
+            AppLog.Log("glass: requested but not shown (Mica needs Windows 11 and no high contrast); solid window");
     }
 
     // ── System tray ─────────────────────────────────────────────────

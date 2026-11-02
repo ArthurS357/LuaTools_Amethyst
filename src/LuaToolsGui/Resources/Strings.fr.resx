@@ -871,4 +871,6 @@ L’activer ?</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Aucune connexion Internet. Utilisation de la version installée localement.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Impossible de télécharger une nouvelle version sans Internet.</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Rien n’a été supprimé : impossible de confirmer que « {0} » est une sauvegarde supprimable sans risque (elle a changé, c’est un lien ou elle date de moins de 5 minutes). Actualisez la liste et réessayez.</value></data>
+  <data name="Settings_Glass" xml:space="preserve"><value>Effet verre (Glassmorphism)</value></data>
+  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Barre de titre et menu latéral translucides sur le fond Mica de Windows 11. Les pages restent opaques pour que le texte garde son contraste. Désactivez-le sur les PC plus lents. Sous Windows 10 et en contraste élevé, le fond est toujours opaque.</value></data>
 </root>

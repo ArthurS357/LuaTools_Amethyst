@@ -39,6 +39,9 @@
     non-text UI; purely decorative hairlines are allowed to sit below that.
     Filled accent buttons pair white text with AccentFill #7C3AED (5.7:1) — NOT with #8B5CF6,
     which only reaches 4.2:1 against white and would fail AA.
+    Glass effect: only the shell (title bar, nav rail) goes translucent — GlassShellBrush, the window
+    colour at 60% over Mica. Every shell text token stays AA over a #3A3A3A backdrop (Mica measures
+    #272727); pages keep their opaque fill, so the ratios above are unchanged (Themes/GlassPolicy.cs).
 -->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -172,6 +175,7 @@
     <Color x:Key="ScrimSoftColor">#8C0E0B14</Color>
     <Color x:Key="ScrimLightColor">#730E0B14</Color>
     <Color x:Key="ScrimPanelColor">#CC17122A</Color>
+    <Color x:Key="GlassShellColor">#990E0B14</Color>  <!-- window colour @ 60%: the glass shell (GlassPolicy.ShellAlpha) -->
     <Color x:Key="CardBackgroundDisabledColor">#0BEDE9FE</Color>
 
     <!-- Status ramp. Deliberately kept on their own hues: colour-coding that means
@@ -404,5 +408,15 @@
     <SolidColorBrush x:Key="ScrimLightBrush" Color="{DynamicResource ScrimLightColor}" />   <!-- was #66000000 -->
     <SolidColorBrush x:Key="ScrimPanelBrush" Color="{DynamicResource ScrimPanelColor}" />   <!-- was #cc14161c -->
     <SolidColorBrush x:Key="ShadowBrush" Color="#1A000000" />       <!-- was #14000000 -->
+
+    <!-- ── Glass shell ──────────────────────────────────────────────────────────── -->
+    <!-- Title bar + nav rail fill while the glass effect is on (Settings → General). The window colour at
+         60% over the Windows 11 Mica backdrop: the shell keeps the palette hue and lets the wallpaper's
+         tint through, and every shell text token stays AA over a #3A3A3A backdrop (Mica measures #272727
+         on a dark window). Pages never sit on this: WPF-UI draws the page area as its own opaque
+         NavigationViewContentBackground. Why Mica, why 60% and not a thin black film: Themes/GlassPolicy.cs.
+         Declared through {DynamicResource} like every other brush here, so it stays unfrozen and the
+         accent switch can repaint it (AccentPalette.SurfaceColors). -->
+    <SolidColorBrush x:Key="GlassShellBrush" Color="{DynamicResource GlassShellColor}" />
 
 </ResourceDictionary>

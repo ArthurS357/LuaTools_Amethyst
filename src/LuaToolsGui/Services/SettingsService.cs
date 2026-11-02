@@ -49,6 +49,10 @@ public class AppSettings
     // and a future tweak to a ramp reaches everyone who picked it.
     public string? AccentColor { get; set; }
 
+    // Glass effect (Mica backdrop behind a translucent title bar and nav rail). Nullable so "never set"
+    // (→ default ON) is distinguishable from an explicit choice; the off switch is for slower PCs.
+    public bool? EnableGlassmorphism { get; set; }
+
     // The user's own Hubcap (hubcapmanifest.com) API key. Null = not configured; key-gated sources stay
     // locked until set. NOTE: this is the ON-DISK form — a DPAPI-protected blob prefixed "dpapi:", not the
     // raw "smm_…" key. Always go through SettingsService.HubcapApiKey, which handles protect/unprotect and
@@ -401,6 +405,17 @@ public sealed class SettingsService
         Save();
     }
 
+    /// <summary>
+    /// Glass effect on the main window (default ON): Windows 11 Mica behind a translucent title bar and nav
+    /// rail. Pages stay on their solid background. Where Mica is unavailable (Windows 10, high contrast) the
+    /// window is solid whatever this says; see <see cref="Themes.GlassPolicy"/>.
+    /// </summary>
+    public bool EnableGlassmorphism
+    {
+        get => _settings.EnableGlassmorphism ?? true; // default ON
+        set { _settings.EnableGlassmorphism = value; Save(); }
+    }
+
     /// <summary>When true, the app is registered to launch on Windows sign-in (default OFF).</summary>
     public bool StartWithWindows
     {
@@ -565,6 +580,7 @@ public sealed class SettingsService
             && _settings.BuildsPageSize is null
             && _settings.Language is null
             && _settings.AccentColor is null
+            && _settings.EnableGlassmorphism is null
             && _settings.HubcapApiKey is null
             && _settings.StartWithWindows is null
             && _settings.MinimizeToTray is null

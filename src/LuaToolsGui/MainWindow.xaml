@@ -21,18 +21,21 @@
     WindowCornerPreference="Round"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
-    <!-- Backdrop deliberately None rather than Mica. Mica derives its tint from the user's WALLPAPER,
-         so the window background is whatever Windows decides — measured at #272727 grey on this machine,
-         which left the app reading as a grey shell with purple accents. Painting SurfaceBaseBrush
-         ourselves is the only way to guarantee the amethyst background the theme specifies. The rounded
-         corners and the extended title bar are unaffected. -->
+    <!-- Backdrop starts as None and is set from code (MainWindow.ApplyGlass), driven by the "Glass effect"
+         setting. Plain Mica alone was rejected before: it derives its tint from the user's WALLPAPER and
+         measured #272727 grey here, so the app read as a grey shell with purple accents. With the glass on,
+         Mica sits UNDER the shell grid painted GlassShellBrush (the window colour at 60%), so the shell
+         stays amethyst and only the wallpaper's hue shows through; the pages keep their opaque fill. With
+         it off, or where Mica is unavailable, this is exactly the solid window it always was. -->
 
 
     <!-- The root grid carries the background rather than the Window: WPF-UI's FluentWindow template
          paints its own chrome over the Window's Background, so setting it there alone leaves the shell
          at WPF-UI's stock grey. Painting it here, inside the app's own visual tree, is what actually
          lands. -->
-    <Grid Background="{StaticResource SurfaceBaseBrush}">
+    <!-- Its Background is set by ApplyGlass with SetResourceReference (a DynamicResource): SurfaceBaseBrush
+         solid, or GlassShellBrush over the backdrop. The XAML value is only what shows before that runs. -->
+    <Grid x:Name="ShellRoot" Background="{DynamicResource SurfaceBaseBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />

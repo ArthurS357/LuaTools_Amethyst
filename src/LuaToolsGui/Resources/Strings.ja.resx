@@ -871,4 +871,6 @@ lua ファイル、その横にあるビルドの lua、保存済みのビルド
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>インターネット接続がありません。ローカルにインストールされたバージョンを使用します。</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>インターネットがないと新しいバージョンをダウンロードできません。</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>何も削除されませんでした: 「{0}」を安全に削除できるバックアップとして確認できませんでした (変更された、リンクである、または作成から 5 分未満です)。一覧を更新してもう一度お試しください。</value></data>
+  <data name="Settings_Glass" xml:space="preserve"><value>ガラス効果 (Glassmorphism)</value></data>
+  <data name="Settings_Glass_Hint" xml:space="preserve"><value>Windows 11 の Mica 背景の上に半透明のタイトル バーとサイド メニューを表示します。文字のコントラストを保つため、ページは不透明のままです。動作の遅い PC ではオフにしてください。Windows 10 とハイ コントラストでは常に不透明な背景になります。</value></data>
 </root>
