@@ -18,7 +18,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # Runs before the compiler because the compiler reports this badly. 1.7.4 committed the csproj in
       # Windows-1252 and the build failed with "Invalid character in the given encoding. Line 19, position
@@ -31,7 +31,7 @@ jobs:
         run: python scripts/check-encoding.py
 
       - name: Set up .NET 10
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.0.x'
 

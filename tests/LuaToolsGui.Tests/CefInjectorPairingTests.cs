@@ -69,7 +69,10 @@ internal sealed class NodePage : IDisposable
     {
         await _node.StandardInput.WriteLineAsync(JsonSerializer.Serialize(expression));
         await _node.StandardInput.FlushAsync();
-        var line = await _node.StandardOutput.ReadLineAsync().WaitAsync(TimeSpan.FromSeconds(10));
+        // 30 s, not 10: the first answer waits for node to cold-start, and on a loaded CI runner (the rest of
+        // the suite running in parallel, Defender scanning the fresh temp .js) that alone once took over 10 s.
+        // A real hang still fails, just later.
+        var line = await _node.StandardOutput.ReadLineAsync().WaitAsync(TimeSpan.FromSeconds(30));
         return JsonSerializer.Deserialize<string>(line ?? "null") ?? "";
     }
 

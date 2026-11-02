@@ -20,6 +20,7 @@ import io
 import sys
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 
 # The script is `check-i18n.py`: a hyphen is not a legal module name, so it cannot be imported normally.
@@ -110,12 +111,14 @@ class TestHappyPath(CheckI18nTestCase):
 
     def test_a_pending_translation_key_may_be_missing_everywhere(self) -> None:
         # PENDING_TRANSLATION is the sanctioned English-only escape hatch; a key listed there must not be
-        # reported as missing, or the whole list would be useless.
-        pending = next(iter(check_i18n.PENDING_TRANSLATION))
-        self.write_english([("App_Title", "LuaTools"), (pending, "English only")])
-        self.write_translation("pt-BR", [("App_Title", "LuaTools")])
-        self.write_designer(["App_Title", pending])
-        self.assertClean()
+        # reported as missing, or the whole list would be useless. The real list can be empty (it is after
+        # the 1.7.13 translation pass), so the test supplies its own entry instead of borrowing one.
+        pending = "Pending_Only_In_English"
+        with mock.patch.object(check_i18n, "PENDING_TRANSLATION", frozenset({pending})):
+            self.write_english([("App_Title", "LuaTools"), (pending, "English only")])
+            self.write_translation("pt-BR", [("App_Title", "LuaTools")])
+            self.write_designer(["App_Title", pending])
+            self.assertClean()
 
 
 class TestDuplicateKeys(CheckI18nTestCase):
