@@ -1,9 +1,9 @@
 # Changelog
 
-## 1.7.13 — 2026-11-02
+## Nao lancado (build local 1.7.12.8)
 
 Auto-update so pelo GitHub com SHA-256 fixado, backup de saves fora da Steam, badge "Instalado", app inteiro traduzido e
-build padronizado. Consolida as builds locais 1.7.12.1 a 1.7.12.5, que nao foram publicadas.
+build padronizado. Junta as builds locais 1.7.12.1 a 1.7.12.8, ainda em teste (sem release publicada).
 
 ### Novidades (builds locais 1.7.12.1 a 1.7.12.5)
 

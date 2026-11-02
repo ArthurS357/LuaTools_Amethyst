@@ -29,7 +29,7 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
-        new("1.7.13", "2026-11-02",
+        new("1.7.12.8", "2026-11-02",
             "Save backups for saves outside Steam, an Installed badge, a self-update that only trusts GitHub and checks the file's SHA-256, and the whole app translated.",
             [
                 "App update: the new version is downloaded only from this project's GitHub releases, never through a mirror, and its SHA-256 must match the digest GitHub publishes for that file. Any mismatch, missing digest or unreachable GitHub refuses the update and leaves the current version in place. Where github.com is blocked, update by hand from the releases page (About).",
