@@ -29,54 +29,18 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
-        new("1.7.12.5", "2026-11-01",
-            "Local test build: the Mode tab offers BetterSteamTools again, with a privacy warning, and the welcome screen installs only the Amethyst projects.",
+        new("1.7.13", "2026-11-02",
+            "Save backups for saves outside Steam, an Installed badge, a self-update that only trusts GitHub and checks the file's SHA-256, and the whole app translated.",
             [
-                "Mode tab: the card is called BetterSteamTools (and BetterSteamTools Nightly) again and downloads from madoiscool/BetterSteamTools. The download is still checked against that repository and its published sha256 before anything is written.",
-                "The card now shows a warning: original project (madoiscool), with telemetry and the DonateKeys system. Pick it only if you accept that.",
-                "Welcome screen: Apply recommended settings installs AmethystTool, and Install our famous plugin installs the Amethyst frontend. Neither ever downloads from madoiscool.",
-                "The BetterSteamTools card now reads as up to date when the installed zip matches the latest release, instead of comparing against a mirror of a different build.",
-                "No new dependency and no new network request.",
-            ]),
-
-        new("1.7.12.4", "2026-11-01",
-            "Local test build: save backups now cover games that keep their saves in Documents, Saved Games or AppData, not only in Steam's userdata.",
-            [
-                "Save backup: the window lists every place the game keeps saves (Steam userdata, Documents, My Games, Saved Games, AppData Local, LocalLow and Roaming) with its size, and you tick which ones go into the backup.",
-                "Only exact folder names are checked, for example Documents\\Saved Games\\Hades. When nothing is found, the app offers to pick the folder by hand, and Add folder manually… registers it for that game.",
-                "One zip now holds a saves folder with a subfolder per location, and Restore puts each one back where it came from. Zips made by older versions still restore.",
-                "A restore only writes to the game's own known folders or to folders you registered. Links are never followed, and a zip that tries to leave those folders is refused whole before anything is written.",
-                "Manage: a game with detected saves shows a save icon on its card, and the tooltip says where. Settings: Custom save folders registers a folder for an AppID.",
-                "No new dependency and no new network request.",
-            ]),
-
-        new("1.7.12.3", "2026-11-01",
-            "Local test build: the Manage list now shows installed games first, in alphabetical order.",
-            [
-                "Manage: the default sort is the new Installed first option. Games with the green Installed badge come first, then the rest, each group in A–Z order by name.",
-                "The order is kept when you search, press Refresh, or add or remove a game, and it updates by itself once Steam's install scan finishes.",
-                "The other sort options (Recently added, Name, Release date, Metacritic, Most reviewed) are still in the Sort menu.",
-                "No new setting, no new dependency and no new network request.",
-            ]),
-
-        new("1.7.12.2", "2026-11-01",
-            "Local test build: save backups are now filed in one folder per game, and the success message shows where the zip went.",
-            [
-                "Save backups: each game gets its own folder inside the backup folder, named after the game (Batman: Arkham becomes Batman_ Arkham). The first backup of a game asks before creating that folder; later ones do not.",
-                "After a backup, the message shows the full path of the zip and stays on screen for 8 seconds.",
-                "Restore, Delete and Import list the zips of every game folder plus the loose zips older versions left in the backup folder, so no history is lost, and a game that gets renamed keeps its backups.",
-                "The same safety checks apply as before: a folder that is a link is refused, restore only reads zips directly in the backup folder or in one game folder, and the archive is still validated whole before anything is written.",
-                "No new setting, no new dependency and no new network request.",
-            ]),
-
-        new("1.7.12.1", "2026-11-01",
-            "Local test build: Manage cards show an Installed badge, save backups can go to a folder you choose, and a save can be imported from any .zip.",
-            [
-                "Manage: a green Installed badge appears on a game's card and in its detail panel when Steam's manifest says the game is fully on disk. The Play button still says Install for a game Steam does not have.",
-                "Settings: the new Save backup folder setting lets you point backups at OneDrive or another drive with Change…, and Reset to auto returns to %AppData%\\LuaToolsGui\\SaveBackups. A folder that is not a full path is ignored.",
-                "Import save (.zip)…: new action in the Manage game menu, the detail panel and the Save backups window. Pick a save zip from anywhere, for example after downloading the game again; it goes through the same checks as a restore (zip-slip, links, other games, size).",
-                "Importing zips the current saves first so nothing is lost, and asks to close Steam if it is running. Only zips laid out as account/appid/files are accepted.",
-                "No new dependency and no new network request.",
+                "App update: the new version is downloaded only from this project's GitHub releases, never through a mirror, and its SHA-256 must match the digest GitHub publishes for that file. Any mismatch, missing digest or unreachable GitHub refuses the update and leaves the current version in place. Where github.com is blocked, update by hand from the releases page (About).",
+                "Save backups: the window lists every place a game keeps saves (Steam userdata, Documents, My Games, Saved Games, AppData Local, LocalLow and Roaming) and you tick which ones go into the backup. One zip holds them all and Restore puts each back where it came from.",
+                "Backups are filed in one folder per game, can go to a folder you choose in Settings (Save backup folder), and Import save (.zip)… restores a save zip from anywhere with the same checks as a restore.",
+                "Manage: a green Installed badge on games Steam has fully on disk, and the new default sort Installed first.",
+                "Mode tab: the card is BetterSteamTools again (madoiscool/BetterSteamTools), with a warning about its telemetry and the DonateKeys system. The welcome screen installs only AmethystTool and the Amethyst frontend.",
+                "Settings → Maintenance: a backup less than 5 minutes old is no longer deleted (an install may still be writing it), a refused batch now says that nothing was deleted and names the item, and the Mode card stops showing a backup folder that was already deleted.",
+                "Translations: the 273 strings that were still English-only are now translated in all 29 languages (AI-assisted, awaiting review by native speakers).",
+                "Diagnostics: 49 places that used to swallow errors silently now write the cause to the log, so a generic error message comes with a reason in the log file.",
+                "Build: SDK pinned in global.json, line endings fixed by .gitattributes and package versions kept in one place (Central Package Management). No new dependency.",
             ]),
 
         new("1.7.12", "2026-11-01",

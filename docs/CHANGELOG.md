@@ -1,6 +1,25 @@
 # Changelog
 
-## Nao lancado
+## 1.7.13 — 2026-11-02
+
+Auto-update so pelo GitHub com SHA-256 fixado, backup de saves fora da Steam, badge "Instalado", app inteiro traduzido e
+build padronizado. Consolida as builds locais 1.7.12.1 a 1.7.12.5, que nao foram publicadas.
+
+### Novidades (builds locais 1.7.12.1 a 1.7.12.5)
+
+- **Badge "Instalado" e ordenacao:** o card e o painel de detalhes do Gerenciar mostram um badge verde quando o manifest
+  da Steam diz que o jogo esta inteiro no disco. Nova ordenacao padrao "Instalados primeiro" (instalados, depois o
+  resto, cada grupo de A a Z), mantida em busca, Refresh e adicionar/remover.
+- **Backup de saves multi-local:** a janela lista todos os lugares onde o jogo guarda saves (userdata da Steam,
+  Documents, My Games, Saved Games, AppData Local/LocalLow/Roaming), com tamanho, e o usuario marca quais entram. Um zip
+  so, com uma subpasta por local; Restaurar devolve cada uma ao seu lugar e zips antigos continuam restaurando. So
+  nomes exatos sao verificados; "Adicionar pasta manualmente..." registra uma pasta por AppID (tambem em Configuracoes).
+- **Backup de saves, pastas e importacao:** uma pasta por jogo dentro da pasta de backups (a primeira vez pergunta),
+  pasta de backups configuravel (OneDrive, outro drive; "Resetar para auto" volta a `%AppData%\LuaToolsGui\SaveBackups`)
+  e "Importar save (.zip)..." de qualquer lugar, com as mesmas checagens do restore (zip-slip, links, outros jogos,
+  tamanho) e copia dos saves atuais antes.
+- **Aba Modo e onboarding:** o card volta a ser BetterSteamTools / BetterSteamTools Nightly (`madoiscool/BetterSteamTools`)
+  com aviso de telemetria e DonateKeys; o onboarding instala so AmethystTool e o frontend Amethyst.
 
 ### Seguranca
 
@@ -23,6 +42,37 @@
   ficaram intactas). Placeholders `{0}`/`{1}` e termos tecnicos (Hubcap, CloudRedirect, AmethystTool, SHA-256, `/login`,
   AppID, lua, manifest) preservados; "depot" segue o termo que cada idioma ja usa na pagina Depots.
   `PENDING_TRANSLATION` ficou vazio e `scripts/check-i18n.py` voltou a exigir paridade total (791 chaves em 29 arquivos).
+
+### Build
+
+- **F-17, build padronizado:** `global.json` fixa o SDK em `10.0.100` com `rollForward: latestFeature`; `.gitattributes`
+  normaliza fins de linha (`* text=auto`, LF em `.sh/.py/.yml`, CRLF em `.sln/.ps1`, binarios explicitos); Central
+  Package Management em `Directory.Packages.props` (versoes saem dos `.csproj`; pin exato do WPF-UI `[4.3.0]` mantido).
+  Versoes resolvidas identicas.
+- **CI:** `actions/checkout@v5`, `actions/setup-dotnet@v5` e `actions/setup-python@v6` (Node 24). O teste do checker de
+  i18n deixou de depender de `PENDING_TRANSLATION` ter itens, e o harness node do `CefInjectorPairingTests` espera 30 s
+  pela primeira resposta (cold start no runner tinha passado de 10 s).
+
+### Correcoes
+
+- **Diagnostico (auditoria):** 49 `catch` que engoliam excecao em caminhos funcionais (startup, protocolo `luatools://`,
+  instalador de lua, DenuvoFix, servidor HTTP local, ponte CEF, LaunchModStore, PluginAdd/Installer, VMs de Download,
+  Fixes, Home e Settings) passam a logar `contexto: Tipo: mensagem` no `AppLog`. Dois `.Result` apos `Task.WhenAll`
+  viraram `await`. Sem mudanca de comportamento.
+- **Limpeza de backups (Configuracoes > Manutencao):**
+  - Backup com menos de 5 minutos (ou datado no futuro) recusa o lote inteiro: pode ser de uma instalacao em andamento.
+    A idade e relida na hora (timestamp do nome da pasta, `LastWriteTime` do `.bak`).
+  - Lote recusado ganha mensagem propria (`Settings_Backups_Err_BatchRefused`: nada foi apagado, e qual item) em vez de
+    "N item(s) could not be deleted. Close Steam and try again."
+  - O registro de instalacao do AmethystTool esquece a pasta de backup que foi apagada, e o card do Modo para de
+    mostrar "Backup: <caminho>" inexistente (drive desconectado esconde sem esquecer).
+  - TOCTOU residual do `DeleteTree` documentado (janela de microssegundos; fechar exigiria handle aberto no diretorio,
+    como `AssetIntegrity.OpenPinned`).
+
+### Testes
+
+- `OfficialGithubDownloaderTests`, `AmethystToolBackupRecordTests`, novos casos em `BackupServiceTests` e
+  `BackupCleanupViewModelTests`. Suite no CI (windows-latest): 2277/2277.
 
 ## 1.7.12 — 2026-11-01
 

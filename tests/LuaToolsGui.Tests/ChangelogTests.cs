@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.7.12.5");
+        AppVersion.Current.Should().Be("1.7.13");
     }
 
     [Fact]
@@ -51,10 +51,14 @@ public class ChangelogTests
 
         // One anchor per change the release was actually about, so an entry that got copied forward from
         // the previous version fails here rather than shipping a changelog describing the wrong release.
-        text.Should().ContainEquivalentOf("madoiscool/BetterSteamTools");    // the Mode card's source
-        text.Should().ContainEquivalentOf("telemetry and the DonateKeys");   // the privacy warning
-        text.Should().ContainEquivalentOf("installs AmethystTool");          // onboarding: Amethyst only
-        text.Should().ContainEquivalentOf("Amethyst frontend");              // onboarding: plugin source
+        text.Should().ContainEquivalentOf("never through a mirror");         // F-04: self-update direct only
+        text.Should().ContainEquivalentOf("SHA-256 must match");             // F-04: pinned digest
+        text.Should().ContainEquivalentOf("LocalLow");                       // multi-location save backups
+        text.Should().ContainEquivalentOf("Installed badge");                // Manage badge
+        text.Should().ContainEquivalentOf("telemetry and the DonateKeys");   // Mode card privacy warning
+        text.Should().ContainEquivalentOf("less than 5 minutes old");        // backup cleanup age gate
+        text.Should().ContainEquivalentOf("all 29 languages");               // translation pass
+        text.Should().ContainEquivalentOf("Central Package Management");     // F-17
     }
 
     [Fact]
