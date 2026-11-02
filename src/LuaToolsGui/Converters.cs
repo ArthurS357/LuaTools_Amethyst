@@ -10,6 +10,14 @@ namespace LuaToolsGui;
 /// <summary>
 /// Loads an image path/URL into a BitmapImage with CacheOption=OnLoad, so cached cover files on
 /// disk aren't left locked (allowing later refresh/clear). Handles local paths and http(s) URLs.
+///
+/// <para>
+/// <b>ConverterParameter = decode width in pixels</b> (optional). Covers are Steam's 460×215 header.jpg
+/// (newer capsules are larger) and were decoded at full size even for a 92×43 row thumbnail: every visible
+/// row then held the full bitmap. With a width, WPF decodes straight to that size, keeping the aspect ratio.
+/// Pick it at the call site from the drawn width ×2 (crisp at 200% scaling) and never above 460, or a
+/// header.jpg would be UPSCALED on decode and cost more, not less. No parameter = full size, as before.
+/// </para>
 /// </summary>
 public class ImagePathToSourceConverter : IValueConverter
 {
@@ -22,8 +30,13 @@ public class ImagePathToSourceConverter : IValueConverter
             bmp.BeginInit();
             bmp.CacheOption = BitmapCacheOption.OnLoad;
             bmp.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+            if (DecodeWidth(parameter) is { } width) bmp.DecodePixelWidth = width;
             bmp.UriSource = new Uri(s, UriKind.Absolute);
             bmp.EndInit();
+
+            // A local file is fully decoded by now (OnLoad) and can be frozen: no change tracking, and safe to
+            // share. An http(s) cover is still downloading and cannot be frozen until it finishes; leave it.
+            if (bmp.CanFreeze) bmp.Freeze();
             return bmp;
         }
         catch
@@ -34,6 +47,15 @@ public class ImagePathToSourceConverter : IValueConverter
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) =>
         throw new NotSupportedException();
+
+    /// <summary>The decode width from a ConverterParameter (int or numeric string), or null for full size.
+    /// Anything unparseable, zero or negative means full size: a bad parameter must never blank a cover.</summary>
+    internal static int? DecodeWidth(object? parameter) => parameter switch
+    {
+        int i when i > 0 => i,
+        string str when int.TryParse(str, NumberStyles.Integer, CultureInfo.InvariantCulture, out int w) && w > 0 => w,
+        _ => null,
+    };
 }
 
 public class InverseBoolToVisibilityConverter : IValueConverter

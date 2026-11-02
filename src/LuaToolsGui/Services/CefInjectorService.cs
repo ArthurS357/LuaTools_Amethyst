@@ -15,6 +15,22 @@ public class CefInjectorService : IHostedService
     private CancellationTokenSource? _cts;
     private string _luatoolsJs = "";
     private string _polyfillJs = "";
+
+    // The script injected into a tab: polyfill + luatools.js. Built once per content change instead of on
+    // every ~1 s discovery tick (it was concatenated there whether or not any tab needed it — two copies of
+    // a plugin-sized string per second for the life of the app). Read and written only by InjectionLoop.
+    private (string Polyfill, string Lua, string Script)? _composed;
+
+    private string ComposedScript()
+    {
+        // One read of each: ReloadPluginFilesAsync may swap either field at any moment.
+        string polyfill = _polyfillJs, lua = _luatoolsJs;
+        if (_composed is { } c && ReferenceEquals(c.Polyfill, polyfill) && ReferenceEquals(c.Lua, lua))
+            return c.Script;
+        string script = polyfill + "\n" + lua;
+        _composed = (polyfill, lua, script);
+        return script;
+    }
     private readonly HttpClient _http = new() { Timeout = TimeSpan.FromSeconds(30) };
 
     // Persistent CDP WebSocket per tab (keyed by tab id), reused across calls so the fast RPC-drain
@@ -130,7 +146,7 @@ public class CefInjectorService : IHostedService
                         // injected by tab ID" is the wrong signal. Check liveness in the CURRENT context every
                         // cycle instead (window.__LuaToolsReady, set as the last statement of luatools.js's
                         // main IIFE) and re-inject whenever it's gone.
-                        var script = _polyfillJs + "\n" + _luatoolsJs;
+                        var script = ComposedScript();
                         var live = new List<(string, string)>();
                         var seen = new HashSet<string>();
                         foreach (var tab in tabs)

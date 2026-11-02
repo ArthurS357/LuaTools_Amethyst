@@ -125,8 +125,8 @@ public class SteamAppInfoCache
     {
         try
         {
-            if (!File.Exists(DetailsPath(appid))) return null;
-            using var doc = JsonDocument.Parse(File.ReadAllText(DetailsPath(appid)));
+            using var doc = OpenDetails(appid);
+            if (doc is null) return null;
             var d = doc.RootElement;
             if (d.ValueKind != JsonValueKind.Object) return null;
             string? name = d.TryGetProperty("name", out var n) ? n.GetString() : null;
@@ -301,17 +301,36 @@ public class SteamAppInfoCache
         catch { return null; }
     }
 
+    /// <summary>
+    /// Parse the cached blob straight from disk, or null if there is none. The readers below used to go through
+    /// <see cref="GetFullDetails"/>, materialising the whole blob as a string first; an appdetails blob carries
+    /// <c>detailed_description</c> HTML and runs to tens of KB, and the Manage grid and filters parse one per
+    /// game in the library. Same sharing as <c>File.ReadAllText</c>, so a concurrent write behaves as before.
+    /// Throws on a malformed blob, like <c>JsonDocument.Parse(string)</c> did; every caller already catches.
+    /// </summary>
+    private static JsonDocument? OpenDetails(long appid)
+    {
+        string path = DetailsPath(appid);
+        if (!File.Exists(path)) return null;
+        using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read,
+            bufferSize: 16 * 1024, FileOptions.SequentialScan);
+        return JsonDocument.Parse(stream);
+    }
+
+    /// <summary>The "{}" marker a delisted app is cached as: an object with no members.</summary>
+    private static bool IsDelistedMarker(JsonElement d) =>
+        d.ValueKind == JsonValueKind.Object && !d.EnumerateObject().Any();
+
     /// <summary>Parse the cached full blob into the fields the Manage filters use. Null if not cached
     /// yet (the caller treats that as "details loading"). Memoized so repeated filters don't re-parse.</summary>
     public AppFilterData? GetFilterData(long appid)
     {
         if (_filterCache.TryGetValue(appid, out var memo)) return memo;
-        string? raw = GetFullDetails(appid);
-        if (raw is null) return null;
 
         try
         {
-            using var doc = JsonDocument.Parse(raw);
+            using var doc = OpenDetails(appid);
+            if (doc is null) return null;
             var d = doc.RootElement;
 
             string? type = d.TryGetProperty("type", out var t) ? t.GetString() : null;
@@ -399,12 +418,10 @@ public class SteamAppInfoCache
     {
         if (_overviewCache.TryGetValue(appid, out var memo)) return memo;
 
-        string? raw = GetFullDetails(appid);
-        if (string.IsNullOrWhiteSpace(raw) || raw == "{}") return null;
-
         try
         {
-            using var doc = JsonDocument.Parse(raw);
+            using var doc = OpenDetails(appid);
+            if (doc is null || IsDelistedMarker(doc.RootElement)) return null;
             var d = doc.RootElement;
 
             // Steam's short_description carries no HTML tags but DOES carry entities in ~6% of apps
@@ -462,11 +479,10 @@ public class SteamAppInfoCache
     /// the lua.tools proxy did). Null if not cached, delisted ("{}"), or nameless.</summary>
     public GameDetails? GetGameDetails(long appid)
     {
-        string? raw = GetFullDetails(appid);
-        if (string.IsNullOrWhiteSpace(raw) || raw == "{}") return null;
         try
         {
-            using var doc = JsonDocument.Parse(raw);
+            using var doc = OpenDetails(appid);
+            if (doc is null || IsDelistedMarker(doc.RootElement)) return null;
             var d = doc.RootElement;
             string? name = d.TryGetProperty("name", out var n) ? n.GetString() : null;
             if (string.IsNullOrWhiteSpace(name)) return null;

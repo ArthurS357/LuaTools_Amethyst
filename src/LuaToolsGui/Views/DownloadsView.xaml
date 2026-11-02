@@ -63,7 +63,7 @@
                         Background="{DynamicResource SurfaceInsetBrush}"
                         CornerRadius="6">
                         <Image
-                            Source="{Binding CoverPath, Converter={StaticResource ImagePathToSource}}"
+                            Source="{Binding CoverPath, Converter={StaticResource ImagePathToSource}, ConverterParameter=184}"
                             Stretch="UniformToFill" />
                     </Border>
 

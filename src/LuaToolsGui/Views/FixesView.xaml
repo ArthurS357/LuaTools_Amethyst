@@ -207,7 +207,8 @@
                                     CornerRadius="10">
                                     <StackPanel>
                                         <Border Height="116" Background="{StaticResource SurfaceCardHoverBrush}" ClipToBounds="True" CornerRadius="10,10,0,0">
-                                            <Image Source="{Binding Cover, Converter={StaticResource ImagePathToSource}}" Stretch="UniformToFill" />
+                                            <!-- 248-wide tile: 2x would be 496, past header.jpg's 460, so cap at 460 (see the converter). -->
+                                            <Image Source="{Binding Cover, Converter={StaticResource ImagePathToSource}, ConverterParameter=460}" Stretch="UniformToFill" />
                                         </Border>
                                         <StackPanel Margin="12,8,12,10">
                                             <TextBlock

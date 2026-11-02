@@ -35,7 +35,7 @@ public class SteamAppListCache
         {
             if (File.Exists(CacheFile) && DateTime.UtcNow - File.GetLastWriteTimeUtc(CacheFile) < MaxAge)
             {
-                var map = JsonSerializer.Deserialize<Dictionary<long, string>>(await File.ReadAllTextAsync(CacheFile));
+                var map = await ReadCacheFileAsync();
                 if (map is { Count: > 0 })
                 {
                     foreach (var (k, v) in map) _names[k] = v;
@@ -58,7 +58,7 @@ public class SteamAppListCache
         {
             if (_names.IsEmpty && File.Exists(CacheFile))
             {
-                var map = JsonSerializer.Deserialize<Dictionary<long, string>>(await File.ReadAllTextAsync(CacheFile));
+                var map = await ReadCacheFileAsync();
                 if (map is not null) foreach (var (k, v) in map) _names[k] = v;
             }
         }
@@ -90,13 +90,48 @@ public class SteamAppListCache
         }
     }
 
+    /// <summary>
+    /// Deserialize the on-disk list straight from the file. It holds ~341k names (well over 10 MB of JSON):
+    /// the old <c>ReadAllTextAsync</c> first materialised all of it as one UTF-16 string, twice the file's
+    /// size in memory, only to hand it to the parser and drop it. Streaming skips that copy entirely.
+    /// </summary>
+    private static Task<Dictionary<long, string>?> ReadCacheFileAsync() => ReadListAsync(CacheFile);
+
+    internal static async Task<Dictionary<long, string>?> ReadListAsync(string path)
+    {
+        await using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read,
+            bufferSize: 64 * 1024, useAsync: true);
+        return await JsonSerializer.DeserializeAsync<Dictionary<long, string>>(stream);
+    }
+
+    /// <summary>
+    /// Serialize straight into a temp file, then move it over the cache: no whole-file string in memory, and
+    /// a kill mid-write leaves the previous list intact instead of a truncated one (which used to cost the
+    /// next launch a full re-download).
+    /// </summary>
     private async Task SaveAsync()
     {
+        try { await WriteListAsync(CacheFile, _names); }
+        catch (Exception ex) // best effort, as before: a failed save must not fault the load task
+        {
+            AppLog.Log($"SteamAppList: cache write failed: {ex.GetType().Name}: {ex.Message}");
+        }
+    }
+
+    internal static async Task WriteListAsync(string path, IReadOnlyDictionary<long, string> names)
+    {
+        string tmp = path + ".tmp";
         try
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(CacheFile)!);
-            await File.WriteAllTextAsync(CacheFile, JsonSerializer.Serialize(_names));
+            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+            await using (var stream = new FileStream(tmp, FileMode.Create, FileAccess.Write, FileShare.None,
+                             bufferSize: 64 * 1024, useAsync: true))
+                await JsonSerializer.SerializeAsync(stream, names);
+            File.Move(tmp, path, overwrite: true);
         }
-        catch { /* best effort */ }
+        finally
+        {
+            try { if (File.Exists(tmp)) File.Delete(tmp); } catch (IOException) { /* best effort */ }
+        }
     }
 }
