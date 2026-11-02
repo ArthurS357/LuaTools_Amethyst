@@ -72,12 +72,14 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
         public string? BackupDirectory { get; set; }
     }
 
-    private static Manifest? ReadManifest()
+    private static Manifest? ReadManifest() => ReadManifest(ManifestPath);
+
+    private static Manifest? ReadManifest(string path)
     {
         try
         {
-            return File.Exists(ManifestPath)
-                ? JsonSerializer.Deserialize<Manifest>(File.ReadAllText(ManifestPath), JsonOpts)
+            return File.Exists(path)
+                ? JsonSerializer.Deserialize<Manifest>(File.ReadAllText(path), JsonOpts)
                 : null;
         }
         catch (Exception e) when (e is IOException or JsonException or UnauthorizedAccessException)
@@ -86,10 +88,12 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
         }
     }
 
-    private static void WriteManifest(Manifest m)
+    private static void WriteManifest(Manifest m) => WriteManifest(ManifestPath, m);
+
+    private static void WriteManifest(string path, Manifest m)
     {
-        Directory.CreateDirectory(StateDir);
-        File.WriteAllText(ManifestPath, JsonSerializer.Serialize(m));
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        File.WriteAllText(path, JsonSerializer.Serialize(m));
     }
 
     /// <summary>Names present directly in the Steam root, for the pure policy to consult.</summary>
@@ -145,8 +149,35 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
     /// </summary>
     public virtual bool IsActive => unlocker.ActiveBackend == ActiveBackend.AmethystTool && IsInstalledLocally();
 
-    /// <summary>Where the last install put the files it displaced, or null if it displaced none.</summary>
-    public virtual string? LastBackupDirectory => ReadManifest()?.BackupDirectory;
+    /// <summary>Where the last install put the files it displaced, or null if it displaced none or that
+    /// folder is gone (see <see cref="LiveBackupDirectory"/>).</summary>
+    public virtual string? LastBackupDirectory => LiveBackupDirectory(ManifestPath);
+
+    /// <summary>
+    /// The manifest's backup folder, if it still exists. Settings → Maintenance deletes exactly these folders
+    /// (<see cref="Backups.BackupService"/>), and the Mode card kept saying "Backup: &lt;path&gt;" for a folder
+    /// that was no longer there; a deleted one is now also dropped from the manifest. Only when its parent
+    /// (the Steam root) is still present: a Steam library on an unplugged drive hides the folder without
+    /// deleting it, and forgetting it then would lose the record for good, so that case is hidden but kept.
+    /// </summary>
+    internal static string? LiveBackupDirectory(string manifestPath)
+    {
+        if (ReadManifest(manifestPath) is not { BackupDirectory: { } dir } manifest) return null;
+        if (Directory.Exists(dir)) return dir;
+        if (!Directory.Exists(Path.GetDirectoryName(dir))) return null;
+
+        manifest.BackupDirectory = null;
+        try
+        {
+            WriteManifest(manifestPath, manifest);
+            AppLog.Log($"amethysttool: backup folder {dir} no longer exists; dropped from the install record");
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            AppLog.Log($"amethysttool: could not drop the missing backup folder from the record: {ex.Message}");
+        }
+        return null;
+    }
 
     /// <summary>
     /// Whether Uninstall has something to work from — an install record, or the local state file that
