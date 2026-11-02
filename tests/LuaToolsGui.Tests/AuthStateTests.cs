@@ -74,6 +74,7 @@ public class AuthStateTests
         // The /login code path is the one that has always worked, and it is what the timed-out message now
         // sends people to. If the wording ever stops naming it, the browser failure becomes a dead end
         // again — which was half of what made this feature feel broken.
+        System.Globalization.CultureInfo.CurrentUICulture = new System.Globalization.CultureInfo("en");   // asserts the English text
         Resources.Strings.Auth_Err_SignInTimedOut.Should().ContainEquivalentOf("/login");
         Resources.Strings.Auth_Err_SignInTimedOut.Should().ContainEquivalentOf("code");
     }

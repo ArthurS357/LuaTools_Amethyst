@@ -147,6 +147,7 @@ public class HubcapResultTests
     [Fact]
     public void Download_wording_separates_an_unreachable_host_from_a_bad_key()
     {
+        System.Globalization.CultureInfo.CurrentUICulture = new System.Globalization.CultureInfo("en");   // asserts the English text
         string offline = HubcapErrorText.Describe(new HubcapResult<DownloadedFile>.Offline(new Exception()));
         string rejected = HubcapErrorText.Describe(new HubcapResult<DownloadedFile>.Unauthorized());
         string quota = HubcapErrorText.Describe(new HubcapResult<DownloadedFile>.RateLimited(null));
@@ -160,6 +161,7 @@ public class HubcapResultTests
     [Fact]
     public void Download_wording_mentions_the_wait_when_Hubcap_supplied_one()
     {
+        System.Globalization.CultureInfo.CurrentUICulture = new System.Globalization.CultureInfo("en");   // asserts the English text
         string withWait = HubcapErrorText.Describe(
             new HubcapResult<DownloadedFile>.RateLimited(TimeSpan.FromMinutes(30)));
 
