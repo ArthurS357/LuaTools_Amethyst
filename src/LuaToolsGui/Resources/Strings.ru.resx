@@ -586,4 +586,288 @@
   <data name="App_StartupFailed" xml:space="preserve"><value>Не удалось запустить LuaTools.&#10;&#10;{0}&#10;&#10;Подробности записаны в:&#10;{1}</value></data>
   <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Не удалось записать файлы ({0}) в папку Steam — доступ запрещён. Похоже, Steam установлен в расположение, требующее прав администратора (например, Program Files). Закройте Steam, затем один раз запустите LuaTools от имени администратора, чтобы применить этот режим.</value></data>
   <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Не удалось записать файлы ({0}) — закройте Steam и повторите попытку.</value></data>
+  <data name="Nav_Plugin" xml:space="preserve"><value>Плагин</value></data>
+  <data name="Settings_HubcapKeyRejected" xml:space="preserve"><value>Hubcap отклонил этот ключ. Убедитесь, что он скопирован полностью и срок его действия не истёк.</value></data>
+  <data name="Settings_HubcapKeyOffline" xml:space="preserve"><value>Не удалось связаться с Hubcap. Проверьте подключение и повторите попытку — ключ не был изменён.</value></data>
+  <data name="Settings_HubcapKeyRateLimited" xml:space="preserve"><value>Hubcap сейчас ограничивает частоту запросов для этого ключа. Повторите попытку чуть позже.</value></data>
+  <data name="Settings_HubcapExpiryExpired" xml:space="preserve"><value>Срок действия вашего ключа Hubcap истёк {0}. Подтвердите новый, чтобы и дальше пользоваться источниками Hubcap.</value></data>
+  <data name="Settings_HubcapExpiryToday" xml:space="preserve"><value>Срок действия вашего ключа Hubcap истекает сегодня ({0}). Получите новый, пока он не перестал работать.</value></data>
+  <data name="Settings_HubcapExpirySoon" xml:space="preserve"><value>Срок действия вашего ключа Hubcap истекает через {0} дн. ({1}). Получите новый, пока он не перестал работать.</value></data>
+  <data name="Hubcap_Err_KeyRejected" xml:space="preserve"><value>Ваш ключ Hubcap недействителен или срок его действия истёк.</value></data>
+  <data name="Hubcap_Err_DailyLimit" xml:space="preserve"><value>Достигнут суточный лимит Hubcap.</value></data>
+  <data name="Hubcap_Err_DailyLimitRetry" xml:space="preserve"><value>Достигнут суточный лимит Hubcap. Повторите попытку примерно через {0}.</value></data>
+  <data name="Hubcap_Err_NoManifest" xml:space="preserve"><value>Для этого приложения нет доступного манифеста Hubcap.</value></data>
+  <data name="Hubcap_Err_Status" xml:space="preserve"><value>Не удалось скачать с Hubcap ({0}).</value></data>
+  <data name="Hubcap_Err_Unreachable" xml:space="preserve"><value>Не удалось связаться с Hubcap. Проверьте подключение и повторите попытку.</value></data>
+  <data name="Hubcap_Err_Generic" xml:space="preserve"><value>Не удалось скачать с Hubcap.</value></data>
+  <data name="Hubcap_Wait_Seconds" xml:space="preserve"><value>{0} сек.</value></data>
+  <data name="Hubcap_Wait_Minutes" xml:space="preserve"><value>{0} мин.</value></data>
+  <data name="Hubcap_Wait_Hours" xml:space="preserve"><value>{0} ч</value></data>
+  <data name="Settings_Accent_Hint" xml:space="preserve"><value>Перекрашивает всё приложение — окно, карточки и текст, а не только акценты. Выберите цвет, затем нажмите «Применить».</value></data>
+  <data name="Settings_Accent_Amethyst" xml:space="preserve"><value>Amethyst</value></data>
+  <data name="Startup_Title" xml:space="preserve"><value>Запуск</value></data>
+  <data name="Startup_Steam_Closing" xml:space="preserve"><value>Закрываем Steam, чтобы LuaTools мог работать с его файлами…</value></data>
+  <data name="Startup_Steam_Closed" xml:space="preserve"><value>Steam закрыт.</value></data>
+  <data name="Startup_Steam_Stubborn_Title" xml:space="preserve"><value>Steam не закрылся</value></data>
+  <data name="Startup_Steam_Stubborn_Body" xml:space="preserve"><value>Steam получил запрос на закрытие, но всё ещё работает.
+
+Закрыть принудительно? Всё, что Steam ещё не сохранил, может быть потеряно. Выберите «Нет», чтобы оставить его запущенным — LuaTools не может менять файлы Steam, пока он работает.</value></data>
+  <data name="Startup_Steam_LeftRunning" xml:space="preserve"><value>Steam всё ещё работает, поэтому ничего не изменено. Закройте Steam и перезапустите LuaTools, когда будете готовы.</value></data>
+  <data name="Startup_Steam_Reopen_Body" xml:space="preserve"><value>LuaTools закончил работу. Снова открыть Steam?</value></data>
+  <data name="Startup_Steam_Reopen_Action" xml:space="preserve"><value>Открыть Steam</value></data>
+  <data name="Startup_Steam_ReopenFailed" xml:space="preserve"><value>Не удалось запустить Steam — откройте его через собственный ярлык.</value></data>
+  <data name="Guard_Title" xml:space="preserve"><value>Steam уже запущен</value></data>
+  <data name="Guard_Body" xml:space="preserve"><value>LuaTools должен сам запустить Steam (или застать его закрытым), чтобы хук подключился. Перезапустить Steam сейчас?</value></data>
+  <data name="Guard_Restart" xml:space="preserve"><value>Перезапустить Steam</value></data>
+  <data name="Guard_Exit" xml:space="preserve"><value>Выход</value></data>
+  <data name="Guard_Continue" xml:space="preserve"><value>Всё равно продолжить (не рекомендуется)</value></data>
+  <data name="Guard_ContinueWarning" xml:space="preserve"><value>Steam остался запущенным, поэтому хук может не подключиться. Если так случится, перезапустите Steam из LuaTools.</value></data>
+  <data name="Manage_Action_SaveBackup" xml:space="preserve"><value>Резервная копия сохранений…</value></data>
+  <data name="Saves_Title" xml:space="preserve"><value>Резервные копии сохранений</value></data>
+  <data name="Saves_Create" xml:space="preserve"><value>Создать новую резервную копию</value></data>
+  <data name="Saves_Restore" xml:space="preserve"><value>Восстановить</value></data>
+  <data name="Saves_Delete" xml:space="preserve"><value>Удалить</value></data>
+  <data name="Saves_Close" xml:space="preserve"><value>Закрыть</value></data>
+  <data name="Saves_Empty" xml:space="preserve"><value>Резервных копий этой игры пока нет.</value></data>
+  <data name="Saves_Locations_Title" xml:space="preserve"><value>Найденные расположения сохранений</value></data>
+  <data name="Saves_Locations_None" xml:space="preserve"><value>Для этой игры не найдена папка сохранений.</value></data>
+  <data name="Saves_Location_Subtitle" xml:space="preserve"><value>{0} · файлов: {1}</value></data>
+  <data name="Saves_AddFolder" xml:space="preserve"><value>Добавить папку вручную…</value></data>
+  <data name="Saves_Confirm_NoneFound" xml:space="preserve"><value>Не удалось найти сохранения этой игры. Выбрать папку вручную?</value></data>
+  <data name="Saves_PickFolder" xml:space="preserve"><value>Выбрать папку</value></data>
+  <data name="Saves_PickFolderTitle" xml:space="preserve"><value>Выберите папку, в которой эта игра хранит свои сохранения</value></data>
+  <data name="Saves_Toast_PickOne" xml:space="preserve"><value>Отметьте хотя бы одно расположение сохранений для резервного копирования.</value></data>
+  <data name="Saves_Toast_FolderRefused" xml:space="preserve"><value>Эту папку нельзя использовать (корень диска, папка Windows или Program Files либо неполный путь).</value></data>
+  <data name="Manage_SaveIcon_Tooltip" xml:space="preserve"><value>Сохранения найдены в: {0}</value></data>
+  <data name="Settings_CustomSaveFolders" xml:space="preserve"><value>Свои папки сохранений</value></data>
+  <data name="Settings_CustomSaveFolders_Hint" xml:space="preserve"><value>Для игр, сохранения которых приложение не находит само. Введите AppID игры и выберите папку; она будет копироваться вместе с этой игрой и остаётся единственным дополнительным местом, куда может писать восстановление.</value></data>
+  <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
+  <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Добавить папку…</value></data>
+  <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Удалить</value></data>
+  <data name="Saves_Note" xml:space="preserve"><value>Копирует папку Steam для каждой игры (userdata). Игры, которые хранят сохранения в «Документах» или AppData, не включены.</value></data>
+  <data name="Saves_Toast_Created" xml:space="preserve"><value>Скопировано файлов: {0}, {1}.</value></data>
+  <data name="Saves_Toast_Restored" xml:space="preserve"><value>Восстановлено файлов: {0}. Копия прежних сохранений сохранена.</value></data>
+  <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Резервная копия удалена.</value></data>
+  <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Сохранения этой игры не найдены. Добавьте папку, где она их хранит, через «Добавить папку вручную…».</value></data>
+  <data name="Saves_Toast_SteamNotFound" xml:space="preserve"><value>Папка Steam не найдена. Укажите её расположение в настройках.</value></data>
+  <data name="Saves_Toast_Refused" xml:space="preserve"><value>Отклонено: резервная копия не относится к этой игре или содержит небезопасные пути. Ничего не изменено.</value></data>
+  <data name="Saves_Toast_Failed" xml:space="preserve"><value>Операция не выполнена. Подробности смотрите в журнале.</value></data>
+  <data name="Saves_Toast_NoSpace" xml:space="preserve"><value>Недостаточно свободного места на диске для резервной копии (нужно {0} с запасом). Ничего не записано.</value></data>
+  <data name="Saves_Confirm_Restore" xml:space="preserve"><value>Восстановить {0}? Текущие сохранения этой игры будут перезаписаны; сначала от них сохраняется копия.</value></data>
+  <data name="Saves_Confirm_SteamOpen" xml:space="preserve"><value>Steam открыт. Чтобы восстановить безопасно (и не дать Steam Cloud перезаписать файлы), Steam должен быть закрыт.</value></data>
+  <data name="Saves_CloseSteamContinue" xml:space="preserve"><value>Закрыть Steam и продолжить</value></data>
+  <data name="Saves_Toast_SteamStillRunning" xml:space="preserve"><value>Steam не закрылся. Закройте его вручную и повторите попытку. Ничего не восстановлено.</value></data>
+  <data name="Saves_Confirm_Delete" xml:space="preserve"><value>Удалить {0}? Это действие нельзя отменить.</value></data>
+  <data name="Manage_Badge_Installed" xml:space="preserve"><value>Установлено</value></data>
+  <data name="Manage_Action_ImportSave" xml:space="preserve"><value>Импорт сохранения (.zip)…</value></data>
+  <data name="Saves_Import" xml:space="preserve"><value>Импорт сохранения…</value></data>
+  <data name="Saves_Import_PickTitle" xml:space="preserve"><value>Выберите резервную копию сохранений (.zip)</value></data>
+  <data name="Saves_Import_Filter" xml:space="preserve"><value>Резервная копия сохранений (*.zip)|*.zip</value></data>
+  <data name="Saves_Confirm_Import" xml:space="preserve"><value>Импортировать {0}? Текущие сохранения этой игры будут перезаписаны; сначала от них сохраняется копия.</value></data>
+  <data name="Saves_Toast_Imported" xml:space="preserve"><value>Импортировано файлов: {0}. Копия прежних сохранений сохранена.</value></data>
+  <data name="Saves_Confirm_NewFolder" xml:space="preserve"><value>Приложение создаст папку с названием этой игры, чтобы упорядочить её сохранения. Продолжить?</value></data>
+  <data name="Saves_Confirm_Ok" xml:space="preserve"><value>ОК</value></data>
+  <data name="Saves_Toast_SavedAt" xml:space="preserve"><value>Резервная копия успешно сохранена в: {0}</value></data>
+  <data name="Settings_SaveBackupFolder" xml:space="preserve"><value>Папка резервных копий сохранений</value></data>
+  <data name="Settings_SaveBackupFolder_Hint" xml:space="preserve"><value>Куда «Резервная копия сохранений…» записывает свои zip-файлы. По умолчанию: %AppData%\LuaToolsGui\SaveBackups.</value></data>
+  <data name="Settings_ChooseSaveBackupFolder" xml:space="preserve"><value>Выберите папку резервных копий сохранений</value></data>
+  <data name="About_Changelog_Title" xml:space="preserve"><value>Что нового</value></data>
+  <data name="About_Changelog_Show" xml:space="preserve"><value>Показать список изменений</value></data>
+  <data name="About_Changelog_Hide" xml:space="preserve"><value>Скрыть список изменений</value></data>
+  <data name="Home_Privacy_UpdatesOff" xml:space="preserve"><value>Самообновление выключено — эта сборка ничего не загружает сама</value></data>
+  <data name="Home_Privacy_UpdatesOn" xml:space="preserve"><value>Самообновление включено — выпуски проверяются при запуске</value></data>
+  <data name="Home_Action_Mode_Tip" xml:space="preserve"><value>Выберите, какой бэкенд управляет прокси-DLL Steam</value></data>
+  <data name="Home_Action_Plugin" xml:space="preserve"><value>Плагин</value></data>
+  <data name="Home_Action_Plugin_Tip" xml:space="preserve"><value>Установить или обновить плагин страницы магазина</value></data>
+  <data name="Home_Action_Updates_Tip" xml:space="preserve"><value>Откройте «О программе», чтобы проверить наличие новой версии</value></data>
+  <data name="Mode_Warn_Telemetry" xml:space="preserve"><value>Оригинальный проект (madoiscool). Предупреждение: содержит телеметрию и систему DonateKeys.</value></data>
+  <data name="Manage_Sort_InstalledFirst" xml:space="preserve"><value>Сначала установленные</value></data>
+  <data name="Add_Warn_NoManifests_Title" xml:space="preserve"><value>Предупреждение</value></data>
+  <data name="Add_Warn_NoManifests" xml:space="preserve"><value>Этот источник не предоставил манифесты для {0}. Загрузка в Steam может завершиться ошибкой. Рекомендуем источник {1}.</value></data>
+  <data name="Plugin_Row_Source" xml:space="preserve"><value>Источник</value></data>
+  <data name="Plugin_Sources_Header" xml:space="preserve"><value>Источник плагина</value></data>
+  <data name="Plugin_Sources_Subtitle" xml:space="preserve"><value>Каждый автор публикует собственную сборку плагина. Выберите ту, которую хотите установить — LuaTools устанавливает только активный источник и никогда не переключается сам.</value></data>
+  <data name="Plugin_Source_By" xml:space="preserve"><value>автор: {0}</value></data>
+  <data name="Plugin_Source_Active" xml:space="preserve"><value>Активен</value></data>
+  <data name="Plugin_Source_Default" xml:space="preserve"><value>По умолчанию</value></data>
+  <data name="Plugin_Source_Installed" xml:space="preserve"><value>Установлено из этого источника.</value></data>
+  <data name="Plugin_Source_ActiveNotInstalled" xml:space="preserve"><value>Активный источник — ещё не установлен.</value></data>
+  <data name="Plugin_Source_Available" xml:space="preserve"><value>Доступно. Выберите, чтобы вместо этого установить от этого автора.</value></data>
+  <data name="Plugin_Source_LatestVersion" xml:space="preserve"><value>Последняя</value></data>
+  <data name="Plugin_Btn_Activate" xml:space="preserve"><value>Использовать этот источник</value></data>
+  <data name="Plugin_Confirm_SwitchCaption" xml:space="preserve"><value>Сменить источник плагина</value></data>
+  <data name="Plugin_Confirm_SwitchBody" xml:space="preserve"><value>Будет установлен плагин из {0} вместо установленного сейчас, а Steam закроется и перезапустится, чтобы применить его. Продолжить?</value></data>
+  <data name="Plugin_Toast_SourceSwitched" xml:space="preserve"><value>Теперь установлено из {0}. Steam перезапускается, чтобы загрузить плагин.</value></data>
+  <data name="Plugin_Err_UnknownSource" xml:space="preserve"><value>{0} — не источник плагинов, входящий в эту сборку, поэтому ничего не установлено.</value></data>
+  <data name="Plugin_SourceErr_NoRelease" xml:space="preserve"><value>Этот источник не опубликовал ни одного выпуска или недоступен.</value></data>
+  <data name="Plugin_SourceErr_NoTag" xml:space="preserve"><value>У последнего выпуска этого источника нет тега версии.</value></data>
+  <data name="Plugin_SourceErr_MissingAsset" xml:space="preserve"><value>В последнем выпуске этого источника отсутствует {0}.</value></data>
+  <data name="Plugin_SourceErr_ForeignAssetUrl" xml:space="preserve"><value>Загрузка {0} из этого источника указывает за пределы его собственного репозитория, поэтому она отклонена.</value></data>
+  <data name="Plugin_SourceErr_NoDigest" xml:space="preserve"><value>Этот источник не публикует SHA-256 для {0}, поэтому подлинность содержимого не удалось подтвердить.</value></data>
+  <data name="Plugin_Err_ArchiveRejected" xml:space="preserve"><value>{0} отклонён проверкой безопасности: {1}</value></data>
+  <data name="Download_Notice_Title" xml:space="preserve"><value>Установка из {0}</value></data>
+  <data name="Download_Notice_Body" xml:space="preserve"><value>{0} · версия {1} · файлов: {2}
+SHA-256 {3}
+Проверено: {4}</value></data>
+  <data name="Download_Notice_Check_Pinned" xml:space="preserve"><value>репозиторий закреплён</value></data>
+  <data name="Download_Notice_Check_Digest" xml:space="preserve"><value>SHA-256 совпадает</value></data>
+  <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>архив проверен</value></data>
+  <data name="Download_Notice_Cancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Отменено до установки чего-либо.</value></data>
+  <data name="Builds_RemoveGame" xml:space="preserve"><value>Удалить игру</value></data>
+  <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Убирает эту игру из списка депо. Удаляет её файлы lua и все сохранённые сборки.</value></data>
+  <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Удалить игру</value></data>
+  <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>Удалить {0} ({1}) из депо?
+
+Это удалит её файл lua, лежащие рядом lua сборок и все сохранённые сборки. Отменить нельзя.</value></data>
+  <data name="Builds_RemoveGame_Done" xml:space="preserve"><value>{0} удалена из депо.</value></data>
+  <data name="Builds_RemoveGame_Gone" xml:space="preserve"><value>У {0} не осталось файлов — удалена из списка.</value></data>
+  <data name="Builds_RemoveGame_Failed" xml:space="preserve"><value>Не удалось полностью удалить {0}: {1}. Закройте Steam и повторите попытку.</value></data>
+  <data name="Auth_Err_SignInTimedOut" xml:space="preserve"><value>Время входа истекло — браузер так и не вернулся. Можно также войти по коду: выполните /login на сервере Discord и вставьте код в настройках.</value></data>
+  <data name="Auth_Err_CallbackPortBusy" xml:space="preserve"><value>Не удалось начать вход: порт 53789 уже занят. Закройте другие попытки входа и повторите.</value></data>
+  <data name="Auth_ProviderUnavailable" xml:space="preserve"><value>Сервер входа сейчас не отвечает, поэтому вход через Discord в браузере, вероятно, завершится по таймауту. Вместо этого можно войти по коду: выполните /login на сервере Discord и введите код в настройках.</value></data>
+  <data name="Auth_SignInCancelled" xml:space="preserve"><value>Вход отменён. Можно повторить попытку или использовать код вручную (выполните /login в Discord).</value></data>
+  <data name="Auth_TryAgain" xml:space="preserve"><value>Повторить</value></data>
+  <data name="Auth_TryAnyway" xml:space="preserve"><value>Всё равно попробовать</value></data>
+  <data name="Auth_UseManualCode" xml:space="preserve"><value>Ввести код вручную</value></data>
+  <data name="Auth_Cancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="Protocol_SilentInstall_Title" xml:space="preserve"><value>Запрос на установку</value></data>
+  <data name="Protocol_SilentInstall_Body" xml:space="preserve"><value>Ссылка просит LuaTools установить приложение {0} в фоновом режиме. Продолжайте, только если запустили это сами.</value></data>
+  <data name="Cdp_Consent_Title" xml:space="preserve"><value>Включить мост страницы магазина Steam?</value></data>
+  <data name="Cdp_Consent_Body" xml:space="preserve"><value>Плагину страницы магазина нужен отладочный мост Steam, который LuaTools включает, добавляя маркер рядом с steam.exe. Пока Steam запущен, это открывает неаутентифицированный локальный порт (127.0.0.1:8080).
+
+Любая другая программа на этом ПК сможет управлять встроенным браузером Steam, используя ваш вход в систему. Включайте, только если доверяете программам, установленным на этом компьютере.
+
+Вы можете отказаться и продолжать пользоваться остальным LuaTools; недоступна будет только кнопка «Add via LuaTools» в магазине.
+
+Включить?</value></data>
+  <data name="Privacy_HttpMetadata_Title" xml:space="preserve"><value>Незашифрованный запрос</value></data>
+  <data name="Privacy_HttpMetadata_Body" xml:space="preserve"><value>Доступность источников проверяется по обычному HTTP ({0}), потому что этот сервер не поддерживает рабочий HTTPS. Учётная запись и ключ не отправляются, но любой на пути вашей сети может увидеть, какое приложение Steam вы искали. Задайте «WarnOnInsecureMetadata»: false в settings.json, чтобы скрыть это уведомление.</value></data>
+  <data name="Theme_Guard_Title" xml:space="preserve"><value>Тема не применена</value></data>
+  <data name="Theme_Guard_Body" xml:space="preserve"><value>Акцент Amethyst не вступил в силу, что обычно означает, что пакет WPF-UI изменил названия ресурсов. Приложение работает нормально, но часть интерфейса будет выглядеть неправильно. См. docs/CHANGELOG.md.</value></data>
+  <data name="App_DisplayName" xml:space="preserve"><value>LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Title" xml:space="preserve"><value>Возможно, это не LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Body" xml:space="preserve"><value>Этот исполняемый файл не идентифицирует себя как LuaTools Amethyst. Если поверх него установлен официальный выпуск LuaTools, аналитика и отправка ключей Steam снова активны. Переустановите из репозитория Amethyst, чтобы вернуть версию с защитой приватности.</value></data>
+  <data name="Fixes_Toast_Blocked" xml:space="preserve"><value>Загрузка отклонена</value></data>
+  <data name="Fixes_Toast_Blocked_Body" xml:space="preserve"><value>{0} не установлен, так как не прошёл проверку безопасности — {1}</value></data>
+  <data name="About_Nav" xml:space="preserve"><value>О программе</value></data>
+  <data name="About_Title" xml:space="preserve"><value>О LuaTools Amethyst</value></data>
+  <data name="About_What_Header" xml:space="preserve"><value>Что это</value></data>
+  <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst — форк LuaTools от сообщества, ориентированный на приватность. Он убирает аналитический пинг и отправку ключей, которые выполняет оригинальная сборка, оставляет все загрузки по HTTPS и поставляется с фиолетовой темой Amethyst.</value></data>
+  <data name="About_Version_Header" xml:space="preserve"><value>Версия</value></data>
+  <data name="About_Repo_Header" xml:space="preserve"><value>Репозиторий</value></data>
+  <data name="About_Updates_Header" xml:space="preserve"><value>Обновления</value></data>
+  <data name="About_Updates_Enabled" xml:space="preserve"><value>Автоматические обновления ВКЛЮЧЕНЫ. LuaTools Amethyst проверяет репозиторий ниже при запуске и устанавливает обновления в фоне.</value></data>
+  <data name="About_Updates_Disabled" xml:space="preserve"><value>Автоматические обновления ВЫКЛЮЧЕНЫ — запросы обновлений не отправляются. Добавьте «AppUpdateRepos» в settings.json, чтобы включить их, или обновляйтесь вручную из репозитория ниже.</value></data>
+  <data name="About_Updates_Sources" xml:space="preserve"><value>Источник обновлений</value></data>
+  <data name="About_Check_Button" xml:space="preserve"><value>Проверить обновления</value></data>
+  <data name="About_Check_Checking" xml:space="preserve"><value>Проверка…</value></data>
+  <data name="About_Check_UpToDate" xml:space="preserve"><value>У вас последняя версия.</value></data>
+  <data name="About_Check_Found" xml:space="preserve"><value>Обновление загружено. Оно будет применено при закрытии LuaTools.</value></data>
+  <data name="About_Check_Failed" xml:space="preserve"><value>Не удалось проверить обновления. Проверьте подключение и настроенный репозиторий.</value></data>
+  <data name="About_Check_Disabled" xml:space="preserve"><value>Автоматические обновления отключены — сначала настройте «AppUpdateRepos» в settings.json.</value></data>
+  <data name="About_OpenRepo" xml:space="preserve"><value>Открыть репозиторий</value></data>
+  <data name="About_OpenSettings" xml:space="preserve"><value>Открыть папку settings.json</value></data>
+  <data name="About_Config_Header" xml:space="preserve"><value>Ручная настройка обновлений</value></data>
+  <data name="About_Config_Body" xml:space="preserve"><value>Отредактируйте settings.json в папке ниже и добавьте репозиторий, из которого хотите получать обновления. Принимается только https://github.com/&lt;owner&gt;/&lt;repo&gt;, а репозитории официальных выпусков LuaTools отклоняются, чтобы официальная сборка никогда не могла заменить эту.</value></data>
+  <data name="Builds_Depot_Download" xml:space="preserve"><value>Скачать депо…</value></data>
+  <data name="Builds_Depot_Unavailable" xml:space="preserve"><value>Скачивание депо недоступно в этой сборке: в ней нет проверенного пина для загрузчика.</value></data>
+  <data name="Builds_Depot_PickTitle" xml:space="preserve"><value>Скачать содержимое депо</value></data>
+  <data name="Builds_Depot_PickHint" xml:space="preserve"><value>Исходные файлы загружаются анонимно прямо с CDN Steam. Ничего не устанавливается — депо записываются в папку ниже, чтобы вы могли использовать их как угодно.</value></data>
+  <data name="Builds_Depot_NoCandidates" xml:space="preserve"><value>Ни одно депо этой игры нельзя скачать. Им нужны и ключ расшифровки из lua, и манифест, опубликованный Steam.</value></data>
+  <data name="Builds_Depot_NeedsKey" xml:space="preserve"><value>нет ключа в этой сборке</value></data>
+  <data name="Builds_Depot_NeedsManifest" xml:space="preserve"><value>Steam не публикует манифест</value></data>
+  <data name="Builds_Depot_NeedsSignIn" xml:space="preserve"><value>войдите, чтобы получить манифест</value></data>
+  <data name="Builds_Depot_SelectAll" xml:space="preserve"><value>Выбрать всё</value></data>
+  <data name="Builds_Depot_SelectNone" xml:space="preserve"><value>Сбросить</value></data>
+  <data name="Builds_Depot_Destination" xml:space="preserve"><value>Папка назначения</value></data>
+  <data name="Builds_Depot_Change" xml:space="preserve"><value>Изменить…</value></data>
+  <data name="Builds_Depot_Space" xml:space="preserve"><value>Нужно {0} · свободно {1} на {2}</value></data>
+  <data name="Builds_Depot_NotEnoughSpace" xml:space="preserve"><value>На этом диске недостаточно свободного места. Выберите меньше депо или другую папку.</value></data>
+  <data name="Builds_Depot_Confirm" xml:space="preserve"><value>Скачать депо: {0}</value></data>
+  <data name="Builds_Depot_Cancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="Builds_Depot_Downloading" xml:space="preserve"><value>Депо {0} из {1} · {2}</value></data>
+  <data name="Builds_Depot_Phase_PreAllocating" xml:space="preserve"><value>резервирование места на диске</value></data>
+  <data name="Builds_Depot_Phase_Validating" xml:space="preserve"><value>проверка существующих файлов</value></data>
+  <data name="Builds_Depot_Phase_FetchingManifest" xml:space="preserve"><value>получение манифеста</value></data>
+  <data name="Builds_Depot_Phase_Downloading" xml:space="preserve"><value>загрузка</value></data>
+  <data name="Builds_Depot_Done" xml:space="preserve"><value>Скачано депо: {0} — в {1}</value></data>
+  <data name="Builds_Depot_OpenFolder" xml:space="preserve"><value>Открыть папку</value></data>
+  <data name="Builds_Depot_CleanUp_Title" xml:space="preserve"><value>Удалить частично скачанное?</value></data>
+  <data name="Builds_Depot_CleanUp_Body" xml:space="preserve"><value>Загрузка была отменена после создания файлов ({0}) в {1}. Удалить только эти файлы? Всё, что там уже было, останется нетронутым.</value></data>
+  <data name="Builds_Depot_CleanUp_Failed" xml:space="preserve"><value>Некоторые файлы не удалось удалить — возможно, они всё ещё используются. Повторите попытку через минуту.</value></data>
+  <data name="Depot_Err_ToolNotPinned" xml:space="preserve"><value>Скачивание депо отключено в этой сборке, потому что в ней нет проверенного пина для загрузчика.</value></data>
+  <data name="Depot_Err_Tool" xml:space="preserve"><value>Не удалось получить загрузчик депо, либо полученное не прошло проверку.</value></data>
+  <data name="Depot_Err_SteamNotFound" xml:space="preserve"><value>Расположение Steam не найдено — укажите его в настройках.</value></data>
+  <data name="Depot_Err_NoKeys" xml:space="preserve"><value>Для этой игры не найдены ключи расшифровки депо.</value></data>
+  <data name="Depot_Err_NoKeyFor" xml:space="preserve"><value>У депо {0} нет пригодного ключа расшифровки.</value></data>
+  <data name="Depot_Err_BadKey" xml:space="preserve"><value>Ключ, сохранённый для депо {0}, не соответствует его манифесту.</value></data>
+  <data name="Depot_Err_NoManifest" xml:space="preserve"><value>Не удалось получить манифест этого депо.</value></data>
+  <data name="Depot_Err_SignIn" xml:space="preserve"><value>Войдите, чтобы получить манифест, которого у Steam ещё нет на этом компьютере.</value></data>
+  <data name="Depot_Err_NoSpace" xml:space="preserve"><value>Недостаточно места на диске: нужно {0}, свободно {1}.</value></data>
+  <data name="Depot_Err_Failed" xml:space="preserve"><value>Депо {0} не удалось: {1}</value></data>
+  <data name="Builds_Depot_Queued" xml:space="preserve"><value>Отправлено в «Загрузки»: депо {0}.</value></data>
+  <data name="Nav_Downloads" xml:space="preserve"><value>Загрузки</value></data>
+  <data name="Downloads_Title" xml:space="preserve"><value>Загрузки</value></data>
+  <data name="Downloads_Subtitle" xml:space="preserve"><value>Всё, что приложение загружает сейчас, и то, что оно загрузило раньше. Манифесты и содержимое депо используют одну очередь.</value></data>
+  <data name="Downloads_Empty" xml:space="preserve"><value>Пока ничего не загружено. Добавление игры на странице «Добавить» или получение содержимого депо на странице «Депо» покажет её здесь.</value></data>
+  <data name="Downloads_Section_Active" xml:space="preserve"><value>В процессе</value></data>
+  <data name="Downloads_Section_History" xml:space="preserve"><value>История</value></data>
+  <data name="Downloads_ActionRequired" xml:space="preserve"><value>ТРЕБУЕТСЯ ДЕЙСТВИЕ</value></data>
+  <data name="Downloads_Of" xml:space="preserve"><value>{0} из {1}</value></data>
+  <data name="Downloads_Eta" xml:space="preserve"><value>осталось {0}</value></data>
+  <data name="Downloads_Source_Depots" xml:space="preserve"><value>Депо: {0}</value></data>
+  <data name="Downloads_Status_Queued" xml:space="preserve"><value>В очереди</value></data>
+  <data name="Downloads_Status_Downloading" xml:space="preserve"><value>Загрузка</value></data>
+  <data name="Downloads_Status_AwaitingConfirm" xml:space="preserve"><value>Ожидает вас</value></data>
+  <data name="Downloads_Status_Installing" xml:space="preserve"><value>Установка</value></data>
+  <data name="Downloads_Status_Paused" xml:space="preserve"><value>Приостановлено</value></data>
+  <data name="Downloads_Status_Verifying" xml:space="preserve"><value>Проверка</value></data>
+  <data name="Downloads_Status_Completed" xml:space="preserve"><value>Готово</value></data>
+  <data name="Downloads_Status_Failed" xml:space="preserve"><value>Ошибка</value></data>
+  <data name="Downloads_Status_Cancelled" xml:space="preserve"><value>Отменено</value></data>
+  <data name="Downloads_Action_Review" xml:space="preserve"><value>Просмотр</value></data>
+  <data name="Downloads_Action_Pause" xml:space="preserve"><value>Пауза</value></data>
+  <data name="Downloads_Action_Resume" xml:space="preserve"><value>Продолжить</value></data>
+  <data name="Downloads_Action_MoveUp" xml:space="preserve"><value>Выше</value></data>
+  <data name="Downloads_Action_MoveDown" xml:space="preserve"><value>Ниже</value></data>
+  <data name="Downloads_Action_Cancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="Downloads_Action_Retry" xml:space="preserve"><value>Повторить</value></data>
+  <data name="Downloads_Action_Remove" xml:space="preserve"><value>Удалить</value></data>
+  <data name="Downloads_Action_ClearHistory" xml:space="preserve"><value>Очистить историю</value></data>
+  <data name="Downloads_Action_CopyAppId" xml:space="preserve"><value>Копировать App ID</value></data>
+  <data name="Downloads_Action_ShowInFolder" xml:space="preserve"><value>Показать в папке</value></data>
+  <data name="Downloads_ClearHistory_Confirm" xml:space="preserve"><value>Удалить все записи ({0}) из истории загрузок? Сами файлы не затрагиваются.</value></data>
+  <data name="Downloads_Err_Interrupted" xml:space="preserve"><value>Прервано при закрытии приложения.</value></data>
+  <data name="Downloads_Err_Cancelled" xml:space="preserve"><value>Отменено.</value></data>
+  <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>Буфер обмена занят другой программой — ничего не скопировано.</value></data>
+  <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Этого расположения больше не существует: {0}</value></data>
+  <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>Отклонено «{0}»: манифест должен называться &lt;depot&gt;_&lt;manifest&gt;.manifest (только цифры).</value></data>
+  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>Исходный репозиторий CloudRedirect недоступен. Функция временно отключена.</value></data>
+  <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Сохранённые сборки (нет активного lua)</value></data>
+  <data name="Settings_Maintenance_Title" xml:space="preserve"><value>ОБСЛУЖИВАНИЕ</value></data>
+  <data name="Settings_Backups_Title" xml:space="preserve"><value>Накопленные резервные копии</value></data>
+  <data name="Settings_Backups_Subtitle" xml:space="preserve"><value>Папки резервных копий, созданные при установке AmethystTool или удалении плагинов. Их удаление освобождает место в папке Steam.</value></data>
+  <data name="Settings_Backups_Empty" xml:space="preserve"><value>Резервные копии не найдены.</value></data>
+  <data name="Settings_Backups_NoSteam" xml:space="preserve"><value>Укажите расположение Steam в настройках, чтобы увидеть резервные копии.</value></data>
+  <data name="Settings_Backups_Refresh" xml:space="preserve"><value>Обновить</value></data>
+  <data name="Settings_Backups_DeleteSelected" xml:space="preserve"><value>Удалить выбранные</value></data>
+  <data name="Settings_Backups_DeleteOlder" xml:space="preserve"><value>Удалить старше 30 дней</value></data>
+  <data name="Settings_Backups_Confirm_Title" xml:space="preserve"><value>Удалить резервные копии?</value></data>
+  <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>Безвозвратно удалить элементы: {0} ({1})? Вы не сможете откатить прежние установки AmethystTool или удаления плагинов.</value></data>
+  <data name="Settings_Backups_Confirm_Delete" xml:space="preserve"><value>Удалить</value></data>
+  <data name="Settings_Backups_Cancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>Удалено элементов: {0} (освобождено {1})</value></data>
+  <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>Не удалось удалить элементов: {0}. Закройте Steam и повторите попытку.</value></data>
+  <data name="Settings_Backups_Column_Name" xml:space="preserve"><value>Имя</value></data>
+  <data name="Settings_Backups_Column_Type" xml:space="preserve"><value>Тип</value></data>
+  <data name="Settings_Backups_Type_Folder" xml:space="preserve"><value>Папка</value></data>
+  <data name="Settings_Backups_Type_File" xml:space="preserve"><value>Файл</value></data>
+  <data name="Settings_Backups_UnknownWarning" xml:space="preserve"><value>Неизвестная резервная копия, проверьте перед удалением</value></data>
+  <data name="Settings_Backups_Column_Date" xml:space="preserve"><value>Создано</value></data>
+  <data name="Settings_Backups_Column_Size" xml:space="preserve"><value>Размер</value></data>
+  <data name="Settings_Backups_Column_Files" xml:space="preserve"><value>Файлы</value></data>
+  <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Локальная версия (офлайн)</value></data>
+  <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Нет подключения к интернету. Используется установленная локально версия.</value></data>
+  <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Без интернета нельзя скачать новую версию.</value></data>
 </root>

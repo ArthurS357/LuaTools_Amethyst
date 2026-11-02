@@ -606,4 +606,288 @@
   <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools 无法启动。&#10;&#10;{0}&#10;&#10;详细信息已写入：&#10;{1}</value></data>
   <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>无法将 {0} 个文件写入 Steam 文件夹——访问被拒绝。Steam 似乎安装在需要管理员权限的位置（例如 Program Files）。请关闭 Steam，然后以管理员身份运行一次 LuaTools 以应用此模式。</value></data>
   <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>无法写入 {0} 个文件——请关闭 Steam 后重试。</value></data>
+  <data name="Nav_Plugin" xml:space="preserve"><value>插件</value></data>
+  <data name="Settings_HubcapKeyRejected" xml:space="preserve"><value>Hubcap 拒绝了该密钥。请检查是否完整复制，以及是否已过期。</value></data>
+  <data name="Settings_HubcapKeyOffline" xml:space="preserve"><value>无法连接到 Hubcap。请检查网络连接后重试——密钥未被更改。</value></data>
+  <data name="Settings_HubcapKeyRateLimited" xml:space="preserve"><value>Hubcap 目前正在对该密钥限流。请稍后再试。</value></data>
+  <data name="Settings_HubcapExpiryExpired" xml:space="preserve"><value>你的 Hubcap 密钥已于 {0} 过期。请验证新密钥以继续使用 Hubcap 源。</value></data>
+  <data name="Settings_HubcapExpiryToday" xml:space="preserve"><value>你的 Hubcap 密钥将于今天（{0}）过期。请在它失效前获取新密钥。</value></data>
+  <data name="Settings_HubcapExpirySoon" xml:space="preserve"><value>你的 Hubcap 密钥将在 {0} 天后（{1}）过期。请在它失效前获取新密钥。</value></data>
+  <data name="Hubcap_Err_KeyRejected" xml:space="preserve"><value>你的 Hubcap 密钥无效或已过期。</value></data>
+  <data name="Hubcap_Err_DailyLimit" xml:space="preserve"><value>已达到 Hubcap 每日限额。</value></data>
+  <data name="Hubcap_Err_DailyLimitRetry" xml:space="preserve"><value>已达到 Hubcap 每日限额。请在约 {0}后重试。</value></data>
+  <data name="Hubcap_Err_NoManifest" xml:space="preserve"><value>此应用没有可用的 Hubcap 清单。</value></data>
+  <data name="Hubcap_Err_Status" xml:space="preserve"><value>Hubcap 下载失败（{0}）。</value></data>
+  <data name="Hubcap_Err_Unreachable" xml:space="preserve"><value>无法连接到 Hubcap。请检查网络连接后重试。</value></data>
+  <data name="Hubcap_Err_Generic" xml:space="preserve"><value>Hubcap 下载失败。</value></data>
+  <data name="Hubcap_Wait_Seconds" xml:space="preserve"><value>{0} 秒</value></data>
+  <data name="Hubcap_Wait_Minutes" xml:space="preserve"><value>{0} 分钟</value></data>
+  <data name="Hubcap_Wait_Hours" xml:space="preserve"><value>{0} 小时</value></data>
+  <data name="Settings_Accent_Hint" xml:space="preserve"><value>为整个应用重新着色——窗口、卡片和文字，而不仅是强调色。选择一种颜色，然后选择“应用”。</value></data>
+  <data name="Settings_Accent_Amethyst" xml:space="preserve"><value>Amethyst</value></data>
+  <data name="Startup_Title" xml:space="preserve"><value>启动</value></data>
+  <data name="Startup_Steam_Closing" xml:space="preserve"><value>正在关闭 Steam，以便 LuaTools 处理其文件…</value></data>
+  <data name="Startup_Steam_Closed" xml:space="preserve"><value>Steam 已关闭。</value></data>
+  <data name="Startup_Steam_Stubborn_Title" xml:space="preserve"><value>Steam 未能关闭</value></data>
+  <data name="Startup_Steam_Stubborn_Body" xml:space="preserve"><value>已请求 Steam 关闭，但它仍在运行。
+
+要强制关闭吗？Steam 尚未保存的内容可能会丢失。选择“否”则让它继续运行——Steam 运行期间 LuaTools 无法更改其文件。</value></data>
+  <data name="Startup_Steam_LeftRunning" xml:space="preserve"><value>Steam 仍在运行，因此未做任何更改。请在准备好后关闭 Steam 并重新启动 LuaTools。</value></data>
+  <data name="Startup_Steam_Reopen_Body" xml:space="preserve"><value>LuaTools 已完成。要重新打开 Steam 吗？</value></data>
+  <data name="Startup_Steam_Reopen_Action" xml:space="preserve"><value>打开 Steam</value></data>
+  <data name="Startup_Steam_ReopenFailed" xml:space="preserve"><value>无法启动 Steam——请从它自己的快捷方式打开。</value></data>
+  <data name="Guard_Title" xml:space="preserve"><value>Steam 已在运行</value></data>
+  <data name="Guard_Body" xml:space="preserve"><value>LuaTools 需要自行启动 Steam（或在其关闭时）才能挂接钩子。现在重启 Steam 吗？</value></data>
+  <data name="Guard_Restart" xml:space="preserve"><value>重启 Steam</value></data>
+  <data name="Guard_Exit" xml:space="preserve"><value>退出</value></data>
+  <data name="Guard_Continue" xml:space="preserve"><value>仍然继续（不建议）</value></data>
+  <data name="Guard_ContinueWarning" xml:space="preserve"><value>Steam 仍在运行，因此钩子可能无法挂接。如果发生这种情况，请从 LuaTools 重启 Steam。</value></data>
+  <data name="Manage_Action_SaveBackup" xml:space="preserve"><value>备份存档…</value></data>
+  <data name="Saves_Title" xml:space="preserve"><value>存档备份</value></data>
+  <data name="Saves_Create" xml:space="preserve"><value>创建新备份</value></data>
+  <data name="Saves_Restore" xml:space="preserve"><value>还原</value></data>
+  <data name="Saves_Delete" xml:space="preserve"><value>删除</value></data>
+  <data name="Saves_Close" xml:space="preserve"><value>关闭</value></data>
+  <data name="Saves_Empty" xml:space="preserve"><value>此游戏还没有备份。</value></data>
+  <data name="Saves_Locations_Title" xml:space="preserve"><value>找到的存档位置</value></data>
+  <data name="Saves_Locations_None" xml:space="preserve"><value>未检测到此游戏的存档文件夹。</value></data>
+  <data name="Saves_Location_Subtitle" xml:space="preserve"><value>{0} · {1} 个文件</value></data>
+  <data name="Saves_AddFolder" xml:space="preserve"><value>手动添加文件夹…</value></data>
+  <data name="Saves_Confirm_NoneFound" xml:space="preserve"><value>我们找不到此游戏的存档。要手动选择文件夹吗？</value></data>
+  <data name="Saves_PickFolder" xml:space="preserve"><value>选择文件夹</value></data>
+  <data name="Saves_PickFolderTitle" xml:space="preserve"><value>选择此游戏保存存档的文件夹</value></data>
+  <data name="Saves_Toast_PickOne" xml:space="preserve"><value>请至少勾选一个要备份的存档位置。</value></data>
+  <data name="Saves_Toast_FolderRefused" xml:space="preserve"><value>无法使用该文件夹（驱动器根目录、Windows 或 Program Files 文件夹，或不是完整路径）。</value></data>
+  <data name="Manage_SaveIcon_Tooltip" xml:space="preserve"><value>在以下位置检测到存档：{0}</value></data>
+  <data name="Settings_CustomSaveFolders" xml:space="preserve"><value>自定义存档文件夹</value></data>
+  <data name="Settings_CustomSaveFolders_Hint" xml:space="preserve"><value>适用于应用无法自行找到存档的游戏。输入游戏的 AppID 并选择文件夹；它会随该游戏一起备份，并且是还原操作唯一可额外写入的位置。</value></data>
+  <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
+  <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>添加文件夹…</value></data>
+  <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>移除</value></data>
+  <data name="Saves_Note" xml:space="preserve"><value>备份 Steam 的每游戏文件夹（userdata）。将存档保存在“文档”或 AppData 中的游戏不包括在内。</value></data>
+  <data name="Saves_Toast_Created" xml:space="preserve"><value>已备份 {0} 个文件，{1}。</value></data>
+  <data name="Saves_Toast_Restored" xml:space="preserve"><value>已还原 {0} 个文件。已保留之前存档的副本。</value></data>
+  <data name="Saves_Toast_Deleted" xml:space="preserve"><value>备份已删除。</value></data>
+  <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>未找到此游戏的存档。请通过“手动添加文件夹…”添加它保存存档的文件夹。</value></data>
+  <data name="Saves_Toast_SteamNotFound" xml:space="preserve"><value>未找到 Steam 文件夹。请在设置中指定其位置。</value></data>
+  <data name="Saves_Toast_Refused" xml:space="preserve"><value>已拒绝：该备份与此游戏不匹配，或包含不安全的路径。未做任何更改。</value></data>
+  <data name="Saves_Toast_Failed" xml:space="preserve"><value>操作失败。详情请查看日志。</value></data>
+  <data name="Saves_Toast_NoSpace" xml:space="preserve"><value>磁盘可用空间不足，无法备份（需要 {0}，含余量）。未写入任何内容。</value></data>
+  <data name="Saves_Confirm_Restore" xml:space="preserve"><value>要还原 {0} 吗？此游戏当前的存档将被覆盖；覆盖前会先保留一份副本。</value></data>
+  <data name="Saves_Confirm_SteamOpen" xml:space="preserve"><value>Steam 已打开。为了安全还原（并防止 Steam 云同步覆盖文件），必须先关闭 Steam。</value></data>
+  <data name="Saves_CloseSteamContinue" xml:space="preserve"><value>关闭 Steam 并继续</value></data>
+  <data name="Saves_Toast_SteamStillRunning" xml:space="preserve"><value>Steam 未能关闭。请手动关闭后重试。未还原任何内容。</value></data>
+  <data name="Saves_Confirm_Delete" xml:space="preserve"><value>要删除 {0} 吗？此操作无法撤销。</value></data>
+  <data name="Manage_Badge_Installed" xml:space="preserve"><value>已安装</value></data>
+  <data name="Manage_Action_ImportSave" xml:space="preserve"><value>导入存档（.zip）…</value></data>
+  <data name="Saves_Import" xml:space="preserve"><value>导入存档…</value></data>
+  <data name="Saves_Import_PickTitle" xml:space="preserve"><value>选择存档备份（.zip）</value></data>
+  <data name="Saves_Import_Filter" xml:space="preserve"><value>存档备份（*.zip）|*.zip</value></data>
+  <data name="Saves_Confirm_Import" xml:space="preserve"><value>要导入 {0} 吗？此游戏当前的存档将被覆盖；覆盖前会先保留一份副本。</value></data>
+  <data name="Saves_Toast_Imported" xml:space="preserve"><value>已导入 {0} 个文件。已保留之前存档的副本。</value></data>
+  <data name="Saves_Confirm_NewFolder" xml:space="preserve"><value>应用将创建一个以此游戏命名的文件夹来整理其存档。要继续吗？</value></data>
+  <data name="Saves_Confirm_Ok" xml:space="preserve"><value>确定</value></data>
+  <data name="Saves_Toast_SavedAt" xml:space="preserve"><value>备份已成功保存到：{0}</value></data>
+  <data name="Settings_SaveBackupFolder" xml:space="preserve"><value>存档备份文件夹</value></data>
+  <data name="Settings_SaveBackupFolder_Hint" xml:space="preserve"><value>“备份存档…”写入 zip 文件的位置。默认：%AppData%\LuaToolsGui\SaveBackups。</value></data>
+  <data name="Settings_ChooseSaveBackupFolder" xml:space="preserve"><value>选择存档备份文件夹</value></data>
+  <data name="About_Changelog_Title" xml:space="preserve"><value>新增内容</value></data>
+  <data name="About_Changelog_Show" xml:space="preserve"><value>显示更新日志</value></data>
+  <data name="About_Changelog_Hide" xml:space="preserve"><value>隐藏更新日志</value></data>
+  <data name="Home_Privacy_UpdatesOff" xml:space="preserve"><value>自动更新已关闭——此版本不会自行获取任何内容</value></data>
+  <data name="Home_Privacy_UpdatesOn" xml:space="preserve"><value>自动更新已开启——启动时会检查发行版</value></data>
+  <data name="Home_Action_Mode_Tip" xml:space="preserve"><value>选择由哪个后端管理 Steam 代理 DLL</value></data>
+  <data name="Home_Action_Plugin" xml:space="preserve"><value>插件</value></data>
+  <data name="Home_Action_Plugin_Tip" xml:space="preserve"><value>安装或更新商店页面插件</value></data>
+  <data name="Home_Action_Updates_Tip" xml:space="preserve"><value>打开“关于”以检查新版本</value></data>
+  <data name="Mode_Warn_Telemetry" xml:space="preserve"><value>原始项目（madoiscool）。警告：包含遥测和 DonateKeys 系统。</value></data>
+  <data name="Manage_Sort_InstalledFirst" xml:space="preserve"><value>已安装的优先</value></data>
+  <data name="Add_Warn_NoManifests_Title" xml:space="preserve"><value>警告</value></data>
+  <data name="Add_Warn_NoManifests" xml:space="preserve"><value>此源没有提供 {0} 的清单。在 Steam 中下载可能失败。我们建议使用 {1} 源。</value></data>
+  <data name="Plugin_Row_Source" xml:space="preserve"><value>源</value></data>
+  <data name="Plugin_Sources_Header" xml:space="preserve"><value>插件源</value></data>
+  <data name="Plugin_Sources_Subtitle" xml:space="preserve"><value>每位作者都会发布自己的插件构建。选择你想安装的那个——LuaTools 只安装当前启用的源，绝不会自行切换。</value></data>
+  <data name="Plugin_Source_By" xml:space="preserve"><value>作者：{0}</value></data>
+  <data name="Plugin_Source_Active" xml:space="preserve"><value>已启用</value></data>
+  <data name="Plugin_Source_Default" xml:space="preserve"><value>默认</value></data>
+  <data name="Plugin_Source_Installed" xml:space="preserve"><value>已从此源安装。</value></data>
+  <data name="Plugin_Source_ActiveNotInstalled" xml:space="preserve"><value>已启用的源——尚未安装。</value></data>
+  <data name="Plugin_Source_Available" xml:space="preserve"><value>可用。选择它即可改为从该作者处安装。</value></data>
+  <data name="Plugin_Source_LatestVersion" xml:space="preserve"><value>最新</value></data>
+  <data name="Plugin_Btn_Activate" xml:space="preserve"><value>使用此源</value></data>
+  <data name="Plugin_Confirm_SwitchCaption" xml:space="preserve"><value>切换插件源</value></data>
+  <data name="Plugin_Confirm_SwitchBody" xml:space="preserve"><value>这将从 {0} 安装插件，替换当前已安装的版本，并关闭后重启 Steam 以应用。要继续吗？</value></data>
+  <data name="Plugin_Toast_SourceSwitched" xml:space="preserve"><value>现已从 {0} 安装。Steam 正在重启以加载它。</value></data>
+  <data name="Plugin_Err_UnknownSource" xml:space="preserve"><value>{0} 不是此版本内置的插件源，因此未安装任何内容。</value></data>
+  <data name="Plugin_SourceErr_NoRelease" xml:space="preserve"><value>此源未发布任何发行版，或无法访问。</value></data>
+  <data name="Plugin_SourceErr_NoTag" xml:space="preserve"><value>此源的最新发行版没有版本标签。</value></data>
+  <data name="Plugin_SourceErr_MissingAsset" xml:space="preserve"><value>此源的最新发行版缺少 {0}。</value></data>
+  <data name="Plugin_SourceErr_ForeignAssetUrl" xml:space="preserve"><value>此源中 {0} 的下载指向其自有存储库之外，因此被拒绝。</value></data>
+  <data name="Plugin_SourceErr_NoDigest" xml:space="preserve"><value>此源没有发布 {0} 的 SHA-256，因此无法证明其内容。</value></data>
+  <data name="Plugin_Err_ArchiveRejected" xml:space="preserve"><value>{0} 被安全检查拒绝：{1}</value></data>
+  <data name="Download_Notice_Title" xml:space="preserve"><value>正在从 {0} 安装</value></data>
+  <data name="Download_Notice_Body" xml:space="preserve"><value>{0} · 版本 {1} · {2} 个文件
+SHA-256 {3}
+已验证：{4}</value></data>
+  <data name="Download_Notice_Check_Pinned" xml:space="preserve"><value>存储库已固定</value></data>
+  <data name="Download_Notice_Check_Digest" xml:space="preserve"><value>SHA-256 匹配</value></data>
+  <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>压缩包已检查</value></data>
+  <data name="Download_Notice_Cancel" xml:space="preserve"><value>取消</value></data>
+  <data name="Download_Notice_Cancelled" xml:space="preserve"><value>在安装任何内容之前已取消。</value></data>
+  <data name="Builds_RemoveGame" xml:space="preserve"><value>移除游戏</value></data>
+  <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>将此游戏从仓库列表中移除。会删除其 lua 文件和所有已存储的构建。</value></data>
+  <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>移除游戏</value></data>
+  <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>要从仓库中移除 {0}（{1}）吗？
+
+这会删除它的 lua 文件、旁边的构建 lua 以及所有已存储的构建。此操作无法撤销。</value></data>
+  <data name="Builds_RemoveGame_Done" xml:space="preserve"><value>已从仓库中移除 {0}。</value></data>
+  <data name="Builds_RemoveGame_Gone" xml:space="preserve"><value>{0} 已没有文件——已从列表中移除。</value></data>
+  <data name="Builds_RemoveGame_Failed" xml:space="preserve"><value>无法完全移除 {0}：{1}。请关闭 Steam 后重试。</value></data>
+  <data name="Auth_Err_SignInTimedOut" xml:space="preserve"><value>登录超时——浏览器一直没有返回。你也可以用代码登录：在 Discord 服务器上运行 /login，然后将代码粘贴到设置中。</value></data>
+  <data name="Auth_Err_CallbackPortBusy" xml:space="preserve"><value>无法开始登录：端口 53789 已被占用。请关闭其他登录尝试后重试。</value></data>
+  <data name="Auth_ProviderUnavailable" xml:space="preserve"><value>登录服务器目前没有响应，因此浏览器中的 Discord 登录很可能会超时。你可以改用代码登录：在 Discord 服务器上运行 /login，然后在设置中输入代码。</value></data>
+  <data name="Auth_SignInCancelled" xml:space="preserve"><value>登录已取消。你可以重试，或使用手动代码（在 Discord 上运行 /login）。</value></data>
+  <data name="Auth_TryAgain" xml:space="preserve"><value>重试</value></data>
+  <data name="Auth_TryAnyway" xml:space="preserve"><value>仍然尝试</value></data>
+  <data name="Auth_UseManualCode" xml:space="preserve"><value>使用手动代码</value></data>
+  <data name="Auth_Cancel" xml:space="preserve"><value>取消</value></data>
+  <data name="Protocol_SilentInstall_Title" xml:space="preserve"><value>安装请求</value></data>
+  <data name="Protocol_SilentInstall_Body" xml:space="preserve"><value>有一个链接正在请求 LuaTools 在后台安装应用 {0}。仅当这是你自己发起的操作时才继续。</value></data>
+  <data name="Cdp_Consent_Title" xml:space="preserve"><value>要启用 Steam 商店页面桥接吗？</value></data>
+  <data name="Cdp_Consent_Body" xml:space="preserve"><value>商店页面插件需要 Steam 的调试桥，LuaTools 通过在 steam.exe 旁添加一个标记来启用它。Steam 运行期间，这会打开一个未经身份验证的本地端口（127.0.0.1:8080）。
+
+此电脑上运行的任何其他程序随后都可以利用你已登录的会话控制 Steam 内置浏览器。仅当你信任此机器上安装的软件时才启用。
+
+你可以拒绝并继续使用 LuaTools 的其余功能；只有商店中的“Add via LuaTools”按钮将不可用。
+
+要启用吗？</value></data>
+  <data name="Privacy_HttpMetadata_Title" xml:space="preserve"><value>未加密的查询</value></data>
+  <data name="Privacy_HttpMetadata_Body" xml:space="preserve"><value>由于该服务器没有可用的 HTTPS，源的可用性通过明文 HTTP（{0}）检查。不会发送任何账户或密钥，但你网络路径上的任何人都能看到你查询了哪个 Steam 应用。在 settings.json 中将“WarnOnInsecureMetadata”设为 false 可隐藏此提示。</value></data>
+  <data name="Theme_Guard_Title" xml:space="preserve"><value>主题未应用</value></data>
+  <data name="Theme_Guard_Body" xml:space="preserve"><value>Amethyst 强调色未生效，这通常意味着 WPF-UI 包更改了其资源名称。应用可正常使用，但部分界面会显示异常。请参阅 docs/CHANGELOG.md。</value></data>
+  <data name="App_DisplayName" xml:space="preserve"><value>LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Title" xml:space="preserve"><value>这可能不是 LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Body" xml:space="preserve"><value>此二进制文件没有将自己标识为 LuaTools Amethyst。如果你在其上安装了官方 LuaTools 发行版，则分析和 Steam 密钥上传已再次启用。请从 Amethyst 仓库重新安装，以恢复注重隐私的版本。</value></data>
+  <data name="Fixes_Toast_Blocked" xml:space="preserve"><value>下载已被拒绝</value></data>
+  <data name="Fixes_Toast_Blocked_Body" xml:space="preserve"><value>{0} 未安装，因为它未通过安全检查——{1}</value></data>
+  <data name="About_Nav" xml:space="preserve"><value>关于</value></data>
+  <data name="About_Title" xml:space="preserve"><value>关于 LuaTools Amethyst</value></data>
+  <data name="About_What_Header" xml:space="preserve"><value>这是什么</value></data>
+  <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst 是 LuaTools 的社区分支，注重隐私。它移除了原版构建所做的分析 ping 和密钥捐赠上传，保持所有下载均通过 HTTPS，并附带 Amethyst 紫色主题。</value></data>
+  <data name="About_Version_Header" xml:space="preserve"><value>版本</value></data>
+  <data name="About_Repo_Header" xml:space="preserve"><value>存储库</value></data>
+  <data name="About_Updates_Header" xml:space="preserve"><value>更新</value></data>
+  <data name="About_Updates_Enabled" xml:space="preserve"><value>自动更新已开启。LuaTools Amethyst 会在启动时检查下方的存储库，并在后台安装更新。</value></data>
+  <data name="About_Updates_Disabled" xml:space="preserve"><value>自动更新已关闭——不会发出任何更新请求。在 settings.json 中添加“AppUpdateRepos”可将其开启，或从下方存储库手动更新。</value></data>
+  <data name="About_Updates_Sources" xml:space="preserve"><value>更新源</value></data>
+  <data name="About_Check_Button" xml:space="preserve"><value>检查更新</value></data>
+  <data name="About_Check_Checking" xml:space="preserve"><value>正在检查…</value></data>
+  <data name="About_Check_UpToDate" xml:space="preserve"><value>你使用的是最新版本。</value></data>
+  <data name="About_Check_Found" xml:space="preserve"><value>已下载更新。它将在你关闭 LuaTools 时应用。</value></data>
+  <data name="About_Check_Failed" xml:space="preserve"><value>无法检查更新。请检查网络连接和已配置的存储库。</value></data>
+  <data name="About_Check_Disabled" xml:space="preserve"><value>自动更新已禁用——请先在 settings.json 中配置“AppUpdateRepos”。</value></data>
+  <data name="About_OpenRepo" xml:space="preserve"><value>打开存储库</value></data>
+  <data name="About_OpenSettings" xml:space="preserve"><value>打开 settings.json 所在文件夹</value></data>
+  <data name="About_Config_Header" xml:space="preserve"><value>手动配置更新</value></data>
+  <data name="About_Config_Body" xml:space="preserve"><value>编辑下方文件夹中的 settings.json，并添加你想从中获取更新的存储库。仅接受 https://github.com/&lt;owner&gt;/&lt;repo&gt;，并且会拒绝原版 LuaTools 发行存储库，以确保官方构建永远无法取代此版本。</value></data>
+  <data name="Builds_Depot_Download" xml:space="preserve"><value>下载仓库…</value></data>
+  <data name="Builds_Depot_Unavailable" xml:space="preserve"><value>此版本无法下载仓库：它没有下载工具的已验证固定项。</value></data>
+  <data name="Builds_Depot_PickTitle" xml:space="preserve"><value>下载仓库内容</value></data>
+  <data name="Builds_Depot_PickHint" xml:space="preserve"><value>原始文件将匿名直接从 Steam 的 CDN 拉取。不会安装任何内容——仓库会被写入下方文件夹，供你随意使用。</value></data>
+  <data name="Builds_Depot_NoCandidates" xml:space="preserve"><value>此游戏的仓库都无法下载。它们既需要来自 lua 的解密密钥，也需要 Steam 发布的清单。</value></data>
+  <data name="Builds_Depot_NeedsKey" xml:space="preserve"><value>此版本中没有密钥</value></data>
+  <data name="Builds_Depot_NeedsManifest" xml:space="preserve"><value>Steam 未发布清单</value></data>
+  <data name="Builds_Depot_NeedsSignIn" xml:space="preserve"><value>登录以获取其清单</value></data>
+  <data name="Builds_Depot_SelectAll" xml:space="preserve"><value>全选</value></data>
+  <data name="Builds_Depot_SelectNone" xml:space="preserve"><value>清除</value></data>
+  <data name="Builds_Depot_Destination" xml:space="preserve"><value>目标文件夹</value></data>
+  <data name="Builds_Depot_Change" xml:space="preserve"><value>更改…</value></data>
+  <data name="Builds_Depot_Space" xml:space="preserve"><value>需要 {0} · {2} 上可用 {1}</value></data>
+  <data name="Builds_Depot_NotEnoughSpace" xml:space="preserve"><value>该驱动器的可用空间不足。请选择更少的仓库或其他文件夹。</value></data>
+  <data name="Builds_Depot_Confirm" xml:space="preserve"><value>下载 {0} 个仓库</value></data>
+  <data name="Builds_Depot_Cancel" xml:space="preserve"><value>取消</value></data>
+  <data name="Builds_Depot_Downloading" xml:space="preserve"><value>仓库 {0}/{1} · {2}</value></data>
+  <data name="Builds_Depot_Phase_PreAllocating" xml:space="preserve"><value>正在预留磁盘空间</value></data>
+  <data name="Builds_Depot_Phase_Validating" xml:space="preserve"><value>正在检查现有文件</value></data>
+  <data name="Builds_Depot_Phase_FetchingManifest" xml:space="preserve"><value>正在获取清单</value></data>
+  <data name="Builds_Depot_Phase_Downloading" xml:space="preserve"><value>正在下载</value></data>
+  <data name="Builds_Depot_Done" xml:space="preserve"><value>已将 {0} 个仓库下载到 {1}</value></data>
+  <data name="Builds_Depot_OpenFolder" xml:space="preserve"><value>打开文件夹</value></data>
+  <data name="Builds_Depot_CleanUp_Title" xml:space="preserve"><value>要移除未完成的下载吗？</value></data>
+  <data name="Builds_Depot_CleanUp_Body" xml:space="preserve"><value>下载在 {1} 中创建了 {0} 个文件后被取消。只删除这些文件吗？原本就在那里的内容保持不动。</value></data>
+  <data name="Builds_Depot_CleanUp_Failed" xml:space="preserve"><value>有些文件无法删除——它们可能仍在使用中。请稍后再试。</value></data>
+  <data name="Depot_Err_ToolNotPinned" xml:space="preserve"><value>此版本关闭了仓库下载，因为它没有下载工具的已验证固定项。</value></data>
+  <data name="Depot_Err_Tool" xml:space="preserve"><value>无法获取仓库下载器，或获取到的内容未通过验证。</value></data>
+  <data name="Depot_Err_SteamNotFound" xml:space="preserve"><value>未找到 Steam 位置——请在设置中指定。</value></data>
+  <data name="Depot_Err_NoKeys" xml:space="preserve"><value>未找到此游戏的仓库解密密钥。</value></data>
+  <data name="Depot_Err_NoKeyFor" xml:space="preserve"><value>仓库 {0} 没有可用的解密密钥。</value></data>
+  <data name="Depot_Err_BadKey" xml:space="preserve"><value>为仓库 {0} 存储的密钥与其清单不匹配。</value></data>
+  <data name="Depot_Err_NoManifest" xml:space="preserve"><value>无法获取该仓库的清单。</value></data>
+  <data name="Depot_Err_SignIn" xml:space="preserve"><value>请登录以获取 Steam 在这台机器上尚没有的清单。</value></data>
+  <data name="Depot_Err_NoSpace" xml:space="preserve"><value>磁盘空间不足：需要 {0}，可用 {1}。</value></data>
+  <data name="Depot_Err_Failed" xml:space="preserve"><value>仓库 {0} 失败：{1}</value></data>
+  <data name="Builds_Depot_Queued" xml:space="preserve"><value>已将 {0} 个仓库发送到下载。</value></data>
+  <data name="Nav_Downloads" xml:space="preserve"><value>下载</value></data>
+  <data name="Downloads_Title" xml:space="preserve"><value>下载</value></data>
+  <data name="Downloads_Subtitle" xml:space="preserve"><value>应用当前正在获取的所有内容，以及之前获取过的内容。清单和仓库内容共用此队列。</value></data>
+  <data name="Downloads_Empty" xml:space="preserve"><value>尚未下载任何内容。在“添加”页面添加游戏，或在“仓库”页面获取仓库内容，它就会显示在这里。</value></data>
+  <data name="Downloads_Section_Active" xml:space="preserve"><value>进行中</value></data>
+  <data name="Downloads_Section_History" xml:space="preserve"><value>历史记录</value></data>
+  <data name="Downloads_ActionRequired" xml:space="preserve"><value>需要操作</value></data>
+  <data name="Downloads_Of" xml:space="preserve"><value>{0}/{1}</value></data>
+  <data name="Downloads_Eta" xml:space="preserve"><value>剩余 {0}</value></data>
+  <data name="Downloads_Source_Depots" xml:space="preserve"><value>{0} 个仓库</value></data>
+  <data name="Downloads_Status_Queued" xml:space="preserve"><value>已排队</value></data>
+  <data name="Downloads_Status_Downloading" xml:space="preserve"><value>正在下载</value></data>
+  <data name="Downloads_Status_AwaitingConfirm" xml:space="preserve"><value>等待你操作</value></data>
+  <data name="Downloads_Status_Installing" xml:space="preserve"><value>正在安装</value></data>
+  <data name="Downloads_Status_Paused" xml:space="preserve"><value>已暂停</value></data>
+  <data name="Downloads_Status_Verifying" xml:space="preserve"><value>正在验证</value></data>
+  <data name="Downloads_Status_Completed" xml:space="preserve"><value>完成</value></data>
+  <data name="Downloads_Status_Failed" xml:space="preserve"><value>失败</value></data>
+  <data name="Downloads_Status_Cancelled" xml:space="preserve"><value>已取消</value></data>
+  <data name="Downloads_Action_Review" xml:space="preserve"><value>查看</value></data>
+  <data name="Downloads_Action_Pause" xml:space="preserve"><value>暂停</value></data>
+  <data name="Downloads_Action_Resume" xml:space="preserve"><value>继续</value></data>
+  <data name="Downloads_Action_MoveUp" xml:space="preserve"><value>上移</value></data>
+  <data name="Downloads_Action_MoveDown" xml:space="preserve"><value>下移</value></data>
+  <data name="Downloads_Action_Cancel" xml:space="preserve"><value>取消</value></data>
+  <data name="Downloads_Action_Retry" xml:space="preserve"><value>重试</value></data>
+  <data name="Downloads_Action_Remove" xml:space="preserve"><value>移除</value></data>
+  <data name="Downloads_Action_ClearHistory" xml:space="preserve"><value>清除历史记录</value></data>
+  <data name="Downloads_Action_CopyAppId" xml:space="preserve"><value>复制 App ID</value></data>
+  <data name="Downloads_Action_ShowInFolder" xml:space="preserve"><value>在文件夹中显示</value></data>
+  <data name="Downloads_ClearHistory_Confirm" xml:space="preserve"><value>要从下载历史记录中移除全部 {0} 条记录吗？文件本身不会受到影响。</value></data>
+  <data name="Downloads_Err_Interrupted" xml:space="preserve"><value>应用关闭时被中断。</value></data>
+  <data name="Downloads_Err_Cancelled" xml:space="preserve"><value>已取消。</value></data>
+  <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>剪贴板正被其他程序占用——未复制任何内容。</value></data>
+  <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>该位置已不存在：{0}</value></data>
+  <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>已拒绝“{0}”：清单必须命名为 &lt;depot&gt;_&lt;manifest&gt;.manifest（仅限数字）。</value></data>
+  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>CloudRedirect 源存储库不可用。该功能已暂时禁用。</value></data>
+  <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>已存储的构建（无活动 lua）</value></data>
+  <data name="Settings_Maintenance_Title" xml:space="preserve"><value>维护</value></data>
+  <data name="Settings_Backups_Title" xml:space="preserve"><value>累积的备份</value></data>
+  <data name="Settings_Backups_Subtitle" xml:space="preserve"><value>安装 AmethystTool 或移除插件时创建的备份文件夹。删除它们可释放 Steam 文件夹中的空间。</value></data>
+  <data name="Settings_Backups_Empty" xml:space="preserve"><value>未找到备份。</value></data>
+  <data name="Settings_Backups_NoSteam" xml:space="preserve"><value>请在设置中配置 Steam 位置以查看备份。</value></data>
+  <data name="Settings_Backups_Refresh" xml:space="preserve"><value>刷新</value></data>
+  <data name="Settings_Backups_DeleteSelected" xml:space="preserve"><value>删除所选</value></data>
+  <data name="Settings_Backups_DeleteOlder" xml:space="preserve"><value>删除超过 30 天的</value></data>
+  <data name="Settings_Backups_Confirm_Title" xml:space="preserve"><value>要删除备份吗？</value></data>
+  <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>要永久删除 {0} 项（{1}）吗？你将无法回退之前的 AmethystTool 安装或插件移除。</value></data>
+  <data name="Settings_Backups_Confirm_Delete" xml:space="preserve"><value>删除</value></data>
+  <data name="Settings_Backups_Cancel" xml:space="preserve"><value>取消</value></data>
+  <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>已删除 {0} 项（释放 {1}）</value></data>
+  <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>无法删除 {0} 项。请关闭 Steam 后重试。</value></data>
+  <data name="Settings_Backups_Column_Name" xml:space="preserve"><value>名称</value></data>
+  <data name="Settings_Backups_Column_Type" xml:space="preserve"><value>类型</value></data>
+  <data name="Settings_Backups_Type_Folder" xml:space="preserve"><value>文件夹</value></data>
+  <data name="Settings_Backups_Type_File" xml:space="preserve"><value>文件</value></data>
+  <data name="Settings_Backups_UnknownWarning" xml:space="preserve"><value>未知备份，删除前请先核实</value></data>
+  <data name="Settings_Backups_Column_Date" xml:space="preserve"><value>创建时间</value></data>
+  <data name="Settings_Backups_Column_Size" xml:space="preserve"><value>大小</value></data>
+  <data name="Settings_Backups_Column_Files" xml:space="preserve"><value>文件</value></data>
+  <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>本地版本（离线）</value></data>
+  <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>没有互联网连接。正在使用本地已安装的版本。</value></data>
+  <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>没有互联网无法下载新版本。</value></data>
 </root>

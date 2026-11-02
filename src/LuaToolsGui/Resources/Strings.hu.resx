@@ -586,4 +586,288 @@ Ez törli a .lua fájlokat a Steam\config\stplug-in mappából. Ezután indítsd
   <data name="App_StartupFailed" xml:space="preserve"><value>A LuaTools nem tudott elindulni.&#10;&#10;{0}&#10;&#10;A részletek ide lettek írva:&#10;{1}</value></data>
   <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>{0} fájl nem írható a Steam mappájába — hozzáférés megtagadva. Úgy tűnik, a Steam olyan helyre van telepítve, amely rendszergazdai jogokat igényel (pl. Program Files). Zárd be a Steamet, majd futtasd egyszer a LuaToolst rendszergazdaként a mód alkalmazásához.</value></data>
   <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>{0} fájl nem írható — zárd be a Steamet, és próbáld újra.</value></data>
+  <data name="Nav_Plugin" xml:space="preserve"><value>Bővítmény</value></data>
+  <data name="Settings_HubcapKeyRejected" xml:space="preserve"><value>A Hubcap elutasította ezt a kulcsot. Ellenőrizd, hogy teljesen át lett-e másolva, és nem járt-e le.</value></data>
+  <data name="Settings_HubcapKeyOffline" xml:space="preserve"><value>A Hubcap nem érhető el. Ellenőrizd a kapcsolatot, és próbáld újra — a kulcs nem változott.</value></data>
+  <data name="Settings_HubcapKeyRateLimited" xml:space="preserve"><value>A Hubcap jelenleg korlátozza ezt a kulcsot. Próbáld újra egy kis idő múlva.</value></data>
+  <data name="Settings_HubcapExpiryExpired" xml:space="preserve"><value>A Hubcap-kulcsod {0} napján lejárt. Érvényesíts egy újat, hogy tovább használhasd a Hubcap-forrásokat.</value></data>
+  <data name="Settings_HubcapExpiryToday" xml:space="preserve"><value>A Hubcap-kulcsod ma jár le ({0}). Szerezz egy újat, mielőtt leáll.</value></data>
+  <data name="Settings_HubcapExpirySoon" xml:space="preserve"><value>A Hubcap-kulcsod {0} nap múlva jár le ({1}). Szerezz egy újat, mielőtt leáll.</value></data>
+  <data name="Hubcap_Err_KeyRejected" xml:space="preserve"><value>A Hubcap-kulcsod érvénytelen vagy lejárt.</value></data>
+  <data name="Hubcap_Err_DailyLimit" xml:space="preserve"><value>Elérted a napi Hubcap-korlátot.</value></data>
+  <data name="Hubcap_Err_DailyLimitRetry" xml:space="preserve"><value>Elérted a napi Hubcap-korlátot. Próbáld újra körülbelül {0} múlva.</value></data>
+  <data name="Hubcap_Err_NoManifest" xml:space="preserve"><value>Ehhez az alkalmazáshoz nem érhető el Hubcap-manifest.</value></data>
+  <data name="Hubcap_Err_Status" xml:space="preserve"><value>A Hubcap-letöltés sikertelen ({0}).</value></data>
+  <data name="Hubcap_Err_Unreachable" xml:space="preserve"><value>A Hubcap nem érhető el. Ellenőrizd a kapcsolatot, és próbáld újra.</value></data>
+  <data name="Hubcap_Err_Generic" xml:space="preserve"><value>A Hubcap-letöltés sikertelen.</value></data>
+  <data name="Hubcap_Wait_Seconds" xml:space="preserve"><value>{0} másodperc</value></data>
+  <data name="Hubcap_Wait_Minutes" xml:space="preserve"><value>{0} perc</value></data>
+  <data name="Hubcap_Wait_Hours" xml:space="preserve"><value>{0} óra</value></data>
+  <data name="Settings_Accent_Hint" xml:space="preserve"><value>Újraszínezi az egész alkalmazást — az ablakot, a kártyákat és a szöveget, nem csak a kiemeléseket. Válassz színt, majd az Alkalmaz gombot.</value></data>
+  <data name="Settings_Accent_Amethyst" xml:space="preserve"><value>Amethyst</value></data>
+  <data name="Startup_Title" xml:space="preserve"><value>Indítás</value></data>
+  <data name="Startup_Steam_Closing" xml:space="preserve"><value>A Steam bezárása, hogy a LuaTools dolgozhasson a fájljain…</value></data>
+  <data name="Startup_Steam_Closed" xml:space="preserve"><value>A Steam be van zárva.</value></data>
+  <data name="Startup_Steam_Stubborn_Title" xml:space="preserve"><value>A Steam nem záródott be</value></data>
+  <data name="Startup_Steam_Stubborn_Body" xml:space="preserve"><value>A Steam bezárására kérés ment, de még fut.
+
+Erőltetett bezárás? Minden, amit a Steam még nem mentett el, elveszhet. Válaszd a Nemet, ha futni hagyod — a LuaTools nem módosíthatja a Steam fájljait, amíg az fut.</value></data>
+  <data name="Startup_Steam_LeftRunning" xml:space="preserve"><value>A Steam még fut, ezért semmi nem változott. Zárd be a Steamet, és indítsd újra a LuaToolst, ha készen állsz.</value></data>
+  <data name="Startup_Steam_Reopen_Body" xml:space="preserve"><value>A LuaTools végzett. Megnyitod újra a Steamet?</value></data>
+  <data name="Startup_Steam_Reopen_Action" xml:space="preserve"><value>Steam megnyitása</value></data>
+  <data name="Startup_Steam_ReopenFailed" xml:space="preserve"><value>A Steamet nem sikerült elindítani — nyisd meg a saját parancsikonjáról.</value></data>
+  <data name="Guard_Title" xml:space="preserve"><value>A Steam már fut</value></data>
+  <data name="Guard_Body" xml:space="preserve"><value>A LuaToolsnak magának kell elindítania a Steamet (vagy bezárva találnia), hogy a hook csatlakozni tudjon. Újraindítod most a Steamet?</value></data>
+  <data name="Guard_Restart" xml:space="preserve"><value>Steam újraindítása</value></data>
+  <data name="Guard_Exit" xml:space="preserve"><value>Kilépés</value></data>
+  <data name="Guard_Continue" xml:space="preserve"><value>Folytatás mindenképp (nem ajánlott)</value></data>
+  <data name="Guard_ContinueWarning" xml:space="preserve"><value>A Steam futva maradt, ezért a hook esetleg nem tud csatlakozni. Ha ez történik, indítsd újra a Steamet a LuaToolsból.</value></data>
+  <data name="Manage_Action_SaveBackup" xml:space="preserve"><value>Mentések biztonsági másolata…</value></data>
+  <data name="Saves_Title" xml:space="preserve"><value>Mentések biztonsági másolatai</value></data>
+  <data name="Saves_Create" xml:space="preserve"><value>Új biztonsági másolat készítése</value></data>
+  <data name="Saves_Restore" xml:space="preserve"><value>Visszaállítás</value></data>
+  <data name="Saves_Delete" xml:space="preserve"><value>Törlés</value></data>
+  <data name="Saves_Close" xml:space="preserve"><value>Bezárás</value></data>
+  <data name="Saves_Empty" xml:space="preserve"><value>Ehhez a játékhoz még nincs biztonsági másolat.</value></data>
+  <data name="Saves_Locations_Title" xml:space="preserve"><value>Talált mentési helyek</value></data>
+  <data name="Saves_Locations_None" xml:space="preserve"><value>Ehhez a játékhoz nem találtunk mentési mappát.</value></data>
+  <data name="Saves_Location_Subtitle" xml:space="preserve"><value>{0} · {1} fájl</value></data>
+  <data name="Saves_AddFolder" xml:space="preserve"><value>Mappa hozzáadása kézzel…</value></data>
+  <data name="Saves_Confirm_NoneFound" xml:space="preserve"><value>Nem találtunk mentéseket ehhez a játékhoz. Szeretnél kézzel kiválasztani egy mappát?</value></data>
+  <data name="Saves_PickFolder" xml:space="preserve"><value>Mappa kiválasztása</value></data>
+  <data name="Saves_PickFolderTitle" xml:space="preserve"><value>Válaszd ki azt a mappát, ahol ez a játék a mentéseit tárolja</value></data>
+  <data name="Saves_Toast_PickOne" xml:space="preserve"><value>Jelölj be legalább egy mentési helyet a biztonsági mentéshez.</value></data>
+  <data name="Saves_Toast_FolderRefused" xml:space="preserve"><value>Ez a mappa nem használható (meghajtó gyökere, Windows- vagy Program Files-mappa, vagy nem teljes elérési út).</value></data>
+  <data name="Manage_SaveIcon_Tooltip" xml:space="preserve"><value>Mentések észlelve itt: {0}</value></data>
+  <data name="Settings_CustomSaveFolders" xml:space="preserve"><value>Egyéni mentési mappák</value></data>
+  <data name="Settings_CustomSaveFolders_Hint" xml:space="preserve"><value>Olyan játékokhoz, amelyek mentéseit az alkalmazás nem találja meg magától. Add meg a játék AppID-ját, és válaszd ki a mappát; ezután a játékkal együtt kerül mentésre, és ez az egyetlen további hely, ahová a visszaállítás írhat.</value></data>
+  <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
+  <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Mappa hozzáadása…</value></data>
+  <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Eltávolítás</value></data>
+  <data name="Saves_Note" xml:space="preserve"><value>Lementi a Steam játékonkénti mappáját (userdata). A Dokumentumokba vagy az AppDataba mentő játékok nem tartoznak bele.</value></data>
+  <data name="Saves_Toast_Created" xml:space="preserve"><value>{0} fájl lementve, {1}.</value></data>
+  <data name="Saves_Toast_Restored" xml:space="preserve"><value>{0} fájl visszaállítva. Az előző mentések másolata megmaradt.</value></data>
+  <data name="Saves_Toast_Deleted" xml:space="preserve"><value>A biztonsági másolat törölve.</value></data>
+  <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Ehhez a játékhoz nem találtunk mentéseket. Add hozzá azt a mappát, ahol tárolja őket, a „Mappa hozzáadása kézzel…” gombbal.</value></data>
+  <data name="Saves_Toast_SteamNotFound" xml:space="preserve"><value>A Steam mappája nem található. Add meg a helyét a Beállításokban.</value></data>
+  <data name="Saves_Toast_Refused" xml:space="preserve"><value>Elutasítva: a biztonsági másolat nem ehhez a játékhoz tartozik, vagy nem biztonságos útvonalakat tartalmaz. Semmi nem változott.</value></data>
+  <data name="Saves_Toast_Failed" xml:space="preserve"><value>A művelet sikertelen. A részleteket lásd a naplóban.</value></data>
+  <data name="Saves_Toast_NoSpace" xml:space="preserve"><value>Nincs elég szabad lemezterület a biztonsági másolathoz ({0} szükséges, tartalékkal együtt). Semmi nem íródott.</value></data>
+  <data name="Saves_Confirm_Restore" xml:space="preserve"><value>Visszaállítod a(z) {0} mentéseit? A játék jelenlegi mentései felülíródnak; előtte másolat készül róluk.</value></data>
+  <data name="Saves_Confirm_SteamOpen" xml:space="preserve"><value>A Steam nyitva van. A biztonságos visszaállításhoz (és hogy a Steam Cloud ne írja felül a fájlokat) a Steamnek be kell lennie zárva.</value></data>
+  <data name="Saves_CloseSteamContinue" xml:space="preserve"><value>Steam bezárása és folytatás</value></data>
+  <data name="Saves_Toast_SteamStillRunning" xml:space="preserve"><value>A Steam nem záródott be. Zárd be kézzel, és próbáld újra. Semmi nem lett visszaállítva.</value></data>
+  <data name="Saves_Confirm_Delete" xml:space="preserve"><value>Törlöd: {0}? Ez nem vonható vissza.</value></data>
+  <data name="Manage_Badge_Installed" xml:space="preserve"><value>Telepítve</value></data>
+  <data name="Manage_Action_ImportSave" xml:space="preserve"><value>Mentés importálása (.zip)…</value></data>
+  <data name="Saves_Import" xml:space="preserve"><value>Mentés importálása…</value></data>
+  <data name="Saves_Import_PickTitle" xml:space="preserve"><value>Válassz egy mentés-biztonsági másolatot (.zip)</value></data>
+  <data name="Saves_Import_Filter" xml:space="preserve"><value>Mentés biztonsági másolata (*.zip)|*.zip</value></data>
+  <data name="Saves_Confirm_Import" xml:space="preserve"><value>Importálod: {0}? A játék jelenlegi mentései felülíródnak; előtte másolat készül róluk.</value></data>
+  <data name="Saves_Toast_Imported" xml:space="preserve"><value>{0} fájl importálva. Az előző mentések másolata megmaradt.</value></data>
+  <data name="Saves_Confirm_NewFolder" xml:space="preserve"><value>Az alkalmazás létrehoz egy mappát a játék nevével a mentései rendszerezéséhez. Folytatod?</value></data>
+  <data name="Saves_Confirm_Ok" xml:space="preserve"><value>OK</value></data>
+  <data name="Saves_Toast_SavedAt" xml:space="preserve"><value>A biztonsági másolat sikeresen mentve ide: {0}</value></data>
+  <data name="Settings_SaveBackupFolder" xml:space="preserve"><value>Mentések biztonsági másolatainak mappája</value></data>
+  <data name="Settings_SaveBackupFolder_Hint" xml:space="preserve"><value>Ahová a „Mentések biztonsági másolata…” a zip-fájljait írja. Alapértelmezett: %AppData%\LuaToolsGui\SaveBackups.</value></data>
+  <data name="Settings_ChooseSaveBackupFolder" xml:space="preserve"><value>Válaszd ki a mentések biztonsági másolatainak mappáját</value></data>
+  <data name="About_Changelog_Title" xml:space="preserve"><value>Újdonságok</value></data>
+  <data name="About_Changelog_Show" xml:space="preserve"><value>Változásnapló megjelenítése</value></data>
+  <data name="About_Changelog_Hide" xml:space="preserve"><value>Változásnapló elrejtése</value></data>
+  <data name="Home_Privacy_UpdatesOff" xml:space="preserve"><value>Önfrissítés kikapcsolva — ez a build magától semmit nem tölt le</value></data>
+  <data name="Home_Privacy_UpdatesOn" xml:space="preserve"><value>Önfrissítés bekapcsolva — a kiadásokat induláskor ellenőrzi</value></data>
+  <data name="Home_Action_Mode_Tip" xml:space="preserve"><value>Válaszd ki, melyik háttérrendszer birtokolja a Steam proxy DLL-jeit</value></data>
+  <data name="Home_Action_Plugin" xml:space="preserve"><value>Bővítmény</value></data>
+  <data name="Home_Action_Plugin_Tip" xml:space="preserve"><value>Az áruházoldal-bővítmény telepítése vagy frissítése</value></data>
+  <data name="Home_Action_Updates_Tip" xml:space="preserve"><value>Nyisd meg a Névjegyet, hogy új verzió után nézz</value></data>
+  <data name="Mode_Warn_Telemetry" xml:space="preserve"><value>Eredeti projekt (madoiscool). Figyelem: telemetriát és DonateKeys rendszert tartalmaz.</value></data>
+  <data name="Manage_Sort_InstalledFirst" xml:space="preserve"><value>Telepítettek elöl</value></data>
+  <data name="Add_Warn_NoManifests_Title" xml:space="preserve"><value>Figyelmeztetés</value></data>
+  <data name="Add_Warn_NoManifests" xml:space="preserve"><value>Ez a forrás nem szállított manifestet ehhez: {0}. A letöltés a Steamben meghiúsulhat. A(z) {1} forrást ajánljuk.</value></data>
+  <data name="Plugin_Row_Source" xml:space="preserve"><value>Forrás</value></data>
+  <data name="Plugin_Sources_Header" xml:space="preserve"><value>Bővítményforrás</value></data>
+  <data name="Plugin_Sources_Subtitle" xml:space="preserve"><value>Minden készítő saját buildet ad ki a bővítményből. Válaszd ki, melyiket szeretnéd telepítve látni — a LuaTools csak az aktív forrást telepíti, és soha nem vált magától.</value></data>
+  <data name="Plugin_Source_By" xml:space="preserve"><value>készítő: {0}</value></data>
+  <data name="Plugin_Source_Active" xml:space="preserve"><value>Aktív</value></data>
+  <data name="Plugin_Source_Default" xml:space="preserve"><value>Alapértelmezett</value></data>
+  <data name="Plugin_Source_Installed" xml:space="preserve"><value>Erről a forrásról telepítve.</value></data>
+  <data name="Plugin_Source_ActiveNotInstalled" xml:space="preserve"><value>Aktív forrás — még nincs telepítve.</value></data>
+  <data name="Plugin_Source_Available" xml:space="preserve"><value>Elérhető. Válaszd ki, hogy ettől a készítőtől telepíts helyette.</value></data>
+  <data name="Plugin_Source_LatestVersion" xml:space="preserve"><value>Legújabb</value></data>
+  <data name="Plugin_Btn_Activate" xml:space="preserve"><value>Forrás használata</value></data>
+  <data name="Plugin_Confirm_SwitchCaption" xml:space="preserve"><value>Bővítményforrás váltása</value></data>
+  <data name="Plugin_Confirm_SwitchBody" xml:space="preserve"><value>Ez a(z) {0} forrásról telepíti a bővítményt, lecserélve a jelenleg telepítettet, és bezárja, majd újraindítja a Steamet az alkalmazáshoz. Folytatod?</value></data>
+  <data name="Plugin_Toast_SourceSwitched" xml:space="preserve"><value>Most a(z) {0} forrásról telepítve. A Steam újraindul a betöltéséhez.</value></data>
+  <data name="Plugin_Err_UnknownSource" xml:space="preserve"><value>A(z) {0} nem olyan bővítményforrás, amelyet ez a build tartalmaz, ezért semmi nem lett telepítve.</value></data>
+  <data name="Plugin_SourceErr_NoRelease" xml:space="preserve"><value>Ez a forrás nem adott ki kiadást, vagy nem volt elérhető.</value></data>
+  <data name="Plugin_SourceErr_NoTag" xml:space="preserve"><value>Ennek a forrásnak a legújabb kiadásához nincs verziócímke.</value></data>
+  <data name="Plugin_SourceErr_MissingAsset" xml:space="preserve"><value>Ennek a forrásnak a legújabb kiadásából hiányzik: {0}.</value></data>
+  <data name="Plugin_SourceErr_ForeignAssetUrl" xml:space="preserve"><value>Ennek a forrásnak a(z) {0} letöltése a saját tárolóján kívülre mutat, ezért elutasítottuk.</value></data>
+  <data name="Plugin_SourceErr_NoDigest" xml:space="preserve"><value>Ez a forrás nem közöl SHA-256 értéket ehhez: {0}, így a tartalom nem igazolható.</value></data>
+  <data name="Plugin_Err_ArchiveRejected" xml:space="preserve"><value>A(z) {0} elutasítva a biztonsági ellenőrzésen: {1}</value></data>
+  <data name="Download_Notice_Title" xml:space="preserve"><value>Telepítés innen: {0}</value></data>
+  <data name="Download_Notice_Body" xml:space="preserve"><value>{0} · {1}. verzió · {2} fájl
+SHA-256 {3}
+Ellenőrizve: {4}</value></data>
+  <data name="Download_Notice_Check_Pinned" xml:space="preserve"><value>tároló rögzítve</value></data>
+  <data name="Download_Notice_Check_Digest" xml:space="preserve"><value>SHA-256 egyezik</value></data>
+  <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>archívum átvizsgálva</value></data>
+  <data name="Download_Notice_Cancel" xml:space="preserve"><value>Mégse</value></data>
+  <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Megszakítva, mielőtt bármi telepítve lett volna.</value></data>
+  <data name="Builds_RemoveGame" xml:space="preserve"><value>Játék eltávolítása</value></data>
+  <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Leveszi ezt a játékot a Tárolók listájáról. Törli a lua-fájljait és az összes mentett buildet.</value></data>
+  <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Játék eltávolítása</value></data>
+  <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>Eltávolítod a(z) {0} ({1}) játékot a Tárolókból?
+
+Ez törli a lua-fájlját, a mellette lévő build-lua-kat és az összes mentett buildet. Nem vonható vissza.</value></data>
+  <data name="Builds_RemoveGame_Done" xml:space="preserve"><value>A(z) {0} eltávolítva a Tárolókból.</value></data>
+  <data name="Builds_RemoveGame_Gone" xml:space="preserve"><value>A(z) {0} játéknak már nem voltak fájljai — eltávolítva a listáról.</value></data>
+  <data name="Builds_RemoveGame_Failed" xml:space="preserve"><value>A(z) {0} nem távolítható el teljesen: {1}. Zárd be a Steamet, és próbáld újra.</value></data>
+  <data name="Auth_Err_SignInTimedOut" xml:space="preserve"><value>A bejelentkezés időtúllépéssel leállt — a böngésző nem tért vissza. Kóddal is bejelentkezhetsz: futtasd a /login parancsot a Discord-szerveren, majd illeszd be a kódot a Beállításokban.</value></data>
+  <data name="Auth_Err_CallbackPortBusy" xml:space="preserve"><value>A bejelentkezést nem sikerült elindítani: a 53789-es port már foglalt. Zárj be minden más bejelentkezési kísérletet, és próbáld újra.</value></data>
+  <data name="Auth_ProviderUnavailable" xml:space="preserve"><value>A bejelentkezési szerver most nem válaszol, ezért a böngészős Discord-bejelentkezés valószínűleg időtúllépéssel leáll. Helyette kóddal is bejelentkezhetsz: futtasd a /login parancsot a Discord-szerveren, és add meg a kódot a Beállításokban.</value></data>
+  <data name="Auth_SignInCancelled" xml:space="preserve"><value>A bejelentkezés megszakítva. Próbálkozhatsz újra, vagy használhatsz kézi kódot (futtasd a /login parancsot a Discordon).</value></data>
+  <data name="Auth_TryAgain" xml:space="preserve"><value>Újra</value></data>
+  <data name="Auth_TryAnyway" xml:space="preserve"><value>Mégis megpróbálom</value></data>
+  <data name="Auth_UseManualCode" xml:space="preserve"><value>Kézi kód használata</value></data>
+  <data name="Auth_Cancel" xml:space="preserve"><value>Mégse</value></data>
+  <data name="Protocol_SilentInstall_Title" xml:space="preserve"><value>Telepítési kérés</value></data>
+  <data name="Protocol_SilentInstall_Body" xml:space="preserve"><value>Egy hivatkozás arra kéri a LuaToolst, hogy telepítse a(z) {0} alkalmazást a háttérben. Csak akkor folytasd, ha te indítottad el.</value></data>
+  <data name="Cdp_Consent_Title" xml:space="preserve"><value>Bekapcsolod a Steam áruházoldal-hidat?</value></data>
+  <data name="Cdp_Consent_Body" xml:space="preserve"><value>Az áruházoldal-bővítménynek szüksége van a Steam hibakereső hídjára, amelyet a LuaTools a steam.exe mellé tett jelölővel kapcsol be. Amíg a Steam fut, ez egy hitelesítés nélküli helyi portot (127.0.0.1:8080) nyit meg.
+
+Bármi más, ami ezen a számítógépen fut, ekkor irányíthatja a Steam beépített böngészőjét a bejelentkezett munkameneteddel. Csak akkor kapcsold be, ha megbízol a gépre telepített szoftverekben.
+
+Visszautasíthatod, és a LuaTools többi részét tovább használhatod; csak az áruházban lévő „Add via LuaTools” gomb nem lesz elérhető.
+
+Bekapcsolod?</value></data>
+  <data name="Privacy_HttpMetadata_Title" xml:space="preserve"><value>Titkosítatlan lekérdezés</value></data>
+  <data name="Privacy_HttpMetadata_Body" xml:space="preserve"><value>A források elérhetőségét sima HTTP-n ({0}) ellenőrizzük, mert az a szerver nem kínál működő HTTPS-t. Fiók vagy kulcs nem kerül elküldésre, de a hálózati útvonalon bárki láthatja, melyik Steam-alkalmazást kerested. Állítsd a „WarnOnInsecureMetadata”: false értéket a settings.json fájlban, hogy ez elrejtsd.</value></data>
+  <data name="Theme_Guard_Title" xml:space="preserve"><value>A téma nem lett alkalmazva</value></data>
+  <data name="Theme_Guard_Body" xml:space="preserve"><value>Az Amethyst-kiemelés nem lépett életbe, ami általában azt jelenti, hogy a WPF-UI csomag megváltoztatta az erőforrásnevei. Az alkalmazás normálisan működik, de egyes részei rosszul fognak kinézni. Lásd: docs/CHANGELOG.md.</value></data>
+  <data name="App_DisplayName" xml:space="preserve"><value>LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Title" xml:space="preserve"><value>Lehet, hogy ez nem a LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Body" xml:space="preserve"><value>Ez a bináris nem LuaTools Amethystként azonosítja magát. Ha egy hivatalos LuaTools-kiadást telepítettél fölé, az analitika és a Steam-kulcsok feltöltése újra aktív. Telepítsd újra az Amethyst-tárolóból, hogy visszakapd az adatvédelmi buildet.</value></data>
+  <data name="Fixes_Toast_Blocked" xml:space="preserve"><value>Letöltés elutasítva</value></data>
+  <data name="Fixes_Toast_Blocked_Body" xml:space="preserve"><value>A(z) {0} nem lett telepítve, mert megbukott egy biztonsági ellenőrzésen — {1}</value></data>
+  <data name="About_Nav" xml:space="preserve"><value>Névjegy</value></data>
+  <data name="About_Title" xml:space="preserve"><value>A LuaTools Amethystről</value></data>
+  <data name="About_What_Header" xml:space="preserve"><value>Mi ez</value></data>
+  <data name="About_What_Body" xml:space="preserve"><value>A LuaTools Amethyst a LuaTools közösségi forkja, amely az adatvédelemre összpontosít. Eltávolítja az eredeti build által végzett analitikai pinget és kulcsfeltöltést, minden letöltést HTTPS-en tart, és a lila Amethyst-témával érkezik.</value></data>
+  <data name="About_Version_Header" xml:space="preserve"><value>Verzió</value></data>
+  <data name="About_Repo_Header" xml:space="preserve"><value>Tároló</value></data>
+  <data name="About_Updates_Header" xml:space="preserve"><value>Frissítések</value></data>
+  <data name="About_Updates_Enabled" xml:space="preserve"><value>Az automatikus frissítések BE vannak kapcsolva. A LuaTools Amethyst induláskor ellenőrzi az alábbi tárolót, és a háttérben telepíti a frissítéseket.</value></data>
+  <data name="About_Updates_Disabled" xml:space="preserve"><value>Az automatikus frissítések KI vannak kapcsolva — nem történik frissítési kérés. Add hozzá az „AppUpdateRepos” értéket a settings.json fájlhoz a bekapcsolásukhoz, vagy frissíts kézzel az alábbi tárolóból.</value></data>
+  <data name="About_Updates_Sources" xml:space="preserve"><value>Frissítési forrás</value></data>
+  <data name="About_Check_Button" xml:space="preserve"><value>Frissítések keresése</value></data>
+  <data name="About_Check_Checking" xml:space="preserve"><value>Ellenőrzés…</value></data>
+  <data name="About_Check_UpToDate" xml:space="preserve"><value>A legújabb verziót használod.</value></data>
+  <data name="About_Check_Found" xml:space="preserve"><value>Egy frissítés letöltődött. A LuaTools bezárásakor lesz alkalmazva.</value></data>
+  <data name="About_Check_Failed" xml:space="preserve"><value>A frissítések keresése nem sikerült. Ellenőrizd a kapcsolatot és a beállított tárolót.</value></data>
+  <data name="About_Check_Disabled" xml:space="preserve"><value>Az automatikus frissítések le vannak tiltva — előbb állítsd be az „AppUpdateRepos” értéket a settings.json fájlban.</value></data>
+  <data name="About_OpenRepo" xml:space="preserve"><value>Tároló megnyitása</value></data>
+  <data name="About_OpenSettings" xml:space="preserve"><value>A settings.json mappájának megnyitása</value></data>
+  <data name="About_Config_Header" xml:space="preserve"><value>Frissítések kézi beállítása</value></data>
+  <data name="About_Config_Body" xml:space="preserve"><value>Szerkeszd a settings.json fájlt az alábbi mappában, és add hozzá azt a tárolót, ahonnan frissítéseket szeretnél. Csak a https://github.com/&lt;owner&gt;/&lt;repo&gt; fogadható el, az eredeti LuaTools-kiadások tárolóit pedig elutasítjuk, hogy hivatalos build soha ne válthassa le ezt.</value></data>
+  <data name="Builds_Depot_Download" xml:space="preserve"><value>Depók letöltése…</value></data>
+  <data name="Builds_Depot_Unavailable" xml:space="preserve"><value>A depók letöltése ebben a buildben nem érhető el: nincs ellenőrzött pin a letöltőeszközhöz.</value></data>
+  <data name="Builds_Depot_PickTitle" xml:space="preserve"><value>Depótartalom letöltése</value></data>
+  <data name="Builds_Depot_PickHint" xml:space="preserve"><value>A nyers fájlokat a Steam CDN-jéről töltjük le közvetlenül, névtelenül. Semmi nem települ — a depók az alábbi mappába kerülnek, hogy tetszés szerint használhasd őket.</value></data>
+  <data name="Builds_Depot_NoCandidates" xml:space="preserve"><value>A játék egyetlen depója sem tölthető le. Szükségük van egy visszafejtési kulcsra a lua-ból és egy, a Steam által közzétett manifestre is.</value></data>
+  <data name="Builds_Depot_NeedsKey" xml:space="preserve"><value>nincs kulcs ebben a buildben</value></data>
+  <data name="Builds_Depot_NeedsManifest" xml:space="preserve"><value>a Steam nem tesz közzé manifestet</value></data>
+  <data name="Builds_Depot_NeedsSignIn" xml:space="preserve"><value>jelentkezz be a manifest lekéréséhez</value></data>
+  <data name="Builds_Depot_SelectAll" xml:space="preserve"><value>Összes kijelölése</value></data>
+  <data name="Builds_Depot_SelectNone" xml:space="preserve"><value>Törlés</value></data>
+  <data name="Builds_Depot_Destination" xml:space="preserve"><value>Célmappa</value></data>
+  <data name="Builds_Depot_Change" xml:space="preserve"><value>Módosítás…</value></data>
+  <data name="Builds_Depot_Space" xml:space="preserve"><value>{0} szükséges · {1} szabad itt: {2}</value></data>
+  <data name="Builds_Depot_NotEnoughSpace" xml:space="preserve"><value>Nincs elég szabad hely azon a meghajtón. Válassz kevesebb depót, vagy másik mappát.</value></data>
+  <data name="Builds_Depot_Confirm" xml:space="preserve"><value>{0} depó letöltése</value></data>
+  <data name="Builds_Depot_Cancel" xml:space="preserve"><value>Mégse</value></data>
+  <data name="Builds_Depot_Downloading" xml:space="preserve"><value>{0}. depó / {1} · {2}</value></data>
+  <data name="Builds_Depot_Phase_PreAllocating" xml:space="preserve"><value>lemezterület lefoglalása</value></data>
+  <data name="Builds_Depot_Phase_Validating" xml:space="preserve"><value>meglévő fájlok ellenőrzése</value></data>
+  <data name="Builds_Depot_Phase_FetchingManifest" xml:space="preserve"><value>manifest lekérése</value></data>
+  <data name="Builds_Depot_Phase_Downloading" xml:space="preserve"><value>letöltés</value></data>
+  <data name="Builds_Depot_Done" xml:space="preserve"><value>{0} depó letöltve ide: {1}</value></data>
+  <data name="Builds_Depot_OpenFolder" xml:space="preserve"><value>Mappa megnyitása</value></data>
+  <data name="Builds_Depot_CleanUp_Title" xml:space="preserve"><value>Eltávolítod a részleges letöltést?</value></data>
+  <data name="Builds_Depot_CleanUp_Body" xml:space="preserve"><value>A letöltés megszakadt, miután {0} fájl létrejött itt: {1}. Csak ezeket a fájlokat töröljük? Ami már ott volt, érintetlen marad.</value></data>
+  <data name="Builds_Depot_CleanUp_Failed" xml:space="preserve"><value>Egyes fájlokat nem sikerült törölni — lehet, hogy még használatban vannak. Próbáld újra egy pillanat múlva.</value></data>
+  <data name="Depot_Err_ToolNotPinned" xml:space="preserve"><value>A depók letöltése ki van kapcsolva ebben a buildben, mert nincs ellenőrzött pin a letöltőeszközhöz.</value></data>
+  <data name="Depot_Err_Tool" xml:space="preserve"><value>A depóletöltő nem szerezhető be, vagy ami megérkezett, megbukott az ellenőrzésen.</value></data>
+  <data name="Depot_Err_SteamNotFound" xml:space="preserve"><value>A Steam helye nem található — add meg a Beállításokban.</value></data>
+  <data name="Depot_Err_NoKeys" xml:space="preserve"><value>Ehhez a játékhoz nem találtunk depó-visszafejtési kulcsokat.</value></data>
+  <data name="Depot_Err_NoKeyFor" xml:space="preserve"><value>A(z) {0} depónak nincs használható visszafejtési kulcsa.</value></data>
+  <data name="Depot_Err_BadKey" xml:space="preserve"><value>A(z) {0} depóhoz tárolt kulcs nem egyezik a manifestjével.</value></data>
+  <data name="Depot_Err_NoManifest" xml:space="preserve"><value>Ahhoz a depóhoz nem sikerült manifestet szerezni.</value></data>
+  <data name="Depot_Err_SignIn" xml:space="preserve"><value>Jelentkezz be, hogy lekérj egy manifestet, amellyel a Steam ezen a gépen még nem rendelkezik.</value></data>
+  <data name="Depot_Err_NoSpace" xml:space="preserve"><value>Nincs elég lemezterület: {0} szükséges, {1} szabad.</value></data>
+  <data name="Depot_Err_Failed" xml:space="preserve"><value>A(z) {0} depó sikertelen: {1}</value></data>
+  <data name="Builds_Depot_Queued" xml:space="preserve"><value>{0} depó elküldve a Letöltésekhez.</value></data>
+  <data name="Nav_Downloads" xml:space="preserve"><value>Letöltések</value></data>
+  <data name="Downloads_Title" xml:space="preserve"><value>Letöltések</value></data>
+  <data name="Downloads_Subtitle" xml:space="preserve"><value>Minden, amit az alkalmazás éppen letölt, és amit korábban letöltött. A manifestek és a depótartalom ugyanazt a várólistát használja.</value></data>
+  <data name="Downloads_Empty" xml:space="preserve"><value>Még semmi nem lett letöltve. Ha hozzáadsz egy játékot a Hozzáadás oldalról, vagy depótartalmat kérsz le a Tárolók oldalról, itt fog megjelenni.</value></data>
+  <data name="Downloads_Section_Active" xml:space="preserve"><value>Folyamatban</value></data>
+  <data name="Downloads_Section_History" xml:space="preserve"><value>Előzmények</value></data>
+  <data name="Downloads_ActionRequired" xml:space="preserve"><value>MŰVELET SZÜKSÉGES</value></data>
+  <data name="Downloads_Of" xml:space="preserve"><value>{0} / {1}</value></data>
+  <data name="Downloads_Eta" xml:space="preserve"><value>{0} van hátra</value></data>
+  <data name="Downloads_Source_Depots" xml:space="preserve"><value>{0} depó</value></data>
+  <data name="Downloads_Status_Queued" xml:space="preserve"><value>Várakozik</value></data>
+  <data name="Downloads_Status_Downloading" xml:space="preserve"><value>Letöltés</value></data>
+  <data name="Downloads_Status_AwaitingConfirm" xml:space="preserve"><value>Rád vár</value></data>
+  <data name="Downloads_Status_Installing" xml:space="preserve"><value>Telepítés</value></data>
+  <data name="Downloads_Status_Paused" xml:space="preserve"><value>Szüneteltetve</value></data>
+  <data name="Downloads_Status_Verifying" xml:space="preserve"><value>Ellenőrzés</value></data>
+  <data name="Downloads_Status_Completed" xml:space="preserve"><value>Kész</value></data>
+  <data name="Downloads_Status_Failed" xml:space="preserve"><value>Sikertelen</value></data>
+  <data name="Downloads_Status_Cancelled" xml:space="preserve"><value>Megszakítva</value></data>
+  <data name="Downloads_Action_Review" xml:space="preserve"><value>Áttekintés</value></data>
+  <data name="Downloads_Action_Pause" xml:space="preserve"><value>Szünet</value></data>
+  <data name="Downloads_Action_Resume" xml:space="preserve"><value>Folytatás</value></data>
+  <data name="Downloads_Action_MoveUp" xml:space="preserve"><value>Feljebb</value></data>
+  <data name="Downloads_Action_MoveDown" xml:space="preserve"><value>Lejjebb</value></data>
+  <data name="Downloads_Action_Cancel" xml:space="preserve"><value>Mégse</value></data>
+  <data name="Downloads_Action_Retry" xml:space="preserve"><value>Újra</value></data>
+  <data name="Downloads_Action_Remove" xml:space="preserve"><value>Eltávolítás</value></data>
+  <data name="Downloads_Action_ClearHistory" xml:space="preserve"><value>Előzmények törlése</value></data>
+  <data name="Downloads_Action_CopyAppId" xml:space="preserve"><value>App ID másolása</value></data>
+  <data name="Downloads_Action_ShowInFolder" xml:space="preserve"><value>Megjelenítés a mappában</value></data>
+  <data name="Downloads_ClearHistory_Confirm" xml:space="preserve"><value>Eltávolítod mind a(z) {0} bejegyzést a letöltési előzményekből? Maguk a fájlok érintetlenek maradnak.</value></data>
+  <data name="Downloads_Err_Interrupted" xml:space="preserve"><value>Megszakadt az alkalmazás bezárásakor.</value></data>
+  <data name="Downloads_Err_Cancelled" xml:space="preserve"><value>Megszakítva.</value></data>
+  <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>A vágólapot egy másik program használja — semmi nem lett másolva.</value></data>
+  <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Ez a hely már nem létezik: {0}</value></data>
+  <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>Elutasítva: „{0}”: a manifest nevének &lt;depot&gt;_&lt;manifest&gt;.manifest alakúnak kell lennie (csak számjegyek).</value></data>
+  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>A CloudRedirect forrástárolója nem érhető el. A funkció ideiglenesen ki van kapcsolva.</value></data>
+  <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Mentett buildek (nincs aktív lua)</value></data>
+  <data name="Settings_Maintenance_Title" xml:space="preserve"><value>KARBANTARTÁS</value></data>
+  <data name="Settings_Backups_Title" xml:space="preserve"><value>Felgyűlt biztonsági másolatok</value></data>
+  <data name="Settings_Backups_Subtitle" xml:space="preserve"><value>Az AmethystTool telepítésekor vagy a bővítmények eltávolításakor létrehozott biztonsági mentési mappák. Törlésükkel helyet szabadítasz fel a Steam mappájában.</value></data>
+  <data name="Settings_Backups_Empty" xml:space="preserve"><value>Nem találtunk biztonsági másolatot.</value></data>
+  <data name="Settings_Backups_NoSteam" xml:space="preserve"><value>Állítsd be a Steam helyét a Beállításokban a biztonsági másolatok megtekintéséhez.</value></data>
+  <data name="Settings_Backups_Refresh" xml:space="preserve"><value>Frissítés</value></data>
+  <data name="Settings_Backups_DeleteSelected" xml:space="preserve"><value>Kijelöltek törlése</value></data>
+  <data name="Settings_Backups_DeleteOlder" xml:space="preserve"><value>30 napnál régebbiek törlése</value></data>
+  <data name="Settings_Backups_Confirm_Title" xml:space="preserve"><value>Törlöd a biztonsági másolatokat?</value></data>
+  <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>Véglegesen törölsz {0} elemet ({1})? Az AmethystTool korábbi telepítéseit vagy a bővítmények eltávolításait nem tudod majd visszavonni.</value></data>
+  <data name="Settings_Backups_Confirm_Delete" xml:space="preserve"><value>Törlés</value></data>
+  <data name="Settings_Backups_Cancel" xml:space="preserve"><value>Mégse</value></data>
+  <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>{0} elem törölve ({1} felszabadítva)</value></data>
+  <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>{0} elemet nem sikerült törölni. Zárd be a Steamet, és próbáld újra.</value></data>
+  <data name="Settings_Backups_Column_Name" xml:space="preserve"><value>Név</value></data>
+  <data name="Settings_Backups_Column_Type" xml:space="preserve"><value>Típus</value></data>
+  <data name="Settings_Backups_Type_Folder" xml:space="preserve"><value>Mappa</value></data>
+  <data name="Settings_Backups_Type_File" xml:space="preserve"><value>Fájl</value></data>
+  <data name="Settings_Backups_UnknownWarning" xml:space="preserve"><value>Ismeretlen biztonsági másolat, törlés előtt ellenőrizd</value></data>
+  <data name="Settings_Backups_Column_Date" xml:space="preserve"><value>Létrehozva</value></data>
+  <data name="Settings_Backups_Column_Size" xml:space="preserve"><value>Méret</value></data>
+  <data name="Settings_Backups_Column_Files" xml:space="preserve"><value>Fájlok</value></data>
+  <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Helyi verzió (offline)</value></data>
+  <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Nincs internetkapcsolat. A helyben telepített verzió van használatban.</value></data>
+  <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Internet nélkül nem tölthető le új verzió.</value></data>
 </root>

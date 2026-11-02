@@ -586,4 +586,288 @@
   <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools を起動できませんでした。&#10;&#10;{0}&#10;&#10;詳細の書き込み先:&#10;{1}</value></data>
   <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Steam フォルダーに {0} 個のファイルを書き込めませんでした — アクセスが拒否されました。Steam は管理者権限が必要な場所 (例: Program Files) にインストールされているようです。Steam を閉じてから、LuaTools を一度管理者として実行してこのモードを適用してください。</value></data>
   <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>{0} 個のファイルを書き込めませんでした — Steam を閉じて再試行してください。</value></data>
+  <data name="Nav_Plugin" xml:space="preserve"><value>プラグイン</value></data>
+  <data name="Settings_HubcapKeyRejected" xml:space="preserve"><value>Hubcap がこのキーを拒否しました。完全にコピーされているか、有効期限が切れていないか確認してください。</value></data>
+  <data name="Settings_HubcapKeyOffline" xml:space="preserve"><value>Hubcap に接続できませんでした。接続を確認してもう一度お試しください — キーは変更されていません。</value></data>
+  <data name="Settings_HubcapKeyRateLimited" xml:space="preserve"><value>Hubcap がこのキーを現在レート制限しています。しばらくしてからもう一度お試しください。</value></data>
+  <data name="Settings_HubcapExpiryExpired" xml:space="preserve"><value>Hubcap キーは {0} に期限切れになりました。Hubcap のソースを引き続き使うには、新しいキーを検証してください。</value></data>
+  <data name="Settings_HubcapExpiryToday" xml:space="preserve"><value>Hubcap キーは本日 ({0}) 期限切れになります。使えなくなる前に新しいキーを取得してください。</value></data>
+  <data name="Settings_HubcapExpirySoon" xml:space="preserve"><value>Hubcap キーはあと {0} 日 ({1}) で期限切れになります。使えなくなる前に新しいキーを取得してください。</value></data>
+  <data name="Hubcap_Err_KeyRejected" xml:space="preserve"><value>Hubcap キーが無効か、期限切れです。</value></data>
+  <data name="Hubcap_Err_DailyLimit" xml:space="preserve"><value>Hubcap の1日の上限に達しました。</value></data>
+  <data name="Hubcap_Err_DailyLimitRetry" xml:space="preserve"><value>Hubcap の1日の上限に達しました。約 {0} 後にもう一度お試しください。</value></data>
+  <data name="Hubcap_Err_NoManifest" xml:space="preserve"><value>このアプリで利用できる Hubcap マニフェストはありません。</value></data>
+  <data name="Hubcap_Err_Status" xml:space="preserve"><value>Hubcap のダウンロードに失敗しました ({0})。</value></data>
+  <data name="Hubcap_Err_Unreachable" xml:space="preserve"><value>Hubcap に接続できませんでした。接続を確認してもう一度お試しください。</value></data>
+  <data name="Hubcap_Err_Generic" xml:space="preserve"><value>Hubcap のダウンロードに失敗しました。</value></data>
+  <data name="Hubcap_Wait_Seconds" xml:space="preserve"><value>{0} 秒</value></data>
+  <data name="Hubcap_Wait_Minutes" xml:space="preserve"><value>{0} 分</value></data>
+  <data name="Hubcap_Wait_Hours" xml:space="preserve"><value>{0} 時間</value></data>
+  <data name="Settings_Accent_Hint" xml:space="preserve"><value>アプリ全体 — ウィンドウ、カード、テキスト — の色を、ハイライトだけでなく変更します。色を選んで「適用」を選択してください。</value></data>
+  <data name="Settings_Accent_Amethyst" xml:space="preserve"><value>Amethyst</value></data>
+  <data name="Startup_Title" xml:space="preserve"><value>起動</value></data>
+  <data name="Startup_Steam_Closing" xml:space="preserve"><value>LuaTools がファイルを操作できるように Steam を終了しています…</value></data>
+  <data name="Startup_Steam_Closed" xml:space="preserve"><value>Steam は終了しました。</value></data>
+  <data name="Startup_Steam_Stubborn_Title" xml:space="preserve"><value>Steam が終了しませんでした</value></data>
+  <data name="Startup_Steam_Stubborn_Body" xml:space="preserve"><value>Steam に終了を要求しましたが、まだ実行中です。
+
+強制終了しますか？ Steam がまだ保存していない内容は失われる可能性があります。そのまま実行させるには「いいえ」を選んでください — Steam の実行中は LuaTools が Steam のファイルを変更できません。</value></data>
+  <data name="Startup_Steam_LeftRunning" xml:space="preserve"><value>Steam がまだ実行中のため、何も変更されていません。準備ができたら Steam を閉じて LuaTools を再起動してください。</value></data>
+  <data name="Startup_Steam_Reopen_Body" xml:space="preserve"><value>LuaTools の処理が完了しました。Steam をもう一度開きますか？</value></data>
+  <data name="Startup_Steam_Reopen_Action" xml:space="preserve"><value>Steam を開く</value></data>
+  <data name="Startup_Steam_ReopenFailed" xml:space="preserve"><value>Steam を起動できませんでした — Steam 自身のショートカットから開いてください。</value></data>
+  <data name="Guard_Title" xml:space="preserve"><value>Steam はすでに実行中です</value></data>
+  <data name="Guard_Body" xml:space="preserve"><value>フックを接続するには、LuaTools が自分で Steam を起動する（または閉じている状態で見つける）必要があります。今すぐ Steam を再起動しますか？</value></data>
+  <data name="Guard_Restart" xml:space="preserve"><value>Steam を再起動</value></data>
+  <data name="Guard_Exit" xml:space="preserve"><value>終了</value></data>
+  <data name="Guard_Continue" xml:space="preserve"><value>それでも続行（非推奨）</value></data>
+  <data name="Guard_ContinueWarning" xml:space="preserve"><value>Steam が実行されたままのため、フックが接続できない可能性があります。その場合は LuaTools から Steam を再起動してください。</value></data>
+  <data name="Manage_Action_SaveBackup" xml:space="preserve"><value>セーブをバックアップ…</value></data>
+  <data name="Saves_Title" xml:space="preserve"><value>セーブのバックアップ</value></data>
+  <data name="Saves_Create" xml:space="preserve"><value>新しいバックアップを作成</value></data>
+  <data name="Saves_Restore" xml:space="preserve"><value>復元</value></data>
+  <data name="Saves_Delete" xml:space="preserve"><value>削除</value></data>
+  <data name="Saves_Close" xml:space="preserve"><value>閉じる</value></data>
+  <data name="Saves_Empty" xml:space="preserve"><value>このゲームのバックアップはまだありません。</value></data>
+  <data name="Saves_Locations_Title" xml:space="preserve"><value>見つかったセーブの場所</value></data>
+  <data name="Saves_Locations_None" xml:space="preserve"><value>このゲームのセーブフォルダーは検出されませんでした。</value></data>
+  <data name="Saves_Location_Subtitle" xml:space="preserve"><value>{0} · {1} ファイル</value></data>
+  <data name="Saves_AddFolder" xml:space="preserve"><value>フォルダーを手動で追加…</value></data>
+  <data name="Saves_Confirm_NoneFound" xml:space="preserve"><value>このゲームのセーブが見つかりませんでした。フォルダーを手動で選択しますか？</value></data>
+  <data name="Saves_PickFolder" xml:space="preserve"><value>フォルダーを選択</value></data>
+  <data name="Saves_PickFolderTitle" xml:space="preserve"><value>このゲームがセーブを保存しているフォルダーを選択してください</value></data>
+  <data name="Saves_Toast_PickOne" xml:space="preserve"><value>バックアップするセーブの場所を1つ以上チェックしてください。</value></data>
+  <data name="Saves_Toast_FolderRefused" xml:space="preserve"><value>そのフォルダーは使用できません（ドライブのルート、Windows や Program Files のフォルダー、または完全なパスではないもの）。</value></data>
+  <data name="Manage_SaveIcon_Tooltip" xml:space="preserve"><value>セーブが検出された場所: {0}</value></data>
+  <data name="Settings_CustomSaveFolders" xml:space="preserve"><value>カスタムセーブフォルダー</value></data>
+  <data name="Settings_CustomSaveFolders_Hint" xml:space="preserve"><value>アプリが自力でセーブを見つけられないゲーム向けです。ゲームの AppID を入力してフォルダーを選ぶと、そのゲームと一緒にバックアップされ、復元が書き込める唯一の追加場所になります。</value></data>
+  <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
+  <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>フォルダーを追加…</value></data>
+  <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>削除</value></data>
+  <data name="Saves_Note" xml:space="preserve"><value>Steam のゲームごとのフォルダー (userdata) をバックアップします。ドキュメントや AppData にセーブを保存するゲームは含まれません。</value></data>
+  <data name="Saves_Toast_Created" xml:space="preserve"><value>{0} ファイルをバックアップしました ({1})。</value></data>
+  <data name="Saves_Toast_Restored" xml:space="preserve"><value>{0} ファイルを復元しました。以前のセーブのコピーは保持されています。</value></data>
+  <data name="Saves_Toast_Deleted" xml:space="preserve"><value>バックアップを削除しました。</value></data>
+  <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>このゲームのセーブは見つかりませんでした。「フォルダーを手動で追加…」で保存先のフォルダーを追加してください。</value></data>
+  <data name="Saves_Toast_SteamNotFound" xml:space="preserve"><value>Steam フォルダーが見つかりません。設定で場所を指定してください。</value></data>
+  <data name="Saves_Toast_Refused" xml:space="preserve"><value>拒否されました: バックアップがこのゲームと一致しないか、安全でないパスを含んでいます。何も変更されていません。</value></data>
+  <data name="Saves_Toast_Failed" xml:space="preserve"><value>操作に失敗しました。詳細はログを参照してください。</value></data>
+  <data name="Saves_Toast_NoSpace" xml:space="preserve"><value>バックアップに必要な空きディスク容量が足りません（余裕分を含め {0} 必要）。何も書き込まれていません。</value></data>
+  <data name="Saves_Confirm_Restore" xml:space="preserve"><value>{0} を復元しますか？ このゲームの現在のセーブは上書きされますが、先にそのコピーが保持されます。</value></data>
+  <data name="Saves_Confirm_SteamOpen" xml:space="preserve"><value>Steam が開いています。安全に復元する（Steam クラウドによるファイルの上書きを防ぐ）には、Steam を閉じる必要があります。</value></data>
+  <data name="Saves_CloseSteamContinue" xml:space="preserve"><value>Steam を閉じて続行</value></data>
+  <data name="Saves_Toast_SteamStillRunning" xml:space="preserve"><value>Steam が終了しませんでした。手動で閉じてもう一度お試しください。何も復元されていません。</value></data>
+  <data name="Saves_Confirm_Delete" xml:space="preserve"><value>{0} を削除しますか？ この操作は元に戻せません。</value></data>
+  <data name="Manage_Badge_Installed" xml:space="preserve"><value>インストール済み</value></data>
+  <data name="Manage_Action_ImportSave" xml:space="preserve"><value>セーブをインポート (.zip)…</value></data>
+  <data name="Saves_Import" xml:space="preserve"><value>セーブをインポート…</value></data>
+  <data name="Saves_Import_PickTitle" xml:space="preserve"><value>セーブのバックアップを選択 (.zip)</value></data>
+  <data name="Saves_Import_Filter" xml:space="preserve"><value>セーブのバックアップ (*.zip)|*.zip</value></data>
+  <data name="Saves_Confirm_Import" xml:space="preserve"><value>{0} をインポートしますか？ このゲームの現在のセーブは上書きされますが、先にそのコピーが保持されます。</value></data>
+  <data name="Saves_Toast_Imported" xml:space="preserve"><value>{0} ファイルをインポートしました。以前のセーブのコピーは保持されています。</value></data>
+  <data name="Saves_Confirm_NewFolder" xml:space="preserve"><value>アプリはセーブを整理するため、このゲーム名のフォルダーを作成します。続行しますか？</value></data>
+  <data name="Saves_Confirm_Ok" xml:space="preserve"><value>OK</value></data>
+  <data name="Saves_Toast_SavedAt" xml:space="preserve"><value>バックアップを正常に保存しました: {0}</value></data>
+  <data name="Settings_SaveBackupFolder" xml:space="preserve"><value>セーブのバックアップフォルダー</value></data>
+  <data name="Settings_SaveBackupFolder_Hint" xml:space="preserve"><value>「セーブをバックアップ…」が zip を書き込む場所です。既定: %AppData%\LuaToolsGui\SaveBackups。</value></data>
+  <data name="Settings_ChooseSaveBackupFolder" xml:space="preserve"><value>セーブのバックアップフォルダーを選択</value></data>
+  <data name="About_Changelog_Title" xml:space="preserve"><value>新機能</value></data>
+  <data name="About_Changelog_Show" xml:space="preserve"><value>変更履歴を表示</value></data>
+  <data name="About_Changelog_Hide" xml:space="preserve"><value>変更履歴を隠す</value></data>
+  <data name="Home_Privacy_UpdatesOff" xml:space="preserve"><value>自動更新はオフ — このビルドは自分では何も取得しません</value></data>
+  <data name="Home_Privacy_UpdatesOn" xml:space="preserve"><value>自動更新はオン — 起動時にリリースを確認します</value></data>
+  <data name="Home_Action_Mode_Tip" xml:space="preserve"><value>Steam のプロキシ DLL を管理するバックエンドを選択</value></data>
+  <data name="Home_Action_Plugin" xml:space="preserve"><value>プラグイン</value></data>
+  <data name="Home_Action_Plugin_Tip" xml:space="preserve"><value>ストアページのプラグインをインストールまたは更新</value></data>
+  <data name="Home_Action_Updates_Tip" xml:space="preserve"><value>新しいバージョンを確認するには「情報」を開いてください</value></data>
+  <data name="Mode_Warn_Telemetry" xml:space="preserve"><value>オリジナルのプロジェクト (madoiscool)。警告: テレメトリと DonateKeys システムを含みます。</value></data>
+  <data name="Manage_Sort_InstalledFirst" xml:space="preserve"><value>インストール済みを先頭に</value></data>
+  <data name="Add_Warn_NoManifests_Title" xml:space="preserve"><value>警告</value></data>
+  <data name="Add_Warn_NoManifests" xml:space="preserve"><value>このソースは {0} のマニフェストを提供しませんでした。Steam でのダウンロードが失敗する可能性があります。{1} ソースをおすすめします。</value></data>
+  <data name="Plugin_Row_Source" xml:space="preserve"><value>ソース</value></data>
+  <data name="Plugin_Sources_Header" xml:space="preserve"><value>プラグインのソース</value></data>
+  <data name="Plugin_Sources_Subtitle" xml:space="preserve"><value>各作者がプラグインの独自ビルドを公開しています。インストールしたいものを選んでください — LuaTools は有効なソースだけをインストールし、勝手に切り替えることはありません。</value></data>
+  <data name="Plugin_Source_By" xml:space="preserve"><value>作者: {0}</value></data>
+  <data name="Plugin_Source_Active" xml:space="preserve"><value>有効</value></data>
+  <data name="Plugin_Source_Default" xml:space="preserve"><value>既定</value></data>
+  <data name="Plugin_Source_Installed" xml:space="preserve"><value>このソースからインストール済み。</value></data>
+  <data name="Plugin_Source_ActiveNotInstalled" xml:space="preserve"><value>有効なソース — まだインストールされていません。</value></data>
+  <data name="Plugin_Source_Available" xml:space="preserve"><value>利用可能。この作者のものに代わりにインストールするには選択してください。</value></data>
+  <data name="Plugin_Source_LatestVersion" xml:space="preserve"><value>最新</value></data>
+  <data name="Plugin_Btn_Activate" xml:space="preserve"><value>このソースを使う</value></data>
+  <data name="Plugin_Confirm_SwitchCaption" xml:space="preserve"><value>プラグインのソースを切り替え</value></data>
+  <data name="Plugin_Confirm_SwitchBody" xml:space="preserve"><value>{0} からプラグインをインストールして現在のものと置き換え、適用のために Steam を閉じて再起動します。続行しますか？</value></data>
+  <data name="Plugin_Toast_SourceSwitched" xml:space="preserve"><value>現在 {0} からインストールされています。読み込みのため Steam を再起動しています。</value></data>
+  <data name="Plugin_Err_UnknownSource" xml:space="preserve"><value>{0} はこのビルドに含まれるプラグインのソースではないため、何もインストールされませんでした。</value></data>
+  <data name="Plugin_SourceErr_NoRelease" xml:space="preserve"><value>このソースはリリースを公開していないか、接続できませんでした。</value></data>
+  <data name="Plugin_SourceErr_NoTag" xml:space="preserve"><value>このソースの最新リリースにはバージョンタグがありません。</value></data>
+  <data name="Plugin_SourceErr_MissingAsset" xml:space="preserve"><value>このソースの最新リリースに {0} がありません。</value></data>
+  <data name="Plugin_SourceErr_ForeignAssetUrl" xml:space="preserve"><value>このソースの {0} のダウンロードが自身のリポジトリ外を指しているため、拒否されました。</value></data>
+  <data name="Plugin_SourceErr_NoDigest" xml:space="preserve"><value>このソースは {0} の SHA-256 を公開していないため、内容を証明できませんでした。</value></data>
+  <data name="Plugin_Err_ArchiveRejected" xml:space="preserve"><value>{0} はセーフティチェックで拒否されました: {1}</value></data>
+  <data name="Download_Notice_Title" xml:space="preserve"><value>{0} からインストール中</value></data>
+  <data name="Download_Notice_Body" xml:space="preserve"><value>{0} · バージョン {1} · {2} ファイル
+SHA-256 {3}
+検証済み: {4}</value></data>
+  <data name="Download_Notice_Check_Pinned" xml:space="preserve"><value>リポジトリを固定済み</value></data>
+  <data name="Download_Notice_Check_Digest" xml:space="preserve"><value>SHA-256 が一致</value></data>
+  <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>アーカイブを検査済み</value></data>
+  <data name="Download_Notice_Cancel" xml:space="preserve"><value>キャンセル</value></data>
+  <data name="Download_Notice_Cancelled" xml:space="preserve"><value>何もインストールされる前にキャンセルされました。</value></data>
+  <data name="Builds_RemoveGame" xml:space="preserve"><value>ゲームを削除</value></data>
+  <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>このゲームをデポの一覧から外します。lua ファイルと保存済みのビルドをすべて削除します。</value></data>
+  <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>ゲームを削除</value></data>
+  <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>{0} ({1}) をデポから削除しますか？
+
+lua ファイル、その横にあるビルドの lua、保存済みのビルドをすべて削除します。元に戻せません。</value></data>
+  <data name="Builds_RemoveGame_Done" xml:space="preserve"><value>{0} をデポから削除しました。</value></data>
+  <data name="Builds_RemoveGame_Gone" xml:space="preserve"><value>{0} にはもうファイルがありませんでした — 一覧から削除しました。</value></data>
+  <data name="Builds_RemoveGame_Failed" xml:space="preserve"><value>{0} を完全には削除できませんでした: {1}。Steam を閉じてもう一度お試しください。</value></data>
+  <data name="Auth_Err_SignInTimedOut" xml:space="preserve"><value>サインインがタイムアウトしました — ブラウザーが戻ってきませんでした。コードでサインインすることもできます: Discord サーバーで /login を実行し、コードを設定に貼り付けてください。</value></data>
+  <data name="Auth_Err_CallbackPortBusy" xml:space="preserve"><value>サインインを開始できませんでした: ポート 53789 はすでに使用中です。他のサインイン試行を閉じてもう一度お試しください。</value></data>
+  <data name="Auth_ProviderUnavailable" xml:space="preserve"><value>サインインサーバーが現在応答していないため、ブラウザーでの Discord サインインはおそらくタイムアウトします。代わりにコードでサインインできます: Discord サーバーで /login を実行し、コードを設定に入力してください。</value></data>
+  <data name="Auth_SignInCancelled" xml:space="preserve"><value>サインインがキャンセルされました。もう一度試すか、手動コードを使用できます (Discord で /login を実行)。</value></data>
+  <data name="Auth_TryAgain" xml:space="preserve"><value>再試行</value></data>
+  <data name="Auth_TryAnyway" xml:space="preserve"><value>それでも試す</value></data>
+  <data name="Auth_UseManualCode" xml:space="preserve"><value>手動コードを使う</value></data>
+  <data name="Auth_Cancel" xml:space="preserve"><value>キャンセル</value></data>
+  <data name="Protocol_SilentInstall_Title" xml:space="preserve"><value>インストールのリクエスト</value></data>
+  <data name="Protocol_SilentInstall_Body" xml:space="preserve"><value>リンクが LuaTools にアプリ {0} のバックグラウンドインストールを求めています。ご自身で開始した場合のみ続行してください。</value></data>
+  <data name="Cdp_Consent_Title" xml:space="preserve"><value>Steam ストアページブリッジを有効にしますか？</value></data>
+  <data name="Cdp_Consent_Body" xml:space="preserve"><value>ストアページのプラグインには Steam のデバッグブリッジが必要で、LuaTools は steam.exe の隣にマーカーを追加して有効にします。Steam の実行中は、認証のないローカルポート (127.0.0.1:8080) が開きます。
+
+この PC で動作している他のあらゆるものが、サインイン済みのセッションを使って Steam の内蔵ブラウザーを操作できるようになります。このマシンにインストールされているソフトウェアを信頼できる場合のみ有効にしてください。
+
+拒否しても LuaTools の他の機能は使えます。ストア内の「Add via LuaTools」ボタンだけが使えなくなります。
+
+有効にしますか？</value></data>
+  <data name="Privacy_HttpMetadata_Title" xml:space="preserve"><value>暗号化されていない問い合わせ</value></data>
+  <data name="Privacy_HttpMetadata_Body" xml:space="preserve"><value>ソースの有無は、そのサーバーが動作する HTTPS を提供していないため、平文の HTTP ({0}) で確認されます。アカウントやキーは送信されませんが、ネットワーク経路上の誰でも、どの Steam アプリを調べたか見ることができます。非表示にするには settings.json で "WarnOnInsecureMetadata": false を設定してください。</value></data>
+  <data name="Theme_Guard_Title" xml:space="preserve"><value>テーマが適用されませんでした</value></data>
+  <data name="Theme_Guard_Body" xml:space="preserve"><value>Amethyst のアクセントが反映されませんでした。通常は WPF-UI パッケージがリソース名を変更したことを意味します。アプリは通常どおり動作しますが、一部の表示が崩れます。docs/CHANGELOG.md を参照してください。</value></data>
+  <data name="App_DisplayName" xml:space="preserve"><value>LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Title" xml:space="preserve"><value>これは LuaTools Amethyst ではないかもしれません</value></data>
+  <data name="Build_NotFork_Body" xml:space="preserve"><value>このバイナリは LuaTools Amethyst であると名乗っていません。公式の LuaTools リリースを上書きインストールした場合、アナリティクスと Steam キーのアップロードが再び有効になっています。プライバシー重視のビルドに戻すには、Amethyst リポジトリから再インストールしてください。</value></data>
+  <data name="Fixes_Toast_Blocked" xml:space="preserve"><value>ダウンロードを拒否しました</value></data>
+  <data name="Fixes_Toast_Blocked_Body" xml:space="preserve"><value>{0} はセーフティチェックに失敗したためインストールされませんでした — {1}</value></data>
+  <data name="About_Nav" xml:space="preserve"><value>情報</value></data>
+  <data name="About_Title" xml:space="preserve"><value>LuaTools Amethyst について</value></data>
+  <data name="About_What_Header" xml:space="preserve"><value>これは何か</value></data>
+  <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst は、プライバシーを重視した LuaTools のコミュニティフォークです。元のビルドが行うアナリティクスの ping とキーの寄付アップロードを取り除き、すべてのダウンロードを HTTPS で行い、Amethyst パープルのテーマを備えています。</value></data>
+  <data name="About_Version_Header" xml:space="preserve"><value>バージョン</value></data>
+  <data name="About_Repo_Header" xml:space="preserve"><value>リポジトリ</value></data>
+  <data name="About_Updates_Header" xml:space="preserve"><value>更新</value></data>
+  <data name="About_Updates_Enabled" xml:space="preserve"><value>自動更新は ON です。LuaTools Amethyst は起動時に下のリポジトリを確認し、バックグラウンドで更新をインストールします。</value></data>
+  <data name="About_Updates_Disabled" xml:space="preserve"><value>自動更新は OFF です — 更新リクエストは行われません。オンにするには settings.json に "AppUpdateRepos" を追加するか、下のリポジトリから手動で更新してください。</value></data>
+  <data name="About_Updates_Sources" xml:space="preserve"><value>更新ソース</value></data>
+  <data name="About_Check_Button" xml:space="preserve"><value>更新を確認</value></data>
+  <data name="About_Check_Checking" xml:space="preserve"><value>確認中…</value></data>
+  <data name="About_Check_UpToDate" xml:space="preserve"><value>最新バージョンです。</value></data>
+  <data name="About_Check_Found" xml:space="preserve"><value>更新をダウンロードしました。LuaTools を閉じたときに適用されます。</value></data>
+  <data name="About_Check_Failed" xml:space="preserve"><value>更新を確認できませんでした。接続と設定したリポジトリを確認してください。</value></data>
+  <data name="About_Check_Disabled" xml:space="preserve"><value>自動更新は無効です — 先に settings.json で "AppUpdateRepos" を設定してください。</value></data>
+  <data name="About_OpenRepo" xml:space="preserve"><value>リポジトリを開く</value></data>
+  <data name="About_OpenSettings" xml:space="preserve"><value>settings.json のフォルダーを開く</value></data>
+  <data name="About_Config_Header" xml:space="preserve"><value>更新を手動で設定する</value></data>
+  <data name="About_Config_Body" xml:space="preserve"><value>下のフォルダーにある settings.json を編集し、更新を受け取りたいリポジトリを追加してください。受け付けるのは https://github.com/&lt;owner&gt;/&lt;repo&gt; のみで、公式ビルドがこれを置き換えることのないよう、元の LuaTools リリースのリポジトリは拒否されます。</value></data>
+  <data name="Builds_Depot_Download" xml:space="preserve"><value>デポをダウンロード…</value></data>
+  <data name="Builds_Depot_Unavailable" xml:space="preserve"><value>このビルドではデポのダウンロードは利用できません: ダウンロードツールの検証済みピンがありません。</value></data>
+  <data name="Builds_Depot_PickTitle" xml:space="preserve"><value>デポの内容をダウンロード</value></data>
+  <data name="Builds_Depot_PickHint" xml:space="preserve"><value>生ファイルは Steam の CDN から匿名で直接取得されます。何もインストールされません — デポは下のフォルダーに書き込まれ、自由に使えます。</value></data>
+  <data name="Builds_Depot_NoCandidates" xml:space="preserve"><value>このゲームのデポはどれもダウンロードできません。lua の復号キーと Steam が公開したマニフェストの両方が必要です。</value></data>
+  <data name="Builds_Depot_NeedsKey" xml:space="preserve"><value>このビルドにキーなし</value></data>
+  <data name="Builds_Depot_NeedsManifest" xml:space="preserve"><value>Steam はマニフェストを公開していません</value></data>
+  <data name="Builds_Depot_NeedsSignIn" xml:space="preserve"><value>マニフェストを取得するにはサインインしてください</value></data>
+  <data name="Builds_Depot_SelectAll" xml:space="preserve"><value>すべて選択</value></data>
+  <data name="Builds_Depot_SelectNone" xml:space="preserve"><value>クリア</value></data>
+  <data name="Builds_Depot_Destination" xml:space="preserve"><value>保存先フォルダー</value></data>
+  <data name="Builds_Depot_Change" xml:space="preserve"><value>変更…</value></data>
+  <data name="Builds_Depot_Space" xml:space="preserve"><value>必要 {0} · {2} の空き {1}</value></data>
+  <data name="Builds_Depot_NotEnoughSpace" xml:space="preserve"><value>そのドライブの空き容量が足りません。デポを減らすか、別のフォルダーを選んでください。</value></data>
+  <data name="Builds_Depot_Confirm" xml:space="preserve"><value>{0} 個のデポをダウンロード</value></data>
+  <data name="Builds_Depot_Cancel" xml:space="preserve"><value>キャンセル</value></data>
+  <data name="Builds_Depot_Downloading" xml:space="preserve"><value>デポ {0}/{1} · {2}</value></data>
+  <data name="Builds_Depot_Phase_PreAllocating" xml:space="preserve"><value>ディスク容量を確保中</value></data>
+  <data name="Builds_Depot_Phase_Validating" xml:space="preserve"><value>既存のファイルを確認中</value></data>
+  <data name="Builds_Depot_Phase_FetchingManifest" xml:space="preserve"><value>マニフェストを取得中</value></data>
+  <data name="Builds_Depot_Phase_Downloading" xml:space="preserve"><value>ダウンロード中</value></data>
+  <data name="Builds_Depot_Done" xml:space="preserve"><value>{0} 個のデポを {1} にダウンロードしました</value></data>
+  <data name="Builds_Depot_OpenFolder" xml:space="preserve"><value>フォルダーを開く</value></data>
+  <data name="Builds_Depot_CleanUp_Title" xml:space="preserve"><value>中途半端なダウンロードを削除しますか？</value></data>
+  <data name="Builds_Depot_CleanUp_Body" xml:space="preserve"><value>{1} に {0} ファイルを作成したところでダウンロードがキャンセルされました。それらのファイルだけを削除しますか？ もともとあったものはそのままです。</value></data>
+  <data name="Builds_Depot_CleanUp_Failed" xml:space="preserve"><value>一部のファイルを削除できませんでした — まだ使用中の可能性があります。少し待ってからもう一度お試しください。</value></data>
+  <data name="Depot_Err_ToolNotPinned" xml:space="preserve"><value>このビルドにはダウンロードツールの検証済みピンがないため、デポのダウンロードはオフになっています。</value></data>
+  <data name="Depot_Err_Tool" xml:space="preserve"><value>デポダウンローダーを取得できなかったか、届いたものが検証に失敗しました。</value></data>
+  <data name="Depot_Err_SteamNotFound" xml:space="preserve"><value>Steam の場所が見つかりません — 設定で指定してください。</value></data>
+  <data name="Depot_Err_NoKeys" xml:space="preserve"><value>このゲームのデポ復号キーが見つかりませんでした。</value></data>
+  <data name="Depot_Err_NoKeyFor" xml:space="preserve"><value>デポ {0} には使用できる復号キーがありません。</value></data>
+  <data name="Depot_Err_BadKey" xml:space="preserve"><value>デポ {0} に保存されているキーがそのマニフェストと一致しません。</value></data>
+  <data name="Depot_Err_NoManifest" xml:space="preserve"><value>そのデポのマニフェストを取得できませんでした。</value></data>
+  <data name="Depot_Err_SignIn" xml:space="preserve"><value>このマシンに Steam がまだ持っていないマニフェストを取得するには、サインインしてください。</value></data>
+  <data name="Depot_Err_NoSpace" xml:space="preserve"><value>ディスク容量が足りません: {0} 必要、空き {1}。</value></data>
+  <data name="Depot_Err_Failed" xml:space="preserve"><value>デポ {0} が失敗しました: {1}</value></data>
+  <data name="Builds_Depot_Queued" xml:space="preserve"><value>{0} 個のデポをダウンロードに送りました。</value></data>
+  <data name="Nav_Downloads" xml:space="preserve"><value>ダウンロード</value></data>
+  <data name="Downloads_Title" xml:space="preserve"><value>ダウンロード</value></data>
+  <data name="Downloads_Subtitle" xml:space="preserve"><value>アプリが現在取得しているものと、以前に取得したものすべて。マニフェストとデポの内容はこのキューを共有します。</value></data>
+  <data name="Downloads_Empty" xml:space="preserve"><value>まだ何もダウンロードされていません。追加ページからゲームを追加するか、デポページからデポの内容を取得すると、ここに表示されます。</value></data>
+  <data name="Downloads_Section_Active" xml:space="preserve"><value>進行中</value></data>
+  <data name="Downloads_Section_History" xml:space="preserve"><value>履歴</value></data>
+  <data name="Downloads_ActionRequired" xml:space="preserve"><value>操作が必要です</value></data>
+  <data name="Downloads_Of" xml:space="preserve"><value>{0}/{1}</value></data>
+  <data name="Downloads_Eta" xml:space="preserve"><value>残り {0}</value></data>
+  <data name="Downloads_Source_Depots" xml:space="preserve"><value>{0} 個のデポ</value></data>
+  <data name="Downloads_Status_Queued" xml:space="preserve"><value>待機中</value></data>
+  <data name="Downloads_Status_Downloading" xml:space="preserve"><value>ダウンロード中</value></data>
+  <data name="Downloads_Status_AwaitingConfirm" xml:space="preserve"><value>確認待ち</value></data>
+  <data name="Downloads_Status_Installing" xml:space="preserve"><value>インストール中</value></data>
+  <data name="Downloads_Status_Paused" xml:space="preserve"><value>一時停止中</value></data>
+  <data name="Downloads_Status_Verifying" xml:space="preserve"><value>検証中</value></data>
+  <data name="Downloads_Status_Completed" xml:space="preserve"><value>完了</value></data>
+  <data name="Downloads_Status_Failed" xml:space="preserve"><value>失敗</value></data>
+  <data name="Downloads_Status_Cancelled" xml:space="preserve"><value>キャンセル済み</value></data>
+  <data name="Downloads_Action_Review" xml:space="preserve"><value>確認</value></data>
+  <data name="Downloads_Action_Pause" xml:space="preserve"><value>一時停止</value></data>
+  <data name="Downloads_Action_Resume" xml:space="preserve"><value>再開</value></data>
+  <data name="Downloads_Action_MoveUp" xml:space="preserve"><value>上へ移動</value></data>
+  <data name="Downloads_Action_MoveDown" xml:space="preserve"><value>下へ移動</value></data>
+  <data name="Downloads_Action_Cancel" xml:space="preserve"><value>キャンセル</value></data>
+  <data name="Downloads_Action_Retry" xml:space="preserve"><value>再試行</value></data>
+  <data name="Downloads_Action_Remove" xml:space="preserve"><value>削除</value></data>
+  <data name="Downloads_Action_ClearHistory" xml:space="preserve"><value>履歴をクリア</value></data>
+  <data name="Downloads_Action_CopyAppId" xml:space="preserve"><value>App ID をコピー</value></data>
+  <data name="Downloads_Action_ShowInFolder" xml:space="preserve"><value>フォルダーで表示</value></data>
+  <data name="Downloads_ClearHistory_Confirm" xml:space="preserve"><value>ダウンロード履歴の {0} 件をすべて削除しますか？ ファイル自体には影響しません。</value></data>
+  <data name="Downloads_Err_Interrupted" xml:space="preserve"><value>アプリの終了時に中断されました。</value></data>
+  <data name="Downloads_Err_Cancelled" xml:space="preserve"><value>キャンセルされました。</value></data>
+  <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>クリップボードが別のプログラムで使用中です — 何もコピーされませんでした。</value></data>
+  <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>その場所はもう存在しません: {0}</value></data>
+  <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>「{0}」を拒否しました: マニフェストの名前は &lt;depot&gt;_&lt;manifest&gt;.manifest（数字のみ）である必要があります。</value></data>
+  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>CloudRedirect のソースリポジトリは利用できません。この機能は一時的に無効です。</value></data>
+  <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>保存済みのビルド（有効な lua なし）</value></data>
+  <data name="Settings_Maintenance_Title" xml:space="preserve"><value>メンテナンス</value></data>
+  <data name="Settings_Backups_Title" xml:space="preserve"><value>たまったバックアップ</value></data>
+  <data name="Settings_Backups_Subtitle" xml:space="preserve"><value>AmethystTool のインストールやプラグインの削除の際に作成されたバックアップフォルダーです。削除すると Steam フォルダーの空き容量が増えます。</value></data>
+  <data name="Settings_Backups_Empty" xml:space="preserve"><value>バックアップが見つかりません。</value></data>
+  <data name="Settings_Backups_NoSteam" xml:space="preserve"><value>バックアップを表示するには、設定で Steam の場所を設定してください。</value></data>
+  <data name="Settings_Backups_Refresh" xml:space="preserve"><value>更新</value></data>
+  <data name="Settings_Backups_DeleteSelected" xml:space="preserve"><value>選択項目を削除</value></data>
+  <data name="Settings_Backups_DeleteOlder" xml:space="preserve"><value>30 日より古いものを削除</value></data>
+  <data name="Settings_Backups_Confirm_Title" xml:space="preserve"><value>バックアップを削除しますか？</value></data>
+  <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>{0} 個の項目 ({1}) を完全に削除しますか？ 以前の AmethystTool のインストールやプラグインの削除には戻せなくなります。</value></data>
+  <data name="Settings_Backups_Confirm_Delete" xml:space="preserve"><value>削除</value></data>
+  <data name="Settings_Backups_Cancel" xml:space="preserve"><value>キャンセル</value></data>
+  <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>{0} 個の項目を削除しました ({1} 解放)</value></data>
+  <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>{0} 個の項目を削除できませんでした。Steam を閉じてもう一度お試しください。</value></data>
+  <data name="Settings_Backups_Column_Name" xml:space="preserve"><value>名前</value></data>
+  <data name="Settings_Backups_Column_Type" xml:space="preserve"><value>種類</value></data>
+  <data name="Settings_Backups_Type_Folder" xml:space="preserve"><value>フォルダー</value></data>
+  <data name="Settings_Backups_Type_File" xml:space="preserve"><value>ファイル</value></data>
+  <data name="Settings_Backups_UnknownWarning" xml:space="preserve"><value>不明なバックアップです。削除する前に確認してください</value></data>
+  <data name="Settings_Backups_Column_Date" xml:space="preserve"><value>作成日時</value></data>
+  <data name="Settings_Backups_Column_Size" xml:space="preserve"><value>サイズ</value></data>
+  <data name="Settings_Backups_Column_Files" xml:space="preserve"><value>ファイル</value></data>
+  <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>ローカルバージョン (オフライン)</value></data>
+  <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>インターネット接続がありません。ローカルにインストールされたバージョンを使用します。</value></data>
+  <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>インターネットがないと新しいバージョンをダウンロードできません。</value></data>
 </root>

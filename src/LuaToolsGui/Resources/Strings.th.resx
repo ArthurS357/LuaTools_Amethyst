@@ -586,4 +586,288 @@
   <data name="App_StartupFailed" xml:space="preserve"><value>ไม่สามารถเริ่ม LuaTools ได้&#10;&#10;{0}&#10;&#10;รายละเอียดถูกเขียนไว้ที่:&#10;{1}</value></data>
   <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>ไม่สามารถเขียนไฟล์ {0} ไฟล์ลงในโฟลเดอร์ Steam ได้ — การเข้าถึงถูกปฏิเสธ ดูเหมือนว่า Steam ติดตั้งอยู่ในตำแหน่งที่ต้องใช้สิทธิ์ผู้ดูแลระบบ (เช่น Program Files) ปิด Steam แล้วเรียกใช้ LuaTools ในฐานะผู้ดูแลระบบหนึ่งครั้งเพื่อใช้โหมดนี้</value></data>
   <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>ไม่สามารถเขียนไฟล์ {0} ไฟล์ได้ — ปิด Steam แล้วลองอีกครั้ง</value></data>
+  <data name="Nav_Plugin" xml:space="preserve"><value>ปลั๊กอิน</value></data>
+  <data name="Settings_HubcapKeyRejected" xml:space="preserve"><value>Hubcap ปฏิเสธคีย์นั้น โปรดตรวจสอบว่าคัดลอกมาครบถ้วนและยังไม่หมดอายุ</value></data>
+  <data name="Settings_HubcapKeyOffline" xml:space="preserve"><value>ไม่สามารถติดต่อ Hubcap ได้ ตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง — คีย์ไม่ได้ถูกเปลี่ยนแปลง</value></data>
+  <data name="Settings_HubcapKeyRateLimited" xml:space="preserve"><value>ขณะนี้ Hubcap กำลังจำกัดอัตราการใช้งานคีย์นี้ โปรดลองอีกครั้งในอีกสักครู่</value></data>
+  <data name="Settings_HubcapExpiryExpired" xml:space="preserve"><value>คีย์ Hubcap ของคุณหมดอายุเมื่อ {0} ตรวจสอบคีย์ใหม่เพื่อใช้แหล่งที่มาของ Hubcap ต่อไป</value></data>
+  <data name="Settings_HubcapExpiryToday" xml:space="preserve"><value>คีย์ Hubcap ของคุณจะหมดอายุวันนี้ ({0}) รับคีย์ใหม่ก่อนที่จะใช้งานไม่ได้</value></data>
+  <data name="Settings_HubcapExpirySoon" xml:space="preserve"><value>คีย์ Hubcap ของคุณจะหมดอายุในอีก {0} วัน ({1}) รับคีย์ใหม่ก่อนที่จะใช้งานไม่ได้</value></data>
+  <data name="Hubcap_Err_KeyRejected" xml:space="preserve"><value>คีย์ Hubcap ของคุณไม่ถูกต้องหรือหมดอายุแล้ว</value></data>
+  <data name="Hubcap_Err_DailyLimit" xml:space="preserve"><value>ถึงขีดจำกัดรายวันของ Hubcap แล้ว</value></data>
+  <data name="Hubcap_Err_DailyLimitRetry" xml:space="preserve"><value>ถึงขีดจำกัดรายวันของ Hubcap แล้ว ลองอีกครั้งในอีกประมาณ {0}</value></data>
+  <data name="Hubcap_Err_NoManifest" xml:space="preserve"><value>ไม่มี manifest ของ Hubcap สำหรับแอปนี้</value></data>
+  <data name="Hubcap_Err_Status" xml:space="preserve"><value>ดาวน์โหลดจาก Hubcap ไม่สำเร็จ ({0})</value></data>
+  <data name="Hubcap_Err_Unreachable" xml:space="preserve"><value>ไม่สามารถติดต่อ Hubcap ได้ ตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง</value></data>
+  <data name="Hubcap_Err_Generic" xml:space="preserve"><value>ดาวน์โหลดจาก Hubcap ไม่สำเร็จ</value></data>
+  <data name="Hubcap_Wait_Seconds" xml:space="preserve"><value>{0} วินาที</value></data>
+  <data name="Hubcap_Wait_Minutes" xml:space="preserve"><value>{0} นาที</value></data>
+  <data name="Hubcap_Wait_Hours" xml:space="preserve"><value>{0} ชั่วโมง</value></data>
+  <data name="Settings_Accent_Hint" xml:space="preserve"><value>เปลี่ยนสีทั้งแอป — หน้าต่าง การ์ด และข้อความ ไม่ใช่แค่ส่วนที่เน้น เลือกสีแล้วเลือก นำไปใช้</value></data>
+  <data name="Settings_Accent_Amethyst" xml:space="preserve"><value>Amethyst</value></data>
+  <data name="Startup_Title" xml:space="preserve"><value>เริ่มต้น</value></data>
+  <data name="Startup_Steam_Closing" xml:space="preserve"><value>กำลังปิด Steam เพื่อให้ LuaTools ทำงานกับไฟล์ของมันได้…</value></data>
+  <data name="Startup_Steam_Closed" xml:space="preserve"><value>Steam ปิดแล้ว</value></data>
+  <data name="Startup_Steam_Stubborn_Title" xml:space="preserve"><value>Steam ไม่ปิด</value></data>
+  <data name="Startup_Steam_Stubborn_Body" xml:space="preserve"><value>ได้ขอให้ Steam ปิดแล้ว แต่ยังทำงานอยู่
+
+บังคับปิดหรือไม่ สิ่งที่ Steam ยังไม่ได้บันทึกอาจสูญหาย เลือก ไม่ เพื่อปล่อยให้ทำงานต่อ — LuaTools เปลี่ยนไฟล์ของ Steam ไม่ได้ขณะที่ Steam ทำงานอยู่</value></data>
+  <data name="Startup_Steam_LeftRunning" xml:space="preserve"><value>Steam ยังทำงานอยู่ จึงไม่มีอะไรเปลี่ยนแปลง ปิด Steam แล้วเริ่ม LuaTools ใหม่เมื่อพร้อม</value></data>
+  <data name="Startup_Steam_Reopen_Body" xml:space="preserve"><value>LuaTools ทำงานเสร็จแล้ว เปิด Steam อีกครั้งหรือไม่</value></data>
+  <data name="Startup_Steam_Reopen_Action" xml:space="preserve"><value>เปิด Steam</value></data>
+  <data name="Startup_Steam_ReopenFailed" xml:space="preserve"><value>ไม่สามารถเริ่ม Steam ได้ — เปิดจากทางลัดของ Steam เอง</value></data>
+  <data name="Guard_Title" xml:space="preserve"><value>Steam กำลังทำงานอยู่แล้ว</value></data>
+  <data name="Guard_Body" xml:space="preserve"><value>LuaTools ต้องเริ่ม Steam เอง (หรือพบว่ามันปิดอยู่) เพื่อให้ hook เกาะติดได้ ต้องการเริ่ม Steam ใหม่ตอนนี้หรือไม่</value></data>
+  <data name="Guard_Restart" xml:space="preserve"><value>เริ่ม Steam ใหม่</value></data>
+  <data name="Guard_Exit" xml:space="preserve"><value>ออก</value></data>
+  <data name="Guard_Continue" xml:space="preserve"><value>ดำเนินการต่อแม้เช่นนั้น (ไม่แนะนำ)</value></data>
+  <data name="Guard_ContinueWarning" xml:space="preserve"><value>Steam ถูกปล่อยให้ทำงานอยู่ hook จึงอาจเกาะติดไม่สำเร็จ หากเกิดเหตุการณ์นั้น ให้เริ่ม Steam ใหม่จาก LuaTools</value></data>
+  <data name="Manage_Action_SaveBackup" xml:space="preserve"><value>สำรองข้อมูลเซฟ…</value></data>
+  <data name="Saves_Title" xml:space="preserve"><value>ข้อมูลสำรองเซฟ</value></data>
+  <data name="Saves_Create" xml:space="preserve"><value>สร้างข้อมูลสำรองใหม่</value></data>
+  <data name="Saves_Restore" xml:space="preserve"><value>กู้คืน</value></data>
+  <data name="Saves_Delete" xml:space="preserve"><value>ลบ</value></data>
+  <data name="Saves_Close" xml:space="preserve"><value>ปิด</value></data>
+  <data name="Saves_Empty" xml:space="preserve"><value>ยังไม่มีข้อมูลสำรองของเกมนี้</value></data>
+  <data name="Saves_Locations_Title" xml:space="preserve"><value>ตำแหน่งเซฟที่พบ</value></data>
+  <data name="Saves_Locations_None" xml:space="preserve"><value>ไม่พบโฟลเดอร์เซฟของเกมนี้</value></data>
+  <data name="Saves_Location_Subtitle" xml:space="preserve"><value>{0} · {1} ไฟล์</value></data>
+  <data name="Saves_AddFolder" xml:space="preserve"><value>เพิ่มโฟลเดอร์ด้วยตนเอง…</value></data>
+  <data name="Saves_Confirm_NoneFound" xml:space="preserve"><value>เราไม่พบเซฟของเกมนี้ ต้องการเลือกโฟลเดอร์ด้วยตนเองหรือไม่</value></data>
+  <data name="Saves_PickFolder" xml:space="preserve"><value>เลือกโฟลเดอร์</value></data>
+  <data name="Saves_PickFolderTitle" xml:space="preserve"><value>เลือกโฟลเดอร์ที่เกมนี้เก็บเซฟ</value></data>
+  <data name="Saves_Toast_PickOne" xml:space="preserve"><value>ติ๊กอย่างน้อยหนึ่งตำแหน่งเซฟเพื่อสำรองข้อมูล</value></data>
+  <data name="Saves_Toast_FolderRefused" xml:space="preserve"><value>ไม่สามารถใช้โฟลเดอร์นั้นได้ (รากของไดรฟ์ โฟลเดอร์ Windows หรือ Program Files หรือพาธที่ไม่สมบูรณ์)</value></data>
+  <data name="Manage_SaveIcon_Tooltip" xml:space="preserve"><value>ตรวจพบเซฟที่: {0}</value></data>
+  <data name="Settings_CustomSaveFolders" xml:space="preserve"><value>โฟลเดอร์เซฟที่กำหนดเอง</value></data>
+  <data name="Settings_CustomSaveFolders_Hint" xml:space="preserve"><value>สำหรับเกมที่แอปหาเซฟเองไม่พบ ป้อน AppID ของเกมแล้วเลือกโฟลเดอร์ โฟลเดอร์นั้นจะถูกสำรองไปกับเกมนั้น และเป็นที่เดียวที่เพิ่มเข้ามาซึ่งการกู้คืนเขียนได้</value></data>
+  <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
+  <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>เพิ่มโฟลเดอร์…</value></data>
+  <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>ลบออก</value></data>
+  <data name="Saves_Note" xml:space="preserve"><value>สำรองโฟลเดอร์ต่อเกมของ Steam (userdata) เกมที่เก็บเซฟใน เอกสาร หรือ AppData จะไม่รวมอยู่ด้วย</value></data>
+  <data name="Saves_Toast_Created" xml:space="preserve"><value>สำรองข้อมูล {0} ไฟล์แล้ว, {1}</value></data>
+  <data name="Saves_Toast_Restored" xml:space="preserve"><value>กู้คืน {0} ไฟล์แล้ว เก็บสำเนาของเซฟก่อนหน้าไว้</value></data>
+  <data name="Saves_Toast_Deleted" xml:space="preserve"><value>ลบข้อมูลสำรองแล้ว</value></data>
+  <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>ไม่พบเซฟของเกมนี้ เพิ่มโฟลเดอร์ที่เกมเก็บเซฟด้วย “เพิ่มโฟลเดอร์ด้วยตนเอง…”</value></data>
+  <data name="Saves_Toast_SteamNotFound" xml:space="preserve"><value>ไม่พบโฟลเดอร์ Steam กำหนดตำแหน่งในการตั้งค่า</value></data>
+  <data name="Saves_Toast_Refused" xml:space="preserve"><value>ถูกปฏิเสธ: ข้อมูลสำรองไม่ตรงกับเกมนี้หรือมีพาธที่ไม่ปลอดภัย ไม่มีอะไรเปลี่ยนแปลง</value></data>
+  <data name="Saves_Toast_Failed" xml:space="preserve"><value>การดำเนินการล้มเหลว ดูรายละเอียดในบันทึก</value></data>
+  <data name="Saves_Toast_NoSpace" xml:space="preserve"><value>พื้นที่ดิสก์ว่างไม่พอสำหรับข้อมูลสำรอง (ต้องใช้ {0} รวมส่วนเผื่อ) ไม่ได้เขียนอะไรเลย</value></data>
+  <data name="Saves_Confirm_Restore" xml:space="preserve"><value>กู้คืน {0} หรือไม่ เซฟปัจจุบันของเกมนี้จะถูกเขียนทับ โดยจะเก็บสำเนาไว้ก่อน</value></data>
+  <data name="Saves_Confirm_SteamOpen" xml:space="preserve"><value>Steam เปิดอยู่ เพื่อกู้คืนอย่างปลอดภัย (และไม่ให้ Steam Cloud เขียนทับไฟล์) ต้องปิด Steam</value></data>
+  <data name="Saves_CloseSteamContinue" xml:space="preserve"><value>ปิด Steam และดำเนินการต่อ</value></data>
+  <data name="Saves_Toast_SteamStillRunning" xml:space="preserve"><value>Steam ไม่ปิด ปิดด้วยตนเองแล้วลองอีกครั้ง ไม่ได้กู้คืนอะไรเลย</value></data>
+  <data name="Saves_Confirm_Delete" xml:space="preserve"><value>ลบ {0} หรือไม่ ไม่สามารถยกเลิกได้</value></data>
+  <data name="Manage_Badge_Installed" xml:space="preserve"><value>ติดตั้งแล้ว</value></data>
+  <data name="Manage_Action_ImportSave" xml:space="preserve"><value>นำเข้าเซฟ (.zip)…</value></data>
+  <data name="Saves_Import" xml:space="preserve"><value>นำเข้าเซฟ…</value></data>
+  <data name="Saves_Import_PickTitle" xml:space="preserve"><value>เลือกข้อมูลสำรองเซฟ (.zip)</value></data>
+  <data name="Saves_Import_Filter" xml:space="preserve"><value>ข้อมูลสำรองเซฟ (*.zip)|*.zip</value></data>
+  <data name="Saves_Confirm_Import" xml:space="preserve"><value>นำเข้า {0} หรือไม่ เซฟปัจจุบันของเกมนี้จะถูกเขียนทับ โดยจะเก็บสำเนาไว้ก่อน</value></data>
+  <data name="Saves_Toast_Imported" xml:space="preserve"><value>นำเข้า {0} ไฟล์แล้ว เก็บสำเนาของเซฟก่อนหน้าไว้</value></data>
+  <data name="Saves_Confirm_NewFolder" xml:space="preserve"><value>แอปจะสร้างโฟลเดอร์ตามชื่อเกมนี้เพื่อจัดระเบียบเซฟ ดำเนินการต่อหรือไม่</value></data>
+  <data name="Saves_Confirm_Ok" xml:space="preserve"><value>ตกลง</value></data>
+  <data name="Saves_Toast_SavedAt" xml:space="preserve"><value>บันทึกข้อมูลสำรองสำเร็จที่: {0}</value></data>
+  <data name="Settings_SaveBackupFolder" xml:space="preserve"><value>โฟลเดอร์ข้อมูลสำรองเซฟ</value></data>
+  <data name="Settings_SaveBackupFolder_Hint" xml:space="preserve"><value>ตำแหน่งที่ “สำรองข้อมูลเซฟ…” เขียนไฟล์ zip ค่าเริ่มต้น: %AppData%\LuaToolsGui\SaveBackups</value></data>
+  <data name="Settings_ChooseSaveBackupFolder" xml:space="preserve"><value>เลือกโฟลเดอร์ข้อมูลสำรองเซฟ</value></data>
+  <data name="About_Changelog_Title" xml:space="preserve"><value>มีอะไรใหม่</value></data>
+  <data name="About_Changelog_Show" xml:space="preserve"><value>แสดงบันทึกการเปลี่ยนแปลง</value></data>
+  <data name="About_Changelog_Hide" xml:space="preserve"><value>ซ่อนบันทึกการเปลี่ยนแปลง</value></data>
+  <data name="Home_Privacy_UpdatesOff" xml:space="preserve"><value>อัปเดตตัวเองปิดอยู่ — บิลด์นี้ไม่ดึงอะไรด้วยตัวเอง</value></data>
+  <data name="Home_Privacy_UpdatesOn" xml:space="preserve"><value>อัปเดตตัวเองเปิดอยู่ — ตรวจสอบรุ่นที่ออกใหม่เมื่อเริ่มต้น</value></data>
+  <data name="Home_Action_Mode_Tip" xml:space="preserve"><value>เลือกแบ็กเอนด์ที่เป็นเจ้าของ DLL พร็อกซีของ Steam</value></data>
+  <data name="Home_Action_Plugin" xml:space="preserve"><value>ปลั๊กอิน</value></data>
+  <data name="Home_Action_Plugin_Tip" xml:space="preserve"><value>ติดตั้งหรืออัปเดตปลั๊กอินหน้าร้านค้า</value></data>
+  <data name="Home_Action_Updates_Tip" xml:space="preserve"><value>เปิด เกี่ยวกับ เพื่อตรวจสอบเวอร์ชันใหม่</value></data>
+  <data name="Mode_Warn_Telemetry" xml:space="preserve"><value>โปรเจกต์ต้นฉบับ (madoiscool) คำเตือน: มีเทเลเมทรีและระบบ DonateKeys</value></data>
+  <data name="Manage_Sort_InstalledFirst" xml:space="preserve"><value>ที่ติดตั้งแล้วก่อน</value></data>
+  <data name="Add_Warn_NoManifests_Title" xml:space="preserve"><value>คำเตือน</value></data>
+  <data name="Add_Warn_NoManifests" xml:space="preserve"><value>แหล่งที่มานี้ไม่ได้ส่ง manifest สำหรับ {0} การดาวน์โหลดใน Steam อาจล้มเหลว เราแนะนำแหล่งที่มา {1}</value></data>
+  <data name="Plugin_Row_Source" xml:space="preserve"><value>แหล่งที่มา</value></data>
+  <data name="Plugin_Sources_Header" xml:space="preserve"><value>แหล่งที่มาของปลั๊กอิน</value></data>
+  <data name="Plugin_Sources_Subtitle" xml:space="preserve"><value>ผู้สร้างแต่ละรายเผยแพร่บิลด์ปลั๊กอินของตัวเอง เลือกอันที่ต้องการติดตั้ง — LuaTools ติดตั้งเฉพาะแหล่งที่มาที่ใช้งานอยู่ และไม่สลับเองเด็ดขาด</value></data>
+  <data name="Plugin_Source_By" xml:space="preserve"><value>โดย {0}</value></data>
+  <data name="Plugin_Source_Active" xml:space="preserve"><value>ใช้งานอยู่</value></data>
+  <data name="Plugin_Source_Default" xml:space="preserve"><value>ค่าเริ่มต้น</value></data>
+  <data name="Plugin_Source_Installed" xml:space="preserve"><value>ติดตั้งจากแหล่งที่มานี้แล้ว</value></data>
+  <data name="Plugin_Source_ActiveNotInstalled" xml:space="preserve"><value>แหล่งที่มาที่ใช้งานอยู่ — ยังไม่ได้ติดตั้ง</value></data>
+  <data name="Plugin_Source_Available" xml:space="preserve"><value>พร้อมใช้งาน เลือกเพื่อติดตั้งจากผู้สร้างรายนี้แทน</value></data>
+  <data name="Plugin_Source_LatestVersion" xml:space="preserve"><value>ล่าสุด</value></data>
+  <data name="Plugin_Btn_Activate" xml:space="preserve"><value>ใช้แหล่งที่มานี้</value></data>
+  <data name="Plugin_Confirm_SwitchCaption" xml:space="preserve"><value>สลับแหล่งที่มาของปลั๊กอิน</value></data>
+  <data name="Plugin_Confirm_SwitchBody" xml:space="preserve"><value>การดำเนินการนี้ติดตั้งปลั๊กอินจาก {0} แทนที่ที่ติดตั้งอยู่ตอนนี้ และปิดแล้วเริ่ม Steam ใหม่เพื่อนำไปใช้ ดำเนินการต่อหรือไม่</value></data>
+  <data name="Plugin_Toast_SourceSwitched" xml:space="preserve"><value>ตอนนี้ติดตั้งจาก {0} แล้ว Steam กำลังเริ่มใหม่เพื่อโหลดปลั๊กอิน</value></data>
+  <data name="Plugin_Err_UnknownSource" xml:space="preserve"><value>{0} ไม่ใช่แหล่งที่มาของปลั๊กอินที่บิลด์นี้มาด้วย จึงไม่ได้ติดตั้งอะไร</value></data>
+  <data name="Plugin_SourceErr_NoRelease" xml:space="preserve"><value>แหล่งที่มานี้ไม่ได้เผยแพร่รุ่นใด หรือไม่สามารถเข้าถึงได้</value></data>
+  <data name="Plugin_SourceErr_NoTag" xml:space="preserve"><value>รุ่นล่าสุดของแหล่งที่มานี้ไม่มีแท็กเวอร์ชัน</value></data>
+  <data name="Plugin_SourceErr_MissingAsset" xml:space="preserve"><value>รุ่นล่าสุดของแหล่งที่มานี้ไม่มี {0}</value></data>
+  <data name="Plugin_SourceErr_ForeignAssetUrl" xml:space="preserve"><value>ลิงก์ดาวน์โหลด {0} ของแหล่งที่มานี้ชี้ออกนอกที่เก็บของตัวเอง จึงถูกปฏิเสธ</value></data>
+  <data name="Plugin_SourceErr_NoDigest" xml:space="preserve"><value>แหล่งที่มานี้ไม่เผยแพร่ SHA-256 สำหรับ {0} จึงพิสูจน์เนื้อหาไม่ได้</value></data>
+  <data name="Plugin_Err_ArchiveRejected" xml:space="preserve"><value>{0} ถูกการตรวจสอบความปลอดภัยปฏิเสธ: {1}</value></data>
+  <data name="Download_Notice_Title" xml:space="preserve"><value>กำลังติดตั้งจาก {0}</value></data>
+  <data name="Download_Notice_Body" xml:space="preserve"><value>{0} · เวอร์ชัน {1} · {2} ไฟล์
+SHA-256 {3}
+ตรวจสอบแล้ว: {4}</value></data>
+  <data name="Download_Notice_Check_Pinned" xml:space="preserve"><value>ตรึงที่เก็บแล้ว</value></data>
+  <data name="Download_Notice_Check_Digest" xml:space="preserve"><value>SHA-256 ตรงกัน</value></data>
+  <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>ตรวจสอบไฟล์เก็บถาวรแล้ว</value></data>
+  <data name="Download_Notice_Cancel" xml:space="preserve"><value>ยกเลิก</value></data>
+  <data name="Download_Notice_Cancelled" xml:space="preserve"><value>ยกเลิกก่อนที่จะติดตั้งอะไร</value></data>
+  <data name="Builds_RemoveGame" xml:space="preserve"><value>ลบเกม</value></data>
+  <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>นำเกมนี้ออกจากรายการดีโป ลบไฟล์ lua ของเกมและบิลด์ที่เก็บไว้ทั้งหมด</value></data>
+  <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>ลบเกม</value></data>
+  <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>ลบ {0} ({1}) ออกจากดีโปหรือไม่
+
+การทำเช่นนี้จะลบไฟล์ lua ของเกม ไฟล์ lua ของบิลด์ที่อยู่ข้างๆ และบิลด์ที่เก็บไว้ทั้งหมด ไม่สามารถยกเลิกได้</value></data>
+  <data name="Builds_RemoveGame_Done" xml:space="preserve"><value>ลบ {0} ออกจากดีโปแล้ว</value></data>
+  <data name="Builds_RemoveGame_Gone" xml:space="preserve"><value>{0} ไม่มีไฟล์เหลือแล้ว — นำออกจากรายการแล้ว</value></data>
+  <data name="Builds_RemoveGame_Failed" xml:space="preserve"><value>ลบ {0} ไม่หมด: {1} ปิด Steam แล้วลองอีกครั้ง</value></data>
+  <data name="Auth_Err_SignInTimedOut" xml:space="preserve"><value>การเข้าสู่ระบบหมดเวลา — เบราว์เซอร์ไม่เคยกลับมา คุณยังเข้าสู่ระบบด้วยโค้ดได้: เรียกใช้ /login ในเซิร์ฟเวอร์ Discord แล้ววางโค้ดในการตั้งค่า</value></data>
+  <data name="Auth_Err_CallbackPortBusy" xml:space="preserve"><value>เริ่มการเข้าสู่ระบบไม่ได้: พอร์ต 53789 ถูกใช้งานอยู่แล้ว ปิดความพยายามเข้าสู่ระบบอื่นแล้วลองอีกครั้ง</value></data>
+  <data name="Auth_ProviderUnavailable" xml:space="preserve"><value>เซิร์ฟเวอร์เข้าสู่ระบบไม่ตอบสนองในขณะนี้ การเข้าสู่ระบบ Discord ผ่านเบราว์เซอร์จึงน่าจะหมดเวลา คุณเข้าสู่ระบบด้วยโค้ดแทนได้: เรียกใช้ /login ในเซิร์ฟเวอร์ Discord แล้วป้อนโค้ดในการตั้งค่า</value></data>
+  <data name="Auth_SignInCancelled" xml:space="preserve"><value>ยกเลิกการเข้าสู่ระบบแล้ว คุณลองอีกครั้งหรือใช้โค้ดด้วยตนเองได้ (เรียกใช้ /login ใน Discord)</value></data>
+  <data name="Auth_TryAgain" xml:space="preserve"><value>ลองอีกครั้ง</value></data>
+  <data name="Auth_TryAnyway" xml:space="preserve"><value>ลองต่อไป</value></data>
+  <data name="Auth_UseManualCode" xml:space="preserve"><value>ใช้โค้ดด้วยตนเอง</value></data>
+  <data name="Auth_Cancel" xml:space="preserve"><value>ยกเลิก</value></data>
+  <data name="Protocol_SilentInstall_Title" xml:space="preserve"><value>คำขอติดตั้ง</value></data>
+  <data name="Protocol_SilentInstall_Body" xml:space="preserve"><value>ลิงก์กำลังขอให้ LuaTools ติดตั้งแอป {0} ในเบื้องหลัง ดำเนินการต่อเฉพาะเมื่อคุณเป็นผู้เริ่มเอง</value></data>
+  <data name="Cdp_Consent_Title" xml:space="preserve"><value>เปิดใช้สะพานหน้าร้านค้า Steam หรือไม่</value></data>
+  <data name="Cdp_Consent_Body" xml:space="preserve"><value>ปลั๊กอินหน้าร้านค้าต้องใช้สะพานดีบักของ Steam ซึ่ง LuaTools เปิดใช้โดยเพิ่มเครื่องหมายไว้ข้าง steam.exe ขณะที่ Steam ทำงาน การทำเช่นนี้จะเปิดพอร์ตภายในเครื่องที่ไม่มีการยืนยันตัวตน (127.0.0.1:8080)
+
+สิ่งอื่นที่ทำงานบนพีซีเครื่องนี้จึงควบคุมเบราว์เซอร์ในตัวของ Steam ด้วยเซสชันที่คุณลงชื่อเข้าใช้ได้ เปิดใช้เฉพาะเมื่อคุณเชื่อถือซอฟต์แวร์ที่ติดตั้งบนเครื่องนี้
+
+คุณปฏิเสธได้และยังใช้ส่วนที่เหลือของ LuaTools ต่อไป เฉพาะปุ่ม “Add via LuaTools” ในร้านค้าที่จะใช้ไม่ได้
+
+เปิดใช้หรือไม่</value></data>
+  <data name="Privacy_HttpMetadata_Title" xml:space="preserve"><value>การค้นหาที่ไม่เข้ารหัส</value></data>
+  <data name="Privacy_HttpMetadata_Body" xml:space="preserve"><value>ความพร้อมใช้งานของแหล่งที่มาถูกตรวจสอบผ่าน HTTP ธรรมดา ({0}) เพราะเซิร์ฟเวอร์นั้นไม่มี HTTPS ที่ใช้งานได้ ไม่มีการส่งบัญชีหรือคีย์ แต่ทุกคนบนเส้นทางเครือข่ายของคุณมองเห็นได้ว่าคุณค้นหาแอป Steam ใด ตั้งค่า “WarnOnInsecureMetadata”: false ใน settings.json เพื่อซ่อนข้อความนี้</value></data>
+  <data name="Theme_Guard_Title" xml:space="preserve"><value>ไม่ได้ใช้ธีม</value></data>
+  <data name="Theme_Guard_Body" xml:space="preserve"><value>สีเน้น Amethyst ไม่มีผล ซึ่งมักหมายความว่าแพ็กเกจ WPF-UI เปลี่ยนชื่อรีซอร์ส แอปทำงานได้ตามปกติ แต่บางส่วนจะดูผิดเพี้ยน ดู docs/CHANGELOG.md</value></data>
+  <data name="App_DisplayName" xml:space="preserve"><value>LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Title" xml:space="preserve"><value>นี่อาจไม่ใช่ LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Body" xml:space="preserve"><value>ไบนารีนี้ไม่ได้ระบุตัวเองว่าเป็น LuaTools Amethyst หากคุณติดตั้ง LuaTools รุ่นทางการทับ การวิเคราะห์และการอัปโหลดคีย์ Steam จะกลับมาทำงานอีกครั้ง ติดตั้งใหม่จากที่เก็บ Amethyst เพื่อกลับมาใช้บิลด์ที่เน้นความเป็นส่วนตัว</value></data>
+  <data name="Fixes_Toast_Blocked" xml:space="preserve"><value>ปฏิเสธการดาวน์โหลด</value></data>
+  <data name="Fixes_Toast_Blocked_Body" xml:space="preserve"><value>{0} ไม่ได้ถูกติดตั้งเพราะไม่ผ่านการตรวจสอบความปลอดภัย — {1}</value></data>
+  <data name="About_Nav" xml:space="preserve"><value>เกี่ยวกับ</value></data>
+  <data name="About_Title" xml:space="preserve"><value>เกี่ยวกับ LuaTools Amethyst</value></data>
+  <data name="About_What_Header" xml:space="preserve"><value>นี่คืออะไร</value></data>
+  <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst เป็นฟอร์กของชุมชนจาก LuaTools ที่เน้นความเป็นส่วนตัว ลบการ ping วิเคราะห์และการอัปโหลดคีย์บริจาคที่บิลด์ต้นฉบับทำ คงทุกการดาวน์โหลดผ่าน HTTPS และมาพร้อมธีมสีม่วง Amethyst</value></data>
+  <data name="About_Version_Header" xml:space="preserve"><value>เวอร์ชัน</value></data>
+  <data name="About_Repo_Header" xml:space="preserve"><value>ที่เก็บ</value></data>
+  <data name="About_Updates_Header" xml:space="preserve"><value>การอัปเดต</value></data>
+  <data name="About_Updates_Enabled" xml:space="preserve"><value>การอัปเดตอัตโนมัติ เปิดอยู่ LuaTools Amethyst ตรวจสอบที่เก็บด้านล่างเมื่อเริ่มต้นและติดตั้งการอัปเดตในเบื้องหลัง</value></data>
+  <data name="About_Updates_Disabled" xml:space="preserve"><value>การอัปเดตอัตโนมัติ ปิดอยู่ — ไม่มีการส่งคำขออัปเดต เพิ่ม “AppUpdateRepos” ใน settings.json เพื่อเปิด หรืออัปเดตด้วยตนเองจากที่เก็บด้านล่าง</value></data>
+  <data name="About_Updates_Sources" xml:space="preserve"><value>แหล่งที่มาของการอัปเดต</value></data>
+  <data name="About_Check_Button" xml:space="preserve"><value>ตรวจสอบการอัปเดต</value></data>
+  <data name="About_Check_Checking" xml:space="preserve"><value>กำลังตรวจสอบ…</value></data>
+  <data name="About_Check_UpToDate" xml:space="preserve"><value>คุณใช้เวอร์ชันล่าสุดอยู่</value></data>
+  <data name="About_Check_Found" xml:space="preserve"><value>ดาวน์โหลดการอัปเดตแล้ว จะใช้เมื่อคุณปิด LuaTools</value></data>
+  <data name="About_Check_Failed" xml:space="preserve"><value>ตรวจสอบการอัปเดตไม่ได้ ตรวจสอบการเชื่อมต่อและที่เก็บที่ตั้งค่าไว้</value></data>
+  <data name="About_Check_Disabled" xml:space="preserve"><value>การอัปเดตอัตโนมัติถูกปิดใช้งาน — ตั้งค่า “AppUpdateRepos” ใน settings.json ก่อน</value></data>
+  <data name="About_OpenRepo" xml:space="preserve"><value>เปิดที่เก็บ</value></data>
+  <data name="About_OpenSettings" xml:space="preserve"><value>เปิดโฟลเดอร์ settings.json</value></data>
+  <data name="About_Config_Header" xml:space="preserve"><value>ตั้งค่าการอัปเดตด้วยตนเอง</value></data>
+  <data name="About_Config_Body" xml:space="preserve"><value>แก้ไข settings.json ในโฟลเดอร์ด้านล่างแล้วเพิ่มที่เก็บที่คุณต้องการรับการอัปเดต รับเฉพาะ https://github.com/&lt;owner&gt;/&lt;repo&gt; เท่านั้น และที่เก็บของรุ่นทางการของ LuaTools จะถูกปฏิเสธเพื่อไม่ให้บิลด์ทางการมาแทนที่บิลด์นี้ได้</value></data>
+  <data name="Builds_Depot_Download" xml:space="preserve"><value>ดาวน์โหลดดีโป…</value></data>
+  <data name="Builds_Depot_Unavailable" xml:space="preserve"><value>บิลด์นี้ดาวน์โหลดดีโปไม่ได้: ไม่มีพินที่ตรวจสอบแล้วสำหรับเครื่องมือดาวน์โหลด</value></data>
+  <data name="Builds_Depot_PickTitle" xml:space="preserve"><value>ดาวน์โหลดเนื้อหาดีโป</value></data>
+  <data name="Builds_Depot_PickHint" xml:space="preserve"><value>ไฟล์ดิบถูกดึงโดยไม่ระบุตัวตนจาก CDN ของ Steam โดยตรง ไม่มีการติดตั้งอะไร — ดีโปจะถูกเขียนลงโฟลเดอร์ด้านล่างให้คุณใช้ตามต้องการ</value></data>
+  <data name="Builds_Depot_NoCandidates" xml:space="preserve"><value>ไม่มีดีโปของเกมนี้ที่ดาวน์โหลดได้ ต้องมีทั้งคีย์ถอดรหัสจาก lua และ manifest ที่ Steam เผยแพร่</value></data>
+  <data name="Builds_Depot_NeedsKey" xml:space="preserve"><value>ไม่มีคีย์ในบิลด์นี้</value></data>
+  <data name="Builds_Depot_NeedsManifest" xml:space="preserve"><value>Steam ไม่เผยแพร่ manifest</value></data>
+  <data name="Builds_Depot_NeedsSignIn" xml:space="preserve"><value>เข้าสู่ระบบเพื่อดึง manifest</value></data>
+  <data name="Builds_Depot_SelectAll" xml:space="preserve"><value>เลือกทั้งหมด</value></data>
+  <data name="Builds_Depot_SelectNone" xml:space="preserve"><value>ล้าง</value></data>
+  <data name="Builds_Depot_Destination" xml:space="preserve"><value>โฟลเดอร์ปลายทาง</value></data>
+  <data name="Builds_Depot_Change" xml:space="preserve"><value>เปลี่ยน…</value></data>
+  <data name="Builds_Depot_Space" xml:space="preserve"><value>ต้องใช้ {0} · ว่าง {1} บน {2}</value></data>
+  <data name="Builds_Depot_NotEnoughSpace" xml:space="preserve"><value>พื้นที่ว่างบนไดรฟ์นั้นไม่พอ เลือกดีโปให้น้อยลงหรือเลือกโฟลเดอร์อื่น</value></data>
+  <data name="Builds_Depot_Confirm" xml:space="preserve"><value>ดาวน์โหลด {0} ดีโป</value></data>
+  <data name="Builds_Depot_Cancel" xml:space="preserve"><value>ยกเลิก</value></data>
+  <data name="Builds_Depot_Downloading" xml:space="preserve"><value>ดีโป {0} จาก {1} · {2}</value></data>
+  <data name="Builds_Depot_Phase_PreAllocating" xml:space="preserve"><value>กำลังจองพื้นที่ดิสก์</value></data>
+  <data name="Builds_Depot_Phase_Validating" xml:space="preserve"><value>กำลังตรวจสอบไฟล์ที่มีอยู่</value></data>
+  <data name="Builds_Depot_Phase_FetchingManifest" xml:space="preserve"><value>กำลังดึง manifest</value></data>
+  <data name="Builds_Depot_Phase_Downloading" xml:space="preserve"><value>กำลังดาวน์โหลด</value></data>
+  <data name="Builds_Depot_Done" xml:space="preserve"><value>ดาวน์โหลด {0} ดีโปไปที่ {1} แล้ว</value></data>
+  <data name="Builds_Depot_OpenFolder" xml:space="preserve"><value>เปิดโฟลเดอร์</value></data>
+  <data name="Builds_Depot_CleanUp_Title" xml:space="preserve"><value>ลบการดาวน์โหลดที่ไม่สมบูรณ์หรือไม่</value></data>
+  <data name="Builds_Depot_CleanUp_Body" xml:space="preserve"><value>การดาวน์โหลดถูกยกเลิกหลังจากสร้าง {0} ไฟล์ใน {1} ลบเฉพาะไฟล์เหล่านั้นหรือไม่ สิ่งที่มีอยู่แล้วจะไม่ถูกแตะต้อง</value></data>
+  <data name="Builds_Depot_CleanUp_Failed" xml:space="preserve"><value>ลบบางไฟล์ไม่ได้ — อาจยังถูกใช้งานอยู่ ลองอีกครั้งในอีกสักครู่</value></data>
+  <data name="Depot_Err_ToolNotPinned" xml:space="preserve"><value>บิลด์นี้ปิดการดาวน์โหลดดีโปเพราะไม่มีพินที่ตรวจสอบแล้วสำหรับเครื่องมือดาวน์โหลด</value></data>
+  <data name="Depot_Err_Tool" xml:space="preserve"><value>ไม่สามารถรับตัวดาวน์โหลดดีโปได้ หรือสิ่งที่ได้มาไม่ผ่านการตรวจสอบ</value></data>
+  <data name="Depot_Err_SteamNotFound" xml:space="preserve"><value>ไม่พบตำแหน่ง Steam — กำหนดในการตั้งค่า</value></data>
+  <data name="Depot_Err_NoKeys" xml:space="preserve"><value>ไม่พบคีย์ถอดรหัสดีโปของเกมนี้</value></data>
+  <data name="Depot_Err_NoKeyFor" xml:space="preserve"><value>ดีโป {0} ไม่มีคีย์ถอดรหัสที่ใช้ได้</value></data>
+  <data name="Depot_Err_BadKey" xml:space="preserve"><value>คีย์ที่เก็บไว้สำหรับดีโป {0} ไม่ตรงกับ manifest ของมัน</value></data>
+  <data name="Depot_Err_NoManifest" xml:space="preserve"><value>ไม่สามารถรับ manifest ของดีโปนั้นได้</value></data>
+  <data name="Depot_Err_SignIn" xml:space="preserve"><value>เข้าสู่ระบบเพื่อดึง manifest ที่ Steam ยังไม่มีบนเครื่องนี้</value></data>
+  <data name="Depot_Err_NoSpace" xml:space="preserve"><value>พื้นที่ดิสก์ไม่พอ: ต้องใช้ {0} ว่าง {1}</value></data>
+  <data name="Depot_Err_Failed" xml:space="preserve"><value>ดีโป {0} ล้มเหลว: {1}</value></data>
+  <data name="Builds_Depot_Queued" xml:space="preserve"><value>ส่ง {0} ดีโปไปยังดาวน์โหลดแล้ว</value></data>
+  <data name="Nav_Downloads" xml:space="preserve"><value>ดาวน์โหลด</value></data>
+  <data name="Downloads_Title" xml:space="preserve"><value>ดาวน์โหลด</value></data>
+  <data name="Downloads_Subtitle" xml:space="preserve"><value>ทุกอย่างที่แอปกำลังดึงอยู่ตอนนี้และที่เคยดึงมาก่อน manifest และเนื้อหาดีโปใช้คิวนี้ร่วมกัน</value></data>
+  <data name="Downloads_Empty" xml:space="preserve"><value>ยังไม่มีการดาวน์โหลด การเพิ่มเกมจากหน้าเพิ่ม หรือการดึงเนื้อหาดีโปจากหน้าดีโป จะแสดงที่นี่</value></data>
+  <data name="Downloads_Section_Active" xml:space="preserve"><value>กำลังดำเนินการ</value></data>
+  <data name="Downloads_Section_History" xml:space="preserve"><value>ประวัติ</value></data>
+  <data name="Downloads_ActionRequired" xml:space="preserve"><value>ต้องดำเนินการ</value></data>
+  <data name="Downloads_Of" xml:space="preserve"><value>{0} จาก {1}</value></data>
+  <data name="Downloads_Eta" xml:space="preserve"><value>เหลือ {0}</value></data>
+  <data name="Downloads_Source_Depots" xml:space="preserve"><value>{0} ดีโป</value></data>
+  <data name="Downloads_Status_Queued" xml:space="preserve"><value>อยู่ในคิว</value></data>
+  <data name="Downloads_Status_Downloading" xml:space="preserve"><value>กำลังดาวน์โหลด</value></data>
+  <data name="Downloads_Status_AwaitingConfirm" xml:space="preserve"><value>รอคุณอยู่</value></data>
+  <data name="Downloads_Status_Installing" xml:space="preserve"><value>กำลังติดตั้ง</value></data>
+  <data name="Downloads_Status_Paused" xml:space="preserve"><value>หยุดชั่วคราว</value></data>
+  <data name="Downloads_Status_Verifying" xml:space="preserve"><value>กำลังตรวจสอบ</value></data>
+  <data name="Downloads_Status_Completed" xml:space="preserve"><value>เสร็จสิ้น</value></data>
+  <data name="Downloads_Status_Failed" xml:space="preserve"><value>ล้มเหลว</value></data>
+  <data name="Downloads_Status_Cancelled" xml:space="preserve"><value>ยกเลิกแล้ว</value></data>
+  <data name="Downloads_Action_Review" xml:space="preserve"><value>ตรวจทาน</value></data>
+  <data name="Downloads_Action_Pause" xml:space="preserve"><value>หยุดชั่วคราว</value></data>
+  <data name="Downloads_Action_Resume" xml:space="preserve"><value>ดำเนินการต่อ</value></data>
+  <data name="Downloads_Action_MoveUp" xml:space="preserve"><value>เลื่อนขึ้น</value></data>
+  <data name="Downloads_Action_MoveDown" xml:space="preserve"><value>เลื่อนลง</value></data>
+  <data name="Downloads_Action_Cancel" xml:space="preserve"><value>ยกเลิก</value></data>
+  <data name="Downloads_Action_Retry" xml:space="preserve"><value>ลองอีกครั้ง</value></data>
+  <data name="Downloads_Action_Remove" xml:space="preserve"><value>ลบออก</value></data>
+  <data name="Downloads_Action_ClearHistory" xml:space="preserve"><value>ล้างประวัติ</value></data>
+  <data name="Downloads_Action_CopyAppId" xml:space="preserve"><value>คัดลอก App ID</value></data>
+  <data name="Downloads_Action_ShowInFolder" xml:space="preserve"><value>แสดงในโฟลเดอร์</value></data>
+  <data name="Downloads_ClearHistory_Confirm" xml:space="preserve"><value>ลบทั้ง {0} รายการออกจากประวัติการดาวน์โหลดหรือไม่ ตัวไฟล์จะไม่ถูกแตะต้อง</value></data>
+  <data name="Downloads_Err_Interrupted" xml:space="preserve"><value>ถูกขัดจังหวะเมื่อแอปปิด</value></data>
+  <data name="Downloads_Err_Cancelled" xml:space="preserve"><value>ยกเลิกแล้ว</value></data>
+  <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>คลิปบอร์ดถูกใช้โดยโปรแกรมอื่น — ไม่ได้คัดลอกอะไร</value></data>
+  <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>ตำแหน่งนั้นไม่มีอยู่แล้ว: {0}</value></data>
+  <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>ปฏิเสธ “{0}”: manifest ต้องตั้งชื่อว่า &lt;depot&gt;_&lt;manifest&gt;.manifest (ตัวเลขเท่านั้น)</value></data>
+  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>ที่เก็บต้นทางของ CloudRedirect ไม่พร้อมใช้งาน ฟีเจอร์ถูกปิดชั่วคราว</value></data>
+  <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>บิลด์ที่เก็บไว้ (ไม่มี lua ที่ใช้งาน)</value></data>
+  <data name="Settings_Maintenance_Title" xml:space="preserve"><value>การบำรุงรักษา</value></data>
+  <data name="Settings_Backups_Title" xml:space="preserve"><value>ข้อมูลสำรองที่สะสม</value></data>
+  <data name="Settings_Backups_Subtitle" xml:space="preserve"><value>โฟลเดอร์สำรองที่สร้างเมื่อติดตั้ง AmethystTool หรือลบปลั๊กอิน การลบจะเพิ่มพื้นที่ว่างในโฟลเดอร์ Steam</value></data>
+  <data name="Settings_Backups_Empty" xml:space="preserve"><value>ไม่พบข้อมูลสำรอง</value></data>
+  <data name="Settings_Backups_NoSteam" xml:space="preserve"><value>ตั้งค่าตำแหน่ง Steam ในการตั้งค่าเพื่อดูข้อมูลสำรอง</value></data>
+  <data name="Settings_Backups_Refresh" xml:space="preserve"><value>รีเฟรช</value></data>
+  <data name="Settings_Backups_DeleteSelected" xml:space="preserve"><value>ลบที่เลือก</value></data>
+  <data name="Settings_Backups_DeleteOlder" xml:space="preserve"><value>ลบที่เก่ากว่า 30 วัน</value></data>
+  <data name="Settings_Backups_Confirm_Title" xml:space="preserve"><value>ลบข้อมูลสำรองหรือไม่</value></data>
+  <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>ลบ {0} รายการ ({1}) อย่างถาวรหรือไม่ คุณจะย้อนกลับการติดตั้ง AmethystTool หรือการลบปลั๊กอินก่อนหน้านี้ไม่ได้</value></data>
+  <data name="Settings_Backups_Confirm_Delete" xml:space="preserve"><value>ลบ</value></data>
+  <data name="Settings_Backups_Cancel" xml:space="preserve"><value>ยกเลิก</value></data>
+  <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>ลบ {0} รายการแล้ว (คืนพื้นที่ {1})</value></data>
+  <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>ลบ {0} รายการไม่ได้ ปิด Steam แล้วลองอีกครั้ง</value></data>
+  <data name="Settings_Backups_Column_Name" xml:space="preserve"><value>ชื่อ</value></data>
+  <data name="Settings_Backups_Column_Type" xml:space="preserve"><value>ประเภท</value></data>
+  <data name="Settings_Backups_Type_Folder" xml:space="preserve"><value>โฟลเดอร์</value></data>
+  <data name="Settings_Backups_Type_File" xml:space="preserve"><value>ไฟล์</value></data>
+  <data name="Settings_Backups_UnknownWarning" xml:space="preserve"><value>ข้อมูลสำรองที่ไม่รู้จัก ตรวจสอบก่อนลบ</value></data>
+  <data name="Settings_Backups_Column_Date" xml:space="preserve"><value>สร้างเมื่อ</value></data>
+  <data name="Settings_Backups_Column_Size" xml:space="preserve"><value>ขนาด</value></data>
+  <data name="Settings_Backups_Column_Files" xml:space="preserve"><value>ไฟล์</value></data>
+  <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>เวอร์ชันในเครื่อง (ออฟไลน์)</value></data>
+  <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>ไม่มีการเชื่อมต่ออินเทอร์เน็ต กำลังใช้เวอร์ชันที่ติดตั้งในเครื่อง</value></data>
+  <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>ดาวน์โหลดเวอร์ชันใหม่ไม่ได้หากไม่มีอินเทอร์เน็ต</value></data>
 </root>

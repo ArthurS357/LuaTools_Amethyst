@@ -586,4 +586,288 @@ Thao tác này sẽ xóa các tệp .lua khỏi Steam\config\stplug-in. Sau đó
   <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools không thể khởi động.&#10;&#10;{0}&#10;&#10;Chi tiết đã được ghi vào:&#10;{1}</value></data>
   <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Không thể ghi {0} tệp vào thư mục Steam — truy cập bị từ chối. Có vẻ Steam được cài ở vị trí cần quyền quản trị viên (ví dụ: Program Files). Hãy đóng Steam, sau đó chạy LuaTools với quyền quản trị viên một lần để áp dụng chế độ này.</value></data>
   <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Không thể ghi {0} tệp — hãy đóng Steam và thử lại.</value></data>
+  <data name="Nav_Plugin" xml:space="preserve"><value>Plugin</value></data>
+  <data name="Settings_HubcapKeyRejected" xml:space="preserve"><value>Hubcap đã từ chối khóa đó. Hãy kiểm tra xem khóa đã được sao chép đầy đủ và chưa hết hạn chưa.</value></data>
+  <data name="Settings_HubcapKeyOffline" xml:space="preserve"><value>Không thể kết nối tới Hubcap. Hãy kiểm tra kết nối rồi thử lại — khóa chưa bị thay đổi.</value></data>
+  <data name="Settings_HubcapKeyRateLimited" xml:space="preserve"><value>Hubcap đang giới hạn tốc độ khóa này. Hãy thử lại sau ít phút.</value></data>
+  <data name="Settings_HubcapExpiryExpired" xml:space="preserve"><value>Khóa Hubcap của bạn đã hết hạn vào {0}. Hãy xác thực khóa mới để tiếp tục dùng các nguồn Hubcap.</value></data>
+  <data name="Settings_HubcapExpiryToday" xml:space="preserve"><value>Khóa Hubcap của bạn hết hạn hôm nay ({0}). Hãy lấy khóa mới trước khi nó ngừng hoạt động.</value></data>
+  <data name="Settings_HubcapExpirySoon" xml:space="preserve"><value>Khóa Hubcap của bạn sẽ hết hạn sau {0} ngày ({1}). Hãy lấy khóa mới trước khi nó ngừng hoạt động.</value></data>
+  <data name="Hubcap_Err_KeyRejected" xml:space="preserve"><value>Khóa Hubcap của bạn không hợp lệ hoặc đã hết hạn.</value></data>
+  <data name="Hubcap_Err_DailyLimit" xml:space="preserve"><value>Bạn đã đạt giới hạn hằng ngày của Hubcap.</value></data>
+  <data name="Hubcap_Err_DailyLimitRetry" xml:space="preserve"><value>Bạn đã đạt giới hạn hằng ngày của Hubcap. Hãy thử lại sau khoảng {0}.</value></data>
+  <data name="Hubcap_Err_NoManifest" xml:space="preserve"><value>Không có manifest Hubcap nào cho ứng dụng này.</value></data>
+  <data name="Hubcap_Err_Status" xml:space="preserve"><value>Tải xuống từ Hubcap thất bại ({0}).</value></data>
+  <data name="Hubcap_Err_Unreachable" xml:space="preserve"><value>Không thể kết nối tới Hubcap. Hãy kiểm tra kết nối rồi thử lại.</value></data>
+  <data name="Hubcap_Err_Generic" xml:space="preserve"><value>Tải xuống từ Hubcap thất bại.</value></data>
+  <data name="Hubcap_Wait_Seconds" xml:space="preserve"><value>{0} giây</value></data>
+  <data name="Hubcap_Wait_Minutes" xml:space="preserve"><value>{0} phút</value></data>
+  <data name="Hubcap_Wait_Hours" xml:space="preserve"><value>{0} giờ</value></data>
+  <data name="Settings_Accent_Hint" xml:space="preserve"><value>Đổi màu toàn bộ ứng dụng — cửa sổ, thẻ và văn bản, không chỉ các điểm nhấn. Chọn một màu rồi chọn Áp dụng.</value></data>
+  <data name="Settings_Accent_Amethyst" xml:space="preserve"><value>Amethyst</value></data>
+  <data name="Startup_Title" xml:space="preserve"><value>Khởi động</value></data>
+  <data name="Startup_Steam_Closing" xml:space="preserve"><value>Đang đóng Steam để LuaTools có thể làm việc với các tệp của nó…</value></data>
+  <data name="Startup_Steam_Closed" xml:space="preserve"><value>Steam đã đóng.</value></data>
+  <data name="Startup_Steam_Stubborn_Title" xml:space="preserve"><value>Steam chưa đóng</value></data>
+  <data name="Startup_Steam_Stubborn_Body" xml:space="preserve"><value>Steam đã được yêu cầu đóng nhưng vẫn đang chạy.
+
+Buộc đóng? Mọi thứ Steam chưa lưu có thể bị mất. Chọn Không để để nó tiếp tục chạy — LuaTools không thể thay đổi các tệp của Steam khi Steam đang chạy.</value></data>
+  <data name="Startup_Steam_LeftRunning" xml:space="preserve"><value>Steam vẫn đang chạy nên chưa có gì thay đổi. Hãy đóng Steam và khởi động lại LuaTools khi bạn sẵn sàng.</value></data>
+  <data name="Startup_Steam_Reopen_Body" xml:space="preserve"><value>LuaTools đã xong việc. Mở lại Steam?</value></data>
+  <data name="Startup_Steam_Reopen_Action" xml:space="preserve"><value>Mở Steam</value></data>
+  <data name="Startup_Steam_ReopenFailed" xml:space="preserve"><value>Không thể khởi động Steam — hãy mở từ lối tắt riêng của nó.</value></data>
+  <data name="Guard_Title" xml:space="preserve"><value>Steam đang chạy</value></data>
+  <data name="Guard_Body" xml:space="preserve"><value>LuaTools cần tự khởi động Steam (hoặc thấy nó đã đóng) để hook có thể gắn vào. Khởi động lại Steam ngay?</value></data>
+  <data name="Guard_Restart" xml:space="preserve"><value>Khởi động lại Steam</value></data>
+  <data name="Guard_Exit" xml:space="preserve"><value>Thoát</value></data>
+  <data name="Guard_Continue" xml:space="preserve"><value>Vẫn tiếp tục (không khuyến nghị)</value></data>
+  <data name="Guard_ContinueWarning" xml:space="preserve"><value>Steam được để chạy nên hook có thể không gắn được. Nếu vậy, hãy khởi động lại Steam từ LuaTools.</value></data>
+  <data name="Manage_Action_SaveBackup" xml:space="preserve"><value>Sao lưu tệp save…</value></data>
+  <data name="Saves_Title" xml:space="preserve"><value>Bản sao lưu save</value></data>
+  <data name="Saves_Create" xml:space="preserve"><value>Tạo bản sao lưu mới</value></data>
+  <data name="Saves_Restore" xml:space="preserve"><value>Khôi phục</value></data>
+  <data name="Saves_Delete" xml:space="preserve"><value>Xóa</value></data>
+  <data name="Saves_Close" xml:space="preserve"><value>Đóng</value></data>
+  <data name="Saves_Empty" xml:space="preserve"><value>Chưa có bản sao lưu nào của game này.</value></data>
+  <data name="Saves_Locations_Title" xml:space="preserve"><value>Vị trí save đã tìm thấy</value></data>
+  <data name="Saves_Locations_None" xml:space="preserve"><value>Không phát hiện thư mục save nào cho game này.</value></data>
+  <data name="Saves_Location_Subtitle" xml:space="preserve"><value>{0} · {1} tệp</value></data>
+  <data name="Saves_AddFolder" xml:space="preserve"><value>Thêm thư mục thủ công…</value></data>
+  <data name="Saves_Confirm_NoneFound" xml:space="preserve"><value>Chúng tôi không tìm thấy save của game này. Bạn có muốn chọn thư mục thủ công không?</value></data>
+  <data name="Saves_PickFolder" xml:space="preserve"><value>Chọn thư mục</value></data>
+  <data name="Saves_PickFolderTitle" xml:space="preserve"><value>Chọn thư mục nơi game này lưu save</value></data>
+  <data name="Saves_Toast_PickOne" xml:space="preserve"><value>Hãy đánh dấu ít nhất một vị trí save để sao lưu.</value></data>
+  <data name="Saves_Toast_FolderRefused" xml:space="preserve"><value>Không thể dùng thư mục đó (gốc ổ đĩa, thư mục Windows hoặc Program Files, hoặc đường dẫn không đầy đủ).</value></data>
+  <data name="Manage_SaveIcon_Tooltip" xml:space="preserve"><value>Save được phát hiện tại: {0}</value></data>
+  <data name="Settings_CustomSaveFolders" xml:space="preserve"><value>Thư mục save tùy chỉnh</value></data>
+  <data name="Settings_CustomSaveFolders_Hint" xml:space="preserve"><value>Dành cho các game mà ứng dụng không tự tìm được save. Nhập AppID của game và chọn thư mục; thư mục đó sẽ được sao lưu cùng game và là nơi bổ sung duy nhất mà thao tác khôi phục được phép ghi.</value></data>
+  <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
+  <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Thêm thư mục…</value></data>
+  <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Xóa</value></data>
+  <data name="Saves_Note" xml:space="preserve"><value>Sao lưu thư mục theo từng game của Steam (userdata). Các game lưu save trong Documents hoặc AppData không được bao gồm.</value></data>
+  <data name="Saves_Toast_Created" xml:space="preserve"><value>Đã sao lưu {0} tệp, {1}.</value></data>
+  <data name="Saves_Toast_Restored" xml:space="preserve"><value>Đã khôi phục {0} tệp. Một bản sao của save trước đó đã được giữ lại.</value></data>
+  <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Đã xóa bản sao lưu.</value></data>
+  <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Không tìm thấy save nào của game này. Hãy thêm thư mục nơi game lưu chúng bằng “Thêm thư mục thủ công…”.</value></data>
+  <data name="Saves_Toast_SteamNotFound" xml:space="preserve"><value>Không tìm thấy thư mục Steam. Hãy đặt vị trí của nó trong Cài đặt.</value></data>
+  <data name="Saves_Toast_Refused" xml:space="preserve"><value>Bị từ chối: bản sao lưu không khớp với game này hoặc chứa đường dẫn không an toàn. Không có gì thay đổi.</value></data>
+  <data name="Saves_Toast_Failed" xml:space="preserve"><value>Thao tác thất bại. Xem nhật ký để biết chi tiết.</value></data>
+  <data name="Saves_Toast_NoSpace" xml:space="preserve"><value>Không đủ dung lượng trống cho bản sao lưu (cần {0}, đã gồm dự phòng). Không có gì được ghi.</value></data>
+  <data name="Saves_Confirm_Restore" xml:space="preserve"><value>Khôi phục {0}? Save hiện tại của game này sẽ bị ghi đè; một bản sao của chúng được giữ lại trước.</value></data>
+  <data name="Saves_Confirm_SteamOpen" xml:space="preserve"><value>Steam đang mở. Để khôi phục an toàn (và ngăn Steam Cloud ghi đè các tệp), Steam phải được đóng.</value></data>
+  <data name="Saves_CloseSteamContinue" xml:space="preserve"><value>Đóng Steam và tiếp tục</value></data>
+  <data name="Saves_Toast_SteamStillRunning" xml:space="preserve"><value>Steam chưa đóng. Hãy đóng thủ công rồi thử lại. Chưa khôi phục gì cả.</value></data>
+  <data name="Saves_Confirm_Delete" xml:space="preserve"><value>Xóa {0}? Không thể hoàn tác.</value></data>
+  <data name="Manage_Badge_Installed" xml:space="preserve"><value>Đã cài đặt</value></data>
+  <data name="Manage_Action_ImportSave" xml:space="preserve"><value>Nhập save (.zip)…</value></data>
+  <data name="Saves_Import" xml:space="preserve"><value>Nhập save…</value></data>
+  <data name="Saves_Import_PickTitle" xml:space="preserve"><value>Chọn một bản sao lưu save (.zip)</value></data>
+  <data name="Saves_Import_Filter" xml:space="preserve"><value>Bản sao lưu save (*.zip)|*.zip</value></data>
+  <data name="Saves_Confirm_Import" xml:space="preserve"><value>Nhập {0}? Save hiện tại của game này sẽ bị ghi đè; một bản sao của chúng được giữ lại trước.</value></data>
+  <data name="Saves_Toast_Imported" xml:space="preserve"><value>Đã nhập {0} tệp. Một bản sao của save trước đó đã được giữ lại.</value></data>
+  <data name="Saves_Confirm_NewFolder" xml:space="preserve"><value>Ứng dụng sẽ tạo một thư mục mang tên game này để sắp xếp save. Tiếp tục?</value></data>
+  <data name="Saves_Confirm_Ok" xml:space="preserve"><value>OK</value></data>
+  <data name="Saves_Toast_SavedAt" xml:space="preserve"><value>Đã lưu bản sao lưu thành công tại: {0}</value></data>
+  <data name="Settings_SaveBackupFolder" xml:space="preserve"><value>Thư mục bản sao lưu save</value></data>
+  <data name="Settings_SaveBackupFolder_Hint" xml:space="preserve"><value>Nơi “Sao lưu tệp save…” ghi các tệp zip. Mặc định: %AppData%\LuaToolsGui\SaveBackups.</value></data>
+  <data name="Settings_ChooseSaveBackupFolder" xml:space="preserve"><value>Chọn thư mục bản sao lưu save</value></data>
+  <data name="About_Changelog_Title" xml:space="preserve"><value>Có gì mới</value></data>
+  <data name="About_Changelog_Show" xml:space="preserve"><value>Hiện nhật ký thay đổi</value></data>
+  <data name="About_Changelog_Hide" xml:space="preserve"><value>Ẩn nhật ký thay đổi</value></data>
+  <data name="Home_Privacy_UpdatesOff" xml:space="preserve"><value>Tự cập nhật đang tắt — bản dựng này không tự tải gì về</value></data>
+  <data name="Home_Privacy_UpdatesOn" xml:space="preserve"><value>Tự cập nhật đang bật — các bản phát hành được kiểm tra khi khởi động</value></data>
+  <data name="Home_Action_Mode_Tip" xml:space="preserve"><value>Chọn backend nào sở hữu các DLL proxy của Steam</value></data>
+  <data name="Home_Action_Plugin" xml:space="preserve"><value>Plugin</value></data>
+  <data name="Home_Action_Plugin_Tip" xml:space="preserve"><value>Cài đặt hoặc cập nhật plugin trang cửa hàng</value></data>
+  <data name="Home_Action_Updates_Tip" xml:space="preserve"><value>Mở Giới thiệu để kiểm tra phiên bản mới</value></data>
+  <data name="Mode_Warn_Telemetry" xml:space="preserve"><value>Dự án gốc (madoiscool). Cảnh báo: có chứa telemetry và hệ thống DonateKeys.</value></data>
+  <data name="Manage_Sort_InstalledFirst" xml:space="preserve"><value>Đã cài đặt lên đầu</value></data>
+  <data name="Add_Warn_NoManifests_Title" xml:space="preserve"><value>Cảnh báo</value></data>
+  <data name="Add_Warn_NoManifests" xml:space="preserve"><value>Nguồn này không cung cấp manifest cho {0}. Việc tải trong Steam có thể thất bại. Chúng tôi khuyên dùng nguồn {1}.</value></data>
+  <data name="Plugin_Row_Source" xml:space="preserve"><value>Nguồn</value></data>
+  <data name="Plugin_Sources_Header" xml:space="preserve"><value>Nguồn plugin</value></data>
+  <data name="Plugin_Sources_Subtitle" xml:space="preserve"><value>Mỗi tác giả phát hành bản dựng plugin riêng. Hãy chọn bản bạn muốn cài — LuaTools chỉ cài nguồn đang dùng và không bao giờ tự chuyển.</value></data>
+  <data name="Plugin_Source_By" xml:space="preserve"><value>bởi {0}</value></data>
+  <data name="Plugin_Source_Active" xml:space="preserve"><value>Đang dùng</value></data>
+  <data name="Plugin_Source_Default" xml:space="preserve"><value>Mặc định</value></data>
+  <data name="Plugin_Source_Installed" xml:space="preserve"><value>Đã cài từ nguồn này.</value></data>
+  <data name="Plugin_Source_ActiveNotInstalled" xml:space="preserve"><value>Nguồn đang dùng — chưa được cài.</value></data>
+  <data name="Plugin_Source_Available" xml:space="preserve"><value>Có sẵn. Chọn để cài từ tác giả này thay thế.</value></data>
+  <data name="Plugin_Source_LatestVersion" xml:space="preserve"><value>Mới nhất</value></data>
+  <data name="Plugin_Btn_Activate" xml:space="preserve"><value>Dùng nguồn này</value></data>
+  <data name="Plugin_Confirm_SwitchCaption" xml:space="preserve"><value>Đổi nguồn plugin</value></data>
+  <data name="Plugin_Confirm_SwitchBody" xml:space="preserve"><value>Thao tác này cài plugin từ {0}, thay thế bản đang cài, đồng thời đóng và khởi động lại Steam để áp dụng. Tiếp tục?</value></data>
+  <data name="Plugin_Toast_SourceSwitched" xml:space="preserve"><value>Hiện đã cài từ {0}. Steam đang khởi động lại để tải nó.</value></data>
+  <data name="Plugin_Err_UnknownSource" xml:space="preserve"><value>{0} không phải nguồn plugin có trong bản dựng này nên chưa cài gì.</value></data>
+  <data name="Plugin_SourceErr_NoRelease" xml:space="preserve"><value>Nguồn này chưa phát hành bản nào, hoặc không thể kết nối tới.</value></data>
+  <data name="Plugin_SourceErr_NoTag" xml:space="preserve"><value>Bản phát hành mới nhất của nguồn này không có thẻ phiên bản.</value></data>
+  <data name="Plugin_SourceErr_MissingAsset" xml:space="preserve"><value>Bản phát hành mới nhất của nguồn này thiếu {0}.</value></data>
+  <data name="Plugin_SourceErr_ForeignAssetUrl" xml:space="preserve"><value>Liên kết tải {0} của nguồn này trỏ ra ngoài kho của chính nó nên đã bị từ chối.</value></data>
+  <data name="Plugin_SourceErr_NoDigest" xml:space="preserve"><value>Nguồn này không công bố SHA-256 cho {0} nên không thể chứng minh nội dung của nó.</value></data>
+  <data name="Plugin_Err_ArchiveRejected" xml:space="preserve"><value>{0} bị kiểm tra an toàn từ chối: {1}</value></data>
+  <data name="Download_Notice_Title" xml:space="preserve"><value>Đang cài đặt từ {0}</value></data>
+  <data name="Download_Notice_Body" xml:space="preserve"><value>{0} · phiên bản {1} · {2} tệp
+SHA-256 {3}
+Đã xác minh: {4}</value></data>
+  <data name="Download_Notice_Check_Pinned" xml:space="preserve"><value>kho đã được ghim</value></data>
+  <data name="Download_Notice_Check_Digest" xml:space="preserve"><value>SHA-256 khớp</value></data>
+  <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>tệp nén đã được quét</value></data>
+  <data name="Download_Notice_Cancel" xml:space="preserve"><value>Hủy</value></data>
+  <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Đã hủy trước khi cài bất cứ thứ gì.</value></data>
+  <data name="Builds_RemoveGame" xml:space="preserve"><value>Gỡ game</value></data>
+  <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Đưa game này ra khỏi danh sách Depot. Xóa các tệp lua của nó và mọi bản dựng đã lưu.</value></data>
+  <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Gỡ game</value></data>
+  <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>Gỡ {0} ({1}) khỏi Depot?
+
+Thao tác này xóa tệp lua của nó, các lua bản dựng bên cạnh và mọi bản dựng đã lưu. Không thể hoàn tác.</value></data>
+  <data name="Builds_RemoveGame_Done" xml:space="preserve"><value>Đã gỡ {0} khỏi Depot.</value></data>
+  <data name="Builds_RemoveGame_Gone" xml:space="preserve"><value>{0} không còn tệp nào — đã gỡ khỏi danh sách.</value></data>
+  <data name="Builds_RemoveGame_Failed" xml:space="preserve"><value>Không thể gỡ hoàn toàn {0}: {1}. Hãy đóng Steam rồi thử lại.</value></data>
+  <data name="Auth_Err_SignInTimedOut" xml:space="preserve"><value>Đăng nhập đã hết thời gian — trình duyệt không bao giờ quay lại. Bạn cũng có thể đăng nhập bằng mã: chạy /login trên máy chủ Discord rồi dán mã vào Cài đặt.</value></data>
+  <data name="Auth_Err_CallbackPortBusy" xml:space="preserve"><value>Không thể bắt đầu đăng nhập: cổng 53789 đang được sử dụng. Hãy đóng mọi lần đăng nhập khác rồi thử lại.</value></data>
+  <data name="Auth_ProviderUnavailable" xml:space="preserve"><value>Máy chủ đăng nhập hiện không phản hồi nên đăng nhập Discord qua trình duyệt có thể sẽ hết thời gian. Thay vào đó bạn có thể đăng nhập bằng mã: chạy /login trên máy chủ Discord và nhập mã vào Cài đặt.</value></data>
+  <data name="Auth_SignInCancelled" xml:space="preserve"><value>Đã hủy đăng nhập. Bạn có thể thử lại hoặc dùng mã thủ công (chạy /login trên Discord).</value></data>
+  <data name="Auth_TryAgain" xml:space="preserve"><value>Thử lại</value></data>
+  <data name="Auth_TryAnyway" xml:space="preserve"><value>Vẫn thử</value></data>
+  <data name="Auth_UseManualCode" xml:space="preserve"><value>Dùng mã thủ công</value></data>
+  <data name="Auth_Cancel" xml:space="preserve"><value>Hủy</value></data>
+  <data name="Protocol_SilentInstall_Title" xml:space="preserve"><value>Yêu cầu cài đặt</value></data>
+  <data name="Protocol_SilentInstall_Body" xml:space="preserve"><value>Một liên kết đang yêu cầu LuaTools cài ứng dụng {0} ở chế độ nền. Chỉ tiếp tục nếu chính bạn đã bắt đầu việc này.</value></data>
+  <data name="Cdp_Consent_Title" xml:space="preserve"><value>Bật cầu nối trang cửa hàng Steam?</value></data>
+  <data name="Cdp_Consent_Body" xml:space="preserve"><value>Plugin trang cửa hàng cần cầu nối gỡ lỗi của Steam, mà LuaTools bật bằng cách thêm một dấu hiệu cạnh steam.exe. Khi Steam đang chạy, việc này mở một cổng cục bộ không xác thực (127.0.0.1:8080).
+
+Mọi chương trình khác chạy trên PC này khi đó có thể điều khiển trình duyệt tích hợp của Steam bằng phiên đăng nhập của bạn. Chỉ bật nếu bạn tin tưởng phần mềm đã cài trên máy này.
+
+Bạn có thể từ chối và vẫn dùng phần còn lại của LuaTools; chỉ nút “Add via LuaTools” trong cửa hàng sẽ không dùng được.
+
+Bật nó?</value></data>
+  <data name="Privacy_HttpMetadata_Title" xml:space="preserve"><value>Tra cứu không mã hóa</value></data>
+  <data name="Privacy_HttpMetadata_Body" xml:space="preserve"><value>Tình trạng sẵn có của nguồn được kiểm tra qua HTTP thường ({0}), vì máy chủ đó không cung cấp HTTPS hoạt động được. Không có tài khoản hay khóa nào được gửi, nhưng bất kỳ ai trên đường truyền mạng của bạn đều có thể thấy bạn đã tra cứu ứng dụng Steam nào. Đặt “WarnOnInsecureMetadata”: false trong settings.json để ẩn thông báo này.</value></data>
+  <data name="Theme_Guard_Title" xml:space="preserve"><value>Chưa áp dụng giao diện</value></data>
+  <data name="Theme_Guard_Body" xml:space="preserve"><value>Màu nhấn Amethyst không có hiệu lực, thường nghĩa là gói WPF-UI đã đổi tên tài nguyên của nó. Ứng dụng vẫn hoạt động bình thường nhưng một số phần sẽ trông sai. Xem docs/CHANGELOG.md.</value></data>
+  <data name="App_DisplayName" xml:space="preserve"><value>LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Title" xml:space="preserve"><value>Đây có thể không phải LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Body" xml:space="preserve"><value>Tệp nhị phân này không tự nhận là LuaTools Amethyst. Nếu bạn đã cài bản LuaTools chính thức đè lên, phân tích và việc tải khóa Steam lên lại hoạt động. Hãy cài lại từ kho Amethyst để lấy lại bản dựng bảo vệ quyền riêng tư.</value></data>
+  <data name="Fixes_Toast_Blocked" xml:space="preserve"><value>Đã từ chối tải xuống</value></data>
+  <data name="Fixes_Toast_Blocked_Body" xml:space="preserve"><value>{0} không được cài vì không qua được một lần kiểm tra an toàn — {1}</value></data>
+  <data name="About_Nav" xml:space="preserve"><value>Giới thiệu</value></data>
+  <data name="About_Title" xml:space="preserve"><value>Giới thiệu LuaTools Amethyst</value></data>
+  <data name="About_What_Header" xml:space="preserve"><value>Đây là gì</value></data>
+  <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst là bản fork cộng đồng của LuaTools, tập trung vào quyền riêng tư. Nó loại bỏ ping phân tích và việc tải khóa lên mà bản gốc thực hiện, giữ mọi lượt tải qua HTTPS và đi kèm giao diện tím Amethyst.</value></data>
+  <data name="About_Version_Header" xml:space="preserve"><value>Phiên bản</value></data>
+  <data name="About_Repo_Header" xml:space="preserve"><value>Kho</value></data>
+  <data name="About_Updates_Header" xml:space="preserve"><value>Cập nhật</value></data>
+  <data name="About_Updates_Enabled" xml:space="preserve"><value>Cập nhật tự động đang BẬT. LuaTools Amethyst kiểm tra kho bên dưới khi khởi động và cài đặt bản cập nhật ở chế độ nền.</value></data>
+  <data name="About_Updates_Disabled" xml:space="preserve"><value>Cập nhật tự động đang TẮT — không có yêu cầu cập nhật nào được gửi. Thêm “AppUpdateRepos” vào settings.json để bật, hoặc cập nhật thủ công từ kho bên dưới.</value></data>
+  <data name="About_Updates_Sources" xml:space="preserve"><value>Nguồn cập nhật</value></data>
+  <data name="About_Check_Button" xml:space="preserve"><value>Kiểm tra cập nhật</value></data>
+  <data name="About_Check_Checking" xml:space="preserve"><value>Đang kiểm tra…</value></data>
+  <data name="About_Check_UpToDate" xml:space="preserve"><value>Bạn đang dùng phiên bản mới nhất.</value></data>
+  <data name="About_Check_Found" xml:space="preserve"><value>Một bản cập nhật đã được tải xuống. Nó sẽ được áp dụng khi bạn đóng LuaTools.</value></data>
+  <data name="About_Check_Failed" xml:space="preserve"><value>Không thể kiểm tra cập nhật. Hãy kiểm tra kết nối và kho đã cấu hình.</value></data>
+  <data name="About_Check_Disabled" xml:space="preserve"><value>Cập nhật tự động đã bị tắt — hãy cấu hình “AppUpdateRepos” trong settings.json trước.</value></data>
+  <data name="About_OpenRepo" xml:space="preserve"><value>Mở kho</value></data>
+  <data name="About_OpenSettings" xml:space="preserve"><value>Mở thư mục settings.json</value></data>
+  <data name="About_Config_Header" xml:space="preserve"><value>Cấu hình cập nhật thủ công</value></data>
+  <data name="About_Config_Body" xml:space="preserve"><value>Chỉnh sửa settings.json trong thư mục bên dưới và thêm kho bạn muốn nhận cập nhật. Chỉ chấp nhận https://github.com/&lt;owner&gt;/&lt;repo&gt;, và các kho phát hành LuaTools chính thức bị từ chối để một bản dựng chính thức không bao giờ thay thế được bản này.</value></data>
+  <data name="Builds_Depot_Download" xml:space="preserve"><value>Tải depot…</value></data>
+  <data name="Builds_Depot_Unavailable" xml:space="preserve"><value>Tính năng tải depot không có trong bản dựng này: nó không có pin đã xác minh cho công cụ tải.</value></data>
+  <data name="Builds_Depot_PickTitle" xml:space="preserve"><value>Tải nội dung depot</value></data>
+  <data name="Builds_Depot_PickHint" xml:space="preserve"><value>Tệp thô được lấy ẩn danh trực tiếp từ CDN của Steam. Không có gì được cài — các depot được ghi vào thư mục bên dưới để bạn dùng tùy ý.</value></data>
+  <data name="Builds_Depot_NoCandidates" xml:space="preserve"><value>Không depot nào của game này có thể tải. Chúng cần cả khóa giải mã từ lua lẫn manifest do Steam công bố.</value></data>
+  <data name="Builds_Depot_NeedsKey" xml:space="preserve"><value>không có khóa trong bản dựng này</value></data>
+  <data name="Builds_Depot_NeedsManifest" xml:space="preserve"><value>Steam không công bố manifest</value></data>
+  <data name="Builds_Depot_NeedsSignIn" xml:space="preserve"><value>đăng nhập để lấy manifest</value></data>
+  <data name="Builds_Depot_SelectAll" xml:space="preserve"><value>Chọn tất cả</value></data>
+  <data name="Builds_Depot_SelectNone" xml:space="preserve"><value>Bỏ chọn</value></data>
+  <data name="Builds_Depot_Destination" xml:space="preserve"><value>Thư mục đích</value></data>
+  <data name="Builds_Depot_Change" xml:space="preserve"><value>Thay đổi…</value></data>
+  <data name="Builds_Depot_Space" xml:space="preserve"><value>Cần {0} · còn trống {1} trên {2}</value></data>
+  <data name="Builds_Depot_NotEnoughSpace" xml:space="preserve"><value>Ổ đĩa đó không đủ dung lượng trống. Hãy chọn ít depot hơn hoặc thư mục khác.</value></data>
+  <data name="Builds_Depot_Confirm" xml:space="preserve"><value>Tải {0} depot</value></data>
+  <data name="Builds_Depot_Cancel" xml:space="preserve"><value>Hủy</value></data>
+  <data name="Builds_Depot_Downloading" xml:space="preserve"><value>Depot {0}/{1} · {2}</value></data>
+  <data name="Builds_Depot_Phase_PreAllocating" xml:space="preserve"><value>đang dành chỗ trên đĩa</value></data>
+  <data name="Builds_Depot_Phase_Validating" xml:space="preserve"><value>đang kiểm tra các tệp hiện có</value></data>
+  <data name="Builds_Depot_Phase_FetchingManifest" xml:space="preserve"><value>đang lấy manifest</value></data>
+  <data name="Builds_Depot_Phase_Downloading" xml:space="preserve"><value>đang tải xuống</value></data>
+  <data name="Builds_Depot_Done" xml:space="preserve"><value>Đã tải {0} depot vào {1}</value></data>
+  <data name="Builds_Depot_OpenFolder" xml:space="preserve"><value>Mở thư mục</value></data>
+  <data name="Builds_Depot_CleanUp_Title" xml:space="preserve"><value>Xóa bản tải dở dang?</value></data>
+  <data name="Builds_Depot_CleanUp_Body" xml:space="preserve"><value>Quá trình tải đã bị hủy sau khi tạo {0} tệp trong {1}. Chỉ xóa các tệp đó? Những gì đã có sẵn ở đó được giữ nguyên.</value></data>
+  <data name="Builds_Depot_CleanUp_Failed" xml:space="preserve"><value>Một số tệp không thể xóa — có thể chúng vẫn đang được dùng. Hãy thử lại sau ít phút.</value></data>
+  <data name="Depot_Err_ToolNotPinned" xml:space="preserve"><value>Tính năng tải depot bị tắt trong bản dựng này vì nó không có pin đã xác minh cho công cụ tải.</value></data>
+  <data name="Depot_Err_Tool" xml:space="preserve"><value>Không thể lấy công cụ tải depot, hoặc thứ nhận được không qua được bước xác minh.</value></data>
+  <data name="Depot_Err_SteamNotFound" xml:space="preserve"><value>Không tìm thấy vị trí Steam — hãy đặt trong Cài đặt.</value></data>
+  <data name="Depot_Err_NoKeys" xml:space="preserve"><value>Không tìm thấy khóa giải mã depot nào cho game này.</value></data>
+  <data name="Depot_Err_NoKeyFor" xml:space="preserve"><value>Depot {0} không có khóa giải mã dùng được.</value></data>
+  <data name="Depot_Err_BadKey" xml:space="preserve"><value>Khóa đã lưu cho depot {0} không khớp với manifest của nó.</value></data>
+  <data name="Depot_Err_NoManifest" xml:space="preserve"><value>Không thể lấy manifest cho depot đó.</value></data>
+  <data name="Depot_Err_SignIn" xml:space="preserve"><value>Hãy đăng nhập để lấy manifest mà Steam chưa có trên máy này.</value></data>
+  <data name="Depot_Err_NoSpace" xml:space="preserve"><value>Không đủ dung lượng đĩa: cần {0}, còn trống {1}.</value></data>
+  <data name="Depot_Err_Failed" xml:space="preserve"><value>Depot {0} thất bại: {1}</value></data>
+  <data name="Builds_Depot_Queued" xml:space="preserve"><value>Đã gửi {0} depot tới Tải xuống.</value></data>
+  <data name="Nav_Downloads" xml:space="preserve"><value>Tải xuống</value></data>
+  <data name="Downloads_Title" xml:space="preserve"><value>Tải xuống</value></data>
+  <data name="Downloads_Subtitle" xml:space="preserve"><value>Mọi thứ ứng dụng đang tải ngay lúc này và những gì đã tải trước đó. Manifest và nội dung depot dùng chung hàng đợi này.</value></data>
+  <data name="Downloads_Empty" xml:space="preserve"><value>Chưa có gì được tải xuống. Thêm game từ trang Thêm, hoặc lấy nội dung depot từ trang Depot, sẽ hiện nó ở đây.</value></data>
+  <data name="Downloads_Section_Active" xml:space="preserve"><value>Đang thực hiện</value></data>
+  <data name="Downloads_Section_History" xml:space="preserve"><value>Lịch sử</value></data>
+  <data name="Downloads_ActionRequired" xml:space="preserve"><value>CẦN HÀNH ĐỘNG</value></data>
+  <data name="Downloads_Of" xml:space="preserve"><value>{0}/{1}</value></data>
+  <data name="Downloads_Eta" xml:space="preserve"><value>còn {0}</value></data>
+  <data name="Downloads_Source_Depots" xml:space="preserve"><value>{0} depot</value></data>
+  <data name="Downloads_Status_Queued" xml:space="preserve"><value>Đang chờ</value></data>
+  <data name="Downloads_Status_Downloading" xml:space="preserve"><value>Đang tải xuống</value></data>
+  <data name="Downloads_Status_AwaitingConfirm" xml:space="preserve"><value>Đang chờ bạn</value></data>
+  <data name="Downloads_Status_Installing" xml:space="preserve"><value>Đang cài đặt</value></data>
+  <data name="Downloads_Status_Paused" xml:space="preserve"><value>Đã tạm dừng</value></data>
+  <data name="Downloads_Status_Verifying" xml:space="preserve"><value>Đang xác minh</value></data>
+  <data name="Downloads_Status_Completed" xml:space="preserve"><value>Xong</value></data>
+  <data name="Downloads_Status_Failed" xml:space="preserve"><value>Thất bại</value></data>
+  <data name="Downloads_Status_Cancelled" xml:space="preserve"><value>Đã hủy</value></data>
+  <data name="Downloads_Action_Review" xml:space="preserve"><value>Xem lại</value></data>
+  <data name="Downloads_Action_Pause" xml:space="preserve"><value>Tạm dừng</value></data>
+  <data name="Downloads_Action_Resume" xml:space="preserve"><value>Tiếp tục</value></data>
+  <data name="Downloads_Action_MoveUp" xml:space="preserve"><value>Lên</value></data>
+  <data name="Downloads_Action_MoveDown" xml:space="preserve"><value>Xuống</value></data>
+  <data name="Downloads_Action_Cancel" xml:space="preserve"><value>Hủy</value></data>
+  <data name="Downloads_Action_Retry" xml:space="preserve"><value>Thử lại</value></data>
+  <data name="Downloads_Action_Remove" xml:space="preserve"><value>Xóa</value></data>
+  <data name="Downloads_Action_ClearHistory" xml:space="preserve"><value>Xóa lịch sử</value></data>
+  <data name="Downloads_Action_CopyAppId" xml:space="preserve"><value>Sao chép App ID</value></data>
+  <data name="Downloads_Action_ShowInFolder" xml:space="preserve"><value>Hiện trong thư mục</value></data>
+  <data name="Downloads_ClearHistory_Confirm" xml:space="preserve"><value>Xóa tất cả {0} mục khỏi lịch sử tải xuống? Bản thân các tệp không bị đụng tới.</value></data>
+  <data name="Downloads_Err_Interrupted" xml:space="preserve"><value>Bị gián đoạn khi ứng dụng đóng.</value></data>
+  <data name="Downloads_Err_Cancelled" xml:space="preserve"><value>Đã hủy.</value></data>
+  <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>Bộ nhớ tạm đang được chương trình khác dùng — chưa sao chép gì.</value></data>
+  <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Vị trí đó không còn tồn tại: {0}</value></data>
+  <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>Đã từ chối “{0}”: manifest phải được đặt tên &lt;depot&gt;_&lt;manifest&gt;.manifest (chỉ gồm chữ số).</value></data>
+  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>Kho nguồn của CloudRedirect không khả dụng. Tính năng tạm thời bị tắt.</value></data>
+  <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Bản dựng đã lưu (không có lua đang dùng)</value></data>
+  <data name="Settings_Maintenance_Title" xml:space="preserve"><value>BẢO TRÌ</value></data>
+  <data name="Settings_Backups_Title" xml:space="preserve"><value>Bản sao lưu tích lũy</value></data>
+  <data name="Settings_Backups_Subtitle" xml:space="preserve"><value>Các thư mục sao lưu được tạo khi cài AmethystTool hoặc gỡ plugin. Xóa chúng sẽ giải phóng dung lượng trong thư mục Steam.</value></data>
+  <data name="Settings_Backups_Empty" xml:space="preserve"><value>Không tìm thấy bản sao lưu nào.</value></data>
+  <data name="Settings_Backups_NoSteam" xml:space="preserve"><value>Hãy cấu hình vị trí Steam trong Cài đặt để xem các bản sao lưu.</value></data>
+  <data name="Settings_Backups_Refresh" xml:space="preserve"><value>Làm mới</value></data>
+  <data name="Settings_Backups_DeleteSelected" xml:space="preserve"><value>Xóa mục đã chọn</value></data>
+  <data name="Settings_Backups_DeleteOlder" xml:space="preserve"><value>Xóa các bản cũ hơn 30 ngày</value></data>
+  <data name="Settings_Backups_Confirm_Title" xml:space="preserve"><value>Xóa các bản sao lưu?</value></data>
+  <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>Xóa vĩnh viễn {0} mục ({1})? Bạn sẽ không thể hoàn nguyên các lần cài AmethystTool hoặc gỡ plugin trước đó.</value></data>
+  <data name="Settings_Backups_Confirm_Delete" xml:space="preserve"><value>Xóa</value></data>
+  <data name="Settings_Backups_Cancel" xml:space="preserve"><value>Hủy</value></data>
+  <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>Đã xóa {0} mục (giải phóng {1})</value></data>
+  <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>Không thể xóa {0} mục. Hãy đóng Steam rồi thử lại.</value></data>
+  <data name="Settings_Backups_Column_Name" xml:space="preserve"><value>Tên</value></data>
+  <data name="Settings_Backups_Column_Type" xml:space="preserve"><value>Loại</value></data>
+  <data name="Settings_Backups_Type_Folder" xml:space="preserve"><value>Thư mục</value></data>
+  <data name="Settings_Backups_Type_File" xml:space="preserve"><value>Tệp</value></data>
+  <data name="Settings_Backups_UnknownWarning" xml:space="preserve"><value>Bản sao lưu không rõ, hãy xác minh trước khi xóa</value></data>
+  <data name="Settings_Backups_Column_Date" xml:space="preserve"><value>Ngày tạo</value></data>
+  <data name="Settings_Backups_Column_Size" xml:space="preserve"><value>Kích thước</value></data>
+  <data name="Settings_Backups_Column_Files" xml:space="preserve"><value>Tệp</value></data>
+  <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Phiên bản cục bộ (ngoại tuyến)</value></data>
+  <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Không có kết nối internet. Đang dùng phiên bản cài cục bộ.</value></data>
+  <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Không thể tải phiên bản mới khi không có internet.</value></data>
 </root>

@@ -586,4 +586,288 @@ Ini menghapus file .lua dari Steam\config\stplug-in. Mulai ulang Steam setelahny
   <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools tidak dapat dimulai.&#10;&#10;{0}&#10;&#10;Detail ditulis ke:&#10;{1}</value></data>
   <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Tidak dapat menulis {0} file ke folder Steam — akses ditolak. Steam tampaknya terpasang di lokasi yang memerlukan hak administrator (mis. Program Files). Tutup Steam, lalu jalankan LuaTools sebagai administrator sekali untuk menerapkan mode ini.</value></data>
   <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Tidak dapat menulis {0} file — tutup Steam dan coba lagi.</value></data>
+  <data name="Nav_Plugin" xml:space="preserve"><value>Plugin</value></data>
+  <data name="Settings_HubcapKeyRejected" xml:space="preserve"><value>Hubcap menolak kunci itu. Pastikan kunci disalin utuh dan belum kedaluwarsa.</value></data>
+  <data name="Settings_HubcapKeyOffline" xml:space="preserve"><value>Tidak dapat menjangkau Hubcap. Periksa koneksi Anda dan coba lagi — kunci tidak diubah.</value></data>
+  <data name="Settings_HubcapKeyRateLimited" xml:space="preserve"><value>Hubcap sedang membatasi kunci ini. Coba lagi sebentar lagi.</value></data>
+  <data name="Settings_HubcapExpiryExpired" xml:space="preserve"><value>Kunci Hubcap Anda kedaluwarsa pada {0}. Validasi kunci baru agar tetap dapat memakai sumber Hubcap.</value></data>
+  <data name="Settings_HubcapExpiryToday" xml:space="preserve"><value>Kunci Hubcap Anda kedaluwarsa hari ini ({0}). Dapatkan yang baru sebelum berhenti berfungsi.</value></data>
+  <data name="Settings_HubcapExpirySoon" xml:space="preserve"><value>Kunci Hubcap Anda kedaluwarsa dalam {0} hari ({1}). Dapatkan yang baru sebelum berhenti berfungsi.</value></data>
+  <data name="Hubcap_Err_KeyRejected" xml:space="preserve"><value>Kunci Hubcap Anda tidak valid atau sudah kedaluwarsa.</value></data>
+  <data name="Hubcap_Err_DailyLimit" xml:space="preserve"><value>Batas harian Hubcap Anda telah tercapai.</value></data>
+  <data name="Hubcap_Err_DailyLimitRetry" xml:space="preserve"><value>Batas harian Hubcap Anda telah tercapai. Coba lagi sekitar {0} lagi.</value></data>
+  <data name="Hubcap_Err_NoManifest" xml:space="preserve"><value>Tidak ada manifest Hubcap yang tersedia untuk aplikasi ini.</value></data>
+  <data name="Hubcap_Err_Status" xml:space="preserve"><value>Unduhan Hubcap gagal ({0}).</value></data>
+  <data name="Hubcap_Err_Unreachable" xml:space="preserve"><value>Tidak dapat menjangkau Hubcap. Periksa koneksi Anda dan coba lagi.</value></data>
+  <data name="Hubcap_Err_Generic" xml:space="preserve"><value>Unduhan Hubcap gagal.</value></data>
+  <data name="Hubcap_Wait_Seconds" xml:space="preserve"><value>{0} detik</value></data>
+  <data name="Hubcap_Wait_Minutes" xml:space="preserve"><value>{0} menit</value></data>
+  <data name="Hubcap_Wait_Hours" xml:space="preserve"><value>{0} jam</value></data>
+  <data name="Settings_Accent_Hint" xml:space="preserve"><value>Mewarnai ulang seluruh aplikasi — jendela, kartu, dan teks, bukan hanya sorotannya. Pilih warna, lalu pilih Terapkan.</value></data>
+  <data name="Settings_Accent_Amethyst" xml:space="preserve"><value>Amethyst</value></data>
+  <data name="Startup_Title" xml:space="preserve"><value>Startup</value></data>
+  <data name="Startup_Steam_Closing" xml:space="preserve"><value>Menutup Steam agar LuaTools dapat mengerjakan filenya…</value></data>
+  <data name="Startup_Steam_Closed" xml:space="preserve"><value>Steam sudah ditutup.</value></data>
+  <data name="Startup_Steam_Stubborn_Title" xml:space="preserve"><value>Steam tidak tertutup</value></data>
+  <data name="Startup_Steam_Stubborn_Body" xml:space="preserve"><value>Steam diminta menutup tetapi masih berjalan.
+
+Paksa tutup? Apa pun yang belum disimpan Steam bisa hilang. Pilih Tidak untuk membiarkannya berjalan — LuaTools tidak dapat mengubah file Steam selama Steam aktif.</value></data>
+  <data name="Startup_Steam_LeftRunning" xml:space="preserve"><value>Steam masih berjalan, jadi tidak ada yang diubah. Tutup Steam dan mulai ulang LuaTools saat Anda siap.</value></data>
+  <data name="Startup_Steam_Reopen_Body" xml:space="preserve"><value>LuaTools selesai. Buka Steam lagi?</value></data>
+  <data name="Startup_Steam_Reopen_Action" xml:space="preserve"><value>Buka Steam</value></data>
+  <data name="Startup_Steam_ReopenFailed" xml:space="preserve"><value>Tidak dapat memulai Steam — buka dari pintasannya sendiri.</value></data>
+  <data name="Guard_Title" xml:space="preserve"><value>Steam sudah berjalan</value></data>
+  <data name="Guard_Body" xml:space="preserve"><value>LuaTools perlu memulai Steam sendiri (atau menemukannya dalam keadaan tertutup) agar hook dapat terpasang. Mulai ulang Steam sekarang?</value></data>
+  <data name="Guard_Restart" xml:space="preserve"><value>Mulai ulang Steam</value></data>
+  <data name="Guard_Exit" xml:space="preserve"><value>Keluar</value></data>
+  <data name="Guard_Continue" xml:space="preserve"><value>Lanjutkan saja (tidak disarankan)</value></data>
+  <data name="Guard_ContinueWarning" xml:space="preserve"><value>Steam dibiarkan berjalan, jadi hook mungkin gagal terpasang. Mulai ulang Steam dari LuaTools jika itu terjadi.</value></data>
+  <data name="Manage_Action_SaveBackup" xml:space="preserve"><value>Cadangkan save…</value></data>
+  <data name="Saves_Title" xml:space="preserve"><value>Cadangan save</value></data>
+  <data name="Saves_Create" xml:space="preserve"><value>Buat cadangan baru</value></data>
+  <data name="Saves_Restore" xml:space="preserve"><value>Pulihkan</value></data>
+  <data name="Saves_Delete" xml:space="preserve"><value>Hapus</value></data>
+  <data name="Saves_Close" xml:space="preserve"><value>Tutup</value></data>
+  <data name="Saves_Empty" xml:space="preserve"><value>Belum ada cadangan untuk game ini.</value></data>
+  <data name="Saves_Locations_Title" xml:space="preserve"><value>Lokasi save yang ditemukan</value></data>
+  <data name="Saves_Locations_None" xml:space="preserve"><value>Tidak ada folder save yang terdeteksi untuk game ini.</value></data>
+  <data name="Saves_Location_Subtitle" xml:space="preserve"><value>{0} · {1} file</value></data>
+  <data name="Saves_AddFolder" xml:space="preserve"><value>Tambahkan folder secara manual…</value></data>
+  <data name="Saves_Confirm_NoneFound" xml:space="preserve"><value>Kami tidak menemukan save untuk game ini. Ingin memilih folder secara manual?</value></data>
+  <data name="Saves_PickFolder" xml:space="preserve"><value>Pilih folder</value></data>
+  <data name="Saves_PickFolderTitle" xml:space="preserve"><value>Pilih folder tempat game ini menyimpan save-nya</value></data>
+  <data name="Saves_Toast_PickOne" xml:space="preserve"><value>Centang setidaknya satu lokasi save untuk dicadangkan.</value></data>
+  <data name="Saves_Toast_FolderRefused" xml:space="preserve"><value>Folder itu tidak dapat digunakan (root drive, folder Windows atau Program Files, atau bukan path lengkap).</value></data>
+  <data name="Manage_SaveIcon_Tooltip" xml:space="preserve"><value>Save terdeteksi di: {0}</value></data>
+  <data name="Settings_CustomSaveFolders" xml:space="preserve"><value>Folder save kustom</value></data>
+  <data name="Settings_CustomSaveFolders_Hint" xml:space="preserve"><value>Untuk game yang save-nya tidak dapat ditemukan aplikasi sendiri. Masukkan AppID game dan pilih foldernya; folder itu lalu dicadangkan bersama game tersebut dan menjadi satu-satunya tempat tambahan yang boleh ditulisi proses pemulihan.</value></data>
+  <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
+  <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Tambah folder…</value></data>
+  <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Hapus</value></data>
+  <data name="Saves_Note" xml:space="preserve"><value>Mencadangkan folder per-game milik Steam (userdata). Game yang menyimpan save di Dokumen atau AppData tidak disertakan.</value></data>
+  <data name="Saves_Toast_Created" xml:space="preserve"><value>{0} file dicadangkan, {1}.</value></data>
+  <data name="Saves_Toast_Restored" xml:space="preserve"><value>{0} file dipulihkan. Salinan save sebelumnya disimpan.</value></data>
+  <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Cadangan dihapus.</value></data>
+  <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Tidak ada save yang ditemukan untuk game ini. Tambahkan folder tempat game menyimpannya dengan “Tambahkan folder secara manual…”.</value></data>
+  <data name="Saves_Toast_SteamNotFound" xml:space="preserve"><value>Folder Steam tidak ditemukan. Atur lokasinya di Pengaturan.</value></data>
+  <data name="Saves_Toast_Refused" xml:space="preserve"><value>Ditolak: cadangan tidak cocok dengan game ini atau berisi path yang tidak aman. Tidak ada yang diubah.</value></data>
+  <data name="Saves_Toast_Failed" xml:space="preserve"><value>Operasi gagal. Lihat log untuk detailnya.</value></data>
+  <data name="Saves_Toast_NoSpace" xml:space="preserve"><value>Ruang disk kosong tidak cukup untuk cadangan (butuh {0}, termasuk margin). Tidak ada yang ditulis.</value></data>
+  <data name="Saves_Confirm_Restore" xml:space="preserve"><value>Pulihkan {0}? Save game ini yang sekarang akan ditimpa; salinannya disimpan terlebih dahulu.</value></data>
+  <data name="Saves_Confirm_SteamOpen" xml:space="preserve"><value>Steam sedang terbuka. Untuk memulihkan dengan aman (dan mencegah Steam Cloud menimpa file), Steam harus ditutup.</value></data>
+  <data name="Saves_CloseSteamContinue" xml:space="preserve"><value>Tutup Steam dan lanjutkan</value></data>
+  <data name="Saves_Toast_SteamStillRunning" xml:space="preserve"><value>Steam tidak tertutup. Tutup secara manual lalu coba lagi. Tidak ada yang dipulihkan.</value></data>
+  <data name="Saves_Confirm_Delete" xml:space="preserve"><value>Hapus {0}? Tindakan ini tidak dapat dibatalkan.</value></data>
+  <data name="Manage_Badge_Installed" xml:space="preserve"><value>Terpasang</value></data>
+  <data name="Manage_Action_ImportSave" xml:space="preserve"><value>Impor save (.zip)…</value></data>
+  <data name="Saves_Import" xml:space="preserve"><value>Impor save…</value></data>
+  <data name="Saves_Import_PickTitle" xml:space="preserve"><value>Pilih cadangan save (.zip)</value></data>
+  <data name="Saves_Import_Filter" xml:space="preserve"><value>Cadangan save (*.zip)|*.zip</value></data>
+  <data name="Saves_Confirm_Import" xml:space="preserve"><value>Impor {0}? Save game ini yang sekarang akan ditimpa; salinannya disimpan terlebih dahulu.</value></data>
+  <data name="Saves_Toast_Imported" xml:space="preserve"><value>{0} file diimpor. Salinan save sebelumnya disimpan.</value></data>
+  <data name="Saves_Confirm_NewFolder" xml:space="preserve"><value>Aplikasi akan membuat folder dengan nama game ini untuk merapikan save-nya. Lanjutkan?</value></data>
+  <data name="Saves_Confirm_Ok" xml:space="preserve"><value>OK</value></data>
+  <data name="Saves_Toast_SavedAt" xml:space="preserve"><value>Cadangan berhasil disimpan di: {0}</value></data>
+  <data name="Settings_SaveBackupFolder" xml:space="preserve"><value>Folder cadangan save</value></data>
+  <data name="Settings_SaveBackupFolder_Hint" xml:space="preserve"><value>Tempat “Cadangkan save…” menulis file zip-nya. Default: %AppData%\LuaToolsGui\SaveBackups.</value></data>
+  <data name="Settings_ChooseSaveBackupFolder" xml:space="preserve"><value>Pilih folder cadangan save</value></data>
+  <data name="About_Changelog_Title" xml:space="preserve"><value>Yang baru</value></data>
+  <data name="About_Changelog_Show" xml:space="preserve"><value>Tampilkan changelog</value></data>
+  <data name="About_Changelog_Hide" xml:space="preserve"><value>Sembunyikan changelog</value></data>
+  <data name="Home_Privacy_UpdatesOff" xml:space="preserve"><value>Pembaruan otomatis mati — build ini tidak mengambil apa pun sendiri</value></data>
+  <data name="Home_Privacy_UpdatesOn" xml:space="preserve"><value>Pembaruan otomatis menyala — rilis diperiksa saat startup</value></data>
+  <data name="Home_Action_Mode_Tip" xml:space="preserve"><value>Pilih backend mana yang memiliki DLL proxy Steam</value></data>
+  <data name="Home_Action_Plugin" xml:space="preserve"><value>Plugin</value></data>
+  <data name="Home_Action_Plugin_Tip" xml:space="preserve"><value>Pasang atau perbarui plugin halaman toko</value></data>
+  <data name="Home_Action_Updates_Tip" xml:space="preserve"><value>Buka Tentang untuk memeriksa versi baru</value></data>
+  <data name="Mode_Warn_Telemetry" xml:space="preserve"><value>Proyek asli (madoiscool). Peringatan: berisi telemetri dan sistem DonateKeys.</value></data>
+  <data name="Manage_Sort_InstalledFirst" xml:space="preserve"><value>Terpasang lebih dulu</value></data>
+  <data name="Add_Warn_NoManifests_Title" xml:space="preserve"><value>Peringatan</value></data>
+  <data name="Add_Warn_NoManifests" xml:space="preserve"><value>Sumber ini tidak menyediakan manifest untuk {0}. Unduhan di Steam mungkin gagal. Kami menyarankan sumber {1}.</value></data>
+  <data name="Plugin_Row_Source" xml:space="preserve"><value>Sumber</value></data>
+  <data name="Plugin_Sources_Header" xml:space="preserve"><value>Sumber plugin</value></data>
+  <data name="Plugin_Sources_Subtitle" xml:space="preserve"><value>Setiap kreator menerbitkan build plugin-nya sendiri. Pilih yang ingin Anda pasang — LuaTools hanya memasang sumber aktif dan tidak pernah beralih sendiri.</value></data>
+  <data name="Plugin_Source_By" xml:space="preserve"><value>oleh {0}</value></data>
+  <data name="Plugin_Source_Active" xml:space="preserve"><value>Aktif</value></data>
+  <data name="Plugin_Source_Default" xml:space="preserve"><value>Default</value></data>
+  <data name="Plugin_Source_Installed" xml:space="preserve"><value>Dipasang dari sumber ini.</value></data>
+  <data name="Plugin_Source_ActiveNotInstalled" xml:space="preserve"><value>Sumber aktif — belum dipasang.</value></data>
+  <data name="Plugin_Source_Available" xml:space="preserve"><value>Tersedia. Pilih untuk memasang dari kreator ini.</value></data>
+  <data name="Plugin_Source_LatestVersion" xml:space="preserve"><value>Terbaru</value></data>
+  <data name="Plugin_Btn_Activate" xml:space="preserve"><value>Gunakan sumber ini</value></data>
+  <data name="Plugin_Confirm_SwitchCaption" xml:space="preserve"><value>Ganti sumber plugin</value></data>
+  <data name="Plugin_Confirm_SwitchBody" xml:space="preserve"><value>Ini memasang plugin dari {0}, menggantikan yang terpasang sekarang, lalu menutup dan memulai ulang Steam untuk menerapkannya. Lanjutkan?</value></data>
+  <data name="Plugin_Toast_SourceSwitched" xml:space="preserve"><value>Sekarang dipasang dari {0}. Steam dimulai ulang untuk memuatnya.</value></data>
+  <data name="Plugin_Err_UnknownSource" xml:space="preserve"><value>{0} bukan sumber plugin yang disertakan build ini, jadi tidak ada yang dipasang.</value></data>
+  <data name="Plugin_SourceErr_NoRelease" xml:space="preserve"><value>Sumber ini tidak menerbitkan rilis, atau tidak dapat dijangkau.</value></data>
+  <data name="Plugin_SourceErr_NoTag" xml:space="preserve"><value>Rilis terbaru sumber ini tidak memiliki tag versi.</value></data>
+  <data name="Plugin_SourceErr_MissingAsset" xml:space="preserve"><value>Rilis terbaru sumber ini tidak memiliki {0}.</value></data>
+  <data name="Plugin_SourceErr_ForeignAssetUrl" xml:space="preserve"><value>Unduhan {0} dari sumber ini menunjuk ke luar repositorinya sendiri, jadi ditolak.</value></data>
+  <data name="Plugin_SourceErr_NoDigest" xml:space="preserve"><value>Sumber ini tidak menerbitkan SHA-256 untuk {0}, sehingga isinya tidak dapat dibuktikan.</value></data>
+  <data name="Plugin_Err_ArchiveRejected" xml:space="preserve"><value>{0} ditolak oleh pemeriksaan keamanan: {1}</value></data>
+  <data name="Download_Notice_Title" xml:space="preserve"><value>Memasang dari {0}</value></data>
+  <data name="Download_Notice_Body" xml:space="preserve"><value>{0} · versi {1} · {2} file
+SHA-256 {3}
+Terverifikasi: {4}</value></data>
+  <data name="Download_Notice_Check_Pinned" xml:space="preserve"><value>repositori dikunci</value></data>
+  <data name="Download_Notice_Check_Digest" xml:space="preserve"><value>SHA-256 cocok</value></data>
+  <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>arsip diperiksa</value></data>
+  <data name="Download_Notice_Cancel" xml:space="preserve"><value>Batal</value></data>
+  <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Dibatalkan sebelum ada yang dipasang.</value></data>
+  <data name="Builds_RemoveGame" xml:space="preserve"><value>Hapus game</value></data>
+  <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Mengeluarkan game ini dari daftar Depot. Menghapus file lua-nya dan semua build tersimpan.</value></data>
+  <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Hapus game</value></data>
+  <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>Hapus {0} ({1}) dari Depot?
+
+Ini menghapus file lua-nya, lua build di sampingnya, dan semua build tersimpan. Tidak dapat dibatalkan.</value></data>
+  <data name="Builds_RemoveGame_Done" xml:space="preserve"><value>{0} dihapus dari Depot.</value></data>
+  <data name="Builds_RemoveGame_Gone" xml:space="preserve"><value>{0} sudah tidak punya file — dihapus dari daftar.</value></data>
+  <data name="Builds_RemoveGame_Failed" xml:space="preserve"><value>Tidak dapat menghapus {0} sepenuhnya: {1}. Tutup Steam lalu coba lagi.</value></data>
+  <data name="Auth_Err_SignInTimedOut" xml:space="preserve"><value>Login kehabisan waktu — browser tidak pernah kembali. Anda juga dapat masuk dengan kode: jalankan /login di server Discord, lalu tempel kodenya di Pengaturan.</value></data>
+  <data name="Auth_Err_CallbackPortBusy" xml:space="preserve"><value>Tidak dapat memulai login: port 53789 sudah digunakan. Tutup upaya login lainnya lalu coba lagi.</value></data>
+  <data name="Auth_ProviderUnavailable" xml:space="preserve"><value>Server login sedang tidak merespons, jadi login Discord lewat browser kemungkinan akan kehabisan waktu. Anda dapat masuk dengan kode: jalankan /login di server Discord dan masukkan kodenya di Pengaturan.</value></data>
+  <data name="Auth_SignInCancelled" xml:space="preserve"><value>Login dibatalkan. Anda dapat mencoba lagi atau memakai kode manual (jalankan /login di Discord).</value></data>
+  <data name="Auth_TryAgain" xml:space="preserve"><value>Coba lagi</value></data>
+  <data name="Auth_TryAnyway" xml:space="preserve"><value>Coba saja</value></data>
+  <data name="Auth_UseManualCode" xml:space="preserve"><value>Gunakan kode manual</value></data>
+  <data name="Auth_Cancel" xml:space="preserve"><value>Batal</value></data>
+  <data name="Protocol_SilentInstall_Title" xml:space="preserve"><value>Permintaan pemasangan</value></data>
+  <data name="Protocol_SilentInstall_Body" xml:space="preserve"><value>Sebuah tautan meminta LuaTools memasang aplikasi {0} di latar belakang. Lanjutkan hanya jika Anda sendiri yang memulainya.</value></data>
+  <data name="Cdp_Consent_Title" xml:space="preserve"><value>Aktifkan jembatan halaman toko Steam?</value></data>
+  <data name="Cdp_Consent_Body" xml:space="preserve"><value>Plugin halaman toko memerlukan jembatan debug Steam, yang diaktifkan LuaTools dengan menambahkan penanda di samping steam.exe. Selama Steam berjalan, ini membuka port lokal tanpa autentikasi (127.0.0.1:8080).
+
+Program lain apa pun yang berjalan di PC ini lalu dapat mengendalikan browser bawaan Steam memakai sesi Anda yang sedang masuk. Aktifkan hanya jika Anda memercayai perangkat lunak yang terpasang di mesin ini.
+
+Anda dapat menolak dan tetap memakai sisa LuaTools; hanya tombol “Add via LuaTools” di toko yang tidak tersedia.
+
+Aktifkan?</value></data>
+  <data name="Privacy_HttpMetadata_Title" xml:space="preserve"><value>Pencarian tanpa enkripsi</value></data>
+  <data name="Privacy_HttpMetadata_Body" xml:space="preserve"><value>Ketersediaan sumber diperiksa lewat HTTP biasa ({0}), karena server itu tidak menyediakan HTTPS yang berfungsi. Tidak ada akun atau kunci yang dikirim, tetapi siapa pun di jalur jaringan Anda dapat melihat aplikasi Steam mana yang Anda cari. Setel “WarnOnInsecureMetadata”: false di settings.json untuk menyembunyikan ini.</value></data>
+  <data name="Theme_Guard_Title" xml:space="preserve"><value>Tema tidak diterapkan</value></data>
+  <data name="Theme_Guard_Body" xml:space="preserve"><value>Aksen Amethyst tidak berlaku, yang biasanya berarti paket WPF-UI mengubah nama resource-nya. Aplikasi tetap berfungsi normal, tetapi sebagian tampilannya akan salah. Lihat docs/CHANGELOG.md.</value></data>
+  <data name="App_DisplayName" xml:space="preserve"><value>LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Title" xml:space="preserve"><value>Ini mungkin bukan LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Body" xml:space="preserve"><value>Biner ini tidak mengidentifikasi dirinya sebagai LuaTools Amethyst. Jika Anda memasang rilis LuaTools resmi di atasnya, analitik dan unggahan kunci Steam aktif kembali. Pasang ulang dari repositori Amethyst untuk mendapatkan kembali build yang menjaga privasi.</value></data>
+  <data name="Fixes_Toast_Blocked" xml:space="preserve"><value>Unduhan ditolak</value></data>
+  <data name="Fixes_Toast_Blocked_Body" xml:space="preserve"><value>{0} tidak dipasang karena gagal pemeriksaan keamanan — {1}</value></data>
+  <data name="About_Nav" xml:space="preserve"><value>Tentang</value></data>
+  <data name="About_Title" xml:space="preserve"><value>Tentang LuaTools Amethyst</value></data>
+  <data name="About_What_Header" xml:space="preserve"><value>Apa ini</value></data>
+  <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst adalah fork komunitas dari LuaTools yang berfokus pada privasi. Fork ini menghapus ping analitik dan unggahan kunci yang dilakukan build asli, menjaga setiap unduhan lewat HTTPS, dan menyertakan tema ungu Amethyst.</value></data>
+  <data name="About_Version_Header" xml:space="preserve"><value>Versi</value></data>
+  <data name="About_Repo_Header" xml:space="preserve"><value>Repositori</value></data>
+  <data name="About_Updates_Header" xml:space="preserve"><value>Pembaruan</value></data>
+  <data name="About_Updates_Enabled" xml:space="preserve"><value>Pembaruan otomatis AKTIF. LuaTools Amethyst memeriksa repositori di bawah saat startup dan memasang pembaruan di latar belakang.</value></data>
+  <data name="About_Updates_Disabled" xml:space="preserve"><value>Pembaruan otomatis MATI — tidak ada permintaan pembaruan yang dikirim. Tambahkan “AppUpdateRepos” ke settings.json untuk menyalakannya, atau perbarui secara manual dari repositori di bawah.</value></data>
+  <data name="About_Updates_Sources" xml:space="preserve"><value>Sumber pembaruan</value></data>
+  <data name="About_Check_Button" xml:space="preserve"><value>Periksa pembaruan</value></data>
+  <data name="About_Check_Checking" xml:space="preserve"><value>Memeriksa…</value></data>
+  <data name="About_Check_UpToDate" xml:space="preserve"><value>Anda menggunakan versi terbaru.</value></data>
+  <data name="About_Check_Found" xml:space="preserve"><value>Pembaruan telah diunduh. Akan diterapkan saat Anda menutup LuaTools.</value></data>
+  <data name="About_Check_Failed" xml:space="preserve"><value>Tidak dapat memeriksa pembaruan. Periksa koneksi Anda dan repositori yang dikonfigurasi.</value></data>
+  <data name="About_Check_Disabled" xml:space="preserve"><value>Pembaruan otomatis dinonaktifkan — konfigurasikan “AppUpdateRepos” di settings.json terlebih dahulu.</value></data>
+  <data name="About_OpenRepo" xml:space="preserve"><value>Buka repositori</value></data>
+  <data name="About_OpenSettings" xml:space="preserve"><value>Buka folder settings.json</value></data>
+  <data name="About_Config_Header" xml:space="preserve"><value>Mengonfigurasi pembaruan secara manual</value></data>
+  <data name="About_Config_Body" xml:space="preserve"><value>Edit settings.json di folder di bawah dan tambahkan repositori sumber pembaruan Anda. Hanya https://github.com/&lt;owner&gt;/&lt;repo&gt; yang diterima, dan repositori rilis LuaTools resmi ditolak agar build resmi tidak pernah dapat menggantikan yang ini.</value></data>
+  <data name="Builds_Depot_Download" xml:space="preserve"><value>Unduh depot…</value></data>
+  <data name="Builds_Depot_Unavailable" xml:space="preserve"><value>Pengunduhan depot tidak tersedia di build ini: tidak ada pin terverifikasi untuk alat pengunduh.</value></data>
+  <data name="Builds_Depot_PickTitle" xml:space="preserve"><value>Unduh konten depot</value></data>
+  <data name="Builds_Depot_PickHint" xml:space="preserve"><value>File mentah diambil langsung dari CDN Steam secara anonim. Tidak ada yang dipasang — depot ditulis ke folder di bawah agar Anda gunakan sesuka hati.</value></data>
+  <data name="Builds_Depot_NoCandidates" xml:space="preserve"><value>Tidak ada depot game ini yang dapat diunduh. Depot memerlukan kunci dekripsi dari lua dan manifest yang diterbitkan Steam.</value></data>
+  <data name="Builds_Depot_NeedsKey" xml:space="preserve"><value>tidak ada kunci di build ini</value></data>
+  <data name="Builds_Depot_NeedsManifest" xml:space="preserve"><value>Steam tidak menerbitkan manifest</value></data>
+  <data name="Builds_Depot_NeedsSignIn" xml:space="preserve"><value>masuk untuk mengambil manifest-nya</value></data>
+  <data name="Builds_Depot_SelectAll" xml:space="preserve"><value>Pilih semua</value></data>
+  <data name="Builds_Depot_SelectNone" xml:space="preserve"><value>Kosongkan</value></data>
+  <data name="Builds_Depot_Destination" xml:space="preserve"><value>Folder tujuan</value></data>
+  <data name="Builds_Depot_Change" xml:space="preserve"><value>Ubah…</value></data>
+  <data name="Builds_Depot_Space" xml:space="preserve"><value>Dibutuhkan {0} · {1} kosong di {2}</value></data>
+  <data name="Builds_Depot_NotEnoughSpace" xml:space="preserve"><value>Ruang kosong di drive itu tidak cukup. Pilih lebih sedikit depot atau folder lain.</value></data>
+  <data name="Builds_Depot_Confirm" xml:space="preserve"><value>Unduh {0} depot</value></data>
+  <data name="Builds_Depot_Cancel" xml:space="preserve"><value>Batal</value></data>
+  <data name="Builds_Depot_Downloading" xml:space="preserve"><value>Depot {0} dari {1} · {2}</value></data>
+  <data name="Builds_Depot_Phase_PreAllocating" xml:space="preserve"><value>mencadangkan ruang disk</value></data>
+  <data name="Builds_Depot_Phase_Validating" xml:space="preserve"><value>memeriksa file yang ada</value></data>
+  <data name="Builds_Depot_Phase_FetchingManifest" xml:space="preserve"><value>mengambil manifest</value></data>
+  <data name="Builds_Depot_Phase_Downloading" xml:space="preserve"><value>mengunduh</value></data>
+  <data name="Builds_Depot_Done" xml:space="preserve"><value>{0} depot diunduh ke {1}</value></data>
+  <data name="Builds_Depot_OpenFolder" xml:space="preserve"><value>Buka folder</value></data>
+  <data name="Builds_Depot_CleanUp_Title" xml:space="preserve"><value>Hapus unduhan parsial?</value></data>
+  <data name="Builds_Depot_CleanUp_Body" xml:space="preserve"><value>Unduhan dibatalkan setelah membuat {0} file di {1}. Hapus hanya file-file itu? Yang sudah ada di sana dibiarkan.</value></data>
+  <data name="Builds_Depot_CleanUp_Failed" xml:space="preserve"><value>Beberapa file tidak dapat dihapus — mungkin masih digunakan. Coba lagi sebentar lagi.</value></data>
+  <data name="Depot_Err_ToolNotPinned" xml:space="preserve"><value>Pengunduhan depot dimatikan di build ini karena tidak memiliki pin terverifikasi untuk alat pengunduh.</value></data>
+  <data name="Depot_Err_Tool" xml:space="preserve"><value>Pengunduh depot tidak dapat diperoleh, atau yang diterima gagal verifikasi.</value></data>
+  <data name="Depot_Err_SteamNotFound" xml:space="preserve"><value>Lokasi Steam tidak ditemukan — atur di Pengaturan.</value></data>
+  <data name="Depot_Err_NoKeys" xml:space="preserve"><value>Tidak ada kunci dekripsi depot yang ditemukan untuk game ini.</value></data>
+  <data name="Depot_Err_NoKeyFor" xml:space="preserve"><value>Depot {0} tidak memiliki kunci dekripsi yang dapat dipakai.</value></data>
+  <data name="Depot_Err_BadKey" xml:space="preserve"><value>Kunci yang tersimpan untuk depot {0} tidak cocok dengan manifest-nya.</value></data>
+  <data name="Depot_Err_NoManifest" xml:space="preserve"><value>Manifest untuk depot itu tidak dapat diperoleh.</value></data>
+  <data name="Depot_Err_SignIn" xml:space="preserve"><value>Masuk untuk mengambil manifest yang belum dimiliki Steam di mesin ini.</value></data>
+  <data name="Depot_Err_NoSpace" xml:space="preserve"><value>Ruang disk tidak cukup: butuh {0}, tersedia {1}.</value></data>
+  <data name="Depot_Err_Failed" xml:space="preserve"><value>Depot {0} gagal: {1}</value></data>
+  <data name="Builds_Depot_Queued" xml:space="preserve"><value>{0} depot dikirim ke Unduhan.</value></data>
+  <data name="Nav_Downloads" xml:space="preserve"><value>Unduhan</value></data>
+  <data name="Downloads_Title" xml:space="preserve"><value>Unduhan</value></data>
+  <data name="Downloads_Subtitle" xml:space="preserve"><value>Semua yang sedang diambil aplikasi dan yang diambil sebelumnya. Manifest dan konten depot berbagi antrean ini.</value></data>
+  <data name="Downloads_Empty" xml:space="preserve"><value>Belum ada yang diunduh. Menambahkan game dari halaman Tambah, atau mengambil konten depot dari halaman Depot, akan menampilkannya di sini.</value></data>
+  <data name="Downloads_Section_Active" xml:space="preserve"><value>Sedang berjalan</value></data>
+  <data name="Downloads_Section_History" xml:space="preserve"><value>Riwayat</value></data>
+  <data name="Downloads_ActionRequired" xml:space="preserve"><value>TINDAKAN DIPERLUKAN</value></data>
+  <data name="Downloads_Of" xml:space="preserve"><value>{0} dari {1}</value></data>
+  <data name="Downloads_Eta" xml:space="preserve"><value>{0} lagi</value></data>
+  <data name="Downloads_Source_Depots" xml:space="preserve"><value>{0} depot</value></data>
+  <data name="Downloads_Status_Queued" xml:space="preserve"><value>Antre</value></data>
+  <data name="Downloads_Status_Downloading" xml:space="preserve"><value>Mengunduh</value></data>
+  <data name="Downloads_Status_AwaitingConfirm" xml:space="preserve"><value>Menunggu Anda</value></data>
+  <data name="Downloads_Status_Installing" xml:space="preserve"><value>Memasang</value></data>
+  <data name="Downloads_Status_Paused" xml:space="preserve"><value>Dijeda</value></data>
+  <data name="Downloads_Status_Verifying" xml:space="preserve"><value>Memverifikasi</value></data>
+  <data name="Downloads_Status_Completed" xml:space="preserve"><value>Selesai</value></data>
+  <data name="Downloads_Status_Failed" xml:space="preserve"><value>Gagal</value></data>
+  <data name="Downloads_Status_Cancelled" xml:space="preserve"><value>Dibatalkan</value></data>
+  <data name="Downloads_Action_Review" xml:space="preserve"><value>Tinjau</value></data>
+  <data name="Downloads_Action_Pause" xml:space="preserve"><value>Jeda</value></data>
+  <data name="Downloads_Action_Resume" xml:space="preserve"><value>Lanjutkan</value></data>
+  <data name="Downloads_Action_MoveUp" xml:space="preserve"><value>Naikkan</value></data>
+  <data name="Downloads_Action_MoveDown" xml:space="preserve"><value>Turunkan</value></data>
+  <data name="Downloads_Action_Cancel" xml:space="preserve"><value>Batal</value></data>
+  <data name="Downloads_Action_Retry" xml:space="preserve"><value>Coba lagi</value></data>
+  <data name="Downloads_Action_Remove" xml:space="preserve"><value>Hapus</value></data>
+  <data name="Downloads_Action_ClearHistory" xml:space="preserve"><value>Hapus riwayat</value></data>
+  <data name="Downloads_Action_CopyAppId" xml:space="preserve"><value>Salin App ID</value></data>
+  <data name="Downloads_Action_ShowInFolder" xml:space="preserve"><value>Tampilkan di folder</value></data>
+  <data name="Downloads_ClearHistory_Confirm" xml:space="preserve"><value>Hapus semua {0} entri dari riwayat unduhan? File-nya sendiri tidak disentuh.</value></data>
+  <data name="Downloads_Err_Interrupted" xml:space="preserve"><value>Terputus saat aplikasi ditutup.</value></data>
+  <data name="Downloads_Err_Cancelled" xml:space="preserve"><value>Dibatalkan.</value></data>
+  <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>Clipboard sedang digunakan program lain — tidak ada yang disalin.</value></data>
+  <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Lokasi itu tidak ada lagi: {0}</value></data>
+  <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>Menolak “{0}”: manifest harus bernama &lt;depot&gt;_&lt;manifest&gt;.manifest (hanya angka).</value></data>
+  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>Repositori sumber CloudRedirect tidak tersedia. Fitur dinonaktifkan sementara.</value></data>
+  <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Build tersimpan (tanpa lua aktif)</value></data>
+  <data name="Settings_Maintenance_Title" xml:space="preserve"><value>PEMELIHARAAN</value></data>
+  <data name="Settings_Backups_Title" xml:space="preserve"><value>Cadangan yang menumpuk</value></data>
+  <data name="Settings_Backups_Subtitle" xml:space="preserve"><value>Folder cadangan yang dibuat saat memasang AmethystTool atau menghapus plugin. Menghapusnya membebaskan ruang di folder Steam.</value></data>
+  <data name="Settings_Backups_Empty" xml:space="preserve"><value>Tidak ada cadangan ditemukan.</value></data>
+  <data name="Settings_Backups_NoSteam" xml:space="preserve"><value>Atur lokasi Steam di Pengaturan untuk melihat cadangan.</value></data>
+  <data name="Settings_Backups_Refresh" xml:space="preserve"><value>Segarkan</value></data>
+  <data name="Settings_Backups_DeleteSelected" xml:space="preserve"><value>Hapus yang dipilih</value></data>
+  <data name="Settings_Backups_DeleteOlder" xml:space="preserve"><value>Hapus yang lebih lama dari 30 hari</value></data>
+  <data name="Settings_Backups_Confirm_Title" xml:space="preserve"><value>Hapus cadangan?</value></data>
+  <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>Hapus permanen {0} item ({1})? Anda tidak akan dapat mengembalikan pemasangan AmethystTool sebelumnya atau penghapusan plugin.</value></data>
+  <data name="Settings_Backups_Confirm_Delete" xml:space="preserve"><value>Hapus</value></data>
+  <data name="Settings_Backups_Cancel" xml:space="preserve"><value>Batal</value></data>
+  <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>{0} item dihapus ({1} dibebaskan)</value></data>
+  <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>{0} item tidak dapat dihapus. Tutup Steam lalu coba lagi.</value></data>
+  <data name="Settings_Backups_Column_Name" xml:space="preserve"><value>Nama</value></data>
+  <data name="Settings_Backups_Column_Type" xml:space="preserve"><value>Jenis</value></data>
+  <data name="Settings_Backups_Type_Folder" xml:space="preserve"><value>Folder</value></data>
+  <data name="Settings_Backups_Type_File" xml:space="preserve"><value>File</value></data>
+  <data name="Settings_Backups_UnknownWarning" xml:space="preserve"><value>Cadangan tidak dikenal, verifikasi sebelum menghapus</value></data>
+  <data name="Settings_Backups_Column_Date" xml:space="preserve"><value>Dibuat</value></data>
+  <data name="Settings_Backups_Column_Size" xml:space="preserve"><value>Ukuran</value></data>
+  <data name="Settings_Backups_Column_Files" xml:space="preserve"><value>File</value></data>
+  <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Versi lokal (offline)</value></data>
+  <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Tidak ada koneksi internet. Memakai versi yang terpasang secara lokal.</value></data>
+  <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Tidak dapat mengunduh versi baru tanpa internet.</value></data>
 </root>

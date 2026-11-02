@@ -586,4 +586,288 @@ Bu işlem, .lua dosyalarını Steam\config\stplug-in konumundan siler. Değişik
   <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools başlatılamadı.&#10;&#10;{0}&#10;&#10;Ayrıntılar şuraya yazıldı:&#10;{1}</value></data>
   <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Steam klasörüne {0} dosya yazılamadı — erişim reddedildi. Steam, yönetici hakları gerektiren bir konuma (ör. Program Files) kurulmuş görünüyor. Steam'i kapatın, ardından bu modu uygulamak için LuaTools'u bir kez yönetici olarak çalıştırın.</value></data>
   <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>{0} dosya yazılamadı — Steam'i kapatıp tekrar deneyin.</value></data>
+  <data name="Nav_Plugin" xml:space="preserve"><value>Eklenti</value></data>
+  <data name="Settings_HubcapKeyRejected" xml:space="preserve"><value>Hubcap bu anahtarı reddetti. Tamamen kopyalandığından ve süresinin dolmadığından emin ol.</value></data>
+  <data name="Settings_HubcapKeyOffline" xml:space="preserve"><value>Hubcap'e ulaşılamadı. Bağlantını kontrol edip tekrar dene — anahtar değiştirilmedi.</value></data>
+  <data name="Settings_HubcapKeyRateLimited" xml:space="preserve"><value>Hubcap şu anda bu anahtarı hız sınırına tabi tutuyor. Biraz sonra tekrar dene.</value></data>
+  <data name="Settings_HubcapExpiryExpired" xml:space="preserve"><value>Hubcap anahtarının süresi {0} tarihinde doldu. Hubcap kaynaklarını kullanmaya devam etmek için yenisini doğrula.</value></data>
+  <data name="Settings_HubcapExpiryToday" xml:space="preserve"><value>Hubcap anahtarının süresi bugün doluyor ({0}). Çalışmayı bırakmadan önce yenisini al.</value></data>
+  <data name="Settings_HubcapExpirySoon" xml:space="preserve"><value>Hubcap anahtarının süresi {0} gün sonra doluyor ({1}). Çalışmayı bırakmadan önce yenisini al.</value></data>
+  <data name="Hubcap_Err_KeyRejected" xml:space="preserve"><value>Hubcap anahtarın geçersiz veya süresi dolmuş.</value></data>
+  <data name="Hubcap_Err_DailyLimit" xml:space="preserve"><value>Hubcap günlük sınırına ulaşıldı.</value></data>
+  <data name="Hubcap_Err_DailyLimitRetry" xml:space="preserve"><value>Hubcap günlük sınırına ulaşıldı. Yaklaşık {0} sonra tekrar dene.</value></data>
+  <data name="Hubcap_Err_NoManifest" xml:space="preserve"><value>Bu uygulama için kullanılabilir bir Hubcap manifest'i yok.</value></data>
+  <data name="Hubcap_Err_Status" xml:space="preserve"><value>Hubcap indirmesi başarısız oldu ({0}).</value></data>
+  <data name="Hubcap_Err_Unreachable" xml:space="preserve"><value>Hubcap'e ulaşılamadı. Bağlantını kontrol edip tekrar dene.</value></data>
+  <data name="Hubcap_Err_Generic" xml:space="preserve"><value>Hubcap indirmesi başarısız oldu.</value></data>
+  <data name="Hubcap_Wait_Seconds" xml:space="preserve"><value>{0} saniye</value></data>
+  <data name="Hubcap_Wait_Minutes" xml:space="preserve"><value>{0} dakika</value></data>
+  <data name="Hubcap_Wait_Hours" xml:space="preserve"><value>{0} saat</value></data>
+  <data name="Settings_Accent_Hint" xml:space="preserve"><value>Tüm uygulamayı yeniden renklendirir — pencere, kartlar ve metin, yalnızca vurgular değil. Bir renk seç, ardından Uygula'yı seç.</value></data>
+  <data name="Settings_Accent_Amethyst" xml:space="preserve"><value>Amethyst</value></data>
+  <data name="Startup_Title" xml:space="preserve"><value>Başlangıç</value></data>
+  <data name="Startup_Steam_Closing" xml:space="preserve"><value>LuaTools dosyaları üzerinde çalışabilsin diye Steam kapatılıyor…</value></data>
+  <data name="Startup_Steam_Closed" xml:space="preserve"><value>Steam kapalı.</value></data>
+  <data name="Startup_Steam_Stubborn_Title" xml:space="preserve"><value>Steam kapanmadı</value></data>
+  <data name="Startup_Steam_Stubborn_Body" xml:space="preserve"><value>Steam'den kapanması istendi ancak hâlâ çalışıyor.
+
+Zorla kapatılsın mı? Steam'in henüz kaydetmediği her şey kaybolabilir. Çalışır durumda bırakmak için Hayır'ı seç — LuaTools, Steam çalışırken dosyalarını değiştiremez.</value></data>
+  <data name="Startup_Steam_LeftRunning" xml:space="preserve"><value>Steam hâlâ çalışıyor, bu yüzden hiçbir şey değiştirilmedi. Hazır olduğunda Steam'i kapat ve LuaTools'u yeniden başlat.</value></data>
+  <data name="Startup_Steam_Reopen_Body" xml:space="preserve"><value>LuaTools işini bitirdi. Steam tekrar açılsın mı?</value></data>
+  <data name="Startup_Steam_Reopen_Action" xml:space="preserve"><value>Steam'i aç</value></data>
+  <data name="Startup_Steam_ReopenFailed" xml:space="preserve"><value>Steam başlatılamadı — kendi kısayolundan aç.</value></data>
+  <data name="Guard_Title" xml:space="preserve"><value>Steam zaten çalışıyor</value></data>
+  <data name="Guard_Body" xml:space="preserve"><value>Hook'un takılabilmesi için LuaTools'un Steam'i kendisinin başlatması (veya kapalı bulması) gerekiyor. Steam şimdi yeniden başlatılsın mı?</value></data>
+  <data name="Guard_Restart" xml:space="preserve"><value>Steam'i yeniden başlat</value></data>
+  <data name="Guard_Exit" xml:space="preserve"><value>Çıkış</value></data>
+  <data name="Guard_Continue" xml:space="preserve"><value>Yine de devam et (önerilmez)</value></data>
+  <data name="Guard_ContinueWarning" xml:space="preserve"><value>Steam çalışır durumda bırakıldı, bu yüzden hook takılamayabilir. Olursa Steam'i LuaTools'tan yeniden başlat.</value></data>
+  <data name="Manage_Action_SaveBackup" xml:space="preserve"><value>Kayıt yedeği…</value></data>
+  <data name="Saves_Title" xml:space="preserve"><value>Kayıt yedekleri</value></data>
+  <data name="Saves_Create" xml:space="preserve"><value>Yeni yedek oluştur</value></data>
+  <data name="Saves_Restore" xml:space="preserve"><value>Geri yükle</value></data>
+  <data name="Saves_Delete" xml:space="preserve"><value>Sil</value></data>
+  <data name="Saves_Close" xml:space="preserve"><value>Kapat</value></data>
+  <data name="Saves_Empty" xml:space="preserve"><value>Bu oyunun henüz yedeği yok.</value></data>
+  <data name="Saves_Locations_Title" xml:space="preserve"><value>Bulunan kayıt konumları</value></data>
+  <data name="Saves_Locations_None" xml:space="preserve"><value>Bu oyun için kayıt klasörü algılanmadı.</value></data>
+  <data name="Saves_Location_Subtitle" xml:space="preserve"><value>{0} · {1} dosya</value></data>
+  <data name="Saves_AddFolder" xml:space="preserve"><value>Klasörü elle ekle…</value></data>
+  <data name="Saves_Confirm_NoneFound" xml:space="preserve"><value>Bu oyun için kayıt bulamadık. Klasörü elle seçmek ister misin?</value></data>
+  <data name="Saves_PickFolder" xml:space="preserve"><value>Klasör seç</value></data>
+  <data name="Saves_PickFolderTitle" xml:space="preserve"><value>Bu oyunun kayıtlarını tuttuğu klasörü seç</value></data>
+  <data name="Saves_Toast_PickOne" xml:space="preserve"><value>Yedeklenecek en az bir kayıt konumunu işaretle.</value></data>
+  <data name="Saves_Toast_FolderRefused" xml:space="preserve"><value>Bu klasör kullanılamaz (sürücü kökü, Windows veya Program Files klasörü ya da tam olmayan bir yol).</value></data>
+  <data name="Manage_SaveIcon_Tooltip" xml:space="preserve"><value>Kayıtların algılandığı konum: {0}</value></data>
+  <data name="Settings_CustomSaveFolders" xml:space="preserve"><value>Özel kayıt klasörleri</value></data>
+  <data name="Settings_CustomSaveFolders_Hint" xml:space="preserve"><value>Uygulamanın kayıtlarını kendi başına bulamadığı oyunlar için. Oyunun AppID'sini gir ve klasörü seç; böylece o oyunla birlikte yedeklenir ve bir geri yüklemenin yazabileceği tek ek yer olur.</value></data>
+  <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
+  <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Klasör ekle…</value></data>
+  <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Kaldır</value></data>
+  <data name="Saves_Note" xml:space="preserve"><value>Steam'in oyun başına klasörünü (userdata) yedekler. Kayıtlarını Belgeler veya AppData içinde tutan oyunlar dahil değildir.</value></data>
+  <data name="Saves_Toast_Created" xml:space="preserve"><value>{0} dosya yedeklendi, {1}.</value></data>
+  <data name="Saves_Toast_Restored" xml:space="preserve"><value>{0} dosya geri yüklendi. Önceki kayıtların bir kopyası saklandı.</value></data>
+  <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Yedek silindi.</value></data>
+  <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Bu oyun için kayıt bulunamadı. Kayıtları tuttuğu klasörü “Klasörü elle ekle…” ile ekle.</value></data>
+  <data name="Saves_Toast_SteamNotFound" xml:space="preserve"><value>Steam klasörü bulunamadı. Konumunu Ayarlar'dan belirle.</value></data>
+  <data name="Saves_Toast_Refused" xml:space="preserve"><value>Reddedildi: yedek bu oyunla eşleşmiyor veya güvensiz yollar içeriyor. Hiçbir şey değiştirilmedi.</value></data>
+  <data name="Saves_Toast_Failed" xml:space="preserve"><value>İşlem başarısız oldu. Ayrıntılar için günlüğe bak.</value></data>
+  <data name="Saves_Toast_NoSpace" xml:space="preserve"><value>Yedek için yeterli boş disk alanı yok ({0} gerekli, pay dahil). Hiçbir şey yazılmadı.</value></data>
+  <data name="Saves_Confirm_Restore" xml:space="preserve"><value>{0} geri yüklensin mi? Bu oyunun mevcut kayıtlarının üzerine yazılacak; önce bir kopyaları saklanır.</value></data>
+  <data name="Saves_Confirm_SteamOpen" xml:space="preserve"><value>Steam açık. Güvenle geri yüklemek (ve Steam Cloud'un dosyaların üzerine yazmasını önlemek) için Steam kapalı olmalı.</value></data>
+  <data name="Saves_CloseSteamContinue" xml:space="preserve"><value>Steam'i kapat ve devam et</value></data>
+  <data name="Saves_Toast_SteamStillRunning" xml:space="preserve"><value>Steam kapanmadı. Elle kapatıp tekrar dene. Hiçbir şey geri yüklenmedi.</value></data>
+  <data name="Saves_Confirm_Delete" xml:space="preserve"><value>{0} silinsin mi? Bu işlem geri alınamaz.</value></data>
+  <data name="Manage_Badge_Installed" xml:space="preserve"><value>Yüklü</value></data>
+  <data name="Manage_Action_ImportSave" xml:space="preserve"><value>Kaydı içe aktar (.zip)…</value></data>
+  <data name="Saves_Import" xml:space="preserve"><value>Kaydı içe aktar…</value></data>
+  <data name="Saves_Import_PickTitle" xml:space="preserve"><value>Bir kayıt yedeği seç (.zip)</value></data>
+  <data name="Saves_Import_Filter" xml:space="preserve"><value>Kayıt yedeği (*.zip)|*.zip</value></data>
+  <data name="Saves_Confirm_Import" xml:space="preserve"><value>{0} içe aktarılsın mı? Bu oyunun mevcut kayıtlarının üzerine yazılacak; önce bir kopyaları saklanır.</value></data>
+  <data name="Saves_Toast_Imported" xml:space="preserve"><value>{0} dosya içe aktarıldı. Önceki kayıtların bir kopyası saklandı.</value></data>
+  <data name="Saves_Confirm_NewFolder" xml:space="preserve"><value>Uygulama, kayıtları düzenlemek için bu oyunun adıyla bir klasör oluşturacak. Devam edilsin mi?</value></data>
+  <data name="Saves_Confirm_Ok" xml:space="preserve"><value>Tamam</value></data>
+  <data name="Saves_Toast_SavedAt" xml:space="preserve"><value>Yedek şuraya başarıyla kaydedildi: {0}</value></data>
+  <data name="Settings_SaveBackupFolder" xml:space="preserve"><value>Kayıt yedeği klasörü</value></data>
+  <data name="Settings_SaveBackupFolder_Hint" xml:space="preserve"><value>“Kayıt yedeği…”nin zip dosyalarını yazdığı yer. Varsayılan: %AppData%\LuaToolsGui\SaveBackups.</value></data>
+  <data name="Settings_ChooseSaveBackupFolder" xml:space="preserve"><value>Kayıt yedeği klasörünü seç</value></data>
+  <data name="About_Changelog_Title" xml:space="preserve"><value>Yenilikler</value></data>
+  <data name="About_Changelog_Show" xml:space="preserve"><value>Değişiklik günlüğünü göster</value></data>
+  <data name="About_Changelog_Hide" xml:space="preserve"><value>Değişiklik günlüğünü gizle</value></data>
+  <data name="Home_Privacy_UpdatesOff" xml:space="preserve"><value>Kendini güncelleme kapalı — bu sürüm kendi başına hiçbir şey indirmez</value></data>
+  <data name="Home_Privacy_UpdatesOn" xml:space="preserve"><value>Kendini güncelleme açık — sürümler başlangıçta denetlenir</value></data>
+  <data name="Home_Action_Mode_Tip" xml:space="preserve"><value>Steam proxy DLL'lerinin hangi arka uca ait olacağını seç</value></data>
+  <data name="Home_Action_Plugin" xml:space="preserve"><value>Eklenti</value></data>
+  <data name="Home_Action_Plugin_Tip" xml:space="preserve"><value>Mağaza sayfası eklentisini yükle veya güncelle</value></data>
+  <data name="Home_Action_Updates_Tip" xml:space="preserve"><value>Yeni sürümü denetlemek için Hakkında'yı aç</value></data>
+  <data name="Mode_Warn_Telemetry" xml:space="preserve"><value>Orijinal proje (madoiscool). Uyarı: telemetri ve DonateKeys sistemi içerir.</value></data>
+  <data name="Manage_Sort_InstalledFirst" xml:space="preserve"><value>Önce yüklenenler</value></data>
+  <data name="Add_Warn_NoManifests_Title" xml:space="preserve"><value>Uyarı</value></data>
+  <data name="Add_Warn_NoManifests" xml:space="preserve"><value>Bu kaynak {0} için manifest sağlamadı. Steam'deki indirme başarısız olabilir. {1} kaynağını öneriyoruz.</value></data>
+  <data name="Plugin_Row_Source" xml:space="preserve"><value>Kaynak</value></data>
+  <data name="Plugin_Sources_Header" xml:space="preserve"><value>Eklenti kaynağı</value></data>
+  <data name="Plugin_Sources_Subtitle" xml:space="preserve"><value>Her geliştirici eklentinin kendi sürümünü yayımlar. Yüklenmesini istediğini seç — LuaTools yalnızca etkin kaynağı yükler ve asla kendi kendine geçiş yapmaz.</value></data>
+  <data name="Plugin_Source_By" xml:space="preserve"><value>geliştiren: {0}</value></data>
+  <data name="Plugin_Source_Active" xml:space="preserve"><value>Etkin</value></data>
+  <data name="Plugin_Source_Default" xml:space="preserve"><value>Varsayılan</value></data>
+  <data name="Plugin_Source_Installed" xml:space="preserve"><value>Bu kaynaktan yüklendi.</value></data>
+  <data name="Plugin_Source_ActiveNotInstalled" xml:space="preserve"><value>Etkin kaynak — henüz yüklenmedi.</value></data>
+  <data name="Plugin_Source_Available" xml:space="preserve"><value>Kullanılabilir. Bunun yerine bu geliştiriciden yüklemek için seç.</value></data>
+  <data name="Plugin_Source_LatestVersion" xml:space="preserve"><value>En son</value></data>
+  <data name="Plugin_Btn_Activate" xml:space="preserve"><value>Bu kaynağı kullan</value></data>
+  <data name="Plugin_Confirm_SwitchCaption" xml:space="preserve"><value>Eklenti kaynağını değiştir</value></data>
+  <data name="Plugin_Confirm_SwitchBody" xml:space="preserve"><value>Bu, eklentiyi {0} kaynağından yükler, şu an yüklü olanın yerine geçer ve uygulamak için Steam'i kapatıp yeniden başlatır. Devam edilsin mi?</value></data>
+  <data name="Plugin_Toast_SourceSwitched" xml:space="preserve"><value>Şimdi {0} kaynağından yüklü. Steam, onu yüklemek için yeniden başlatılıyor.</value></data>
+  <data name="Plugin_Err_UnknownSource" xml:space="preserve"><value>{0}, bu sürümle gelen bir eklenti kaynağı değil, bu yüzden hiçbir şey yüklenmedi.</value></data>
+  <data name="Plugin_SourceErr_NoRelease" xml:space="preserve"><value>Bu kaynak hiç sürüm yayımlamadı veya ulaşılamadı.</value></data>
+  <data name="Plugin_SourceErr_NoTag" xml:space="preserve"><value>Bu kaynağın en yeni sürümünde sürüm etiketi yok.</value></data>
+  <data name="Plugin_SourceErr_MissingAsset" xml:space="preserve"><value>Bu kaynağın en yeni sürümünde {0} eksik.</value></data>
+  <data name="Plugin_SourceErr_ForeignAssetUrl" xml:space="preserve"><value>Bu kaynaktaki {0} indirmesi kendi deposunun dışını gösteriyor, bu yüzden reddedildi.</value></data>
+  <data name="Plugin_SourceErr_NoDigest" xml:space="preserve"><value>Bu kaynak {0} için SHA-256 yayımlamıyor, bu yüzden içeriği kanıtlanamadı.</value></data>
+  <data name="Plugin_Err_ArchiveRejected" xml:space="preserve"><value>{0}, güvenlik denetimi tarafından reddedildi: {1}</value></data>
+  <data name="Download_Notice_Title" xml:space="preserve"><value>{0} kaynağından yükleniyor</value></data>
+  <data name="Download_Notice_Body" xml:space="preserve"><value>{0} · sürüm {1} · {2} dosya
+SHA-256 {3}
+Doğrulandı: {4}</value></data>
+  <data name="Download_Notice_Check_Pinned" xml:space="preserve"><value>depo sabitlendi</value></data>
+  <data name="Download_Notice_Check_Digest" xml:space="preserve"><value>SHA-256 eşleşti</value></data>
+  <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>arşiv incelendi</value></data>
+  <data name="Download_Notice_Cancel" xml:space="preserve"><value>İptal</value></data>
+  <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Hiçbir şey yüklenmeden iptal edildi.</value></data>
+  <data name="Builds_RemoveGame" xml:space="preserve"><value>Oyunu kaldır</value></data>
+  <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Bu oyunu Depolar listesinden çıkarır. lua dosyalarını ve kayıtlı tüm sürümleri siler.</value></data>
+  <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Oyunu kaldır</value></data>
+  <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>{0} ({1}) Depolar'dan kaldırılsın mı?
+
+Bu, lua dosyasını, yanındaki sürüm lua'larını ve kayıtlı tüm sürümleri siler. Geri alınamaz.</value></data>
+  <data name="Builds_RemoveGame_Done" xml:space="preserve"><value>{0} Depolar'dan kaldırıldı.</value></data>
+  <data name="Builds_RemoveGame_Gone" xml:space="preserve"><value>{0} için dosya kalmamıştı — listeden kaldırıldı.</value></data>
+  <data name="Builds_RemoveGame_Failed" xml:space="preserve"><value>{0} tamamen kaldırılamadı: {1}. Steam'i kapatıp tekrar dene.</value></data>
+  <data name="Auth_Err_SignInTimedOut" xml:space="preserve"><value>Giriş zaman aşımına uğradı — tarayıcı hiç geri dönmedi. Kodla da giriş yapabilirsin: Discord sunucusunda /login komutunu çalıştır, ardından kodu Ayarlar'a yapıştır.</value></data>
+  <data name="Auth_Err_CallbackPortBusy" xml:space="preserve"><value>Giriş başlatılamadı: 53789 numaralı bağlantı noktası zaten kullanımda. Diğer giriş denemelerini kapatıp tekrar dene.</value></data>
+  <data name="Auth_ProviderUnavailable" xml:space="preserve"><value>Giriş sunucusu şu anda yanıt vermiyor, bu yüzden tarayıcıdaki Discord girişi büyük olasılıkla zaman aşımına uğrayacak. Bunun yerine kodla giriş yapabilirsin: Discord sunucusunda /login komutunu çalıştır ve kodu Ayarlar'a gir.</value></data>
+  <data name="Auth_SignInCancelled" xml:space="preserve"><value>Giriş iptal edildi. Tekrar deneyebilir veya elle kod kullanabilirsin (Discord'da /login komutunu çalıştır).</value></data>
+  <data name="Auth_TryAgain" xml:space="preserve"><value>Tekrar dene</value></data>
+  <data name="Auth_TryAnyway" xml:space="preserve"><value>Yine de dene</value></data>
+  <data name="Auth_UseManualCode" xml:space="preserve"><value>Elle kod kullan</value></data>
+  <data name="Auth_Cancel" xml:space="preserve"><value>İptal</value></data>
+  <data name="Protocol_SilentInstall_Title" xml:space="preserve"><value>Yükleme isteği</value></data>
+  <data name="Protocol_SilentInstall_Body" xml:space="preserve"><value>Bir bağlantı, LuaTools'tan {0} uygulamasını arka planda yüklemesini istiyor. Bunu kendin başlattıysan devam et.</value></data>
+  <data name="Cdp_Consent_Title" xml:space="preserve"><value>Steam mağaza sayfası köprüsü etkinleştirilsin mi?</value></data>
+  <data name="Cdp_Consent_Body" xml:space="preserve"><value>Mağaza sayfası eklentisi, LuaTools'un steam.exe yanına bir işaret ekleyerek etkinleştirdiği Steam hata ayıklama köprüsüne ihtiyaç duyar. Steam çalışırken bu, kimlik doğrulaması olmayan yerel bir bağlantı noktası (127.0.0.1:8080) açar.
+
+Bu bilgisayarda çalışan diğer her şey, oturum açmış oturumunu kullanarak Steam'in yerleşik tarayıcısını kontrol edebilir. Bunu yalnızca bu makinede yüklü yazılımlara güveniyorsan etkinleştir.
+
+Reddedip LuaTools'un geri kalanını kullanmaya devam edebilirsin; yalnızca mağazadaki “Add via LuaTools” düğmesi kullanılamaz olur.
+
+Etkinleştirilsin mi?</value></data>
+  <data name="Privacy_HttpMetadata_Title" xml:space="preserve"><value>Şifrelenmemiş sorgu</value></data>
+  <data name="Privacy_HttpMetadata_Body" xml:space="preserve"><value>Kaynak kullanılabilirliği, bu sunucu çalışan bir HTTPS sunmadığı için düz HTTP ({0}) üzerinden denetlenir. Hesap veya anahtar gönderilmez, ancak ağ yolundaki herkes hangi Steam uygulamasına baktığını görebilir. Bunu gizlemek için settings.json içinde “WarnOnInsecureMetadata”: false olarak ayarla.</value></data>
+  <data name="Theme_Guard_Title" xml:space="preserve"><value>Tema uygulanmadı</value></data>
+  <data name="Theme_Guard_Body" xml:space="preserve"><value>Amethyst vurgusu etkili olmadı; bu genellikle WPF-UI paketinin kaynak adlarını değiştirdiği anlamına gelir. Uygulama normal çalışır ancak bazı bölümleri hatalı görünecektir. docs/CHANGELOG.md'ye bak.</value></data>
+  <data name="App_DisplayName" xml:space="preserve"><value>LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Title" xml:space="preserve"><value>Bu LuaTools Amethyst olmayabilir</value></data>
+  <data name="Build_NotFork_Body" xml:space="preserve"><value>Bu ikili dosya kendini LuaTools Amethyst olarak tanıtmıyor. Üzerine resmî bir LuaTools sürümü yüklediysen analitik ve Steam anahtar yüklemesi yeniden etkin. Gizlilik sürümünü geri almak için Amethyst deposundan yeniden yükle.</value></data>
+  <data name="Fixes_Toast_Blocked" xml:space="preserve"><value>İndirme reddedildi</value></data>
+  <data name="Fixes_Toast_Blocked_Body" xml:space="preserve"><value>{0}, bir güvenlik denetiminden geçemediği için yüklenmedi — {1}</value></data>
+  <data name="About_Nav" xml:space="preserve"><value>Hakkında</value></data>
+  <data name="About_Title" xml:space="preserve"><value>LuaTools Amethyst Hakkında</value></data>
+  <data name="About_What_Header" xml:space="preserve"><value>Bu nedir</value></data>
+  <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst, gizliliğe odaklanan, topluluk tarafından geliştirilen bir LuaTools çatalıdır. Orijinal sürümün yaptığı analitik pingini ve anahtar bağışı yüklemesini kaldırır, tüm indirmeleri HTTPS üzerinden tutar ve mor Amethyst temasıyla gelir.</value></data>
+  <data name="About_Version_Header" xml:space="preserve"><value>Sürüm</value></data>
+  <data name="About_Repo_Header" xml:space="preserve"><value>Depo</value></data>
+  <data name="About_Updates_Header" xml:space="preserve"><value>Güncellemeler</value></data>
+  <data name="About_Updates_Enabled" xml:space="preserve"><value>Otomatik güncellemeler AÇIK. LuaTools Amethyst başlangıçta aşağıdaki depoyu denetler ve güncellemeleri arka planda yükler.</value></data>
+  <data name="About_Updates_Disabled" xml:space="preserve"><value>Otomatik güncellemeler KAPALI — hiçbir güncelleme isteği yapılmaz. Açmak için settings.json'a “AppUpdateRepos” ekle veya aşağıdaki depodan elle güncelle.</value></data>
+  <data name="About_Updates_Sources" xml:space="preserve"><value>Güncelleme kaynağı</value></data>
+  <data name="About_Check_Button" xml:space="preserve"><value>Güncellemeleri denetle</value></data>
+  <data name="About_Check_Checking" xml:space="preserve"><value>Denetleniyor…</value></data>
+  <data name="About_Check_UpToDate" xml:space="preserve"><value>En son sürümü kullanıyorsun.</value></data>
+  <data name="About_Check_Found" xml:space="preserve"><value>Bir güncelleme indirildi. LuaTools'u kapattığında uygulanacak.</value></data>
+  <data name="About_Check_Failed" xml:space="preserve"><value>Güncellemeler denetlenemedi. Bağlantını ve yapılandırılmış depoyu kontrol et.</value></data>
+  <data name="About_Check_Disabled" xml:space="preserve"><value>Otomatik güncellemeler devre dışı — önce settings.json içinde “AppUpdateRepos” ayarını yapılandır.</value></data>
+  <data name="About_OpenRepo" xml:space="preserve"><value>Depoyu aç</value></data>
+  <data name="About_OpenSettings" xml:space="preserve"><value>settings.json klasörünü aç</value></data>
+  <data name="About_Config_Header" xml:space="preserve"><value>Güncellemeleri elle yapılandırma</value></data>
+  <data name="About_Config_Body" xml:space="preserve"><value>Aşağıdaki klasördeki settings.json dosyasını düzenle ve güncelleme almak istediğin depoyu ekle. Yalnızca https://github.com/&lt;owner&gt;/&lt;repo&gt; kabul edilir ve resmî bir sürümün bunun yerini asla alamaması için orijinal LuaTools sürüm depoları reddedilir.</value></data>
+  <data name="Builds_Depot_Download" xml:space="preserve"><value>Depoları indir…</value></data>
+  <data name="Builds_Depot_Unavailable" xml:space="preserve"><value>Depo indirme bu sürümde kullanılamıyor: indirme aracı için doğrulanmış bir pin yok.</value></data>
+  <data name="Builds_Depot_PickTitle" xml:space="preserve"><value>Depo içeriğini indir</value></data>
+  <data name="Builds_Depot_PickHint" xml:space="preserve"><value>Ham dosyalar doğrudan Steam'in CDN'inden anonim olarak çekilir. Hiçbir şey yüklenmez — depolar, dilediğin gibi kullanman için aşağıdaki klasöre yazılır.</value></data>
+  <data name="Builds_Depot_NoCandidates" xml:space="preserve"><value>Bu oyunun hiçbir deposu indirilemiyor. Hem lua'dan bir şifre çözme anahtarına hem de Steam tarafından yayımlanmış bir manifest'e ihtiyaçları var.</value></data>
+  <data name="Builds_Depot_NeedsKey" xml:space="preserve"><value>bu sürümde anahtar yok</value></data>
+  <data name="Builds_Depot_NeedsManifest" xml:space="preserve"><value>Steam manifest yayımlamıyor</value></data>
+  <data name="Builds_Depot_NeedsSignIn" xml:space="preserve"><value>manifest'ini almak için giriş yap</value></data>
+  <data name="Builds_Depot_SelectAll" xml:space="preserve"><value>Tümünü seç</value></data>
+  <data name="Builds_Depot_SelectNone" xml:space="preserve"><value>Temizle</value></data>
+  <data name="Builds_Depot_Destination" xml:space="preserve"><value>Hedef klasör</value></data>
+  <data name="Builds_Depot_Change" xml:space="preserve"><value>Değiştir…</value></data>
+  <data name="Builds_Depot_Space" xml:space="preserve"><value>{0} gerekli · {2} üzerinde {1} boş</value></data>
+  <data name="Builds_Depot_NotEnoughSpace" xml:space="preserve"><value>O sürücüde yeterli boş alan yok. Daha az depo seç veya başka bir klasör seç.</value></data>
+  <data name="Builds_Depot_Confirm" xml:space="preserve"><value>{0} depoyu indir</value></data>
+  <data name="Builds_Depot_Cancel" xml:space="preserve"><value>İptal</value></data>
+  <data name="Builds_Depot_Downloading" xml:space="preserve"><value>Depo {0} / {1} · {2}</value></data>
+  <data name="Builds_Depot_Phase_PreAllocating" xml:space="preserve"><value>disk alanı ayrılıyor</value></data>
+  <data name="Builds_Depot_Phase_Validating" xml:space="preserve"><value>mevcut dosyalar denetleniyor</value></data>
+  <data name="Builds_Depot_Phase_FetchingManifest" xml:space="preserve"><value>manifest alınıyor</value></data>
+  <data name="Builds_Depot_Phase_Downloading" xml:space="preserve"><value>indiriliyor</value></data>
+  <data name="Builds_Depot_Done" xml:space="preserve"><value>{0} depo {1} konumuna indirildi</value></data>
+  <data name="Builds_Depot_OpenFolder" xml:space="preserve"><value>Klasörü aç</value></data>
+  <data name="Builds_Depot_CleanUp_Title" xml:space="preserve"><value>Kısmi indirme kaldırılsın mı?</value></data>
+  <data name="Builds_Depot_CleanUp_Body" xml:space="preserve"><value>İndirme, {1} içinde {0} dosya oluşturulduktan sonra iptal edildi. Yalnızca bu dosyalar silinsin mi? Orada zaten olanlara dokunulmaz.</value></data>
+  <data name="Builds_Depot_CleanUp_Failed" xml:space="preserve"><value>Bazı dosyalar silinemedi — hâlâ kullanımda olabilirler. Biraz sonra tekrar dene.</value></data>
+  <data name="Depot_Err_ToolNotPinned" xml:space="preserve"><value>Depo indirme bu sürümde kapalı, çünkü indirme aracı için doğrulanmış bir pin taşımıyor.</value></data>
+  <data name="Depot_Err_Tool" xml:space="preserve"><value>Depo indiricisi edinilemedi veya gelen şey doğrulamadan geçemedi.</value></data>
+  <data name="Depot_Err_SteamNotFound" xml:space="preserve"><value>Steam konumu bulunamadı — Ayarlar'dan belirle.</value></data>
+  <data name="Depot_Err_NoKeys" xml:space="preserve"><value>Bu oyun için depo şifre çözme anahtarı bulunamadı.</value></data>
+  <data name="Depot_Err_NoKeyFor" xml:space="preserve"><value>{0} deposunun kullanılabilir bir şifre çözme anahtarı yok.</value></data>
+  <data name="Depot_Err_BadKey" xml:space="preserve"><value>{0} deposu için saklanan anahtar, manifest'iyle eşleşmiyor.</value></data>
+  <data name="Depot_Err_NoManifest" xml:space="preserve"><value>O depo için manifest edinilemedi.</value></data>
+  <data name="Depot_Err_SignIn" xml:space="preserve"><value>Steam'in bu makinede henüz sahip olmadığı bir manifest'i almak için giriş yap.</value></data>
+  <data name="Depot_Err_NoSpace" xml:space="preserve"><value>Yetersiz disk alanı: {0} gerekli, {1} boş.</value></data>
+  <data name="Depot_Err_Failed" xml:space="preserve"><value>{0} deposu başarısız oldu: {1}</value></data>
+  <data name="Builds_Depot_Queued" xml:space="preserve"><value>{0} depo İndirmeler'e gönderildi.</value></data>
+  <data name="Nav_Downloads" xml:space="preserve"><value>İndirmeler</value></data>
+  <data name="Downloads_Title" xml:space="preserve"><value>İndirmeler</value></data>
+  <data name="Downloads_Subtitle" xml:space="preserve"><value>Uygulamanın şu anda çektiği her şey ve daha önce çektikleri. Manifest'ler ve depo içeriği bu kuyruğu paylaşır.</value></data>
+  <data name="Downloads_Empty" xml:space="preserve"><value>Henüz hiçbir şey indirilmedi. Ekle sayfasından bir oyun eklemek veya Depolar sayfasından depo içeriği çekmek burada görünmesini sağlar.</value></data>
+  <data name="Downloads_Section_Active" xml:space="preserve"><value>Devam eden</value></data>
+  <data name="Downloads_Section_History" xml:space="preserve"><value>Geçmiş</value></data>
+  <data name="Downloads_ActionRequired" xml:space="preserve"><value>EYLEM GEREKLİ</value></data>
+  <data name="Downloads_Of" xml:space="preserve"><value>{0} / {1}</value></data>
+  <data name="Downloads_Eta" xml:space="preserve"><value>{0} kaldı</value></data>
+  <data name="Downloads_Source_Depots" xml:space="preserve"><value>{0} depo</value></data>
+  <data name="Downloads_Status_Queued" xml:space="preserve"><value>Sırada</value></data>
+  <data name="Downloads_Status_Downloading" xml:space="preserve"><value>İndiriliyor</value></data>
+  <data name="Downloads_Status_AwaitingConfirm" xml:space="preserve"><value>Seni bekliyor</value></data>
+  <data name="Downloads_Status_Installing" xml:space="preserve"><value>Yükleniyor</value></data>
+  <data name="Downloads_Status_Paused" xml:space="preserve"><value>Duraklatıldı</value></data>
+  <data name="Downloads_Status_Verifying" xml:space="preserve"><value>Doğrulanıyor</value></data>
+  <data name="Downloads_Status_Completed" xml:space="preserve"><value>Bitti</value></data>
+  <data name="Downloads_Status_Failed" xml:space="preserve"><value>Başarısız</value></data>
+  <data name="Downloads_Status_Cancelled" xml:space="preserve"><value>İptal edildi</value></data>
+  <data name="Downloads_Action_Review" xml:space="preserve"><value>İncele</value></data>
+  <data name="Downloads_Action_Pause" xml:space="preserve"><value>Duraklat</value></data>
+  <data name="Downloads_Action_Resume" xml:space="preserve"><value>Sürdür</value></data>
+  <data name="Downloads_Action_MoveUp" xml:space="preserve"><value>Yukarı taşı</value></data>
+  <data name="Downloads_Action_MoveDown" xml:space="preserve"><value>Aşağı taşı</value></data>
+  <data name="Downloads_Action_Cancel" xml:space="preserve"><value>İptal</value></data>
+  <data name="Downloads_Action_Retry" xml:space="preserve"><value>Yeniden dene</value></data>
+  <data name="Downloads_Action_Remove" xml:space="preserve"><value>Kaldır</value></data>
+  <data name="Downloads_Action_ClearHistory" xml:space="preserve"><value>Geçmişi temizle</value></data>
+  <data name="Downloads_Action_CopyAppId" xml:space="preserve"><value>App ID'yi kopyala</value></data>
+  <data name="Downloads_Action_ShowInFolder" xml:space="preserve"><value>Klasörde göster</value></data>
+  <data name="Downloads_ClearHistory_Confirm" xml:space="preserve"><value>İndirme geçmişindeki {0} kaydın tümü kaldırılsın mı? Dosyalara dokunulmaz.</value></data>
+  <data name="Downloads_Err_Interrupted" xml:space="preserve"><value>Uygulama kapanırken kesintiye uğradı.</value></data>
+  <data name="Downloads_Err_Cancelled" xml:space="preserve"><value>İptal edildi.</value></data>
+  <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>Pano başka bir program tarafından kullanılıyor — hiçbir şey kopyalanmadı.</value></data>
+  <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Bu konum artık yok: {0}</value></data>
+  <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>“{0}” reddedildi: bir manifest'in adı &lt;depot&gt;_&lt;manifest&gt;.manifest olmalıdır (yalnızca rakamlar).</value></data>
+  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>CloudRedirect kaynak deposu kullanılamıyor. Özellik geçici olarak devre dışı.</value></data>
+  <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Kayıtlı sürümler (etkin lua yok)</value></data>
+  <data name="Settings_Maintenance_Title" xml:space="preserve"><value>BAKIM</value></data>
+  <data name="Settings_Backups_Title" xml:space="preserve"><value>Biriken yedekler</value></data>
+  <data name="Settings_Backups_Subtitle" xml:space="preserve"><value>AmethystTool yüklenirken veya eklentiler kaldırılırken oluşturulan yedek klasörleri. Bunları silmek Steam klasöründe yer açar.</value></data>
+  <data name="Settings_Backups_Empty" xml:space="preserve"><value>Yedek bulunamadı.</value></data>
+  <data name="Settings_Backups_NoSteam" xml:space="preserve"><value>Yedekleri görmek için Ayarlar'da Steam konumunu yapılandır.</value></data>
+  <data name="Settings_Backups_Refresh" xml:space="preserve"><value>Yenile</value></data>
+  <data name="Settings_Backups_DeleteSelected" xml:space="preserve"><value>Seçilenleri sil</value></data>
+  <data name="Settings_Backups_DeleteOlder" xml:space="preserve"><value>30 günden eskileri sil</value></data>
+  <data name="Settings_Backups_Confirm_Title" xml:space="preserve"><value>Yedekler silinsin mi?</value></data>
+  <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>{0} öge ({1}) kalıcı olarak silinsin mi? AmethystTool'un önceki yüklemelerini veya eklenti kaldırmalarını geri alamazsın.</value></data>
+  <data name="Settings_Backups_Confirm_Delete" xml:space="preserve"><value>Sil</value></data>
+  <data name="Settings_Backups_Cancel" xml:space="preserve"><value>İptal</value></data>
+  <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>{0} öge silindi ({1} boşaltıldı)</value></data>
+  <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>{0} öge silinemedi. Steam'i kapatıp tekrar dene.</value></data>
+  <data name="Settings_Backups_Column_Name" xml:space="preserve"><value>Ad</value></data>
+  <data name="Settings_Backups_Column_Type" xml:space="preserve"><value>Tür</value></data>
+  <data name="Settings_Backups_Type_Folder" xml:space="preserve"><value>Klasör</value></data>
+  <data name="Settings_Backups_Type_File" xml:space="preserve"><value>Dosya</value></data>
+  <data name="Settings_Backups_UnknownWarning" xml:space="preserve"><value>Bilinmeyen yedek, silmeden önce doğrula</value></data>
+  <data name="Settings_Backups_Column_Date" xml:space="preserve"><value>Oluşturulma</value></data>
+  <data name="Settings_Backups_Column_Size" xml:space="preserve"><value>Boyut</value></data>
+  <data name="Settings_Backups_Column_Files" xml:space="preserve"><value>Dosyalar</value></data>
+  <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Yerel sürüm (çevrimdışı)</value></data>
+  <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>İnternet bağlantısı yok. Yerel olarak yüklü sürüm kullanılıyor.</value></data>
+  <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>İnternet olmadan yeni sürüm indirilemez.</value></data>
 </root>

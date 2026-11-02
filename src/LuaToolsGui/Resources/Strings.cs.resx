@@ -586,4 +586,288 @@ Tím se smažou soubory .lua ze Steam\config\stplug-in. Poté restartujte Steam,
   <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools se nepodařilo spustit.&#10;&#10;{0}&#10;&#10;Podrobnosti byly zapsány do:&#10;{1}</value></data>
   <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Nelze zapsat soubory ({0}) do složky Steamu — přístup odepřen. Steam je zřejmě nainstalován v umístění, které vyžaduje oprávnění správce (např. Program Files). Zavřete Steam a jednou spusťte LuaTools jako správce, aby se tento režim použil.</value></data>
   <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Nelze zapsat soubory ({0}) — zavřete Steam a zkuste to znovu.</value></data>
+  <data name="Nav_Plugin" xml:space="preserve"><value>Plugin</value></data>
+  <data name="Settings_HubcapKeyRejected" xml:space="preserve"><value>Hubcap tento klíč odmítl. Zkontrolujte, zda byl zkopírován celý a zda nevypršel.</value></data>
+  <data name="Settings_HubcapKeyOffline" xml:space="preserve"><value>Hubcap se nepodařilo kontaktovat. Zkontrolujte připojení a zkuste to znovu — klíč nebyl změněn.</value></data>
+  <data name="Settings_HubcapKeyRateLimited" xml:space="preserve"><value>Hubcap tento klíč právě omezuje. Zkuste to za chvíli znovu.</value></data>
+  <data name="Settings_HubcapExpiryExpired" xml:space="preserve"><value>Váš klíč Hubcap vypršel dne {0}. Ověřte nový, abyste mohli dál používat zdroje Hubcap.</value></data>
+  <data name="Settings_HubcapExpiryToday" xml:space="preserve"><value>Váš klíč Hubcap vyprší dnes ({0}). Získejte nový, než přestane fungovat.</value></data>
+  <data name="Settings_HubcapExpirySoon" xml:space="preserve"><value>Váš klíč Hubcap vyprší za {0} dní ({1}). Získejte nový, než přestane fungovat.</value></data>
+  <data name="Hubcap_Err_KeyRejected" xml:space="preserve"><value>Váš klíč Hubcap je neplatný nebo vypršel.</value></data>
+  <data name="Hubcap_Err_DailyLimit" xml:space="preserve"><value>Byl dosažen denní limit Hubcap.</value></data>
+  <data name="Hubcap_Err_DailyLimitRetry" xml:space="preserve"><value>Byl dosažen denní limit Hubcap. Zkuste to znovu přibližně za {0}.</value></data>
+  <data name="Hubcap_Err_NoManifest" xml:space="preserve"><value>Pro tuto aplikaci není k dispozici žádný manifest Hubcap.</value></data>
+  <data name="Hubcap_Err_Status" xml:space="preserve"><value>Stažení z Hubcap se nezdařilo ({0}).</value></data>
+  <data name="Hubcap_Err_Unreachable" xml:space="preserve"><value>Hubcap se nepodařilo kontaktovat. Zkontrolujte připojení a zkuste to znovu.</value></data>
+  <data name="Hubcap_Err_Generic" xml:space="preserve"><value>Stažení z Hubcap se nezdařilo.</value></data>
+  <data name="Hubcap_Wait_Seconds" xml:space="preserve"><value>{0} s</value></data>
+  <data name="Hubcap_Wait_Minutes" xml:space="preserve"><value>{0} min</value></data>
+  <data name="Hubcap_Wait_Hours" xml:space="preserve"><value>{0} h</value></data>
+  <data name="Settings_Accent_Hint" xml:space="preserve"><value>Přebarví celou aplikaci — okno, karty i text, nejen zvýraznění. Vyberte barvu a pak zvolte Použít.</value></data>
+  <data name="Settings_Accent_Amethyst" xml:space="preserve"><value>Amethyst</value></data>
+  <data name="Startup_Title" xml:space="preserve"><value>Spuštění</value></data>
+  <data name="Startup_Steam_Closing" xml:space="preserve"><value>Zavírám Steam, aby mohl LuaTools pracovat s jeho soubory…</value></data>
+  <data name="Startup_Steam_Closed" xml:space="preserve"><value>Steam je zavřený.</value></data>
+  <data name="Startup_Steam_Stubborn_Title" xml:space="preserve"><value>Steam se nezavřel</value></data>
+  <data name="Startup_Steam_Stubborn_Body" xml:space="preserve"><value>Steam byl požádán o zavření, ale stále běží.
+
+Vynutit zavření? Vše, co Steam ještě neuložil, může být ztraceno. Zvolte Ne, aby zůstal spuštěný — LuaTools nemůže měnit soubory Steamu, dokud běží.</value></data>
+  <data name="Startup_Steam_LeftRunning" xml:space="preserve"><value>Steam stále běží, takže se nic nezměnilo. Zavřete Steam a až budete připraveni, spusťte LuaTools znovu.</value></data>
+  <data name="Startup_Steam_Reopen_Body" xml:space="preserve"><value>LuaTools je hotov. Otevřít Steam znovu?</value></data>
+  <data name="Startup_Steam_Reopen_Action" xml:space="preserve"><value>Otevřít Steam</value></data>
+  <data name="Startup_Steam_ReopenFailed" xml:space="preserve"><value>Steam se nepodařilo spustit — otevřete jej z jeho vlastního zástupce.</value></data>
+  <data name="Guard_Title" xml:space="preserve"><value>Steam už běží</value></data>
+  <data name="Guard_Body" xml:space="preserve"><value>LuaTools musí Steam spustit sám (nebo ho najít zavřený), aby se hook mohl připojit. Restartovat Steam nyní?</value></data>
+  <data name="Guard_Restart" xml:space="preserve"><value>Restartovat Steam</value></data>
+  <data name="Guard_Exit" xml:space="preserve"><value>Konec</value></data>
+  <data name="Guard_Continue" xml:space="preserve"><value>Přesto pokračovat (nedoporučuje se)</value></data>
+  <data name="Guard_ContinueWarning" xml:space="preserve"><value>Steam zůstal spuštěný, takže se hook nemusí připojit. Pokud se to stane, restartujte Steam z LuaTools.</value></data>
+  <data name="Manage_Action_SaveBackup" xml:space="preserve"><value>Záloha uložených her…</value></data>
+  <data name="Saves_Title" xml:space="preserve"><value>Zálohy uložených her</value></data>
+  <data name="Saves_Create" xml:space="preserve"><value>Vytvořit novou zálohu</value></data>
+  <data name="Saves_Restore" xml:space="preserve"><value>Obnovit</value></data>
+  <data name="Saves_Delete" xml:space="preserve"><value>Smazat</value></data>
+  <data name="Saves_Close" xml:space="preserve"><value>Zavřít</value></data>
+  <data name="Saves_Empty" xml:space="preserve"><value>Zatím žádné zálohy této hry.</value></data>
+  <data name="Saves_Locations_Title" xml:space="preserve"><value>Nalezená umístění uložených her</value></data>
+  <data name="Saves_Locations_None" xml:space="preserve"><value>Pro tuto hru nebyla zjištěna žádná složka s uloženými hrami.</value></data>
+  <data name="Saves_Location_Subtitle" xml:space="preserve"><value>{0} · {1} soubor(ů)</value></data>
+  <data name="Saves_AddFolder" xml:space="preserve"><value>Přidat složku ručně…</value></data>
+  <data name="Saves_Confirm_NoneFound" xml:space="preserve"><value>Nepodařilo se najít uložené hry pro tuto hru. Chcete vybrat složku ručně?</value></data>
+  <data name="Saves_PickFolder" xml:space="preserve"><value>Vybrat složku</value></data>
+  <data name="Saves_PickFolderTitle" xml:space="preserve"><value>Vyberte složku, kam tato hra ukládá své uložené hry</value></data>
+  <data name="Saves_Toast_PickOne" xml:space="preserve"><value>Zaškrtněte alespoň jedno umístění uložených her k zálohování.</value></data>
+  <data name="Saves_Toast_FolderRefused" xml:space="preserve"><value>Tuto složku nelze použít (kořen jednotky, složka Windows nebo Program Files, nebo neúplná cesta).</value></data>
+  <data name="Manage_SaveIcon_Tooltip" xml:space="preserve"><value>Uložené hry zjištěny v: {0}</value></data>
+  <data name="Settings_CustomSaveFolders" xml:space="preserve"><value>Vlastní složky uložených her</value></data>
+  <data name="Settings_CustomSaveFolders_Hint" xml:space="preserve"><value>Pro hry, jejichž uložené hry aplikace sama nenajde. Zadejte AppID hry a vyberte složku; bude se zálohovat spolu s touto hrou a je to jediné další místo, kam smí obnova zapisovat.</value></data>
+  <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
+  <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Přidat složku…</value></data>
+  <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Odebrat</value></data>
+  <data name="Saves_Note" xml:space="preserve"><value>Zálohuje složku Steamu pro jednotlivé hry (userdata). Hry, které ukládají pozice do Dokumentů nebo AppData, nejsou zahrnuty.</value></data>
+  <data name="Saves_Toast_Created" xml:space="preserve"><value>Zazálohováno souborů: {0}, {1}.</value></data>
+  <data name="Saves_Toast_Restored" xml:space="preserve"><value>Obnoveno souborů: {0}. Kopie předchozích uložených her byla zachována.</value></data>
+  <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Záloha smazána.</value></data>
+  <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Pro tuto hru nebyly nalezeny žádné uložené hry. Přidejte složku, kam je ukládá, přes „Přidat složku ručně…“.</value></data>
+  <data name="Saves_Toast_SteamNotFound" xml:space="preserve"><value>Složka Steamu nenalezena. Nastavte její umístění v Nastavení.</value></data>
+  <data name="Saves_Toast_Refused" xml:space="preserve"><value>Odmítnuto: záloha neodpovídá této hře nebo obsahuje nebezpečné cesty. Nic se nezměnilo.</value></data>
+  <data name="Saves_Toast_Failed" xml:space="preserve"><value>Operace se nezdařila. Podrobnosti najdete v protokolu.</value></data>
+  <data name="Saves_Toast_NoSpace" xml:space="preserve"><value>Na disku není dost volného místa pro zálohu (potřeba {0} včetně rezervy). Nic nebylo zapsáno.</value></data>
+  <data name="Saves_Confirm_Restore" xml:space="preserve"><value>Obnovit {0}? Aktuální uložené hry této hry budou přepsány; nejprve se z nich ponechá kopie.</value></data>
+  <data name="Saves_Confirm_SteamOpen" xml:space="preserve"><value>Steam je otevřený. Aby bylo možné bezpečně obnovit (a Steam Cloud nepřepsal soubory), musí být Steam zavřený.</value></data>
+  <data name="Saves_CloseSteamContinue" xml:space="preserve"><value>Zavřít Steam a pokračovat</value></data>
+  <data name="Saves_Toast_SteamStillRunning" xml:space="preserve"><value>Steam se nezavřel. Zavřete jej ručně a zkuste to znovu. Nic nebylo obnoveno.</value></data>
+  <data name="Saves_Confirm_Delete" xml:space="preserve"><value>Smazat {0}? Tuto akci nelze vrátit zpět.</value></data>
+  <data name="Manage_Badge_Installed" xml:space="preserve"><value>Nainstalováno</value></data>
+  <data name="Manage_Action_ImportSave" xml:space="preserve"><value>Importovat uloženou hru (.zip)…</value></data>
+  <data name="Saves_Import" xml:space="preserve"><value>Importovat uloženou hru…</value></data>
+  <data name="Saves_Import_PickTitle" xml:space="preserve"><value>Vyberte zálohu uložených her (.zip)</value></data>
+  <data name="Saves_Import_Filter" xml:space="preserve"><value>Záloha uložených her (*.zip)|*.zip</value></data>
+  <data name="Saves_Confirm_Import" xml:space="preserve"><value>Importovat {0}? Aktuální uložené hry této hry budou přepsány; nejprve se z nich ponechá kopie.</value></data>
+  <data name="Saves_Toast_Imported" xml:space="preserve"><value>Importováno souborů: {0}. Kopie předchozích uložených her byla zachována.</value></data>
+  <data name="Saves_Confirm_NewFolder" xml:space="preserve"><value>Aplikace vytvoří složku pojmenovanou podle této hry, aby uložené hry uspořádala. Pokračovat?</value></data>
+  <data name="Saves_Confirm_Ok" xml:space="preserve"><value>OK</value></data>
+  <data name="Saves_Toast_SavedAt" xml:space="preserve"><value>Záloha byla úspěšně uložena do: {0}</value></data>
+  <data name="Settings_SaveBackupFolder" xml:space="preserve"><value>Složka záloh uložených her</value></data>
+  <data name="Settings_SaveBackupFolder_Hint" xml:space="preserve"><value>Kam „Záloha uložených her…“ zapisuje své soubory zip. Výchozí: %AppData%\LuaToolsGui\SaveBackups.</value></data>
+  <data name="Settings_ChooseSaveBackupFolder" xml:space="preserve"><value>Vyberte složku záloh uložených her</value></data>
+  <data name="About_Changelog_Title" xml:space="preserve"><value>Co je nového</value></data>
+  <data name="About_Changelog_Show" xml:space="preserve"><value>Zobrazit seznam změn</value></data>
+  <data name="About_Changelog_Hide" xml:space="preserve"><value>Skrýt seznam změn</value></data>
+  <data name="Home_Privacy_UpdatesOff" xml:space="preserve"><value>Samoaktualizace vypnuta — tento build si sám nic nestahuje</value></data>
+  <data name="Home_Privacy_UpdatesOn" xml:space="preserve"><value>Samoaktualizace zapnuta — vydání se kontrolují při spuštění</value></data>
+  <data name="Home_Action_Mode_Tip" xml:space="preserve"><value>Vyberte, který backend vlastní proxy DLL Steamu</value></data>
+  <data name="Home_Action_Plugin" xml:space="preserve"><value>Plugin</value></data>
+  <data name="Home_Action_Plugin_Tip" xml:space="preserve"><value>Nainstalovat nebo aktualizovat plugin pro stránku obchodu</value></data>
+  <data name="Home_Action_Updates_Tip" xml:space="preserve"><value>Otevřete O aplikaci a zkontrolujte novou verzi</value></data>
+  <data name="Mode_Warn_Telemetry" xml:space="preserve"><value>Původní projekt (madoiscool). Upozornění: obsahuje telemetrii a systém DonateKeys.</value></data>
+  <data name="Manage_Sort_InstalledFirst" xml:space="preserve"><value>Nainstalované první</value></data>
+  <data name="Add_Warn_NoManifests_Title" xml:space="preserve"><value>Upozornění</value></data>
+  <data name="Add_Warn_NoManifests" xml:space="preserve"><value>Tento zdroj nedodal manifesty pro {0}. Stahování ve Steamu může selhat. Doporučujeme zdroj {1}.</value></data>
+  <data name="Plugin_Row_Source" xml:space="preserve"><value>Zdroj</value></data>
+  <data name="Plugin_Sources_Header" xml:space="preserve"><value>Zdroj pluginu</value></data>
+  <data name="Plugin_Sources_Subtitle" xml:space="preserve"><value>Každý autor publikuje vlastní build pluginu. Vyberte ten, který chcete nainstalovat — LuaTools instaluje vždy jen aktivní zdroj a nikdy se nepřepne sám.</value></data>
+  <data name="Plugin_Source_By" xml:space="preserve"><value>od {0}</value></data>
+  <data name="Plugin_Source_Active" xml:space="preserve"><value>Aktivní</value></data>
+  <data name="Plugin_Source_Default" xml:space="preserve"><value>Výchozí</value></data>
+  <data name="Plugin_Source_Installed" xml:space="preserve"><value>Nainstalováno z tohoto zdroje.</value></data>
+  <data name="Plugin_Source_ActiveNotInstalled" xml:space="preserve"><value>Aktivní zdroj — zatím nenainstalováno.</value></data>
+  <data name="Plugin_Source_Available" xml:space="preserve"><value>K dispozici. Vyberte jej, pokud chcete místo toho instalovat od tohoto autora.</value></data>
+  <data name="Plugin_Source_LatestVersion" xml:space="preserve"><value>Nejnovější</value></data>
+  <data name="Plugin_Btn_Activate" xml:space="preserve"><value>Použít tento zdroj</value></data>
+  <data name="Plugin_Confirm_SwitchCaption" xml:space="preserve"><value>Přepnout zdroj pluginu</value></data>
+  <data name="Plugin_Confirm_SwitchBody" xml:space="preserve"><value>Tím se nainstaluje plugin z {0}, nahradí se aktuálně nainstalovaný a Steam se zavře a znovu spustí, aby se změna použila. Pokračovat?</value></data>
+  <data name="Plugin_Toast_SourceSwitched" xml:space="preserve"><value>Nyní nainstalováno z {0}. Steam se restartuje, aby plugin načetl.</value></data>
+  <data name="Plugin_Err_UnknownSource" xml:space="preserve"><value>{0} není zdroj pluginu dodávaný s tímto buildem, takže nebylo nic nainstalováno.</value></data>
+  <data name="Plugin_SourceErr_NoRelease" xml:space="preserve"><value>Tento zdroj nepublikoval žádné vydání, nebo se k němu nepodařilo připojit.</value></data>
+  <data name="Plugin_SourceErr_NoTag" xml:space="preserve"><value>Nejnovější vydání tohoto zdroje nemá značku verze.</value></data>
+  <data name="Plugin_SourceErr_MissingAsset" xml:space="preserve"><value>V nejnovějším vydání tohoto zdroje chybí {0}.</value></data>
+  <data name="Plugin_SourceErr_ForeignAssetUrl" xml:space="preserve"><value>Stažení {0} z tohoto zdroje míří mimo jeho vlastní repozitář, proto bylo odmítnuto.</value></data>
+  <data name="Plugin_SourceErr_NoDigest" xml:space="preserve"><value>Tento zdroj nepublikuje SHA-256 pro {0}, takže se jeho obsah nepodařilo ověřit.</value></data>
+  <data name="Plugin_Err_ArchiveRejected" xml:space="preserve"><value>{0} bylo odmítnuto bezpečnostní kontrolou: {1}</value></data>
+  <data name="Download_Notice_Title" xml:space="preserve"><value>Instalace z {0}</value></data>
+  <data name="Download_Notice_Body" xml:space="preserve"><value>{0} · verze {1} · {2} soubor(ů)
+SHA-256 {3}
+Ověřeno: {4}</value></data>
+  <data name="Download_Notice_Check_Pinned" xml:space="preserve"><value>repozitář připnut</value></data>
+  <data name="Download_Notice_Check_Digest" xml:space="preserve"><value>SHA-256 sedí</value></data>
+  <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>archiv zkontrolován</value></data>
+  <data name="Download_Notice_Cancel" xml:space="preserve"><value>Zrušit</value></data>
+  <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Zrušeno před instalací čehokoli.</value></data>
+  <data name="Builds_RemoveGame" xml:space="preserve"><value>Odebrat hru</value></data>
+  <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Odebere tuto hru ze seznamu Depotů. Smaže její soubory lua a všechny uložené buildy.</value></data>
+  <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Odebrat hru</value></data>
+  <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>Odebrat {0} ({1}) z Depotů?
+
+Tím se smaže její soubor lua, případné lua buildů vedle něj a všechny uložené buildy. Nelze vrátit zpět.</value></data>
+  <data name="Builds_RemoveGame_Done" xml:space="preserve"><value>{0} odebráno z Depotů.</value></data>
+  <data name="Builds_RemoveGame_Gone" xml:space="preserve"><value>{0} už neměla žádné soubory — odebráno ze seznamu.</value></data>
+  <data name="Builds_RemoveGame_Failed" xml:space="preserve"><value>{0} se nepodařilo odebrat úplně: {1}. Zavřete Steam a zkuste to znovu.</value></data>
+  <data name="Auth_Err_SignInTimedOut" xml:space="preserve"><value>Přihlášení vypršelo — prohlížeč se nikdy nevrátil. Můžete se přihlásit i kódem: spusťte /login na serveru Discord a vložte kód v Nastavení.</value></data>
+  <data name="Auth_Err_CallbackPortBusy" xml:space="preserve"><value>Přihlášení se nepodařilo zahájit: port 53789 je již používán. Zavřete jakékoli jiné pokusy o přihlášení a zkuste to znovu.</value></data>
+  <data name="Auth_ProviderUnavailable" xml:space="preserve"><value>Přihlašovací server právě neodpovídá, takže přihlášení přes Discord v prohlížeči pravděpodobně vyprší. Místo toho se můžete přihlásit kódem: spusťte /login na serveru Discord a zadejte kód v Nastavení.</value></data>
+  <data name="Auth_SignInCancelled" xml:space="preserve"><value>Přihlášení zrušeno. Můžete to zkusit znovu nebo použít ruční kód (spusťte /login na Discordu).</value></data>
+  <data name="Auth_TryAgain" xml:space="preserve"><value>Zkusit znovu</value></data>
+  <data name="Auth_TryAnyway" xml:space="preserve"><value>Přesto zkusit</value></data>
+  <data name="Auth_UseManualCode" xml:space="preserve"><value>Použít ruční kód</value></data>
+  <data name="Auth_Cancel" xml:space="preserve"><value>Zrušit</value></data>
+  <data name="Protocol_SilentInstall_Title" xml:space="preserve"><value>Žádost o instalaci</value></data>
+  <data name="Protocol_SilentInstall_Body" xml:space="preserve"><value>Odkaz žádá LuaTools o instalaci aplikace {0} na pozadí. Pokračujte, jen pokud jste to spustili sami.</value></data>
+  <data name="Cdp_Consent_Title" xml:space="preserve"><value>Zapnout most pro stránku obchodu Steamu?</value></data>
+  <data name="Cdp_Consent_Body" xml:space="preserve"><value>Plugin pro stránku obchodu potřebuje ladicí most Steamu, který LuaTools zapíná přidáním značky vedle steam.exe. Dokud Steam běží, otevře to neověřený lokální port (127.0.0.1:8080).
+
+Cokoli dalšího spuštěného na tomto PC by pak mohlo ovládat vestavěný prohlížeč Steamu pomocí vaší přihlášené relace. Zapněte to, jen pokud důvěřujete softwaru nainstalovanému na tomto počítači.
+
+Můžete odmítnout a zbytek LuaTools dál používat; nedostupné bude jen tlačítko „Add via LuaTools“ v obchodě.
+
+Zapnout?</value></data>
+  <data name="Privacy_HttpMetadata_Title" xml:space="preserve"><value>Nešifrovaný dotaz</value></data>
+  <data name="Privacy_HttpMetadata_Body" xml:space="preserve"><value>Dostupnost zdrojů se ověřuje přes prosté HTTP ({0}), protože tento server nenabízí funkční HTTPS. Neodesílá se žádný účet ani klíč, ale kdokoli na cestě vaší sítě uvidí, kterou aplikaci Steamu jste vyhledali. Nastavte „WarnOnInsecureMetadata“: false v settings.json, aby se toto skrylo.</value></data>
+  <data name="Theme_Guard_Title" xml:space="preserve"><value>Motiv nebyl použit</value></data>
+  <data name="Theme_Guard_Body" xml:space="preserve"><value>Akcent Amethyst se neprojevil, což obvykle znamená, že balíček WPF-UI změnil názvy svých zdrojů. Aplikace funguje normálně, ale některé její části budou vypadat špatně. Viz docs/CHANGELOG.md.</value></data>
+  <data name="App_DisplayName" xml:space="preserve"><value>LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Title" xml:space="preserve"><value>Toto nemusí být LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Body" xml:space="preserve"><value>Tento binární soubor se nehlásí jako LuaTools Amethyst. Pokud jste přes něj nainstalovali oficiální vydání LuaTools, je analytika a odesílání klíčů Steamu opět aktivní. Přeinstalujte z repozitáře Amethyst, abyste získali zpět verzi šetřící soukromí.</value></data>
+  <data name="Fixes_Toast_Blocked" xml:space="preserve"><value>Stažení odmítnuto</value></data>
+  <data name="Fixes_Toast_Blocked_Body" xml:space="preserve"><value>{0} nebylo nainstalováno, protože neprošlo bezpečnostní kontrolou — {1}</value></data>
+  <data name="About_Nav" xml:space="preserve"><value>O aplikaci</value></data>
+  <data name="About_Title" xml:space="preserve"><value>O LuaTools Amethyst</value></data>
+  <data name="About_What_Header" xml:space="preserve"><value>Co to je</value></data>
+  <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst je komunitní fork LuaTools zaměřený na soukromí. Odstraňuje analytický ping a odesílání klíčů, které provádí původní build, drží všechna stahování přes HTTPS a dodává fialový motiv Amethyst.</value></data>
+  <data name="About_Version_Header" xml:space="preserve"><value>Verze</value></data>
+  <data name="About_Repo_Header" xml:space="preserve"><value>Repozitář</value></data>
+  <data name="About_Updates_Header" xml:space="preserve"><value>Aktualizace</value></data>
+  <data name="About_Updates_Enabled" xml:space="preserve"><value>Automatické aktualizace jsou ZAPNUTY. LuaTools Amethyst při spuštění zkontroluje repozitář níže a aktualizace instaluje na pozadí.</value></data>
+  <data name="About_Updates_Disabled" xml:space="preserve"><value>Automatické aktualizace jsou VYPNUTY — neprovádí se žádný požadavek na aktualizaci. Přidejte „AppUpdateRepos“ do settings.json, abyste je zapnuli, nebo aktualizujte ručně z repozitáře níže.</value></data>
+  <data name="About_Updates_Sources" xml:space="preserve"><value>Zdroj aktualizací</value></data>
+  <data name="About_Check_Button" xml:space="preserve"><value>Zkontrolovat aktualizace</value></data>
+  <data name="About_Check_Checking" xml:space="preserve"><value>Kontroluji…</value></data>
+  <data name="About_Check_UpToDate" xml:space="preserve"><value>Máte nejnovější verzi.</value></data>
+  <data name="About_Check_Found" xml:space="preserve"><value>Aktualizace byla stažena. Použije se po zavření LuaTools.</value></data>
+  <data name="About_Check_Failed" xml:space="preserve"><value>Aktualizace se nepodařilo zkontrolovat. Zkontrolujte připojení a nastavený repozitář.</value></data>
+  <data name="About_Check_Disabled" xml:space="preserve"><value>Automatické aktualizace jsou vypnuty — nejprve nastavte „AppUpdateRepos“ v settings.json.</value></data>
+  <data name="About_OpenRepo" xml:space="preserve"><value>Otevřít repozitář</value></data>
+  <data name="About_OpenSettings" xml:space="preserve"><value>Otevřít složku settings.json</value></data>
+  <data name="About_Config_Header" xml:space="preserve"><value>Ruční nastavení aktualizací</value></data>
+  <data name="About_Config_Body" xml:space="preserve"><value>Upravte settings.json ve složce níže a přidejte repozitář, ze kterého chcete aktualizace získávat. Přijímá se pouze https://github.com/&lt;owner&gt;/&lt;repo&gt; a repozitáře oficiálních vydání LuaTools se odmítají, aby oficiální build nikdy nemohl nahradit tento.</value></data>
+  <data name="Builds_Depot_Download" xml:space="preserve"><value>Stáhnout depoty…</value></data>
+  <data name="Builds_Depot_Unavailable" xml:space="preserve"><value>Stahování depotů není v tomto buildu dostupné: nemá ověřený pin pro nástroj ke stahování.</value></data>
+  <data name="Builds_Depot_PickTitle" xml:space="preserve"><value>Stáhnout obsah depotu</value></data>
+  <data name="Builds_Depot_PickHint" xml:space="preserve"><value>Surové soubory se stahují anonymně přímo z CDN Steamu. Nic se neinstaluje — depoty se zapíší do složky níže, abyste je mohli použít, jak chcete.</value></data>
+  <data name="Builds_Depot_NoCandidates" xml:space="preserve"><value>Žádný depot této hry nelze stáhnout. Potřebují jak dešifrovací klíč z lua, tak manifest publikovaný Steamem.</value></data>
+  <data name="Builds_Depot_NeedsKey" xml:space="preserve"><value>v tomto buildu není klíč</value></data>
+  <data name="Builds_Depot_NeedsManifest" xml:space="preserve"><value>Steam nepublikuje manifest</value></data>
+  <data name="Builds_Depot_NeedsSignIn" xml:space="preserve"><value>přihlaste se pro získání manifestu</value></data>
+  <data name="Builds_Depot_SelectAll" xml:space="preserve"><value>Vybrat vše</value></data>
+  <data name="Builds_Depot_SelectNone" xml:space="preserve"><value>Vymazat</value></data>
+  <data name="Builds_Depot_Destination" xml:space="preserve"><value>Cílová složka</value></data>
+  <data name="Builds_Depot_Change" xml:space="preserve"><value>Změnit…</value></data>
+  <data name="Builds_Depot_Space" xml:space="preserve"><value>Potřeba {0} · volných {1} na {2}</value></data>
+  <data name="Builds_Depot_NotEnoughSpace" xml:space="preserve"><value>Na tomto disku není dost volného místa. Vyberte méně depotů nebo jinou složku.</value></data>
+  <data name="Builds_Depot_Confirm" xml:space="preserve"><value>Stáhnout depoty: {0}</value></data>
+  <data name="Builds_Depot_Cancel" xml:space="preserve"><value>Zrušit</value></data>
+  <data name="Builds_Depot_Downloading" xml:space="preserve"><value>Depot {0} z {1} · {2}</value></data>
+  <data name="Builds_Depot_Phase_PreAllocating" xml:space="preserve"><value>rezervace místa na disku</value></data>
+  <data name="Builds_Depot_Phase_Validating" xml:space="preserve"><value>kontrola existujících souborů</value></data>
+  <data name="Builds_Depot_Phase_FetchingManifest" xml:space="preserve"><value>získávání manifestu</value></data>
+  <data name="Builds_Depot_Phase_Downloading" xml:space="preserve"><value>stahování</value></data>
+  <data name="Builds_Depot_Done" xml:space="preserve"><value>Staženo depotů: {0} do {1}</value></data>
+  <data name="Builds_Depot_OpenFolder" xml:space="preserve"><value>Otevřít složku</value></data>
+  <data name="Builds_Depot_CleanUp_Title" xml:space="preserve"><value>Odstranit částečné stažení?</value></data>
+  <data name="Builds_Depot_CleanUp_Body" xml:space="preserve"><value>Stahování bylo zrušeno poté, co vzniklo souborů: {0} ve složce {1}. Smazat jen tyto soubory? Co tam bylo už předtím, zůstane nedotčeno.</value></data>
+  <data name="Builds_Depot_CleanUp_Failed" xml:space="preserve"><value>Některé soubory se nepodařilo smazat — možná se ještě používají. Zkuste to za chvíli znovu.</value></data>
+  <data name="Depot_Err_ToolNotPinned" xml:space="preserve"><value>Stahování depotů je v tomto buildu vypnuté, protože nemá ověřený pin pro nástroj ke stahování.</value></data>
+  <data name="Depot_Err_Tool" xml:space="preserve"><value>Nástroj ke stahování depotů se nepodařilo získat, nebo to, co dorazilo, neprošlo ověřením.</value></data>
+  <data name="Depot_Err_SteamNotFound" xml:space="preserve"><value>Umístění Steamu nenalezeno — nastavte ho v Nastavení.</value></data>
+  <data name="Depot_Err_NoKeys" xml:space="preserve"><value>Pro tuto hru nebyly nalezeny žádné dešifrovací klíče depotů.</value></data>
+  <data name="Depot_Err_NoKeyFor" xml:space="preserve"><value>Depot {0} nemá použitelný dešifrovací klíč.</value></data>
+  <data name="Depot_Err_BadKey" xml:space="preserve"><value>Klíč uložený pro depot {0} neodpovídá jeho manifestu.</value></data>
+  <data name="Depot_Err_NoManifest" xml:space="preserve"><value>Manifest pro tento depot se nepodařilo získat.</value></data>
+  <data name="Depot_Err_SignIn" xml:space="preserve"><value>Přihlaste se a získejte manifest, který Steam na tomto počítači ještě nemá.</value></data>
+  <data name="Depot_Err_NoSpace" xml:space="preserve"><value>Nedostatek místa na disku: potřeba {0}, volných {1}.</value></data>
+  <data name="Depot_Err_Failed" xml:space="preserve"><value>Depot {0} selhal: {1}</value></data>
+  <data name="Builds_Depot_Queued" xml:space="preserve"><value>Odesláno do Stahování: depotů {0}.</value></data>
+  <data name="Nav_Downloads" xml:space="preserve"><value>Stahování</value></data>
+  <data name="Downloads_Title" xml:space="preserve"><value>Stahování</value></data>
+  <data name="Downloads_Subtitle" xml:space="preserve"><value>Vše, co aplikace právě stahuje, a co stáhla dříve. Manifesty a obsah depotů sdílejí tuto frontu.</value></data>
+  <data name="Downloads_Empty" xml:space="preserve"><value>Zatím nebylo nic staženo. Přidání hry ze stránky Přidat nebo získání obsahu depotu ze stránky Depoty ji sem zobrazí.</value></data>
+  <data name="Downloads_Section_Active" xml:space="preserve"><value>Probíhá</value></data>
+  <data name="Downloads_Section_History" xml:space="preserve"><value>Historie</value></data>
+  <data name="Downloads_ActionRequired" xml:space="preserve"><value>VYŽADOVÁNA AKCE</value></data>
+  <data name="Downloads_Of" xml:space="preserve"><value>{0} z {1}</value></data>
+  <data name="Downloads_Eta" xml:space="preserve"><value>zbývá {0}</value></data>
+  <data name="Downloads_Source_Depots" xml:space="preserve"><value>Depotů: {0}</value></data>
+  <data name="Downloads_Status_Queued" xml:space="preserve"><value>Ve frontě</value></data>
+  <data name="Downloads_Status_Downloading" xml:space="preserve"><value>Stahování</value></data>
+  <data name="Downloads_Status_AwaitingConfirm" xml:space="preserve"><value>Čeká na vás</value></data>
+  <data name="Downloads_Status_Installing" xml:space="preserve"><value>Instalace</value></data>
+  <data name="Downloads_Status_Paused" xml:space="preserve"><value>Pozastaveno</value></data>
+  <data name="Downloads_Status_Verifying" xml:space="preserve"><value>Ověřování</value></data>
+  <data name="Downloads_Status_Completed" xml:space="preserve"><value>Hotovo</value></data>
+  <data name="Downloads_Status_Failed" xml:space="preserve"><value>Selhalo</value></data>
+  <data name="Downloads_Status_Cancelled" xml:space="preserve"><value>Zrušeno</value></data>
+  <data name="Downloads_Action_Review" xml:space="preserve"><value>Zkontrolovat</value></data>
+  <data name="Downloads_Action_Pause" xml:space="preserve"><value>Pozastavit</value></data>
+  <data name="Downloads_Action_Resume" xml:space="preserve"><value>Pokračovat</value></data>
+  <data name="Downloads_Action_MoveUp" xml:space="preserve"><value>Posunout nahoru</value></data>
+  <data name="Downloads_Action_MoveDown" xml:space="preserve"><value>Posunout dolů</value></data>
+  <data name="Downloads_Action_Cancel" xml:space="preserve"><value>Zrušit</value></data>
+  <data name="Downloads_Action_Retry" xml:space="preserve"><value>Zkusit znovu</value></data>
+  <data name="Downloads_Action_Remove" xml:space="preserve"><value>Odebrat</value></data>
+  <data name="Downloads_Action_ClearHistory" xml:space="preserve"><value>Vymazat historii</value></data>
+  <data name="Downloads_Action_CopyAppId" xml:space="preserve"><value>Kopírovat App ID</value></data>
+  <data name="Downloads_Action_ShowInFolder" xml:space="preserve"><value>Zobrazit ve složce</value></data>
+  <data name="Downloads_ClearHistory_Confirm" xml:space="preserve"><value>Odebrat všechny položky ({0}) z historie stahování? Samotné soubory se nedotknou.</value></data>
+  <data name="Downloads_Err_Interrupted" xml:space="preserve"><value>Přerušeno při zavření aplikace.</value></data>
+  <data name="Downloads_Err_Cancelled" xml:space="preserve"><value>Zrušeno.</value></data>
+  <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>Schránku právě používá jiný program — nic se nezkopírovalo.</value></data>
+  <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Toto umístění už neexistuje: {0}</value></data>
+  <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>Odmítnuto „{0}“: manifest se musí jmenovat &lt;depot&gt;_&lt;manifest&gt;.manifest (jen číslice).</value></data>
+  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>Zdrojový repozitář CloudRedirect není dostupný. Funkce je dočasně vypnuta.</value></data>
+  <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Uložené buildy (bez aktivního lua)</value></data>
+  <data name="Settings_Maintenance_Title" xml:space="preserve"><value>ÚDRŽBA</value></data>
+  <data name="Settings_Backups_Title" xml:space="preserve"><value>Nahromaděné zálohy</value></data>
+  <data name="Settings_Backups_Subtitle" xml:space="preserve"><value>Složky záloh vytvořené při instalaci AmethystTool nebo odebírání pluginů. Jejich smazáním uvolníte místo ve složce Steamu.</value></data>
+  <data name="Settings_Backups_Empty" xml:space="preserve"><value>Nebyly nalezeny žádné zálohy.</value></data>
+  <data name="Settings_Backups_NoSteam" xml:space="preserve"><value>Nastavte umístění Steamu v Nastavení, abyste viděli zálohy.</value></data>
+  <data name="Settings_Backups_Refresh" xml:space="preserve"><value>Obnovit</value></data>
+  <data name="Settings_Backups_DeleteSelected" xml:space="preserve"><value>Smazat vybrané</value></data>
+  <data name="Settings_Backups_DeleteOlder" xml:space="preserve"><value>Smazat starší než 30 dní</value></data>
+  <data name="Settings_Backups_Confirm_Title" xml:space="preserve"><value>Smazat zálohy?</value></data>
+  <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>Trvale smazat položky ({0}; {1})? Dřívější instalace AmethystTool ani odebrání pluginů pak nepůjde vrátit.</value></data>
+  <data name="Settings_Backups_Confirm_Delete" xml:space="preserve"><value>Smazat</value></data>
+  <data name="Settings_Backups_Cancel" xml:space="preserve"><value>Zrušit</value></data>
+  <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>Smazáno položek: {0} (uvolněno {1})</value></data>
+  <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>Nepodařilo se smazat položek: {0}. Zavřete Steam a zkuste to znovu.</value></data>
+  <data name="Settings_Backups_Column_Name" xml:space="preserve"><value>Název</value></data>
+  <data name="Settings_Backups_Column_Type" xml:space="preserve"><value>Typ</value></data>
+  <data name="Settings_Backups_Type_Folder" xml:space="preserve"><value>Složka</value></data>
+  <data name="Settings_Backups_Type_File" xml:space="preserve"><value>Soubor</value></data>
+  <data name="Settings_Backups_UnknownWarning" xml:space="preserve"><value>Neznámá záloha, před smazáním ověřte</value></data>
+  <data name="Settings_Backups_Column_Date" xml:space="preserve"><value>Vytvořeno</value></data>
+  <data name="Settings_Backups_Column_Size" xml:space="preserve"><value>Velikost</value></data>
+  <data name="Settings_Backups_Column_Files" xml:space="preserve"><value>Soubory</value></data>
+  <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Místní verze (offline)</value></data>
+  <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Žádné připojení k internetu. Používá se lokálně nainstalovaná verze.</value></data>
+  <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Bez internetu nelze stáhnout novou verzi.</value></data>
 </root>

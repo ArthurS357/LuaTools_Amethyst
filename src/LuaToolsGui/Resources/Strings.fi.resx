@@ -586,4 +586,288 @@ Tämä poistaa .lua-tiedostot sijainnista Steam\config\stplug-in. Käynnistä St
   <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools ei käynnistynyt.&#10;&#10;{0}&#10;&#10;Tiedot kirjoitettiin kohteeseen:&#10;{1}</value></data>
   <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Tiedostoja ({0}) ei voitu kirjoittaa Steam-kansioon — pääsy evätty. Steam näyttää olevan asennettu sijaintiin, joka vaatii järjestelmänvalvojan oikeudet (esim. Program Files). Sulje Steam ja suorita LuaTools kerran järjestelmänvalvojana ottaaksesi tämän tilan käyttöön.</value></data>
   <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Tiedostoja ({0}) ei voitu kirjoittaa — sulje Steam ja yritä uudelleen.</value></data>
+  <data name="Nav_Plugin" xml:space="preserve"><value>Laajennus</value></data>
+  <data name="Settings_HubcapKeyRejected" xml:space="preserve"><value>Hubcap hylkäsi tämän avaimen. Tarkista, että se kopioitiin kokonaan eikä ole vanhentunut.</value></data>
+  <data name="Settings_HubcapKeyOffline" xml:space="preserve"><value>Hubcapiin ei saatu yhteyttä. Tarkista yhteytesi ja yritä uudelleen — avainta ei muutettu.</value></data>
+  <data name="Settings_HubcapKeyRateLimited" xml:space="preserve"><value>Hubcap rajoittaa tämän avaimen käyttöä juuri nyt. Yritä hetken kuluttua uudelleen.</value></data>
+  <data name="Settings_HubcapExpiryExpired" xml:space="preserve"><value>Hubcap-avaimesi vanheni {0}. Vahvista uusi avain, jotta voit jatkaa Hubcap-lähteiden käyttöä.</value></data>
+  <data name="Settings_HubcapExpiryToday" xml:space="preserve"><value>Hubcap-avaimesi vanhenee tänään ({0}). Hanki uusi ennen kuin se lakkaa toimimasta.</value></data>
+  <data name="Settings_HubcapExpirySoon" xml:space="preserve"><value>Hubcap-avaimesi vanhenee {0} päivän kuluttua ({1}). Hanki uusi ennen kuin se lakkaa toimimasta.</value></data>
+  <data name="Hubcap_Err_KeyRejected" xml:space="preserve"><value>Hubcap-avaimesi on virheellinen tai vanhentunut.</value></data>
+  <data name="Hubcap_Err_DailyLimit" xml:space="preserve"><value>Hubcapin päiväkohtainen raja on täynnä.</value></data>
+  <data name="Hubcap_Err_DailyLimitRetry" xml:space="preserve"><value>Hubcapin päiväkohtainen raja on täynnä. Yritä uudelleen noin {0} kuluttua.</value></data>
+  <data name="Hubcap_Err_NoManifest" xml:space="preserve"><value>Tälle sovellukselle ei ole saatavilla Hubcap-manifestia.</value></data>
+  <data name="Hubcap_Err_Status" xml:space="preserve"><value>Hubcap-lataus epäonnistui ({0}).</value></data>
+  <data name="Hubcap_Err_Unreachable" xml:space="preserve"><value>Hubcapiin ei saatu yhteyttä. Tarkista yhteytesi ja yritä uudelleen.</value></data>
+  <data name="Hubcap_Err_Generic" xml:space="preserve"><value>Hubcap-lataus epäonnistui.</value></data>
+  <data name="Hubcap_Wait_Seconds" xml:space="preserve"><value>{0} sekuntia</value></data>
+  <data name="Hubcap_Wait_Minutes" xml:space="preserve"><value>{0} minuuttia</value></data>
+  <data name="Hubcap_Wait_Hours" xml:space="preserve"><value>{0} tuntia</value></data>
+  <data name="Settings_Accent_Hint" xml:space="preserve"><value>Värittää koko sovelluksen uudelleen — ikkunan, kortit ja tekstin, ei vain korostuksia. Valitse väri ja sitten Käytä.</value></data>
+  <data name="Settings_Accent_Amethyst" xml:space="preserve"><value>Amethyst</value></data>
+  <data name="Startup_Title" xml:space="preserve"><value>Käynnistys</value></data>
+  <data name="Startup_Steam_Closing" xml:space="preserve"><value>Suljetaan Steam, jotta LuaTools voi työskennellä sen tiedostojen kanssa…</value></data>
+  <data name="Startup_Steam_Closed" xml:space="preserve"><value>Steam on suljettu.</value></data>
+  <data name="Startup_Steam_Stubborn_Title" xml:space="preserve"><value>Steam ei sulkeutunut</value></data>
+  <data name="Startup_Steam_Stubborn_Body" xml:space="preserve"><value>Steamia pyydettiin sulkeutumaan, mutta se on yhä käynnissä.
+
+Pakotetaanko sulkeminen? Kaikki, mitä Steam ei ole vielä tallentanut, voi kadota. Valitse Ei, jos haluat jättää sen käyntiin — LuaTools ei voi muuttaa Steamin tiedostoja, kun se on käynnissä.</value></data>
+  <data name="Startup_Steam_LeftRunning" xml:space="preserve"><value>Steam on yhä käynnissä, joten mitään ei muutettu. Sulje Steam ja käynnistä LuaTools uudelleen, kun olet valmis.</value></data>
+  <data name="Startup_Steam_Reopen_Body" xml:space="preserve"><value>LuaTools on valmis. Avataanko Steam uudelleen?</value></data>
+  <data name="Startup_Steam_Reopen_Action" xml:space="preserve"><value>Avaa Steam</value></data>
+  <data name="Startup_Steam_ReopenFailed" xml:space="preserve"><value>Steamia ei voitu käynnistää — avaa se sen omasta pikakuvakkeesta.</value></data>
+  <data name="Guard_Title" xml:space="preserve"><value>Steam on jo käynnissä</value></data>
+  <data name="Guard_Body" xml:space="preserve"><value>LuaToolsin täytyy käynnistää Steam itse (tai löytää se suljettuna), jotta koukku kiinnittyy. Käynnistetäänkö Steam uudelleen nyt?</value></data>
+  <data name="Guard_Restart" xml:space="preserve"><value>Käynnistä Steam uudelleen</value></data>
+  <data name="Guard_Exit" xml:space="preserve"><value>Poistu</value></data>
+  <data name="Guard_Continue" xml:space="preserve"><value>Jatka silti (ei suositella)</value></data>
+  <data name="Guard_ContinueWarning" xml:space="preserve"><value>Steam jätettiin käyntiin, joten koukku ei ehkä kiinnity. Käynnistä Steam uudelleen LuaToolsista, jos niin käy.</value></data>
+  <data name="Manage_Action_SaveBackup" xml:space="preserve"><value>Varmuuskopioi tallennukset…</value></data>
+  <data name="Saves_Title" xml:space="preserve"><value>Tallennusten varmuuskopiot</value></data>
+  <data name="Saves_Create" xml:space="preserve"><value>Luo uusi varmuuskopio</value></data>
+  <data name="Saves_Restore" xml:space="preserve"><value>Palauta</value></data>
+  <data name="Saves_Delete" xml:space="preserve"><value>Poista</value></data>
+  <data name="Saves_Close" xml:space="preserve"><value>Sulje</value></data>
+  <data name="Saves_Empty" xml:space="preserve"><value>Tästä pelistä ei ole vielä varmuuskopioita.</value></data>
+  <data name="Saves_Locations_Title" xml:space="preserve"><value>Löydetyt tallennussijainnit</value></data>
+  <data name="Saves_Locations_None" xml:space="preserve"><value>Tälle pelille ei havaittu tallennuskansiota.</value></data>
+  <data name="Saves_Location_Subtitle" xml:space="preserve"><value>{0} · {1} tiedosto(a)</value></data>
+  <data name="Saves_AddFolder" xml:space="preserve"><value>Lisää kansio käsin…</value></data>
+  <data name="Saves_Confirm_NoneFound" xml:space="preserve"><value>Tämän pelin tallennuksia ei löytynyt. Haluatko valita kansion käsin?</value></data>
+  <data name="Saves_PickFolder" xml:space="preserve"><value>Valitse kansio</value></data>
+  <data name="Saves_PickFolderTitle" xml:space="preserve"><value>Valitse kansio, johon tämä peli tallentaa tallennuksensa</value></data>
+  <data name="Saves_Toast_PickOne" xml:space="preserve"><value>Valitse vähintään yksi tallennussijainti varmuuskopioitavaksi.</value></data>
+  <data name="Saves_Toast_FolderRefused" xml:space="preserve"><value>Kansiota ei voi käyttää (aseman juuri, Windows- tai Program Files -kansio tai epätäydellinen polku).</value></data>
+  <data name="Manage_SaveIcon_Tooltip" xml:space="preserve"><value>Tallennukset havaittu sijainnissa: {0}</value></data>
+  <data name="Settings_CustomSaveFolders" xml:space="preserve"><value>Omat tallennuskansiot</value></data>
+  <data name="Settings_CustomSaveFolders_Hint" xml:space="preserve"><value>Peleille, joiden tallennuksia sovellus ei löydä itse. Syötä pelin AppID ja valitse kansio; se varmuuskopioidaan silloin pelin mukana ja on ainoa ylimääräinen paikka, johon palautus saa kirjoittaa.</value></data>
+  <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
+  <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Lisää kansio…</value></data>
+  <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Poista</value></data>
+  <data name="Saves_Note" xml:space="preserve"><value>Varmuuskopioi Steamin pelikohtaisen kansion (userdata). Pelejä, jotka tallentavat Asiakirjoihin tai AppDataan, ei sisällytetä.</value></data>
+  <data name="Saves_Toast_Created" xml:space="preserve"><value>Varmuuskopioitu {0} tiedosto(a), {1}.</value></data>
+  <data name="Saves_Toast_Restored" xml:space="preserve"><value>Palautettu {0} tiedosto(a). Edellisten tallennusten kopio säilytettiin.</value></data>
+  <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Varmuuskopio poistettu.</value></data>
+  <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Tämän pelin tallennuksia ei löytynyt. Lisää kansio, johon peli ne tallentaa, valinnalla ”Lisää kansio käsin…”.</value></data>
+  <data name="Saves_Toast_SteamNotFound" xml:space="preserve"><value>Steam-kansiota ei löytynyt. Aseta sen sijainti Asetuksissa.</value></data>
+  <data name="Saves_Toast_Refused" xml:space="preserve"><value>Hylätty: varmuuskopio ei vastaa tätä peliä tai sisältää turvattomia polkuja. Mitään ei muutettu.</value></data>
+  <data name="Saves_Toast_Failed" xml:space="preserve"><value>Toiminto epäonnistui. Katso lisätiedot lokista.</value></data>
+  <data name="Saves_Toast_NoSpace" xml:space="preserve"><value>Levyllä ei ole tarpeeksi vapaata tilaa varmuuskopiolle ({0} tarvitaan, marginaali mukaan lukien). Mitään ei kirjoitettu.</value></data>
+  <data name="Saves_Confirm_Restore" xml:space="preserve"><value>Palautetaanko {0}? Pelin nykyiset tallennukset ylikirjoitetaan; niistä säilytetään ensin kopio.</value></data>
+  <data name="Saves_Confirm_SteamOpen" xml:space="preserve"><value>Steam on auki. Turvallista palautusta varten (ja jotta Steam Cloud ei ylikirjoita tiedostoja) Steamin on oltava suljettuna.</value></data>
+  <data name="Saves_CloseSteamContinue" xml:space="preserve"><value>Sulje Steam ja jatka</value></data>
+  <data name="Saves_Toast_SteamStillRunning" xml:space="preserve"><value>Steam ei sulkeutunut. Sulje se käsin ja yritä uudelleen. Mitään ei palautettu.</value></data>
+  <data name="Saves_Confirm_Delete" xml:space="preserve"><value>Poistetaanko {0}? Tätä ei voi perua.</value></data>
+  <data name="Manage_Badge_Installed" xml:space="preserve"><value>Asennettu</value></data>
+  <data name="Manage_Action_ImportSave" xml:space="preserve"><value>Tuo tallennus (.zip)…</value></data>
+  <data name="Saves_Import" xml:space="preserve"><value>Tuo tallennus…</value></data>
+  <data name="Saves_Import_PickTitle" xml:space="preserve"><value>Valitse tallennusten varmuuskopio (.zip)</value></data>
+  <data name="Saves_Import_Filter" xml:space="preserve"><value>Tallennusten varmuuskopio (*.zip)|*.zip</value></data>
+  <data name="Saves_Confirm_Import" xml:space="preserve"><value>Tuodaanko {0}? Pelin nykyiset tallennukset ylikirjoitetaan; niistä säilytetään ensin kopio.</value></data>
+  <data name="Saves_Toast_Imported" xml:space="preserve"><value>Tuotu {0} tiedosto(a). Edellisten tallennusten kopio säilytettiin.</value></data>
+  <data name="Saves_Confirm_NewFolder" xml:space="preserve"><value>Sovellus luo tämän pelin nimisen kansion tallennusten järjestämiseksi. Jatketaanko?</value></data>
+  <data name="Saves_Confirm_Ok" xml:space="preserve"><value>OK</value></data>
+  <data name="Saves_Toast_SavedAt" xml:space="preserve"><value>Varmuuskopio tallennettu onnistuneesti sijaintiin: {0}</value></data>
+  <data name="Settings_SaveBackupFolder" xml:space="preserve"><value>Tallennusten varmuuskopiokansio</value></data>
+  <data name="Settings_SaveBackupFolder_Hint" xml:space="preserve"><value>Minne ”Varmuuskopioi tallennukset…” kirjoittaa zip-tiedostonsa. Oletus: %AppData%\LuaToolsGui\SaveBackups.</value></data>
+  <data name="Settings_ChooseSaveBackupFolder" xml:space="preserve"><value>Valitse tallennusten varmuuskopiokansio</value></data>
+  <data name="About_Changelog_Title" xml:space="preserve"><value>Uutta</value></data>
+  <data name="About_Changelog_Show" xml:space="preserve"><value>Näytä muutosloki</value></data>
+  <data name="About_Changelog_Hide" xml:space="preserve"><value>Piilota muutosloki</value></data>
+  <data name="Home_Privacy_UpdatesOff" xml:space="preserve"><value>Itsepäivitys pois — tämä versio ei hae mitään itsekseen</value></data>
+  <data name="Home_Privacy_UpdatesOn" xml:space="preserve"><value>Itsepäivitys päällä — julkaisut tarkistetaan käynnistyksessä</value></data>
+  <data name="Home_Action_Mode_Tip" xml:space="preserve"><value>Valitse, mikä taustajärjestelmä omistaa Steamin välityspalvelin-DLL:t</value></data>
+  <data name="Home_Action_Plugin" xml:space="preserve"><value>Laajennus</value></data>
+  <data name="Home_Action_Plugin_Tip" xml:space="preserve"><value>Asenna tai päivitä kauppasivun laajennus</value></data>
+  <data name="Home_Action_Updates_Tip" xml:space="preserve"><value>Avaa Tietoja tarkistaaksesi uuden version</value></data>
+  <data name="Mode_Warn_Telemetry" xml:space="preserve"><value>Alkuperäinen projekti (madoiscool). Varoitus: sisältää telemetriaa ja DonateKeys-järjestelmän.</value></data>
+  <data name="Manage_Sort_InstalledFirst" xml:space="preserve"><value>Asennetut ensin</value></data>
+  <data name="Add_Warn_NoManifests_Title" xml:space="preserve"><value>Varoitus</value></data>
+  <data name="Add_Warn_NoManifests" xml:space="preserve"><value>Tämä lähde ei toimittanut manifesteja kohteelle {0}. Lataus Steamissä voi epäonnistua. Suosittelemme lähdettä {1}.</value></data>
+  <data name="Plugin_Row_Source" xml:space="preserve"><value>Lähde</value></data>
+  <data name="Plugin_Sources_Header" xml:space="preserve"><value>Laajennuksen lähde</value></data>
+  <data name="Plugin_Sources_Subtitle" xml:space="preserve"><value>Jokainen tekijä julkaisee oman versionsa laajennuksesta. Valitse se, jonka haluat asennettavaksi — LuaTools asentaa vain aktiivisen lähteen eikä vaihda koskaan itsestään.</value></data>
+  <data name="Plugin_Source_By" xml:space="preserve"><value>tekijä: {0}</value></data>
+  <data name="Plugin_Source_Active" xml:space="preserve"><value>Aktiivinen</value></data>
+  <data name="Plugin_Source_Default" xml:space="preserve"><value>Oletus</value></data>
+  <data name="Plugin_Source_Installed" xml:space="preserve"><value>Asennettu tästä lähteestä.</value></data>
+  <data name="Plugin_Source_ActiveNotInstalled" xml:space="preserve"><value>Aktiivinen lähde — ei vielä asennettu.</value></data>
+  <data name="Plugin_Source_Available" xml:space="preserve"><value>Saatavilla. Valitse se asentaaksesi sen sijaan tältä tekijältä.</value></data>
+  <data name="Plugin_Source_LatestVersion" xml:space="preserve"><value>Uusin</value></data>
+  <data name="Plugin_Btn_Activate" xml:space="preserve"><value>Käytä tätä lähdettä</value></data>
+  <data name="Plugin_Confirm_SwitchCaption" xml:space="preserve"><value>Vaihda laajennuksen lähde</value></data>
+  <data name="Plugin_Confirm_SwitchBody" xml:space="preserve"><value>Tämä asentaa laajennuksen lähteestä {0}, korvaa tällä hetkellä asennetun ja sulkee sekä käynnistää Steamin uudelleen ottaakseen sen käyttöön. Jatketaanko?</value></data>
+  <data name="Plugin_Toast_SourceSwitched" xml:space="preserve"><value>Nyt asennettu lähteestä {0}. Steam käynnistyy uudelleen ladatakseen sen.</value></data>
+  <data name="Plugin_Err_UnknownSource" xml:space="preserve"><value>{0} ei ole tämän version mukana tuleva laajennuslähde, joten mitään ei asennettu.</value></data>
+  <data name="Plugin_SourceErr_NoRelease" xml:space="preserve"><value>Tämä lähde ei julkaissut yhtään versiota tai siihen ei saatu yhteyttä.</value></data>
+  <data name="Plugin_SourceErr_NoTag" xml:space="preserve"><value>Tämän lähteen uusimmassa julkaisussa ei ole versiotunnistetta.</value></data>
+  <data name="Plugin_SourceErr_MissingAsset" xml:space="preserve"><value>Tämän lähteen uusimmasta julkaisusta puuttuu {0}.</value></data>
+  <data name="Plugin_SourceErr_ForeignAssetUrl" xml:space="preserve"><value>Tämän lähteen {0}-lataus osoittaa sen oman arkiston ulkopuolelle, joten se hylättiin.</value></data>
+  <data name="Plugin_SourceErr_NoDigest" xml:space="preserve"><value>Tämä lähde ei julkaise SHA-256-tiivistettä kohteelle {0}, joten sisältöä ei voitu todentaa.</value></data>
+  <data name="Plugin_Err_ArchiveRejected" xml:space="preserve"><value>Turvatarkistus hylkäsi kohteen {0}: {1}</value></data>
+  <data name="Download_Notice_Title" xml:space="preserve"><value>Asennetaan lähteestä {0}</value></data>
+  <data name="Download_Notice_Body" xml:space="preserve"><value>{0} · versio {1} · {2} tiedosto(a)
+SHA-256 {3}
+Varmennettu: {4}</value></data>
+  <data name="Download_Notice_Check_Pinned" xml:space="preserve"><value>arkisto lukittu</value></data>
+  <data name="Download_Notice_Check_Digest" xml:space="preserve"><value>SHA-256 täsmäsi</value></data>
+  <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>arkisto tarkistettu</value></data>
+  <data name="Download_Notice_Cancel" xml:space="preserve"><value>Peruuta</value></data>
+  <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Peruutettu ennen kuin mitään asennettiin.</value></data>
+  <data name="Builds_RemoveGame" xml:space="preserve"><value>Poista peli</value></data>
+  <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Poistaa tämän pelin Varastot-luettelosta. Poistaa sen lua-tiedostot ja kaikki tallennetut koosteet.</value></data>
+  <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Poista peli</value></data>
+  <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>Poistetaanko {0} ({1}) Varastoista?
+
+Tämä poistaa sen lua-tiedoston, sen vieressä olevat koosteiden lua-tiedostot ja kaikki tallennetut koosteet. Tätä ei voi perua.</value></data>
+  <data name="Builds_RemoveGame_Done" xml:space="preserve"><value>{0} poistettu Varastoista.</value></data>
+  <data name="Builds_RemoveGame_Gone" xml:space="preserve"><value>Kohteella {0} ei ollut enää tiedostoja — poistettu luettelosta.</value></data>
+  <data name="Builds_RemoveGame_Failed" xml:space="preserve"><value>Kohdetta {0} ei voitu poistaa kokonaan: {1}. Sulje Steam ja yritä uudelleen.</value></data>
+  <data name="Auth_Err_SignInTimedOut" xml:space="preserve"><value>Kirjautuminen aikakatkaistiin — selain ei koskaan palannut. Voit kirjautua myös koodilla: suorita /login Discord-palvelimella ja liitä koodi Asetuksiin.</value></data>
+  <data name="Auth_Err_CallbackPortBusy" xml:space="preserve"><value>Kirjautumista ei voitu aloittaa: portti 53789 on jo käytössä. Sulje muut kirjautumisyritykset ja yritä uudelleen.</value></data>
+  <data name="Auth_ProviderUnavailable" xml:space="preserve"><value>Kirjautumispalvelin ei vastaa juuri nyt, joten selaimen Discord-kirjautuminen aikakatkaistaan todennäköisesti. Voit kirjautua sen sijaan koodilla: suorita /login Discord-palvelimella ja syötä koodi Asetuksiin.</value></data>
+  <data name="Auth_SignInCancelled" xml:space="preserve"><value>Kirjautuminen peruutettu. Voit yrittää uudelleen tai käyttää koodia käsin (suorita /login Discordissa).</value></data>
+  <data name="Auth_TryAgain" xml:space="preserve"><value>Yritä uudelleen</value></data>
+  <data name="Auth_TryAnyway" xml:space="preserve"><value>Yritä silti</value></data>
+  <data name="Auth_UseManualCode" xml:space="preserve"><value>Käytä koodia käsin</value></data>
+  <data name="Auth_Cancel" xml:space="preserve"><value>Peruuta</value></data>
+  <data name="Protocol_SilentInstall_Title" xml:space="preserve"><value>Asennuspyyntö</value></data>
+  <data name="Protocol_SilentInstall_Body" xml:space="preserve"><value>Linkki pyytää LuaToolsia asentamaan sovelluksen {0} taustalla. Jatka vain, jos aloitit tämän itse.</value></data>
+  <data name="Cdp_Consent_Title" xml:space="preserve"><value>Otetaanko Steamin kauppasivun silta käyttöön?</value></data>
+  <data name="Cdp_Consent_Body" xml:space="preserve"><value>Kauppasivun laajennus tarvitsee Steamin virheenkorjaussillan, jonka LuaTools ottaa käyttöön lisäämällä merkin steam.exen viereen. Kun Steam on käynnissä, tämä avaa todentamattoman paikallisen portin (127.0.0.1:8080).
+
+Mikä tahansa muu tällä tietokoneella pyörivä ohjelma voisi silloin ohjata Steamin sisäänrakennettua selainta kirjautuneen istuntosi avulla. Ota tämä käyttöön vain, jos luotat tälle koneelle asennettuun ohjelmistoon.
+
+Voit kieltäytyä ja käyttää silti muuta LuaToolsia; vain kaupan ”Add via LuaTools” -painike jää pois käytöstä.
+
+Otetaanko käyttöön?</value></data>
+  <data name="Privacy_HttpMetadata_Title" xml:space="preserve"><value>Salaamaton haku</value></data>
+  <data name="Privacy_HttpMetadata_Body" xml:space="preserve"><value>Lähteiden saatavuus tarkistetaan tavallisella HTTP:llä ({0}), koska kyseinen palvelin ei tarjoa toimivaa HTTPS:ää. Tiliä tai avainta ei lähetetä, mutta kuka tahansa verkkoreitilläsi näkee, minkä Steam-sovelluksen hait. Aseta ”WarnOnInsecureMetadata”: false tiedostossa settings.json piilottaaksesi tämän.</value></data>
+  <data name="Theme_Guard_Title" xml:space="preserve"><value>Teemaa ei otettu käyttöön</value></data>
+  <data name="Theme_Guard_Body" xml:space="preserve"><value>Amethyst-korostus ei tullut voimaan, mikä yleensä tarkoittaa, että WPF-UI-paketti on muuttanut resurssiensa nimiä. Sovellus toimii normaalisti, mutta osa siitä näyttää väärältä. Katso docs/CHANGELOG.md.</value></data>
+  <data name="App_DisplayName" xml:space="preserve"><value>LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Title" xml:space="preserve"><value>Tämä ei ehkä ole LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Body" xml:space="preserve"><value>Tämä binääri ei tunnista itseään LuaTools Amethystiksi. Jos olet asentanut sen päälle virallisen LuaTools-julkaisun, analytiikka ja Steam-avainten lähetys ovat taas käytössä. Asenna uudelleen Amethyst-arkistosta saadaksesi yksityisyysversion takaisin.</value></data>
+  <data name="Fixes_Toast_Blocked" xml:space="preserve"><value>Lataus hylätty</value></data>
+  <data name="Fixes_Toast_Blocked_Body" xml:space="preserve"><value>Kohdetta {0} ei asennettu, koska se ei läpäissyt turvatarkistusta — {1}</value></data>
+  <data name="About_Nav" xml:space="preserve"><value>Tietoja</value></data>
+  <data name="About_Title" xml:space="preserve"><value>Tietoja: LuaTools Amethyst</value></data>
+  <data name="About_What_Header" xml:space="preserve"><value>Mikä tämä on</value></data>
+  <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst on yhteisön LuaTools-haarautuma, joka keskittyy yksityisyyteen. Se poistaa analytiikkapingin ja avainlähetyksen, jotka alkuperäinen versio tekee, pitää kaikki lataukset HTTPS:n yli ja sisältää violetin Amethyst-teeman.</value></data>
+  <data name="About_Version_Header" xml:space="preserve"><value>Versio</value></data>
+  <data name="About_Repo_Header" xml:space="preserve"><value>Arkisto</value></data>
+  <data name="About_Updates_Header" xml:space="preserve"><value>Päivitykset</value></data>
+  <data name="About_Updates_Enabled" xml:space="preserve"><value>Automaattiset päivitykset ovat PÄÄLLÄ. LuaTools Amethyst tarkistaa alla olevan arkiston käynnistyksessä ja asentaa päivitykset taustalla.</value></data>
+  <data name="About_Updates_Disabled" xml:space="preserve"><value>Automaattiset päivitykset ovat POIS — päivityspyyntöjä ei tehdä. Lisää ”AppUpdateRepos” tiedostoon settings.json ottaaksesi ne käyttöön tai päivitä käsin alla olevasta arkistosta.</value></data>
+  <data name="About_Updates_Sources" xml:space="preserve"><value>Päivityslähde</value></data>
+  <data name="About_Check_Button" xml:space="preserve"><value>Tarkista päivitykset</value></data>
+  <data name="About_Check_Checking" xml:space="preserve"><value>Tarkistetaan…</value></data>
+  <data name="About_Check_UpToDate" xml:space="preserve"><value>Käytössäsi on uusin versio.</value></data>
+  <data name="About_Check_Found" xml:space="preserve"><value>Päivitys ladattiin. Se otetaan käyttöön, kun suljet LuaToolsin.</value></data>
+  <data name="About_Check_Failed" xml:space="preserve"><value>Päivityksiä ei voitu tarkistaa. Tarkista yhteytesi ja määritetty arkisto.</value></data>
+  <data name="About_Check_Disabled" xml:space="preserve"><value>Automaattiset päivitykset on poistettu käytöstä — määritä ensin ”AppUpdateRepos” tiedostossa settings.json.</value></data>
+  <data name="About_OpenRepo" xml:space="preserve"><value>Avaa arkisto</value></data>
+  <data name="About_OpenSettings" xml:space="preserve"><value>Avaa settings.json-kansio</value></data>
+  <data name="About_Config_Header" xml:space="preserve"><value>Päivitysten määrittäminen käsin</value></data>
+  <data name="About_Config_Body" xml:space="preserve"><value>Muokkaa settings.json-tiedostoa alla olevassa kansiossa ja lisää arkisto, josta haluat päivityksiä. Vain https://github.com/&lt;owner&gt;/&lt;repo&gt; hyväksytään, ja alkuperäisten LuaTools-julkaisujen arkistot hylätään, jotta virallinen versio ei voi koskaan korvata tätä.</value></data>
+  <data name="Builds_Depot_Download" xml:space="preserve"><value>Lataa varastoja…</value></data>
+  <data name="Builds_Depot_Unavailable" xml:space="preserve"><value>Varastojen lataus ei ole käytettävissä tässä versiossa: siinä ei ole varmennettua pinniä latausohjelmalle.</value></data>
+  <data name="Builds_Depot_PickTitle" xml:space="preserve"><value>Lataa varaston sisältö</value></data>
+  <data name="Builds_Depot_PickHint" xml:space="preserve"><value>Raakatiedostot haetaan nimettömästi suoraan Steamin CDN:stä. Mitään ei asenneta — varastot kirjoitetaan alla olevaan kansioon käytettäväksi haluamallasi tavalla.</value></data>
+  <data name="Builds_Depot_NoCandidates" xml:space="preserve"><value>Yhtäkään tämän pelin varastoa ei voi ladata. Ne tarvitsevat sekä salauksenpurkuavaimen lua-tiedostosta että Steamin julkaiseman manifestin.</value></data>
+  <data name="Builds_Depot_NeedsKey" xml:space="preserve"><value>ei avainta tässä versiossa</value></data>
+  <data name="Builds_Depot_NeedsManifest" xml:space="preserve"><value>Steam ei julkaise manifestia</value></data>
+  <data name="Builds_Depot_NeedsSignIn" xml:space="preserve"><value>kirjaudu hakeaksesi sen manifestin</value></data>
+  <data name="Builds_Depot_SelectAll" xml:space="preserve"><value>Valitse kaikki</value></data>
+  <data name="Builds_Depot_SelectNone" xml:space="preserve"><value>Tyhjennä</value></data>
+  <data name="Builds_Depot_Destination" xml:space="preserve"><value>Kohdekansio</value></data>
+  <data name="Builds_Depot_Change" xml:space="preserve"><value>Vaihda…</value></data>
+  <data name="Builds_Depot_Space" xml:space="preserve"><value>Tarvitaan {0} · vapaana {1} asemalla {2}</value></data>
+  <data name="Builds_Depot_NotEnoughSpace" xml:space="preserve"><value>Asemalla ei ole tarpeeksi vapaata tilaa. Valitse vähemmän varastoja tai toinen kansio.</value></data>
+  <data name="Builds_Depot_Confirm" xml:space="preserve"><value>Lataa {0} varasto(a)</value></data>
+  <data name="Builds_Depot_Cancel" xml:space="preserve"><value>Peruuta</value></data>
+  <data name="Builds_Depot_Downloading" xml:space="preserve"><value>Varasto {0}/{1} · {2}</value></data>
+  <data name="Builds_Depot_Phase_PreAllocating" xml:space="preserve"><value>varataan levytilaa</value></data>
+  <data name="Builds_Depot_Phase_Validating" xml:space="preserve"><value>tarkistetaan olemassa olevia tiedostoja</value></data>
+  <data name="Builds_Depot_Phase_FetchingManifest" xml:space="preserve"><value>haetaan manifestia</value></data>
+  <data name="Builds_Depot_Phase_Downloading" xml:space="preserve"><value>ladataan</value></data>
+  <data name="Builds_Depot_Done" xml:space="preserve"><value>Ladattu {0} varasto(a) kansioon {1}</value></data>
+  <data name="Builds_Depot_OpenFolder" xml:space="preserve"><value>Avaa kansio</value></data>
+  <data name="Builds_Depot_CleanUp_Title" xml:space="preserve"><value>Poistetaanko osittainen lataus?</value></data>
+  <data name="Builds_Depot_CleanUp_Body" xml:space="preserve"><value>Lataus peruutettiin sen jälkeen, kun kansioon {1} oli luotu {0} tiedosto(a). Poistetaanko vain nämä tiedostot? Se, mitä siellä jo oli, jätetään rauhaan.</value></data>
+  <data name="Builds_Depot_CleanUp_Failed" xml:space="preserve"><value>Joitakin tiedostoja ei voitu poistaa — ne voivat olla vielä käytössä. Yritä hetken kuluttua uudelleen.</value></data>
+  <data name="Depot_Err_ToolNotPinned" xml:space="preserve"><value>Varastojen lataus on poissa käytöstä tässä versiossa, koska siinä ei ole varmennettua pinniä latausohjelmalle.</value></data>
+  <data name="Depot_Err_Tool" xml:space="preserve"><value>Varastojen latausohjelmaa ei saatu tai saapunut tiedosto ei läpäissyt varmennusta.</value></data>
+  <data name="Depot_Err_SteamNotFound" xml:space="preserve"><value>Steamin sijaintia ei löytynyt — aseta se Asetuksissa.</value></data>
+  <data name="Depot_Err_NoKeys" xml:space="preserve"><value>Tälle pelille ei löytynyt varastojen salauksenpurkuavaimia.</value></data>
+  <data name="Depot_Err_NoKeyFor" xml:space="preserve"><value>Varastolla {0} ei ole käyttökelpoista salauksenpurkuavainta.</value></data>
+  <data name="Depot_Err_BadKey" xml:space="preserve"><value>Varastolle {0} tallennettu avain ei vastaa sen manifestia.</value></data>
+  <data name="Depot_Err_NoManifest" xml:space="preserve"><value>Kyseisen varaston manifestia ei saatu.</value></data>
+  <data name="Depot_Err_SignIn" xml:space="preserve"><value>Kirjaudu hakeaksesi manifestin, jota Steamillä ei vielä ole tällä koneella.</value></data>
+  <data name="Depot_Err_NoSpace" xml:space="preserve"><value>Levytila ei riitä: tarvitaan {0}, vapaana {1}.</value></data>
+  <data name="Depot_Err_Failed" xml:space="preserve"><value>Varasto {0} epäonnistui: {1}</value></data>
+  <data name="Builds_Depot_Queued" xml:space="preserve"><value>Lähetettiin {0} varasto(a) Latauksiin.</value></data>
+  <data name="Nav_Downloads" xml:space="preserve"><value>Lataukset</value></data>
+  <data name="Downloads_Title" xml:space="preserve"><value>Lataukset</value></data>
+  <data name="Downloads_Subtitle" xml:space="preserve"><value>Kaikki, mitä sovellus hakee juuri nyt, ja mitä se haki aiemmin. Manifestit ja varastojen sisältö jakavat tämän jonon.</value></data>
+  <data name="Downloads_Empty" xml:space="preserve"><value>Mitään ei ole vielä ladattu. Pelin lisääminen Lisää-sivulta tai varaston sisällön hakeminen Varastot-sivulta tuo sen tähän.</value></data>
+  <data name="Downloads_Section_Active" xml:space="preserve"><value>Käynnissä</value></data>
+  <data name="Downloads_Section_History" xml:space="preserve"><value>Historia</value></data>
+  <data name="Downloads_ActionRequired" xml:space="preserve"><value>TOIMENPIDE VAADITAAN</value></data>
+  <data name="Downloads_Of" xml:space="preserve"><value>{0}/{1}</value></data>
+  <data name="Downloads_Eta" xml:space="preserve"><value>{0} jäljellä</value></data>
+  <data name="Downloads_Source_Depots" xml:space="preserve"><value>{0} varasto(a)</value></data>
+  <data name="Downloads_Status_Queued" xml:space="preserve"><value>Jonossa</value></data>
+  <data name="Downloads_Status_Downloading" xml:space="preserve"><value>Ladataan</value></data>
+  <data name="Downloads_Status_AwaitingConfirm" xml:space="preserve"><value>Odottaa sinua</value></data>
+  <data name="Downloads_Status_Installing" xml:space="preserve"><value>Asennetaan</value></data>
+  <data name="Downloads_Status_Paused" xml:space="preserve"><value>Keskeytetty</value></data>
+  <data name="Downloads_Status_Verifying" xml:space="preserve"><value>Varmennetaan</value></data>
+  <data name="Downloads_Status_Completed" xml:space="preserve"><value>Valmis</value></data>
+  <data name="Downloads_Status_Failed" xml:space="preserve"><value>Epäonnistui</value></data>
+  <data name="Downloads_Status_Cancelled" xml:space="preserve"><value>Peruutettu</value></data>
+  <data name="Downloads_Action_Review" xml:space="preserve"><value>Tarkista</value></data>
+  <data name="Downloads_Action_Pause" xml:space="preserve"><value>Keskeytä</value></data>
+  <data name="Downloads_Action_Resume" xml:space="preserve"><value>Jatka</value></data>
+  <data name="Downloads_Action_MoveUp" xml:space="preserve"><value>Siirrä ylös</value></data>
+  <data name="Downloads_Action_MoveDown" xml:space="preserve"><value>Siirrä alas</value></data>
+  <data name="Downloads_Action_Cancel" xml:space="preserve"><value>Peruuta</value></data>
+  <data name="Downloads_Action_Retry" xml:space="preserve"><value>Yritä uudelleen</value></data>
+  <data name="Downloads_Action_Remove" xml:space="preserve"><value>Poista</value></data>
+  <data name="Downloads_Action_ClearHistory" xml:space="preserve"><value>Tyhjennä historia</value></data>
+  <data name="Downloads_Action_CopyAppId" xml:space="preserve"><value>Kopioi App ID</value></data>
+  <data name="Downloads_Action_ShowInFolder" xml:space="preserve"><value>Näytä kansiossa</value></data>
+  <data name="Downloads_ClearHistory_Confirm" xml:space="preserve"><value>Poistetaanko kaikki {0} merkintää latausten historiasta? Itse tiedostoihin ei kosketa.</value></data>
+  <data name="Downloads_Err_Interrupted" xml:space="preserve"><value>Keskeytyi, kun sovellus suljettiin.</value></data>
+  <data name="Downloads_Err_Cancelled" xml:space="preserve"><value>Peruutettu.</value></data>
+  <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>Leikepöytä on toisen ohjelman käytössä — mitään ei kopioitu.</value></data>
+  <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Sijaintia ei enää ole: {0}</value></data>
+  <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>Hylätty ”{0}”: manifestin nimen on oltava &lt;depot&gt;_&lt;manifest&gt;.manifest (vain numeroita).</value></data>
+  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>CloudRedirectin lähdearkisto ei ole saatavilla. Ominaisuus on tilapäisesti pois käytöstä.</value></data>
+  <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Tallennetut koosteet (ei aktiivista luaa)</value></data>
+  <data name="Settings_Maintenance_Title" xml:space="preserve"><value>YLLÄPITO</value></data>
+  <data name="Settings_Backups_Title" xml:space="preserve"><value>Kertyneet varmuuskopiot</value></data>
+  <data name="Settings_Backups_Subtitle" xml:space="preserve"><value>Varmuuskopiokansiot, jotka syntyvät AmethystToolia asennettaessa tai laajennuksia poistettaessa. Niiden poistaminen vapauttaa tilaa Steam-kansiosta.</value></data>
+  <data name="Settings_Backups_Empty" xml:space="preserve"><value>Varmuuskopioita ei löytynyt.</value></data>
+  <data name="Settings_Backups_NoSteam" xml:space="preserve"><value>Määritä Steamin sijainti Asetuksissa nähdäksesi varmuuskopiot.</value></data>
+  <data name="Settings_Backups_Refresh" xml:space="preserve"><value>Päivitä</value></data>
+  <data name="Settings_Backups_DeleteSelected" xml:space="preserve"><value>Poista valitut</value></data>
+  <data name="Settings_Backups_DeleteOlder" xml:space="preserve"><value>Poista yli 30 päivää vanhat</value></data>
+  <data name="Settings_Backups_Confirm_Title" xml:space="preserve"><value>Poistetaanko varmuuskopiot?</value></data>
+  <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>Poistetaanko {0} kohdetta ({1}) pysyvästi? Aiempia AmethystTool-asennuksia tai laajennusten poistoja ei voi enää palauttaa.</value></data>
+  <data name="Settings_Backups_Confirm_Delete" xml:space="preserve"><value>Poista</value></data>
+  <data name="Settings_Backups_Cancel" xml:space="preserve"><value>Peruuta</value></data>
+  <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>{0} kohdetta poistettu ({1} vapautettu)</value></data>
+  <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>{0} kohdetta ei voitu poistaa. Sulje Steam ja yritä uudelleen.</value></data>
+  <data name="Settings_Backups_Column_Name" xml:space="preserve"><value>Nimi</value></data>
+  <data name="Settings_Backups_Column_Type" xml:space="preserve"><value>Tyyppi</value></data>
+  <data name="Settings_Backups_Type_Folder" xml:space="preserve"><value>Kansio</value></data>
+  <data name="Settings_Backups_Type_File" xml:space="preserve"><value>Tiedosto</value></data>
+  <data name="Settings_Backups_UnknownWarning" xml:space="preserve"><value>Tuntematon varmuuskopio, tarkista ennen poistamista</value></data>
+  <data name="Settings_Backups_Column_Date" xml:space="preserve"><value>Luotu</value></data>
+  <data name="Settings_Backups_Column_Size" xml:space="preserve"><value>Koko</value></data>
+  <data name="Settings_Backups_Column_Files" xml:space="preserve"><value>Tiedostot</value></data>
+  <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Paikallinen versio (offline)</value></data>
+  <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Ei internetyhteyttä. Käytetään paikallisesti asennettua versiota.</value></data>
+  <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Uutta versiota ei voi ladata ilman internetiä.</value></data>
 </root>

@@ -679,8 +679,7 @@ public static class Strings
     public static string Launch_Drift_Action => Get(nameof(Launch_Drift_Action));
 
     // ── Auth errors ──
-    // These replace hardcoded English literals that used to be thrown from AuthService. They are listed in
-    // check-i18n.py's PENDING_TRANSLATION until the translation pass picks them up.
+    // These replace hardcoded English literals that used to be thrown from AuthService.
     public static string Auth_Err_SignInTimedOut => Get(nameof(Auth_Err_SignInTimedOut));
     public static string Auth_Err_CallbackPortBusy => Get(nameof(Auth_Err_CallbackPortBusy));
 

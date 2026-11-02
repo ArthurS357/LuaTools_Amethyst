@@ -15,6 +15,15 @@
   auto-update do app mudou. Onde o github.com e bloqueado, atualizar a mao pela pagina de releases (aba Sobre).
 - Testes: `OfficialGithubDownloaderTests` (mutacao validada: desligar a comparacao do hash derruba os testes).
 
+### Strings
+
+- **Traducao em massa (i18n):** as 272 chaves que estavam em `PENDING_TRANSLATION` (pagina Sobre, Downloads, Saves,
+  erros do Hubcap, fonte do plugin, fluxo de inicializacao, avisos de consentimento, download de depots...) foram
+  traduzidas nos 29 arquivos `Strings.*.resx` (as 159 que faltavam no pt-BR tambem; as 113 ja escritas pelo mantenedor
+  ficaram intactas). Placeholders `{0}`/`{1}` e termos tecnicos (Hubcap, CloudRedirect, AmethystTool, SHA-256, `/login`,
+  AppID, lua, manifest) preservados; "depot" segue o termo que cada idioma ja usa na pagina Depots.
+  `PENDING_TRANSLATION` ficou vazio e `scripts/check-i18n.py` voltou a exigir paridade total (791 chaves em 29 arquivos).
+
 ## 1.7.12 — 2026-11-01
 
 Login cancelado tratado na hora, onboarding que para de voltar depois do login, e backup de saves que confere espaco e

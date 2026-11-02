@@ -586,4 +586,288 @@ Detta tar bort .lua-filerna från Steam\config\stplug-in. Starta om Steam efter�
   <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools kunde inte starta.&#10;&#10;{0}&#10;&#10;Informationen skrevs till:&#10;{1}</value></data>
   <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Det gick inte att skriva {0} fil(er) till Steam-mappen — åtkomst nekad. Steam verkar vara installerat på en plats som kräver administratörsbehörighet (t.ex. Program Files). Stäng Steam och kör sedan LuaTools som administratör en gång för att tillämpa det här läget.</value></data>
   <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Det gick inte att skriva {0} fil(er) — stäng Steam och försök igen.</value></data>
+  <data name="Nav_Plugin" xml:space="preserve"><value>Tillägg</value></data>
+  <data name="Settings_HubcapKeyRejected" xml:space="preserve"><value>Hubcap avvisade den nyckeln. Kontrollera att den kopierades i sin helhet och inte har gått ut.</value></data>
+  <data name="Settings_HubcapKeyOffline" xml:space="preserve"><value>Det gick inte att nå Hubcap. Kontrollera anslutningen och försök igen — nyckeln ändrades inte.</value></data>
+  <data name="Settings_HubcapKeyRateLimited" xml:space="preserve"><value>Hubcap begränsar den här nyckeln just nu. Försök igen om en stund.</value></data>
+  <data name="Settings_HubcapExpiryExpired" xml:space="preserve"><value>Din Hubcap-nyckel gick ut den {0}. Verifiera en ny för att fortsätta använda Hubcap-källor.</value></data>
+  <data name="Settings_HubcapExpiryToday" xml:space="preserve"><value>Din Hubcap-nyckel går ut i dag ({0}). Skaffa en ny innan den slutar fungera.</value></data>
+  <data name="Settings_HubcapExpirySoon" xml:space="preserve"><value>Din Hubcap-nyckel går ut om {0} dagar ({1}). Skaffa en ny innan den slutar fungera.</value></data>
+  <data name="Hubcap_Err_KeyRejected" xml:space="preserve"><value>Din Hubcap-nyckel är ogiltig eller har gått ut.</value></data>
+  <data name="Hubcap_Err_DailyLimit" xml:space="preserve"><value>Din dagliga Hubcap-gräns är nådd.</value></data>
+  <data name="Hubcap_Err_DailyLimitRetry" xml:space="preserve"><value>Din dagliga Hubcap-gräns är nådd. Försök igen om ungefär {0}.</value></data>
+  <data name="Hubcap_Err_NoManifest" xml:space="preserve"><value>Inget Hubcap-manifest finns tillgängligt för den här appen.</value></data>
+  <data name="Hubcap_Err_Status" xml:space="preserve"><value>Hubcap-nedladdningen misslyckades ({0}).</value></data>
+  <data name="Hubcap_Err_Unreachable" xml:space="preserve"><value>Det gick inte att nå Hubcap. Kontrollera anslutningen och försök igen.</value></data>
+  <data name="Hubcap_Err_Generic" xml:space="preserve"><value>Hubcap-nedladdningen misslyckades.</value></data>
+  <data name="Hubcap_Wait_Seconds" xml:space="preserve"><value>{0} sekunder</value></data>
+  <data name="Hubcap_Wait_Minutes" xml:space="preserve"><value>{0} minuter</value></data>
+  <data name="Hubcap_Wait_Hours" xml:space="preserve"><value>{0} timmar</value></data>
+  <data name="Settings_Accent_Hint" xml:space="preserve"><value>Färgar om hela appen — fönster, kort och text, inte bara accenterna. Välj en färg och sedan Verkställ.</value></data>
+  <data name="Settings_Accent_Amethyst" xml:space="preserve"><value>Amethyst</value></data>
+  <data name="Startup_Title" xml:space="preserve"><value>Start</value></data>
+  <data name="Startup_Steam_Closing" xml:space="preserve"><value>Stänger Steam så att LuaTools kan arbeta med dess filer…</value></data>
+  <data name="Startup_Steam_Closed" xml:space="preserve"><value>Steam är stängt.</value></data>
+  <data name="Startup_Steam_Stubborn_Title" xml:space="preserve"><value>Steam stängdes inte</value></data>
+  <data name="Startup_Steam_Stubborn_Body" xml:space="preserve"><value>Steam ombads stänga men körs fortfarande.
+
+Tvinga stängning? Allt som Steam inte har sparat än kan gå förlorat. Välj Nej för att låta det köra — LuaTools kan inte ändra Steams filer medan det är igång.</value></data>
+  <data name="Startup_Steam_LeftRunning" xml:space="preserve"><value>Steam körs fortfarande, så inget ändrades. Stäng Steam och starta om LuaTools när du är redo.</value></data>
+  <data name="Startup_Steam_Reopen_Body" xml:space="preserve"><value>LuaTools är klart. Öppna Steam igen?</value></data>
+  <data name="Startup_Steam_Reopen_Action" xml:space="preserve"><value>Öppna Steam</value></data>
+  <data name="Startup_Steam_ReopenFailed" xml:space="preserve"><value>Det gick inte att starta Steam — öppna det från dess egen genväg.</value></data>
+  <data name="Guard_Title" xml:space="preserve"><value>Steam körs redan</value></data>
+  <data name="Guard_Body" xml:space="preserve"><value>LuaTools behöver starta Steam själv (eller hitta det stängt) för att kroken ska kunna fästa. Starta om Steam nu?</value></data>
+  <data name="Guard_Restart" xml:space="preserve"><value>Starta om Steam</value></data>
+  <data name="Guard_Exit" xml:space="preserve"><value>Avsluta</value></data>
+  <data name="Guard_Continue" xml:space="preserve"><value>Fortsätt ändå (rekommenderas inte)</value></data>
+  <data name="Guard_ContinueWarning" xml:space="preserve"><value>Steam lämnades igång, så kroken kanske inte fäster. Starta om Steam från LuaTools om det händer.</value></data>
+  <data name="Manage_Action_SaveBackup" xml:space="preserve"><value>Säkerhetskopiera sparfiler…</value></data>
+  <data name="Saves_Title" xml:space="preserve"><value>Säkerhetskopior av sparfiler</value></data>
+  <data name="Saves_Create" xml:space="preserve"><value>Skapa ny säkerhetskopia</value></data>
+  <data name="Saves_Restore" xml:space="preserve"><value>Återställ</value></data>
+  <data name="Saves_Delete" xml:space="preserve"><value>Ta bort</value></data>
+  <data name="Saves_Close" xml:space="preserve"><value>Stäng</value></data>
+  <data name="Saves_Empty" xml:space="preserve"><value>Inga säkerhetskopior av det här spelet än.</value></data>
+  <data name="Saves_Locations_Title" xml:space="preserve"><value>Hittade sparplatser</value></data>
+  <data name="Saves_Locations_None" xml:space="preserve"><value>Ingen sparmapp hittades för det här spelet.</value></data>
+  <data name="Saves_Location_Subtitle" xml:space="preserve"><value>{0} · {1} fil(er)</value></data>
+  <data name="Saves_AddFolder" xml:space="preserve"><value>Lägg till mapp manuellt…</value></data>
+  <data name="Saves_Confirm_NoneFound" xml:space="preserve"><value>Vi hittade inga sparfiler för det här spelet. Vill du välja en mapp manuellt?</value></data>
+  <data name="Saves_PickFolder" xml:space="preserve"><value>Välj mapp</value></data>
+  <data name="Saves_PickFolderTitle" xml:space="preserve"><value>Välj mappen där det här spelet har sina sparfiler</value></data>
+  <data name="Saves_Toast_PickOne" xml:space="preserve"><value>Markera minst en sparplats att säkerhetskopiera.</value></data>
+  <data name="Saves_Toast_FolderRefused" xml:space="preserve"><value>Den mappen kan inte användas (en enhetsrot, en Windows- eller Program Files-mapp eller en ofullständig sökväg).</value></data>
+  <data name="Manage_SaveIcon_Tooltip" xml:space="preserve"><value>Sparfiler hittades i: {0}</value></data>
+  <data name="Settings_CustomSaveFolders" xml:space="preserve"><value>Egna sparmappar</value></data>
+  <data name="Settings_CustomSaveFolders_Hint" xml:space="preserve"><value>För spel vars sparfiler appen inte hittar själv. Ange spelets AppID och välj mappen; den säkerhetskopieras då tillsammans med spelet och är den enda extra plats en återställning får skriva till.</value></data>
+  <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
+  <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Lägg till mapp…</value></data>
+  <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Ta bort</value></data>
+  <data name="Saves_Note" xml:space="preserve"><value>Säkerhetskopierar Steams mapp per spel (userdata). Spel som sparar i Dokument eller AppData ingår inte.</value></data>
+  <data name="Saves_Toast_Created" xml:space="preserve"><value>Säkerhetskopierade {0} fil(er), {1}.</value></data>
+  <data name="Saves_Toast_Restored" xml:space="preserve"><value>Återställde {0} fil(er). En kopia av de tidigare sparfilerna behölls.</value></data>
+  <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Säkerhetskopian togs bort.</value></data>
+  <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Inga sparfiler hittades för det här spelet. Lägg till mappen där det sparar med ”Lägg till mapp manuellt…”.</value></data>
+  <data name="Saves_Toast_SteamNotFound" xml:space="preserve"><value>Steam-mappen hittades inte. Ange dess plats i Inställningar.</value></data>
+  <data name="Saves_Toast_Refused" xml:space="preserve"><value>Avvisades: säkerhetskopian hör inte till det här spelet eller innehåller osäkra sökvägar. Inget ändrades.</value></data>
+  <data name="Saves_Toast_Failed" xml:space="preserve"><value>Åtgärden misslyckades. Se loggen för detaljer.</value></data>
+  <data name="Saves_Toast_NoSpace" xml:space="preserve"><value>Inte tillräckligt med ledigt diskutrymme för säkerhetskopian ({0} behövs, marginal inräknad). Inget skrevs.</value></data>
+  <data name="Saves_Confirm_Restore" xml:space="preserve"><value>Återställa {0}? Spelets nuvarande sparfiler skrivs över; en kopia av dem behålls först.</value></data>
+  <data name="Saves_Confirm_SteamOpen" xml:space="preserve"><value>Steam är öppet. För att återställa säkert (och hindra Steam Cloud från att skriva över filerna) måste Steam vara stängt.</value></data>
+  <data name="Saves_CloseSteamContinue" xml:space="preserve"><value>Stäng Steam och fortsätt</value></data>
+  <data name="Saves_Toast_SteamStillRunning" xml:space="preserve"><value>Steam stängdes inte. Stäng det manuellt och försök igen. Inget återställdes.</value></data>
+  <data name="Saves_Confirm_Delete" xml:space="preserve"><value>Ta bort {0}? Det går inte att ångra.</value></data>
+  <data name="Manage_Badge_Installed" xml:space="preserve"><value>Installerad</value></data>
+  <data name="Manage_Action_ImportSave" xml:space="preserve"><value>Importera sparfil (.zip)…</value></data>
+  <data name="Saves_Import" xml:space="preserve"><value>Importera sparfil…</value></data>
+  <data name="Saves_Import_PickTitle" xml:space="preserve"><value>Välj en säkerhetskopia av sparfiler (.zip)</value></data>
+  <data name="Saves_Import_Filter" xml:space="preserve"><value>Säkerhetskopia av sparfiler (*.zip)|*.zip</value></data>
+  <data name="Saves_Confirm_Import" xml:space="preserve"><value>Importera {0}? Spelets nuvarande sparfiler skrivs över; en kopia av dem behålls först.</value></data>
+  <data name="Saves_Toast_Imported" xml:space="preserve"><value>Importerade {0} fil(er). En kopia av de tidigare sparfilerna behölls.</value></data>
+  <data name="Saves_Confirm_NewFolder" xml:space="preserve"><value>Appen skapar en mapp med spelets namn för att ordna dess sparfiler. Fortsätta?</value></data>
+  <data name="Saves_Confirm_Ok" xml:space="preserve"><value>OK</value></data>
+  <data name="Saves_Toast_SavedAt" xml:space="preserve"><value>Säkerhetskopian sparades i: {0}</value></data>
+  <data name="Settings_SaveBackupFolder" xml:space="preserve"><value>Mapp för säkerhetskopior av sparfiler</value></data>
+  <data name="Settings_SaveBackupFolder_Hint" xml:space="preserve"><value>Dit ”Säkerhetskopiera sparfiler…” skriver sina zip-filer. Standard: %AppData%\LuaToolsGui\SaveBackups.</value></data>
+  <data name="Settings_ChooseSaveBackupFolder" xml:space="preserve"><value>Välj mapp för säkerhetskopior av sparfiler</value></data>
+  <data name="About_Changelog_Title" xml:space="preserve"><value>Nyheter</value></data>
+  <data name="About_Changelog_Show" xml:space="preserve"><value>Visa ändringslogg</value></data>
+  <data name="About_Changelog_Hide" xml:space="preserve"><value>Dölj ändringslogg</value></data>
+  <data name="Home_Privacy_UpdatesOff" xml:space="preserve"><value>Självuppdatering av — den här versionen hämtar inget på egen hand</value></data>
+  <data name="Home_Privacy_UpdatesOn" xml:space="preserve"><value>Självuppdatering på — utgåvor kontrolleras vid start</value></data>
+  <data name="Home_Action_Mode_Tip" xml:space="preserve"><value>Välj vilken backend som äger Steams proxy-DLL:er</value></data>
+  <data name="Home_Action_Plugin" xml:space="preserve"><value>Tillägg</value></data>
+  <data name="Home_Action_Plugin_Tip" xml:space="preserve"><value>Installera eller uppdatera tillägget för butikssidan</value></data>
+  <data name="Home_Action_Updates_Tip" xml:space="preserve"><value>Öppna Om för att söka efter en ny version</value></data>
+  <data name="Mode_Warn_Telemetry" xml:space="preserve"><value>Originalprojektet (madoiscool). Varning: innehåller telemetri och DonateKeys-systemet.</value></data>
+  <data name="Manage_Sort_InstalledFirst" xml:space="preserve"><value>Installerade först</value></data>
+  <data name="Add_Warn_NoManifests_Title" xml:space="preserve"><value>Varning</value></data>
+  <data name="Add_Warn_NoManifests" xml:space="preserve"><value>Den här källan levererade inga manifest för {0}. Nedladdningen i Steam kan misslyckas. Vi rekommenderar källan {1}.</value></data>
+  <data name="Plugin_Row_Source" xml:space="preserve"><value>Källa</value></data>
+  <data name="Plugin_Sources_Header" xml:space="preserve"><value>Tilläggskälla</value></data>
+  <data name="Plugin_Sources_Subtitle" xml:space="preserve"><value>Varje skapare publicerar sin egen version av tillägget. Välj den du vill ha installerad — LuaTools installerar bara den aktiva källan och byter aldrig av sig självt.</value></data>
+  <data name="Plugin_Source_By" xml:space="preserve"><value>av {0}</value></data>
+  <data name="Plugin_Source_Active" xml:space="preserve"><value>Aktiv</value></data>
+  <data name="Plugin_Source_Default" xml:space="preserve"><value>Standard</value></data>
+  <data name="Plugin_Source_Installed" xml:space="preserve"><value>Installerad från den här källan.</value></data>
+  <data name="Plugin_Source_ActiveNotInstalled" xml:space="preserve"><value>Aktiv källa — inte installerad än.</value></data>
+  <data name="Plugin_Source_Available" xml:space="preserve"><value>Tillgänglig. Välj den för att installera från den här skaparen i stället.</value></data>
+  <data name="Plugin_Source_LatestVersion" xml:space="preserve"><value>Senaste</value></data>
+  <data name="Plugin_Btn_Activate" xml:space="preserve"><value>Använd den här källan</value></data>
+  <data name="Plugin_Confirm_SwitchCaption" xml:space="preserve"><value>Byt tilläggskälla</value></data>
+  <data name="Plugin_Confirm_SwitchBody" xml:space="preserve"><value>Det här installerar tillägget från {0}, ersätter det som är installerat nu och stänger och startar om Steam för att tillämpa det. Fortsätta?</value></data>
+  <data name="Plugin_Toast_SourceSwitched" xml:space="preserve"><value>Nu installerat från {0}. Steam startar om för att läsa in det.</value></data>
+  <data name="Plugin_Err_UnknownSource" xml:space="preserve"><value>{0} är inte en tilläggskälla som följer med den här versionen, så inget installerades.</value></data>
+  <data name="Plugin_SourceErr_NoRelease" xml:space="preserve"><value>Den här källan publicerade ingen utgåva eller gick inte att nå.</value></data>
+  <data name="Plugin_SourceErr_NoTag" xml:space="preserve"><value>Den här källans senaste utgåva saknar versionstagg.</value></data>
+  <data name="Plugin_SourceErr_MissingAsset" xml:space="preserve"><value>Den här källans senaste utgåva saknar {0}.</value></data>
+  <data name="Plugin_SourceErr_ForeignAssetUrl" xml:space="preserve"><value>Den här källans nedladdning av {0} pekar utanför dess eget arkiv och avvisades därför.</value></data>
+  <data name="Plugin_SourceErr_NoDigest" xml:space="preserve"><value>Den här källan publicerar ingen SHA-256 för {0}, så innehållet kunde inte styrkas.</value></data>
+  <data name="Plugin_Err_ArchiveRejected" xml:space="preserve"><value>{0} avvisades av säkerhetskontrollen: {1}</value></data>
+  <data name="Download_Notice_Title" xml:space="preserve"><value>Installerar från {0}</value></data>
+  <data name="Download_Notice_Body" xml:space="preserve"><value>{0} · version {1} · {2} fil(er)
+SHA-256 {3}
+Verifierat: {4}</value></data>
+  <data name="Download_Notice_Check_Pinned" xml:space="preserve"><value>arkiv fastlåst</value></data>
+  <data name="Download_Notice_Check_Digest" xml:space="preserve"><value>SHA-256 stämde</value></data>
+  <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>arkiv genomsökt</value></data>
+  <data name="Download_Notice_Cancel" xml:space="preserve"><value>Avbryt</value></data>
+  <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Avbröts innan något installerades.</value></data>
+  <data name="Builds_RemoveGame" xml:space="preserve"><value>Ta bort spel</value></data>
+  <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Tar bort det här spelet från Depå-listan. Raderar dess lua-filer och alla sparade byggen.</value></data>
+  <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Ta bort spel</value></data>
+  <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>Ta bort {0} ({1}) från Depåer?
+
+Det raderar dess lua-fil, eventuella bygg-lua bredvid den och alla sparade byggen. Det går inte att ångra.</value></data>
+  <data name="Builds_RemoveGame_Done" xml:space="preserve"><value>{0} togs bort från Depåer.</value></data>
+  <data name="Builds_RemoveGame_Gone" xml:space="preserve"><value>{0} hade inga filer kvar — borttaget från listan.</value></data>
+  <data name="Builds_RemoveGame_Failed" xml:space="preserve"><value>Kunde inte ta bort {0} helt: {1}. Stäng Steam och försök igen.</value></data>
+  <data name="Auth_Err_SignInTimedOut" xml:space="preserve"><value>Inloggningen tog för lång tid — webbläsaren kom aldrig tillbaka. Du kan också logga in med en kod: kör /login på Discord-servern och klistra in koden i Inställningar.</value></data>
+  <data name="Auth_Err_CallbackPortBusy" xml:space="preserve"><value>Det gick inte att starta inloggningen: port 53789 används redan. Stäng andra inloggningsförsök och försök igen.</value></data>
+  <data name="Auth_ProviderUnavailable" xml:space="preserve"><value>Inloggningsservern svarar inte just nu, så inloggningen via Discord i webbläsaren kommer troligen att gå ut på tid. Du kan i stället logga in med en kod: kör /login på Discord-servern och ange koden i Inställningar.</value></data>
+  <data name="Auth_SignInCancelled" xml:space="preserve"><value>Inloggningen avbröts. Du kan försöka igen eller använda en manuell kod (kör /login på Discord).</value></data>
+  <data name="Auth_TryAgain" xml:space="preserve"><value>Försök igen</value></data>
+  <data name="Auth_TryAnyway" xml:space="preserve"><value>Försök ändå</value></data>
+  <data name="Auth_UseManualCode" xml:space="preserve"><value>Använd manuell kod</value></data>
+  <data name="Auth_Cancel" xml:space="preserve"><value>Avbryt</value></data>
+  <data name="Protocol_SilentInstall_Title" xml:space="preserve"><value>Installationsbegäran</value></data>
+  <data name="Protocol_SilentInstall_Body" xml:space="preserve"><value>En länk ber LuaTools installera appen {0} i bakgrunden. Fortsätt bara om du startade detta själv.</value></data>
+  <data name="Cdp_Consent_Title" xml:space="preserve"><value>Aktivera bryggan för Steams butikssida?</value></data>
+  <data name="Cdp_Consent_Body" xml:space="preserve"><value>Tillägget för butikssidan behöver Steams felsökningsbrygga, som LuaTools aktiverar genom att lägga en markör bredvid steam.exe. Medan Steam körs öppnar det en oautentiserad lokal port (127.0.0.1:8080).
+
+Allt annat som körs på den här datorn skulle då kunna styra Steams inbyggda webbläsare med din inloggade session. Aktivera bara om du litar på programvaran som är installerad på den här datorn.
+
+Du kan avböja och ändå använda resten av LuaTools; bara knappen ”Add via LuaTools” i butiken blir otillgänglig.
+
+Aktivera?</value></data>
+  <data name="Privacy_HttpMetadata_Title" xml:space="preserve"><value>Okrypterad förfrågan</value></data>
+  <data name="Privacy_HttpMetadata_Body" xml:space="preserve"><value>Källornas tillgänglighet kontrolleras över vanlig HTTP ({0}), eftersom den servern inte erbjuder fungerande HTTPS. Inget konto eller någon nyckel skickas, men alla på din nätverksväg kan se vilken Steam-app du slog upp. Ställ in ”WarnOnInsecureMetadata”: false i settings.json för att dölja detta.</value></data>
+  <data name="Theme_Guard_Title" xml:space="preserve"><value>Temat tillämpades inte</value></data>
+  <data name="Theme_Guard_Body" xml:space="preserve"><value>Amethyst-accenten slog inte igenom, vilket oftast betyder att WPF-UI-paketet har ändrat sina resursnamn. Appen fungerar normalt men delar av den ser fel ut. Se docs/CHANGELOG.md.</value></data>
+  <data name="App_DisplayName" xml:space="preserve"><value>LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Title" xml:space="preserve"><value>Det här kanske inte är LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Body" xml:space="preserve"><value>Den här binären identifierar sig inte som LuaTools Amethyst. Om du har installerat en officiell LuaTools-utgåva över den är analys och uppladdning av Steam-nycklar aktiva igen. Installera om från Amethyst-arkivet för att få tillbaka integritetsversionen.</value></data>
+  <data name="Fixes_Toast_Blocked" xml:space="preserve"><value>Nedladdning avvisad</value></data>
+  <data name="Fixes_Toast_Blocked_Body" xml:space="preserve"><value>{0} installerades inte eftersom den misslyckades med en säkerhetskontroll — {1}</value></data>
+  <data name="About_Nav" xml:space="preserve"><value>Om</value></data>
+  <data name="About_Title" xml:space="preserve"><value>Om LuaTools Amethyst</value></data>
+  <data name="About_What_Header" xml:space="preserve"><value>Vad det här är</value></data>
+  <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst är en community-fork av LuaTools med fokus på integritet. Den tar bort analys-pingen och nyckeluppladdningen som originalversionen gör, håller alla nedladdningar över HTTPS och levereras med det lila Amethyst-temat.</value></data>
+  <data name="About_Version_Header" xml:space="preserve"><value>Version</value></data>
+  <data name="About_Repo_Header" xml:space="preserve"><value>Arkiv</value></data>
+  <data name="About_Updates_Header" xml:space="preserve"><value>Uppdateringar</value></data>
+  <data name="About_Updates_Enabled" xml:space="preserve"><value>Automatiska uppdateringar är PÅ. LuaTools Amethyst kontrollerar arkivet nedan vid start och installerar uppdateringar i bakgrunden.</value></data>
+  <data name="About_Updates_Disabled" xml:space="preserve"><value>Automatiska uppdateringar är AV — ingen uppdateringsbegäran görs. Lägg till ”AppUpdateRepos” i settings.json för att slå på dem, eller uppdatera manuellt från arkivet nedan.</value></data>
+  <data name="About_Updates_Sources" xml:space="preserve"><value>Uppdateringskälla</value></data>
+  <data name="About_Check_Button" xml:space="preserve"><value>Sök efter uppdateringar</value></data>
+  <data name="About_Check_Checking" xml:space="preserve"><value>Kontrollerar…</value></data>
+  <data name="About_Check_UpToDate" xml:space="preserve"><value>Du har den senaste versionen.</value></data>
+  <data name="About_Check_Found" xml:space="preserve"><value>En uppdatering laddades ned. Den tillämpas när du stänger LuaTools.</value></data>
+  <data name="About_Check_Failed" xml:space="preserve"><value>Det gick inte att söka efter uppdateringar. Kontrollera anslutningen och det konfigurerade arkivet.</value></data>
+  <data name="About_Check_Disabled" xml:space="preserve"><value>Automatiska uppdateringar är inaktiverade — konfigurera först ”AppUpdateRepos” i settings.json.</value></data>
+  <data name="About_OpenRepo" xml:space="preserve"><value>Öppna arkivet</value></data>
+  <data name="About_OpenSettings" xml:space="preserve"><value>Öppna mappen med settings.json</value></data>
+  <data name="About_Config_Header" xml:space="preserve"><value>Konfigurera uppdateringar manuellt</value></data>
+  <data name="About_Config_Body" xml:space="preserve"><value>Redigera settings.json i mappen nedan och lägg till arkivet du vill ha uppdateringar från. Endast https://github.com/&lt;owner&gt;/&lt;repo&gt; accepteras, och de ursprungliga LuaTools-utgåvornas arkiv avvisas så att ett officiellt bygge aldrig kan ersätta det här.</value></data>
+  <data name="Builds_Depot_Download" xml:space="preserve"><value>Ladda ned depåer…</value></data>
+  <data name="Builds_Depot_Unavailable" xml:space="preserve"><value>Nedladdning av depåer är inte tillgänglig i den här versionen: den saknar en verifierad pin för nedladdningsverktyget.</value></data>
+  <data name="Builds_Depot_PickTitle" xml:space="preserve"><value>Ladda ned depåinnehåll</value></data>
+  <data name="Builds_Depot_PickHint" xml:space="preserve"><value>Råfiler hämtas anonymt direkt från Steams CDN. Inget installeras — depåerna skrivs till mappen nedan så att du kan använda dem som du vill.</value></data>
+  <data name="Builds_Depot_NoCandidates" xml:space="preserve"><value>Ingen av spelets depåer kan laddas ned. De behöver både en dekrypteringsnyckel från lua och ett manifest som Steam publicerat.</value></data>
+  <data name="Builds_Depot_NeedsKey" xml:space="preserve"><value>ingen nyckel i den här versionen</value></data>
+  <data name="Builds_Depot_NeedsManifest" xml:space="preserve"><value>Steam publicerar inget manifest</value></data>
+  <data name="Builds_Depot_NeedsSignIn" xml:space="preserve"><value>logga in för att hämta dess manifest</value></data>
+  <data name="Builds_Depot_SelectAll" xml:space="preserve"><value>Markera alla</value></data>
+  <data name="Builds_Depot_SelectNone" xml:space="preserve"><value>Rensa</value></data>
+  <data name="Builds_Depot_Destination" xml:space="preserve"><value>Målmapp</value></data>
+  <data name="Builds_Depot_Change" xml:space="preserve"><value>Ändra…</value></data>
+  <data name="Builds_Depot_Space" xml:space="preserve"><value>{0} krävs · {1} lediga på {2}</value></data>
+  <data name="Builds_Depot_NotEnoughSpace" xml:space="preserve"><value>Inte tillräckligt med ledigt utrymme på den enheten. Välj färre depåer eller en annan mapp.</value></data>
+  <data name="Builds_Depot_Confirm" xml:space="preserve"><value>Ladda ned {0} depå(er)</value></data>
+  <data name="Builds_Depot_Cancel" xml:space="preserve"><value>Avbryt</value></data>
+  <data name="Builds_Depot_Downloading" xml:space="preserve"><value>Depå {0} av {1} · {2}</value></data>
+  <data name="Builds_Depot_Phase_PreAllocating" xml:space="preserve"><value>reserverar diskutrymme</value></data>
+  <data name="Builds_Depot_Phase_Validating" xml:space="preserve"><value>kontrollerar befintliga filer</value></data>
+  <data name="Builds_Depot_Phase_FetchingManifest" xml:space="preserve"><value>hämtar manifest</value></data>
+  <data name="Builds_Depot_Phase_Downloading" xml:space="preserve"><value>laddar ned</value></data>
+  <data name="Builds_Depot_Done" xml:space="preserve"><value>Laddade ned {0} depå(er) till {1}</value></data>
+  <data name="Builds_Depot_OpenFolder" xml:space="preserve"><value>Öppna mapp</value></data>
+  <data name="Builds_Depot_CleanUp_Title" xml:space="preserve"><value>Ta bort den delvisa nedladdningen?</value></data>
+  <data name="Builds_Depot_CleanUp_Body" xml:space="preserve"><value>Nedladdningen avbröts efter att {0} fil(er) skapats i {1}. Radera bara de filerna? Det som redan fanns där lämnas orört.</value></data>
+  <data name="Builds_Depot_CleanUp_Failed" xml:space="preserve"><value>Vissa filer kunde inte raderas — de kan fortfarande vara i bruk. Försök igen om en stund.</value></data>
+  <data name="Depot_Err_ToolNotPinned" xml:space="preserve"><value>Nedladdning av depåer är avstängd i den här versionen eftersom den saknar en verifierad pin för nedladdningsverktyget.</value></data>
+  <data name="Depot_Err_Tool" xml:space="preserve"><value>Depånedladdaren kunde inte hämtas, eller så klarade det som kom inte verifieringen.</value></data>
+  <data name="Depot_Err_SteamNotFound" xml:space="preserve"><value>Steams plats hittades inte — ange den i Inställningar.</value></data>
+  <data name="Depot_Err_NoKeys" xml:space="preserve"><value>Inga dekrypteringsnycklar för depåer hittades för det här spelet.</value></data>
+  <data name="Depot_Err_NoKeyFor" xml:space="preserve"><value>Depå {0} har ingen användbar dekrypteringsnyckel.</value></data>
+  <data name="Depot_Err_BadKey" xml:space="preserve"><value>Nyckeln som sparats för depå {0} stämmer inte med dess manifest.</value></data>
+  <data name="Depot_Err_NoManifest" xml:space="preserve"><value>Manifestet för den depån kunde inte hämtas.</value></data>
+  <data name="Depot_Err_SignIn" xml:space="preserve"><value>Logga in för att hämta ett manifest som Steam inte redan har på den här datorn.</value></data>
+  <data name="Depot_Err_NoSpace" xml:space="preserve"><value>Inte tillräckligt med diskutrymme: {0} krävs, {1} lediga.</value></data>
+  <data name="Depot_Err_Failed" xml:space="preserve"><value>Depå {0} misslyckades: {1}</value></data>
+  <data name="Builds_Depot_Queued" xml:space="preserve"><value>Skickade {0} depå(er) till Nedladdningar.</value></data>
+  <data name="Nav_Downloads" xml:space="preserve"><value>Nedladdningar</value></data>
+  <data name="Downloads_Title" xml:space="preserve"><value>Nedladdningar</value></data>
+  <data name="Downloads_Subtitle" xml:space="preserve"><value>Allt som appen hämtar just nu och det den hämtat tidigare. Manifest och depåinnehåll delar den här kön.</value></data>
+  <data name="Downloads_Empty" xml:space="preserve"><value>Inget har laddats ned än. Lägger du till ett spel från sidan Lägg till, eller hämtar depåinnehåll från sidan Depåer, visas det här.</value></data>
+  <data name="Downloads_Section_Active" xml:space="preserve"><value>Pågår</value></data>
+  <data name="Downloads_Section_History" xml:space="preserve"><value>Historik</value></data>
+  <data name="Downloads_ActionRequired" xml:space="preserve"><value>ÅTGÄRD KRÄVS</value></data>
+  <data name="Downloads_Of" xml:space="preserve"><value>{0} av {1}</value></data>
+  <data name="Downloads_Eta" xml:space="preserve"><value>{0} kvar</value></data>
+  <data name="Downloads_Source_Depots" xml:space="preserve"><value>{0} depå(er)</value></data>
+  <data name="Downloads_Status_Queued" xml:space="preserve"><value>I kö</value></data>
+  <data name="Downloads_Status_Downloading" xml:space="preserve"><value>Laddar ned</value></data>
+  <data name="Downloads_Status_AwaitingConfirm" xml:space="preserve"><value>Väntar på dig</value></data>
+  <data name="Downloads_Status_Installing" xml:space="preserve"><value>Installerar</value></data>
+  <data name="Downloads_Status_Paused" xml:space="preserve"><value>Pausad</value></data>
+  <data name="Downloads_Status_Verifying" xml:space="preserve"><value>Verifierar</value></data>
+  <data name="Downloads_Status_Completed" xml:space="preserve"><value>Klar</value></data>
+  <data name="Downloads_Status_Failed" xml:space="preserve"><value>Misslyckades</value></data>
+  <data name="Downloads_Status_Cancelled" xml:space="preserve"><value>Avbruten</value></data>
+  <data name="Downloads_Action_Review" xml:space="preserve"><value>Granska</value></data>
+  <data name="Downloads_Action_Pause" xml:space="preserve"><value>Pausa</value></data>
+  <data name="Downloads_Action_Resume" xml:space="preserve"><value>Återuppta</value></data>
+  <data name="Downloads_Action_MoveUp" xml:space="preserve"><value>Flytta upp</value></data>
+  <data name="Downloads_Action_MoveDown" xml:space="preserve"><value>Flytta ned</value></data>
+  <data name="Downloads_Action_Cancel" xml:space="preserve"><value>Avbryt</value></data>
+  <data name="Downloads_Action_Retry" xml:space="preserve"><value>Försök igen</value></data>
+  <data name="Downloads_Action_Remove" xml:space="preserve"><value>Ta bort</value></data>
+  <data name="Downloads_Action_ClearHistory" xml:space="preserve"><value>Rensa historik</value></data>
+  <data name="Downloads_Action_CopyAppId" xml:space="preserve"><value>Kopiera App ID</value></data>
+  <data name="Downloads_Action_ShowInFolder" xml:space="preserve"><value>Visa i mapp</value></data>
+  <data name="Downloads_ClearHistory_Confirm" xml:space="preserve"><value>Ta bort alla {0} poster från nedladdningshistoriken? Själva filerna rörs inte.</value></data>
+  <data name="Downloads_Err_Interrupted" xml:space="preserve"><value>Avbröts när appen stängdes.</value></data>
+  <data name="Downloads_Err_Cancelled" xml:space="preserve"><value>Avbruten.</value></data>
+  <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>Urklippet används av ett annat program — inget kopierades.</value></data>
+  <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Den platsen finns inte längre: {0}</value></data>
+  <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>Avvisade ”{0}”: ett manifest måste heta &lt;depot&gt;_&lt;manifest&gt;.manifest (endast siffror).</value></data>
+  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>CloudRedirects källarkiv är inte tillgängligt. Funktionen är tillfälligt avstängd.</value></data>
+  <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Sparade byggen (ingen aktiv lua)</value></data>
+  <data name="Settings_Maintenance_Title" xml:space="preserve"><value>UNDERHÅLL</value></data>
+  <data name="Settings_Backups_Title" xml:space="preserve"><value>Ackumulerade säkerhetskopior</value></data>
+  <data name="Settings_Backups_Subtitle" xml:space="preserve"><value>Säkerhetskopieringsmappar som skapats vid installation av AmethystTool eller borttagning av tillägg. Att radera dem frigör utrymme i Steam-mappen.</value></data>
+  <data name="Settings_Backups_Empty" xml:space="preserve"><value>Inga säkerhetskopior hittades.</value></data>
+  <data name="Settings_Backups_NoSteam" xml:space="preserve"><value>Ange Steams plats i Inställningar för att se säkerhetskopior.</value></data>
+  <data name="Settings_Backups_Refresh" xml:space="preserve"><value>Uppdatera</value></data>
+  <data name="Settings_Backups_DeleteSelected" xml:space="preserve"><value>Ta bort valda</value></data>
+  <data name="Settings_Backups_DeleteOlder" xml:space="preserve"><value>Ta bort äldre än 30 dagar</value></data>
+  <data name="Settings_Backups_Confirm_Title" xml:space="preserve"><value>Ta bort säkerhetskopior?</value></data>
+  <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>Ta bort {0} objekt ({1}) permanent? Du kommer inte att kunna återställa tidigare AmethystTool-installationer eller borttagningar av tillägg.</value></data>
+  <data name="Settings_Backups_Confirm_Delete" xml:space="preserve"><value>Ta bort</value></data>
+  <data name="Settings_Backups_Cancel" xml:space="preserve"><value>Avbryt</value></data>
+  <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>{0} objekt borttagna ({1} frigjorda)</value></data>
+  <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>{0} objekt kunde inte tas bort. Stäng Steam och försök igen.</value></data>
+  <data name="Settings_Backups_Column_Name" xml:space="preserve"><value>Namn</value></data>
+  <data name="Settings_Backups_Column_Type" xml:space="preserve"><value>Typ</value></data>
+  <data name="Settings_Backups_Type_Folder" xml:space="preserve"><value>Mapp</value></data>
+  <data name="Settings_Backups_Type_File" xml:space="preserve"><value>Fil</value></data>
+  <data name="Settings_Backups_UnknownWarning" xml:space="preserve"><value>Okänd säkerhetskopia, verifiera innan du tar bort</value></data>
+  <data name="Settings_Backups_Column_Date" xml:space="preserve"><value>Skapad</value></data>
+  <data name="Settings_Backups_Column_Size" xml:space="preserve"><value>Storlek</value></data>
+  <data name="Settings_Backups_Column_Files" xml:space="preserve"><value>Filer</value></data>
+  <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Lokal version (offline)</value></data>
+  <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Ingen internetanslutning. Använder den lokalt installerade versionen.</value></data>
+  <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Det går inte att ladda ned en ny version utan internet.</value></data>
 </root>

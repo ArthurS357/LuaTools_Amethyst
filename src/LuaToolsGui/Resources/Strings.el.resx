@@ -586,4 +586,288 @@
   <data name="App_StartupFailed" xml:space="preserve"><value>Δεν ήταν δυνατή η εκκίνηση του LuaTools.&#10;&#10;{0}&#10;&#10;Οι λεπτομέρειες γράφτηκαν στο:&#10;{1}</value></data>
   <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Δεν ήταν δυνατή η εγγραφή αρχείων ({0}) στον φάκελο του Steam — η πρόσβαση απορρίφθηκε. Το Steam φαίνεται να είναι εγκατεστημένο σε τοποθεσία που απαιτεί δικαιώματα διαχειριστή (π.χ. Program Files). Κλείστε το Steam και εκτελέστε το LuaTools ως διαχειριστής μία φορά για να εφαρμόσετε αυτή τη λειτουργία.</value></data>
   <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Δεν ήταν δυνατή η εγγραφή αρχείων ({0}) — κλείστε το Steam και δοκιμάστε ξανά.</value></data>
+  <data name="Nav_Plugin" xml:space="preserve"><value>Πρόσθετο</value></data>
+  <data name="Settings_HubcapKeyRejected" xml:space="preserve"><value>Το Hubcap απέρριψε αυτό το κλειδί. Έλεγξε ότι αντιγράφηκε ολόκληρο και δεν έχει λήξει.</value></data>
+  <data name="Settings_HubcapKeyOffline" xml:space="preserve"><value>Δεν ήταν δυνατή η επικοινωνία με το Hubcap. Έλεγξε τη σύνδεσή σου και δοκίμασε ξανά — το κλειδί δεν άλλαξε.</value></data>
+  <data name="Settings_HubcapKeyRateLimited" xml:space="preserve"><value>Το Hubcap περιορίζει αυτή τη στιγμή το ρυθμό αιτημάτων αυτού του κλειδιού. Δοκίμασε ξανά σε λίγο.</value></data>
+  <data name="Settings_HubcapExpiryExpired" xml:space="preserve"><value>Το κλειδί Hubcap σου έληξε στις {0}. Επικύρωσε ένα νέο για να συνεχίσεις να χρησιμοποιείς τις πηγές Hubcap.</value></data>
+  <data name="Settings_HubcapExpiryToday" xml:space="preserve"><value>Το κλειδί Hubcap σου λήγει σήμερα ({0}). Πάρε ένα νέο πριν σταματήσει να λειτουργεί.</value></data>
+  <data name="Settings_HubcapExpirySoon" xml:space="preserve"><value>Το κλειδί Hubcap σου λήγει σε {0} ημέρες ({1}). Πάρε ένα νέο πριν σταματήσει να λειτουργεί.</value></data>
+  <data name="Hubcap_Err_KeyRejected" xml:space="preserve"><value>Το κλειδί Hubcap σου δεν είναι έγκυρο ή έχει λήξει.</value></data>
+  <data name="Hubcap_Err_DailyLimit" xml:space="preserve"><value>Συμπληρώθηκε το ημερήσιο όριο του Hubcap.</value></data>
+  <data name="Hubcap_Err_DailyLimitRetry" xml:space="preserve"><value>Συμπληρώθηκε το ημερήσιο όριο του Hubcap. Δοκίμασε ξανά σε περίπου {0}.</value></data>
+  <data name="Hubcap_Err_NoManifest" xml:space="preserve"><value>Δεν υπάρχει διαθέσιμο manifest Hubcap για αυτή την εφαρμογή.</value></data>
+  <data name="Hubcap_Err_Status" xml:space="preserve"><value>Η λήψη από το Hubcap απέτυχε ({0}).</value></data>
+  <data name="Hubcap_Err_Unreachable" xml:space="preserve"><value>Δεν ήταν δυνατή η επικοινωνία με το Hubcap. Έλεγξε τη σύνδεσή σου και δοκίμασε ξανά.</value></data>
+  <data name="Hubcap_Err_Generic" xml:space="preserve"><value>Η λήψη από το Hubcap απέτυχε.</value></data>
+  <data name="Hubcap_Wait_Seconds" xml:space="preserve"><value>{0} δευτερόλεπτα</value></data>
+  <data name="Hubcap_Wait_Minutes" xml:space="preserve"><value>{0} λεπτά</value></data>
+  <data name="Hubcap_Wait_Hours" xml:space="preserve"><value>{0} ώρες</value></data>
+  <data name="Settings_Accent_Hint" xml:space="preserve"><value>Αλλάζει το χρώμα ολόκληρης της εφαρμογής — παράθυρο, κάρτες και κείμενο, όχι μόνο τα σημεία έμφασης. Διάλεξε χρώμα και μετά πάτησε Εφαρμογή.</value></data>
+  <data name="Settings_Accent_Amethyst" xml:space="preserve"><value>Amethyst</value></data>
+  <data name="Startup_Title" xml:space="preserve"><value>Εκκίνηση</value></data>
+  <data name="Startup_Steam_Closing" xml:space="preserve"><value>Κλείσιμο του Steam ώστε το LuaTools να δουλέψει στα αρχεία του…</value></data>
+  <data name="Startup_Steam_Closed" xml:space="preserve"><value>Το Steam είναι κλειστό.</value></data>
+  <data name="Startup_Steam_Stubborn_Title" xml:space="preserve"><value>Το Steam δεν έκλεισε</value></data>
+  <data name="Startup_Steam_Stubborn_Body" xml:space="preserve"><value>Ζητήθηκε από το Steam να κλείσει, αλλά εξακολουθεί να εκτελείται.
+
+Να γίνει αναγκαστικό κλείσιμο; Ό,τι δεν έχει αποθηκεύσει ακόμη το Steam μπορεί να χαθεί. Επίλεξε Όχι για να το αφήσεις να τρέχει — το LuaTools δεν μπορεί να αλλάξει τα αρχεία του Steam όσο αυτό εκτελείται.</value></data>
+  <data name="Startup_Steam_LeftRunning" xml:space="preserve"><value>Το Steam εξακολουθεί να εκτελείται, οπότε δεν άλλαξε τίποτα. Κλείσε το Steam και επανεκκίνησε το LuaTools όταν είσαι έτοιμος.</value></data>
+  <data name="Startup_Steam_Reopen_Body" xml:space="preserve"><value>Το LuaTools ολοκλήρωσε. Να ανοίξει ξανά το Steam;</value></data>
+  <data name="Startup_Steam_Reopen_Action" xml:space="preserve"><value>Άνοιγμα Steam</value></data>
+  <data name="Startup_Steam_ReopenFailed" xml:space="preserve"><value>Δεν ήταν δυνατή η εκκίνηση του Steam — άνοιξέ το από τη δική του συντόμευση.</value></data>
+  <data name="Guard_Title" xml:space="preserve"><value>Το Steam εκτελείται ήδη</value></data>
+  <data name="Guard_Body" xml:space="preserve"><value>Το LuaTools πρέπει να ξεκινήσει το ίδιο το Steam (ή να το βρει κλειστό) ώστε να προσαρτηθεί το hook. Να γίνει επανεκκίνηση του Steam τώρα;</value></data>
+  <data name="Guard_Restart" xml:space="preserve"><value>Επανεκκίνηση Steam</value></data>
+  <data name="Guard_Exit" xml:space="preserve"><value>Έξοδος</value></data>
+  <data name="Guard_Continue" xml:space="preserve"><value>Συνέχεια ούτως ή άλλως (δεν συνιστάται)</value></data>
+  <data name="Guard_ContinueWarning" xml:space="preserve"><value>Το Steam έμεινε να τρέχει, οπότε το hook μπορεί να μην προσαρτηθεί. Αν συμβεί αυτό, κάνε επανεκκίνηση του Steam από το LuaTools.</value></data>
+  <data name="Manage_Action_SaveBackup" xml:space="preserve"><value>Αντίγραφο ασφαλείας αποθηκεύσεων…</value></data>
+  <data name="Saves_Title" xml:space="preserve"><value>Αντίγραφα ασφαλείας αποθηκεύσεων</value></data>
+  <data name="Saves_Create" xml:space="preserve"><value>Δημιουργία νέου αντιγράφου ασφαλείας</value></data>
+  <data name="Saves_Restore" xml:space="preserve"><value>Επαναφορά</value></data>
+  <data name="Saves_Delete" xml:space="preserve"><value>Διαγραφή</value></data>
+  <data name="Saves_Close" xml:space="preserve"><value>Κλείσιμο</value></data>
+  <data name="Saves_Empty" xml:space="preserve"><value>Δεν υπάρχουν ακόμη αντίγραφα ασφαλείας αυτού του παιχνιδιού.</value></data>
+  <data name="Saves_Locations_Title" xml:space="preserve"><value>Τοποθεσίες αποθηκεύσεων που βρέθηκαν</value></data>
+  <data name="Saves_Locations_None" xml:space="preserve"><value>Δεν εντοπίστηκε φάκελος αποθηκεύσεων για αυτό το παιχνίδι.</value></data>
+  <data name="Saves_Location_Subtitle" xml:space="preserve"><value>{0} · {1} αρχείο/α</value></data>
+  <data name="Saves_AddFolder" xml:space="preserve"><value>Προσθήκη φακέλου με το χέρι…</value></data>
+  <data name="Saves_Confirm_NoneFound" xml:space="preserve"><value>Δεν βρήκαμε αποθηκεύσεις για αυτό το παιχνίδι. Θέλεις να επιλέξεις φάκελο με το χέρι;</value></data>
+  <data name="Saves_PickFolder" xml:space="preserve"><value>Επιλογή φακέλου</value></data>
+  <data name="Saves_PickFolderTitle" xml:space="preserve"><value>Επίλεξε τον φάκελο όπου αυτό το παιχνίδι κρατά τις αποθηκεύσεις του</value></data>
+  <data name="Saves_Toast_PickOne" xml:space="preserve"><value>Τσέκαρε τουλάχιστον μία τοποθεσία αποθηκεύσεων για δημιουργία αντιγράφου.</value></data>
+  <data name="Saves_Toast_FolderRefused" xml:space="preserve"><value>Αυτός ο φάκελος δεν μπορεί να χρησιμοποιηθεί (ρίζα δίσκου, φάκελος Windows ή Program Files ή μη πλήρης διαδρομή).</value></data>
+  <data name="Manage_SaveIcon_Tooltip" xml:space="preserve"><value>Αποθηκεύσεις εντοπίστηκαν στο: {0}</value></data>
+  <data name="Settings_CustomSaveFolders" xml:space="preserve"><value>Προσαρμοσμένοι φάκελοι αποθηκεύσεων</value></data>
+  <data name="Settings_CustomSaveFolders_Hint" xml:space="preserve"><value>Για παιχνίδια των οποίων τις αποθηκεύσεις η εφαρμογή δεν βρίσκει μόνη της. Δώσε το AppID του παιχνιδιού και επίλεξε τον φάκελο· τότε περιλαμβάνεται στο αντίγραφο ασφαλείας αυτού του παιχνιδιού και είναι το μόνο επιπλέον σημείο όπου επιτρέπεται να γράψει μια επαναφορά.</value></data>
+  <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
+  <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Προσθήκη φακέλου…</value></data>
+  <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Αφαίρεση</value></data>
+  <data name="Saves_Note" xml:space="preserve"><value>Δημιουργεί αντίγραφο του φακέλου ανά παιχνίδι του Steam (userdata). Τα παιχνίδια που κρατούν αποθηκεύσεις στα Έγγραφα ή στο AppData δεν περιλαμβάνονται.</value></data>
+  <data name="Saves_Toast_Created" xml:space="preserve"><value>Δημιουργήθηκε αντίγραφο {0} αρχείου/ων, {1}.</value></data>
+  <data name="Saves_Toast_Restored" xml:space="preserve"><value>Επαναφέρθηκαν {0} αρχείο/α. Διατηρήθηκε αντίγραφο των προηγούμενων αποθηκεύσεων.</value></data>
+  <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Το αντίγραφο ασφαλείας διαγράφηκε.</value></data>
+  <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Δεν βρέθηκαν αποθηκεύσεις για αυτό το παιχνίδι. Πρόσθεσε τον φάκελο όπου τις κρατά με «Προσθήκη φακέλου με το χέρι…».</value></data>
+  <data name="Saves_Toast_SteamNotFound" xml:space="preserve"><value>Ο φάκελος του Steam δεν βρέθηκε. Όρισε την τοποθεσία του στις Ρυθμίσεις.</value></data>
+  <data name="Saves_Toast_Refused" xml:space="preserve"><value>Απορρίφθηκε: το αντίγραφο ασφαλείας δεν ταιριάζει με αυτό το παιχνίδι ή περιέχει μη ασφαλείς διαδρομές. Δεν άλλαξε τίποτα.</value></data>
+  <data name="Saves_Toast_Failed" xml:space="preserve"><value>Η λειτουργία απέτυχε. Δες το αρχείο καταγραφής για λεπτομέρειες.</value></data>
+  <data name="Saves_Toast_NoSpace" xml:space="preserve"><value>Δεν υπάρχει αρκετός ελεύθερος χώρος στον δίσκο για το αντίγραφο ασφαλείας (απαιτούνται {0}, με το περιθώριο). Δεν γράφτηκε τίποτα.</value></data>
+  <data name="Saves_Confirm_Restore" xml:space="preserve"><value>Επαναφορά του {0}; Οι τρέχουσες αποθηκεύσεις αυτού του παιχνιδιού θα αντικατασταθούν· πρώτα διατηρείται αντίγραφό τους.</value></data>
+  <data name="Saves_Confirm_SteamOpen" xml:space="preserve"><value>Το Steam είναι ανοιχτό. Για ασφαλή επαναφορά (και για να μην αντικαταστήσει το Steam Cloud τα αρχεία), το Steam πρέπει να είναι κλειστό.</value></data>
+  <data name="Saves_CloseSteamContinue" xml:space="preserve"><value>Κλείσιμο Steam και συνέχεια</value></data>
+  <data name="Saves_Toast_SteamStillRunning" xml:space="preserve"><value>Το Steam δεν έκλεισε. Κλείσε το με το χέρι και δοκίμασε ξανά. Δεν επαναφέρθηκε τίποτα.</value></data>
+  <data name="Saves_Confirm_Delete" xml:space="preserve"><value>Διαγραφή του {0}; Αυτή η ενέργεια δεν αναιρείται.</value></data>
+  <data name="Manage_Badge_Installed" xml:space="preserve"><value>Εγκατεστημένο</value></data>
+  <data name="Manage_Action_ImportSave" xml:space="preserve"><value>Εισαγωγή αποθήκευσης (.zip)…</value></data>
+  <data name="Saves_Import" xml:space="preserve"><value>Εισαγωγή αποθήκευσης…</value></data>
+  <data name="Saves_Import_PickTitle" xml:space="preserve"><value>Επίλεξε ένα αντίγραφο ασφαλείας αποθηκεύσεων (.zip)</value></data>
+  <data name="Saves_Import_Filter" xml:space="preserve"><value>Αντίγραφο ασφαλείας αποθηκεύσεων (*.zip)|*.zip</value></data>
+  <data name="Saves_Confirm_Import" xml:space="preserve"><value>Εισαγωγή του {0}; Οι τρέχουσες αποθηκεύσεις αυτού του παιχνιδιού θα αντικατασταθούν· πρώτα διατηρείται αντίγραφό τους.</value></data>
+  <data name="Saves_Toast_Imported" xml:space="preserve"><value>Εισήχθησαν {0} αρχείο/α. Διατηρήθηκε αντίγραφο των προηγούμενων αποθηκεύσεων.</value></data>
+  <data name="Saves_Confirm_NewFolder" xml:space="preserve"><value>Η εφαρμογή θα δημιουργήσει έναν φάκελο με το όνομα αυτού του παιχνιδιού για να οργανώσει τις αποθηκεύσεις του. Συνέχεια;</value></data>
+  <data name="Saves_Confirm_Ok" xml:space="preserve"><value>OK</value></data>
+  <data name="Saves_Toast_SavedAt" xml:space="preserve"><value>Το αντίγραφο ασφαλείας αποθηκεύτηκε με επιτυχία στο: {0}</value></data>
+  <data name="Settings_SaveBackupFolder" xml:space="preserve"><value>Φάκελος αντιγράφων ασφαλείας αποθηκεύσεων</value></data>
+  <data name="Settings_SaveBackupFolder_Hint" xml:space="preserve"><value>Πού γράφει τα zip του το «Αντίγραφο ασφαλείας αποθηκεύσεων…». Προεπιλογή: %AppData%\LuaToolsGui\SaveBackups.</value></data>
+  <data name="Settings_ChooseSaveBackupFolder" xml:space="preserve"><value>Επίλεξε τον φάκελο αντιγράφων ασφαλείας αποθηκεύσεων</value></data>
+  <data name="About_Changelog_Title" xml:space="preserve"><value>Τι νέο υπάρχει</value></data>
+  <data name="About_Changelog_Show" xml:space="preserve"><value>Εμφάνιση καταγραφής αλλαγών</value></data>
+  <data name="About_Changelog_Hide" xml:space="preserve"><value>Απόκρυψη καταγραφής αλλαγών</value></data>
+  <data name="Home_Privacy_UpdatesOff" xml:space="preserve"><value>Αυτόματη ενημέρωση ανενεργή — αυτή η έκδοση δεν κατεβάζει τίποτα μόνη της</value></data>
+  <data name="Home_Privacy_UpdatesOn" xml:space="preserve"><value>Αυτόματη ενημέρωση ενεργή — οι εκδόσεις ελέγχονται κατά την εκκίνηση</value></data>
+  <data name="Home_Action_Mode_Tip" xml:space="preserve"><value>Επίλεξε ποιο backend κατέχει τα proxy DLL του Steam</value></data>
+  <data name="Home_Action_Plugin" xml:space="preserve"><value>Πρόσθετο</value></data>
+  <data name="Home_Action_Plugin_Tip" xml:space="preserve"><value>Εγκατάσταση ή ενημέρωση του πρόσθετου της σελίδας καταστήματος</value></data>
+  <data name="Home_Action_Updates_Tip" xml:space="preserve"><value>Άνοιξε το Σχετικά για να ελέγξεις για νέα έκδοση</value></data>
+  <data name="Mode_Warn_Telemetry" xml:space="preserve"><value>Αρχικό έργο (madoiscool). Προειδοποίηση: περιέχει τηλεμετρία και το σύστημα DonateKeys.</value></data>
+  <data name="Manage_Sort_InstalledFirst" xml:space="preserve"><value>Πρώτα τα εγκατεστημένα</value></data>
+  <data name="Add_Warn_NoManifests_Title" xml:space="preserve"><value>Προειδοποίηση</value></data>
+  <data name="Add_Warn_NoManifests" xml:space="preserve"><value>Αυτή η πηγή δεν παρέδωσε manifests για το {0}. Η λήψη στο Steam μπορεί να αποτύχει. Προτείνουμε την πηγή {1}.</value></data>
+  <data name="Plugin_Row_Source" xml:space="preserve"><value>Πηγή</value></data>
+  <data name="Plugin_Sources_Header" xml:space="preserve"><value>Πηγή πρόσθετου</value></data>
+  <data name="Plugin_Sources_Subtitle" xml:space="preserve"><value>Κάθε δημιουργός δημοσιεύει τη δική του έκδοση του πρόσθετου. Διάλεξε αυτή που θέλεις να εγκατασταθεί — το LuaTools εγκαθιστά μόνο την ενεργή πηγή και δεν αλλάζει ποτέ από μόνο του.</value></data>
+  <data name="Plugin_Source_By" xml:space="preserve"><value>από {0}</value></data>
+  <data name="Plugin_Source_Active" xml:space="preserve"><value>Ενεργή</value></data>
+  <data name="Plugin_Source_Default" xml:space="preserve"><value>Προεπιλογή</value></data>
+  <data name="Plugin_Source_Installed" xml:space="preserve"><value>Εγκαταστάθηκε από αυτή την πηγή.</value></data>
+  <data name="Plugin_Source_ActiveNotInstalled" xml:space="preserve"><value>Ενεργή πηγή — δεν έχει εγκατασταθεί ακόμη.</value></data>
+  <data name="Plugin_Source_Available" xml:space="preserve"><value>Διαθέσιμη. Επίλεξέ τη για να εγκαταστήσεις από αυτόν τον δημιουργό.</value></data>
+  <data name="Plugin_Source_LatestVersion" xml:space="preserve"><value>Τελευταία</value></data>
+  <data name="Plugin_Btn_Activate" xml:space="preserve"><value>Χρήση αυτής της πηγής</value></data>
+  <data name="Plugin_Confirm_SwitchCaption" xml:space="preserve"><value>Αλλαγή πηγής πρόσθετου</value></data>
+  <data name="Plugin_Confirm_SwitchBody" xml:space="preserve"><value>Αυτό εγκαθιστά το πρόσθετο από το {0}, αντικαθιστώντας ό,τι είναι εγκατεστημένο τώρα, και κλείνει και επανεκκινεί το Steam για να εφαρμοστεί. Συνέχεια;</value></data>
+  <data name="Plugin_Toast_SourceSwitched" xml:space="preserve"><value>Τώρα εγκατεστημένο από το {0}. Το Steam επανεκκινείται για να το φορτώσει.</value></data>
+  <data name="Plugin_Err_UnknownSource" xml:space="preserve"><value>Το {0} δεν είναι πηγή πρόσθετων που περιλαμβάνει αυτή η έκδοση, οπότε δεν εγκαταστάθηκε τίποτα.</value></data>
+  <data name="Plugin_SourceErr_NoRelease" xml:space="preserve"><value>Αυτή η πηγή δεν δημοσίευσε καμία έκδοση ή δεν ήταν προσβάσιμη.</value></data>
+  <data name="Plugin_SourceErr_NoTag" xml:space="preserve"><value>Η νεότερη έκδοση αυτής της πηγής δεν φέρει ετικέτα έκδοσης.</value></data>
+  <data name="Plugin_SourceErr_MissingAsset" xml:space="preserve"><value>Στη νεότερη έκδοση αυτής της πηγής λείπει το {0}.</value></data>
+  <data name="Plugin_SourceErr_ForeignAssetUrl" xml:space="preserve"><value>Η λήψη του {0} από αυτή την πηγή δείχνει εκτός του δικού της αποθετηρίου, οπότε απορρίφθηκε.</value></data>
+  <data name="Plugin_SourceErr_NoDigest" xml:space="preserve"><value>Αυτή η πηγή δεν δημοσιεύει SHA-256 για το {0}, οπότε το περιεχόμενό του δεν μπόρεσε να αποδειχθεί.</value></data>
+  <data name="Plugin_Err_ArchiveRejected" xml:space="preserve"><value>Το {0} απορρίφθηκε από τον έλεγχο ασφαλείας: {1}</value></data>
+  <data name="Download_Notice_Title" xml:space="preserve"><value>Εγκατάσταση από {0}</value></data>
+  <data name="Download_Notice_Body" xml:space="preserve"><value>{0} · έκδοση {1} · {2} αρχείο/α
+SHA-256 {3}
+Επαληθεύτηκε: {4}</value></data>
+  <data name="Download_Notice_Check_Pinned" xml:space="preserve"><value>αποθετήριο καρφιτσωμένο</value></data>
+  <data name="Download_Notice_Check_Digest" xml:space="preserve"><value>το SHA-256 ταιριάζει</value></data>
+  <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>το αρχείο ελέγχθηκε</value></data>
+  <data name="Download_Notice_Cancel" xml:space="preserve"><value>Ακύρωση</value></data>
+  <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Ακυρώθηκε πριν εγκατασταθεί οτιδήποτε.</value></data>
+  <data name="Builds_RemoveGame" xml:space="preserve"><value>Αφαίρεση παιχνιδιού</value></data>
+  <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Βγάζει αυτό το παιχνίδι από τη λίστα των Depots. Διαγράφει τα αρχεία lua του και όλα τα αποθηκευμένα builds.</value></data>
+  <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Αφαίρεση παιχνιδιού</value></data>
+  <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>Αφαίρεση του {0} ({1}) από τα Depots;
+
+Αυτό διαγράφει το αρχείο lua του, τυχόν lua builds δίπλα του και όλα τα αποθηκευμένα builds. Δεν αναιρείται.</value></data>
+  <data name="Builds_RemoveGame_Done" xml:space="preserve"><value>Το {0} αφαιρέθηκε από τα Depots.</value></data>
+  <data name="Builds_RemoveGame_Gone" xml:space="preserve"><value>Το {0} δεν είχε πια αρχεία — αφαιρέθηκε από τη λίστα.</value></data>
+  <data name="Builds_RemoveGame_Failed" xml:space="preserve"><value>Δεν ήταν δυνατή η πλήρης αφαίρεση του {0}: {1}. Κλείσε το Steam και δοκίμασε ξανά.</value></data>
+  <data name="Auth_Err_SignInTimedOut" xml:space="preserve"><value>Το login έληξε — ο περιηγητής δεν επέστρεψε ποτέ. Μπορείς επίσης να συνδεθείς με κωδικό: εκτέλεσε /login στον διακομιστή Discord και επικόλλησε τον κωδικό στις Ρυθμίσεις.</value></data>
+  <data name="Auth_Err_CallbackPortBusy" xml:space="preserve"><value>Δεν ήταν δυνατή η έναρξη του login: η θύρα 53789 χρησιμοποιείται ήδη. Κλείσε τυχόν άλλες απόπειρες login και δοκίμασε ξανά.</value></data>
+  <data name="Auth_ProviderUnavailable" xml:space="preserve"><value>Ο διακομιστής login δεν ανταποκρίνεται αυτή τη στιγμή, οπότε το login Discord στον περιηγητή πιθανότατα θα λήξει. Μπορείς να συνδεθείς με κωδικό: εκτέλεσε /login στον διακομιστή Discord και δώσε τον κωδικό στις Ρυθμίσεις.</value></data>
+  <data name="Auth_SignInCancelled" xml:space="preserve"><value>Το login ακυρώθηκε. Μπορείς να δοκιμάσεις ξανά ή να χρησιμοποιήσεις χειροκίνητο κωδικό (εκτέλεσε /login στο Discord).</value></data>
+  <data name="Auth_TryAgain" xml:space="preserve"><value>Δοκίμασε ξανά</value></data>
+  <data name="Auth_TryAnyway" xml:space="preserve"><value>Δοκίμασε ούτως ή άλλως</value></data>
+  <data name="Auth_UseManualCode" xml:space="preserve"><value>Χρήση χειροκίνητου κωδικού</value></data>
+  <data name="Auth_Cancel" xml:space="preserve"><value>Ακύρωση</value></data>
+  <data name="Protocol_SilentInstall_Title" xml:space="preserve"><value>Αίτημα εγκατάστασης</value></data>
+  <data name="Protocol_SilentInstall_Body" xml:space="preserve"><value>Ένας σύνδεσμος ζητά από το LuaTools να εγκαταστήσει την εφαρμογή {0} στο παρασκήνιο. Συνέχισε μόνο αν το ξεκίνησες εσύ.</value></data>
+  <data name="Cdp_Consent_Title" xml:space="preserve"><value>Ενεργοποίηση της γέφυρας της σελίδας καταστήματος του Steam;</value></data>
+  <data name="Cdp_Consent_Body" xml:space="preserve"><value>Το πρόσθετο της σελίδας καταστήματος χρειάζεται τη γέφυρα εντοπισμού σφαλμάτων του Steam, την οποία το LuaTools ενεργοποιεί προσθέτοντας έναν δείκτη δίπλα στο steam.exe. Όσο εκτελείται το Steam, αυτό ανοίγει μια τοπική θύρα χωρίς έλεγχο ταυτότητας (127.0.0.1:8080).
+
+Οτιδήποτε άλλο εκτελείται σε αυτόν τον υπολογιστή θα μπορούσε τότε να ελέγξει τον ενσωματωμένο περιηγητή του Steam χρησιμοποιώντας τη συνδεδεμένη συνεδρία σου. Ενεργοποίησέ το μόνο αν εμπιστεύεσαι το λογισμικό που είναι εγκατεστημένο σε αυτό το μηχάνημα.
+
+Μπορείς να αρνηθείς και να συνεχίσεις να χρησιμοποιείς τα υπόλοιπα του LuaTools· μόνο το κουμπί «Add via LuaTools» στο κατάστημα δεν θα είναι διαθέσιμο.
+
+Ενεργοποίηση;</value></data>
+  <data name="Privacy_HttpMetadata_Title" xml:space="preserve"><value>Μη κρυπτογραφημένη αναζήτηση</value></data>
+  <data name="Privacy_HttpMetadata_Body" xml:space="preserve"><value>Η διαθεσιμότητα των πηγών ελέγχεται μέσω απλού HTTP ({0}), επειδή αυτός ο διακομιστής δεν προσφέρει λειτουργικό HTTPS. Δεν στέλνεται λογαριασμός ή κλειδί, αλλά οποιοσδήποτε στη διαδρομή του δικτύου σου μπορεί να δει ποια εφαρμογή του Steam αναζήτησες. Όρισε «WarnOnInsecureMetadata»: false στο settings.json για να το κρύψεις.</value></data>
+  <data name="Theme_Guard_Title" xml:space="preserve"><value>Το θέμα δεν εφαρμόστηκε</value></data>
+  <data name="Theme_Guard_Body" xml:space="preserve"><value>Η έμφαση Amethyst δεν τέθηκε σε ισχύ, κάτι που συνήθως σημαίνει ότι το πακέτο WPF-UI άλλαξε τα ονόματα των πόρων του. Η εφαρμογή λειτουργεί κανονικά, αλλά κάποια τμήματά της θα φαίνονται λάθος. Δες το docs/CHANGELOG.md.</value></data>
+  <data name="App_DisplayName" xml:space="preserve"><value>LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Title" xml:space="preserve"><value>Αυτό μπορεί να μην είναι το LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Body" xml:space="preserve"><value>Αυτό το δυαδικό αρχείο δεν δηλώνει ότι είναι το LuaTools Amethyst. Αν εγκατέστησες από πάνω επίσημη έκδοση του LuaTools, η ανάλυση και η αποστολή κλειδιών του Steam είναι πάλι ενεργές. Επανεγκατέστησε από το αποθετήριο Amethyst για να επαναφέρεις την έκδοση που προστατεύει το απόρρητο.</value></data>
+  <data name="Fixes_Toast_Blocked" xml:space="preserve"><value>Η λήψη απορρίφθηκε</value></data>
+  <data name="Fixes_Toast_Blocked_Body" xml:space="preserve"><value>Το {0} δεν εγκαταστάθηκε επειδή απέτυχε σε έλεγχο ασφαλείας — {1}</value></data>
+  <data name="About_Nav" xml:space="preserve"><value>Σχετικά</value></data>
+  <data name="About_Title" xml:space="preserve"><value>Σχετικά με το LuaTools Amethyst</value></data>
+  <data name="About_What_Header" xml:space="preserve"><value>Τι είναι αυτό</value></data>
+  <data name="About_What_Body" xml:space="preserve"><value>Το LuaTools Amethyst είναι ένα fork της κοινότητας του LuaTools με έμφαση στο απόρρητο. Αφαιρεί το ping ανάλυσης και την αποστολή κλειδιών που κάνει η αρχική έκδοση, κρατά κάθε λήψη μέσω HTTPS και συνοδεύεται από το μοβ θέμα Amethyst.</value></data>
+  <data name="About_Version_Header" xml:space="preserve"><value>Έκδοση</value></data>
+  <data name="About_Repo_Header" xml:space="preserve"><value>Αποθετήριο</value></data>
+  <data name="About_Updates_Header" xml:space="preserve"><value>Ενημερώσεις</value></data>
+  <data name="About_Updates_Enabled" xml:space="preserve"><value>Οι αυτόματες ενημερώσεις είναι ΕΝΕΡΓΕΣ. Το LuaTools Amethyst ελέγχει το παρακάτω αποθετήριο κατά την εκκίνηση και εγκαθιστά ενημερώσεις στο παρασκήνιο.</value></data>
+  <data name="About_Updates_Disabled" xml:space="preserve"><value>Οι αυτόματες ενημερώσεις είναι ΑΝΕΝΕΡΓΕΣ — δεν γίνεται κανένα αίτημα ενημέρωσης. Πρόσθεσε το «AppUpdateRepos» στο settings.json για να τις ενεργοποιήσεις ή ενημέρωσε με το χέρι από το παρακάτω αποθετήριο.</value></data>
+  <data name="About_Updates_Sources" xml:space="preserve"><value>Πηγή ενημερώσεων</value></data>
+  <data name="About_Check_Button" xml:space="preserve"><value>Έλεγχος για ενημερώσεις</value></data>
+  <data name="About_Check_Checking" xml:space="preserve"><value>Έλεγχος…</value></data>
+  <data name="About_Check_UpToDate" xml:space="preserve"><value>Έχεις την τελευταία έκδοση.</value></data>
+  <data name="About_Check_Found" xml:space="preserve"><value>Μια ενημέρωση λήφθηκε. Θα εφαρμοστεί όταν κλείσεις το LuaTools.</value></data>
+  <data name="About_Check_Failed" xml:space="preserve"><value>Δεν ήταν δυνατός ο έλεγχος για ενημερώσεις. Έλεγξε τη σύνδεσή σου και το ρυθμισμένο αποθετήριο.</value></data>
+  <data name="About_Check_Disabled" xml:space="preserve"><value>Οι αυτόματες ενημερώσεις είναι απενεργοποιημένες — ρύθμισε πρώτα το «AppUpdateRepos» στο settings.json.</value></data>
+  <data name="About_OpenRepo" xml:space="preserve"><value>Άνοιγμα αποθετηρίου</value></data>
+  <data name="About_OpenSettings" xml:space="preserve"><value>Άνοιγμα φακέλου settings.json</value></data>
+  <data name="About_Config_Header" xml:space="preserve"><value>Χειροκίνητη ρύθμιση ενημερώσεων</value></data>
+  <data name="About_Config_Body" xml:space="preserve"><value>Επεξεργάσου το settings.json στον παρακάτω φάκελο και πρόσθεσε το αποθετήριο από το οποίο θέλεις ενημερώσεις. Γίνεται δεκτό μόνο το https://github.com/&lt;owner&gt;/&lt;repo&gt; και τα αποθετήρια των αρχικών εκδόσεων του LuaTools απορρίπτονται, ώστε μια επίσημη έκδοση να μην μπορεί ποτέ να αντικαταστήσει αυτήν.</value></data>
+  <data name="Builds_Depot_Download" xml:space="preserve"><value>Λήψη depots…</value></data>
+  <data name="Builds_Depot_Unavailable" xml:space="preserve"><value>Η λήψη depots δεν είναι διαθέσιμη σε αυτή την έκδοση: δεν έχει επαληθευμένο pin για το εργαλείο λήψης.</value></data>
+  <data name="Builds_Depot_PickTitle" xml:space="preserve"><value>Λήψη περιεχομένου depot</value></data>
+  <data name="Builds_Depot_PickHint" xml:space="preserve"><value>Τα ωμά αρχεία τραβιούνται ανώνυμα απευθείας από το CDN του Steam. Δεν εγκαθίσταται τίποτα — τα depots γράφονται στον παρακάτω φάκελο για να τα χρησιμοποιήσεις όπως θέλεις.</value></data>
+  <data name="Builds_Depot_NoCandidates" xml:space="preserve"><value>Κανένα depot αυτού του παιχνιδιού δεν μπορεί να ληφθεί. Χρειάζονται και κλειδί αποκρυπτογράφησης από το lua και manifest που έχει δημοσιεύσει το Steam.</value></data>
+  <data name="Builds_Depot_NeedsKey" xml:space="preserve"><value>χωρίς κλειδί σε αυτή την έκδοση</value></data>
+  <data name="Builds_Depot_NeedsManifest" xml:space="preserve"><value>Το Steam δεν δημοσιεύει manifest</value></data>
+  <data name="Builds_Depot_NeedsSignIn" xml:space="preserve"><value>συνδέσου για να φέρεις το manifest του</value></data>
+  <data name="Builds_Depot_SelectAll" xml:space="preserve"><value>Επιλογή όλων</value></data>
+  <data name="Builds_Depot_SelectNone" xml:space="preserve"><value>Εκκαθάριση</value></data>
+  <data name="Builds_Depot_Destination" xml:space="preserve"><value>Φάκελος προορισμού</value></data>
+  <data name="Builds_Depot_Change" xml:space="preserve"><value>Αλλαγή…</value></data>
+  <data name="Builds_Depot_Space" xml:space="preserve"><value>Απαιτούνται {0} · ελεύθερα {1} στο {2}</value></data>
+  <data name="Builds_Depot_NotEnoughSpace" xml:space="preserve"><value>Δεν υπάρχει αρκετός ελεύθερος χώρος σε αυτόν τον δίσκο. Διάλεξε λιγότερα depots ή άλλον φάκελο.</value></data>
+  <data name="Builds_Depot_Confirm" xml:space="preserve"><value>Λήψη {0} depot(s)</value></data>
+  <data name="Builds_Depot_Cancel" xml:space="preserve"><value>Ακύρωση</value></data>
+  <data name="Builds_Depot_Downloading" xml:space="preserve"><value>Depot {0} από {1} · {2}</value></data>
+  <data name="Builds_Depot_Phase_PreAllocating" xml:space="preserve"><value>δέσμευση χώρου στο δίσκο</value></data>
+  <data name="Builds_Depot_Phase_Validating" xml:space="preserve"><value>έλεγχος υπαρχόντων αρχείων</value></data>
+  <data name="Builds_Depot_Phase_FetchingManifest" xml:space="preserve"><value>λήψη του manifest</value></data>
+  <data name="Builds_Depot_Phase_Downloading" xml:space="preserve"><value>λήψη</value></data>
+  <data name="Builds_Depot_Done" xml:space="preserve"><value>Λήφθηκαν {0} depot(s) στο {1}</value></data>
+  <data name="Builds_Depot_OpenFolder" xml:space="preserve"><value>Άνοιγμα φακέλου</value></data>
+  <data name="Builds_Depot_CleanUp_Title" xml:space="preserve"><value>Αφαίρεση της μερικής λήψης;</value></data>
+  <data name="Builds_Depot_CleanUp_Body" xml:space="preserve"><value>Η λήψη ακυρώθηκε αφού δημιουργήθηκαν {0} αρχείο/α στο {1}. Να διαγραφούν μόνο αυτά τα αρχεία; Ό,τι υπήρχε ήδη εκεί μένει ανέγγιχτο.</value></data>
+  <data name="Builds_Depot_CleanUp_Failed" xml:space="preserve"><value>Ορισμένα αρχεία δεν ήταν δυνατό να διαγραφούν — ίσως χρησιμοποιούνται ακόμη. Δοκίμασε ξανά σε λίγο.</value></data>
+  <data name="Depot_Err_ToolNotPinned" xml:space="preserve"><value>Η λήψη depots είναι απενεργοποιημένη σε αυτή την έκδοση επειδή δεν έχει επαληθευμένο pin για το εργαλείο λήψης.</value></data>
+  <data name="Depot_Err_Tool" xml:space="preserve"><value>Το εργαλείο λήψης depots δεν ήταν δυνατό να αποκτηθεί ή ό,τι ήρθε απέτυχε στην επαλήθευση.</value></data>
+  <data name="Depot_Err_SteamNotFound" xml:space="preserve"><value>Η τοποθεσία του Steam δεν βρέθηκε — όρισέ την στις Ρυθμίσεις.</value></data>
+  <data name="Depot_Err_NoKeys" xml:space="preserve"><value>Δεν βρέθηκαν κλειδιά αποκρυπτογράφησης depot για αυτό το παιχνίδι.</value></data>
+  <data name="Depot_Err_NoKeyFor" xml:space="preserve"><value>Το depot {0} δεν έχει χρησιμοποιήσιμο κλειδί αποκρυπτογράφησης.</value></data>
+  <data name="Depot_Err_BadKey" xml:space="preserve"><value>Το κλειδί που είναι αποθηκευμένο για το depot {0} δεν ταιριάζει με το manifest του.</value></data>
+  <data name="Depot_Err_NoManifest" xml:space="preserve"><value>Το manifest για αυτό το depot δεν ήταν δυνατό να αποκτηθεί.</value></data>
+  <data name="Depot_Err_SignIn" xml:space="preserve"><value>Συνδέσου για να φέρεις ένα manifest που το Steam δεν έχει ήδη σε αυτό το μηχάνημα.</value></data>
+  <data name="Depot_Err_NoSpace" xml:space="preserve"><value>Ανεπαρκής χώρος δίσκου: απαιτούνται {0}, ελεύθερα {1}.</value></data>
+  <data name="Depot_Err_Failed" xml:space="preserve"><value>Το depot {0} απέτυχε: {1}</value></data>
+  <data name="Builds_Depot_Queued" xml:space="preserve"><value>Στάλθηκαν {0} depot(s) στις Λήψεις.</value></data>
+  <data name="Nav_Downloads" xml:space="preserve"><value>Λήψεις</value></data>
+  <data name="Downloads_Title" xml:space="preserve"><value>Λήψεις</value></data>
+  <data name="Downloads_Subtitle" xml:space="preserve"><value>Ό,τι τραβά η εφαρμογή αυτή τη στιγμή και ό,τι τράβηξε πριν. Τα manifests και το περιεχόμενο depots μοιράζονται αυτή την ουρά.</value></data>
+  <data name="Downloads_Empty" xml:space="preserve"><value>Δεν έχει ληφθεί τίποτα ακόμη. Η προσθήκη ενός παιχνιδιού από τη σελίδα Προσθήκη ή η λήψη περιεχομένου depot από τη σελίδα Depots θα το εμφανίσει εδώ.</value></data>
+  <data name="Downloads_Section_Active" xml:space="preserve"><value>Σε εξέλιξη</value></data>
+  <data name="Downloads_Section_History" xml:space="preserve"><value>Ιστορικό</value></data>
+  <data name="Downloads_ActionRequired" xml:space="preserve"><value>ΑΠΑΙΤΕΙΤΑΙ ΕΝΕΡΓΕΙΑ</value></data>
+  <data name="Downloads_Of" xml:space="preserve"><value>{0} από {1}</value></data>
+  <data name="Downloads_Eta" xml:space="preserve"><value>απομένουν {0}</value></data>
+  <data name="Downloads_Source_Depots" xml:space="preserve"><value>{0} depot(s)</value></data>
+  <data name="Downloads_Status_Queued" xml:space="preserve"><value>Στην ουρά</value></data>
+  <data name="Downloads_Status_Downloading" xml:space="preserve"><value>Λήψη</value></data>
+  <data name="Downloads_Status_AwaitingConfirm" xml:space="preserve"><value>Σε περιμένει</value></data>
+  <data name="Downloads_Status_Installing" xml:space="preserve"><value>Εγκατάσταση</value></data>
+  <data name="Downloads_Status_Paused" xml:space="preserve"><value>Σε παύση</value></data>
+  <data name="Downloads_Status_Verifying" xml:space="preserve"><value>Επαλήθευση</value></data>
+  <data name="Downloads_Status_Completed" xml:space="preserve"><value>Ολοκληρώθηκε</value></data>
+  <data name="Downloads_Status_Failed" xml:space="preserve"><value>Απέτυχε</value></data>
+  <data name="Downloads_Status_Cancelled" xml:space="preserve"><value>Ακυρώθηκε</value></data>
+  <data name="Downloads_Action_Review" xml:space="preserve"><value>Έλεγχος</value></data>
+  <data name="Downloads_Action_Pause" xml:space="preserve"><value>Παύση</value></data>
+  <data name="Downloads_Action_Resume" xml:space="preserve"><value>Συνέχεια</value></data>
+  <data name="Downloads_Action_MoveUp" xml:space="preserve"><value>Μετακίνηση πάνω</value></data>
+  <data name="Downloads_Action_MoveDown" xml:space="preserve"><value>Μετακίνηση κάτω</value></data>
+  <data name="Downloads_Action_Cancel" xml:space="preserve"><value>Ακύρωση</value></data>
+  <data name="Downloads_Action_Retry" xml:space="preserve"><value>Επανάληψη</value></data>
+  <data name="Downloads_Action_Remove" xml:space="preserve"><value>Αφαίρεση</value></data>
+  <data name="Downloads_Action_ClearHistory" xml:space="preserve"><value>Εκκαθάριση ιστορικού</value></data>
+  <data name="Downloads_Action_CopyAppId" xml:space="preserve"><value>Αντιγραφή App ID</value></data>
+  <data name="Downloads_Action_ShowInFolder" xml:space="preserve"><value>Εμφάνιση στον φάκελο</value></data>
+  <data name="Downloads_ClearHistory_Confirm" xml:space="preserve"><value>Αφαίρεση και των {0} καταχωρήσεων από το ιστορικό λήψεων; Τα ίδια τα αρχεία δεν θίγονται.</value></data>
+  <data name="Downloads_Err_Interrupted" xml:space="preserve"><value>Διακόπηκε όταν έκλεισε η εφαρμογή.</value></data>
+  <data name="Downloads_Err_Cancelled" xml:space="preserve"><value>Ακυρώθηκε.</value></data>
+  <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>Το πρόχειρο χρησιμοποιείται από άλλο πρόγραμμα — δεν αντιγράφηκε τίποτα.</value></data>
+  <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Αυτή η τοποθεσία δεν υπάρχει πια: {0}</value></data>
+  <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>Απορρίφθηκε το «{0}»: ένα manifest πρέπει να ονομάζεται &lt;depot&gt;_&lt;manifest&gt;.manifest (μόνο ψηφία).</value></data>
+  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>Το αποθετήριο πηγής του CloudRedirect δεν είναι διαθέσιμο. Η λειτουργία είναι προσωρινά απενεργοποιημένη.</value></data>
+  <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Αποθηκευμένα builds (χωρίς ενεργό lua)</value></data>
+  <data name="Settings_Maintenance_Title" xml:space="preserve"><value>ΣΥΝΤΗΡΗΣΗ</value></data>
+  <data name="Settings_Backups_Title" xml:space="preserve"><value>Συσσωρευμένα αντίγραφα ασφαλείας</value></data>
+  <data name="Settings_Backups_Subtitle" xml:space="preserve"><value>Φάκελοι αντιγράφων ασφαλείας που δημιουργούνται κατά την εγκατάσταση του AmethystTool ή την αφαίρεση πρόσθετων. Η διαγραφή τους ελευθερώνει χώρο στον φάκελο του Steam.</value></data>
+  <data name="Settings_Backups_Empty" xml:space="preserve"><value>Δεν βρέθηκαν αντίγραφα ασφαλείας.</value></data>
+  <data name="Settings_Backups_NoSteam" xml:space="preserve"><value>Ρύθμισε την τοποθεσία του Steam στις Ρυθμίσεις για να δεις τα αντίγραφα ασφαλείας.</value></data>
+  <data name="Settings_Backups_Refresh" xml:space="preserve"><value>Ανανέωση</value></data>
+  <data name="Settings_Backups_DeleteSelected" xml:space="preserve"><value>Διαγραφή επιλεγμένων</value></data>
+  <data name="Settings_Backups_DeleteOlder" xml:space="preserve"><value>Διαγραφή παλαιότερων των 30 ημερών</value></data>
+  <data name="Settings_Backups_Confirm_Title" xml:space="preserve"><value>Διαγραφή αντιγράφων ασφαλείας;</value></data>
+  <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>Οριστική διαγραφή {0} στοιχείου/ων ({1}); Δεν θα μπορείς να επαναφέρεις προηγούμενες εγκαταστάσεις του AmethystTool ή αφαιρέσεις πρόσθετων.</value></data>
+  <data name="Settings_Backups_Confirm_Delete" xml:space="preserve"><value>Διαγραφή</value></data>
+  <data name="Settings_Backups_Cancel" xml:space="preserve"><value>Ακύρωση</value></data>
+  <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>Διαγράφηκαν {0} στοιχείο/α (ελευθερώθηκαν {1})</value></data>
+  <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>Δεν ήταν δυνατή η διαγραφή {0} στοιχείου/ων. Κλείσε το Steam και δοκίμασε ξανά.</value></data>
+  <data name="Settings_Backups_Column_Name" xml:space="preserve"><value>Όνομα</value></data>
+  <data name="Settings_Backups_Column_Type" xml:space="preserve"><value>Τύπος</value></data>
+  <data name="Settings_Backups_Type_Folder" xml:space="preserve"><value>Φάκελος</value></data>
+  <data name="Settings_Backups_Type_File" xml:space="preserve"><value>Αρχείο</value></data>
+  <data name="Settings_Backups_UnknownWarning" xml:space="preserve"><value>Άγνωστο αντίγραφο ασφαλείας, επαλήθευσε πριν τη διαγραφή</value></data>
+  <data name="Settings_Backups_Column_Date" xml:space="preserve"><value>Δημιουργήθηκε</value></data>
+  <data name="Settings_Backups_Column_Size" xml:space="preserve"><value>Μέγεθος</value></data>
+  <data name="Settings_Backups_Column_Files" xml:space="preserve"><value>Αρχεία</value></data>
+  <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Τοπική έκδοση (εκτός σύνδεσης)</value></data>
+  <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Δεν υπάρχει σύνδεση στο internet. Χρησιμοποιείται η τοπικά εγκατεστημένη έκδοση.</value></data>
+  <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Δεν είναι δυνατή η λήψη νέας έκδοσης χωρίς internet.</value></data>
 </root>

@@ -586,4 +586,288 @@ Aceasta șterge fișierele .lua din Steam\config\stplug-in. Repornește Steam du
   <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools nu a putut porni.&#10;&#10;{0}&#10;&#10;Detaliile au fost scrise în:&#10;{1}</value></data>
   <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Nu s-au putut scrie {0} fișier(e) în folderul Steam — acces refuzat. Se pare că Steam este instalat într-o locație care necesită drepturi de administrator (de ex. Program Files). Închide Steam, apoi rulează LuaTools o dată ca administrator pentru a aplica acest mod.</value></data>
   <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Nu s-au putut scrie {0} fișier(e) — închide Steam și încearcă din nou.</value></data>
+  <data name="Nav_Plugin" xml:space="preserve"><value>Plugin</value></data>
+  <data name="Settings_HubcapKeyRejected" xml:space="preserve"><value>Hubcap a respins această cheie. Verifică dacă a fost copiată integral și dacă nu a expirat.</value></data>
+  <data name="Settings_HubcapKeyOffline" xml:space="preserve"><value>Nu s-a putut contacta Hubcap. Verifică conexiunea și încearcă din nou — cheia nu a fost modificată.</value></data>
+  <data name="Settings_HubcapKeyRateLimited" xml:space="preserve"><value>Hubcap limitează acum cererile pentru această cheie. Încearcă din nou într-un moment.</value></data>
+  <data name="Settings_HubcapExpiryExpired" xml:space="preserve"><value>Cheia ta Hubcap a expirat pe {0}. Validează una nouă pentru a continua să folosești sursele Hubcap.</value></data>
+  <data name="Settings_HubcapExpiryToday" xml:space="preserve"><value>Cheia ta Hubcap expiră astăzi ({0}). Obține una nouă înainte să nu mai funcționeze.</value></data>
+  <data name="Settings_HubcapExpirySoon" xml:space="preserve"><value>Cheia ta Hubcap expiră în {0} zile ({1}). Obține una nouă înainte să nu mai funcționeze.</value></data>
+  <data name="Hubcap_Err_KeyRejected" xml:space="preserve"><value>Cheia ta Hubcap este nevalidă sau a expirat.</value></data>
+  <data name="Hubcap_Err_DailyLimit" xml:space="preserve"><value>Ai atins limita zilnică Hubcap.</value></data>
+  <data name="Hubcap_Err_DailyLimitRetry" xml:space="preserve"><value>Ai atins limita zilnică Hubcap. Încearcă din nou peste aproximativ {0}.</value></data>
+  <data name="Hubcap_Err_NoManifest" xml:space="preserve"><value>Nu este disponibil niciun manifest Hubcap pentru această aplicație.</value></data>
+  <data name="Hubcap_Err_Status" xml:space="preserve"><value>Descărcarea de la Hubcap a eșuat ({0}).</value></data>
+  <data name="Hubcap_Err_Unreachable" xml:space="preserve"><value>Nu s-a putut contacta Hubcap. Verifică conexiunea și încearcă din nou.</value></data>
+  <data name="Hubcap_Err_Generic" xml:space="preserve"><value>Descărcarea de la Hubcap a eșuat.</value></data>
+  <data name="Hubcap_Wait_Seconds" xml:space="preserve"><value>{0} secunde</value></data>
+  <data name="Hubcap_Wait_Minutes" xml:space="preserve"><value>{0} minute</value></data>
+  <data name="Hubcap_Wait_Hours" xml:space="preserve"><value>{0} ore</value></data>
+  <data name="Settings_Accent_Hint" xml:space="preserve"><value>Recolorează întreaga aplicație — fereastra, cardurile și textul, nu doar accentele. Alege o culoare, apoi apasă Aplică.</value></data>
+  <data name="Settings_Accent_Amethyst" xml:space="preserve"><value>Amethyst</value></data>
+  <data name="Startup_Title" xml:space="preserve"><value>Pornire</value></data>
+  <data name="Startup_Steam_Closing" xml:space="preserve"><value>Se închide Steam pentru ca LuaTools să poată lucra pe fișierele lui…</value></data>
+  <data name="Startup_Steam_Closed" xml:space="preserve"><value>Steam este închis.</value></data>
+  <data name="Startup_Steam_Stubborn_Title" xml:space="preserve"><value>Steam nu s-a închis</value></data>
+  <data name="Startup_Steam_Stubborn_Body" xml:space="preserve"><value>Steam a primit cerere să se închidă, dar încă rulează.
+
+Forțezi închiderea? Tot ce nu a salvat încă Steam se poate pierde. Alege Nu pentru a-l lăsa să ruleze — LuaTools nu poate modifica fișierele Steam cât timp acesta rulează.</value></data>
+  <data name="Startup_Steam_LeftRunning" xml:space="preserve"><value>Steam încă rulează, deci nu s-a modificat nimic. Închide Steam și repornește LuaTools când ești gata.</value></data>
+  <data name="Startup_Steam_Reopen_Body" xml:space="preserve"><value>LuaTools a terminat. Deschizi din nou Steam?</value></data>
+  <data name="Startup_Steam_Reopen_Action" xml:space="preserve"><value>Deschide Steam</value></data>
+  <data name="Startup_Steam_ReopenFailed" xml:space="preserve"><value>Steam nu a putut fi pornit — deschide-l din propria scurtătură.</value></data>
+  <data name="Guard_Title" xml:space="preserve"><value>Steam rulează deja</value></data>
+  <data name="Guard_Body" xml:space="preserve"><value>LuaTools trebuie să pornească el însuși Steam (sau să-l găsească închis) pentru ca hook-ul să se atașeze. Repornești Steam acum?</value></data>
+  <data name="Guard_Restart" xml:space="preserve"><value>Repornește Steam</value></data>
+  <data name="Guard_Exit" xml:space="preserve"><value>Ieșire</value></data>
+  <data name="Guard_Continue" xml:space="preserve"><value>Continuă oricum (nerecomandat)</value></data>
+  <data name="Guard_ContinueWarning" xml:space="preserve"><value>Steam a rămas pornit, deci hook-ul s-ar putea să nu se atașeze. Dacă se întâmplă asta, repornește Steam din LuaTools.</value></data>
+  <data name="Manage_Action_SaveBackup" xml:space="preserve"><value>Copie de siguranță a salvărilor…</value></data>
+  <data name="Saves_Title" xml:space="preserve"><value>Copii de siguranță ale salvărilor</value></data>
+  <data name="Saves_Create" xml:space="preserve"><value>Creează o copie de siguranță nouă</value></data>
+  <data name="Saves_Restore" xml:space="preserve"><value>Restaurează</value></data>
+  <data name="Saves_Delete" xml:space="preserve"><value>Șterge</value></data>
+  <data name="Saves_Close" xml:space="preserve"><value>Închide</value></data>
+  <data name="Saves_Empty" xml:space="preserve"><value>Nicio copie de siguranță pentru acest joc încă.</value></data>
+  <data name="Saves_Locations_Title" xml:space="preserve"><value>Locații de salvări găsite</value></data>
+  <data name="Saves_Locations_None" xml:space="preserve"><value>Nu a fost detectat niciun folder de salvări pentru acest joc.</value></data>
+  <data name="Saves_Location_Subtitle" xml:space="preserve"><value>{0} · {1} fișier(e)</value></data>
+  <data name="Saves_AddFolder" xml:space="preserve"><value>Adaugă folder manual…</value></data>
+  <data name="Saves_Confirm_NoneFound" xml:space="preserve"><value>Nu am găsit salvări pentru acest joc. Vrei să selectezi manual un folder?</value></data>
+  <data name="Saves_PickFolder" xml:space="preserve"><value>Selectează folderul</value></data>
+  <data name="Saves_PickFolderTitle" xml:space="preserve"><value>Alege folderul în care acest joc își păstrează salvările</value></data>
+  <data name="Saves_Toast_PickOne" xml:space="preserve"><value>Bifează cel puțin o locație de salvări pentru copia de siguranță.</value></data>
+  <data name="Saves_Toast_FolderRefused" xml:space="preserve"><value>Folderul nu poate fi folosit (rădăcina unei unități, un folder Windows sau Program Files ori o cale incompletă).</value></data>
+  <data name="Manage_SaveIcon_Tooltip" xml:space="preserve"><value>Salvări detectate în: {0}</value></data>
+  <data name="Settings_CustomSaveFolders" xml:space="preserve"><value>Foldere de salvări personalizate</value></data>
+  <data name="Settings_CustomSaveFolders_Hint" xml:space="preserve"><value>Pentru jocurile ale căror salvări aplicația nu le găsește singură. Introdu AppID-ul jocului și alege folderul; va fi inclus în copia de siguranță a jocului și este singurul loc suplimentar în care o restaurare poate scrie.</value></data>
+  <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
+  <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Adaugă folder…</value></data>
+  <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Elimină</value></data>
+  <data name="Saves_Note" xml:space="preserve"><value>Face copie folderului Steam pe joc (userdata). Jocurile care își păstrează salvările în Documente sau AppData nu sunt incluse.</value></data>
+  <data name="Saves_Toast_Created" xml:space="preserve"><value>S-au salvat {0} fișier(e), {1}.</value></data>
+  <data name="Saves_Toast_Restored" xml:space="preserve"><value>S-au restaurat {0} fișier(e). O copie a salvărilor anterioare a fost păstrată.</value></data>
+  <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Copia de siguranță a fost ștearsă.</value></data>
+  <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Nu s-au găsit salvări pentru acest joc. Adaugă folderul în care le păstrează cu „Adaugă folder manual…”.</value></data>
+  <data name="Saves_Toast_SteamNotFound" xml:space="preserve"><value>Folderul Steam nu a fost găsit. Setează locația în Setări.</value></data>
+  <data name="Saves_Toast_Refused" xml:space="preserve"><value>Refuzat: copia de siguranță nu corespunde acestui joc sau conține căi nesigure. Nu s-a modificat nimic.</value></data>
+  <data name="Saves_Toast_Failed" xml:space="preserve"><value>Operațiunea a eșuat. Vezi jurnalul pentru detalii.</value></data>
+  <data name="Saves_Toast_NoSpace" xml:space="preserve"><value>Nu este destul spațiu liber pe disc pentru copia de siguranță ({0} necesari, marjă inclusă). Nu s-a scris nimic.</value></data>
+  <data name="Saves_Confirm_Restore" xml:space="preserve"><value>Restaurezi {0}? Salvările actuale ale acestui joc vor fi suprascrise; mai întâi se păstrează o copie a lor.</value></data>
+  <data name="Saves_Confirm_SteamOpen" xml:space="preserve"><value>Steam este deschis. Pentru o restaurare sigură (și ca Steam Cloud să nu suprascrie fișierele), Steam trebuie să fie închis.</value></data>
+  <data name="Saves_CloseSteamContinue" xml:space="preserve"><value>Închide Steam și continuă</value></data>
+  <data name="Saves_Toast_SteamStillRunning" xml:space="preserve"><value>Steam nu s-a închis. Închide-l manual și încearcă din nou. Nu s-a restaurat nimic.</value></data>
+  <data name="Saves_Confirm_Delete" xml:space="preserve"><value>Ștergi {0}? Acțiunea nu poate fi anulată.</value></data>
+  <data name="Manage_Badge_Installed" xml:space="preserve"><value>Instalat</value></data>
+  <data name="Manage_Action_ImportSave" xml:space="preserve"><value>Importă salvare (.zip)…</value></data>
+  <data name="Saves_Import" xml:space="preserve"><value>Importă salvare…</value></data>
+  <data name="Saves_Import_PickTitle" xml:space="preserve"><value>Alege o copie de siguranță a salvărilor (.zip)</value></data>
+  <data name="Saves_Import_Filter" xml:space="preserve"><value>Copie de siguranță a salvărilor (*.zip)|*.zip</value></data>
+  <data name="Saves_Confirm_Import" xml:space="preserve"><value>Imporți {0}? Salvările actuale ale acestui joc vor fi suprascrise; mai întâi se păstrează o copie a lor.</value></data>
+  <data name="Saves_Toast_Imported" xml:space="preserve"><value>S-au importat {0} fișier(e). O copie a salvărilor anterioare a fost păstrată.</value></data>
+  <data name="Saves_Confirm_NewFolder" xml:space="preserve"><value>Aplicația va crea un folder cu numele acestui joc pentru a-i organiza salvările. Continui?</value></data>
+  <data name="Saves_Confirm_Ok" xml:space="preserve"><value>OK</value></data>
+  <data name="Saves_Toast_SavedAt" xml:space="preserve"><value>Copia de siguranță a fost salvată cu succes în: {0}</value></data>
+  <data name="Settings_SaveBackupFolder" xml:space="preserve"><value>Folderul copiilor de siguranță ale salvărilor</value></data>
+  <data name="Settings_SaveBackupFolder_Hint" xml:space="preserve"><value>Unde scrie „Copie de siguranță a salvărilor…” fișierele zip. Implicit: %AppData%\LuaToolsGui\SaveBackups.</value></data>
+  <data name="Settings_ChooseSaveBackupFolder" xml:space="preserve"><value>Alege folderul copiilor de siguranță ale salvărilor</value></data>
+  <data name="About_Changelog_Title" xml:space="preserve"><value>Noutăți</value></data>
+  <data name="About_Changelog_Show" xml:space="preserve"><value>Afișează jurnalul de modificări</value></data>
+  <data name="About_Changelog_Hide" xml:space="preserve"><value>Ascunde jurnalul de modificări</value></data>
+  <data name="Home_Privacy_UpdatesOff" xml:space="preserve"><value>Actualizare automată oprită — această versiune nu descarcă nimic singură</value></data>
+  <data name="Home_Privacy_UpdatesOn" xml:space="preserve"><value>Actualizare automată pornită — versiunile sunt verificate la pornire</value></data>
+  <data name="Home_Action_Mode_Tip" xml:space="preserve"><value>Alege ce backend deține DLL-urile proxy ale Steam</value></data>
+  <data name="Home_Action_Plugin" xml:space="preserve"><value>Plugin</value></data>
+  <data name="Home_Action_Plugin_Tip" xml:space="preserve"><value>Instalează sau actualizează pluginul paginii magazinului</value></data>
+  <data name="Home_Action_Updates_Tip" xml:space="preserve"><value>Deschide Despre pentru a verifica dacă există o versiune nouă</value></data>
+  <data name="Mode_Warn_Telemetry" xml:space="preserve"><value>Proiectul original (madoiscool). Avertisment: conține telemetrie și sistemul DonateKeys.</value></data>
+  <data name="Manage_Sort_InstalledFirst" xml:space="preserve"><value>Cele instalate primele</value></data>
+  <data name="Add_Warn_NoManifests_Title" xml:space="preserve"><value>Avertisment</value></data>
+  <data name="Add_Warn_NoManifests" xml:space="preserve"><value>Această sursă nu a livrat manifeste pentru {0}. Descărcarea în Steam poate eșua. Recomandăm sursa {1}.</value></data>
+  <data name="Plugin_Row_Source" xml:space="preserve"><value>Sursă</value></data>
+  <data name="Plugin_Sources_Header" xml:space="preserve"><value>Sursa pluginului</value></data>
+  <data name="Plugin_Sources_Subtitle" xml:space="preserve"><value>Fiecare creator publică propria versiune a pluginului. Alege-o pe cea pe care o vrei instalată — LuaTools instalează doar sursa activă și nu comută niciodată singur.</value></data>
+  <data name="Plugin_Source_By" xml:space="preserve"><value>de {0}</value></data>
+  <data name="Plugin_Source_Active" xml:space="preserve"><value>Activă</value></data>
+  <data name="Plugin_Source_Default" xml:space="preserve"><value>Implicită</value></data>
+  <data name="Plugin_Source_Installed" xml:space="preserve"><value>Instalat din această sursă.</value></data>
+  <data name="Plugin_Source_ActiveNotInstalled" xml:space="preserve"><value>Sursă activă — încă neinstalat.</value></data>
+  <data name="Plugin_Source_Available" xml:space="preserve"><value>Disponibilă. Alege-o pentru a instala de la acest creator.</value></data>
+  <data name="Plugin_Source_LatestVersion" xml:space="preserve"><value>Ultima</value></data>
+  <data name="Plugin_Btn_Activate" xml:space="preserve"><value>Folosește această sursă</value></data>
+  <data name="Plugin_Confirm_SwitchCaption" xml:space="preserve"><value>Schimbă sursa pluginului</value></data>
+  <data name="Plugin_Confirm_SwitchBody" xml:space="preserve"><value>Aceasta instalează pluginul din {0}, înlocuindu-l pe cel instalat acum, și închide și repornește Steam pentru a-l aplica. Continui?</value></data>
+  <data name="Plugin_Toast_SourceSwitched" xml:space="preserve"><value>Acum instalat din {0}. Steam se repornește pentru a-l încărca.</value></data>
+  <data name="Plugin_Err_UnknownSource" xml:space="preserve"><value>{0} nu este o sursă de pluginuri inclusă în această versiune, deci nu s-a instalat nimic.</value></data>
+  <data name="Plugin_SourceErr_NoRelease" xml:space="preserve"><value>Această sursă nu a publicat nicio versiune sau nu a putut fi contactată.</value></data>
+  <data name="Plugin_SourceErr_NoTag" xml:space="preserve"><value>Cea mai nouă versiune a acestei surse nu are etichetă de versiune.</value></data>
+  <data name="Plugin_SourceErr_MissingAsset" xml:space="preserve"><value>În cea mai nouă versiune a acestei surse lipsește {0}.</value></data>
+  <data name="Plugin_SourceErr_ForeignAssetUrl" xml:space="preserve"><value>Descărcarea pentru {0} din această sursă indică în afara propriului depozit, așa că a fost refuzată.</value></data>
+  <data name="Plugin_SourceErr_NoDigest" xml:space="preserve"><value>Această sursă nu publică SHA-256 pentru {0}, deci conținutul nu a putut fi dovedit.</value></data>
+  <data name="Plugin_Err_ArchiveRejected" xml:space="preserve"><value>{0} a fost refuzat de verificarea de securitate: {1}</value></data>
+  <data name="Download_Notice_Title" xml:space="preserve"><value>Se instalează din {0}</value></data>
+  <data name="Download_Notice_Body" xml:space="preserve"><value>{0} · versiunea {1} · {2} fișier(e)
+SHA-256 {3}
+Verificat: {4}</value></data>
+  <data name="Download_Notice_Check_Pinned" xml:space="preserve"><value>depozit fixat</value></data>
+  <data name="Download_Notice_Check_Digest" xml:space="preserve"><value>SHA-256 corespunde</value></data>
+  <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>arhivă analizată</value></data>
+  <data name="Download_Notice_Cancel" xml:space="preserve"><value>Anulează</value></data>
+  <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Anulat înainte de a se instala ceva.</value></data>
+  <data name="Builds_RemoveGame" xml:space="preserve"><value>Elimină jocul</value></data>
+  <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Scoate acest joc din lista Depozite. Șterge fișierele sale lua și toate build-urile salvate.</value></data>
+  <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Elimină jocul</value></data>
+  <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>Elimini {0} ({1}) din Depozite?
+
+Aceasta șterge fișierul său lua, eventualele lua de build de lângă el și toate build-urile salvate. Nu poate fi anulat.</value></data>
+  <data name="Builds_RemoveGame_Done" xml:space="preserve"><value>{0} a fost eliminat din Depozite.</value></data>
+  <data name="Builds_RemoveGame_Gone" xml:space="preserve"><value>{0} nu mai avea fișiere — eliminat din listă.</value></data>
+  <data name="Builds_RemoveGame_Failed" xml:space="preserve"><value>{0} nu a putut fi eliminat complet: {1}. Închide Steam și încearcă din nou.</value></data>
+  <data name="Auth_Err_SignInTimedOut" xml:space="preserve"><value>Autentificarea a expirat — browserul nu s-a mai întors. Te poți autentifica și cu un cod: rulează /login pe serverul Discord, apoi lipește codul în Setări.</value></data>
+  <data name="Auth_Err_CallbackPortBusy" xml:space="preserve"><value>Autentificarea nu a putut porni: portul 53789 este deja folosit. Închide orice altă încercare de autentificare și încearcă din nou.</value></data>
+  <data name="Auth_ProviderUnavailable" xml:space="preserve"><value>Serverul de autentificare nu răspunde momentan, deci autentificarea Discord din browser va expira probabil. Te poți autentifica în schimb cu un cod: rulează /login pe serverul Discord și introdu codul în Setări.</value></data>
+  <data name="Auth_SignInCancelled" xml:space="preserve"><value>Autentificare anulată. Poți încerca din nou sau folosi un cod manual (rulează /login pe Discord).</value></data>
+  <data name="Auth_TryAgain" xml:space="preserve"><value>Încearcă din nou</value></data>
+  <data name="Auth_TryAnyway" xml:space="preserve"><value>Încearcă oricum</value></data>
+  <data name="Auth_UseManualCode" xml:space="preserve"><value>Folosește cod manual</value></data>
+  <data name="Auth_Cancel" xml:space="preserve"><value>Anulează</value></data>
+  <data name="Protocol_SilentInstall_Title" xml:space="preserve"><value>Cerere de instalare</value></data>
+  <data name="Protocol_SilentInstall_Body" xml:space="preserve"><value>Un link cere LuaTools să instaleze aplicația {0} în fundal. Continuă doar dacă ai inițiat tu acest lucru.</value></data>
+  <data name="Cdp_Consent_Title" xml:space="preserve"><value>Activezi puntea paginii magazinului Steam?</value></data>
+  <data name="Cdp_Consent_Body" xml:space="preserve"><value>Pluginul paginii magazinului are nevoie de puntea de depanare a Steam, pe care LuaTools o activează adăugând un marcaj lângă steam.exe. Cât timp rulează Steam, aceasta deschide un port local neautentificat (127.0.0.1:8080).
+
+Orice alt program care rulează pe acest PC ar putea atunci controla browserul integrat al Steam folosind sesiunea ta autentificată. Activează doar dacă ai încredere în software-ul instalat pe acest calculator.
+
+Poți refuza și continua să folosești restul LuaTools; doar butonul „Add via LuaTools” din magazin va fi indisponibil.
+
+O activezi?</value></data>
+  <data name="Privacy_HttpMetadata_Title" xml:space="preserve"><value>Interogare necriptată</value></data>
+  <data name="Privacy_HttpMetadata_Body" xml:space="preserve"><value>Disponibilitatea surselor este verificată prin HTTP simplu ({0}), deoarece acel server nu oferă HTTPS funcțional. Nu se trimite niciun cont sau cheie, dar oricine se află pe calea rețelei tale poate vedea ce aplicație Steam ai căutat. Setează „WarnOnInsecureMetadata”: false în settings.json pentru a ascunde acest mesaj.</value></data>
+  <data name="Theme_Guard_Title" xml:space="preserve"><value>Tema nu a fost aplicată</value></data>
+  <data name="Theme_Guard_Body" xml:space="preserve"><value>Accentul Amethyst nu a avut efect, ceea ce de obicei înseamnă că pachetul WPF-UI a schimbat numele resurselor sale. Aplicația funcționează normal, dar unele părți vor arăta greșit. Vezi docs/CHANGELOG.md.</value></data>
+  <data name="App_DisplayName" xml:space="preserve"><value>LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Title" xml:space="preserve"><value>Este posibil să nu fie LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Body" xml:space="preserve"><value>Acest binar nu se identifică drept LuaTools Amethyst. Dacă ai instalat peste el o versiune oficială LuaTools, analiza și trimiterea cheilor Steam sunt din nou active. Reinstalează din depozitul Amethyst pentru a recupera versiunea care protejează confidențialitatea.</value></data>
+  <data name="Fixes_Toast_Blocked" xml:space="preserve"><value>Descărcare refuzată</value></data>
+  <data name="Fixes_Toast_Blocked_Body" xml:space="preserve"><value>{0} nu a fost instalat deoarece a picat o verificare de securitate — {1}</value></data>
+  <data name="About_Nav" xml:space="preserve"><value>Despre</value></data>
+  <data name="About_Title" xml:space="preserve"><value>Despre LuaTools Amethyst</value></data>
+  <data name="About_What_Header" xml:space="preserve"><value>Ce este acesta</value></data>
+  <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst este un fork al comunității pentru LuaTools, axat pe confidențialitate. Elimină pingul de analiză și trimiterea de chei pe care le face versiunea originală, ține toate descărcările pe HTTPS și vine cu tema violet Amethyst.</value></data>
+  <data name="About_Version_Header" xml:space="preserve"><value>Versiune</value></data>
+  <data name="About_Repo_Header" xml:space="preserve"><value>Depozit</value></data>
+  <data name="About_Updates_Header" xml:space="preserve"><value>Actualizări</value></data>
+  <data name="About_Updates_Enabled" xml:space="preserve"><value>Actualizările automate sunt PORNITE. LuaTools Amethyst verifică depozitul de mai jos la pornire și instalează actualizările în fundal.</value></data>
+  <data name="About_Updates_Disabled" xml:space="preserve"><value>Actualizările automate sunt OPRITE — nu se face nicio cerere de actualizare. Adaugă „AppUpdateRepos” în settings.json pentru a le porni sau actualizează manual din depozitul de mai jos.</value></data>
+  <data name="About_Updates_Sources" xml:space="preserve"><value>Sursa actualizărilor</value></data>
+  <data name="About_Check_Button" xml:space="preserve"><value>Caută actualizări</value></data>
+  <data name="About_Check_Checking" xml:space="preserve"><value>Se verifică…</value></data>
+  <data name="About_Check_UpToDate" xml:space="preserve"><value>Ai cea mai recentă versiune.</value></data>
+  <data name="About_Check_Found" xml:space="preserve"><value>O actualizare a fost descărcată. Va fi aplicată când închizi LuaTools.</value></data>
+  <data name="About_Check_Failed" xml:space="preserve"><value>Nu s-au putut căuta actualizări. Verifică conexiunea și depozitul configurat.</value></data>
+  <data name="About_Check_Disabled" xml:space="preserve"><value>Actualizările automate sunt dezactivate — configurează mai întâi „AppUpdateRepos” în settings.json.</value></data>
+  <data name="About_OpenRepo" xml:space="preserve"><value>Deschide depozitul</value></data>
+  <data name="About_OpenSettings" xml:space="preserve"><value>Deschide folderul settings.json</value></data>
+  <data name="About_Config_Header" xml:space="preserve"><value>Configurarea manuală a actualizărilor</value></data>
+  <data name="About_Config_Body" xml:space="preserve"><value>Editează settings.json în folderul de mai jos și adaugă depozitul din care vrei actualizări. Se acceptă doar https://github.com/&lt;owner&gt;/&lt;repo&gt;, iar depozitele versiunilor oficiale LuaTools sunt refuzate pentru ca o versiune oficială să nu o poată înlocui niciodată pe aceasta.</value></data>
+  <data name="Builds_Depot_Download" xml:space="preserve"><value>Descarcă depozite…</value></data>
+  <data name="Builds_Depot_Unavailable" xml:space="preserve"><value>Descărcarea depozitelor nu este disponibilă în această versiune: nu are un pin verificat pentru instrumentul de descărcare.</value></data>
+  <data name="Builds_Depot_PickTitle" xml:space="preserve"><value>Descarcă conținutul unui depozit</value></data>
+  <data name="Builds_Depot_PickHint" xml:space="preserve"><value>Fișierele brute sunt preluate anonim direct de pe CDN-ul Steam. Nu se instalează nimic — depozitele sunt scrise în folderul de mai jos ca să le folosești cum vrei.</value></data>
+  <data name="Builds_Depot_NoCandidates" xml:space="preserve"><value>Niciun depozit al acestui joc nu poate fi descărcat. Au nevoie atât de o cheie de decriptare din lua, cât și de un manifest publicat de Steam.</value></data>
+  <data name="Builds_Depot_NeedsKey" xml:space="preserve"><value>nicio cheie în această versiune</value></data>
+  <data name="Builds_Depot_NeedsManifest" xml:space="preserve"><value>Steam nu publică manifest</value></data>
+  <data name="Builds_Depot_NeedsSignIn" xml:space="preserve"><value>autentifică-te pentru a-i prelua manifestul</value></data>
+  <data name="Builds_Depot_SelectAll" xml:space="preserve"><value>Selectează tot</value></data>
+  <data name="Builds_Depot_SelectNone" xml:space="preserve"><value>Golește</value></data>
+  <data name="Builds_Depot_Destination" xml:space="preserve"><value>Folder de destinație</value></data>
+  <data name="Builds_Depot_Change" xml:space="preserve"><value>Schimbă…</value></data>
+  <data name="Builds_Depot_Space" xml:space="preserve"><value>Necesar {0} · liber {1} pe {2}</value></data>
+  <data name="Builds_Depot_NotEnoughSpace" xml:space="preserve"><value>Nu este destul spațiu liber pe acea unitate. Alege mai puține depozite sau alt folder.</value></data>
+  <data name="Builds_Depot_Confirm" xml:space="preserve"><value>Descarcă {0} depozit(e)</value></data>
+  <data name="Builds_Depot_Cancel" xml:space="preserve"><value>Anulează</value></data>
+  <data name="Builds_Depot_Downloading" xml:space="preserve"><value>Depozit {0} din {1} · {2}</value></data>
+  <data name="Builds_Depot_Phase_PreAllocating" xml:space="preserve"><value>se rezervă spațiu pe disc</value></data>
+  <data name="Builds_Depot_Phase_Validating" xml:space="preserve"><value>se verifică fișierele existente</value></data>
+  <data name="Builds_Depot_Phase_FetchingManifest" xml:space="preserve"><value>se preia manifestul</value></data>
+  <data name="Builds_Depot_Phase_Downloading" xml:space="preserve"><value>se descarcă</value></data>
+  <data name="Builds_Depot_Done" xml:space="preserve"><value>{0} depozit(e) descărcat(e) în {1}</value></data>
+  <data name="Builds_Depot_OpenFolder" xml:space="preserve"><value>Deschide folderul</value></data>
+  <data name="Builds_Depot_CleanUp_Title" xml:space="preserve"><value>Elimini descărcarea parțială?</value></data>
+  <data name="Builds_Depot_CleanUp_Body" xml:space="preserve"><value>Descărcarea a fost anulată după crearea a {0} fișier(e) în {1}. Ștergi doar acele fișiere? Ce era deja acolo rămâne neatins.</value></data>
+  <data name="Builds_Depot_CleanUp_Failed" xml:space="preserve"><value>Unele fișiere nu au putut fi șterse — este posibil să fie încă în uz. Încearcă din nou într-un moment.</value></data>
+  <data name="Depot_Err_ToolNotPinned" xml:space="preserve"><value>Descărcarea depozitelor este oprită în această versiune deoarece nu are un pin verificat pentru instrumentul de descărcare.</value></data>
+  <data name="Depot_Err_Tool" xml:space="preserve"><value>Instrumentul de descărcare a depozitelor nu a putut fi obținut sau ce a sosit a picat verificarea.</value></data>
+  <data name="Depot_Err_SteamNotFound" xml:space="preserve"><value>Locația Steam nu a fost găsită — setează-o în Setări.</value></data>
+  <data name="Depot_Err_NoKeys" xml:space="preserve"><value>Nu s-au găsit chei de decriptare a depozitelor pentru acest joc.</value></data>
+  <data name="Depot_Err_NoKeyFor" xml:space="preserve"><value>Depozitul {0} nu are o cheie de decriptare utilizabilă.</value></data>
+  <data name="Depot_Err_BadKey" xml:space="preserve"><value>Cheia stocată pentru depozitul {0} nu corespunde manifestului său.</value></data>
+  <data name="Depot_Err_NoManifest" xml:space="preserve"><value>Manifestul pentru acel depozit nu a putut fi obținut.</value></data>
+  <data name="Depot_Err_SignIn" xml:space="preserve"><value>Autentifică-te pentru a prelua un manifest pe care Steam nu îl are încă pe acest calculator.</value></data>
+  <data name="Depot_Err_NoSpace" xml:space="preserve"><value>Spațiu insuficient pe disc: necesari {0}, liberi {1}.</value></data>
+  <data name="Depot_Err_Failed" xml:space="preserve"><value>Depozitul {0} a eșuat: {1}</value></data>
+  <data name="Builds_Depot_Queued" xml:space="preserve"><value>{0} depozit(e) trimis(e) la Descărcări.</value></data>
+  <data name="Nav_Downloads" xml:space="preserve"><value>Descărcări</value></data>
+  <data name="Downloads_Title" xml:space="preserve"><value>Descărcări</value></data>
+  <data name="Downloads_Subtitle" xml:space="preserve"><value>Tot ce descarcă aplicația acum și ce a descărcat înainte. Manifestele și conținutul depozitelor folosesc aceeași coadă.</value></data>
+  <data name="Downloads_Empty" xml:space="preserve"><value>Nu s-a descărcat nimic încă. Adăugarea unui joc din pagina Adaugă sau preluarea conținutului unui depozit din pagina Depozite îl va afișa aici.</value></data>
+  <data name="Downloads_Section_Active" xml:space="preserve"><value>În desfășurare</value></data>
+  <data name="Downloads_Section_History" xml:space="preserve"><value>Istoric</value></data>
+  <data name="Downloads_ActionRequired" xml:space="preserve"><value>ACȚIUNE NECESARĂ</value></data>
+  <data name="Downloads_Of" xml:space="preserve"><value>{0} din {1}</value></data>
+  <data name="Downloads_Eta" xml:space="preserve"><value>mai rămân {0}</value></data>
+  <data name="Downloads_Source_Depots" xml:space="preserve"><value>{0} depozit(e)</value></data>
+  <data name="Downloads_Status_Queued" xml:space="preserve"><value>În coadă</value></data>
+  <data name="Downloads_Status_Downloading" xml:space="preserve"><value>Se descarcă</value></data>
+  <data name="Downloads_Status_AwaitingConfirm" xml:space="preserve"><value>Te așteaptă</value></data>
+  <data name="Downloads_Status_Installing" xml:space="preserve"><value>Se instalează</value></data>
+  <data name="Downloads_Status_Paused" xml:space="preserve"><value>În pauză</value></data>
+  <data name="Downloads_Status_Verifying" xml:space="preserve"><value>Se verifică</value></data>
+  <data name="Downloads_Status_Completed" xml:space="preserve"><value>Gata</value></data>
+  <data name="Downloads_Status_Failed" xml:space="preserve"><value>Eșuat</value></data>
+  <data name="Downloads_Status_Cancelled" xml:space="preserve"><value>Anulat</value></data>
+  <data name="Downloads_Action_Review" xml:space="preserve"><value>Revizuiește</value></data>
+  <data name="Downloads_Action_Pause" xml:space="preserve"><value>Pauză</value></data>
+  <data name="Downloads_Action_Resume" xml:space="preserve"><value>Reia</value></data>
+  <data name="Downloads_Action_MoveUp" xml:space="preserve"><value>Mută în sus</value></data>
+  <data name="Downloads_Action_MoveDown" xml:space="preserve"><value>Mută în jos</value></data>
+  <data name="Downloads_Action_Cancel" xml:space="preserve"><value>Anulează</value></data>
+  <data name="Downloads_Action_Retry" xml:space="preserve"><value>Reîncearcă</value></data>
+  <data name="Downloads_Action_Remove" xml:space="preserve"><value>Elimină</value></data>
+  <data name="Downloads_Action_ClearHistory" xml:space="preserve"><value>Șterge istoricul</value></data>
+  <data name="Downloads_Action_CopyAppId" xml:space="preserve"><value>Copiază App ID</value></data>
+  <data name="Downloads_Action_ShowInFolder" xml:space="preserve"><value>Arată în folder</value></data>
+  <data name="Downloads_ClearHistory_Confirm" xml:space="preserve"><value>Elimini toate cele {0} intrări din istoricul descărcărilor? Fișierele în sine nu sunt atinse.</value></data>
+  <data name="Downloads_Err_Interrupted" xml:space="preserve"><value>Întrerupt la închiderea aplicației.</value></data>
+  <data name="Downloads_Err_Cancelled" xml:space="preserve"><value>Anulat.</value></data>
+  <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>Clipboardul este folosit de alt program — nu s-a copiat nimic.</value></data>
+  <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Acea locație nu mai există: {0}</value></data>
+  <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>Refuzat „{0}”: un manifest trebuie numit &lt;depot&gt;_&lt;manifest&gt;.manifest (doar cifre).</value></data>
+  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>Depozitul sursă CloudRedirect nu este disponibil. Funcția este dezactivată temporar.</value></data>
+  <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Build-uri salvate (niciun lua activ)</value></data>
+  <data name="Settings_Maintenance_Title" xml:space="preserve"><value>ÎNTREȚINERE</value></data>
+  <data name="Settings_Backups_Title" xml:space="preserve"><value>Copii de siguranță acumulate</value></data>
+  <data name="Settings_Backups_Subtitle" xml:space="preserve"><value>Foldere de copii de siguranță create la instalarea AmethystTool sau la eliminarea pluginurilor. Ștergerea lor eliberează spațiu în folderul Steam.</value></data>
+  <data name="Settings_Backups_Empty" xml:space="preserve"><value>Nu s-au găsit copii de siguranță.</value></data>
+  <data name="Settings_Backups_NoSteam" xml:space="preserve"><value>Configurează locația Steam în Setări pentru a vedea copiile de siguranță.</value></data>
+  <data name="Settings_Backups_Refresh" xml:space="preserve"><value>Reîmprospătează</value></data>
+  <data name="Settings_Backups_DeleteSelected" xml:space="preserve"><value>Șterge selecția</value></data>
+  <data name="Settings_Backups_DeleteOlder" xml:space="preserve"><value>Șterge cele mai vechi de 30 de zile</value></data>
+  <data name="Settings_Backups_Confirm_Title" xml:space="preserve"><value>Ștergi copiile de siguranță?</value></data>
+  <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>Ștergi definitiv {0} element(e) ({1})? Nu vei mai putea reveni la instalări anterioare AmethystTool sau la eliminări de pluginuri.</value></data>
+  <data name="Settings_Backups_Confirm_Delete" xml:space="preserve"><value>Șterge</value></data>
+  <data name="Settings_Backups_Cancel" xml:space="preserve"><value>Anulează</value></data>
+  <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>{0} element(e) șters(e) ({1} eliberați)</value></data>
+  <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>{0} element(e) nu au putut fi șterse. Închide Steam și încearcă din nou.</value></data>
+  <data name="Settings_Backups_Column_Name" xml:space="preserve"><value>Nume</value></data>
+  <data name="Settings_Backups_Column_Type" xml:space="preserve"><value>Tip</value></data>
+  <data name="Settings_Backups_Type_Folder" xml:space="preserve"><value>Folder</value></data>
+  <data name="Settings_Backups_Type_File" xml:space="preserve"><value>Fișier</value></data>
+  <data name="Settings_Backups_UnknownWarning" xml:space="preserve"><value>Copie de siguranță necunoscută, verifică înainte de a șterge</value></data>
+  <data name="Settings_Backups_Column_Date" xml:space="preserve"><value>Creat</value></data>
+  <data name="Settings_Backups_Column_Size" xml:space="preserve"><value>Dimensiune</value></data>
+  <data name="Settings_Backups_Column_Files" xml:space="preserve"><value>Fișiere</value></data>
+  <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Versiune locală (offline)</value></data>
+  <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Nu există conexiune la internet. Se folosește versiunea instalată local.</value></data>
+  <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Fără internet nu se poate descărca o versiune nouă.</value></data>
 </root>

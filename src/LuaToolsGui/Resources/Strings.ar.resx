@@ -612,4 +612,288 @@
   <data name="App_StartupFailed" xml:space="preserve"><value>تعذّر تشغيل LuaTools.&#10;&#10;{0}&#10;&#10;كُتبت التفاصيل في:&#10;{1}</value></data>
   <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>تعذّرت كتابة {0} ملف (ملفات) في مجلد Steam — تم رفض الوصول. يبدو أن Steam مثبّت في موقع يتطلب صلاحيات المسؤول (مثل Program Files). أغلق Steam، ثم شغّل LuaTools كمسؤول مرة واحدة لتطبيق هذا الوضع.</value></data>
   <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>تعذّرت كتابة {0} ملف (ملفات) — أغلق Steam وحاول مرة أخرى.</value></data>
+  <data name="Nav_Plugin" xml:space="preserve"><value>إضافة</value></data>
+  <data name="Settings_HubcapKeyRejected" xml:space="preserve"><value>رفض Hubcap هذا المفتاح. تأكد من أنه نُسخ كاملاً وأنه لم تنتهِ صلاحيته.</value></data>
+  <data name="Settings_HubcapKeyOffline" xml:space="preserve"><value>تعذّر الوصول إلى Hubcap. تحقق من اتصالك وحاول مجدداً — لم يتغير المفتاح.</value></data>
+  <data name="Settings_HubcapKeyRateLimited" xml:space="preserve"><value>يقيّد Hubcap معدل الطلبات لهذا المفتاح حالياً. حاول مجدداً بعد قليل.</value></data>
+  <data name="Settings_HubcapExpiryExpired" xml:space="preserve"><value>انتهت صلاحية مفتاح Hubcap الخاص بك في {0}. تحقق من مفتاح جديد لمواصلة استخدام مصادر Hubcap.</value></data>
+  <data name="Settings_HubcapExpiryToday" xml:space="preserve"><value>تنتهي صلاحية مفتاح Hubcap الخاص بك اليوم ({0}). احصل على مفتاح جديد قبل أن يتوقف عن العمل.</value></data>
+  <data name="Settings_HubcapExpirySoon" xml:space="preserve"><value>تنتهي صلاحية مفتاح Hubcap الخاص بك خلال {0} يوماً ({1}). احصل على مفتاح جديد قبل أن يتوقف عن العمل.</value></data>
+  <data name="Hubcap_Err_KeyRejected" xml:space="preserve"><value>مفتاح Hubcap الخاص بك غير صالح أو منتهي الصلاحية.</value></data>
+  <data name="Hubcap_Err_DailyLimit" xml:space="preserve"><value>تم بلوغ الحد اليومي لـ Hubcap.</value></data>
+  <data name="Hubcap_Err_DailyLimitRetry" xml:space="preserve"><value>تم بلوغ الحد اليومي لـ Hubcap. حاول مجدداً بعد حوالي {0}.</value></data>
+  <data name="Hubcap_Err_NoManifest" xml:space="preserve"><value>لا يتوفر manifest من Hubcap لهذا التطبيق.</value></data>
+  <data name="Hubcap_Err_Status" xml:space="preserve"><value>فشل التنزيل من Hubcap ({0}).</value></data>
+  <data name="Hubcap_Err_Unreachable" xml:space="preserve"><value>تعذّر الوصول إلى Hubcap. تحقق من اتصالك وحاول مجدداً.</value></data>
+  <data name="Hubcap_Err_Generic" xml:space="preserve"><value>فشل التنزيل من Hubcap.</value></data>
+  <data name="Hubcap_Wait_Seconds" xml:space="preserve"><value>{0} ثانية</value></data>
+  <data name="Hubcap_Wait_Minutes" xml:space="preserve"><value>{0} دقيقة</value></data>
+  <data name="Hubcap_Wait_Hours" xml:space="preserve"><value>{0} ساعة</value></data>
+  <data name="Settings_Accent_Hint" xml:space="preserve"><value>يعيد تلوين التطبيق بأكمله — النافذة والبطاقات والنص، لا التمييز فقط. اختر لوناً ثم اختر تطبيق.</value></data>
+  <data name="Settings_Accent_Amethyst" xml:space="preserve"><value>Amethyst</value></data>
+  <data name="Startup_Title" xml:space="preserve"><value>بدء التشغيل</value></data>
+  <data name="Startup_Steam_Closing" xml:space="preserve"><value>جارٍ إغلاق Steam ليتمكن LuaTools من العمل على ملفاته…</value></data>
+  <data name="Startup_Steam_Closed" xml:space="preserve"><value>Steam مغلق.</value></data>
+  <data name="Startup_Steam_Stubborn_Title" xml:space="preserve"><value>لم يُغلق Steam</value></data>
+  <data name="Startup_Steam_Stubborn_Body" xml:space="preserve"><value>طُلب من Steam الإغلاق لكنه ما زال يعمل.
+
+هل تريد فرض الإغلاق؟ قد يضيع كل ما لم يحفظه Steam بعد. اختر لا لتركه يعمل — لا يستطيع LuaTools تغيير ملفات Steam أثناء تشغيله.</value></data>
+  <data name="Startup_Steam_LeftRunning" xml:space="preserve"><value>ما زال Steam يعمل، لذلك لم يتغير شيء. أغلق Steam وأعد تشغيل LuaTools عندما تكون جاهزاً.</value></data>
+  <data name="Startup_Steam_Reopen_Body" xml:space="preserve"><value>انتهى LuaTools. هل تريد فتح Steam مجدداً؟</value></data>
+  <data name="Startup_Steam_Reopen_Action" xml:space="preserve"><value>فتح Steam</value></data>
+  <data name="Startup_Steam_ReopenFailed" xml:space="preserve"><value>تعذّر تشغيل Steam — افتحه من اختصاره الخاص.</value></data>
+  <data name="Guard_Title" xml:space="preserve"><value>Steam قيد التشغيل بالفعل</value></data>
+  <data name="Guard_Body" xml:space="preserve"><value>يحتاج LuaTools إلى تشغيل Steam بنفسه (أو إيجاده مغلقاً) كي يرتبط الـ hook. هل تريد إعادة تشغيل Steam الآن؟</value></data>
+  <data name="Guard_Restart" xml:space="preserve"><value>إعادة تشغيل Steam</value></data>
+  <data name="Guard_Exit" xml:space="preserve"><value>خروج</value></data>
+  <data name="Guard_Continue" xml:space="preserve"><value>المتابعة على أي حال (غير مستحسن)</value></data>
+  <data name="Guard_ContinueWarning" xml:space="preserve"><value>تُرك Steam قيد التشغيل، لذا قد يفشل الـ hook في الارتباط. أعد تشغيل Steam من LuaTools إذا حدث ذلك.</value></data>
+  <data name="Manage_Action_SaveBackup" xml:space="preserve"><value>نسخ احتياطي للحفظ…</value></data>
+  <data name="Saves_Title" xml:space="preserve"><value>النسخ الاحتياطية للحفظ</value></data>
+  <data name="Saves_Create" xml:space="preserve"><value>إنشاء نسخة احتياطية جديدة</value></data>
+  <data name="Saves_Restore" xml:space="preserve"><value>استعادة</value></data>
+  <data name="Saves_Delete" xml:space="preserve"><value>حذف</value></data>
+  <data name="Saves_Close" xml:space="preserve"><value>إغلاق</value></data>
+  <data name="Saves_Empty" xml:space="preserve"><value>لا توجد نسخ احتياطية لهذه اللعبة بعد.</value></data>
+  <data name="Saves_Locations_Title" xml:space="preserve"><value>مواقع الحفظ التي عُثر عليها</value></data>
+  <data name="Saves_Locations_None" xml:space="preserve"><value>لم يُكتشف مجلد حفظ لهذه اللعبة.</value></data>
+  <data name="Saves_Location_Subtitle" xml:space="preserve"><value>{0} · {1} ملف</value></data>
+  <data name="Saves_AddFolder" xml:space="preserve"><value>إضافة مجلد يدوياً…</value></data>
+  <data name="Saves_Confirm_NoneFound" xml:space="preserve"><value>لم نعثر على ملفات حفظ لهذه اللعبة. هل تريد تحديد مجلد يدوياً؟</value></data>
+  <data name="Saves_PickFolder" xml:space="preserve"><value>تحديد المجلد</value></data>
+  <data name="Saves_PickFolderTitle" xml:space="preserve"><value>اختر المجلد الذي تحتفظ فيه هذه اللعبة بملفات حفظها</value></data>
+  <data name="Saves_Toast_PickOne" xml:space="preserve"><value>حدد موقع حفظ واحداً على الأقل لنسخه احتياطياً.</value></data>
+  <data name="Saves_Toast_FolderRefused" xml:space="preserve"><value>لا يمكن استخدام هذا المجلد (جذر قرص، أو مجلد Windows أو Program Files، أو مسار غير كامل).</value></data>
+  <data name="Manage_SaveIcon_Tooltip" xml:space="preserve"><value>تم اكتشاف ملفات الحفظ في: {0}</value></data>
+  <data name="Settings_CustomSaveFolders" xml:space="preserve"><value>مجلدات حفظ مخصصة</value></data>
+  <data name="Settings_CustomSaveFolders_Hint" xml:space="preserve"><value>للألعاب التي لا يستطيع التطبيق العثور على ملفات حفظها بنفسه. أدخل AppID اللعبة واختر المجلد؛ سيُنسخ احتياطياً مع تلك اللعبة وهو المكان الإضافي الوحيد الذي يجوز للاستعادة الكتابة فيه.</value></data>
+  <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
+  <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>إضافة مجلد…</value></data>
+  <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>إزالة</value></data>
+  <data name="Saves_Note" xml:space="preserve"><value>ينسخ احتياطياً مجلد Steam الخاص بكل لعبة (userdata). الألعاب التي تحتفظ بملفات الحفظ في المستندات أو AppData غير مشمولة.</value></data>
+  <data name="Saves_Toast_Created" xml:space="preserve"><value>تم نسخ {0} ملف احتياطياً، {1}.</value></data>
+  <data name="Saves_Toast_Restored" xml:space="preserve"><value>تمت استعادة {0} ملف. تم الاحتفاظ بنسخة من ملفات الحفظ السابقة.</value></data>
+  <data name="Saves_Toast_Deleted" xml:space="preserve"><value>تم حذف النسخة الاحتياطية.</value></data>
+  <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>لم يُعثر على ملفات حفظ لهذه اللعبة. أضف المجلد الذي تحتفظ فيه بها عبر «إضافة مجلد يدوياً…».</value></data>
+  <data name="Saves_Toast_SteamNotFound" xml:space="preserve"><value>لم يُعثر على مجلد Steam. حدّد موقعه في الإعدادات.</value></data>
+  <data name="Saves_Toast_Refused" xml:space="preserve"><value>مرفوض: النسخة الاحتياطية لا تطابق هذه اللعبة أو تحتوي على مسارات غير آمنة. لم يتغير شيء.</value></data>
+  <data name="Saves_Toast_Failed" xml:space="preserve"><value>فشلت العملية. راجع السجل للتفاصيل.</value></data>
+  <data name="Saves_Toast_NoSpace" xml:space="preserve"><value>لا توجد مساحة قرص كافية للنسخة الاحتياطية (يلزم {0} شاملةً هامش الأمان). لم يُكتب شيء.</value></data>
+  <data name="Saves_Confirm_Restore" xml:space="preserve"><value>استعادة {0}؟ ستُستبدل ملفات الحفظ الحالية لهذه اللعبة؛ ويُحتفظ أولاً بنسخة منها.</value></data>
+  <data name="Saves_Confirm_SteamOpen" xml:space="preserve"><value>Steam مفتوح. للاستعادة بأمان (ومنع Steam Cloud من استبدال الملفات)، يجب إغلاق Steam.</value></data>
+  <data name="Saves_CloseSteamContinue" xml:space="preserve"><value>إغلاق Steam والمتابعة</value></data>
+  <data name="Saves_Toast_SteamStillRunning" xml:space="preserve"><value>لم يُغلق Steam. أغلقه يدوياً وحاول مجدداً. لم تتم استعادة شيء.</value></data>
+  <data name="Saves_Confirm_Delete" xml:space="preserve"><value>حذف {0}؟ لا يمكن التراجع عن ذلك.</value></data>
+  <data name="Manage_Badge_Installed" xml:space="preserve"><value>مثبّت</value></data>
+  <data name="Manage_Action_ImportSave" xml:space="preserve"><value>استيراد ملف حفظ (.zip)…</value></data>
+  <data name="Saves_Import" xml:space="preserve"><value>استيراد ملف حفظ…</value></data>
+  <data name="Saves_Import_PickTitle" xml:space="preserve"><value>اختر نسخة احتياطية للحفظ (.zip)</value></data>
+  <data name="Saves_Import_Filter" xml:space="preserve"><value>نسخة احتياطية للحفظ (*.zip)|*.zip</value></data>
+  <data name="Saves_Confirm_Import" xml:space="preserve"><value>استيراد {0}؟ ستُستبدل ملفات الحفظ الحالية لهذه اللعبة؛ ويُحتفظ أولاً بنسخة منها.</value></data>
+  <data name="Saves_Toast_Imported" xml:space="preserve"><value>تم استيراد {0} ملف. تم الاحتفاظ بنسخة من ملفات الحفظ السابقة.</value></data>
+  <data name="Saves_Confirm_NewFolder" xml:space="preserve"><value>سينشئ التطبيق مجلداً باسم هذه اللعبة لتنظيم ملفات حفظها. هل تريد المتابعة؟</value></data>
+  <data name="Saves_Confirm_Ok" xml:space="preserve"><value>موافق</value></data>
+  <data name="Saves_Toast_SavedAt" xml:space="preserve"><value>تم حفظ النسخة الاحتياطية بنجاح في: {0}</value></data>
+  <data name="Settings_SaveBackupFolder" xml:space="preserve"><value>مجلد النسخ الاحتياطية للحفظ</value></data>
+  <data name="Settings_SaveBackupFolder_Hint" xml:space="preserve"><value>المكان الذي يكتب فيه «نسخ احتياطي للحفظ…» ملفات zip الخاصة به. الافتراضي: %AppData%\LuaToolsGui\SaveBackups.</value></data>
+  <data name="Settings_ChooseSaveBackupFolder" xml:space="preserve"><value>اختر مجلد النسخ الاحتياطية للحفظ</value></data>
+  <data name="About_Changelog_Title" xml:space="preserve"><value>ما الجديد</value></data>
+  <data name="About_Changelog_Show" xml:space="preserve"><value>إظهار سجل التغييرات</value></data>
+  <data name="About_Changelog_Hide" xml:space="preserve"><value>إخفاء سجل التغييرات</value></data>
+  <data name="Home_Privacy_UpdatesOff" xml:space="preserve"><value>التحديث الذاتي متوقف — هذه النسخة لا تجلب أي شيء من تلقاء نفسها</value></data>
+  <data name="Home_Privacy_UpdatesOn" xml:space="preserve"><value>التحديث الذاتي يعمل — تُفحص الإصدارات عند البدء</value></data>
+  <data name="Home_Action_Mode_Tip" xml:space="preserve"><value>اختر أي واجهة خلفية تملك ملفات DLL الوسيطة لـ Steam</value></data>
+  <data name="Home_Action_Plugin" xml:space="preserve"><value>إضافة</value></data>
+  <data name="Home_Action_Plugin_Tip" xml:space="preserve"><value>تثبيت إضافة صفحة المتجر أو تحديثها</value></data>
+  <data name="Home_Action_Updates_Tip" xml:space="preserve"><value>افتح «حول» للتحقق من وجود إصدار جديد</value></data>
+  <data name="Mode_Warn_Telemetry" xml:space="preserve"><value>المشروع الأصلي (madoiscool). تحذير: يحتوي على القياس عن بُعد ونظام DonateKeys.</value></data>
+  <data name="Manage_Sort_InstalledFirst" xml:space="preserve"><value>المثبّتة أولاً</value></data>
+  <data name="Add_Warn_NoManifests_Title" xml:space="preserve"><value>تحذير</value></data>
+  <data name="Add_Warn_NoManifests" xml:space="preserve"><value>لم يوفّر هذا المصدر manifest للعبة {0}. قد يفشل التنزيل في Steam. نوصي بالمصدر {1}.</value></data>
+  <data name="Plugin_Row_Source" xml:space="preserve"><value>المصدر</value></data>
+  <data name="Plugin_Sources_Header" xml:space="preserve"><value>مصدر الإضافة</value></data>
+  <data name="Plugin_Sources_Subtitle" xml:space="preserve"><value>ينشر كل مطوّر نسخته الخاصة من الإضافة. اختر النسخة التي تريد تثبيتها — يثبّت LuaTools المصدر النشط فقط ولا يبدّل من تلقاء نفسه أبداً.</value></data>
+  <data name="Plugin_Source_By" xml:space="preserve"><value>بواسطة {0}</value></data>
+  <data name="Plugin_Source_Active" xml:space="preserve"><value>نشط</value></data>
+  <data name="Plugin_Source_Default" xml:space="preserve"><value>افتراضي</value></data>
+  <data name="Plugin_Source_Installed" xml:space="preserve"><value>مثبّت من هذا المصدر.</value></data>
+  <data name="Plugin_Source_ActiveNotInstalled" xml:space="preserve"><value>المصدر النشط — لم يُثبَّت بعد.</value></data>
+  <data name="Plugin_Source_Available" xml:space="preserve"><value>متاح. اخترْه للتثبيت من هذا المطوّر بدلاً من ذلك.</value></data>
+  <data name="Plugin_Source_LatestVersion" xml:space="preserve"><value>الأحدث</value></data>
+  <data name="Plugin_Btn_Activate" xml:space="preserve"><value>استخدام هذا المصدر</value></data>
+  <data name="Plugin_Confirm_SwitchCaption" xml:space="preserve"><value>تبديل مصدر الإضافة</value></data>
+  <data name="Plugin_Confirm_SwitchBody" xml:space="preserve"><value>سيؤدي هذا إلى تثبيت الإضافة من {0} بدلاً من المثبّتة حالياً، وإغلاق Steam وإعادة تشغيله لتطبيقها. هل تريد المتابعة؟</value></data>
+  <data name="Plugin_Toast_SourceSwitched" xml:space="preserve"><value>مثبّت الآن من {0}. يُعاد تشغيل Steam لتحميله.</value></data>
+  <data name="Plugin_Err_UnknownSource" xml:space="preserve"><value>{0} ليس مصدر إضافة تشمله هذه النسخة، لذلك لم يُثبَّت شيء.</value></data>
+  <data name="Plugin_SourceErr_NoRelease" xml:space="preserve"><value>لم ينشر هذا المصدر أي إصدار، أو تعذّر الوصول إليه.</value></data>
+  <data name="Plugin_SourceErr_NoTag" xml:space="preserve"><value>أحدث إصدار لهذا المصدر لا يحمل وسم إصدار.</value></data>
+  <data name="Plugin_SourceErr_MissingAsset" xml:space="preserve"><value>أحدث إصدار لهذا المصدر ينقصه {0}.</value></data>
+  <data name="Plugin_SourceErr_ForeignAssetUrl" xml:space="preserve"><value>رابط تنزيل {0} من هذا المصدر يشير إلى خارج مستودعه الخاص، لذلك رُفض.</value></data>
+  <data name="Plugin_SourceErr_NoDigest" xml:space="preserve"><value>لا ينشر هذا المصدر قيمة SHA-256 للملف {0}، لذا تعذّر إثبات محتواه.</value></data>
+  <data name="Plugin_Err_ArchiveRejected" xml:space="preserve"><value>رُفض {0} بواسطة فحص الأمان: {1}</value></data>
+  <data name="Download_Notice_Title" xml:space="preserve"><value>جارٍ التثبيت من {0}</value></data>
+  <data name="Download_Notice_Body" xml:space="preserve"><value>{0} · الإصدار {1} · {2} ملف
+SHA-256 {3}
+تم التحقق: {4}</value></data>
+  <data name="Download_Notice_Check_Pinned" xml:space="preserve"><value>المستودع مثبّت</value></data>
+  <data name="Download_Notice_Check_Digest" xml:space="preserve"><value>SHA-256 مطابق</value></data>
+  <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>الأرشيف مفحوص</value></data>
+  <data name="Download_Notice_Cancel" xml:space="preserve"><value>إلغاء</value></data>
+  <data name="Download_Notice_Cancelled" xml:space="preserve"><value>أُلغي قبل تثبيت أي شيء.</value></data>
+  <data name="Builds_RemoveGame" xml:space="preserve"><value>إزالة اللعبة</value></data>
+  <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>يزيل هذه اللعبة من قائمة المستودعات. يحذف ملفات lua الخاصة بها وجميع الإصدارات المخزّنة.</value></data>
+  <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>إزالة اللعبة</value></data>
+  <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>إزالة {0} ({1}) من المستودعات؟
+
+سيحذف هذا ملف lua الخاص بها وأي ملفات lua للإصدارات بجانبه وجميع الإصدارات المخزّنة. لا يمكن التراجع عن ذلك.</value></data>
+  <data name="Builds_RemoveGame_Done" xml:space="preserve"><value>أُزيلت {0} من المستودعات.</value></data>
+  <data name="Builds_RemoveGame_Gone" xml:space="preserve"><value>لم يعد لدى {0} أي ملفات — أُزيلت من القائمة.</value></data>
+  <data name="Builds_RemoveGame_Failed" xml:space="preserve"><value>تعذّرت إزالة {0} بالكامل: {1}. أغلق Steam وحاول مجدداً.</value></data>
+  <data name="Auth_Err_SignInTimedOut" xml:space="preserve"><value>انتهت مهلة تسجيل الدخول — لم يعد المتصفح أبداً. يمكنك أيضاً تسجيل الدخول برمز: شغّل /login على خادم Discord ثم الصق الرمز في الإعدادات.</value></data>
+  <data name="Auth_Err_CallbackPortBusy" xml:space="preserve"><value>تعذّر بدء تسجيل الدخول: المنفذ 53789 مستخدم بالفعل. أغلق أي محاولات تسجيل دخول أخرى وحاول مجدداً.</value></data>
+  <data name="Auth_ProviderUnavailable" xml:space="preserve"><value>خادم تسجيل الدخول لا يستجيب حالياً، لذا من المرجح أن تنتهي مهلة تسجيل الدخول عبر Discord في المتصفح. يمكنك تسجيل الدخول برمز بدلاً من ذلك: شغّل /login على خادم Discord وأدخل الرمز في الإعدادات.</value></data>
+  <data name="Auth_SignInCancelled" xml:space="preserve"><value>أُلغي تسجيل الدخول. يمكنك المحاولة مجدداً أو استخدام رمز يدوي (شغّل /login على Discord).</value></data>
+  <data name="Auth_TryAgain" xml:space="preserve"><value>حاول مجدداً</value></data>
+  <data name="Auth_TryAnyway" xml:space="preserve"><value>حاول على أي حال</value></data>
+  <data name="Auth_UseManualCode" xml:space="preserve"><value>استخدام رمز يدوي</value></data>
+  <data name="Auth_Cancel" xml:space="preserve"><value>إلغاء</value></data>
+  <data name="Protocol_SilentInstall_Title" xml:space="preserve"><value>طلب تثبيت</value></data>
+  <data name="Protocol_SilentInstall_Body" xml:space="preserve"><value>هناك رابط يطلب من LuaTools تثبيت التطبيق {0} في الخلفية. تابع فقط إذا كنت أنت من بدأ ذلك.</value></data>
+  <data name="Cdp_Consent_Title" xml:space="preserve"><value>هل تريد تفعيل جسر صفحة متجر Steam؟</value></data>
+  <data name="Cdp_Consent_Body" xml:space="preserve"><value>تحتاج إضافة صفحة المتجر إلى جسر التصحيح في Steam، والذي يفعّله LuaTools بإضافة علامة بجانب steam.exe. أثناء تشغيل Steam يفتح هذا منفذاً محلياً غير موثَّق (127.0.0.1:8080).
+
+يمكن لأي برنامج آخر يعمل على هذا الحاسوب حينئذٍ التحكم في المتصفح المدمج في Steam باستخدام جلستك المسجَّل دخولها. فعّل هذا فقط إذا كنت تثق بالبرامج المثبّتة على هذا الجهاز.
+
+يمكنك الرفض ومواصلة استخدام بقية LuaTools؛ سيتعذّر فقط زر «Add via LuaTools» في المتجر.
+
+هل تريد تفعيله؟</value></data>
+  <data name="Privacy_HttpMetadata_Title" xml:space="preserve"><value>استعلام غير مشفّر</value></data>
+  <data name="Privacy_HttpMetadata_Body" xml:space="preserve"><value>يُفحص توفر المصادر عبر HTTP عادي ({0}) لأن ذلك الخادم لا يوفّر HTTPS يعمل. لا يُرسل أي حساب أو مفتاح، لكن يستطيع أي شخص على مسار شبكتك أن يرى أي تطبيق Steam بحثت عنه. اضبط «WarnOnInsecureMetadata»: false في settings.json لإخفاء هذا.</value></data>
+  <data name="Theme_Guard_Title" xml:space="preserve"><value>لم يُطبَّق المظهر</value></data>
+  <data name="Theme_Guard_Body" xml:space="preserve"><value>لم يسرِ لون التمييز Amethyst، وهذا يعني عادةً أن حزمة WPF-UI غيّرت أسماء مواردها. يعمل التطبيق بشكل طبيعي لكن أجزاء منه ستبدو خاطئة. راجع docs/CHANGELOG.md.</value></data>
+  <data name="App_DisplayName" xml:space="preserve"><value>LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Title" xml:space="preserve"><value>قد لا يكون هذا LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Body" xml:space="preserve"><value>هذا الملف التنفيذي لا يعرّف نفسه على أنه LuaTools Amethyst. إذا ثبّتّ إصداراً رسمياً من LuaTools فوقه، فقد عاد التحليل ورفع مفاتيح Steam إلى العمل. أعد التثبيت من مستودع Amethyst لاستعادة النسخة الحافظة للخصوصية.</value></data>
+  <data name="Fixes_Toast_Blocked" xml:space="preserve"><value>رُفض التنزيل</value></data>
+  <data name="Fixes_Toast_Blocked_Body" xml:space="preserve"><value>لم يُثبَّت {0} لأنه فشل في فحص أمان — {1}</value></data>
+  <data name="About_Nav" xml:space="preserve"><value>حول</value></data>
+  <data name="About_Title" xml:space="preserve"><value>حول LuaTools Amethyst</value></data>
+  <data name="About_What_Header" xml:space="preserve"><value>ما هذا</value></data>
+  <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst هو فرع مجتمعي من LuaTools يركّز على الخصوصية. يزيل ping التحليلات ورفع مفاتيح التبرع الذي تقوم به النسخة الأصلية، ويُبقي كل التنزيلات عبر HTTPS، ويأتي بالمظهر البنفسجي Amethyst.</value></data>
+  <data name="About_Version_Header" xml:space="preserve"><value>الإصدار</value></data>
+  <data name="About_Repo_Header" xml:space="preserve"><value>المستودع</value></data>
+  <data name="About_Updates_Header" xml:space="preserve"><value>التحديثات</value></data>
+  <data name="About_Updates_Enabled" xml:space="preserve"><value>التحديثات التلقائية مفعّلة. يفحص LuaTools Amethyst المستودع أدناه عند البدء ويثبّت التحديثات في الخلفية.</value></data>
+  <data name="About_Updates_Disabled" xml:space="preserve"><value>التحديثات التلقائية متوقفة — لا يُرسل أي طلب تحديث. أضف «AppUpdateRepos» إلى settings.json لتفعيلها، أو حدّث يدوياً من المستودع أدناه.</value></data>
+  <data name="About_Updates_Sources" xml:space="preserve"><value>مصدر التحديث</value></data>
+  <data name="About_Check_Button" xml:space="preserve"><value>التحقق من التحديثات</value></data>
+  <data name="About_Check_Checking" xml:space="preserve"><value>جارٍ التحقق…</value></data>
+  <data name="About_Check_UpToDate" xml:space="preserve"><value>أنت تستخدم أحدث إصدار.</value></data>
+  <data name="About_Check_Found" xml:space="preserve"><value>تم تنزيل تحديث. سيُطبَّق عند إغلاق LuaTools.</value></data>
+  <data name="About_Check_Failed" xml:space="preserve"><value>تعذّر التحقق من التحديثات. تحقق من اتصالك والمستودع المضبوط.</value></data>
+  <data name="About_Check_Disabled" xml:space="preserve"><value>التحديثات التلقائية معطّلة — اضبط «AppUpdateRepos» في settings.json أولاً.</value></data>
+  <data name="About_OpenRepo" xml:space="preserve"><value>فتح المستودع</value></data>
+  <data name="About_OpenSettings" xml:space="preserve"><value>فتح مجلد settings.json</value></data>
+  <data name="About_Config_Header" xml:space="preserve"><value>ضبط التحديثات يدوياً</value></data>
+  <data name="About_Config_Body" xml:space="preserve"><value>حرّر settings.json في المجلد أدناه وأضف المستودع الذي تريد التحديثات منه. يُقبل فقط https://github.com/&lt;owner&gt;/&lt;repo&gt;، وتُرفض مستودعات الإصدارات الأصلية من LuaTools حتى لا يحلّ إصدار رسمي محل هذا الإصدار أبداً.</value></data>
+  <data name="Builds_Depot_Download" xml:space="preserve"><value>تنزيل المستودعات…</value></data>
+  <data name="Builds_Depot_Unavailable" xml:space="preserve"><value>تنزيل المستودعات غير متاح في هذه النسخة: ليس فيها pin موثّق لأداة التنزيل.</value></data>
+  <data name="Builds_Depot_PickTitle" xml:space="preserve"><value>تنزيل محتوى المستودع</value></data>
+  <data name="Builds_Depot_PickHint" xml:space="preserve"><value>تُجلب الملفات الخام مباشرةً من CDN الخاص بـ Steam بشكل مجهول. لا يُثبَّت شيء — تُكتب المستودعات في المجلد أدناه لتستخدمها كما تشاء.</value></data>
+  <data name="Builds_Depot_NoCandidates" xml:space="preserve"><value>لا يمكن تنزيل أي من مستودعات هذه اللعبة. فهي تحتاج إلى مفتاح فك تشفير من lua وإلى manifest نشره Steam.</value></data>
+  <data name="Builds_Depot_NeedsKey" xml:space="preserve"><value>لا مفتاح في هذه النسخة</value></data>
+  <data name="Builds_Depot_NeedsManifest" xml:space="preserve"><value>لا ينشر Steam أي manifest</value></data>
+  <data name="Builds_Depot_NeedsSignIn" xml:space="preserve"><value>سجّل الدخول لجلب الـ manifest الخاص به</value></data>
+  <data name="Builds_Depot_SelectAll" xml:space="preserve"><value>تحديد الكل</value></data>
+  <data name="Builds_Depot_SelectNone" xml:space="preserve"><value>مسح</value></data>
+  <data name="Builds_Depot_Destination" xml:space="preserve"><value>مجلد الوجهة</value></data>
+  <data name="Builds_Depot_Change" xml:space="preserve"><value>تغيير…</value></data>
+  <data name="Builds_Depot_Space" xml:space="preserve"><value>يلزم {0} · المتاح {1} على {2}</value></data>
+  <data name="Builds_Depot_NotEnoughSpace" xml:space="preserve"><value>لا توجد مساحة خالية كافية على ذلك القرص. اختر مستودعات أقل أو مجلداً آخر.</value></data>
+  <data name="Builds_Depot_Confirm" xml:space="preserve"><value>تنزيل {0} مستودع</value></data>
+  <data name="Builds_Depot_Cancel" xml:space="preserve"><value>إلغاء</value></data>
+  <data name="Builds_Depot_Downloading" xml:space="preserve"><value>المستودع {0} من {1} · {2}</value></data>
+  <data name="Builds_Depot_Phase_PreAllocating" xml:space="preserve"><value>جارٍ حجز مساحة القرص</value></data>
+  <data name="Builds_Depot_Phase_Validating" xml:space="preserve"><value>جارٍ فحص الملفات الموجودة</value></data>
+  <data name="Builds_Depot_Phase_FetchingManifest" xml:space="preserve"><value>جارٍ جلب الـ manifest</value></data>
+  <data name="Builds_Depot_Phase_Downloading" xml:space="preserve"><value>جارٍ التنزيل</value></data>
+  <data name="Builds_Depot_Done" xml:space="preserve"><value>تم تنزيل {0} مستودع إلى {1}</value></data>
+  <data name="Builds_Depot_OpenFolder" xml:space="preserve"><value>فتح المجلد</value></data>
+  <data name="Builds_Depot_CleanUp_Title" xml:space="preserve"><value>إزالة التنزيل الجزئي؟</value></data>
+  <data name="Builds_Depot_CleanUp_Body" xml:space="preserve"><value>أُلغي التنزيل بعد إنشاء {0} ملف في {1}. هل تريد حذف تلك الملفات فقط؟ ما كان موجوداً مسبقاً يُترك كما هو.</value></data>
+  <data name="Builds_Depot_CleanUp_Failed" xml:space="preserve"><value>تعذّر حذف بعض الملفات — قد تكون ما زالت قيد الاستخدام. حاول مجدداً بعد قليل.</value></data>
+  <data name="Depot_Err_ToolNotPinned" xml:space="preserve"><value>تنزيل المستودعات متوقف في هذه النسخة لأنها لا تحمل pin موثّقاً لأداة التنزيل.</value></data>
+  <data name="Depot_Err_Tool" xml:space="preserve"><value>تعذّر الحصول على أداة تنزيل المستودعات، أو أن ما وصل فشل في التحقق.</value></data>
+  <data name="Depot_Err_SteamNotFound" xml:space="preserve"><value>لم يُعثر على موقع Steam — حدّده في الإعدادات.</value></data>
+  <data name="Depot_Err_NoKeys" xml:space="preserve"><value>لم يُعثر على مفاتيح فك تشفير للمستودعات لهذه اللعبة.</value></data>
+  <data name="Depot_Err_NoKeyFor" xml:space="preserve"><value>المستودع {0} ليس لديه مفتاح فك تشفير صالح للاستخدام.</value></data>
+  <data name="Depot_Err_BadKey" xml:space="preserve"><value>المفتاح المخزّن للمستودع {0} لا يطابق الـ manifest الخاص به.</value></data>
+  <data name="Depot_Err_NoManifest" xml:space="preserve"><value>تعذّر الحصول على الـ manifest الخاص بذلك المستودع.</value></data>
+  <data name="Depot_Err_SignIn" xml:space="preserve"><value>سجّل الدخول لجلب manifest لا يملكه Steam بعد على هذا الجهاز.</value></data>
+  <data name="Depot_Err_NoSpace" xml:space="preserve"><value>مساحة القرص غير كافية: يلزم {0}، المتاح {1}.</value></data>
+  <data name="Depot_Err_Failed" xml:space="preserve"><value>فشل المستودع {0}: {1}</value></data>
+  <data name="Builds_Depot_Queued" xml:space="preserve"><value>أُرسل {0} مستودع إلى التنزيلات.</value></data>
+  <data name="Nav_Downloads" xml:space="preserve"><value>التنزيلات</value></data>
+  <data name="Downloads_Title" xml:space="preserve"><value>التنزيلات</value></data>
+  <data name="Downloads_Subtitle" xml:space="preserve"><value>كل ما يجلبه التطبيق الآن وما جلبه سابقاً. تشترك الـ manifests ومحتوى المستودعات في هذا الطابور.</value></data>
+  <data name="Downloads_Empty" xml:space="preserve"><value>لم يُنزَّل شيء بعد. إضافة لعبة من صفحة الإضافة، أو جلب محتوى مستودع من صفحة المستودعات، سيجعلها تظهر هنا.</value></data>
+  <data name="Downloads_Section_Active" xml:space="preserve"><value>قيد التنفيذ</value></data>
+  <data name="Downloads_Section_History" xml:space="preserve"><value>السجل</value></data>
+  <data name="Downloads_ActionRequired" xml:space="preserve"><value>مطلوب إجراء</value></data>
+  <data name="Downloads_Of" xml:space="preserve"><value>{0} من {1}</value></data>
+  <data name="Downloads_Eta" xml:space="preserve"><value>متبقٍ {0}</value></data>
+  <data name="Downloads_Source_Depots" xml:space="preserve"><value>{0} مستودع</value></data>
+  <data name="Downloads_Status_Queued" xml:space="preserve"><value>في الطابور</value></data>
+  <data name="Downloads_Status_Downloading" xml:space="preserve"><value>جارٍ التنزيل</value></data>
+  <data name="Downloads_Status_AwaitingConfirm" xml:space="preserve"><value>بانتظارك</value></data>
+  <data name="Downloads_Status_Installing" xml:space="preserve"><value>جارٍ التثبيت</value></data>
+  <data name="Downloads_Status_Paused" xml:space="preserve"><value>متوقف مؤقتاً</value></data>
+  <data name="Downloads_Status_Verifying" xml:space="preserve"><value>جارٍ التحقق</value></data>
+  <data name="Downloads_Status_Completed" xml:space="preserve"><value>تم</value></data>
+  <data name="Downloads_Status_Failed" xml:space="preserve"><value>فشل</value></data>
+  <data name="Downloads_Status_Cancelled" xml:space="preserve"><value>أُلغي</value></data>
+  <data name="Downloads_Action_Review" xml:space="preserve"><value>مراجعة</value></data>
+  <data name="Downloads_Action_Pause" xml:space="preserve"><value>إيقاف مؤقت</value></data>
+  <data name="Downloads_Action_Resume" xml:space="preserve"><value>استئناف</value></data>
+  <data name="Downloads_Action_MoveUp" xml:space="preserve"><value>نقل لأعلى</value></data>
+  <data name="Downloads_Action_MoveDown" xml:space="preserve"><value>نقل لأسفل</value></data>
+  <data name="Downloads_Action_Cancel" xml:space="preserve"><value>إلغاء</value></data>
+  <data name="Downloads_Action_Retry" xml:space="preserve"><value>إعادة المحاولة</value></data>
+  <data name="Downloads_Action_Remove" xml:space="preserve"><value>إزالة</value></data>
+  <data name="Downloads_Action_ClearHistory" xml:space="preserve"><value>مسح السجل</value></data>
+  <data name="Downloads_Action_CopyAppId" xml:space="preserve"><value>نسخ App ID</value></data>
+  <data name="Downloads_Action_ShowInFolder" xml:space="preserve"><value>إظهار في المجلد</value></data>
+  <data name="Downloads_ClearHistory_Confirm" xml:space="preserve"><value>إزالة كل الإدخالات ({0}) من سجل التنزيلات؟ لا تُمَسّ الملفات نفسها.</value></data>
+  <data name="Downloads_Err_Interrupted" xml:space="preserve"><value>توقّف عند إغلاق التطبيق.</value></data>
+  <data name="Downloads_Err_Cancelled" xml:space="preserve"><value>أُلغي.</value></data>
+  <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>الحافظة قيد الاستخدام من برنامج آخر — لم يُنسخ شيء.</value></data>
+  <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>ذلك الموقع لم يعد موجوداً: {0}</value></data>
+  <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>رُفض «{0}»: يجب أن يُسمّى الـ manifest بالصيغة &lt;depot&gt;_&lt;manifest&gt;.manifest (أرقام فقط).</value></data>
+  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>مستودع مصدر CloudRedirect غير متاح. الميزة معطّلة مؤقتاً.</value></data>
+  <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>الإصدارات المخزّنة (لا يوجد lua نشط)</value></data>
+  <data name="Settings_Maintenance_Title" xml:space="preserve"><value>الصيانة</value></data>
+  <data name="Settings_Backups_Title" xml:space="preserve"><value>النسخ الاحتياطية المتراكمة</value></data>
+  <data name="Settings_Backups_Subtitle" xml:space="preserve"><value>مجلدات نسخ احتياطية تُنشأ عند تثبيت AmethystTool أو إزالة الإضافات. حذفها يحرّر مساحة في مجلد Steam.</value></data>
+  <data name="Settings_Backups_Empty" xml:space="preserve"><value>لم يُعثر على نسخ احتياطية.</value></data>
+  <data name="Settings_Backups_NoSteam" xml:space="preserve"><value>اضبط موقع Steam في الإعدادات لعرض النسخ الاحتياطية.</value></data>
+  <data name="Settings_Backups_Refresh" xml:space="preserve"><value>تحديث</value></data>
+  <data name="Settings_Backups_DeleteSelected" xml:space="preserve"><value>حذف المحدد</value></data>
+  <data name="Settings_Backups_DeleteOlder" xml:space="preserve"><value>حذف الأقدم من 30 يوماً</value></data>
+  <data name="Settings_Backups_Confirm_Title" xml:space="preserve"><value>حذف النسخ الاحتياطية؟</value></data>
+  <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>حذف {0} عنصر ({1}) نهائياً؟ لن تتمكن من التراجع عن عمليات تثبيت AmethystTool السابقة أو عمليات إزالة الإضافات.</value></data>
+  <data name="Settings_Backups_Confirm_Delete" xml:space="preserve"><value>حذف</value></data>
+  <data name="Settings_Backups_Cancel" xml:space="preserve"><value>إلغاء</value></data>
+  <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>تم حذف {0} عنصر (تحرّر {1})</value></data>
+  <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>تعذّر حذف {0} عنصر. أغلق Steam وحاول مجدداً.</value></data>
+  <data name="Settings_Backups_Column_Name" xml:space="preserve"><value>الاسم</value></data>
+  <data name="Settings_Backups_Column_Type" xml:space="preserve"><value>النوع</value></data>
+  <data name="Settings_Backups_Type_Folder" xml:space="preserve"><value>مجلد</value></data>
+  <data name="Settings_Backups_Type_File" xml:space="preserve"><value>ملف</value></data>
+  <data name="Settings_Backups_UnknownWarning" xml:space="preserve"><value>نسخة احتياطية غير معروفة، تحقق قبل الحذف</value></data>
+  <data name="Settings_Backups_Column_Date" xml:space="preserve"><value>تاريخ الإنشاء</value></data>
+  <data name="Settings_Backups_Column_Size" xml:space="preserve"><value>الحجم</value></data>
+  <data name="Settings_Backups_Column_Files" xml:space="preserve"><value>الملفات</value></data>
+  <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>الإصدار المحلي (دون اتصال)</value></data>
+  <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>لا يوجد اتصال بالإنترنت. يُستخدم الإصدار المثبّت محلياً.</value></data>
+  <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>لا يمكن تنزيل إصدار جديد دون إنترنت.</value></data>
 </root>

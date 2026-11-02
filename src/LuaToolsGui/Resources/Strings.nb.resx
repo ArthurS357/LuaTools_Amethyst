@@ -586,4 +586,288 @@ Dette sletter .lua-filene fra Steam\config\stplug-in. Start Steam på nytt etter
   <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools kunne ikke starte.&#10;&#10;{0}&#10;&#10;Detaljene ble skrevet til:&#10;{1}</value></data>
   <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Kunne ikke skrive {0} fil(er) til Steam-mappen — tilgang nektet. Steam ser ut til å være installert et sted som krever administratorrettigheter (f.eks. Program Files). Lukk Steam, og kjør deretter LuaTools som administrator én gang for å ta i bruk denne modusen.</value></data>
   <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Kunne ikke skrive {0} fil(er) — lukk Steam og prøv igjen.</value></data>
+  <data name="Nav_Plugin" xml:space="preserve"><value>Programtillegg</value></data>
+  <data name="Settings_HubcapKeyRejected" xml:space="preserve"><value>Hubcap avviste den nøkkelen. Sjekk at den ble kopiert i sin helhet og ikke har utløpt.</value></data>
+  <data name="Settings_HubcapKeyOffline" xml:space="preserve"><value>Fikk ikke kontakt med Hubcap. Sjekk tilkoblingen og prøv igjen — nøkkelen ble ikke endret.</value></data>
+  <data name="Settings_HubcapKeyRateLimited" xml:space="preserve"><value>Hubcap begrenser denne nøkkelen akkurat nå. Prøv igjen om litt.</value></data>
+  <data name="Settings_HubcapExpiryExpired" xml:space="preserve"><value>Hubcap-nøkkelen din utløp {0}. Valider en ny for å fortsette å bruke Hubcap-kilder.</value></data>
+  <data name="Settings_HubcapExpiryToday" xml:space="preserve"><value>Hubcap-nøkkelen din utløper i dag ({0}). Skaff en ny før den slutter å virke.</value></data>
+  <data name="Settings_HubcapExpirySoon" xml:space="preserve"><value>Hubcap-nøkkelen din utløper om {0} dager ({1}). Skaff en ny før den slutter å virke.</value></data>
+  <data name="Hubcap_Err_KeyRejected" xml:space="preserve"><value>Hubcap-nøkkelen din er ugyldig eller utløpt.</value></data>
+  <data name="Hubcap_Err_DailyLimit" xml:space="preserve"><value>Den daglige Hubcap-grensen din er nådd.</value></data>
+  <data name="Hubcap_Err_DailyLimitRetry" xml:space="preserve"><value>Den daglige Hubcap-grensen din er nådd. Prøv igjen om omtrent {0}.</value></data>
+  <data name="Hubcap_Err_NoManifest" xml:space="preserve"><value>Ingen Hubcap-manifest er tilgjengelig for denne appen.</value></data>
+  <data name="Hubcap_Err_Status" xml:space="preserve"><value>Hubcap-nedlastingen mislyktes ({0}).</value></data>
+  <data name="Hubcap_Err_Unreachable" xml:space="preserve"><value>Fikk ikke kontakt med Hubcap. Sjekk tilkoblingen og prøv igjen.</value></data>
+  <data name="Hubcap_Err_Generic" xml:space="preserve"><value>Hubcap-nedlastingen mislyktes.</value></data>
+  <data name="Hubcap_Wait_Seconds" xml:space="preserve"><value>{0} sekunder</value></data>
+  <data name="Hubcap_Wait_Minutes" xml:space="preserve"><value>{0} minutter</value></data>
+  <data name="Hubcap_Wait_Hours" xml:space="preserve"><value>{0} timer</value></data>
+  <data name="Settings_Accent_Hint" xml:space="preserve"><value>Gir hele appen nye farger — vindu, kort og tekst, ikke bare utheving. Velg en farge, og velg deretter Bruk.</value></data>
+  <data name="Settings_Accent_Amethyst" xml:space="preserve"><value>Amethyst</value></data>
+  <data name="Startup_Title" xml:space="preserve"><value>Oppstart</value></data>
+  <data name="Startup_Steam_Closing" xml:space="preserve"><value>Lukker Steam slik at LuaTools kan jobbe med filene…</value></data>
+  <data name="Startup_Steam_Closed" xml:space="preserve"><value>Steam er lukket.</value></data>
+  <data name="Startup_Steam_Stubborn_Title" xml:space="preserve"><value>Steam ble ikke lukket</value></data>
+  <data name="Startup_Steam_Stubborn_Body" xml:space="preserve"><value>Steam ble bedt om å lukke seg, men kjører fortsatt.
+
+Tvinge lukking? Alt Steam ikke har lagret ennå, kan gå tapt. Velg Nei for å la det kjøre — LuaTools kan ikke endre Steams filer mens det kjører.</value></data>
+  <data name="Startup_Steam_LeftRunning" xml:space="preserve"><value>Steam kjører fortsatt, så ingenting ble endret. Lukk Steam og start LuaTools på nytt når du er klar.</value></data>
+  <data name="Startup_Steam_Reopen_Body" xml:space="preserve"><value>LuaTools er ferdig. Åpne Steam igjen?</value></data>
+  <data name="Startup_Steam_Reopen_Action" xml:space="preserve"><value>Åpne Steam</value></data>
+  <data name="Startup_Steam_ReopenFailed" xml:space="preserve"><value>Kunne ikke starte Steam — åpne det fra sin egen snarvei.</value></data>
+  <data name="Guard_Title" xml:space="preserve"><value>Steam kjører allerede</value></data>
+  <data name="Guard_Body" xml:space="preserve"><value>LuaTools må starte Steam selv (eller finne det lukket) for at kroken skal feste seg. Starte Steam på nytt nå?</value></data>
+  <data name="Guard_Restart" xml:space="preserve"><value>Start Steam på nytt</value></data>
+  <data name="Guard_Exit" xml:space="preserve"><value>Avslutt</value></data>
+  <data name="Guard_Continue" xml:space="preserve"><value>Fortsett likevel (anbefales ikke)</value></data>
+  <data name="Guard_ContinueWarning" xml:space="preserve"><value>Steam ble stående og kjøre, så kroken kan mislykkes i å feste seg. Start Steam på nytt fra LuaTools hvis det skjer.</value></data>
+  <data name="Manage_Action_SaveBackup" xml:space="preserve"><value>Sikkerhetskopier lagrede spill…</value></data>
+  <data name="Saves_Title" xml:space="preserve"><value>Sikkerhetskopier av lagrede spill</value></data>
+  <data name="Saves_Create" xml:space="preserve"><value>Opprett ny sikkerhetskopi</value></data>
+  <data name="Saves_Restore" xml:space="preserve"><value>Gjenopprett</value></data>
+  <data name="Saves_Delete" xml:space="preserve"><value>Slett</value></data>
+  <data name="Saves_Close" xml:space="preserve"><value>Lukk</value></data>
+  <data name="Saves_Empty" xml:space="preserve"><value>Ingen sikkerhetskopier av dette spillet ennå.</value></data>
+  <data name="Saves_Locations_Title" xml:space="preserve"><value>Fant lagringssteder</value></data>
+  <data name="Saves_Locations_None" xml:space="preserve"><value>Ingen mappe med lagrede spill ble funnet for dette spillet.</value></data>
+  <data name="Saves_Location_Subtitle" xml:space="preserve"><value>{0} · {1} fil(er)</value></data>
+  <data name="Saves_AddFolder" xml:space="preserve"><value>Legg til mappe manuelt…</value></data>
+  <data name="Saves_Confirm_NoneFound" xml:space="preserve"><value>Vi fant ingen lagrede spill for dette spillet. Vil du velge en mappe manuelt?</value></data>
+  <data name="Saves_PickFolder" xml:space="preserve"><value>Velg mappe</value></data>
+  <data name="Saves_PickFolderTitle" xml:space="preserve"><value>Velg mappen der dette spillet lagrer sine lagrede spill</value></data>
+  <data name="Saves_Toast_PickOne" xml:space="preserve"><value>Merk minst ett lagringssted som skal sikkerhetskopieres.</value></data>
+  <data name="Saves_Toast_FolderRefused" xml:space="preserve"><value>Den mappen kan ikke brukes (roten av en stasjon, en Windows- eller Program Files-mappe eller en ufullstendig sti).</value></data>
+  <data name="Manage_SaveIcon_Tooltip" xml:space="preserve"><value>Lagrede spill funnet i: {0}</value></data>
+  <data name="Settings_CustomSaveFolders" xml:space="preserve"><value>Egendefinerte mapper for lagrede spill</value></data>
+  <data name="Settings_CustomSaveFolders_Hint" xml:space="preserve"><value>For spill der appen ikke finner de lagrede spillene selv. Skriv inn spillets AppID og velg mappen; den sikkerhetskopieres da sammen med spillet og er det eneste ekstra stedet en gjenoppretting kan skrive til.</value></data>
+  <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
+  <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Legg til mappe…</value></data>
+  <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Fjern</value></data>
+  <data name="Saves_Note" xml:space="preserve"><value>Sikkerhetskopierer Steams mappe per spill (userdata). Spill som lagrer i Dokumenter eller AppData, er ikke med.</value></data>
+  <data name="Saves_Toast_Created" xml:space="preserve"><value>Sikkerhetskopierte {0} fil(er), {1}.</value></data>
+  <data name="Saves_Toast_Restored" xml:space="preserve"><value>Gjenopprettet {0} fil(er). En kopi av de forrige lagrede spillene ble beholdt.</value></data>
+  <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Sikkerhetskopien ble slettet.</value></data>
+  <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Fant ingen lagrede spill for dette spillet. Legg til mappen der det lagrer dem, med «Legg til mappe manuelt…».</value></data>
+  <data name="Saves_Toast_SteamNotFound" xml:space="preserve"><value>Fant ikke Steam-mappen. Angi plasseringen i Innstillinger.</value></data>
+  <data name="Saves_Toast_Refused" xml:space="preserve"><value>Avvist: sikkerhetskopien passer ikke til dette spillet eller inneholder usikre stier. Ingenting ble endret.</value></data>
+  <data name="Saves_Toast_Failed" xml:space="preserve"><value>Operasjonen mislyktes. Se loggen for detaljer.</value></data>
+  <data name="Saves_Toast_NoSpace" xml:space="preserve"><value>Ikke nok ledig diskplass til sikkerhetskopien ({0} kreves, margin inkludert). Ingenting ble skrevet.</value></data>
+  <data name="Saves_Confirm_Restore" xml:space="preserve"><value>Gjenopprette {0}? Spillets nåværende lagrede spill overskrives; en kopi av dem beholdes først.</value></data>
+  <data name="Saves_Confirm_SteamOpen" xml:space="preserve"><value>Steam er åpent. For å gjenopprette trygt (og hindre at Steam Cloud overskriver filene) må Steam være lukket.</value></data>
+  <data name="Saves_CloseSteamContinue" xml:space="preserve"><value>Lukk Steam og fortsett</value></data>
+  <data name="Saves_Toast_SteamStillRunning" xml:space="preserve"><value>Steam ble ikke lukket. Lukk det manuelt og prøv igjen. Ingenting ble gjenopprettet.</value></data>
+  <data name="Saves_Confirm_Delete" xml:space="preserve"><value>Slette {0}? Dette kan ikke angres.</value></data>
+  <data name="Manage_Badge_Installed" xml:space="preserve"><value>Installert</value></data>
+  <data name="Manage_Action_ImportSave" xml:space="preserve"><value>Importer lagret spill (.zip)…</value></data>
+  <data name="Saves_Import" xml:space="preserve"><value>Importer lagret spill…</value></data>
+  <data name="Saves_Import_PickTitle" xml:space="preserve"><value>Velg en sikkerhetskopi av lagrede spill (.zip)</value></data>
+  <data name="Saves_Import_Filter" xml:space="preserve"><value>Sikkerhetskopi av lagrede spill (*.zip)|*.zip</value></data>
+  <data name="Saves_Confirm_Import" xml:space="preserve"><value>Importere {0}? Spillets nåværende lagrede spill overskrives; en kopi av dem beholdes først.</value></data>
+  <data name="Saves_Toast_Imported" xml:space="preserve"><value>Importerte {0} fil(er). En kopi av de forrige lagrede spillene ble beholdt.</value></data>
+  <data name="Saves_Confirm_NewFolder" xml:space="preserve"><value>Appen oppretter en mappe oppkalt etter dette spillet for å organisere de lagrede spillene. Fortsette?</value></data>
+  <data name="Saves_Confirm_Ok" xml:space="preserve"><value>OK</value></data>
+  <data name="Saves_Toast_SavedAt" xml:space="preserve"><value>Sikkerhetskopien ble lagret i: {0}</value></data>
+  <data name="Settings_SaveBackupFolder" xml:space="preserve"><value>Mappe for sikkerhetskopier av lagrede spill</value></data>
+  <data name="Settings_SaveBackupFolder_Hint" xml:space="preserve"><value>Hvor «Sikkerhetskopier lagrede spill…» skriver zip-filene sine. Standard: %AppData%\LuaToolsGui\SaveBackups.</value></data>
+  <data name="Settings_ChooseSaveBackupFolder" xml:space="preserve"><value>Velg mappen for sikkerhetskopier av lagrede spill</value></data>
+  <data name="About_Changelog_Title" xml:space="preserve"><value>Nytt</value></data>
+  <data name="About_Changelog_Show" xml:space="preserve"><value>Vis endringslogg</value></data>
+  <data name="About_Changelog_Hide" xml:space="preserve"><value>Skjul endringslogg</value></data>
+  <data name="Home_Privacy_UpdatesOff" xml:space="preserve"><value>Selvoppdatering av — denne versjonen henter ingenting på egen hånd</value></data>
+  <data name="Home_Privacy_UpdatesOn" xml:space="preserve"><value>Selvoppdatering på — utgivelser sjekkes ved oppstart</value></data>
+  <data name="Home_Action_Mode_Tip" xml:space="preserve"><value>Velg hvilken backend som eier Steams proxy-DLL-er</value></data>
+  <data name="Home_Action_Plugin" xml:space="preserve"><value>Programtillegg</value></data>
+  <data name="Home_Action_Plugin_Tip" xml:space="preserve"><value>Installer eller oppdater programtillegget for butikksiden</value></data>
+  <data name="Home_Action_Updates_Tip" xml:space="preserve"><value>Åpne Om for å se etter en ny versjon</value></data>
+  <data name="Mode_Warn_Telemetry" xml:space="preserve"><value>Det opprinnelige prosjektet (madoiscool). Advarsel: inneholder telemetri og DonateKeys-systemet.</value></data>
+  <data name="Manage_Sort_InstalledFirst" xml:space="preserve"><value>Installerte først</value></data>
+  <data name="Add_Warn_NoManifests_Title" xml:space="preserve"><value>Advarsel</value></data>
+  <data name="Add_Warn_NoManifests" xml:space="preserve"><value>Denne kilden leverte ikke manifester for {0}. Nedlastingen i Steam kan mislykkes. Vi anbefaler kilden {1}.</value></data>
+  <data name="Plugin_Row_Source" xml:space="preserve"><value>Kilde</value></data>
+  <data name="Plugin_Sources_Header" xml:space="preserve"><value>Kilde for programtillegget</value></data>
+  <data name="Plugin_Sources_Subtitle" xml:space="preserve"><value>Hver skaper publiserer sin egen versjon av programtillegget. Velg den du vil ha installert — LuaTools installerer bare den aktive kilden og bytter aldri av seg selv.</value></data>
+  <data name="Plugin_Source_By" xml:space="preserve"><value>av {0}</value></data>
+  <data name="Plugin_Source_Active" xml:space="preserve"><value>Aktiv</value></data>
+  <data name="Plugin_Source_Default" xml:space="preserve"><value>Standard</value></data>
+  <data name="Plugin_Source_Installed" xml:space="preserve"><value>Installert fra denne kilden.</value></data>
+  <data name="Plugin_Source_ActiveNotInstalled" xml:space="preserve"><value>Aktiv kilde — ikke installert ennå.</value></data>
+  <data name="Plugin_Source_Available" xml:space="preserve"><value>Tilgjengelig. Velg den for å installere fra denne skaperen i stedet.</value></data>
+  <data name="Plugin_Source_LatestVersion" xml:space="preserve"><value>Nyeste</value></data>
+  <data name="Plugin_Btn_Activate" xml:space="preserve"><value>Bruk denne kilden</value></data>
+  <data name="Plugin_Confirm_SwitchCaption" xml:space="preserve"><value>Bytt kilde for programtillegget</value></data>
+  <data name="Plugin_Confirm_SwitchBody" xml:space="preserve"><value>Dette installerer programtillegget fra {0}, erstatter det som er installert nå, og lukker og starter Steam på nytt for å ta det i bruk. Fortsette?</value></data>
+  <data name="Plugin_Toast_SourceSwitched" xml:space="preserve"><value>Nå installert fra {0}. Steam starter på nytt for å laste det.</value></data>
+  <data name="Plugin_Err_UnknownSource" xml:space="preserve"><value>{0} er ikke en tilleggskilde som følger med denne versjonen, så ingenting ble installert.</value></data>
+  <data name="Plugin_SourceErr_NoRelease" xml:space="preserve"><value>Denne kilden har ikke publisert noen utgivelse, eller den kunne ikke nås.</value></data>
+  <data name="Plugin_SourceErr_NoTag" xml:space="preserve"><value>Denne kildens nyeste utgivelse har ingen versjonsmerkelapp.</value></data>
+  <data name="Plugin_SourceErr_MissingAsset" xml:space="preserve"><value>Denne kildens nyeste utgivelse mangler {0}.</value></data>
+  <data name="Plugin_SourceErr_ForeignAssetUrl" xml:space="preserve"><value>Denne kildens nedlasting av {0} peker utenfor sitt eget repositorium, så den ble avvist.</value></data>
+  <data name="Plugin_SourceErr_NoDigest" xml:space="preserve"><value>Denne kilden publiserer ingen SHA-256 for {0}, så innholdet kunne ikke bekreftes.</value></data>
+  <data name="Plugin_Err_ArchiveRejected" xml:space="preserve"><value>{0} ble avvist av sikkerhetskontrollen: {1}</value></data>
+  <data name="Download_Notice_Title" xml:space="preserve"><value>Installerer fra {0}</value></data>
+  <data name="Download_Notice_Body" xml:space="preserve"><value>{0} · versjon {1} · {2} fil(er)
+SHA-256 {3}
+Verifisert: {4}</value></data>
+  <data name="Download_Notice_Check_Pinned" xml:space="preserve"><value>repositorium festet</value></data>
+  <data name="Download_Notice_Check_Digest" xml:space="preserve"><value>SHA-256 stemte</value></data>
+  <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>arkiv skannet</value></data>
+  <data name="Download_Notice_Cancel" xml:space="preserve"><value>Avbryt</value></data>
+  <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Avbrutt før noe ble installert.</value></data>
+  <data name="Builds_RemoveGame" xml:space="preserve"><value>Fjern spill</value></data>
+  <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Tar dette spillet av Depot-listen. Sletter lua-filene og alle lagrede bygg.</value></data>
+  <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Fjern spill</value></data>
+  <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>Fjerne {0} ({1}) fra Depoter?
+
+Dette sletter lua-filen, eventuelle bygg-lua ved siden av og alle lagrede bygg. Det kan ikke angres.</value></data>
+  <data name="Builds_RemoveGame_Done" xml:space="preserve"><value>{0} ble fjernet fra Depoter.</value></data>
+  <data name="Builds_RemoveGame_Gone" xml:space="preserve"><value>{0} hadde ingen filer igjen — fjernet fra listen.</value></data>
+  <data name="Builds_RemoveGame_Failed" xml:space="preserve"><value>Kunne ikke fjerne {0} helt: {1}. Lukk Steam og prøv igjen.</value></data>
+  <data name="Auth_Err_SignInTimedOut" xml:space="preserve"><value>Innloggingen fikk tidsavbrudd — nettleseren kom aldri tilbake. Du kan også logge inn med en kode: kjør /login på Discord-serveren og lim inn koden i Innstillinger.</value></data>
+  <data name="Auth_Err_CallbackPortBusy" xml:space="preserve"><value>Kunne ikke starte innlogging: port 53789 er allerede i bruk. Lukk andre innloggingsforsøk og prøv igjen.</value></data>
+  <data name="Auth_ProviderUnavailable" xml:space="preserve"><value>Innloggingsserveren svarer ikke akkurat nå, så Discord-innloggingen i nettleseren får sannsynligvis tidsavbrudd. Du kan logge inn med en kode i stedet: kjør /login på Discord-serveren og skriv inn koden i Innstillinger.</value></data>
+  <data name="Auth_SignInCancelled" xml:space="preserve"><value>Innlogging avbrutt. Du kan prøve igjen eller bruke en manuell kode (kjør /login på Discord).</value></data>
+  <data name="Auth_TryAgain" xml:space="preserve"><value>Prøv igjen</value></data>
+  <data name="Auth_TryAnyway" xml:space="preserve"><value>Prøv likevel</value></data>
+  <data name="Auth_UseManualCode" xml:space="preserve"><value>Bruk manuell kode</value></data>
+  <data name="Auth_Cancel" xml:space="preserve"><value>Avbryt</value></data>
+  <data name="Protocol_SilentInstall_Title" xml:space="preserve"><value>Installasjonsforespørsel</value></data>
+  <data name="Protocol_SilentInstall_Body" xml:space="preserve"><value>En lenke ber LuaTools om å installere appen {0} i bakgrunnen. Fortsett bare hvis du startet dette selv.</value></data>
+  <data name="Cdp_Consent_Title" xml:space="preserve"><value>Aktivere broen for Steams butikkside?</value></data>
+  <data name="Cdp_Consent_Body" xml:space="preserve"><value>Programtillegget for butikksiden trenger Steams feilsøkingsbro, som LuaTools aktiverer ved å legge til en markør ved siden av steam.exe. Mens Steam kjører, åpner dette en uautentisert lokal port (127.0.0.1:8080).
+
+Alt annet som kjører på denne PC-en, kunne da styre Steams innebygde nettleser med den påloggede økten din. Aktiver dette bare hvis du stoler på programvaren som er installert på denne maskinen.
+
+Du kan avslå og fortsatt bruke resten av LuaTools; bare knappen «Add via LuaTools» i butikken blir utilgjengelig.
+
+Aktivere?</value></data>
+  <data name="Privacy_HttpMetadata_Title" xml:space="preserve"><value>Ukryptert oppslag</value></data>
+  <data name="Privacy_HttpMetadata_Body" xml:space="preserve"><value>Tilgjengeligheten til kilder sjekkes over vanlig HTTP ({0}), fordi den serveren ikke tilbyr fungerende HTTPS. Ingen konto eller nøkkel sendes, men alle på nettverksveien din kan se hvilken Steam-app du slo opp. Sett «WarnOnInsecureMetadata»: false i settings.json for å skjule dette.</value></data>
+  <data name="Theme_Guard_Title" xml:space="preserve"><value>Temaet ble ikke brukt</value></data>
+  <data name="Theme_Guard_Body" xml:space="preserve"><value>Amethyst-aksenten trådte ikke i kraft, noe som vanligvis betyr at WPF-UI-pakken har endret ressursnavnene sine. Appen fungerer normalt, men deler av den vil se feil ut. Se docs/CHANGELOG.md.</value></data>
+  <data name="App_DisplayName" xml:space="preserve"><value>LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Title" xml:space="preserve"><value>Dette er kanskje ikke LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Body" xml:space="preserve"><value>Denne binærfilen identifiserer seg ikke som LuaTools Amethyst. Hvis du har installert en offisiell LuaTools-utgivelse over den, er analyse og opplasting av Steam-nøkler aktive igjen. Installer på nytt fra Amethyst-repositoriet for å få personvernversjonen tilbake.</value></data>
+  <data name="Fixes_Toast_Blocked" xml:space="preserve"><value>Nedlasting avvist</value></data>
+  <data name="Fixes_Toast_Blocked_Body" xml:space="preserve"><value>{0} ble ikke installert fordi den feilet en sikkerhetskontroll — {1}</value></data>
+  <data name="About_Nav" xml:space="preserve"><value>Om</value></data>
+  <data name="About_Title" xml:space="preserve"><value>Om LuaTools Amethyst</value></data>
+  <data name="About_What_Header" xml:space="preserve"><value>Hva dette er</value></data>
+  <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst er en community-fork av LuaTools med fokus på personvern. Den fjerner analyse-pingen og nøkkelopplastingen som originalversjonen utfører, holder alle nedlastinger over HTTPS og leveres med det lilla Amethyst-temaet.</value></data>
+  <data name="About_Version_Header" xml:space="preserve"><value>Versjon</value></data>
+  <data name="About_Repo_Header" xml:space="preserve"><value>Repositorium</value></data>
+  <data name="About_Updates_Header" xml:space="preserve"><value>Oppdateringer</value></data>
+  <data name="About_Updates_Enabled" xml:space="preserve"><value>Automatiske oppdateringer er PÅ. LuaTools Amethyst sjekker repositoriet nedenfor ved oppstart og installerer oppdateringer i bakgrunnen.</value></data>
+  <data name="About_Updates_Disabled" xml:space="preserve"><value>Automatiske oppdateringer er AV — ingen oppdateringsforespørsel sendes. Legg til «AppUpdateRepos» i settings.json for å slå dem på, eller oppdater manuelt fra repositoriet nedenfor.</value></data>
+  <data name="About_Updates_Sources" xml:space="preserve"><value>Oppdateringskilde</value></data>
+  <data name="About_Check_Button" xml:space="preserve"><value>Se etter oppdateringer</value></data>
+  <data name="About_Check_Checking" xml:space="preserve"><value>Sjekker…</value></data>
+  <data name="About_Check_UpToDate" xml:space="preserve"><value>Du har den nyeste versjonen.</value></data>
+  <data name="About_Check_Found" xml:space="preserve"><value>En oppdatering ble lastet ned. Den tas i bruk når du lukker LuaTools.</value></data>
+  <data name="About_Check_Failed" xml:space="preserve"><value>Kunne ikke se etter oppdateringer. Sjekk tilkoblingen og det konfigurerte repositoriet.</value></data>
+  <data name="About_Check_Disabled" xml:space="preserve"><value>Automatiske oppdateringer er deaktivert — konfigurer «AppUpdateRepos» i settings.json først.</value></data>
+  <data name="About_OpenRepo" xml:space="preserve"><value>Åpne repositorium</value></data>
+  <data name="About_OpenSettings" xml:space="preserve"><value>Åpne mappen med settings.json</value></data>
+  <data name="About_Config_Header" xml:space="preserve"><value>Konfigurere oppdateringer manuelt</value></data>
+  <data name="About_Config_Body" xml:space="preserve"><value>Rediger settings.json i mappen nedenfor og legg til repositoriet du vil ha oppdateringer fra. Bare https://github.com/&lt;owner&gt;/&lt;repo&gt; godtas, og repositoriene til de opprinnelige LuaTools-utgivelsene avvises slik at en offisiell versjon aldri kan erstatte denne.</value></data>
+  <data name="Builds_Depot_Download" xml:space="preserve"><value>Last ned depoter…</value></data>
+  <data name="Builds_Depot_Unavailable" xml:space="preserve"><value>Nedlasting av depoter er ikke tilgjengelig i denne versjonen: den har ikke en verifisert pin for nedlastingsverktøyet.</value></data>
+  <data name="Builds_Depot_PickTitle" xml:space="preserve"><value>Last ned depotinnhold</value></data>
+  <data name="Builds_Depot_PickHint" xml:space="preserve"><value>Rå filer hentes anonymt rett fra Steams CDN. Ingenting installeres — depotene skrives til mappen nedenfor slik at du kan bruke dem som du vil.</value></data>
+  <data name="Builds_Depot_NoCandidates" xml:space="preserve"><value>Ingen av spillets depoter kan lastes ned. De trenger både en dekrypteringsnøkkel fra lua og et manifest publisert av Steam.</value></data>
+  <data name="Builds_Depot_NeedsKey" xml:space="preserve"><value>ingen nøkkel i denne versjonen</value></data>
+  <data name="Builds_Depot_NeedsManifest" xml:space="preserve"><value>Steam publiserer ikke noe manifest</value></data>
+  <data name="Builds_Depot_NeedsSignIn" xml:space="preserve"><value>logg inn for å hente manifestet</value></data>
+  <data name="Builds_Depot_SelectAll" xml:space="preserve"><value>Velg alle</value></data>
+  <data name="Builds_Depot_SelectNone" xml:space="preserve"><value>Tøm</value></data>
+  <data name="Builds_Depot_Destination" xml:space="preserve"><value>Målmappe</value></data>
+  <data name="Builds_Depot_Change" xml:space="preserve"><value>Endre…</value></data>
+  <data name="Builds_Depot_Space" xml:space="preserve"><value>{0} kreves · {1} ledig på {2}</value></data>
+  <data name="Builds_Depot_NotEnoughSpace" xml:space="preserve"><value>Ikke nok ledig plass på den stasjonen. Velg færre depoter eller en annen mappe.</value></data>
+  <data name="Builds_Depot_Confirm" xml:space="preserve"><value>Last ned {0} depot(er)</value></data>
+  <data name="Builds_Depot_Cancel" xml:space="preserve"><value>Avbryt</value></data>
+  <data name="Builds_Depot_Downloading" xml:space="preserve"><value>Depot {0} av {1} · {2}</value></data>
+  <data name="Builds_Depot_Phase_PreAllocating" xml:space="preserve"><value>reserverer diskplass</value></data>
+  <data name="Builds_Depot_Phase_Validating" xml:space="preserve"><value>sjekker eksisterende filer</value></data>
+  <data name="Builds_Depot_Phase_FetchingManifest" xml:space="preserve"><value>henter manifest</value></data>
+  <data name="Builds_Depot_Phase_Downloading" xml:space="preserve"><value>laster ned</value></data>
+  <data name="Builds_Depot_Done" xml:space="preserve"><value>Lastet ned {0} depot(er) til {1}</value></data>
+  <data name="Builds_Depot_OpenFolder" xml:space="preserve"><value>Åpne mappe</value></data>
+  <data name="Builds_Depot_CleanUp_Title" xml:space="preserve"><value>Fjerne den delvise nedlastingen?</value></data>
+  <data name="Builds_Depot_CleanUp_Body" xml:space="preserve"><value>Nedlastingen ble avbrutt etter at {0} fil(er) ble opprettet i {1}. Slette bare de filene? Det som allerede lå der, blir stående urørt.</value></data>
+  <data name="Builds_Depot_CleanUp_Failed" xml:space="preserve"><value>Noen filer kunne ikke slettes — de kan fortsatt være i bruk. Prøv igjen om litt.</value></data>
+  <data name="Depot_Err_ToolNotPinned" xml:space="preserve"><value>Nedlasting av depoter er slått av i denne versjonen fordi den ikke har en verifisert pin for nedlastingsverktøyet.</value></data>
+  <data name="Depot_Err_Tool" xml:space="preserve"><value>Depotnedlasteren kunne ikke hentes, eller det som kom, besto ikke verifiseringen.</value></data>
+  <data name="Depot_Err_SteamNotFound" xml:space="preserve"><value>Fant ikke Steam-plasseringen — angi den i Innstillinger.</value></data>
+  <data name="Depot_Err_NoKeys" xml:space="preserve"><value>Fant ingen dekrypteringsnøkler for depoter for dette spillet.</value></data>
+  <data name="Depot_Err_NoKeyFor" xml:space="preserve"><value>Depot {0} har ingen brukbar dekrypteringsnøkkel.</value></data>
+  <data name="Depot_Err_BadKey" xml:space="preserve"><value>Nøkkelen som er lagret for depot {0}, passer ikke til manifestet.</value></data>
+  <data name="Depot_Err_NoManifest" xml:space="preserve"><value>Manifestet for det depotet kunne ikke hentes.</value></data>
+  <data name="Depot_Err_SignIn" xml:space="preserve"><value>Logg inn for å hente et manifest som Steam ikke allerede har på denne maskinen.</value></data>
+  <data name="Depot_Err_NoSpace" xml:space="preserve"><value>Ikke nok diskplass: {0} kreves, {1} ledig.</value></data>
+  <data name="Depot_Err_Failed" xml:space="preserve"><value>Depot {0} mislyktes: {1}</value></data>
+  <data name="Builds_Depot_Queued" xml:space="preserve"><value>Sendte {0} depot(er) til Nedlastinger.</value></data>
+  <data name="Nav_Downloads" xml:space="preserve"><value>Nedlastinger</value></data>
+  <data name="Downloads_Title" xml:space="preserve"><value>Nedlastinger</value></data>
+  <data name="Downloads_Subtitle" xml:space="preserve"><value>Alt appen henter akkurat nå, og det den hentet før. Manifester og depotinnhold deler denne køen.</value></data>
+  <data name="Downloads_Empty" xml:space="preserve"><value>Ingenting er lastet ned ennå. Å legge til et spill fra siden Legg til, eller hente depotinnhold fra siden Depoter, vil vise det her.</value></data>
+  <data name="Downloads_Section_Active" xml:space="preserve"><value>Pågår</value></data>
+  <data name="Downloads_Section_History" xml:space="preserve"><value>Historikk</value></data>
+  <data name="Downloads_ActionRequired" xml:space="preserve"><value>HANDLING KREVES</value></data>
+  <data name="Downloads_Of" xml:space="preserve"><value>{0} av {1}</value></data>
+  <data name="Downloads_Eta" xml:space="preserve"><value>{0} igjen</value></data>
+  <data name="Downloads_Source_Depots" xml:space="preserve"><value>{0} depot(er)</value></data>
+  <data name="Downloads_Status_Queued" xml:space="preserve"><value>I kø</value></data>
+  <data name="Downloads_Status_Downloading" xml:space="preserve"><value>Laster ned</value></data>
+  <data name="Downloads_Status_AwaitingConfirm" xml:space="preserve"><value>Venter på deg</value></data>
+  <data name="Downloads_Status_Installing" xml:space="preserve"><value>Installerer</value></data>
+  <data name="Downloads_Status_Paused" xml:space="preserve"><value>Satt på pause</value></data>
+  <data name="Downloads_Status_Verifying" xml:space="preserve"><value>Verifiserer</value></data>
+  <data name="Downloads_Status_Completed" xml:space="preserve"><value>Ferdig</value></data>
+  <data name="Downloads_Status_Failed" xml:space="preserve"><value>Mislyktes</value></data>
+  <data name="Downloads_Status_Cancelled" xml:space="preserve"><value>Avbrutt</value></data>
+  <data name="Downloads_Action_Review" xml:space="preserve"><value>Se gjennom</value></data>
+  <data name="Downloads_Action_Pause" xml:space="preserve"><value>Pause</value></data>
+  <data name="Downloads_Action_Resume" xml:space="preserve"><value>Fortsett</value></data>
+  <data name="Downloads_Action_MoveUp" xml:space="preserve"><value>Flytt opp</value></data>
+  <data name="Downloads_Action_MoveDown" xml:space="preserve"><value>Flytt ned</value></data>
+  <data name="Downloads_Action_Cancel" xml:space="preserve"><value>Avbryt</value></data>
+  <data name="Downloads_Action_Retry" xml:space="preserve"><value>Prøv igjen</value></data>
+  <data name="Downloads_Action_Remove" xml:space="preserve"><value>Fjern</value></data>
+  <data name="Downloads_Action_ClearHistory" xml:space="preserve"><value>Tøm historikk</value></data>
+  <data name="Downloads_Action_CopyAppId" xml:space="preserve"><value>Kopier App ID</value></data>
+  <data name="Downloads_Action_ShowInFolder" xml:space="preserve"><value>Vis i mappe</value></data>
+  <data name="Downloads_ClearHistory_Confirm" xml:space="preserve"><value>Fjerne alle {0} oppføringene fra nedlastingshistorikken? Selve filene røres ikke.</value></data>
+  <data name="Downloads_Err_Interrupted" xml:space="preserve"><value>Avbrutt da appen ble lukket.</value></data>
+  <data name="Downloads_Err_Cancelled" xml:space="preserve"><value>Avbrutt.</value></data>
+  <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>Utklippstavlen brukes av et annet program — ingenting ble kopiert.</value></data>
+  <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Den plasseringen finnes ikke lenger: {0}</value></data>
+  <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>Avviste «{0}»: et manifest må hete &lt;depot&gt;_&lt;manifest&gt;.manifest (bare sifre).</value></data>
+  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>CloudRedirects kilderepositorium er utilgjengelig. Funksjonen er midlertidig slått av.</value></data>
+  <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Lagrede bygg (ingen aktiv lua)</value></data>
+  <data name="Settings_Maintenance_Title" xml:space="preserve"><value>VEDLIKEHOLD</value></data>
+  <data name="Settings_Backups_Title" xml:space="preserve"><value>Opphopede sikkerhetskopier</value></data>
+  <data name="Settings_Backups_Subtitle" xml:space="preserve"><value>Sikkerhetskopimapper opprettet ved installasjon av AmethystTool eller fjerning av programtillegg. Å slette dem frigjør plass i Steam-mappen.</value></data>
+  <data name="Settings_Backups_Empty" xml:space="preserve"><value>Fant ingen sikkerhetskopier.</value></data>
+  <data name="Settings_Backups_NoSteam" xml:space="preserve"><value>Angi Steam-plasseringen i Innstillinger for å se sikkerhetskopier.</value></data>
+  <data name="Settings_Backups_Refresh" xml:space="preserve"><value>Oppdater</value></data>
+  <data name="Settings_Backups_DeleteSelected" xml:space="preserve"><value>Slett valgte</value></data>
+  <data name="Settings_Backups_DeleteOlder" xml:space="preserve"><value>Slett eldre enn 30 dager</value></data>
+  <data name="Settings_Backups_Confirm_Title" xml:space="preserve"><value>Slette sikkerhetskopier?</value></data>
+  <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>Slette {0} element(er) ({1}) permanent? Du vil ikke kunne rulle tilbake tidligere AmethystTool-installasjoner eller fjerninger av programtillegg.</value></data>
+  <data name="Settings_Backups_Confirm_Delete" xml:space="preserve"><value>Slett</value></data>
+  <data name="Settings_Backups_Cancel" xml:space="preserve"><value>Avbryt</value></data>
+  <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>{0} element(er) slettet ({1} frigjort)</value></data>
+  <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>{0} element(er) kunne ikke slettes. Lukk Steam og prøv igjen.</value></data>
+  <data name="Settings_Backups_Column_Name" xml:space="preserve"><value>Navn</value></data>
+  <data name="Settings_Backups_Column_Type" xml:space="preserve"><value>Type</value></data>
+  <data name="Settings_Backups_Type_Folder" xml:space="preserve"><value>Mappe</value></data>
+  <data name="Settings_Backups_Type_File" xml:space="preserve"><value>Fil</value></data>
+  <data name="Settings_Backups_UnknownWarning" xml:space="preserve"><value>Ukjent sikkerhetskopi, verifiser før sletting</value></data>
+  <data name="Settings_Backups_Column_Date" xml:space="preserve"><value>Opprettet</value></data>
+  <data name="Settings_Backups_Column_Size" xml:space="preserve"><value>Størrelse</value></data>
+  <data name="Settings_Backups_Column_Files" xml:space="preserve"><value>Filer</value></data>
+  <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Lokal versjon (frakoblet)</value></data>
+  <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Ingen internettforbindelse. Bruker den lokalt installerte versjonen.</value></data>
+  <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Kan ikke laste ned en ny versjon uten internett.</value></data>
 </root>

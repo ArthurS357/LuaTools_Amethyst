@@ -586,4 +586,288 @@ Dit verwijdert de .lua-bestanden uit Steam\config\stplug-in. Herstart Steam daar
   <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools kon niet starten.&#10;&#10;{0}&#10;&#10;De details zijn weggeschreven naar:&#10;{1}</value></data>
   <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>Kon {0} bestand(en) niet naar de Steam-map schrijven — toegang geweigerd. Steam lijkt geïnstalleerd op een locatie waarvoor beheerdersrechten nodig zijn (bijv. Program Files). Sluit Steam en voer LuaTools één keer uit als beheerder om deze modus toe te passen.</value></data>
   <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>Kon {0} bestand(en) niet schrijven — sluit Steam en probeer het opnieuw.</value></data>
+  <data name="Nav_Plugin" xml:space="preserve"><value>Plug-in</value></data>
+  <data name="Settings_HubcapKeyRejected" xml:space="preserve"><value>Hubcap heeft die sleutel geweigerd. Controleer of hij volledig is gekopieerd en niet is verlopen.</value></data>
+  <data name="Settings_HubcapKeyOffline" xml:space="preserve"><value>Hubcap kon niet worden bereikt. Controleer je verbinding en probeer het opnieuw — de sleutel is niet gewijzigd.</value></data>
+  <data name="Settings_HubcapKeyRateLimited" xml:space="preserve"><value>Hubcap beperkt deze sleutel op dit moment. Probeer het zo meteen opnieuw.</value></data>
+  <data name="Settings_HubcapExpiryExpired" xml:space="preserve"><value>Je Hubcap-sleutel is verlopen op {0}. Valideer een nieuwe om Hubcap-bronnen te blijven gebruiken.</value></data>
+  <data name="Settings_HubcapExpiryToday" xml:space="preserve"><value>Je Hubcap-sleutel verloopt vandaag ({0}). Haal een nieuwe voordat hij niet meer werkt.</value></data>
+  <data name="Settings_HubcapExpirySoon" xml:space="preserve"><value>Je Hubcap-sleutel verloopt over {0} dagen ({1}). Haal een nieuwe voordat hij niet meer werkt.</value></data>
+  <data name="Hubcap_Err_KeyRejected" xml:space="preserve"><value>Je Hubcap-sleutel is ongeldig of verlopen.</value></data>
+  <data name="Hubcap_Err_DailyLimit" xml:space="preserve"><value>Je dagelijkse Hubcap-limiet is bereikt.</value></data>
+  <data name="Hubcap_Err_DailyLimitRetry" xml:space="preserve"><value>Je dagelijkse Hubcap-limiet is bereikt. Probeer het over ongeveer {0} opnieuw.</value></data>
+  <data name="Hubcap_Err_NoManifest" xml:space="preserve"><value>Er is geen Hubcap-manifest beschikbaar voor deze app.</value></data>
+  <data name="Hubcap_Err_Status" xml:space="preserve"><value>Hubcap-download mislukt ({0}).</value></data>
+  <data name="Hubcap_Err_Unreachable" xml:space="preserve"><value>Hubcap kon niet worden bereikt. Controleer je verbinding en probeer het opnieuw.</value></data>
+  <data name="Hubcap_Err_Generic" xml:space="preserve"><value>Hubcap-download mislukt.</value></data>
+  <data name="Hubcap_Wait_Seconds" xml:space="preserve"><value>{0} seconden</value></data>
+  <data name="Hubcap_Wait_Minutes" xml:space="preserve"><value>{0} minuten</value></data>
+  <data name="Hubcap_Wait_Hours" xml:space="preserve"><value>{0} uur</value></data>
+  <data name="Settings_Accent_Hint" xml:space="preserve"><value>Geeft de hele app een nieuwe kleur — venster, kaarten en tekst, niet alleen de accenten. Kies een kleur en kies dan Toepassen.</value></data>
+  <data name="Settings_Accent_Amethyst" xml:space="preserve"><value>Amethyst</value></data>
+  <data name="Startup_Title" xml:space="preserve"><value>Opstarten</value></data>
+  <data name="Startup_Steam_Closing" xml:space="preserve"><value>Steam wordt afgesloten zodat LuaTools aan de bestanden kan werken…</value></data>
+  <data name="Startup_Steam_Closed" xml:space="preserve"><value>Steam is afgesloten.</value></data>
+  <data name="Startup_Steam_Stubborn_Title" xml:space="preserve"><value>Steam is niet afgesloten</value></data>
+  <data name="Startup_Steam_Stubborn_Body" xml:space="preserve"><value>Steam kreeg het verzoek om af te sluiten, maar draait nog.
+
+Afsluiten forceren? Alles wat Steam nog niet heeft opgeslagen kan verloren gaan. Kies Nee om het te laten draaien — LuaTools kan de bestanden van Steam niet wijzigen zolang het actief is.</value></data>
+  <data name="Startup_Steam_LeftRunning" xml:space="preserve"><value>Steam draait nog, dus er is niets gewijzigd. Sluit Steam af en start LuaTools opnieuw als je klaar bent.</value></data>
+  <data name="Startup_Steam_Reopen_Body" xml:space="preserve"><value>LuaTools is klaar. Steam weer openen?</value></data>
+  <data name="Startup_Steam_Reopen_Action" xml:space="preserve"><value>Steam openen</value></data>
+  <data name="Startup_Steam_ReopenFailed" xml:space="preserve"><value>Steam kon niet worden gestart — open het via de eigen snelkoppeling.</value></data>
+  <data name="Guard_Title" xml:space="preserve"><value>Steam draait al</value></data>
+  <data name="Guard_Body" xml:space="preserve"><value>LuaTools moet Steam zelf starten (of afgesloten aantreffen) zodat de hook zich kan koppelen. Steam nu opnieuw starten?</value></data>
+  <data name="Guard_Restart" xml:space="preserve"><value>Steam opnieuw starten</value></data>
+  <data name="Guard_Exit" xml:space="preserve"><value>Afsluiten</value></data>
+  <data name="Guard_Continue" xml:space="preserve"><value>Toch doorgaan (niet aanbevolen)</value></data>
+  <data name="Guard_ContinueWarning" xml:space="preserve"><value>Steam bleef draaien, dus de hook kan zich mogelijk niet koppelen. Start Steam dan opnieuw via LuaTools.</value></data>
+  <data name="Manage_Action_SaveBackup" xml:space="preserve"><value>Opgeslagen spel back-uppen…</value></data>
+  <data name="Saves_Title" xml:space="preserve"><value>Back-ups van opgeslagen spellen</value></data>
+  <data name="Saves_Create" xml:space="preserve"><value>Nieuwe back-up maken</value></data>
+  <data name="Saves_Restore" xml:space="preserve"><value>Herstellen</value></data>
+  <data name="Saves_Delete" xml:space="preserve"><value>Verwijderen</value></data>
+  <data name="Saves_Close" xml:space="preserve"><value>Sluiten</value></data>
+  <data name="Saves_Empty" xml:space="preserve"><value>Nog geen back-ups van dit spel.</value></data>
+  <data name="Saves_Locations_Title" xml:space="preserve"><value>Gevonden opslaglocaties</value></data>
+  <data name="Saves_Locations_None" xml:space="preserve"><value>Er is geen map met opgeslagen spellen gevonden voor dit spel.</value></data>
+  <data name="Saves_Location_Subtitle" xml:space="preserve"><value>{0} · {1} bestand(en)</value></data>
+  <data name="Saves_AddFolder" xml:space="preserve"><value>Map handmatig toevoegen…</value></data>
+  <data name="Saves_Confirm_NoneFound" xml:space="preserve"><value>We konden geen opgeslagen spellen voor dit spel vinden. Wil je handmatig een map kiezen?</value></data>
+  <data name="Saves_PickFolder" xml:space="preserve"><value>Map selecteren</value></data>
+  <data name="Saves_PickFolderTitle" xml:space="preserve"><value>Kies de map waarin dit spel zijn opgeslagen spellen bewaart</value></data>
+  <data name="Saves_Toast_PickOne" xml:space="preserve"><value>Vink minstens één opslaglocatie aan om een back-up van te maken.</value></data>
+  <data name="Saves_Toast_FolderRefused" xml:space="preserve"><value>Die map kan niet worden gebruikt (een stationsroot, een Windows- of Program Files-map, of geen volledig pad).</value></data>
+  <data name="Manage_SaveIcon_Tooltip" xml:space="preserve"><value>Opgeslagen spellen gevonden in: {0}</value></data>
+  <data name="Settings_CustomSaveFolders" xml:space="preserve"><value>Aangepaste mappen voor opgeslagen spellen</value></data>
+  <data name="Settings_CustomSaveFolders_Hint" xml:space="preserve"><value>Voor spellen waarvan de app de opgeslagen spellen niet zelf kan vinden. Voer de AppID van het spel in en kies de map; die wordt dan samen met dat spel geback-upt en is de enige extra plek waar een herstelactie mag schrijven.</value></data>
+  <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
+  <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Map toevoegen…</value></data>
+  <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Verwijderen</value></data>
+  <data name="Saves_Note" xml:space="preserve"><value>Maakt een back-up van de map per spel van Steam (userdata). Spellen die hun voortgang in Documenten of AppData bewaren, zijn niet inbegrepen.</value></data>
+  <data name="Saves_Toast_Created" xml:space="preserve"><value>Back-up gemaakt van {0} bestand(en), {1}.</value></data>
+  <data name="Saves_Toast_Restored" xml:space="preserve"><value>{0} bestand(en) hersteld. Een kopie van de vorige opgeslagen spellen is bewaard.</value></data>
+  <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Back-up verwijderd.</value></data>
+  <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Er zijn geen opgeslagen spellen gevonden voor dit spel. Voeg de map waarin het ze bewaart toe via “Map handmatig toevoegen…”.</value></data>
+  <data name="Saves_Toast_SteamNotFound" xml:space="preserve"><value>Steam-map niet gevonden. Stel de locatie in bij Instellingen.</value></data>
+  <data name="Saves_Toast_Refused" xml:space="preserve"><value>Geweigerd: de back-up hoort niet bij dit spel of bevat onveilige paden. Er is niets gewijzigd.</value></data>
+  <data name="Saves_Toast_Failed" xml:space="preserve"><value>De bewerking is mislukt. Zie het logboek voor details.</value></data>
+  <data name="Saves_Toast_NoSpace" xml:space="preserve"><value>Niet genoeg vrije schijfruimte voor de back-up ({0} nodig, marge inbegrepen). Er is niets geschreven.</value></data>
+  <data name="Saves_Confirm_Restore" xml:space="preserve"><value>{0} herstellen? De huidige opgeslagen spellen van dit spel worden overschreven; eerst wordt er een kopie van bewaard.</value></data>
+  <data name="Saves_Confirm_SteamOpen" xml:space="preserve"><value>Steam is geopend. Om veilig te herstellen (en te voorkomen dat Steam Cloud de bestanden overschrijft), moet Steam zijn afgesloten.</value></data>
+  <data name="Saves_CloseSteamContinue" xml:space="preserve"><value>Steam sluiten en doorgaan</value></data>
+  <data name="Saves_Toast_SteamStillRunning" xml:space="preserve"><value>Steam is niet afgesloten. Sluit het handmatig af en probeer het opnieuw. Er is niets hersteld.</value></data>
+  <data name="Saves_Confirm_Delete" xml:space="preserve"><value>{0} verwijderen? Dit kan niet ongedaan worden gemaakt.</value></data>
+  <data name="Manage_Badge_Installed" xml:space="preserve"><value>Geïnstalleerd</value></data>
+  <data name="Manage_Action_ImportSave" xml:space="preserve"><value>Opgeslagen spel importeren (.zip)…</value></data>
+  <data name="Saves_Import" xml:space="preserve"><value>Opgeslagen spel importeren…</value></data>
+  <data name="Saves_Import_PickTitle" xml:space="preserve"><value>Kies een back-up van opgeslagen spellen (.zip)</value></data>
+  <data name="Saves_Import_Filter" xml:space="preserve"><value>Back-up van opgeslagen spellen (*.zip)|*.zip</value></data>
+  <data name="Saves_Confirm_Import" xml:space="preserve"><value>{0} importeren? De huidige opgeslagen spellen van dit spel worden overschreven; eerst wordt er een kopie van bewaard.</value></data>
+  <data name="Saves_Toast_Imported" xml:space="preserve"><value>{0} bestand(en) geïmporteerd. Een kopie van de vorige opgeslagen spellen is bewaard.</value></data>
+  <data name="Saves_Confirm_NewFolder" xml:space="preserve"><value>De app maakt een map met de naam van dit spel om de opgeslagen spellen te ordenen. Doorgaan?</value></data>
+  <data name="Saves_Confirm_Ok" xml:space="preserve"><value>OK</value></data>
+  <data name="Saves_Toast_SavedAt" xml:space="preserve"><value>Back-up succesvol opgeslagen in: {0}</value></data>
+  <data name="Settings_SaveBackupFolder" xml:space="preserve"><value>Map voor back-ups van opgeslagen spellen</value></data>
+  <data name="Settings_SaveBackupFolder_Hint" xml:space="preserve"><value>Waar “Opgeslagen spel back-uppen…” zijn zipbestanden schrijft. Standaard: %AppData%\LuaToolsGui\SaveBackups.</value></data>
+  <data name="Settings_ChooseSaveBackupFolder" xml:space="preserve"><value>Kies de map voor back-ups van opgeslagen spellen</value></data>
+  <data name="About_Changelog_Title" xml:space="preserve"><value>Wat is er nieuw</value></data>
+  <data name="About_Changelog_Show" xml:space="preserve"><value>Wijzigingslogboek tonen</value></data>
+  <data name="About_Changelog_Hide" xml:space="preserve"><value>Wijzigingslogboek verbergen</value></data>
+  <data name="Home_Privacy_UpdatesOff" xml:space="preserve"><value>Zelf bijwerken uit — deze build haalt niets uit zichzelf op</value></data>
+  <data name="Home_Privacy_UpdatesOn" xml:space="preserve"><value>Zelf bijwerken aan — releases worden bij het opstarten gecontroleerd</value></data>
+  <data name="Home_Action_Mode_Tip" xml:space="preserve"><value>Kies welke backend de Steam-proxy-DLL's beheert</value></data>
+  <data name="Home_Action_Plugin" xml:space="preserve"><value>Plug-in</value></data>
+  <data name="Home_Action_Plugin_Tip" xml:space="preserve"><value>De plug-in voor de winkelpagina installeren of bijwerken</value></data>
+  <data name="Home_Action_Updates_Tip" xml:space="preserve"><value>Open Info om op een nieuwe versie te controleren</value></data>
+  <data name="Mode_Warn_Telemetry" xml:space="preserve"><value>Oorspronkelijk project (madoiscool). Waarschuwing: bevat telemetrie en het DonateKeys-systeem.</value></data>
+  <data name="Manage_Sort_InstalledFirst" xml:space="preserve"><value>Geïnstalleerd eerst</value></data>
+  <data name="Add_Warn_NoManifests_Title" xml:space="preserve"><value>Waarschuwing</value></data>
+  <data name="Add_Warn_NoManifests" xml:space="preserve"><value>Deze bron heeft geen manifests geleverd voor {0}. De download in Steam kan mislukken. We raden de bron {1} aan.</value></data>
+  <data name="Plugin_Row_Source" xml:space="preserve"><value>Bron</value></data>
+  <data name="Plugin_Sources_Header" xml:space="preserve"><value>Plug-inbron</value></data>
+  <data name="Plugin_Sources_Subtitle" xml:space="preserve"><value>Elke maker publiceert zijn eigen build van de plug-in. Kies degene die je geïnstalleerd wilt hebben — LuaTools installeert alleen de actieve bron en schakelt nooit uit zichzelf over.</value></data>
+  <data name="Plugin_Source_By" xml:space="preserve"><value>door {0}</value></data>
+  <data name="Plugin_Source_Active" xml:space="preserve"><value>Actief</value></data>
+  <data name="Plugin_Source_Default" xml:space="preserve"><value>Standaard</value></data>
+  <data name="Plugin_Source_Installed" xml:space="preserve"><value>Geïnstalleerd vanuit deze bron.</value></data>
+  <data name="Plugin_Source_ActiveNotInstalled" xml:space="preserve"><value>Actieve bron — nog niet geïnstalleerd.</value></data>
+  <data name="Plugin_Source_Available" xml:space="preserve"><value>Beschikbaar. Kies deze om in plaats daarvan van deze maker te installeren.</value></data>
+  <data name="Plugin_Source_LatestVersion" xml:space="preserve"><value>Nieuwste</value></data>
+  <data name="Plugin_Btn_Activate" xml:space="preserve"><value>Deze bron gebruiken</value></data>
+  <data name="Plugin_Confirm_SwitchCaption" xml:space="preserve"><value>Plug-inbron wisselen</value></data>
+  <data name="Plugin_Confirm_SwitchBody" xml:space="preserve"><value>Hiermee wordt de plug-in van {0} geïnstalleerd, ter vervanging van wat nu is geïnstalleerd, en wordt Steam afgesloten en opnieuw gestart om hem toe te passen. Doorgaan?</value></data>
+  <data name="Plugin_Toast_SourceSwitched" xml:space="preserve"><value>Nu geïnstalleerd vanuit {0}. Steam wordt opnieuw gestart om hem te laden.</value></data>
+  <data name="Plugin_Err_UnknownSource" xml:space="preserve"><value>{0} is geen plug-inbron die deze build meelevert, dus er is niets geïnstalleerd.</value></data>
+  <data name="Plugin_SourceErr_NoRelease" xml:space="preserve"><value>Deze bron heeft geen release gepubliceerd of was niet te bereiken.</value></data>
+  <data name="Plugin_SourceErr_NoTag" xml:space="preserve"><value>De nieuwste release van deze bron heeft geen versietag.</value></data>
+  <data name="Plugin_SourceErr_MissingAsset" xml:space="preserve"><value>In de nieuwste release van deze bron ontbreekt {0}.</value></data>
+  <data name="Plugin_SourceErr_ForeignAssetUrl" xml:space="preserve"><value>De download voor {0} van deze bron verwijst buiten de eigen repository en is daarom geweigerd.</value></data>
+  <data name="Plugin_SourceErr_NoDigest" xml:space="preserve"><value>Deze bron publiceert geen SHA-256 voor {0}, dus de inhoud kon niet worden aangetoond.</value></data>
+  <data name="Plugin_Err_ArchiveRejected" xml:space="preserve"><value>{0} is geweigerd door de veiligheidscontrole: {1}</value></data>
+  <data name="Download_Notice_Title" xml:space="preserve"><value>Installeren vanuit {0}</value></data>
+  <data name="Download_Notice_Body" xml:space="preserve"><value>{0} · versie {1} · {2} bestand(en)
+SHA-256 {3}
+Geverifieerd: {4}</value></data>
+  <data name="Download_Notice_Check_Pinned" xml:space="preserve"><value>repository vastgezet</value></data>
+  <data name="Download_Notice_Check_Digest" xml:space="preserve"><value>SHA-256 komt overeen</value></data>
+  <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>archief gecontroleerd</value></data>
+  <data name="Download_Notice_Cancel" xml:space="preserve"><value>Annuleren</value></data>
+  <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Geannuleerd voordat er iets is geïnstalleerd.</value></data>
+  <data name="Builds_RemoveGame" xml:space="preserve"><value>Spel verwijderen</value></data>
+  <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Haalt dit spel van de Depots-lijst. Verwijdert de lua-bestanden en alle opgeslagen builds.</value></data>
+  <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Spel verwijderen</value></data>
+  <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>{0} ({1}) uit Depots verwijderen?
+
+Hiermee worden het lua-bestand, eventuele build-lua's ernaast en alle opgeslagen builds verwijderd. Dit kan niet ongedaan worden gemaakt.</value></data>
+  <data name="Builds_RemoveGame_Done" xml:space="preserve"><value>{0} uit Depots verwijderd.</value></data>
+  <data name="Builds_RemoveGame_Gone" xml:space="preserve"><value>{0} had geen bestanden meer — van de lijst verwijderd.</value></data>
+  <data name="Builds_RemoveGame_Failed" xml:space="preserve"><value>{0} kon niet volledig worden verwijderd: {1}. Sluit Steam af en probeer het opnieuw.</value></data>
+  <data name="Auth_Err_SignInTimedOut" xml:space="preserve"><value>Time-out van de login — de browser kwam nooit terug. Je kunt ook inloggen met een code: voer /login uit op de Discord-server en plak de code bij Instellingen.</value></data>
+  <data name="Auth_Err_CallbackPortBusy" xml:space="preserve"><value>Login kon niet worden gestart: poort 53789 is al in gebruik. Sluit andere inlogpogingen en probeer het opnieuw.</value></data>
+  <data name="Auth_ProviderUnavailable" xml:space="preserve"><value>De loginserver reageert op dit moment niet, dus de Discord-login in de browser loopt waarschijnlijk op een time-out. Je kunt in plaats daarvan inloggen met een code: voer /login uit op de Discord-server en voer de code in bij Instellingen.</value></data>
+  <data name="Auth_SignInCancelled" xml:space="preserve"><value>Login geannuleerd. Je kunt het opnieuw proberen of een handmatige code gebruiken (voer /login uit op Discord).</value></data>
+  <data name="Auth_TryAgain" xml:space="preserve"><value>Opnieuw proberen</value></data>
+  <data name="Auth_TryAnyway" xml:space="preserve"><value>Toch proberen</value></data>
+  <data name="Auth_UseManualCode" xml:space="preserve"><value>Handmatige code gebruiken</value></data>
+  <data name="Auth_Cancel" xml:space="preserve"><value>Annuleren</value></data>
+  <data name="Protocol_SilentInstall_Title" xml:space="preserve"><value>Installatieverzoek</value></data>
+  <data name="Protocol_SilentInstall_Body" xml:space="preserve"><value>Een link vraagt LuaTools om app {0} op de achtergrond te installeren. Ga alleen door als je dit zelf hebt gestart.</value></data>
+  <data name="Cdp_Consent_Title" xml:space="preserve"><value>De brug voor de Steam-winkelpagina inschakelen?</value></data>
+  <data name="Cdp_Consent_Body" xml:space="preserve"><value>De plug-in voor de winkelpagina heeft de debugbrug van Steam nodig, die LuaTools inschakelt door een markering naast steam.exe te plaatsen. Zolang Steam draait, opent dit een niet-geauthenticeerde lokale poort (127.0.0.1:8080).
+
+Al het andere dat op deze pc draait, kan dan de ingebouwde browser van Steam besturen met jouw aangemelde sessie. Schakel dit alleen in als je de software op deze machine vertrouwt.
+
+Je kunt weigeren en de rest van LuaTools blijven gebruiken; alleen de knop "Add via LuaTools" in de winkel is dan niet beschikbaar.
+
+Inschakelen?</value></data>
+  <data name="Privacy_HttpMetadata_Title" xml:space="preserve"><value>Onversleutelde opzoeking</value></data>
+  <data name="Privacy_HttpMetadata_Body" xml:space="preserve"><value>De beschikbaarheid van bronnen wordt gecontroleerd via gewoon HTTP ({0}), omdat die server geen werkende HTTPS biedt. Er wordt geen account of sleutel verzonden, maar iedereen op je netwerkpad kan zien welke Steam-app je hebt opgezocht. Stel "WarnOnInsecureMetadata": false in in settings.json om dit te verbergen.</value></data>
+  <data name="Theme_Guard_Title" xml:space="preserve"><value>Thema niet toegepast</value></data>
+  <data name="Theme_Guard_Body" xml:space="preserve"><value>Het Amethyst-accent is niet doorgekomen, wat meestal betekent dat het WPF-UI-pakket zijn resourcenamen heeft gewijzigd. De app werkt normaal, maar onderdelen ervan zien er verkeerd uit. Zie docs/CHANGELOG.md.</value></data>
+  <data name="App_DisplayName" xml:space="preserve"><value>LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Title" xml:space="preserve"><value>Dit is mogelijk niet LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Body" xml:space="preserve"><value>Dit programma meldt zich niet als LuaTools Amethyst. Als je er een officiële LuaTools-release overheen hebt geïnstalleerd, zijn analyse en de upload van Steam-sleutels weer actief. Installeer opnieuw vanuit de Amethyst-repository om de privacybuild terug te krijgen.</value></data>
+  <data name="Fixes_Toast_Blocked" xml:space="preserve"><value>Download geweigerd</value></data>
+  <data name="Fixes_Toast_Blocked_Body" xml:space="preserve"><value>{0} is niet geïnstalleerd omdat het een veiligheidscontrole niet doorstond — {1}</value></data>
+  <data name="About_Nav" xml:space="preserve"><value>Info</value></data>
+  <data name="About_Title" xml:space="preserve"><value>Over LuaTools Amethyst</value></data>
+  <data name="About_What_Header" xml:space="preserve"><value>Wat dit is</value></data>
+  <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst is een community-fork van LuaTools, gericht op privacy. Hij verwijdert de analyse-ping en de sleutelupload die de originele build uitvoert, houdt elke download via HTTPS en levert het paarse Amethyst-thema mee.</value></data>
+  <data name="About_Version_Header" xml:space="preserve"><value>Versie</value></data>
+  <data name="About_Repo_Header" xml:space="preserve"><value>Repository</value></data>
+  <data name="About_Updates_Header" xml:space="preserve"><value>Updates</value></data>
+  <data name="About_Updates_Enabled" xml:space="preserve"><value>Automatische updates staan AAN. LuaTools Amethyst controleert bij het opstarten de onderstaande repository en installeert updates op de achtergrond.</value></data>
+  <data name="About_Updates_Disabled" xml:space="preserve"><value>Automatische updates staan UIT — er wordt geen updateverzoek gedaan. Voeg "AppUpdateRepos" toe aan settings.json om ze in te schakelen, of werk handmatig bij via de onderstaande repository.</value></data>
+  <data name="About_Updates_Sources" xml:space="preserve"><value>Updatebron</value></data>
+  <data name="About_Check_Button" xml:space="preserve"><value>Op updates controleren</value></data>
+  <data name="About_Check_Checking" xml:space="preserve"><value>Bezig met controleren…</value></data>
+  <data name="About_Check_UpToDate" xml:space="preserve"><value>Je hebt de nieuwste versie.</value></data>
+  <data name="About_Check_Found" xml:space="preserve"><value>Er is een update gedownload. Deze wordt toegepast wanneer je LuaTools sluit.</value></data>
+  <data name="About_Check_Failed" xml:space="preserve"><value>Kon niet op updates controleren. Controleer je verbinding en de geconfigureerde repository.</value></data>
+  <data name="About_Check_Disabled" xml:space="preserve"><value>Automatische updates zijn uitgeschakeld — configureer eerst "AppUpdateRepos" in settings.json.</value></data>
+  <data name="About_OpenRepo" xml:space="preserve"><value>Repository openen</value></data>
+  <data name="About_OpenSettings" xml:space="preserve"><value>Map van settings.json openen</value></data>
+  <data name="About_Config_Header" xml:space="preserve"><value>Updates handmatig configureren</value></data>
+  <data name="About_Config_Body" xml:space="preserve"><value>Bewerk settings.json in de onderstaande map en voeg de repository toe waarvan je updates wilt ontvangen. Alleen https://github.com/&lt;owner&gt;/&lt;repo&gt; wordt geaccepteerd, en de repositories van de officiële LuaTools-releases worden geweigerd zodat een officiële build deze nooit kan vervangen.</value></data>
+  <data name="Builds_Depot_Download" xml:space="preserve"><value>Depots downloaden…</value></data>
+  <data name="Builds_Depot_Unavailable" xml:space="preserve"><value>Depots downloaden is niet beschikbaar in deze build: er is geen geverifieerde pin voor de downloadtool.</value></data>
+  <data name="Builds_Depot_PickTitle" xml:space="preserve"><value>Depotinhoud downloaden</value></data>
+  <data name="Builds_Depot_PickHint" xml:space="preserve"><value>Ruwe bestanden worden anoniem rechtstreeks van het CDN van Steam gehaald. Er wordt niets geïnstalleerd — de depots worden naar de onderstaande map geschreven zodat je ze naar believen kunt gebruiken.</value></data>
+  <data name="Builds_Depot_NoCandidates" xml:space="preserve"><value>Geen enkel depot van dit spel kan worden gedownload. Ze hebben zowel een ontsleutelingssleutel uit de lua als een door Steam gepubliceerd manifest nodig.</value></data>
+  <data name="Builds_Depot_NeedsKey" xml:space="preserve"><value>geen sleutel in deze build</value></data>
+  <data name="Builds_Depot_NeedsManifest" xml:space="preserve"><value>Steam publiceert geen manifest</value></data>
+  <data name="Builds_Depot_NeedsSignIn" xml:space="preserve"><value>log in om het manifest op te halen</value></data>
+  <data name="Builds_Depot_SelectAll" xml:space="preserve"><value>Alles selecteren</value></data>
+  <data name="Builds_Depot_SelectNone" xml:space="preserve"><value>Wissen</value></data>
+  <data name="Builds_Depot_Destination" xml:space="preserve"><value>Doelmap</value></data>
+  <data name="Builds_Depot_Change" xml:space="preserve"><value>Wijzigen…</value></data>
+  <data name="Builds_Depot_Space" xml:space="preserve"><value>{0} nodig · {1} vrij op {2}</value></data>
+  <data name="Builds_Depot_NotEnoughSpace" xml:space="preserve"><value>Niet genoeg vrije ruimte op die schijf. Kies minder depots of een andere map.</value></data>
+  <data name="Builds_Depot_Confirm" xml:space="preserve"><value>{0} depot(s) downloaden</value></data>
+  <data name="Builds_Depot_Cancel" xml:space="preserve"><value>Annuleren</value></data>
+  <data name="Builds_Depot_Downloading" xml:space="preserve"><value>Depot {0} van {1} · {2}</value></data>
+  <data name="Builds_Depot_Phase_PreAllocating" xml:space="preserve"><value>schijfruimte reserveren</value></data>
+  <data name="Builds_Depot_Phase_Validating" xml:space="preserve"><value>bestaande bestanden controleren</value></data>
+  <data name="Builds_Depot_Phase_FetchingManifest" xml:space="preserve"><value>manifest ophalen</value></data>
+  <data name="Builds_Depot_Phase_Downloading" xml:space="preserve"><value>downloaden</value></data>
+  <data name="Builds_Depot_Done" xml:space="preserve"><value>{0} depot(s) gedownload naar {1}</value></data>
+  <data name="Builds_Depot_OpenFolder" xml:space="preserve"><value>Map openen</value></data>
+  <data name="Builds_Depot_CleanUp_Title" xml:space="preserve"><value>Gedeeltelijke download verwijderen?</value></data>
+  <data name="Builds_Depot_CleanUp_Body" xml:space="preserve"><value>De download is geannuleerd nadat {0} bestand(en) in {1} waren aangemaakt. Alleen die bestanden verwijderen? Wat er al stond, blijft ongemoeid.</value></data>
+  <data name="Builds_Depot_CleanUp_Failed" xml:space="preserve"><value>Sommige bestanden konden niet worden verwijderd — ze zijn mogelijk nog in gebruik. Probeer het zo meteen opnieuw.</value></data>
+  <data name="Depot_Err_ToolNotPinned" xml:space="preserve"><value>Depots downloaden is uitgeschakeld in deze build omdat er geen geverifieerde pin voor de downloadtool is.</value></data>
+  <data name="Depot_Err_Tool" xml:space="preserve"><value>De depotdownloader kon niet worden verkregen, of wat binnenkwam voldeed niet aan de verificatie.</value></data>
+  <data name="Depot_Err_SteamNotFound" xml:space="preserve"><value>Steam-locatie niet gevonden — stel deze in bij Instellingen.</value></data>
+  <data name="Depot_Err_NoKeys" xml:space="preserve"><value>Er zijn geen ontsleutelingssleutels voor depots gevonden voor dit spel.</value></data>
+  <data name="Depot_Err_NoKeyFor" xml:space="preserve"><value>Depot {0} heeft geen bruikbare ontsleutelingssleutel.</value></data>
+  <data name="Depot_Err_BadKey" xml:space="preserve"><value>De voor depot {0} opgeslagen sleutel past niet bij het manifest.</value></data>
+  <data name="Depot_Err_NoManifest" xml:space="preserve"><value>Het manifest voor dat depot kon niet worden verkregen.</value></data>
+  <data name="Depot_Err_SignIn" xml:space="preserve"><value>Log in om een manifest op te halen dat Steam nog niet op deze machine heeft.</value></data>
+  <data name="Depot_Err_NoSpace" xml:space="preserve"><value>Niet genoeg schijfruimte: {0} nodig, {1} vrij.</value></data>
+  <data name="Depot_Err_Failed" xml:space="preserve"><value>Depot {0} mislukt: {1}</value></data>
+  <data name="Builds_Depot_Queued" xml:space="preserve"><value>{0} depot(s) naar Downloads gestuurd.</value></data>
+  <data name="Nav_Downloads" xml:space="preserve"><value>Downloads</value></data>
+  <data name="Downloads_Title" xml:space="preserve"><value>Downloads</value></data>
+  <data name="Downloads_Subtitle" xml:space="preserve"><value>Alles wat de app nu ophaalt en wat eerder is opgehaald. Manifests en depotinhoud delen deze wachtrij.</value></data>
+  <data name="Downloads_Empty" xml:space="preserve"><value>Er is nog niets gedownload. Een spel toevoegen via de pagina Toevoegen of depotinhoud ophalen via de pagina Depots laat het hier verschijnen.</value></data>
+  <data name="Downloads_Section_Active" xml:space="preserve"><value>Bezig</value></data>
+  <data name="Downloads_Section_History" xml:space="preserve"><value>Geschiedenis</value></data>
+  <data name="Downloads_ActionRequired" xml:space="preserve"><value>ACTIE VEREIST</value></data>
+  <data name="Downloads_Of" xml:space="preserve"><value>{0} van {1}</value></data>
+  <data name="Downloads_Eta" xml:space="preserve"><value>nog {0}</value></data>
+  <data name="Downloads_Source_Depots" xml:space="preserve"><value>{0} depot(s)</value></data>
+  <data name="Downloads_Status_Queued" xml:space="preserve"><value>In de wachtrij</value></data>
+  <data name="Downloads_Status_Downloading" xml:space="preserve"><value>Downloaden</value></data>
+  <data name="Downloads_Status_AwaitingConfirm" xml:space="preserve"><value>Wacht op jou</value></data>
+  <data name="Downloads_Status_Installing" xml:space="preserve"><value>Installeren</value></data>
+  <data name="Downloads_Status_Paused" xml:space="preserve"><value>Gepauzeerd</value></data>
+  <data name="Downloads_Status_Verifying" xml:space="preserve"><value>Verifiëren</value></data>
+  <data name="Downloads_Status_Completed" xml:space="preserve"><value>Klaar</value></data>
+  <data name="Downloads_Status_Failed" xml:space="preserve"><value>Mislukt</value></data>
+  <data name="Downloads_Status_Cancelled" xml:space="preserve"><value>Geannuleerd</value></data>
+  <data name="Downloads_Action_Review" xml:space="preserve"><value>Bekijken</value></data>
+  <data name="Downloads_Action_Pause" xml:space="preserve"><value>Pauzeren</value></data>
+  <data name="Downloads_Action_Resume" xml:space="preserve"><value>Hervatten</value></data>
+  <data name="Downloads_Action_MoveUp" xml:space="preserve"><value>Omhoog</value></data>
+  <data name="Downloads_Action_MoveDown" xml:space="preserve"><value>Omlaag</value></data>
+  <data name="Downloads_Action_Cancel" xml:space="preserve"><value>Annuleren</value></data>
+  <data name="Downloads_Action_Retry" xml:space="preserve"><value>Opnieuw proberen</value></data>
+  <data name="Downloads_Action_Remove" xml:space="preserve"><value>Verwijderen</value></data>
+  <data name="Downloads_Action_ClearHistory" xml:space="preserve"><value>Geschiedenis wissen</value></data>
+  <data name="Downloads_Action_CopyAppId" xml:space="preserve"><value>App ID kopiëren</value></data>
+  <data name="Downloads_Action_ShowInFolder" xml:space="preserve"><value>Tonen in map</value></data>
+  <data name="Downloads_ClearHistory_Confirm" xml:space="preserve"><value>Alle {0} items uit de downloadgeschiedenis verwijderen? De bestanden zelf blijven ongemoeid.</value></data>
+  <data name="Downloads_Err_Interrupted" xml:space="preserve"><value>Onderbroken toen de app werd gesloten.</value></data>
+  <data name="Downloads_Err_Cancelled" xml:space="preserve"><value>Geannuleerd.</value></data>
+  <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>Het klembord wordt door een ander programma gebruikt — er is niets gekopieerd.</value></data>
+  <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Die locatie bestaat niet meer: {0}</value></data>
+  <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>'{0}' geweigerd: een manifest moet &lt;depot&gt;_&lt;manifest&gt;.manifest heten (alleen cijfers).</value></data>
+  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>De bronrepository van CloudRedirect is niet beschikbaar. De functie is tijdelijk uitgeschakeld.</value></data>
+  <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Opgeslagen builds (geen actieve lua)</value></data>
+  <data name="Settings_Maintenance_Title" xml:space="preserve"><value>ONDERHOUD</value></data>
+  <data name="Settings_Backups_Title" xml:space="preserve"><value>Opgebouwde back-ups</value></data>
+  <data name="Settings_Backups_Subtitle" xml:space="preserve"><value>Back-upmappen die zijn aangemaakt bij het installeren van AmethystTool of het verwijderen van plug-ins. Ze verwijderen maakt ruimte vrij in de Steam-map.</value></data>
+  <data name="Settings_Backups_Empty" xml:space="preserve"><value>Geen back-ups gevonden.</value></data>
+  <data name="Settings_Backups_NoSteam" xml:space="preserve"><value>Stel de Steam-locatie in bij Instellingen om back-ups te zien.</value></data>
+  <data name="Settings_Backups_Refresh" xml:space="preserve"><value>Vernieuwen</value></data>
+  <data name="Settings_Backups_DeleteSelected" xml:space="preserve"><value>Selectie verwijderen</value></data>
+  <data name="Settings_Backups_DeleteOlder" xml:space="preserve"><value>Ouder dan 30 dagen verwijderen</value></data>
+  <data name="Settings_Backups_Confirm_Title" xml:space="preserve"><value>Back-ups verwijderen?</value></data>
+  <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>{0} item(s) ({1}) definitief verwijderen? Je kunt eerdere installaties van AmethystTool of verwijderingen van plug-ins dan niet meer terugdraaien.</value></data>
+  <data name="Settings_Backups_Confirm_Delete" xml:space="preserve"><value>Verwijderen</value></data>
+  <data name="Settings_Backups_Cancel" xml:space="preserve"><value>Annuleren</value></data>
+  <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>{0} item(s) verwijderd ({1} vrijgemaakt)</value></data>
+  <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>{0} item(s) konden niet worden verwijderd. Sluit Steam af en probeer het opnieuw.</value></data>
+  <data name="Settings_Backups_Column_Name" xml:space="preserve"><value>Naam</value></data>
+  <data name="Settings_Backups_Column_Type" xml:space="preserve"><value>Type</value></data>
+  <data name="Settings_Backups_Type_Folder" xml:space="preserve"><value>Map</value></data>
+  <data name="Settings_Backups_Type_File" xml:space="preserve"><value>Bestand</value></data>
+  <data name="Settings_Backups_UnknownWarning" xml:space="preserve"><value>Onbekende back-up, controleer voordat je verwijdert</value></data>
+  <data name="Settings_Backups_Column_Date" xml:space="preserve"><value>Aangemaakt</value></data>
+  <data name="Settings_Backups_Column_Size" xml:space="preserve"><value>Grootte</value></data>
+  <data name="Settings_Backups_Column_Files" xml:space="preserve"><value>Bestanden</value></data>
+  <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Lokale versie (offline)</value></data>
+  <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Geen internetverbinding. De lokaal geïnstalleerde versie wordt gebruikt.</value></data>
+  <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Zonder internet kan geen nieuwe versie worden gedownload.</value></data>
 </root>

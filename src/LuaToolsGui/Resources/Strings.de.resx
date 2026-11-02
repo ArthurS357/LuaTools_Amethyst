@@ -586,4 +586,288 @@ Dadurch werden die .lua-Dateien aus Steam\config\stplug-in gelöscht. Starte Ste
   <data name="App_StartupFailed" xml:space="preserve"><value>LuaTools konnte nicht starten.&#10;&#10;{0}&#10;&#10;Details wurden gespeichert in:&#10;{1}</value></data>
   <data name="Unlocker_Err_WriteDenied" xml:space="preserve"><value>{0} Datei(en) konnten nicht in den Steam-Ordner geschrieben werden — Zugriff verweigert. Steam scheint an einem Ort installiert zu sein, der Administratorrechte erfordert (z. B. Program Files). Schließe Steam und starte LuaTools dann einmal als Administrator, um diesen Modus anzuwenden.</value></data>
   <data name="Unlocker_Err_WriteFailed" xml:space="preserve"><value>{0} Datei(en) konnten nicht geschrieben werden — schließe Steam und versuche es erneut.</value></data>
+  <data name="Nav_Plugin" xml:space="preserve"><value>Plugin</value></data>
+  <data name="Settings_HubcapKeyRejected" xml:space="preserve"><value>Hubcap hat diesen Schlüssel abgelehnt. Prüfe, ob er vollständig kopiert wurde und nicht abgelaufen ist.</value></data>
+  <data name="Settings_HubcapKeyOffline" xml:space="preserve"><value>Hubcap war nicht erreichbar. Prüfe deine Verbindung und versuche es erneut — der Schlüssel wurde nicht geändert.</value></data>
+  <data name="Settings_HubcapKeyRateLimited" xml:space="preserve"><value>Hubcap drosselt diesen Schlüssel gerade. Versuche es in Kürze erneut.</value></data>
+  <data name="Settings_HubcapExpiryExpired" xml:space="preserve"><value>Dein Hubcap-Schlüssel ist am {0} abgelaufen. Bestätige einen neuen, um die Hubcap-Quellen weiter zu nutzen.</value></data>
+  <data name="Settings_HubcapExpiryToday" xml:space="preserve"><value>Dein Hubcap-Schlüssel läuft heute ab ({0}). Hol dir einen neuen, bevor er nicht mehr funktioniert.</value></data>
+  <data name="Settings_HubcapExpirySoon" xml:space="preserve"><value>Dein Hubcap-Schlüssel läuft in {0} Tagen ab ({1}). Hol dir einen neuen, bevor er nicht mehr funktioniert.</value></data>
+  <data name="Hubcap_Err_KeyRejected" xml:space="preserve"><value>Dein Hubcap-Schlüssel ist ungültig oder abgelaufen.</value></data>
+  <data name="Hubcap_Err_DailyLimit" xml:space="preserve"><value>Dein tägliches Hubcap-Limit ist erreicht.</value></data>
+  <data name="Hubcap_Err_DailyLimitRetry" xml:space="preserve"><value>Dein tägliches Hubcap-Limit ist erreicht. Versuche es in etwa {0} erneut.</value></data>
+  <data name="Hubcap_Err_NoManifest" xml:space="preserve"><value>Für diese App ist kein Hubcap-Manifest verfügbar.</value></data>
+  <data name="Hubcap_Err_Status" xml:space="preserve"><value>Hubcap-Download fehlgeschlagen ({0}).</value></data>
+  <data name="Hubcap_Err_Unreachable" xml:space="preserve"><value>Hubcap war nicht erreichbar. Prüfe deine Verbindung und versuche es erneut.</value></data>
+  <data name="Hubcap_Err_Generic" xml:space="preserve"><value>Hubcap-Download fehlgeschlagen.</value></data>
+  <data name="Hubcap_Wait_Seconds" xml:space="preserve"><value>{0} Sekunden</value></data>
+  <data name="Hubcap_Wait_Minutes" xml:space="preserve"><value>{0} Minuten</value></data>
+  <data name="Hubcap_Wait_Hours" xml:space="preserve"><value>{0} Stunden</value></data>
+  <data name="Settings_Accent_Hint" xml:space="preserve"><value>Färbt die gesamte App um — Fenster, Karten und Text, nicht nur die Akzente. Wähle eine Farbe und klicke dann auf Anwenden.</value></data>
+  <data name="Settings_Accent_Amethyst" xml:space="preserve"><value>Amethyst</value></data>
+  <data name="Startup_Title" xml:space="preserve"><value>Start</value></data>
+  <data name="Startup_Steam_Closing" xml:space="preserve"><value>Steam wird geschlossen, damit LuaTools an dessen Dateien arbeiten kann…</value></data>
+  <data name="Startup_Steam_Closed" xml:space="preserve"><value>Steam ist geschlossen.</value></data>
+  <data name="Startup_Steam_Stubborn_Title" xml:space="preserve"><value>Steam wurde nicht geschlossen</value></data>
+  <data name="Startup_Steam_Stubborn_Body" xml:space="preserve"><value>Steam wurde zum Beenden aufgefordert, läuft aber noch.
+
+Beenden erzwingen? Alles, was Steam noch nicht gespeichert hat, kann verloren gehen. Wähle Nein, um es weiterlaufen zu lassen — LuaTools kann die Dateien von Steam nicht ändern, solange es läuft.</value></data>
+  <data name="Startup_Steam_LeftRunning" xml:space="preserve"><value>Steam läuft noch, daher wurde nichts geändert. Schließe Steam und starte LuaTools neu, wenn du bereit bist.</value></data>
+  <data name="Startup_Steam_Reopen_Body" xml:space="preserve"><value>LuaTools ist fertig. Steam wieder öffnen?</value></data>
+  <data name="Startup_Steam_Reopen_Action" xml:space="preserve"><value>Steam öffnen</value></data>
+  <data name="Startup_Steam_ReopenFailed" xml:space="preserve"><value>Steam konnte nicht gestartet werden — öffne es über die eigene Verknüpfung.</value></data>
+  <data name="Guard_Title" xml:space="preserve"><value>Steam läuft bereits</value></data>
+  <data name="Guard_Body" xml:space="preserve"><value>LuaTools muss Steam selbst starten (oder geschlossen vorfinden), damit sich der Hook anhängen kann. Steam jetzt neu starten?</value></data>
+  <data name="Guard_Restart" xml:space="preserve"><value>Steam neu starten</value></data>
+  <data name="Guard_Exit" xml:space="preserve"><value>Beenden</value></data>
+  <data name="Guard_Continue" xml:space="preserve"><value>Trotzdem fortfahren (nicht empfohlen)</value></data>
+  <data name="Guard_ContinueWarning" xml:space="preserve"><value>Steam läuft weiter, daher kann sich der Hook eventuell nicht anhängen. Starte Steam in diesem Fall über LuaTools neu.</value></data>
+  <data name="Manage_Action_SaveBackup" xml:space="preserve"><value>Spielstand sichern…</value></data>
+  <data name="Saves_Title" xml:space="preserve"><value>Spielstand-Backups</value></data>
+  <data name="Saves_Create" xml:space="preserve"><value>Neues Backup erstellen</value></data>
+  <data name="Saves_Restore" xml:space="preserve"><value>Wiederherstellen</value></data>
+  <data name="Saves_Delete" xml:space="preserve"><value>Löschen</value></data>
+  <data name="Saves_Close" xml:space="preserve"><value>Schließen</value></data>
+  <data name="Saves_Empty" xml:space="preserve"><value>Noch keine Backups für dieses Spiel.</value></data>
+  <data name="Saves_Locations_Title" xml:space="preserve"><value>Gefundene Speicherorte</value></data>
+  <data name="Saves_Locations_None" xml:space="preserve"><value>Für dieses Spiel wurde kein Spielstand-Ordner erkannt.</value></data>
+  <data name="Saves_Location_Subtitle" xml:space="preserve"><value>{0} · {1} Datei(en)</value></data>
+  <data name="Saves_AddFolder" xml:space="preserve"><value>Ordner manuell hinzufügen…</value></data>
+  <data name="Saves_Confirm_NoneFound" xml:space="preserve"><value>Wir konnten keine Spielstände für dieses Spiel finden. Möchtest du manuell einen Ordner auswählen?</value></data>
+  <data name="Saves_PickFolder" xml:space="preserve"><value>Ordner auswählen</value></data>
+  <data name="Saves_PickFolderTitle" xml:space="preserve"><value>Wähle den Ordner, in dem dieses Spiel seine Spielstände ablegt</value></data>
+  <data name="Saves_Toast_PickOne" xml:space="preserve"><value>Wähle mindestens einen Speicherort für das Backup aus.</value></data>
+  <data name="Saves_Toast_FolderRefused" xml:space="preserve"><value>Dieser Ordner kann nicht verwendet werden (Laufwerkswurzel, Windows- oder Program-Files-Ordner oder kein vollständiger Pfad).</value></data>
+  <data name="Manage_SaveIcon_Tooltip" xml:space="preserve"><value>Spielstände erkannt in: {0}</value></data>
+  <data name="Settings_CustomSaveFolders" xml:space="preserve"><value>Eigene Spielstand-Ordner</value></data>
+  <data name="Settings_CustomSaveFolders_Hint" xml:space="preserve"><value>Für Spiele, deren Spielstände die App nicht selbst findet. Gib die AppID des Spiels ein und wähle den Ordner; er wird dann zusammen mit diesem Spiel gesichert und ist der einzige zusätzliche Ort, an den eine Wiederherstellung schreiben darf.</value></data>
+  <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
+  <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Ordner hinzufügen…</value></data>
+  <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Entfernen</value></data>
+  <data name="Saves_Note" xml:space="preserve"><value>Sichert den spielspezifischen Ordner von Steam (userdata). Spiele, die ihre Spielstände in Dokumente oder AppData ablegen, sind nicht enthalten.</value></data>
+  <data name="Saves_Toast_Created" xml:space="preserve"><value>{0} Datei(en) gesichert, {1}.</value></data>
+  <data name="Saves_Toast_Restored" xml:space="preserve"><value>{0} Datei(en) wiederhergestellt. Eine Kopie der vorherigen Spielstände wurde behalten.</value></data>
+  <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Backup gelöscht.</value></data>
+  <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Für dieses Spiel wurden keine Spielstände gefunden. Füge den Ordner, in dem es sie ablegt, über „Ordner manuell hinzufügen…“ hinzu.</value></data>
+  <data name="Saves_Toast_SteamNotFound" xml:space="preserve"><value>Steam-Ordner nicht gefunden. Lege den Speicherort in den Einstellungen fest.</value></data>
+  <data name="Saves_Toast_Refused" xml:space="preserve"><value>Abgelehnt: Das Backup gehört nicht zu diesem Spiel oder enthält unsichere Pfade. Es wurde nichts geändert.</value></data>
+  <data name="Saves_Toast_Failed" xml:space="preserve"><value>Der Vorgang ist fehlgeschlagen. Details findest du im Protokoll.</value></data>
+  <data name="Saves_Toast_NoSpace" xml:space="preserve"><value>Nicht genug freier Speicherplatz für das Backup ({0} benötigt, Puffer eingerechnet). Es wurde nichts geschrieben.</value></data>
+  <data name="Saves_Confirm_Restore" xml:space="preserve"><value>{0} wiederherstellen? Die aktuellen Spielstände dieses Spiels werden überschrieben; zuvor wird eine Kopie davon behalten.</value></data>
+  <data name="Saves_Confirm_SteamOpen" xml:space="preserve"><value>Steam ist geöffnet. Für eine sichere Wiederherstellung (und damit Steam Cloud die Dateien nicht überschreibt) muss Steam geschlossen sein.</value></data>
+  <data name="Saves_CloseSteamContinue" xml:space="preserve"><value>Steam schließen und fortfahren</value></data>
+  <data name="Saves_Toast_SteamStillRunning" xml:space="preserve"><value>Steam wurde nicht geschlossen. Schließe es manuell und versuche es erneut. Es wurde nichts wiederhergestellt.</value></data>
+  <data name="Saves_Confirm_Delete" xml:space="preserve"><value>{0} löschen? Das kann nicht rückgängig gemacht werden.</value></data>
+  <data name="Manage_Badge_Installed" xml:space="preserve"><value>Installiert</value></data>
+  <data name="Manage_Action_ImportSave" xml:space="preserve"><value>Spielstand importieren (.zip)…</value></data>
+  <data name="Saves_Import" xml:space="preserve"><value>Spielstand importieren…</value></data>
+  <data name="Saves_Import_PickTitle" xml:space="preserve"><value>Spielstand-Backup auswählen (.zip)</value></data>
+  <data name="Saves_Import_Filter" xml:space="preserve"><value>Spielstand-Backup (*.zip)|*.zip</value></data>
+  <data name="Saves_Confirm_Import" xml:space="preserve"><value>{0} importieren? Die aktuellen Spielstände dieses Spiels werden überschrieben; zuvor wird eine Kopie davon behalten.</value></data>
+  <data name="Saves_Toast_Imported" xml:space="preserve"><value>{0} Datei(en) importiert. Eine Kopie der vorherigen Spielstände wurde behalten.</value></data>
+  <data name="Saves_Confirm_NewFolder" xml:space="preserve"><value>Die App erstellt einen nach diesem Spiel benannten Ordner, um dessen Spielstände zu ordnen. Fortfahren?</value></data>
+  <data name="Saves_Confirm_Ok" xml:space="preserve"><value>OK</value></data>
+  <data name="Saves_Toast_SavedAt" xml:space="preserve"><value>Backup erfolgreich gespeichert unter: {0}</value></data>
+  <data name="Settings_SaveBackupFolder" xml:space="preserve"><value>Ordner für Spielstand-Backups</value></data>
+  <data name="Settings_SaveBackupFolder_Hint" xml:space="preserve"><value>Wohin „Spielstand sichern…“ seine Zip-Dateien schreibt. Standard: %AppData%\LuaToolsGui\SaveBackups.</value></data>
+  <data name="Settings_ChooseSaveBackupFolder" xml:space="preserve"><value>Ordner für Spielstand-Backups auswählen</value></data>
+  <data name="About_Changelog_Title" xml:space="preserve"><value>Neuigkeiten</value></data>
+  <data name="About_Changelog_Show" xml:space="preserve"><value>Änderungsprotokoll anzeigen</value></data>
+  <data name="About_Changelog_Hide" xml:space="preserve"><value>Änderungsprotokoll ausblenden</value></data>
+  <data name="Home_Privacy_UpdatesOff" xml:space="preserve"><value>Selbstaktualisierung aus — dieser Build lädt von sich aus nichts herunter</value></data>
+  <data name="Home_Privacy_UpdatesOn" xml:space="preserve"><value>Selbstaktualisierung an — Releases werden beim Start geprüft</value></data>
+  <data name="Home_Action_Mode_Tip" xml:space="preserve"><value>Wähle, welches Backend die Steam-Proxy-DLLs besitzt</value></data>
+  <data name="Home_Action_Plugin" xml:space="preserve"><value>Plugin</value></data>
+  <data name="Home_Action_Plugin_Tip" xml:space="preserve"><value>Das Store-Seiten-Plugin installieren oder aktualisieren</value></data>
+  <data name="Home_Action_Updates_Tip" xml:space="preserve"><value>Öffne „Über“, um nach einer neuen Version zu suchen</value></data>
+  <data name="Mode_Warn_Telemetry" xml:space="preserve"><value>Originalprojekt (madoiscool). Warnung: enthält Telemetrie und das DonateKeys-System.</value></data>
+  <data name="Manage_Sort_InstalledFirst" xml:space="preserve"><value>Installierte zuerst</value></data>
+  <data name="Add_Warn_NoManifests_Title" xml:space="preserve"><value>Warnung</value></data>
+  <data name="Add_Warn_NoManifests" xml:space="preserve"><value>Diese Quelle hat keine Manifests für {0} geliefert. Der Download in Steam kann fehlschlagen. Wir empfehlen die Quelle {1}.</value></data>
+  <data name="Plugin_Row_Source" xml:space="preserve"><value>Quelle</value></data>
+  <data name="Plugin_Sources_Header" xml:space="preserve"><value>Plugin-Quelle</value></data>
+  <data name="Plugin_Sources_Subtitle" xml:space="preserve"><value>Jeder Ersteller veröffentlicht seinen eigenen Build des Plugins. Wähle den, der installiert werden soll — LuaTools installiert immer nur die aktive Quelle und wechselt nie von selbst.</value></data>
+  <data name="Plugin_Source_By" xml:space="preserve"><value>von {0}</value></data>
+  <data name="Plugin_Source_Active" xml:space="preserve"><value>Aktiv</value></data>
+  <data name="Plugin_Source_Default" xml:space="preserve"><value>Standard</value></data>
+  <data name="Plugin_Source_Installed" xml:space="preserve"><value>Aus dieser Quelle installiert.</value></data>
+  <data name="Plugin_Source_ActiveNotInstalled" xml:space="preserve"><value>Aktive Quelle — noch nicht installiert.</value></data>
+  <data name="Plugin_Source_Available" xml:space="preserve"><value>Verfügbar. Wähle sie, um stattdessen von diesem Ersteller zu installieren.</value></data>
+  <data name="Plugin_Source_LatestVersion" xml:space="preserve"><value>Neueste</value></data>
+  <data name="Plugin_Btn_Activate" xml:space="preserve"><value>Diese Quelle verwenden</value></data>
+  <data name="Plugin_Confirm_SwitchCaption" xml:space="preserve"><value>Plugin-Quelle wechseln</value></data>
+  <data name="Plugin_Confirm_SwitchBody" xml:space="preserve"><value>Dadurch wird das Plugin von {0} installiert, das aktuell installierte ersetzt und Steam zum Übernehmen geschlossen und neu gestartet. Fortfahren?</value></data>
+  <data name="Plugin_Toast_SourceSwitched" xml:space="preserve"><value>Jetzt von {0} installiert. Steam wird neu gestartet, um es zu laden.</value></data>
+  <data name="Plugin_Err_UnknownSource" xml:space="preserve"><value>{0} ist keine Plugin-Quelle, die dieser Build mitbringt, daher wurde nichts installiert.</value></data>
+  <data name="Plugin_SourceErr_NoRelease" xml:space="preserve"><value>Diese Quelle hat kein Release veröffentlicht oder war nicht erreichbar.</value></data>
+  <data name="Plugin_SourceErr_NoTag" xml:space="preserve"><value>Das neueste Release dieser Quelle trägt kein Versions-Tag.</value></data>
+  <data name="Plugin_SourceErr_MissingAsset" xml:space="preserve"><value>Im neuesten Release dieser Quelle fehlt {0}.</value></data>
+  <data name="Plugin_SourceErr_ForeignAssetUrl" xml:space="preserve"><value>Der Download für {0} aus dieser Quelle zeigt außerhalb ihres eigenen Repositorys und wurde deshalb abgelehnt.</value></data>
+  <data name="Plugin_SourceErr_NoDigest" xml:space="preserve"><value>Diese Quelle veröffentlicht keinen SHA-256 für {0}, daher ließ sich der Inhalt nicht belegen.</value></data>
+  <data name="Plugin_Err_ArchiveRejected" xml:space="preserve"><value>{0} wurde von der Sicherheitsprüfung abgelehnt: {1}</value></data>
+  <data name="Download_Notice_Title" xml:space="preserve"><value>Installation von {0}</value></data>
+  <data name="Download_Notice_Body" xml:space="preserve"><value>{0} · Version {1} · {2} Datei(en)
+SHA-256 {3}
+Geprüft: {4}</value></data>
+  <data name="Download_Notice_Check_Pinned" xml:space="preserve"><value>Repository festgelegt</value></data>
+  <data name="Download_Notice_Check_Digest" xml:space="preserve"><value>SHA-256 stimmt überein</value></data>
+  <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>Archiv geprüft</value></data>
+  <data name="Download_Notice_Cancel" xml:space="preserve"><value>Abbrechen</value></data>
+  <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Abgebrochen, bevor etwas installiert wurde.</value></data>
+  <data name="Builds_RemoveGame" xml:space="preserve"><value>Spiel entfernen</value></data>
+  <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Nimmt dieses Spiel aus der Depot-Liste. Löscht seine Lua-Dateien und alle gespeicherten Builds.</value></data>
+  <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Spiel entfernen</value></data>
+  <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>{0} ({1}) aus den Depots entfernen?
+
+Dadurch werden seine Lua-Datei, daneben liegende Build-Luas und alle gespeicherten Builds gelöscht. Das kann nicht rückgängig gemacht werden.</value></data>
+  <data name="Builds_RemoveGame_Done" xml:space="preserve"><value>{0} aus den Depots entfernt.</value></data>
+  <data name="Builds_RemoveGame_Gone" xml:space="preserve"><value>{0} hatte keine Dateien mehr — aus der Liste entfernt.</value></data>
+  <data name="Builds_RemoveGame_Failed" xml:space="preserve"><value>{0} konnte nicht vollständig entfernt werden: {1}. Schließe Steam und versuche es erneut.</value></data>
+  <data name="Auth_Err_SignInTimedOut" xml:space="preserve"><value>Zeitüberschreitung beim Login — der Browser ist nie zurückgekehrt. Du kannst dich auch mit einem Code anmelden: Führe /login auf dem Discord-Server aus und füge den Code in den Einstellungen ein.</value></data>
+  <data name="Auth_Err_CallbackPortBusy" xml:space="preserve"><value>Login konnte nicht gestartet werden: Port 53789 wird bereits verwendet. Schließe alle anderen Login-Versuche und versuche es erneut.</value></data>
+  <data name="Auth_ProviderUnavailable" xml:space="preserve"><value>Der Login-Server antwortet gerade nicht, daher läuft der Discord-Login im Browser wahrscheinlich in eine Zeitüberschreitung. Du kannst dich stattdessen mit einem Code anmelden: Führe /login auf dem Discord-Server aus und gib den Code in den Einstellungen ein.</value></data>
+  <data name="Auth_SignInCancelled" xml:space="preserve"><value>Login abgebrochen. Du kannst es erneut versuchen oder einen manuellen Code verwenden (führe /login auf Discord aus).</value></data>
+  <data name="Auth_TryAgain" xml:space="preserve"><value>Erneut versuchen</value></data>
+  <data name="Auth_TryAnyway" xml:space="preserve"><value>Trotzdem versuchen</value></data>
+  <data name="Auth_UseManualCode" xml:space="preserve"><value>Manuellen Code verwenden</value></data>
+  <data name="Auth_Cancel" xml:space="preserve"><value>Abbrechen</value></data>
+  <data name="Protocol_SilentInstall_Title" xml:space="preserve"><value>Installationsanfrage</value></data>
+  <data name="Protocol_SilentInstall_Body" xml:space="preserve"><value>Ein Link fordert LuaTools auf, die App {0} im Hintergrund zu installieren. Fahre nur fort, wenn du das selbst ausgelöst hast.</value></data>
+  <data name="Cdp_Consent_Title" xml:space="preserve"><value>Die Steam-Store-Seiten-Brücke aktivieren?</value></data>
+  <data name="Cdp_Consent_Body" xml:space="preserve"><value>Das Store-Seiten-Plugin braucht die Debug-Brücke von Steam, die LuaTools aktiviert, indem es neben steam.exe eine Markierung ablegt. Solange Steam läuft, öffnet das einen nicht authentifizierten lokalen Port (127.0.0.1:8080).
+
+Alles andere, was auf diesem PC läuft, könnte dann den integrierten Browser von Steam mit deiner angemeldeten Sitzung steuern. Aktiviere das nur, wenn du der auf diesem Rechner installierten Software vertraust.
+
+Du kannst ablehnen und den Rest von LuaTools weiter nutzen; nur die Schaltfläche „Add via LuaTools“ im Store ist dann nicht verfügbar.
+
+Aktivieren?</value></data>
+  <data name="Privacy_HttpMetadata_Title" xml:space="preserve"><value>Unverschlüsselte Abfrage</value></data>
+  <data name="Privacy_HttpMetadata_Body" xml:space="preserve"><value>Die Verfügbarkeit von Quellen wird über unverschlüsseltes HTTP geprüft ({0}), weil dieser Server kein funktionierendes HTTPS anbietet. Es werden weder Konto noch Schlüssel gesendet, aber jeder auf deinem Netzwerkpfad kann sehen, welche Steam-App du abgefragt hast. Setze „WarnOnInsecureMetadata“: false in der settings.json, um diesen Hinweis auszublenden.</value></data>
+  <data name="Theme_Guard_Title" xml:space="preserve"><value>Design nicht angewendet</value></data>
+  <data name="Theme_Guard_Body" xml:space="preserve"><value>Der Amethyst-Akzent hat nicht gegriffen, was meist bedeutet, dass das WPF-UI-Paket seine Ressourcennamen geändert hat. Die App funktioniert normal, aber Teile davon sehen falsch aus. Siehe docs/CHANGELOG.md.</value></data>
+  <data name="App_DisplayName" xml:space="preserve"><value>LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Title" xml:space="preserve"><value>Dies ist möglicherweise nicht LuaTools Amethyst</value></data>
+  <data name="Build_NotFork_Body" xml:space="preserve"><value>Diese Binärdatei gibt sich nicht als LuaTools Amethyst zu erkennen. Wenn du ein offizielles LuaTools-Release darüber installiert hast, sind Analyse und der Upload von Steam-Schlüsseln wieder aktiv. Installiere neu aus dem Amethyst-Repository, um den Datenschutz-Build zurückzubekommen.</value></data>
+  <data name="Fixes_Toast_Blocked" xml:space="preserve"><value>Download abgelehnt</value></data>
+  <data name="Fixes_Toast_Blocked_Body" xml:space="preserve"><value>{0} wurde nicht installiert, weil es eine Sicherheitsprüfung nicht bestanden hat — {1}</value></data>
+  <data name="About_Nav" xml:space="preserve"><value>Über</value></data>
+  <data name="About_Title" xml:space="preserve"><value>Über LuaTools Amethyst</value></data>
+  <data name="About_What_Header" xml:space="preserve"><value>Worum es geht</value></data>
+  <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst ist ein Community-Fork von LuaTools mit Fokus auf Datenschutz. Er entfernt den Analyse-Ping und den Schlüssel-Upload, den der Original-Build durchführt, hält alle Downloads über HTTPS und bringt das violette Amethyst-Design mit.</value></data>
+  <data name="About_Version_Header" xml:space="preserve"><value>Version</value></data>
+  <data name="About_Repo_Header" xml:space="preserve"><value>Repository</value></data>
+  <data name="About_Updates_Header" xml:space="preserve"><value>Updates</value></data>
+  <data name="About_Updates_Enabled" xml:space="preserve"><value>Automatische Updates sind AN. LuaTools Amethyst prüft beim Start das unten stehende Repository und installiert Updates im Hintergrund.</value></data>
+  <data name="About_Updates_Disabled" xml:space="preserve"><value>Automatische Updates sind AUS — es wird keine Update-Anfrage gestellt. Füge „AppUpdateRepos“ zur settings.json hinzu, um sie einzuschalten, oder aktualisiere manuell über das Repository unten.</value></data>
+  <data name="About_Updates_Sources" xml:space="preserve"><value>Update-Quelle</value></data>
+  <data name="About_Check_Button" xml:space="preserve"><value>Nach Updates suchen</value></data>
+  <data name="About_Check_Checking" xml:space="preserve"><value>Prüfe…</value></data>
+  <data name="About_Check_UpToDate" xml:space="preserve"><value>Du verwendest die neueste Version.</value></data>
+  <data name="About_Check_Found" xml:space="preserve"><value>Ein Update wurde heruntergeladen. Es wird angewendet, wenn du LuaTools schließt.</value></data>
+  <data name="About_Check_Failed" xml:space="preserve"><value>Die Suche nach Updates ist fehlgeschlagen. Prüfe deine Verbindung und das konfigurierte Repository.</value></data>
+  <data name="About_Check_Disabled" xml:space="preserve"><value>Automatische Updates sind deaktiviert — konfiguriere zuerst „AppUpdateRepos“ in der settings.json.</value></data>
+  <data name="About_OpenRepo" xml:space="preserve"><value>Repository öffnen</value></data>
+  <data name="About_OpenSettings" xml:space="preserve"><value>Ordner der settings.json öffnen</value></data>
+  <data name="About_Config_Header" xml:space="preserve"><value>Updates manuell konfigurieren</value></data>
+  <data name="About_Config_Body" xml:space="preserve"><value>Bearbeite die settings.json im unten genannten Ordner und füge das Repository hinzu, von dem du Updates beziehen möchtest. Akzeptiert wird nur https://github.com/&lt;owner&gt;/&lt;repo&gt;, und die Repositorys der offiziellen LuaTools-Releases werden abgelehnt, damit ein offizieller Build diesen nie ersetzen kann.</value></data>
+  <data name="Builds_Depot_Download" xml:space="preserve"><value>Depots herunterladen…</value></data>
+  <data name="Builds_Depot_Unavailable" xml:space="preserve"><value>Das Herunterladen von Depots ist in diesem Build nicht verfügbar: Er hat keinen verifizierten Pin für das Downloader-Tool.</value></data>
+  <data name="Builds_Depot_PickTitle" xml:space="preserve"><value>Depot-Inhalte herunterladen</value></data>
+  <data name="Builds_Depot_PickHint" xml:space="preserve"><value>Rohdateien werden anonym direkt vom CDN von Steam geholt. Es wird nichts installiert — die Depots werden in den unten genannten Ordner geschrieben, damit du sie nach Belieben nutzen kannst.</value></data>
+  <data name="Builds_Depot_NoCandidates" xml:space="preserve"><value>Keines der Depots dieses Spiels kann heruntergeladen werden. Sie brauchen sowohl einen Entschlüsselungsschlüssel aus dem Lua als auch ein von Steam veröffentlichtes Manifest.</value></data>
+  <data name="Builds_Depot_NeedsKey" xml:space="preserve"><value>kein Schlüssel in diesem Build</value></data>
+  <data name="Builds_Depot_NeedsManifest" xml:space="preserve"><value>Steam veröffentlicht kein Manifest</value></data>
+  <data name="Builds_Depot_NeedsSignIn" xml:space="preserve"><value>zum Abrufen des Manifests anmelden</value></data>
+  <data name="Builds_Depot_SelectAll" xml:space="preserve"><value>Alle auswählen</value></data>
+  <data name="Builds_Depot_SelectNone" xml:space="preserve"><value>Leeren</value></data>
+  <data name="Builds_Depot_Destination" xml:space="preserve"><value>Zielordner</value></data>
+  <data name="Builds_Depot_Change" xml:space="preserve"><value>Ändern…</value></data>
+  <data name="Builds_Depot_Space" xml:space="preserve"><value>{0} benötigt · {1} frei auf {2}</value></data>
+  <data name="Builds_Depot_NotEnoughSpace" xml:space="preserve"><value>Nicht genug freier Speicherplatz auf diesem Laufwerk. Wähle weniger Depots oder einen anderen Ordner.</value></data>
+  <data name="Builds_Depot_Confirm" xml:space="preserve"><value>{0} Depot(s) herunterladen</value></data>
+  <data name="Builds_Depot_Cancel" xml:space="preserve"><value>Abbrechen</value></data>
+  <data name="Builds_Depot_Downloading" xml:space="preserve"><value>Depot {0} von {1} · {2}</value></data>
+  <data name="Builds_Depot_Phase_PreAllocating" xml:space="preserve"><value>Speicherplatz wird reserviert</value></data>
+  <data name="Builds_Depot_Phase_Validating" xml:space="preserve"><value>vorhandene Dateien werden geprüft</value></data>
+  <data name="Builds_Depot_Phase_FetchingManifest" xml:space="preserve"><value>Manifest wird abgerufen</value></data>
+  <data name="Builds_Depot_Phase_Downloading" xml:space="preserve"><value>Download läuft</value></data>
+  <data name="Builds_Depot_Done" xml:space="preserve"><value>{0} Depot(s) nach {1} heruntergeladen</value></data>
+  <data name="Builds_Depot_OpenFolder" xml:space="preserve"><value>Ordner öffnen</value></data>
+  <data name="Builds_Depot_CleanUp_Title" xml:space="preserve"><value>Unvollständigen Download entfernen?</value></data>
+  <data name="Builds_Depot_CleanUp_Body" xml:space="preserve"><value>Der Download wurde abgebrochen, nachdem {0} Datei(en) in {1} angelegt wurden. Nur diese Dateien löschen? Was schon vorher dort lag, bleibt unangetastet.</value></data>
+  <data name="Builds_Depot_CleanUp_Failed" xml:space="preserve"><value>Einige Dateien konnten nicht gelöscht werden — möglicherweise sind sie noch in Verwendung. Versuche es gleich noch einmal.</value></data>
+  <data name="Depot_Err_ToolNotPinned" xml:space="preserve"><value>Das Herunterladen von Depots ist in diesem Build deaktiviert, weil er keinen verifizierten Pin für das Downloader-Tool mitbringt.</value></data>
+  <data name="Depot_Err_Tool" xml:space="preserve"><value>Der Depot-Downloader konnte nicht beschafft werden, oder das Gelieferte hat die Prüfung nicht bestanden.</value></data>
+  <data name="Depot_Err_SteamNotFound" xml:space="preserve"><value>Steam-Speicherort nicht gefunden — lege ihn in den Einstellungen fest.</value></data>
+  <data name="Depot_Err_NoKeys" xml:space="preserve"><value>Für dieses Spiel wurden keine Depot-Entschlüsselungsschlüssel gefunden.</value></data>
+  <data name="Depot_Err_NoKeyFor" xml:space="preserve"><value>Depot {0} hat keinen verwendbaren Entschlüsselungsschlüssel.</value></data>
+  <data name="Depot_Err_BadKey" xml:space="preserve"><value>Der für Depot {0} gespeicherte Schlüssel passt nicht zu seinem Manifest.</value></data>
+  <data name="Depot_Err_NoManifest" xml:space="preserve"><value>Das Manifest für dieses Depot konnte nicht beschafft werden.</value></data>
+  <data name="Depot_Err_SignIn" xml:space="preserve"><value>Melde dich an, um ein Manifest abzurufen, das Steam auf diesem Rechner noch nicht hat.</value></data>
+  <data name="Depot_Err_NoSpace" xml:space="preserve"><value>Nicht genug Speicherplatz: {0} benötigt, {1} frei.</value></data>
+  <data name="Depot_Err_Failed" xml:space="preserve"><value>Depot {0} fehlgeschlagen: {1}</value></data>
+  <data name="Builds_Depot_Queued" xml:space="preserve"><value>{0} Depot(s) an Downloads gesendet.</value></data>
+  <data name="Nav_Downloads" xml:space="preserve"><value>Downloads</value></data>
+  <data name="Downloads_Title" xml:space="preserve"><value>Downloads</value></data>
+  <data name="Downloads_Subtitle" xml:space="preserve"><value>Alles, was die App gerade herunterlädt, und was sie zuvor geladen hat. Manifests und Depot-Inhalte teilen sich diese Warteschlange.</value></data>
+  <data name="Downloads_Empty" xml:space="preserve"><value>Es wurde noch nichts heruntergeladen. Ein Spiel über die Seite „Hinzufügen“ zu ergänzen oder Depot-Inhalte über die Seite „Depots“ zu holen, lässt es hier erscheinen.</value></data>
+  <data name="Downloads_Section_Active" xml:space="preserve"><value>In Bearbeitung</value></data>
+  <data name="Downloads_Section_History" xml:space="preserve"><value>Verlauf</value></data>
+  <data name="Downloads_ActionRequired" xml:space="preserve"><value>AKTION ERFORDERLICH</value></data>
+  <data name="Downloads_Of" xml:space="preserve"><value>{0} von {1}</value></data>
+  <data name="Downloads_Eta" xml:space="preserve"><value>noch {0}</value></data>
+  <data name="Downloads_Source_Depots" xml:space="preserve"><value>{0} Depot(s)</value></data>
+  <data name="Downloads_Status_Queued" xml:space="preserve"><value>In der Warteschlange</value></data>
+  <data name="Downloads_Status_Downloading" xml:space="preserve"><value>Wird heruntergeladen</value></data>
+  <data name="Downloads_Status_AwaitingConfirm" xml:space="preserve"><value>Wartet auf dich</value></data>
+  <data name="Downloads_Status_Installing" xml:space="preserve"><value>Wird installiert</value></data>
+  <data name="Downloads_Status_Paused" xml:space="preserve"><value>Pausiert</value></data>
+  <data name="Downloads_Status_Verifying" xml:space="preserve"><value>Wird überprüft</value></data>
+  <data name="Downloads_Status_Completed" xml:space="preserve"><value>Fertig</value></data>
+  <data name="Downloads_Status_Failed" xml:space="preserve"><value>Fehlgeschlagen</value></data>
+  <data name="Downloads_Status_Cancelled" xml:space="preserve"><value>Abgebrochen</value></data>
+  <data name="Downloads_Action_Review" xml:space="preserve"><value>Prüfen</value></data>
+  <data name="Downloads_Action_Pause" xml:space="preserve"><value>Pausieren</value></data>
+  <data name="Downloads_Action_Resume" xml:space="preserve"><value>Fortsetzen</value></data>
+  <data name="Downloads_Action_MoveUp" xml:space="preserve"><value>Nach oben</value></data>
+  <data name="Downloads_Action_MoveDown" xml:space="preserve"><value>Nach unten</value></data>
+  <data name="Downloads_Action_Cancel" xml:space="preserve"><value>Abbrechen</value></data>
+  <data name="Downloads_Action_Retry" xml:space="preserve"><value>Wiederholen</value></data>
+  <data name="Downloads_Action_Remove" xml:space="preserve"><value>Entfernen</value></data>
+  <data name="Downloads_Action_ClearHistory" xml:space="preserve"><value>Verlauf leeren</value></data>
+  <data name="Downloads_Action_CopyAppId" xml:space="preserve"><value>App ID kopieren</value></data>
+  <data name="Downloads_Action_ShowInFolder" xml:space="preserve"><value>Im Ordner anzeigen</value></data>
+  <data name="Downloads_ClearHistory_Confirm" xml:space="preserve"><value>Alle {0} Einträge aus dem Download-Verlauf entfernen? Die Dateien selbst bleiben unberührt.</value></data>
+  <data name="Downloads_Err_Interrupted" xml:space="preserve"><value>Beim Schließen der App unterbrochen.</value></data>
+  <data name="Downloads_Err_Cancelled" xml:space="preserve"><value>Abgebrochen.</value></data>
+  <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>Die Zwischenablage wird von einem anderen Programm verwendet — es wurde nichts kopiert.</value></data>
+  <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Dieser Speicherort existiert nicht mehr: {0}</value></data>
+  <data name="Installer_Err_ManifestNameRefused" xml:space="preserve"><value>„{0}“ abgelehnt: Ein Manifest muss &lt;depot&gt;_&lt;manifest&gt;.manifest heißen (nur Ziffern).</value></data>
+  <data name="CloudRedirect_Err_RepoUnavailable" xml:space="preserve"><value>Das Quell-Repository von CloudRedirect ist nicht verfügbar. Die Funktion ist vorübergehend deaktiviert.</value></data>
+  <data name="Builds_SavedBuildsNoLua" xml:space="preserve"><value>Gespeicherte Builds (kein aktives Lua)</value></data>
+  <data name="Settings_Maintenance_Title" xml:space="preserve"><value>WARTUNG</value></data>
+  <data name="Settings_Backups_Title" xml:space="preserve"><value>Angesammelte Backups</value></data>
+  <data name="Settings_Backups_Subtitle" xml:space="preserve"><value>Backup-Ordner, die beim Installieren von AmethystTool oder beim Entfernen von Plugins angelegt wurden. Sie zu löschen gibt Speicherplatz im Steam-Ordner frei.</value></data>
+  <data name="Settings_Backups_Empty" xml:space="preserve"><value>Keine Backups gefunden.</value></data>
+  <data name="Settings_Backups_NoSteam" xml:space="preserve"><value>Lege den Steam-Speicherort in den Einstellungen fest, um Backups zu sehen.</value></data>
+  <data name="Settings_Backups_Refresh" xml:space="preserve"><value>Aktualisieren</value></data>
+  <data name="Settings_Backups_DeleteSelected" xml:space="preserve"><value>Ausgewählte löschen</value></data>
+  <data name="Settings_Backups_DeleteOlder" xml:space="preserve"><value>Älter als 30 Tage löschen</value></data>
+  <data name="Settings_Backups_Confirm_Title" xml:space="preserve"><value>Backups löschen?</value></data>
+  <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>{0} Element(e) ({1}) endgültig löschen? Frühere AmethystTool-Installationen oder Plugin-Entfernungen lassen sich dann nicht mehr zurücksetzen.</value></data>
+  <data name="Settings_Backups_Confirm_Delete" xml:space="preserve"><value>Löschen</value></data>
+  <data name="Settings_Backups_Cancel" xml:space="preserve"><value>Abbrechen</value></data>
+  <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>{0} Element(e) gelöscht ({1} freigegeben)</value></data>
+  <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>{0} Element(e) konnten nicht gelöscht werden. Schließe Steam und versuche es erneut.</value></data>
+  <data name="Settings_Backups_Column_Name" xml:space="preserve"><value>Name</value></data>
+  <data name="Settings_Backups_Column_Type" xml:space="preserve"><value>Typ</value></data>
+  <data name="Settings_Backups_Type_Folder" xml:space="preserve"><value>Ordner</value></data>
+  <data name="Settings_Backups_Type_File" xml:space="preserve"><value>Datei</value></data>
+  <data name="Settings_Backups_UnknownWarning" xml:space="preserve"><value>Unbekanntes Backup, vor dem Löschen prüfen</value></data>
+  <data name="Settings_Backups_Column_Date" xml:space="preserve"><value>Erstellt</value></data>
+  <data name="Settings_Backups_Column_Size" xml:space="preserve"><value>Größe</value></data>
+  <data name="Settings_Backups_Column_Files" xml:space="preserve"><value>Dateien</value></data>
+  <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Lokale Version (offline)</value></data>
+  <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Keine Internetverbindung. Die lokal installierte Version wird verwendet.</value></data>
+  <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Ohne Internet kann keine neue Version heruntergeladen werden.</value></data>
 </root>
