@@ -870,4 +870,5 @@ Włączyć?</value></data>
   <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Wersja lokalna (offline)</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Brak połączenia z internetem. Używana jest wersja zainstalowana lokalnie.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Bez internetu nie można pobrać nowej wersji.</value></data>
+  <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Nic nie zostało usunięte: nie udało się potwierdzić, że „{0}” to kopia zapasowa, którą można bezpiecznie usunąć (zmieniła się, jest dowiązaniem lub ma mniej niż 5 minut). Odśwież listę i spróbuj ponownie.</value></data>
 </root>

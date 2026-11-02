@@ -870,4 +870,5 @@ Attivarlo?</value></data>
   <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Versione locale (offline)</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Nessuna connessione a Internet. Uso della versione installata localmente.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Impossibile scaricare una nuova versione senza Internet.</value></data>
+  <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Non è stato eliminato nulla: impossibile confermare che "{0}" sia un backup eliminabile in sicurezza (è cambiato, è un collegamento o ha meno di 5 minuti). Aggiorna l’elenco e riprova.</value></data>
 </root>

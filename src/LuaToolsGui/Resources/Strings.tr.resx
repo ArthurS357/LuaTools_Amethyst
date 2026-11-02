@@ -870,4 +870,5 @@ Etkinleştirilsin mi?</value></data>
   <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Yerel sürüm (çevrimdışı)</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>İnternet bağlantısı yok. Yerel olarak yüklü sürüm kullanılıyor.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>İnternet olmadan yeni sürüm indirilemez.</value></data>
+  <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Hiçbir şey silinmedi: "{0}" öğesinin güvenle kaldırılabilecek bir yedek olduğu doğrulanamadı (değişti, bir bağlantı ya da 5 dakikadan yeni). Listeyi yenileyip tekrar dene.</value></data>
 </root>

@@ -870,4 +870,5 @@ Aktifkan?</value></data>
   <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Versi lokal (offline)</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Tidak ada koneksi internet. Memakai versi yang terpasang secara lokal.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Tidak dapat mengunduh versi baru tanpa internet.</value></data>
+  <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Tidak ada yang dihapus: "{0}" tidak dapat dipastikan sebagai cadangan yang aman untuk dihapus (berubah, berupa tautan, atau berumur kurang dari 5 menit). Segarkan daftar lalu coba lagi.</value></data>
 </root>

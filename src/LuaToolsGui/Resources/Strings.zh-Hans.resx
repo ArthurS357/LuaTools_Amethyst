@@ -890,4 +890,5 @@ SHA-256 {3}
   <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>本地版本（离线）</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>没有互联网连接。正在使用本地已安装的版本。</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>没有互联网无法下载新版本。</value></data>
+  <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>未删除任何内容：无法确认“{0}”是可以安全删除的备份（它已更改、是链接，或创建不到 5 分钟）。请刷新列表后重试。</value></data>
 </root>

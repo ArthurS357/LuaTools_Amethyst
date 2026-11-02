@@ -870,4 +870,5 @@ SHA-256 {3}
   <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>เวอร์ชันในเครื่อง (ออฟไลน์)</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>ไม่มีการเชื่อมต่ออินเทอร์เน็ต กำลังใช้เวอร์ชันที่ติดตั้งในเครื่อง</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>ดาวน์โหลดเวอร์ชันใหม่ไม่ได้หากไม่มีอินเทอร์เน็ต</value></data>
+  <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>ไม่มีการลบสิ่งใด: ยืนยันไม่ได้ว่า "{0}" เป็นข้อมูลสำรองที่ลบได้อย่างปลอดภัย (มีการเปลี่ยนแปลง เป็นลิงก์ หรือสร้างมาไม่ถึง 5 นาที) รีเฟรชรายการแล้วลองอีกครั้ง</value></data>
 </root>

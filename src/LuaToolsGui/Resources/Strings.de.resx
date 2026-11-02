@@ -870,4 +870,5 @@ Aktivieren?</value></data>
   <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Lokale Version (offline)</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Keine Internetverbindung. Die lokal installierte Version wird verwendet.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Ohne Internet kann keine neue Version heruntergeladen werden.</value></data>
+  <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Es wurde nichts gelöscht: „{0}“ konnte nicht als sicher löschbares Backup bestätigt werden (es hat sich geändert, ist ein Link oder ist jünger als 5 Minuten). Aktualisiere die Liste und versuche es erneut.</value></data>
 </root>

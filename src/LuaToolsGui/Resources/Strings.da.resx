@@ -870,4 +870,5 @@ Aktivér?</value></data>
   <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Lokal version (offline)</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Ingen internetforbindelse. Bruger den lokalt installerede version.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Kan ikke downloade en ny version uden internet.</value></data>
+  <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Intet blev slettet: "{0}" kunne ikke bekræftes som en sikkerhedskopi, der trygt kan fjernes (den er ændret, er et link eller er under 5 minutter gammel). Opdater listen, og prøv igen.</value></data>
 </root>

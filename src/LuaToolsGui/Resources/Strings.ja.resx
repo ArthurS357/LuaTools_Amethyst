@@ -870,4 +870,5 @@ lua ファイル、その横にあるビルドの lua、保存済みのビルド
   <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>ローカルバージョン (オフライン)</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>インターネット接続がありません。ローカルにインストールされたバージョンを使用します。</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>インターネットがないと新しいバージョンをダウンロードできません。</value></data>
+  <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>何も削除されませんでした: 「{0}」を安全に削除できるバックアップとして確認できませんでした (変更された、リンクである、または作成から 5 分未満です)。一覧を更新してもう一度お試しください。</value></data>
 </root>

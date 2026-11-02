@@ -870,4 +870,5 @@ Ativar?</value></data>
   <data name="Downloads_Err_Cancelled" xml:space="preserve"><value>Cancelado.</value></data>
   <data name="Downloads_Err_ClipboardBusy" xml:space="preserve"><value>A área de transferência está em uso por outro programa — nada foi copiado.</value></data>
   <data name="Downloads_Err_PathMissing" xml:space="preserve"><value>Esse local não existe mais: {0}</value></data>
+  <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Nada foi apagado: não foi possível confirmar que "{0}" é um backup seguro para remover (ele mudou, é um link ou tem menos de 5 minutos). Atualize a lista e tente novamente.</value></data>
 </root>

@@ -870,4 +870,5 @@ Bekapcsolod?</value></data>
   <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Helyi verzió (offline)</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Nincs internetkapcsolat. A helyben telepített verzió van használatban.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Internet nélkül nem tölthető le új verzió.</value></data>
+  <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Semmi sem lett törölve: nem sikerült megerősíteni, hogy a(z) „{0}” biztonságosan törölhető biztonsági mentés (megváltozott, hivatkozás, vagy 5 percnél újabb). Frissítsd a listát, és próbáld újra.</value></data>
 </root>

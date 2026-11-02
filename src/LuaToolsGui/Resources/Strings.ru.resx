@@ -870,4 +870,5 @@ SHA-256 {3}
   <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Локальная версия (офлайн)</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Нет подключения к интернету. Используется установленная локально версия.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Без интернета нельзя скачать новую версию.</value></data>
+  <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Ничего не удалено: не удалось подтвердить, что «{0}» — резервная копия, которую можно безопасно удалить (она изменилась, является ссылкой или создана менее 5 минут назад). Обновите список и повторите попытку.</value></data>
 </root>

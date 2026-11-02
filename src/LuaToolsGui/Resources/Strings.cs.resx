@@ -870,4 +870,5 @@ Zapnout?</value></data>
   <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Místní verze (offline)</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Žádné připojení k internetu. Používá se lokálně nainstalovaná verze.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Bez internetu nelze stáhnout novou verzi.</value></data>
+  <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Nic nebylo smazáno: nepodařilo se ověřit, že „{0}“ je záloha, kterou lze bezpečně odstranit (změnila se, je to odkaz nebo je mladší než 5 minut). Obnovte seznam a zkuste to znovu.</value></data>
 </root>

@@ -870,4 +870,5 @@ Puedes rechazarlo y seguir usando el resto de LuaTools; solo el botón «Add via
   <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Versión local (sin conexión)</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Sin conexión a Internet. Usando la versión instalada localmente.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>No se puede descargar una nueva versión sin Internet.</value></data>
+  <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>No se eliminó nada: no se pudo confirmar que "{0}" sea un respaldo que se pueda borrar con seguridad (cambió, es un enlace o tiene menos de 5 minutos). Actualiza la lista e inténtalo de nuevo.</value></data>
 </root>

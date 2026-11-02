@@ -905,4 +905,5 @@ Enable it?</value></data>
   <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Local version (Offline)</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>No internet connection. Using locally installed version.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Cannot download a new version without internet.</value></data>
+  <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Nothing was deleted: "{0}" could not be confirmed as a backup that is safe to remove (it changed, is a link, or is less than 5 minutes old). Refresh the list and try again.</value></data>
 </root>

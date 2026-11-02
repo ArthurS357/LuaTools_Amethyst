@@ -219,6 +219,45 @@ public sealed class BackupCleanupViewModelTests : IDisposable
         asked.Should().BeFalse();
         vm.Entries.Should().ContainSingle();
     }
+
+    // ── Failure message ──────────────────────────────────────────────
+
+    [Fact]
+    public void A_refused_batch_says_nothing_was_deleted_and_names_the_item()
+    {
+        var refused = new BackupDeleteResult(0, 0, ["AmethystTool-backup-20261102-120000"], Refused: true);
+
+        string? message = BackupCleanupViewModel.FailureMessage(refused);
+
+        message.Should().Be(string.Format(Resources.Strings.Settings_Backups_Err_BatchRefused,
+            "AmethystTool-backup-20261102-120000"));
+        message.Should().NotBe(string.Format(Resources.Strings.Settings_Backups_Toast_Failed, 1),
+            "the per-item 'close Steam and try again' message is wrong for a batch refused before anything ran");
+    }
+
+    [Fact]
+    public void Per_item_failures_keep_the_count_message() =>
+        BackupCleanupViewModel.FailureMessage(new BackupDeleteResult(1, 10, ["a", "b"], Refused: false))
+            .Should().Be(string.Format(Resources.Strings.Settings_Backups_Toast_Failed, 2));
+
+    [Fact]
+    public void A_clean_delete_has_no_failure_message() =>
+        BackupCleanupViewModel.FailureMessage(new BackupDeleteResult(2, 10, [], Refused: false)).Should().BeNull();
+
+    [Fact]
+    public async Task Deleting_a_backup_made_a_minute_ago_is_refused_end_to_end()
+    {
+        // Through the real service: the 5-minute gate refuses, the folder stays, the list is rescanned.
+        string fresh = Backup("AmethystTool-backup-", DateTime.Now.AddMinutes(-1));
+        var vm = Vm(_root);
+        await vm.RefreshCommand.ExecuteAsync(null);
+        vm.Entries.Single().IsSelected = true;
+
+        await vm.DeleteSelectedCommand.ExecuteAsync(null);
+
+        Directory.Exists(fresh).Should().BeTrue();
+        vm.Entries.Should().ContainSingle();
+    }
 }
 
 /// <summary>

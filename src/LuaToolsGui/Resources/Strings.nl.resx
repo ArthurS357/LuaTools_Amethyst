@@ -870,4 +870,5 @@ Inschakelen?</value></data>
   <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Lokale versie (offline)</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Geen internetverbinding. De lokaal geïnstalleerde versie wordt gebruikt.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Zonder internet kan geen nieuwe versie worden gedownload.</value></data>
+  <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Er is niets verwijderd: "{0}" kon niet worden bevestigd als een back-up die veilig verwijderd kan worden (het is gewijzigd, is een koppeling of is jonger dan 5 minuten). Vernieuw de lijst en probeer het opnieuw.</value></data>
 </root>

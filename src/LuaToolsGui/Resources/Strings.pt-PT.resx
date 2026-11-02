@@ -870,4 +870,5 @@ Ativar?</value></data>
   <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Versão local (offline)</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Sem ligação à Internet. A usar a versão instalada localmente.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Não é possível transferir uma nova versão sem Internet.</value></data>
+  <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Nada foi eliminado: não foi possível confirmar que "{0}" é uma cópia de segurança segura para remover (foi alterada, é uma ligação ou tem menos de 5 minutos). Atualize a lista e tente novamente.</value></data>
 </root>

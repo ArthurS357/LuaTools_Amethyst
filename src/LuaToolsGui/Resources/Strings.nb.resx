@@ -870,4 +870,5 @@ Aktivere?</value></data>
   <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Lokal versjon (frakoblet)</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Ingen internettforbindelse. Bruker den lokalt installerte versjonen.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Kan ikke laste ned en ny versjon uten internett.</value></data>
+  <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Ingenting ble slettet: "{0}" kunne ikke bekreftes som en sikkerhetskopi som trygt kan fjernes (den er endret, er en lenke eller er under 5 minutter gammel). Oppdater listen og prøv igjen.</value></data>
 </root>

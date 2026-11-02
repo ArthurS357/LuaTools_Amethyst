@@ -870,4 +870,5 @@ Aktivera?</value></data>
   <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Lokal version (offline)</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Ingen internetanslutning. Använder den lokalt installerade versionen.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Det går inte att ladda ned en ny version utan internet.</value></data>
+  <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Inget togs bort: "{0}" kunde inte bekräftas som en säkerhetskopia som säkert kan tas bort (den har ändrats, är en länk eller är yngre än 5 minuter). Uppdatera listan och försök igen.</value></data>
 </root>

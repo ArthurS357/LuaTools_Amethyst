@@ -870,4 +870,5 @@ SHA-256 {3}
   <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Τοπική έκδοση (εκτός σύνδεσης)</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Δεν υπάρχει σύνδεση στο internet. Χρησιμοποιείται η τοπικά εγκατεστημένη έκδοση.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Δεν είναι δυνατή η λήψη νέας έκδοσης χωρίς internet.</value></data>
+  <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Δεν διαγράφηκε τίποτα: δεν ήταν δυνατό να επιβεβαιωθεί ότι το «{0}» είναι αντίγραφο ασφαλείας που μπορεί να αφαιρεθεί με ασφάλεια (άλλαξε, είναι σύνδεσμος ή είναι νεότερο από 5 λεπτά). Ανανέωσε τη λίστα και δοκίμασε ξανά.</value></data>
 </root>

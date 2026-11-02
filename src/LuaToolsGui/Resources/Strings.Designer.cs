@@ -171,6 +171,7 @@ public static class Strings
     public static string Settings_Backups_Cancel => Get(nameof(Settings_Backups_Cancel));
     public static string Settings_Backups_Toast_Deleted => Get(nameof(Settings_Backups_Toast_Deleted));
     public static string Settings_Backups_Toast_Failed => Get(nameof(Settings_Backups_Toast_Failed));
+    public static string Settings_Backups_Err_BatchRefused => Get(nameof(Settings_Backups_Err_BatchRefused));
     public static string Settings_Backups_Column_Name => Get(nameof(Settings_Backups_Column_Name));
     public static string Settings_Backups_Column_Type => Get(nameof(Settings_Backups_Column_Type));
     public static string Settings_Backups_Type_Folder => Get(nameof(Settings_Backups_Type_Folder));

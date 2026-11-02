@@ -870,4 +870,5 @@ O activezi?</value></data>
   <data name="Settings_AmethystTool_OfflineStatus" xml:space="preserve"><value>Versiune locală (offline)</value></data>
   <data name="Settings_AmethystTool_OfflineHint" xml:space="preserve"><value>Nu există conexiune la internet. Se folosește versiunea instalată local.</value></data>
   <data name="Settings_AmethystTool_OfflineDownloadError" xml:space="preserve"><value>Fără internet nu se poate descărca o versiune nouă.</value></data>
+  <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Nu s-a șters nimic: nu s-a putut confirma că „{0}” este o copie de rezervă care poate fi ștearsă în siguranță (s-a modificat, este un link sau are mai puțin de 5 minute). Reîmprospătează lista și încearcă din nou.</value></data>
 </root>

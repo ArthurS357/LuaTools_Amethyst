@@ -138,14 +138,26 @@ public partial class BackupCleanupViewModel : ObservableObject
             if (result.DeletedCount > 0)
                 _toast.Show(Resources.Strings.Settings_Backups_Title, string.Format(CultureInfo.CurrentCulture,
                     Resources.Strings.Settings_Backups_Toast_Deleted, result.DeletedCount, ByteSize.Format(result.BytesFreed)));
-            if (result.Errors.Count > 0)
-                _toast.Show(Resources.Strings.Settings_Backups_Title, string.Format(CultureInfo.CurrentCulture,
-                    Resources.Strings.Settings_Backups_Toast_Failed, result.Errors.Count), error: true);
+            if (FailureMessage(result) is { } failure)
+                _toast.Show(Resources.Strings.Settings_Backups_Title, failure, error: true);
 
             await RescanAsync();
         }
         finally { _busy = false; }
     }
+
+    /// <summary>
+    /// What to tell the user when a delete did not fully succeed, or null when it did. A refused batch gets its
+    /// own message: it used to fall through to "1 item(s) could not be deleted. Close Steam and try again.",
+    /// which was wrong twice over: NOTHING was deleted, and closing Steam changes nothing about why.
+    /// </summary>
+    internal static string? FailureMessage(BackupDeleteResult result) =>
+        result.Refused
+            ? string.Format(CultureInfo.CurrentCulture, Resources.Strings.Settings_Backups_Err_BatchRefused,
+                result.Errors.FirstOrDefault() ?? "?")
+            : result.Errors.Count > 0
+                ? string.Format(CultureInfo.CurrentCulture, Resources.Strings.Settings_Backups_Toast_Failed, result.Errors.Count)
+                : null;
 
     private static async Task<bool> ConfirmWithDialogAsync(int count, long bytes)
     {
