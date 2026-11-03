@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.7.12.10");
+        AppVersion.Current.Should().Be("1.7.13");
     }
 
     [Fact]

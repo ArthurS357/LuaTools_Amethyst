@@ -1,30 +1,23 @@
 # Changelog
 
-## Nao lancado (build local 1.7.12.10)
+## 1.7.13 — 2026-11-02
 
-Auto-update so pelo GitHub com SHA-256 fixado, backup de saves fora da Steam, badge "Instalado", app inteiro traduzido e
-build padronizado. Junta as builds locais 1.7.12.1 a 1.7.12.10, ainda em teste (sem release publicada).
+Maior atualizacao do fork ate hoje: vidro com Acrylic, backup de saves fora da Steam, badge "Instalado", auto-update so
+pelo GitHub com SHA-256 fixado, CloudRedirect removido, app inteiro traduzido e build padronizado. Consolida as builds
+locais 1.7.12.1 a 1.7.12.10 (nunca publicadas).
 
-### 1.7.12.10 — shell do vidro a 65%
+### Efeito vidro (Acrylic)
 
-- **Shell de 80% (`0xCC`) para 65% (`0xA6`).** Medido na 1.7.12.9: o Acrylic funcionava (cor do shell seguia o fundo:
-  `#2B2627` sobre branco, `#2C270A` sobre amarelo, `#191415` sobre preto; paginas constantes em `#231A1C`), mas a tinta
-  de 80% o deixava com cara de janela solida. Troca deliberada de contraste por visual: o texto do shell mantem 3:1 sobre
-  o pior fundo (`#989898`, desktop claro) e AA (4,5:1) sobre desktop escuro (`#363636`). `GlassmorphismTests` reflete os
-  dois patamares; o AA sobre desktop claro deixou de ser garantido.
+- **Mica trocado por Acrylic, shell a 65% (`0xA6`).** O Mica (1.7.12.8) estava ativo (DWM `SYSTEMBACKDROP_TYPE` = 2) mas
+  era invisivel: em janela escura e uma cor lisa, sem desfoque (`#202020` sobre branco, preto e amarelo). Acrylic
+  (`DWMSBT_TRANSIENTWINDOW`) desfoca o que esta atras e a cor do shell segue o fundo (`#2B2627` sobre branco, `#2C270A`
+  sobre amarelo, `#191415` sobre preto; paginas constantes em `#231A1C`). A 80% (1.7.12.9) ainda parecia janela solida;
+  65% foi escolha deliberada de visual sobre contraste: o texto do shell mantem 3:1 sobre o pior fundo (`#989898`,
+  desktop claro) e AA (4,5:1) sobre desktop escuro (`#363636`). `GlassmorphismTests` reflete os dois patamares; o AA
+  sobre desktop claro deixou de ser garantido. Gate inalterado: Windows 11 e sem alto contraste. Texto de ajuda
+  (`Settings_Glass_Hint`) atualizado nos 30 idiomas.
 
-### 1.7.12.9 — vidro com Acrylic
-
-- **Mica trocado por Acrylic.** Na 1.7.12.8 o vidro estava ativo (DWM `SYSTEMBACKDROP_TYPE` = 2 na janela real) mas era
-  invisivel: Mica em janela escura e uma cor lisa, sem desfoque, medida `#202020` sobre branco, preto e amarelo, e sob o
-  shell a 60% ficava a poucos niveis do solido. Acrylic (`DWMSBT_TRANSIENTWINDOW`) desfoca o que esta atras.
-- **Shell a 80% (`0xCC`).** Acrylic escuro mede `#929292` sobre janela branca e `#989800` sobre amarela, entao o pior
-  caso do teste de contraste subiu de `#3A3A3A` para `#989898`. Contra ele, 50% deixa texto de destaque a 2,8:1 e 70% a
-  4,4:1; 80% e o menor degrau AA nas tres paletas. Gate inalterado: Windows 11 (`IsSupported(Mica)`, porque o WPF-UI diz
-  que Acrylic existe desde o Windows 7) e sem alto contraste. Texto de ajuda (`Settings_Glass_Hint`) atualizado nos 30
-  idiomas (so o nome do material).
-
-### Novidades (builds locais 1.7.12.1 a 1.7.12.5)
+### Novidades
 
 - **Badge "Instalado" e ordenacao:** o card e o painel de detalhes do Gerenciar mostram um badge verde quando o manifest
   da Steam diz que o jogo esta inteiro no disco. Nova ordenacao padrao "Instalados primeiro" (instalados, depois o
@@ -38,10 +31,9 @@ build padronizado. Junta as builds locais 1.7.12.1 a 1.7.12.10, ainda em teste (
   e "Importar save (.zip)..." de qualquer lugar, com as mesmas checagens do restore (zip-slip, links, outros jogos,
   tamanho) e copia dos saves atuais antes.
 - **Efeito vidro (Configuracoes > Geral, padrao ligado):** no Windows 11 a barra de titulo e o menu lateral ficam
-  translucidos sobre o backdrop Mica (`GlassShellBrush` = cor da janela a 60%); as paginas continuam opacas
-  (`NavigationViewContentBackground` do WPF-UI), entao nenhum token de texto perde contraste. Troca ao vivo, sem
-  reiniciar. Windows 10, alto contraste ou toggle desligado = janela solida como antes. *(Substituido na 1.7.12.9:
-  Acrylic a 80%, ver acima.)*
+  translucidos sobre o backdrop Acrylic (`GlassShellBrush` = cor da janela a 65%); as paginas continuam opacas
+  (`NavigationViewContentBackground` do WPF-UI), entao o texto das paginas nao perde contraste. Troca ao vivo, sem
+  reiniciar. Windows 10, alto contraste ou toggle desligado = janela solida como antes. Detalhes acima.
 - **Aba Modo e onboarding:** o card volta a ser BetterSteamTools / BetterSteamTools Nightly (`madoiscool/BetterSteamTools`)
   com aviso de telemetria e DonateKeys; o onboarding instala so AmethystTool e o frontend Amethyst.
 

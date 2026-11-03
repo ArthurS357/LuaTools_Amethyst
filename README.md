@@ -13,7 +13,7 @@ enable/disable), manages unlocker modes, launches games through Steam, and injec
 into Steam's store pages. It ships translated in 29 languages and installs via Velopack; updating itself
 is opt-in (see [Updating](#updating)).
 
-Current version: **1.7.12** · Repository: <https://github.com/ArthurS357/LuaTools_Amethyst>
+Current version: **1.7.13** · Repository: <https://github.com/ArthurS357/LuaTools_Amethyst>
 
 ### Checking which build you are running
 
