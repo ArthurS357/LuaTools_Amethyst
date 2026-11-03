@@ -128,17 +128,27 @@ public sealed class StagedDownloadTests : IDisposable
     }
 
     /// <summary>The stall deadline is per read, not per download: a body slower in total than the
-    /// deadline, but never silent for that long, must complete.</summary>
+    /// deadline, but never silent for that long, must complete.
+    ///
+    /// <para>
+    /// Real time on purpose: the deadline is <c>CancellationTokenSource.CancelAfter</c> inside
+    /// <c>SaveResponseAsync</c>, which takes no clock, so a fake one would mean changing production code for
+    /// a test. The flake this replaces (100 ms steps against a 500 ms deadline, 5x margin) failed on a loaded
+    /// CI runner. Here a read has to be late by 2.9 s to trip it (30x), while the body still takes 3.2 s in
+    /// total, longer than the 3 s deadline, which is the property under test.
+    /// </para></summary>
     [Fact]
     public async Task SlowButSteadyBody_IsNotMistakenForAStall()
     {
-        using var res = Response(new ScriptedBody(8, TimeSpan.FromMilliseconds(100), Tail.End), "1.zip");
+        const int chunks = 32;                                     // 32 x 100 ms = 3.2 s > stallDeadline
+        TimeSpan stallDeadline = TimeSpan.FromSeconds(3);
+        using var res = Response(new ScriptedBody(chunks, TimeSpan.FromMilliseconds(100), Tail.End), "1.zip");
 
         var file = await LuaToolsApiClient.SaveResponseAsync(
-                res, "1.zip", null, CancellationToken.None, _folder, TimeSpan.FromMilliseconds(500))
+                res, "1.zip", null, CancellationToken.None, _folder, stallDeadline)
             .WaitAsync(Guard);
 
-        File.ReadAllText(file.FilePath).Should().Be("xxxxxxxx");
+        File.ReadAllText(file.FilePath).Should().Be(new string('x', chunks));
     }
 
     [Theory]
