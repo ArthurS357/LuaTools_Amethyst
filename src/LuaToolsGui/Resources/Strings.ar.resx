@@ -541,6 +541,12 @@
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>أحدث إصدار من AmethystTool لا ينشر {0}.</value></data>
   <data name="Amethyst_Err_Archive" xml:space="preserve"><value>تم رفض أرشيف AmethystTool: {0}</value></data>
   <data name="Amethyst_Backup_Line" xml:space="preserve"><value>الملفات التي كانت موجودة في مجلد Steam حُفظت في {0}</value></data>
+  <data name="Amethyst_Denuvo_Label" xml:space="preserve"><value>وضع Denuvo (أسماء بديلة)</value></data>
+  <data name="Amethyst_Denuvo_Hint" xml:space="preserve"><value>ينشئ ملفات توافق (OpenSteamTool) لمدقق Denuvo. معطّل افتراضيًا.</value></data>
+  <data name="Amethyst_Denuvo_Toast_On" xml:space="preserve"><value>تم تفعيل وضع Denuvo. يسري مفعوله عند تشغيل Steam في المرة القادمة.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Off" xml:space="preserve"><value>تم تعطيل وضع Denuvo. يسري مفعوله عند تشغيل Steam في المرة القادمة.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Failed" xml:space="preserve"><value>تعذّر تغيير وضع Denuvo: {0}</value></data>
+  <data name="Amethyst_Denuvo_NoConfig" xml:space="preserve"><value>لم يتم العثور على {0} في مجلد Steam. أعد تثبيت AmethystTool لاستعادته.</value></data>
   <data name="Removal_Confirm_Caption" xml:space="preserve"><value>هل تريد إلغاء تثبيت هذه الإضافة؟</value></data>
   <data name="Removal_Confirm_Body" xml:space="preserve"><value>سيُغلق Steam حتى يمكن إزالة ملفاته، ولن يُعاد فتحه تلقائيًا. كل ما يُزال يُحفظ في مجلد نسخ احتياطي داخل مجلد Steam.</value></data>
   <data name="Removal_Toast_Removed" xml:space="preserve"><value>تمت الإزالة. حُفظت الملفات في مجلد نسخ احتياطي داخل مجلد Steam.</value></data>

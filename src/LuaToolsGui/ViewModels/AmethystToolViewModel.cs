@@ -79,6 +79,19 @@ public sealed partial class AmethystToolViewModel(AmethystToolService installer,
     [ObservableProperty] private double _progress;
     [ObservableProperty] private bool _isProgressIndeterminate;
 
+    /// <summary>
+    /// "Denuvo Mode (Aliases)": <c>[compatibility] denuvo_aliases</c> as <c>amethysttool.toml</c> has it.
+    /// Bound ONE-WAY to the switch: the switch's click runs <see cref="ToggleDenuvoAliasesCommand"/>, and only
+    /// a successful write moves this. A failed write snaps the switch back to what the file still says.
+    /// </summary>
+    [ObservableProperty] private bool _denuvoAliasesEnabled;
+
+    /// <summary>
+    /// Whether there is an <c>amethysttool.toml</c> to write into. Read by
+    /// <see cref="ModeViewModel.CanToggleDenuvoAliases"/>, which also folds in the page's busy flag.
+    /// </summary>
+    [ObservableProperty] private bool _denuvoConfigPresent;
+
     /// <summary>Non-null shows an info/warning line under the buttons (offline, GitHub rate limit).</summary>
     [ObservableProperty] private string? _statusLine;
 
@@ -146,6 +159,48 @@ public sealed partial class AmethystToolViewModel(AmethystToolService installer,
         BackupLine = installer.LastBackupDirectory is { } dir
             ? string.Format(Resources.Strings.Amethyst_Backup_Line, dir)
             : null;
+
+        RefreshDenuvoAliases();
+    }
+
+    /// <summary>Re-read the switch from disk. No config file → off and disabled.</summary>
+    private void RefreshDenuvoAliases()
+    {
+        bool? state = installer.ReadDenuvoAliases();
+        DenuvoConfigPresent = state is not null;
+        DenuvoAliasesEnabled = state == true;
+    }
+
+    /// <summary>
+    /// The switch was clicked: write the opposite of what the file last said. The switch has already
+    /// flipped itself, so on failure the property is re-announced to put it back — the value did not change,
+    /// and an unchanged <c>[ObservableProperty]</c> raises nothing on its own.
+    /// </summary>
+    [RelayCommand]
+    private async Task ToggleDenuvoAliasesAsync(CancellationToken ct)
+    {
+        bool target = !DenuvoAliasesEnabled;
+        if (IsBusy || !IsInstalled || !DenuvoConfigPresent)
+        {
+            OnPropertyChanged(nameof(DenuvoAliasesEnabled));
+            return;
+        }
+
+        var (ok, error) = await installer.SetDenuvoAliasesAsync(target, ct);
+        if (ok)
+        {
+            DenuvoAliasesEnabled = target;
+            toast.Show(Resources.Strings.Amethyst_Denuvo_Label, target
+                ? Resources.Strings.Amethyst_Denuvo_Toast_On
+                : Resources.Strings.Amethyst_Denuvo_Toast_Off);
+        }
+        else
+        {
+            RefreshDenuvoAliases();
+            OnPropertyChanged(nameof(DenuvoAliasesEnabled));
+            toast.Show(Resources.Strings.Amethyst_Denuvo_Label,
+                string.Format(Resources.Strings.Amethyst_Denuvo_Toast_Failed, error), error: true);
+        }
     }
 
     private IProgress<double?> MakeProgress() => new Progress<double?>(p =>

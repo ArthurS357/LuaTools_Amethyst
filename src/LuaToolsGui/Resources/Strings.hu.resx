@@ -515,6 +515,12 @@ Ez törli a .lua fájlokat a Steam\config\stplug-in mappából. Ezután indítsd
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>A legfrissebb AmethystTool kiadás nem tesz közzé {0} fájlt.</value></data>
   <data name="Amethyst_Err_Archive" xml:space="preserve"><value>Az AmethystTool archívumot elutasítottuk: {0}</value></data>
   <data name="Amethyst_Backup_Line" xml:space="preserve"><value>A Steam mappájában már meglévő fájlok itt maradtak meg: {0}</value></data>
+  <data name="Amethyst_Denuvo_Label" xml:space="preserve"><value>Denuvo mód (álnevek)</value></data>
+  <data name="Amethyst_Denuvo_Hint" xml:space="preserve"><value>Kompatibilitási fájlokat (OpenSteamTool) hoz létre a Denuvo ellenőrző számára. Alapértelmezetten ki van kapcsolva.</value></data>
+  <data name="Amethyst_Denuvo_Toast_On" xml:space="preserve"><value>Denuvo mód bekapcsolva. A Steam következő indításakor lép életbe.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Off" xml:space="preserve"><value>Denuvo mód kikapcsolva. A Steam következő indításakor lép életbe.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Failed" xml:space="preserve"><value>Nem sikerült módosítani a Denuvo módot: {0}</value></data>
+  <data name="Amethyst_Denuvo_NoConfig" xml:space="preserve"><value>A(z) {0} nem található a Steam mappában. Telepítsd újra az AmethystToolt a visszaállításhoz.</value></data>
   <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Eltávolítja ezt a bővítményt?</value></data>
   <data name="Removal_Confirm_Body" xml:space="preserve"><value>A Steam bezárul, hogy a fájljai eltávolíthatók legyenek, és NEM nyílik meg újra automatikusan. Minden eltávolított elem a Steam mappán belüli biztonsági mentési mappába kerül.</value></data>
   <data name="Removal_Toast_Removed" xml:space="preserve"><value>Eltávolítva. A fájlok a Steam mappán belüli biztonsági mentési mappában maradtak.</value></data>

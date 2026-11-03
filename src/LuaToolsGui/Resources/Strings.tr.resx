@@ -515,6 +515,12 @@ Bu işlem, .lua dosyalarını Steam\config\stplug-in konumundan siler. Değişik
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>En son AmethystTool sürümü {0} yayımlamıyor.</value></data>
   <data name="Amethyst_Err_Archive" xml:space="preserve"><value>AmethystTool arşivi reddedildi: {0}</value></data>
   <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Steam klasörünüzde zaten bulunan dosyalar {0} içinde saklandı</value></data>
+  <data name="Amethyst_Denuvo_Label" xml:space="preserve"><value>Denuvo Modu (Takma Adlar)</value></data>
+  <data name="Amethyst_Denuvo_Hint" xml:space="preserve"><value>Denuvo doğrulayıcısı için uyumluluk dosyaları (OpenSteamTool) oluşturur. Varsayılan olarak kapalıdır.</value></data>
+  <data name="Amethyst_Denuvo_Toast_On" xml:space="preserve"><value>Denuvo Modu açıldı. Steam bir sonraki açılışında geçerli olur.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Off" xml:space="preserve"><value>Denuvo Modu kapatıldı. Steam bir sonraki açılışında geçerli olur.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Failed" xml:space="preserve"><value>Denuvo Modu değiştirilemedi: {0}</value></data>
+  <data name="Amethyst_Denuvo_NoConfig" xml:space="preserve"><value>{0}, Steam klasöründe bulunamadı. Geri yüklemek için AmethystTool'u yeniden yükleyin.</value></data>
   <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Bu eklenti kaldırılsın mı?</value></data>
   <data name="Removal_Confirm_Body" xml:space="preserve"><value>Dosyalarının kaldırılabilmesi için Steam kapatılacak ve sizin yerinize yeniden AÇILMAYACAK. Kaldırılan her şey Steam klasörünüzdeki bir yedek klasöründe saklanır.</value></data>
   <data name="Removal_Toast_Removed" xml:space="preserve"><value>Kaldırıldı. Dosyalar Steam klasörünüzdeki bir yedek klasöründe saklandı.</value></data>

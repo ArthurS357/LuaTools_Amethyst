@@ -515,6 +515,12 @@
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Най-новото издание на AmethystTool не публикува {0}.</value></data>
   <data name="Amethyst_Err_Archive" xml:space="preserve"><value>Архивът на AmethystTool беше отхвърлен: {0}</value></data>
   <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Файловете, които вече бяха в папката на Steam, са запазени в {0}</value></data>
+  <data name="Amethyst_Denuvo_Label" xml:space="preserve"><value>Режим Denuvo (псевдоними)</value></data>
+  <data name="Amethyst_Denuvo_Hint" xml:space="preserve"><value>Създава файлове за съвместимост (OpenSteamTool) за валидатора на Denuvo. Изключено по подразбиране.</value></data>
+  <data name="Amethyst_Denuvo_Toast_On" xml:space="preserve"><value>Режимът Denuvo е включен. Ще влезе в сила при следващото стартиране на Steam.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Off" xml:space="preserve"><value>Режимът Denuvo е изключен. Ще влезе в сила при следващото стартиране на Steam.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Failed" xml:space="preserve"><value>Режимът Denuvo не можа да бъде променен: {0}</value></data>
+  <data name="Amethyst_Denuvo_NoConfig" xml:space="preserve"><value>{0} не е намерен в папката на Steam. Преинсталирайте AmethystTool, за да го възстановите.</value></data>
   <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Да се премахне ли тази приставка?</value></data>
   <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam ще бъде затворен, за да могат да бъдат премахнати файловете му, и НЯМА да бъде отворен отново автоматично. Всичко премахнато се запазва в папка с резервно копие в папката на Steam.</value></data>
   <data name="Removal_Toast_Removed" xml:space="preserve"><value>Премахнато. Файловете са запазени в папка с резервно копие в папката на Steam.</value></data>

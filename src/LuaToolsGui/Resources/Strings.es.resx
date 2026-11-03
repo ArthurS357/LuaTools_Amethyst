@@ -515,6 +515,12 @@ Esto borra los archivos .lua de Steam\config\stplug-in. Reinicia Steam después 
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>La última versión de AmethystTool no publica {0}.</value></data>
   <data name="Amethyst_Err_Archive" xml:space="preserve"><value>Se rechazó el archivo de AmethystTool: {0}</value></data>
   <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Los archivos que ya estaban en la carpeta de Steam se guardaron en {0}</value></data>
+  <data name="Amethyst_Denuvo_Label" xml:space="preserve"><value>Modo Denuvo (alias)</value></data>
+  <data name="Amethyst_Denuvo_Hint" xml:space="preserve"><value>Crea archivos de compatibilidad (OpenSteamTool) para el validador de Denuvo. Desactivado por defecto.</value></data>
+  <data name="Amethyst_Denuvo_Toast_On" xml:space="preserve"><value>Modo Denuvo activado. Se aplicará la próxima vez que se inicie Steam.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Off" xml:space="preserve"><value>Modo Denuvo desactivado. Se aplicará la próxima vez que se inicie Steam.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Failed" xml:space="preserve"><value>No se pudo cambiar el Modo Denuvo: {0}</value></data>
+  <data name="Amethyst_Denuvo_NoConfig" xml:space="preserve"><value>No se encontró {0} en tu carpeta de Steam. Reinstala AmethystTool para restaurarlo.</value></data>
   <data name="Removal_Confirm_Caption" xml:space="preserve"><value>¿Desinstalar este complemento?</value></data>
   <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam se cerrará para poder quitar sus archivos y NO se volverá a abrir automáticamente. Todo lo que se quite queda en una carpeta de copia de seguridad dentro de la carpeta de Steam.</value></data>
   <data name="Removal_Toast_Removed" xml:space="preserve"><value>Quitado. Los archivos quedaron en una carpeta de copia de seguridad dentro de la carpeta de Steam.</value></data>

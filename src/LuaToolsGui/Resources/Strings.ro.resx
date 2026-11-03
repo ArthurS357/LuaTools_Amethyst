@@ -515,6 +515,12 @@ Aceasta șterge fișierele .lua din Steam\config\stplug-in. Repornește Steam du
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Cea mai recentă versiune AmethystTool nu publică {0}.</value></data>
   <data name="Amethyst_Err_Archive" xml:space="preserve"><value>Arhiva AmethystTool a fost respinsă: {0}</value></data>
   <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Fișierele care erau deja în folderul Steam au fost păstrate în {0}</value></data>
+  <data name="Amethyst_Denuvo_Label" xml:space="preserve"><value>Mod Denuvo (aliasuri)</value></data>
+  <data name="Amethyst_Denuvo_Hint" xml:space="preserve"><value>Creează fișiere de compatibilitate (OpenSteamTool) pentru validatorul Denuvo. Dezactivat implicit.</value></data>
+  <data name="Amethyst_Denuvo_Toast_On" xml:space="preserve"><value>Modul Denuvo a fost activat. Intră în vigoare la următoarea pornire a Steam.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Off" xml:space="preserve"><value>Modul Denuvo a fost dezactivat. Intră în vigoare la următoarea pornire a Steam.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Failed" xml:space="preserve"><value>Modul Denuvo nu a putut fi schimbat: {0}</value></data>
+  <data name="Amethyst_Denuvo_NoConfig" xml:space="preserve"><value>{0} nu a fost găsit în folderul Steam. Reinstalează AmethystTool pentru a-l restaura.</value></data>
   <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Dezinstalați acest plugin?</value></data>
   <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam va fi închis pentru ca fișierele să poată fi eliminate și NU va fi redeschis automat. Tot ce se elimină este păstrat într-un folder de rezervă din folderul Steam.</value></data>
   <data name="Removal_Toast_Removed" xml:space="preserve"><value>Eliminat. Fișierele au fost păstrate într-un folder de rezervă din folderul Steam.</value></data>

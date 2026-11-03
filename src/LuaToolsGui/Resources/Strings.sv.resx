@@ -515,6 +515,12 @@ Detta tar bort .lua-filerna från Steam\config\stplug-in. Starta om Steam efter�
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Den senaste AmethystTool-versionen publicerar inte {0}.</value></data>
   <data name="Amethyst_Err_Archive" xml:space="preserve"><value>AmethystTool-arkivet avvisades: {0}</value></data>
   <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Filer som redan låg i din Steam-mapp sparades i {0}</value></data>
+  <data name="Amethyst_Denuvo_Label" xml:space="preserve"><value>Denuvo-läge (alias)</value></data>
+  <data name="Amethyst_Denuvo_Hint" xml:space="preserve"><value>Skapar kompatibilitetsfiler (OpenSteamTool) för Denuvo-validatorn. Av som standard.</value></data>
+  <data name="Amethyst_Denuvo_Toast_On" xml:space="preserve"><value>Denuvo-läge aktiverat. Gäller från nästa gång Steam startar.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Off" xml:space="preserve"><value>Denuvo-läge inaktiverat. Gäller från nästa gång Steam startar.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Failed" xml:space="preserve"><value>Det gick inte att ändra Denuvo-läge: {0}</value></data>
+  <data name="Amethyst_Denuvo_NoConfig" xml:space="preserve"><value>{0} hittades inte i Steam-mappen. Installera om AmethystTool för att återställa den.</value></data>
   <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Vill du avinstallera det här tillägget?</value></data>
   <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam stängs så att filerna kan tas bort, och öppnas INTE igen åt dig. Allt som tas bort sparas i en säkerhetskopiemapp i din Steam-mapp.</value></data>
   <data name="Removal_Toast_Removed" xml:space="preserve"><value>Borttaget. Filerna sparades i en säkerhetskopiemapp i din Steam-mapp.</value></data>

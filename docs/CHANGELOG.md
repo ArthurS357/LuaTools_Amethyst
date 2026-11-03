@@ -1,5 +1,34 @@
 # Changelog
 
+## 1.7.13.1 — 2026-11-03
+
+Integracao com o "Denuvo Compatibility Mode" do AmethystTool v1.3.5.
+
+### Novidades
+
+- **Modo Denuvo (Aliases) no card do AmethystTool (aba Modo):** `ToggleSwitch` que liga/desliga
+  `[compatibility] denuvo_aliases` em `%SteamPath%\amethysttool.toml`. Com a opcao ligada o AmethystTool cria os aliases
+  `OpenSteamTool.dll` / `opensteamtool.toml` para o validador do Denuvo (TokeerDRM), mantendo o motor original privado.
+  Desligado por padrao; vale a partir do proximo start da Steam.
+- **Habilitacao:** o toggle so fica ativo com o AmethystTool instalado, o `amethysttool.toml` presente e a pagina livre
+  (`ModeViewModel.CanToggleDenuvoAliases`); sem o arquivo ele fica desligado e desabilitado. O binding de `IsChecked` e
+  one-way: o clique roda `ToggleDenuvoAliasesCommand` e so uma escrita bem-sucedida move o valor (falha = o toggle volta
+  e um toast diz o motivo).
+- **Install/update preserva a opcao:** o payload substitui o `amethysttool.toml`; se `denuvo_aliases` estava `true`,
+  o valor e regravado logo apos o `ApplyPlan` (melhor esforco, antes de religar a Steam).
+
+### Implementacao
+
+- `AmethystToolConfig` (puro): edicao por linha, sem round trip de TOML. Altera so a linha da chave (mantendo
+  indentacao e comentario), insere a chave no fim da secao existente (antes da linha em branco que a separa da proxima)
+  ou anexa `[compatibility]` no fim do arquivo. Preserva CRLF/LF e BOM; ignora `[compatibility]` dentro de strings
+  multilinha e `[[compatibility]]`; edita `compatibility.denuvo_aliases` na raiz; recusa (`FormatException`) tabela
+  inline ou outras chaves pontilhadas `compatibility.*` na raiz, que tornariam o TOML invalido com um header novo.
+- `AmethystToolService.SetDenuvoAliasesAsync(bool)` / `ReadDenuvoAliases()`: grava via `AtomicFile.WriteAllBytes`
+  (temp + rename), nao cria o arquivo se ele nao existir e nao regrava quando o valor ja e o pedido.
+- Strings novas (`Amethyst_Denuvo_*`, 6 chaves) nos 29 idiomas; `check-i18n.py` OK.
+- Testes: `AmethystToolDenuvoAliasesTests` (edicao do TOML, arquivo em disco, card e bindings da `ModeView.xaml`).
+
 ## 1.7.13 — 2026-11-02
 
 Maior atualizacao do fork ate hoje: vidro com Acrylic, backup de saves fora da Steam, badge "Instalado", auto-update so

@@ -515,6 +515,12 @@
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>最新的 AmethystTool 版本未發布 {0}。</value></data>
   <data name="Amethyst_Err_Archive" xml:space="preserve"><value>AmethystTool 壓縮檔已被拒絕：{0}</value></data>
   <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Steam 資料夾中原有的檔案已保存到 {0}</value></data>
+  <data name="Amethyst_Denuvo_Label" xml:space="preserve"><value>Denuvo 模式（別名）</value></data>
+  <data name="Amethyst_Denuvo_Hint" xml:space="preserve"><value>為 Denuvo 驗證器建立相容檔案（OpenSteamTool）。預設為關閉。</value></data>
+  <data name="Amethyst_Denuvo_Toast_On" xml:space="preserve"><value>已開啟 Denuvo 模式。將在下次啟動 Steam 時生效。</value></data>
+  <data name="Amethyst_Denuvo_Toast_Off" xml:space="preserve"><value>已關閉 Denuvo 模式。將在下次啟動 Steam 時生效。</value></data>
+  <data name="Amethyst_Denuvo_Toast_Failed" xml:space="preserve"><value>無法變更 Denuvo 模式：{0}</value></data>
+  <data name="Amethyst_Denuvo_NoConfig" xml:space="preserve"><value>在 Steam 資料夾中找不到 {0}。請重新安裝 AmethystTool 以還原該檔案。</value></data>
   <data name="Removal_Confirm_Caption" xml:space="preserve"><value>要解除安裝此外掛嗎？</value></data>
   <data name="Removal_Confirm_Body" xml:space="preserve"><value>將關閉 Steam 以便移除其檔案，且不會自動重新開啟。移除的內容都會保存到 Steam 資料夾內的備份資料夾中。</value></data>
   <data name="Removal_Toast_Removed" xml:space="preserve"><value>已移除。檔案已保存到 Steam 資料夾內的備份資料夾中。</value></data>

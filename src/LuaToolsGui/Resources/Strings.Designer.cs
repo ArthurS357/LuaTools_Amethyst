@@ -739,6 +739,14 @@ public static class Strings
     public static string Amethyst_Err_Archive => Get(nameof(Amethyst_Err_Archive));
     public static string Amethyst_Backup_Line => Get(nameof(Amethyst_Backup_Line));
 
+    // ── AmethystTool: Denuvo Mode (Aliases) ──
+    public static string Amethyst_Denuvo_Label => Get(nameof(Amethyst_Denuvo_Label));
+    public static string Amethyst_Denuvo_Hint => Get(nameof(Amethyst_Denuvo_Hint));
+    public static string Amethyst_Denuvo_Toast_On => Get(nameof(Amethyst_Denuvo_Toast_On));
+    public static string Amethyst_Denuvo_Toast_Off => Get(nameof(Amethyst_Denuvo_Toast_Off));
+    public static string Amethyst_Denuvo_Toast_Failed => Get(nameof(Amethyst_Denuvo_Toast_Failed));
+    public static string Amethyst_Denuvo_NoConfig => Get(nameof(Amethyst_Denuvo_NoConfig));
+
     // ── Plugin removal (uninstall) ──
     public static string Removal_Confirm_Caption => Get(nameof(Removal_Confirm_Caption));
     public static string Removal_Confirm_Body => Get(nameof(Removal_Confirm_Body));

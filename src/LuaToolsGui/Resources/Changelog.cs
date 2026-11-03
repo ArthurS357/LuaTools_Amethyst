@@ -29,6 +29,15 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.7.13.1", "2026-11-03",
+            "Denuvo Mode (Aliases) on the AmethystTool card: one switch for AmethystTool 1.3.5's compatibility mode for the Denuvo validator.",
+            [
+                "Mode tab → AmethystTool card: new Denuvo Mode (Aliases) switch. It sets [compatibility] denuvo_aliases in amethysttool.toml, and AmethystTool then creates the OpenSteamTool compatibility files the Denuvo (TokeerDRM) validator looks for. Off by default; it takes effect the next time Steam starts.",
+                "Only that one line of the config is changed: other settings, comments and line endings stay as they were, and the file is written atomically (temp file + rename), so a crash cannot leave a half-written config. A config that defines the section in a way the edit could break is left untouched and reported.",
+                "The switch is available only when AmethystTool is installed and amethysttool.toml exists; it is never created from scratch. Updating or reinstalling AmethystTool keeps the switch on if it was on.",
+                "Translated in all 29 languages. No new dependency and no new network request.",
+            ]),
+
         new("1.7.13", "2026-11-02",
             "The biggest update of this fork so far: a frosted-glass (Acrylic) window, save backups for saves outside Steam, an Installed badge, a self-update that only trusts GitHub and checks the file's SHA-256, CloudRedirect removed, and the whole app translated.",
             [

@@ -199,6 +199,87 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
         removal.HasRecordFor(PluginIds.AmethystTool)
         || (ReadManifest() is not null && AmethystToolPlan.IsInstalled(SteamRootFiles()));
 
+    // ── Denuvo Mode (Aliases) — [compatibility] denuvo_aliases in amethysttool.toml ──────────────
+
+    /// <summary><c>&lt;Steam&gt;\amethysttool.toml</c>, or null when no Steam folder is known.</summary>
+    private string? ConfigPath => SteamDir is { } dir ? Path.Combine(dir, AmethystToolConfig.FileName) : null;
+
+    /// <summary>
+    /// The switch as the config file has it: <see langword="null"/> when there is no
+    /// <c>amethysttool.toml</c> to read (nothing installed, or it was deleted), which is what disables the
+    /// toggle — there is nothing for it to write into.
+    /// </summary>
+    public virtual bool? ReadDenuvoAliases() =>
+        ConfigPath is { } path ? ReadDenuvoAliases(path) : null;
+
+    internal static bool? ReadDenuvoAliases(string configPath)
+    {
+        try
+        {
+            return File.Exists(configPath)
+                ? AmethystToolConfig.ReadDenuvoAliases(Decode(File.ReadAllBytes(configPath)).Text)
+                : null;
+        }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+        {
+            return null; // unreadable reads as "not available", never as "off"
+        }
+    }
+
+    /// <summary>
+    /// Turn AmethystTool v1.3.5's Denuvo compatibility mode on or off. When on, AmethystTool creates
+    /// <c>OpenSteamTool.dll</c> / <c>opensteamtool.toml</c> aliases so the Denuvo (TokeerDRM) validator finds
+    /// the names it looks for; this method only flips the config key, AmethystTool does the rest the next
+    /// time Steam loads it.
+    ///
+    /// <para>
+    /// Refuses rather than creating the file when <c>amethysttool.toml</c> is missing: a config holding only
+    /// this key would replace every default the payload's own copy carries.
+    /// </para>
+    /// </summary>
+    public virtual Task<(bool ok, string? error)> SetDenuvoAliasesAsync(bool enabled, CancellationToken ct = default) =>
+        ConfigPath is { } path
+            ? SetDenuvoAliasesAsync(path, enabled, ct)
+            : Task.FromResult<(bool, string?)>((false, Resources.Strings.Plugin_Err_SteamNotFound));
+
+    internal static async Task<(bool ok, string? error)> SetDenuvoAliasesAsync(
+        string configPath, bool enabled, CancellationToken ct = default)
+    {
+        try
+        {
+            if (!File.Exists(configPath))
+                return (false, string.Format(Resources.Strings.Amethyst_Denuvo_NoConfig, AmethystToolConfig.FileName));
+
+            var (text, bom) = Decode(await File.ReadAllBytesAsync(configPath, ct));
+            string updated = AmethystToolConfig.SetDenuvoAliases(text, enabled);
+            if (updated == text) return (true, null); // already in that state: no write, no mtime bump
+
+            byte[] bytes = [.. (bom ? Utf8Bom : []), .. new System.Text.UTF8Encoding(false).GetBytes(updated)];
+
+            // Temp file + one rename: a crash mid-write must never leave AmethystTool a half-written config,
+            // which it would refuse to load — taking the unlocker down with it.
+            AtomicFile.WriteAllBytes(configPath, bytes);
+            AppLog.Log($"amethysttool: [{AmethystToolConfig.Section}] {AmethystToolConfig.Key} = {(enabled ? "true" : "false")}");
+            return (true, null);
+        }
+        catch (OperationCanceledException) { throw; }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or FormatException)
+        {
+            AppLog.Log($"amethysttool: could not set {AmethystToolConfig.Key}: {ex.Message}");
+            return (false, ex.Message);
+        }
+    }
+
+    private static readonly byte[] Utf8Bom = [0xEF, 0xBB, 0xBF];
+
+    /// <summary>UTF-8 text, plus whether the file opened with a BOM — kept on write, so the edit changes the
+    /// one key and not the encoding of the whole file.</summary>
+    private static (string Text, bool Bom) Decode(byte[] bytes)
+    {
+        bool bom = bytes.AsSpan().StartsWith(Utf8Bom);
+        return (new System.Text.UTF8Encoding(false).GetString(bom ? bytes[3..] : bytes), bom);
+    }
+
     public async Task<GithubRelease?> FetchLatestAsync(bool force, CancellationToken ct = default)
     {
         if (!force && _cachedLatest is not null) return _cachedLatest;
@@ -321,7 +402,18 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
                 await Task.Delay(1200, ct); // let handles on the DLLs release after the shutdown
             }
 
+            // The payload's amethysttool.toml replaces the one on disk (see ApplyPlan), which would silently
+            // turn Denuvo Mode back off on every update while the card's switch was last seen on. It is the
+            // one setting this app writes into that file, so it is the one carried across. Best effort: a
+            // failure leaves the payload's default (off) and the card re-reads the file afterwards.
+            bool keepDenuvoAliases = ReadDenuvoAliases(Path.Combine(steamDir, AmethystToolConfig.FileName)) == true;
+
             ApplyPlan(plan);
+
+            if (keepDenuvoAliases)
+                // Not cancellable: the files are already placed, and a cancel here would skip the Steam restart.
+                await SetDenuvoAliasesAsync(Path.Combine(steamDir, AmethystToolConfig.FileName), true,
+                    CancellationToken.None);
 
             // Deliberately AFTER ApplyPlan rather than in a finally: if a copy threw, the Steam root holds
             // a partial payload, and relaunching Steam onto a proxy DLL whose target is missing is worse

@@ -733,6 +733,12 @@ Enable it?</value></data>
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>The latest AmethystTool release does not publish {0}.</value></data>
   <data name="Amethyst_Err_Archive" xml:space="preserve"><value>The AmethystTool archive was rejected: {0}</value></data>
   <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Files that were already in your Steam folder were kept in {0}</value></data>
+  <data name="Amethyst_Denuvo_Label" xml:space="preserve"><value>Denuvo Mode (Aliases)</value></data>
+  <data name="Amethyst_Denuvo_Hint" xml:space="preserve"><value>Creates compatibility files (OpenSteamTool) for the Denuvo validator. Off by default.</value></data>
+  <data name="Amethyst_Denuvo_Toast_On" xml:space="preserve"><value>Denuvo Mode turned on. It takes effect the next time Steam starts.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Off" xml:space="preserve"><value>Denuvo Mode turned off. It takes effect the next time Steam starts.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Failed" xml:space="preserve"><value>Couldn't change Denuvo Mode: {0}</value></data>
+  <data name="Amethyst_Denuvo_NoConfig" xml:space="preserve"><value>{0} wasn't found in your Steam folder. Reinstall AmethystTool to restore it.</value></data>
   <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Uninstall this plugin?</value></data>
   <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam will be closed so its files can be removed, and will NOT be reopened for you. Everything removed is kept in a backup folder inside your Steam folder.</value></data>
   <data name="Removal_Toast_Removed" xml:space="preserve"><value>Removed. The files were kept in a backup folder inside your Steam folder.</value></data>

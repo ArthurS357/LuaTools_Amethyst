@@ -515,6 +515,12 @@
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>รุ่นล่าสุดของ AmethystTool ไม่ได้เผยแพร่ {0}</value></data>
   <data name="Amethyst_Err_Archive" xml:space="preserve"><value>ไฟล์บีบอัดของ AmethystTool ถูกปฏิเสธ: {0}</value></data>
   <data name="Amethyst_Backup_Line" xml:space="preserve"><value>ไฟล์ที่มีอยู่แล้วในโฟลเดอร์ Steam ถูกเก็บไว้ที่ {0}</value></data>
+  <data name="Amethyst_Denuvo_Label" xml:space="preserve"><value>โหมด Denuvo (ชื่อแทน)</value></data>
+  <data name="Amethyst_Denuvo_Hint" xml:space="preserve"><value>สร้างไฟล์ความเข้ากันได้ (OpenSteamTool) สำหรับตัวตรวจสอบของ Denuvo ปิดอยู่โดยค่าเริ่มต้น</value></data>
+  <data name="Amethyst_Denuvo_Toast_On" xml:space="preserve"><value>เปิดโหมด Denuvo แล้ว จะมีผลเมื่อเปิด Steam ครั้งถัดไป</value></data>
+  <data name="Amethyst_Denuvo_Toast_Off" xml:space="preserve"><value>ปิดโหมด Denuvo แล้ว จะมีผลเมื่อเปิด Steam ครั้งถัดไป</value></data>
+  <data name="Amethyst_Denuvo_Toast_Failed" xml:space="preserve"><value>ไม่สามารถเปลี่ยนโหมด Denuvo ได้: {0}</value></data>
+  <data name="Amethyst_Denuvo_NoConfig" xml:space="preserve"><value>ไม่พบ {0} ในโฟลเดอร์ Steam ติดตั้ง AmethystTool ใหม่เพื่อกู้คืน</value></data>
   <data name="Removal_Confirm_Caption" xml:space="preserve"><value>ต้องการถอนการติดตั้งปลั๊กอินนี้หรือไม่</value></data>
   <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam จะถูกปิดเพื่อให้ลบไฟล์ได้ และจะไม่เปิดขึ้นใหม่ให้อัตโนมัติ ทุกอย่างที่ถูกลบจะถูกเก็บไว้ในโฟลเดอร์สำรองภายในโฟลเดอร์ Steam ของคุณ</value></data>
   <data name="Removal_Toast_Removed" xml:space="preserve"><value>ลบแล้ว ไฟล์ถูกเก็บไว้ในโฟลเดอร์สำรองภายในโฟลเดอร์ Steam ของคุณ</value></data>

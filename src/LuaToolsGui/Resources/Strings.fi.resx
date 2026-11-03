@@ -515,6 +515,12 @@ Tämä poistaa .lua-tiedostot sijainnista Steam\config\stplug-in. Käynnistä St
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Uusin AmethystTool-julkaisu ei julkaise tiedostoa {0}.</value></data>
   <data name="Amethyst_Err_Archive" xml:space="preserve"><value>AmethystTool-arkisto hylättiin: {0}</value></data>
   <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Steam-kansiossa jo olleet tiedostot säilytettiin kansiossa {0}</value></data>
+  <data name="Amethyst_Denuvo_Label" xml:space="preserve"><value>Denuvo-tila (aliakset)</value></data>
+  <data name="Amethyst_Denuvo_Hint" xml:space="preserve"><value>Luo yhteensopivuustiedostot (OpenSteamTool) Denuvon validaattoria varten. Oletuksena pois päältä.</value></data>
+  <data name="Amethyst_Denuvo_Toast_On" xml:space="preserve"><value>Denuvo-tila otettu käyttöön. Muutos tulee voimaan, kun Steam käynnistyy seuraavan kerran.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Off" xml:space="preserve"><value>Denuvo-tila poistettu käytöstä. Muutos tulee voimaan, kun Steam käynnistyy seuraavan kerran.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Failed" xml:space="preserve"><value>Denuvo-tilan muuttaminen epäonnistui: {0}</value></data>
+  <data name="Amethyst_Denuvo_NoConfig" xml:space="preserve"><value>Tiedostoa {0} ei löytynyt Steam-kansiosta. Asenna AmethystTool uudelleen palauttaaksesi sen.</value></data>
   <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Poistetaanko tämä laajennus?</value></data>
   <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam suljetaan, jotta sen tiedostot voidaan poistaa, EIKÄ sitä avata uudelleen puolestasi. Kaikki poistettu säilytetään varmuuskopiokansiossa Steam-kansiossasi.</value></data>
   <data name="Removal_Toast_Removed" xml:space="preserve"><value>Poistettu. Tiedostot säilytettiin varmuuskopiokansiossa Steam-kansiossasi.</value></data>

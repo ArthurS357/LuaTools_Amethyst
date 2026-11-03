@@ -515,6 +515,12 @@
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>最新の AmethystTool リリースは {0} を公開していません。</value></data>
   <data name="Amethyst_Err_Archive" xml:space="preserve"><value>AmethystTool のアーカイブは拒否されました: {0}</value></data>
   <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Steam フォルダーに既にあったファイルは {0} に保管しました</value></data>
+  <data name="Amethyst_Denuvo_Label" xml:space="preserve"><value>Denuvo モード（エイリアス）</value></data>
+  <data name="Amethyst_Denuvo_Hint" xml:space="preserve"><value>Denuvo の検証用に互換ファイル（OpenSteamTool）を作成します。既定ではオフです。</value></data>
+  <data name="Amethyst_Denuvo_Toast_On" xml:space="preserve"><value>Denuvo モードをオンにしました。次回 Steam の起動時に反映されます。</value></data>
+  <data name="Amethyst_Denuvo_Toast_Off" xml:space="preserve"><value>Denuvo モードをオフにしました。次回 Steam の起動時に反映されます。</value></data>
+  <data name="Amethyst_Denuvo_Toast_Failed" xml:space="preserve"><value>Denuvo モードを変更できませんでした: {0}</value></data>
+  <data name="Amethyst_Denuvo_NoConfig" xml:space="preserve"><value>Steam フォルダーに {0} が見つかりません。AmethystTool を再インストールして復元してください。</value></data>
   <data name="Removal_Confirm_Caption" xml:space="preserve"><value>このプラグインをアンインストールしますか？</value></data>
   <data name="Removal_Confirm_Body" xml:space="preserve"><value>ファイルを削除できるように Steam を終了します。自動では再起動しません。削除したものはすべて Steam フォルダー内のバックアップ フォルダーに保管されます。</value></data>
   <data name="Removal_Toast_Removed" xml:space="preserve"><value>削除しました。ファイルは Steam フォルダー内のバックアップ フォルダーに保管しました。</value></data>

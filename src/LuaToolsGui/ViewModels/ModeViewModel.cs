@@ -75,6 +75,7 @@ public partial class ModeViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(NotBusy))]
     [NotifyPropertyChangedFor(nameof(CanUninstallMode))]
     [NotifyPropertyChangedFor(nameof(CanUninstallAmethyst))]
+    [NotifyPropertyChangedFor(nameof(CanToggleDenuvoAliases))]
     private bool _isBusy;
     public bool NotBusy => !IsBusy;
 
@@ -123,6 +124,13 @@ public partial class ModeViewModel : ObservableObject
                     OnPropertyChanged(nameof(CanUninstallAmethyst));
                     break;
 
+                // Same reason for the Denuvo switch: its inputs are refreshed by the card, not the page.
+                case nameof(AmethystToolViewModel.IsInstalled):
+                case nameof(AmethystToolViewModel.DenuvoConfigPresent):
+                case nameof(AmethystToolViewModel.IsBusy):
+                    OnPropertyChanged(nameof(CanToggleDenuvoAliases));
+                    break;
+
                 // The card draws no progress bar of its own. This page has one, docked at the bottom and
                 // shared by every Mode, and an AmethystTool install is a Mode install — it should move the
                 // same bar rather than growing a second one halfway up the page.
@@ -151,6 +159,14 @@ public partial class ModeViewModel : ObservableObject
     /// progress disables it too. Those two operations write the same files.
     /// </summary>
     public bool CanUninstallAmethyst => Amethyst.HasInstallRecord && !IsBusy;
+
+    /// <summary>
+    /// Whether the "Denuvo Mode (Aliases)" switch is live: AmethystTool is installed AND its
+    /// <c>amethysttool.toml</c> exists to be edited, and nothing on the page is busy — an install replaces
+    /// that very file, so a write racing it would be lost or, worse, land on the old copy.
+    /// </summary>
+    public bool CanToggleDenuvoAliases =>
+        Amethyst.IsInstalled && Amethyst.DenuvoConfigPresent && !Amethyst.IsBusy && !IsBusy;
 
     /// <summary>True if a hidden mode should be shown: its reveal-file exists, or it's the active mode.</summary>
     private bool IsModeVisible(ModeDefinition def)

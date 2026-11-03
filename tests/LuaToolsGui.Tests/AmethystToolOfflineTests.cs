@@ -45,6 +45,7 @@ public class AmethystToolOfflineTests : IDisposable
         public override bool IsActive => false;
         public override bool CanUninstall => false;
         public override string? LastBackupDirectory => null;
+        public override bool? ReadDenuvoAliases() => null; // no Steam root behind this fake
         public override Task<AmethystToolStatus> GetStatusAsync(bool force = false, CancellationToken ct = default) =>
             Status.Task;
         public override Task<(bool ok, string? error)> InstallAsync(

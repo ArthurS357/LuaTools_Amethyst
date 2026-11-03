@@ -194,6 +194,45 @@
                                 Text="{Binding BackupLine}"
                                 TextWrapping="Wrap"
                                 Visibility="{Binding BackupLine, Converter={StaticResource NullToCollapsed}}" />
+
+                            <!-- Denuvo Mode (Aliases): [compatibility] denuvo_aliases in amethysttool.toml.
+                                 IsChecked is ONE-WAY on purpose: the click runs the command, and only a
+                                 successful write moves the bound value, so a failed write snaps the switch
+                                 back. Enabled only with AmethystTool installed and its toml present, and
+                                 never while the page is busy (an install replaces that very file). -->
+                            <Border
+                                Margin="0,12,0,0"
+                                Padding="0,12,0,0"
+                                BorderBrush="{StaticResource BorderStrongBrush}"
+                                BorderThickness="0,1,0,0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock
+                                            FontSize="13"
+                                            FontWeight="Medium"
+                                            Text="{x:Static res:Strings.Amethyst_Denuvo_Label}" />
+                                        <TextBlock
+                                            Margin="0,4,0,0"
+                                            FontSize="12"
+                                            Foreground="{StaticResource TextDimBrush}"
+                                            Text="{x:Static res:Strings.Amethyst_Denuvo_Hint}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+                                    <ui:ToggleSwitch
+                                        Grid.Column="1"
+                                        Margin="12,0,0,0"
+                                        VerticalAlignment="Center"
+                                        AutomationProperties.HelpText="{x:Static res:Strings.Amethyst_Denuvo_Hint}"
+                                        AutomationProperties.Name="{x:Static res:Strings.Amethyst_Denuvo_Label}"
+                                        Command="{Binding ToggleDenuvoAliasesCommand}"
+                                        IsChecked="{Binding DenuvoAliasesEnabled, Mode=OneWay}"
+                                        IsEnabled="{Binding DataContext.CanToggleDenuvoAliases, ElementName=Root}" />
+                                </Grid>
+                            </Border>
                         </StackPanel>
 
                         <StackPanel Grid.Column="1" VerticalAlignment="Center">

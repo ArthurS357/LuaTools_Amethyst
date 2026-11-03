@@ -515,6 +515,12 @@
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>В последнем выпуске AmethystTool нет {0}.</value></data>
   <data name="Amethyst_Err_Archive" xml:space="preserve"><value>Архив AmethystTool отклонён: {0}</value></data>
   <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Файлы, которые уже были в папке Steam, сохранены в {0}</value></data>
+  <data name="Amethyst_Denuvo_Label" xml:space="preserve"><value>Режим Denuvo (псевдонимы)</value></data>
+  <data name="Amethyst_Denuvo_Hint" xml:space="preserve"><value>Создаёт файлы совместимости (OpenSteamTool) для валидатора Denuvo. По умолчанию выключено.</value></data>
+  <data name="Amethyst_Denuvo_Toast_On" xml:space="preserve"><value>Режим Denuvo включён. Изменение вступит в силу при следующем запуске Steam.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Off" xml:space="preserve"><value>Режим Denuvo выключен. Изменение вступит в силу при следующем запуске Steam.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Failed" xml:space="preserve"><value>Не удалось изменить режим Denuvo: {0}</value></data>
+  <data name="Amethyst_Denuvo_NoConfig" xml:space="preserve"><value>{0} не найден в папке Steam. Переустановите AmethystTool, чтобы восстановить его.</value></data>
   <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Удалить этот плагин?</value></data>
   <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam будет закрыт, чтобы можно было убрать его файлы, и НЕ будет открыт снова автоматически. Всё удалённое сохраняется в папке резервной копии внутри папки Steam.</value></data>
   <data name="Removal_Toast_Removed" xml:space="preserve"><value>Удалено. Файлы сохранены в папке резервной копии внутри папки Steam.</value></data>

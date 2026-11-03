@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.7.13");
+        AppVersion.Current.Should().Be("1.7.13.1");
     }
 
     [Fact]
@@ -51,6 +51,18 @@ public class ChangelogTests
 
         // One anchor per change the release was actually about, so an entry that got copied forward from
         // the previous version fails here rather than shipping a changelog describing the wrong release.
+        text.Should().ContainEquivalentOf("Denuvo Mode (Aliases)");          // the switch on the card
+        text.Should().ContainEquivalentOf("denuvo_aliases");                 // the key it writes
+        text.Should().ContainEquivalentOf("written atomically");             // AtomicFile
+        text.Should().ContainEquivalentOf("keeps the switch on");            // survives an update
+    }
+
+    [Fact]
+    public void The_1_7_13_entry_still_names_what_that_release_was_about()
+    {
+        // 1.7.13.1 is a point release on top of it; the big entry must not have been edited away.
+        string text = string.Join(" ", Changelog.Entries.Single(e => e.Version == "1.7.13").Highlights);
+
         text.Should().ContainEquivalentOf("never through a mirror");         // F-04: self-update direct only
         text.Should().ContainEquivalentOf("SHA-256 must match");             // F-04: pinned digest
         text.Should().ContainEquivalentOf("LocalLow");                       // multi-location save backups

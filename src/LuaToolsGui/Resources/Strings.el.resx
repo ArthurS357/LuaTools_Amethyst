@@ -515,6 +515,12 @@
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Η τελευταία έκδοση του AmethystTool δεν δημοσιεύει {0}.</value></data>
   <data name="Amethyst_Err_Archive" xml:space="preserve"><value>Το αρχείο του AmethystTool απορρίφθηκε: {0}</value></data>
   <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Τα αρχεία που υπήρχαν ήδη στον φάκελο του Steam φυλάχθηκαν στο {0}</value></data>
+  <data name="Amethyst_Denuvo_Label" xml:space="preserve"><value>Λειτουργία Denuvo (ψευδώνυμα)</value></data>
+  <data name="Amethyst_Denuvo_Hint" xml:space="preserve"><value>Δημιουργεί αρχεία συμβατότητας (OpenSteamTool) για τον επικυρωτή του Denuvo. Απενεργοποιημένη από προεπιλογή.</value></data>
+  <data name="Amethyst_Denuvo_Toast_On" xml:space="preserve"><value>Η λειτουργία Denuvo ενεργοποιήθηκε. Θα ισχύσει την επόμενη φορά που θα ξεκινήσει το Steam.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Off" xml:space="preserve"><value>Η λειτουργία Denuvo απενεργοποιήθηκε. Θα ισχύσει την επόμενη φορά που θα ξεκινήσει το Steam.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Failed" xml:space="preserve"><value>Δεν ήταν δυνατή η αλλαγή της λειτουργίας Denuvo: {0}</value></data>
+  <data name="Amethyst_Denuvo_NoConfig" xml:space="preserve"><value>Το {0} δεν βρέθηκε στον φάκελο του Steam. Επανεγκαταστήστε το AmethystTool για να το επαναφέρετε.</value></data>
   <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Να γίνει απεγκατάσταση αυτού του πρόσθετου;</value></data>
   <data name="Removal_Confirm_Body" xml:space="preserve"><value>Το Steam θα κλείσει ώστε να μπορούν να αφαιρεθούν τα αρχεία του και ΔΕΝ θα ανοίξει ξανά αυτόματα. Ό,τι αφαιρεθεί φυλάσσεται σε φάκελο αντιγράφου ασφαλείας μέσα στον φάκελο του Steam.</value></data>
   <data name="Removal_Toast_Removed" xml:space="preserve"><value>Αφαιρέθηκε. Τα αρχεία φυλάχτηκαν σε φάκελο αντιγράφου ασφαλείας μέσα στον φάκελο του Steam.</value></data>

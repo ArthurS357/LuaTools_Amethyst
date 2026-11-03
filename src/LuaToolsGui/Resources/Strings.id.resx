@@ -515,6 +515,12 @@ Ini menghapus file .lua dari Steam\config\stplug-in. Mulai ulang Steam setelahny
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Rilis AmethystTool terbaru tidak menerbitkan {0}.</value></data>
   <data name="Amethyst_Err_Archive" xml:space="preserve"><value>Arsip AmethystTool ditolak: {0}</value></data>
   <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Berkas yang sudah ada di folder Steam disimpan di {0}</value></data>
+  <data name="Amethyst_Denuvo_Label" xml:space="preserve"><value>Mode Denuvo (Alias)</value></data>
+  <data name="Amethyst_Denuvo_Hint" xml:space="preserve"><value>Membuat file kompatibilitas (OpenSteamTool) untuk validator Denuvo. Nonaktif secara default.</value></data>
+  <data name="Amethyst_Denuvo_Toast_On" xml:space="preserve"><value>Mode Denuvo diaktifkan. Berlaku saat Steam dijalankan berikutnya.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Off" xml:space="preserve"><value>Mode Denuvo dinonaktifkan. Berlaku saat Steam dijalankan berikutnya.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Failed" xml:space="preserve"><value>Tidak dapat mengubah Mode Denuvo: {0}</value></data>
+  <data name="Amethyst_Denuvo_NoConfig" xml:space="preserve"><value>{0} tidak ditemukan di folder Steam. Instal ulang AmethystTool untuk memulihkannya.</value></data>
   <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Copot pemasangan plugin ini?</value></data>
   <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam akan ditutup agar berkasnya bisa dihapus, dan TIDAK akan dibuka lagi secara otomatis. Semua yang dihapus disimpan di folder cadangan di dalam folder Steam Anda.</value></data>
   <data name="Removal_Toast_Removed" xml:space="preserve"><value>Dihapus. Berkas disimpan di folder cadangan di dalam folder Steam Anda.</value></data>

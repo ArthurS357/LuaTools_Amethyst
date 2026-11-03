@@ -515,6 +515,12 @@ Thao tác này sẽ xóa các tệp .lua khỏi Steam\config\stplug-in. Sau đó
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Bản phát hành AmethystTool mới nhất không công bố {0}.</value></data>
   <data name="Amethyst_Err_Archive" xml:space="preserve"><value>Kho lưu trữ AmethystTool đã bị từ chối: {0}</value></data>
   <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Các tệp đã có sẵn trong thư mục Steam được giữ tại {0}</value></data>
+  <data name="Amethyst_Denuvo_Label" xml:space="preserve"><value>Chế độ Denuvo (bí danh)</value></data>
+  <data name="Amethyst_Denuvo_Hint" xml:space="preserve"><value>Tạo các tệp tương thích (OpenSteamTool) cho trình xác thực Denuvo. Mặc định tắt.</value></data>
+  <data name="Amethyst_Denuvo_Toast_On" xml:space="preserve"><value>Đã bật Chế độ Denuvo. Có hiệu lực từ lần khởi động Steam tiếp theo.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Off" xml:space="preserve"><value>Đã tắt Chế độ Denuvo. Có hiệu lực từ lần khởi động Steam tiếp theo.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Failed" xml:space="preserve"><value>Không thể thay đổi Chế độ Denuvo: {0}</value></data>
+  <data name="Amethyst_Denuvo_NoConfig" xml:space="preserve"><value>Không tìm thấy {0} trong thư mục Steam. Hãy cài đặt lại AmethystTool để khôi phục.</value></data>
   <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Gỡ cài đặt plugin này?</value></data>
   <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam sẽ được đóng để có thể gỡ các tệp của nó, và sẽ KHÔNG tự mở lại. Mọi thứ bị gỡ đều được giữ trong một thư mục sao lưu bên trong thư mục Steam của bạn.</value></data>
   <data name="Removal_Toast_Removed" xml:space="preserve"><value>Đã gỡ. Các tệp được giữ trong một thư mục sao lưu bên trong thư mục Steam của bạn.</value></data>

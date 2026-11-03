@@ -515,6 +515,12 @@ Tím se smažou soubory .lua ze Steam\config\stplug-in. Poté restartujte Steam,
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Nejnovější verze AmethystTool nepublikuje {0}.</value></data>
   <data name="Amethyst_Err_Archive" xml:space="preserve"><value>Archiv AmethystTool byl odmítnut: {0}</value></data>
   <data name="Amethyst_Backup_Line" xml:space="preserve"><value>Soubory, které už ve složce Steamu byly, jsou uloženy v {0}</value></data>
+  <data name="Amethyst_Denuvo_Label" xml:space="preserve"><value>Režim Denuvo (aliasy)</value></data>
+  <data name="Amethyst_Denuvo_Hint" xml:space="preserve"><value>Vytvoří soubory kompatibility (OpenSteamTool) pro validátor Denuvo. Ve výchozím stavu vypnuto.</value></data>
+  <data name="Amethyst_Denuvo_Toast_On" xml:space="preserve"><value>Režim Denuvo zapnut. Projeví se při příštím spuštění Steamu.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Off" xml:space="preserve"><value>Režim Denuvo vypnut. Projeví se při příštím spuštění Steamu.</value></data>
+  <data name="Amethyst_Denuvo_Toast_Failed" xml:space="preserve"><value>Režim Denuvo se nepodařilo změnit: {0}</value></data>
+  <data name="Amethyst_Denuvo_NoConfig" xml:space="preserve"><value>{0} nebyl ve složce Steamu nalezen. Pro obnovení přeinstalujte AmethystTool.</value></data>
   <data name="Removal_Confirm_Caption" xml:space="preserve"><value>Odinstalovat tento plugin?</value></data>
   <data name="Removal_Confirm_Body" xml:space="preserve"><value>Steam bude zavřen, aby šlo jeho soubory odstranit, a NEBUDE za vás znovu otevřen. Vše odstraněné zůstane ve složce se zálohou uvnitř složky Steamu.</value></data>
   <data name="Removal_Toast_Removed" xml:space="preserve"><value>Odstraněno. Soubory zůstaly ve složce se zálohou uvnitř složky Steamu.</value></data>
