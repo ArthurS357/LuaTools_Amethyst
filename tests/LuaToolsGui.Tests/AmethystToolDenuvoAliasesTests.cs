@@ -272,15 +272,16 @@ public class AmethystToolDenuvoAliasesTests : IDisposable
         public FakeService() : base(null!, null!, null!, null!, null!, null!) { }
 
         public bool? OnDisk { get; set; }
+        public bool Installed { get; init; } = true;
         public (bool ok, string? error) WriteResult { get; init; } = (true, null);
         public List<bool> Writes { get; } = [];
 
-        public override bool IsInstalledLocally() => true;
+        public override bool IsInstalledLocally() => Installed;
         public override bool IsActive => true;
         public override bool CanUninstall => true;
         public override string? LastBackupDirectory => null;
         public override Task<AmethystToolStatus> GetStatusAsync(bool force = false, CancellationToken ct = default) =>
-            Task.FromResult(new AmethystToolStatus(true, "v1.3.5", "v1.3.5", false, false));
+            Task.FromResult(new AmethystToolStatus(Installed, "v1.3.5", "v1.3.5", false, false));
         public override bool? ReadDenuvoAliases() => OnDisk;
 
         public override Task<(bool ok, string? error)> SetDenuvoAliasesAsync(bool enabled, CancellationToken ct = default)
@@ -355,16 +356,46 @@ public class AmethystToolDenuvoAliasesTests : IDisposable
         svc.Writes.Should().BeEmpty();
     }
 
+    [Theory]
+    [InlineData(true, true, false, true)]
+    [InlineData(false, true, false, false)] // a leftover toml without AmethystTool installed
+    [InlineData(true, false, false, false)]
+    [InlineData(true, true, true, false)]   // a Mode install on the page rewrites the same root
+    public async Task The_switch_is_live_only_with_amethysttool_installed_its_config_present_and_the_page_idle(
+        bool installed, bool configPresent, bool pageBusy, bool expected)
+    {
+        var card = new AmethystToolViewModel(
+            new FakeService { Installed = installed, OnDisk = configPresent ? false : null }, new ToastService());
+        var page = new ModeViewModel(null!, new ToastService(), null!, null!, card);
+        await card.LoadAsync();
+
+        page.IsBusy = pageBusy;
+
+        page.CanToggleDenuvoAliases.Should().Be(expected);
+    }
+
     // ── Bindings (WPF fails them silently) ───────────────────────────────
 
-    private static string ModeViewXaml()
+    private static string RepoFile(params string[] path)
     {
         var dir = new DirectoryInfo(AppContext.BaseDirectory);
         while (dir is not null && !File.Exists(Path.Combine(dir.FullName, "LuaToolsGui.sln")))
             dir = dir.Parent;
         return File.ReadAllText(Path.Combine(
-            dir?.FullName ?? throw new DirectoryNotFoundException("LuaToolsGui.sln"),
-            "src", "LuaToolsGui", "Views", "ModeView.xaml"));
+            [dir?.FullName ?? throw new DirectoryNotFoundException("LuaToolsGui.sln"), .. path]));
+    }
+
+    private static string ModeViewXaml() => RepoFile("src", "LuaToolsGui", "Views", "ModeView.xaml");
+
+    [Fact]
+    public void The_config_write_goes_through_AtomicFile()
+    {
+        // Not observable from outside: a plain write produces the same bytes, until a crash mid-write
+        // leaves AmethystTool a half config it refuses to load — taking the unlocker down with it.
+        string src = RepoFile("src", "LuaToolsGui", "Services", "AmethystToolService.cs");
+
+        src.Should().Contain("AtomicFile.WriteAllBytes(configPath, bytes)");
+        src.Should().NotMatchRegex(@"(?<!Atomic)File\.WriteAllBytes\(configPath");
     }
 
     [Fact]

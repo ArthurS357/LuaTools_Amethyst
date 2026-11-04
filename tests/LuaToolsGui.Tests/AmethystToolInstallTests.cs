@@ -116,6 +116,32 @@ public class AmethystToolInstallTests : IDisposable
     }
 
     [Fact]
+    public async Task An_update_keeps_denuvo_mode_on()
+    {
+        // The payload's config ships the key off; without the carry every update silently disables it.
+        File.WriteAllText(SteamFile("amethysttool.toml"), "[compatibility]\ndenuvo_aliases = true\n");
+        StageArchiveContents();
+        File.WriteAllText(Path.Combine(_staged, "amethysttool.toml"), "[log]\nlevel = \"info\"\n\n[compatibility]\ndenuvo_aliases = false\n");
+
+        await AmethystToolService.ApplyPlanKeepingDenuvoAliasesAsync(BuildPlan(), SteamFile("amethysttool.toml"));
+
+        File.ReadAllText(SteamFile("amethysttool.toml"))
+            .Should().Be("[log]\nlevel = \"info\"\n\n[compatibility]\ndenuvo_aliases = true\n");
+    }
+
+    [Fact]
+    public async Task An_update_with_denuvo_mode_off_takes_the_payload_config_as_is()
+    {
+        StageArchiveContents();
+        const string payload = "[compatibility]\ndenuvo_aliases = false\n";
+        File.WriteAllText(Path.Combine(_staged, "amethysttool.toml"), payload);
+
+        await AmethystToolService.ApplyPlanKeepingDenuvoAliasesAsync(BuildPlan(), SteamFile("amethysttool.toml"));
+
+        File.ReadAllText(SteamFile("amethysttool.toml")).Should().Be(payload);
+    }
+
+    [Fact]
     public void Files_that_were_not_there_leave_no_backup_entry()
     {
         File.WriteAllText(SteamFile("dwmapi.dll"), "old");

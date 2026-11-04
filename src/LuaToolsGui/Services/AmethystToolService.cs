@@ -402,18 +402,7 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
                 await Task.Delay(1200, ct); // let handles on the DLLs release after the shutdown
             }
 
-            // The payload's amethysttool.toml replaces the one on disk (see ApplyPlan), which would silently
-            // turn Denuvo Mode back off on every update while the card's switch was last seen on. It is the
-            // one setting this app writes into that file, so it is the one carried across. Best effort: a
-            // failure leaves the payload's default (off) and the card re-reads the file afterwards.
-            bool keepDenuvoAliases = ReadDenuvoAliases(Path.Combine(steamDir, AmethystToolConfig.FileName)) == true;
-
-            ApplyPlan(plan);
-
-            if (keepDenuvoAliases)
-                // Not cancellable: the files are already placed, and a cancel here would skip the Steam restart.
-                await SetDenuvoAliasesAsync(Path.Combine(steamDir, AmethystToolConfig.FileName), true,
-                    CancellationToken.None);
+            await ApplyPlanKeepingDenuvoAliasesAsync(plan, Path.Combine(steamDir, AmethystToolConfig.FileName));
 
             // Deliberately AFTER ApplyPlan rather than in a finally: if a copy threw, the Steam root holds
             // a partial payload, and relaunching Steam onto a proxy DLL whose target is missing is worse
@@ -459,6 +448,24 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
         {
             try { Directory.Delete(tmp, recursive: true); } catch (IOException) { /* temp cleanup */ }
         }
+    }
+
+    /// <summary>
+    /// <see cref="ApplyPlan"/>, carrying <c>[compatibility] denuvo_aliases = true</c> across. The payload's
+    /// amethysttool.toml replaces the one on disk, which would silently turn Denuvo Mode back off on every
+    /// update while the card's switch was last seen on. It is the one setting this app writes into that file,
+    /// so it is the one carried across. Best effort: a failure leaves the payload's default (off) and the card
+    /// re-reads the file afterwards.
+    /// </summary>
+    internal static async Task ApplyPlanKeepingDenuvoAliasesAsync(AmethystInstallPlan plan, string configPath)
+    {
+        bool keepDenuvoAliases = ReadDenuvoAliases(configPath) == true;
+
+        ApplyPlan(plan);
+
+        if (keepDenuvoAliases)
+            // Not cancellable: the files are already placed, and a cancel here would skip the Steam restart.
+            await SetDenuvoAliasesAsync(configPath, true, CancellationToken.None);
     }
 
     /// <summary>

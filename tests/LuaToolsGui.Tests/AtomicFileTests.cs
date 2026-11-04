@@ -45,6 +45,20 @@ public sealed class AtomicFileTests : IDisposable
     }
 
     [Fact]
+    public void The_content_goes_to_a_sibling_temp_file_never_straight_to_the_destination()
+    {
+        // What makes it atomic: fill only ever sees the temp path, and one rename publishes it.
+        File.WriteAllText(P("a.json"), "OLD");
+        var filled = new List<string>();
+
+        AtomicFile.Write(P("a.json"), p => { filled.Add(p); File.WriteAllText(p, "NEW"); });
+
+        filled.Should().ContainSingle().Which.Should().NotBe(P("a.json"))
+            .And.StartWith(_dir, "a rename across volumes would be a copy, not atomic");
+        File.ReadAllText(P("a.json")).Should().Be("NEW");
+    }
+
+    [Fact]
     public void A_write_that_dies_midway_leaves_the_old_content_and_no_temp_file()
     {
         // The crash this exists for: the previous content must survive, not a half-written replacement.
