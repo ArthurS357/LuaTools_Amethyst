@@ -858,4 +858,15 @@ Puedes rechazarlo y seguir usando el resto de LuaTools; solo el botón «Add via
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>No se eliminó nada: no se pudo confirmar que "{0}" sea un respaldo que se pueda borrar con seguridad (cambió, es un enlace o tiene menos de 5 minutos). Actualiza la lista e inténtalo de nuevo.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Efecto cristal (Glassmorphism)</value></data>
   <data name="Settings_Glass_Hint" xml:space="preserve"><value>Barra de título y menú lateral translúcidos sobre el fondo Acrylic de Windows 11. Las páginas siguen siendo sólidas para que el texto mantenga el contraste. Desactívalo en PC más lentas. En Windows 10 y con contraste alto el fondo es siempre sólido.</value></data>
+  <data name="Launch_Overrides_Title" xml:space="preserve"><value>Todas las opciones modificadas</value></data>
+  <data name="Launch_Overrides_Empty" xml:space="preserve"><value>LuaTools no cambió las opciones de inicio de ningún juego.</value></data>
+  <data name="Launch_RestoreAll" xml:space="preserve"><value>Restaurar todas</value></data>
+  <data name="Launch_RestoreAll_Title" xml:space="preserve"><value>¿Restaurar todas las opciones de inicio?</value></data>
+  <data name="Launch_RestoreAll_Body" xml:space="preserve"><value>Esto devuelve las opciones de inicio originales de {0} juego(s) y descarta tus cambios. Steam se cerrará y se volverá a abrir. ¿Continuar?</value></data>
+  <data name="Launch_RestoreAll_Done" xml:space="preserve"><value>{0} juego(s) restaurado(s).</value></data>
+  <data name="Launch_RestoreAll_Partial" xml:space="preserve"><value>{0} juego(s) restaurado(s). Estos siguen guardados y puedes reintentarlo: {1}</value></data>
+  <data name="Launch_RestoreAll_Failed" xml:space="preserve"><value>No se cambió nada. {0}</value></data>
+  <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>No se pudo crear la copia de seguridad. Revisa el espacio libre en disco.</value></data>
+  <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam no se cerró.</value></data>
+  <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>No se pudieron volver a escribir las opciones de inicio originales.</value></data>
 </root>

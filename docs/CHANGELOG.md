@@ -1,5 +1,49 @@
 # Changelog
 
+## 1.7.13.2 — 2026-11-05
+
+Launch options: lista de todos os jogos alterados, "Restore all" seguro e "Show in folder". Mecanismo do upstream v1.3.3
+reimplementado a partir de `docs/parity-audit-v1.3.3-decompiled.md`, sem copiar codigo.
+
+### Novidades
+
+- **Manage → All launch overrides (`LaunchOverridesDialog`):** lista App ID, nome e o override atual de cada jogo em
+  `launchmods.json`, com "Show in folder" por botao e menu de contexto.
+- **Restore all (`LaunchOptionsService.Restore`/`RestoreAll`):** uma so gravacao de `appinfo.vdf`. Ordem: snapshot de
+  `launchmods.json` em `launchmods.json.pre-restore`, substituicoes por jogo, backup obrigatorio de `appinfo.vdf`, temp +
+  swap, e so entao remocao dos registros restaurados. Falha de backup, de escrita ou Steam que nao fecha: nada muda.
+- **Falha por jogo:** jogo corrompido ou fora do cache vai para `RestoreResult.Failed`, mantem o registro e nao impede
+  os demais. Jogo nunca editado nao entra no lote e segue byte a byte.
+- **Show in folder na janela de launch options:** abre `steamapps\common\<pasta>` via `SteamService.OpenFolder`.
+
+### Correcoes
+
+- **Restore individual perdia o original:** `LaunchOptionsViewModel.Restore` apagava o registro mesmo com o `Apply` falho.
+  Agora usa `Restore`, que so apaga apos a troca do arquivo.
+- **`Rebase` gravava a propria edicao como original:** apos update do Steam + "Re-apply", abrir o editor tornava a edicao
+  o "original", e restaurar nao voltava mais. `Apply` agora faz o rebase antes de escrever por cima, e `Rebase` nunca aceita
+  entradas iguais ao `Desired`.
+- **Restore nao desfazia campo de `config` novo:** `LaunchOption.ToTable` deixava `oslist`/`osarch`/`BetaKey`/`ownsdlc` numa
+  entrada cujo original nao tinha `config`. Agora limpa essas chaves e preserva as nao modeladas.
+- **Registro danificado por build antiga (`Original == Desired`):** se a edicao segue viva, o jogo vai para `Failed` e o
+  registro fica, em vez de reportar "restaurado". Se a Steam ja reescreveu, nada e gravado.
+- **`Apply` e `Restore` nao rodam ao mesmo tempo:** trava unica no servico, porque o Re-apply roda com a janela principal
+  ativa.
+
+### Limite conhecido
+
+- Restore apos reordenar ou apagar entradas: as chaves nao modeladas (`vacmodulefilename`, `description_loc`) podem ficar
+  na entrada errada ou se perder, porque `LaunchMod.Original` nao guarda a tabela crua. Anterior a esta versao; a Steam corrige
+  ao reescrever o registro do app.
+- `launchmods.json.pre-restore` guarda uma so geracao e a recuperacao e manual.
+
+### Implementacao
+
+- 11 chaves novas (`Launch_Overrides_*`, `Launch_RestoreAll*`, `Launch_Restore_BackupFailed`,
+  `Launch_Restore_SteamStillRunning`, `Launch_Restore_Mismatch`) nos 29 idiomas, traducao assistida por IA;
+  `check-i18n.py` OK.
+- Testes: `LaunchRestoreTests`, `LaunchOverridesDialogTests`. Sem pacote novo e sem request de rede nova.
+
 ## 1.7.13.1 — 2026-11-03
 
 Integracao com o "Denuvo Compatibility Mode" do AmethystTool v1.3.5.

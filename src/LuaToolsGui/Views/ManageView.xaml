@@ -41,12 +41,19 @@
             <StackPanel>
                 <TextBlock FontSize="22" FontWeight="Bold" Text="{x:Static res:Strings.Manage_Title}" />
             </StackPanel>
-            <ui:Button
+            <StackPanel
                 Grid.Column="1"
                 VerticalAlignment="Top"
-                Command="{Binding RefreshCommand}"
-                Content="{x:Static res:Strings.Manage_Refresh}"
-                Icon="{ui:SymbolIcon ArrowSync24}" />
+                Orientation="Horizontal">
+                <ui:Button
+                    Margin="0,0,8,0"
+                    Command="{Binding ShowLaunchOverridesCommand}"
+                    Content="{x:Static res:Strings.Launch_Overrides_Title}" />
+                <ui:Button
+                    Command="{Binding RefreshCommand}"
+                    Content="{x:Static res:Strings.Manage_Refresh}"
+                    Icon="{ui:SymbolIcon ArrowSync24}" />
+            </StackPanel>
         </Grid>
 
         <!-- Search + Filters toggle -->

@@ -167,6 +167,7 @@ public partial class App : Application
                 services.AddSingleton<ManageViewModel>();
                 services.AddSingleton<BuildsViewModel>();
                 services.AddTransient<LaunchOptionsViewModel>(); // one per dialog
+                services.AddTransient<LaunchOverridesViewModel>(); // one per dialog
                 services.AddSingleton<Services.Backups.SaveBackupService>();
                 services.AddTransient<SaveBackupViewModel>(); // one per dialog
                 services.AddSingleton<HomeViewModel>();
@@ -1099,6 +1100,11 @@ public partial class App : Application
             { Owner = window };
             dialog.ShowDialog();
         });
+
+        // Manage "All launch overrides" → every edited game, with Restore all.
+        manage.OpenLaunchOverrides = () => Dispatcher.Invoke(() =>
+            new LaunchOverridesDialog(_host.Services.GetRequiredService<LaunchOverridesViewModel>())
+            { Owner = window }.ShowDialog());
 
         // Manage "Save backup…" → list/create/restore/delete the game's userdata zips.
         var saveBackups = _host.Services.GetRequiredService<Services.Backups.SaveBackupService>();

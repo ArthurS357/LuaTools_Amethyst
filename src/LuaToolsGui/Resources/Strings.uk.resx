@@ -858,4 +858,15 @@ SHA-256 {3}
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Нічого не видалено: не вдалося підтвердити, що «{0}» — резервна копія, яку можна безпечно видалити (вона змінилася, є посиланням або створена менше ніж 5 хвилин тому). Оновіть список і повторіть спробу.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Ефект скла (Glassmorphism)</value></data>
   <data name="Settings_Glass_Hint" xml:space="preserve"><value>Напівпрозорі заголовок вікна й бічне меню поверх фону Acrylic у Windows 11. Сторінки лишаються непрозорими, щоб текст зберігав контраст. Вимкніть на повільних ПК. У Windows 10 і в режимі високої контрастності фон завжди суцільний.</value></data>
+  <data name="Launch_Overrides_Title" xml:space="preserve"><value>Усі змінені параметри</value></data>
+  <data name="Launch_Overrides_Empty" xml:space="preserve"><value>LuaTools не змінював параметри запуску жодної гри.</value></data>
+  <data name="Launch_RestoreAll" xml:space="preserve"><value>Відновити все</value></data>
+  <data name="Launch_RestoreAll_Title" xml:space="preserve"><value>Відновити всі параметри запуску?</value></data>
+  <data name="Launch_RestoreAll_Body" xml:space="preserve"><value>Буде повернуто початкові параметри запуску для ігор ({0}), а ваші зміни скасовано. Steam буде закрито й відкрито знову. Продовжити?</value></data>
+  <data name="Launch_RestoreAll_Done" xml:space="preserve"><value>Відновлено ігор: {0}.</value></data>
+  <data name="Launch_RestoreAll_Partial" xml:space="preserve"><value>Відновлено ігор: {0}. Ці залишаються збереженими, можна спробувати ще раз: {1}</value></data>
+  <data name="Launch_RestoreAll_Failed" xml:space="preserve"><value>Нічого не змінено. {0}</value></data>
+  <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Не вдалося створити резервну копію. Перевірте вільне місце на диску.</value></data>
+  <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam не закрився.</value></data>
+  <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>Не вдалося записати назад початкові параметри запуску.</value></data>
 </root>

@@ -893,4 +893,15 @@ Enable it?</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Nothing was deleted: "{0}" could not be confirmed as a backup that is safe to remove (it changed, is a link, or is less than 5 minutes old). Refresh the list and try again.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Glass effect (Glassmorphism)</value></data>
   <data name="Settings_Glass_Hint" xml:space="preserve"><value>Translucent title bar and side menu over the Windows 11 Acrylic backdrop. Pages stay solid so text keeps its contrast. Turn it off on slower PCs. Windows 10 and high contrast always use the solid background.</value></data>
+  <data name="Launch_Overrides_Title" xml:space="preserve"><value>All launch overrides</value></data>
+  <data name="Launch_Overrides_Empty" xml:space="preserve"><value>LuaTools hasn't changed any game's launch options.</value></data>
+  <data name="Launch_RestoreAll" xml:space="preserve"><value>Restore all</value></data>
+  <data name="Launch_RestoreAll_Title" xml:space="preserve"><value>Restore all launch options?</value></data>
+  <data name="Launch_RestoreAll_Body" xml:space="preserve"><value>This puts back the original launch options of {0} game(s) and forgets your changes. Steam will be closed and reopened. Continue?</value></data>
+  <data name="Launch_RestoreAll_Done" xml:space="preserve"><value>Restored {0} game(s).</value></data>
+  <data name="Launch_RestoreAll_Partial" xml:space="preserve"><value>Restored {0} game(s). These stay saved and can be retried: {1}</value></data>
+  <data name="Launch_RestoreAll_Failed" xml:space="preserve"><value>Nothing was changed. {0}</value></data>
+  <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Couldn't make a safety backup. Check your free disk space.</value></data>
+  <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam didn't close.</value></data>
+  <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>The original launch options couldn't be written back.</value></data>
 </root>

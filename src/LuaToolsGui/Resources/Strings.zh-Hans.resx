@@ -878,4 +878,15 @@ SHA-256 {3}
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>未删除任何内容：无法确认“{0}”是可以安全删除的备份（它已更改、是链接，或创建不到 5 分钟）。请刷新列表后重试。</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>玻璃效果 (Glassmorphism)</value></data>
   <data name="Settings_Glass_Hint" xml:space="preserve"><value>在 Windows 11 的 Acrylic 背景上显示半透明的标题栏和侧边菜单。页面保持不透明，以保证文字对比度。较慢的电脑上请关闭。Windows 10 和高对比度模式下始终使用不透明背景。</value></data>
+  <data name="Launch_Overrides_Title" xml:space="preserve"><value>所有已更改的启动选项</value></data>
+  <data name="Launch_Overrides_Empty" xml:space="preserve"><value>LuaTools 尚未更改任何游戏的启动选项。</value></data>
+  <data name="Launch_RestoreAll" xml:space="preserve"><value>全部还原</value></data>
+  <data name="Launch_RestoreAll_Title" xml:space="preserve"><value>还原所有启动选项?</value></data>
+  <data name="Launch_RestoreAll_Body" xml:space="preserve"><value>这将恢复 {0} 个游戏的原始启动选项并放弃你的更改。Steam 将关闭并重新打开。是否继续?</value></data>
+  <data name="Launch_RestoreAll_Done" xml:space="preserve"><value>已还原 {0} 个游戏。</value></data>
+  <data name="Launch_RestoreAll_Partial" xml:space="preserve"><value>已还原 {0} 个游戏。以下游戏仍保留记录,可重试:{1}</value></data>
+  <data name="Launch_RestoreAll_Failed" xml:space="preserve"><value>未做任何更改。{0}</value></data>
+  <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>无法创建安全备份。请检查可用磁盘空间。</value></data>
+  <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam 未关闭。</value></data>
+  <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>无法写回原始启动选项。</value></data>
 </root>

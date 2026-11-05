@@ -858,4 +858,15 @@ Aktivera?</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Inget togs bort: "{0}" kunde inte bekräftas som en säkerhetskopia som säkert kan tas bort (den har ändrats, är en länk eller är yngre än 5 minuter). Uppdatera listan och försök igen.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Glaseffekt (Glassmorphism)</value></data>
   <data name="Settings_Glass_Hint" xml:space="preserve"><value>Genomskinlig namnlist och sidomeny över Acrylic-bakgrunden i Windows 11. Sidorna förblir ogenomskinliga så att texten behåller sin kontrast. Stäng av på långsammare datorer. I Windows 10 och med hög kontrast är bakgrunden alltid enfärgad.</value></data>
+  <data name="Launch_Overrides_Title" xml:space="preserve"><value>Alla ändrade alternativ</value></data>
+  <data name="Launch_Overrides_Empty" xml:space="preserve"><value>LuaTools har inte ändrat startalternativen för något spel.</value></data>
+  <data name="Launch_RestoreAll" xml:space="preserve"><value>Återställ alla</value></data>
+  <data name="Launch_RestoreAll_Title" xml:space="preserve"><value>Återställa alla startalternativ?</value></data>
+  <data name="Launch_RestoreAll_Body" xml:space="preserve"><value>Detta återställer de ursprungliga startalternativen för {0} spel och tar bort dina ändringar. Steam stängs och öppnas igen. Fortsätta?</value></data>
+  <data name="Launch_RestoreAll_Done" xml:space="preserve"><value>{0} spel återställda.</value></data>
+  <data name="Launch_RestoreAll_Partial" xml:space="preserve"><value>{0} spel återställda. Dessa förblir sparade och kan försökas igen: {1}</value></data>
+  <data name="Launch_RestoreAll_Failed" xml:space="preserve"><value>Inget ändrades. {0}</value></data>
+  <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Det gick inte att skapa en säkerhetskopia. Kontrollera ledigt diskutrymme.</value></data>
+  <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam stängdes inte.</value></data>
+  <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>De ursprungliga startalternativen kunde inte skrivas tillbaka.</value></data>
 </root>

@@ -858,4 +858,15 @@ Bekapcsolod?</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Semmi sem lett törölve: nem sikerült megerősíteni, hogy a(z) „{0}” biztonságosan törölhető biztonsági mentés (megváltozott, hivatkozás, vagy 5 percnél újabb). Frissítsd a listát, és próbáld újra.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Üveghatás (Glassmorphism)</value></data>
   <data name="Settings_Glass_Hint" xml:space="preserve"><value>Áttetsző címsor és oldalmenü a Windows 11 Acrylic háttere fölött. Az oldalak tömörek maradnak, hogy a szöveg megtartsa a kontrasztját. Lassabb gépeken kapcsold ki. Windows 10 alatt és nagy kontrasztú módban a háttér mindig tömör.</value></data>
+  <data name="Launch_Overrides_Title" xml:space="preserve"><value>Az összes módosított beállítás</value></data>
+  <data name="Launch_Overrides_Empty" xml:space="preserve"><value>A LuaTools egyetlen játék indítási beállításait sem módosította.</value></data>
+  <data name="Launch_RestoreAll" xml:space="preserve"><value>Összes visszaállítása</value></data>
+  <data name="Launch_RestoreAll_Title" xml:space="preserve"><value>Visszaállítod az összes indítási beállítást?</value></data>
+  <data name="Launch_RestoreAll_Body" xml:space="preserve"><value>Ez visszaállítja {0} játék eredeti indítási beállításait, és elveti a módosításaidat. A Steam bezárul, majd újra megnyílik. Folytatod?</value></data>
+  <data name="Launch_RestoreAll_Done" xml:space="preserve"><value>{0} játék visszaállítva.</value></data>
+  <data name="Launch_RestoreAll_Partial" xml:space="preserve"><value>{0} játék visszaállítva. Ezek mentve maradnak, és újra megpróbálhatók: {1}</value></data>
+  <data name="Launch_RestoreAll_Failed" xml:space="preserve"><value>Semmi sem változott. {0}</value></data>
+  <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Nem sikerült biztonsági mentést készíteni. Ellenőrizd a szabad lemezterületet.</value></data>
+  <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>A Steam nem záródott be.</value></data>
+  <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>Az eredeti indítási beállításokat nem sikerült visszaírni.</value></data>
 </root>

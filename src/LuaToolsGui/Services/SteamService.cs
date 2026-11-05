@@ -108,6 +108,11 @@ public class SteamService(SettingsService settings)
     public static void RevealInExplorer(string filePath) =>
         Process.Start(new ProcessStartInfo("explorer.exe", $"/select,\"{filePath}\"") { UseShellExecute = true });
 
+    /// <summary>Open Explorer inside the given folder, which the caller has checked exists. Always quoted:
+    /// Explorer treats a comma as a separator, and a Windows path can't contain a quote.</summary>
+    public static void OpenFolder(string folderPath) =>
+        Process.Start(new ProcessStartInfo("explorer.exe", $"\"{folderPath}\""))?.Dispose();
+
     /// <summary>Kill any running steam.exe (and its tree) and wait for it to exit. Safe to call when
     /// Steam isn't running. Use before changing Steam's files so they aren't locked.</summary>
     /// <summary>True while a Steam client process is running — appinfo.vdf can't be edited under it.</summary>

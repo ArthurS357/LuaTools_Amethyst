@@ -290,6 +290,10 @@
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                     <ui:Button
+                        Margin="0,0,8,0"
+                        Command="{Binding ShowInFolderCommand}"
+                        Content="{x:Static res:Strings.Downloads_Action_ShowInFolder}" />
+                    <ui:Button
                         Command="{Binding RestoreCommand}"
                         Content="{x:Static res:Strings.Launch_Restore}"
                         IsEnabled="{Binding IsModded}"

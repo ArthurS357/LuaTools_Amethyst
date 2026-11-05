@@ -460,6 +460,12 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
     [RelayCommand]
     private void EditLaunchOptions(LuaTileViewModel tile) => OpenLaunchOptions?.Invoke(tile.AppId, tile.Name);
 
+    /// <summary>Set by App — opens the list of every game whose launch options were edited.</summary>
+    public Action? OpenLaunchOverrides { get; set; }
+
+    [RelayCommand]
+    private void ShowLaunchOverrides() => OpenLaunchOverrides?.Invoke();
+
     /// <summary>Set by App — opens the save-backup dialog for a game (appid, name).</summary>
     public Action<long, string>? OpenSaveBackup { get; set; }
 

@@ -858,4 +858,15 @@ Ativar?</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Nada foi eliminado: não foi possível confirmar que "{0}" é uma cópia de segurança segura para remover (foi alterada, é uma ligação ou tem menos de 5 minutos). Atualize a lista e tente novamente.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Efeito Vidro (Glassmorphism)</value></data>
   <data name="Settings_Glass_Hint" xml:space="preserve"><value>Barra de título e menu lateral translúcidos sobre o fundo Acrylic do Windows 11. As páginas mantêm-se sólidas para o texto manter o contraste. Desative em PCs mais lentos. No Windows 10 e em alto contraste o fundo é sempre sólido.</value></data>
+  <data name="Launch_Overrides_Title" xml:space="preserve"><value>Todas as opções alteradas</value></data>
+  <data name="Launch_Overrides_Empty" xml:space="preserve"><value>O LuaTools não alterou as opções de arranque de nenhum jogo.</value></data>
+  <data name="Launch_RestoreAll" xml:space="preserve"><value>Restaurar todas</value></data>
+  <data name="Launch_RestoreAll_Title" xml:space="preserve"><value>Restaurar todas as opções de arranque?</value></data>
+  <data name="Launch_RestoreAll_Body" xml:space="preserve"><value>Isto repõe as opções de arranque originais de {0} jogo(s) e descarta as suas alterações. O Steam será fechado e reaberto. Continuar?</value></data>
+  <data name="Launch_RestoreAll_Done" xml:space="preserve"><value>{0} jogo(s) restaurado(s).</value></data>
+  <data name="Launch_RestoreAll_Partial" xml:space="preserve"><value>{0} jogo(s) restaurado(s). Estes continuam guardados e podem ser tentados de novo: {1}</value></data>
+  <data name="Launch_RestoreAll_Failed" xml:space="preserve"><value>Nada foi alterado. {0}</value></data>
+  <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Não foi possível criar a cópia de segurança. Verifique o espaço livre em disco.</value></data>
+  <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>O Steam não fechou.</value></data>
+  <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>Não foi possível repor as opções de arranque originais.</value></data>
 </root>

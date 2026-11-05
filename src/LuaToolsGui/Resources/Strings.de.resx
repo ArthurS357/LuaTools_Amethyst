@@ -858,4 +858,15 @@ Aktivieren?</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Es wurde nichts gelöscht: „{0}“ konnte nicht als sicher löschbares Backup bestätigt werden (es hat sich geändert, ist ein Link oder ist jünger als 5 Minuten). Aktualisiere die Liste und versuche es erneut.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Glaseffekt (Glassmorphism)</value></data>
   <data name="Settings_Glass_Hint" xml:space="preserve"><value>Durchscheinende Titelleiste und Seitenleiste über dem Acrylic-Hintergrund von Windows 11. Die Seiten bleiben deckend, damit der Text seinen Kontrast behält. Auf langsameren PCs ausschalten. Unter Windows 10 und bei hohem Kontrast ist der Hintergrund immer deckend.</value></data>
+  <data name="Launch_Overrides_Title" xml:space="preserve"><value>Alle geänderten Startoptionen</value></data>
+  <data name="Launch_Overrides_Empty" xml:space="preserve"><value>LuaTools hat bei keinem Spiel die Startoptionen geändert.</value></data>
+  <data name="Launch_RestoreAll" xml:space="preserve"><value>Alle wiederherstellen</value></data>
+  <data name="Launch_RestoreAll_Title" xml:space="preserve"><value>Alle Startoptionen wiederherstellen?</value></data>
+  <data name="Launch_RestoreAll_Body" xml:space="preserve"><value>Dadurch werden die ursprünglichen Startoptionen von {0} Spiel(en) wiederhergestellt und deine Änderungen verworfen. Steam wird geschlossen und neu geöffnet. Fortfahren?</value></data>
+  <data name="Launch_RestoreAll_Done" xml:space="preserve"><value>{0} Spiel(e) wiederhergestellt.</value></data>
+  <data name="Launch_RestoreAll_Partial" xml:space="preserve"><value>{0} Spiel(e) wiederhergestellt. Diese bleiben gespeichert und können erneut versucht werden: {1}</value></data>
+  <data name="Launch_RestoreAll_Failed" xml:space="preserve"><value>Es wurde nichts geändert. {0}</value></data>
+  <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Die Sicherung konnte nicht erstellt werden. Prüfe den freien Speicherplatz.</value></data>
+  <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam wurde nicht geschlossen.</value></data>
+  <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>Die ursprünglichen Startoptionen konnten nicht zurückgeschrieben werden.</value></data>
 </root>

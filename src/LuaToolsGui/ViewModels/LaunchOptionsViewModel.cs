@@ -75,6 +75,9 @@ public partial class LaunchOptionsViewModel : ObservableObject
 {
     private readonly LaunchOptionsService _launch;
     private readonly ToastService _toast;
+    private readonly Func<long, string?> _installDir;
+    private readonly Func<string, string, bool> _confirm;
+    private readonly Action<string> _openFolder;
 
     private LaunchState? _state;
 
@@ -128,10 +131,22 @@ public partial class LaunchOptionsViewModel : ObservableObject
     /// <summary>Set by the view so the dialog can close itself.</summary>
     public Action<bool>? CloseWith { get; set; }
 
-    public LaunchOptionsViewModel(LaunchOptionsService launch, ToastService toast)
+    public LaunchOptionsViewModel(LaunchOptionsService launch, ToastService toast, SteamLibraryService library)
+        : this(launch, toast, library.GetInstallDir)
+    { }
+
+    /// <summary>Test seam: the install-folder lookup, Explorer and the confirmation box are the parts
+    /// that reach outside the process.</summary>
+    internal LaunchOptionsViewModel(LaunchOptionsService launch, ToastService toast,
+                                    Func<long, string?>? installDir = null,
+                                    Func<string, string, bool>? confirm = null,
+                                    Action<string>? openFolder = null)
     {
         _launch = launch;
         _toast = toast;
+        _installDir = installDir ?? (_ => null);
+        _confirm = confirm ?? ConfirmWithMessageBox;
+        _openFolder = openFolder ?? SteamService.OpenFolder;
         Entries.CollectionChanged += OnEntriesChanged;
     }
 
@@ -288,7 +303,7 @@ public partial class LaunchOptionsViewModel : ObservableObject
         _launch.Stage((int)AppId, _state.ChangeNumber, _state.Current, desired);
         IsModded = true;
 
-        if (Confirm(Resources.Strings.Launch_ApplyNow_Body, Resources.Strings.Launch_ApplyNow_Title))
+        if (_confirm(Resources.Strings.Launch_ApplyNow_Body, Resources.Strings.Launch_ApplyNow_Title))
             ApplyToSteam(new Dictionary<int, IReadOnlyList<LaunchOption>> { [(int)AppId] = desired });
         else
             _toast.Show(Resources.Strings.Launch_Title, Resources.Strings.Launch_Staged);
@@ -300,22 +315,43 @@ public partial class LaunchOptionsViewModel : ObservableObject
     [RelayCommand]
     private void Restore()
     {
-        if (_launch.StageRestore((int)AppId) is not { } original)
+        if (_launch.StageRestore((int)AppId) is null)
         {
             _toast.Show(Resources.Strings.Launch_Title, Resources.Strings.Launch_NothingToRestore, error: true);
             return;
         }
 
-        if (!Confirm(Resources.Strings.Launch_Restore_Body, Resources.Strings.Launch_Restore_Title)) return;
+        if (!_confirm(Resources.Strings.Launch_Restore_Body, Resources.Strings.Launch_Restore_Title)) return;
 
-        ApplyToSteam(new Dictionary<int, IReadOnlyList<LaunchOption>> { [(int)AppId] = original });
-        _launch.Store.Remove((int)AppId);
+        // The record is only forgotten when the game was really restored; on failure it stays, along
+        // with the snapshot needed to try again.
+        var result = _launch.Restore([(int)AppId]);
+        if (!result.Ok)
+        {
+            string reason = result.Error ?? result.Failed[0].Reason;
+            _toast.Show(Resources.Strings.Launch_Title,
+                string.Format(Resources.Strings.Launch_ApplyFailed, reason), error: true);
+            return;
+        }
+
+        _toast.Show(Resources.Strings.Launch_Title,
+            result.SteamWasRunning
+                ? Resources.Strings.Launch_Applied_Restarted
+                : Resources.Strings.Launch_Applied);
         IsModded = false;
         CloseWith?.Invoke(true);
     }
 
     [RelayCommand]
     private void Cancel() => CloseWith?.Invoke(false);
+
+    /// <summary>Open the game's folder (steamapps\common\&lt;installdir&gt;) in Explorer.</summary>
+    [RelayCommand]
+    private void ShowInFolder()
+    {
+        if (_installDir(AppId) is { } dir) _openFolder(dir);
+        else _toast.Show(Resources.Strings.Launch_Title, Resources.Strings.Manage_Steamless_NoInstall, error: true);
+    }
 
     /// <summary>
     /// Write into appinfo.vdf. Steam is closed first — it owns the file and regenerates it from its own
@@ -334,6 +370,6 @@ public partial class LaunchOptionsViewModel : ObservableObject
                 string.Format(Resources.Strings.Launch_ApplyFailed, result.Error), error: true);
     }
 
-    private static bool Confirm(string body, string title) =>
+    private static bool ConfirmWithMessageBox(string body, string title) =>
         MessageBox.Show(body, title, MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK;
 }

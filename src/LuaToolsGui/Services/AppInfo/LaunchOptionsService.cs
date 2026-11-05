@@ -13,6 +13,22 @@ public sealed record LaunchState(
 /// <summary>Outcome of writing appinfo.vdf.</summary>
 public sealed record ApplyResult(bool Ok, string? Error = null, bool SteamWasRunning = false);
 
+/// <summary>A game a restore could not put back. Its stored edit is kept, so it can be retried.</summary>
+public sealed record RestoreFailure(int AppId, string Reason);
+
+/// <summary>
+/// Outcome of a restore. <see cref="Error"/> means the whole operation stopped and nothing changed;
+/// <see cref="Failed"/> names games that were skipped while the others in the batch were restored.
+/// </summary>
+public sealed record RestoreResult(
+    IReadOnlyList<int> Restored,
+    IReadOnlyList<RestoreFailure> Failed,
+    string? Error = null,
+    bool SteamWasRunning = false)
+{
+    public bool Ok => Error is null && Failed.Count == 0;
+}
+
 /// <summary>
 /// Reads and writes Steam launch options, combining the appinfo codec with the durable
 /// <see cref="LaunchModStore"/>.
@@ -37,6 +53,10 @@ public class LaunchOptionsService
     private readonly Action _startSteam;
     private readonly LaunchModStore _store;
     private readonly string? _backupDir;
+
+    /// <summary>One write at a time. The drift notice's Re-apply runs with the main window live, and a
+    /// restore finishing during it would leave the edit written back with no record left to undo it.</summary>
+    private readonly object _writeGate = new();
 
     public LaunchOptionsService(SteamService steam, LaunchModStore store)
         : this(() => steam.EffectivePath is { } p ? Path.Combine(p, "appcache", "appinfo.vdf") : null,
@@ -111,11 +131,14 @@ public class LaunchOptionsService
     /// </summary>
     public ApplyResult Reapply(IReadOnlyList<int> appIds, bool restartSteam = true)
     {
-        var edits = new Dictionary<int, IReadOnlyList<LaunchOption>>();
-        foreach (int appId in appIds)
-            if (_store.Get(appId) is { } mod) edits[appId] = mod.Desired;
+        lock (_writeGate)
+        {
+            var edits = new Dictionary<int, IReadOnlyList<LaunchOption>>();
+            foreach (int appId in appIds)
+                if (_store.Get(appId) is { } mod) edits[appId] = mod.Desired;
 
-        return Apply(edits, restartSteam);
+            return Apply(edits, restartSteam);
+        }
     }
 
     /// <summary>
@@ -128,6 +151,11 @@ public class LaunchOptionsService
     /// </para>
     /// </summary>
     public ApplyResult Apply(IReadOnlyDictionary<int, IReadOnlyList<LaunchOption>> edits, bool restartSteam)
+    {
+        lock (_writeGate) return ApplyCore(edits, restartSteam);
+    }
+
+    private ApplyResult ApplyCore(IReadOnlyDictionary<int, IReadOnlyList<LaunchOption>> edits, bool restartSteam)
     {
         if (AppInfoPath is not { } path || !File.Exists(path))
             return new ApplyResult(false, "Steam's appinfo cache wasn't found.");
@@ -149,6 +177,9 @@ public class LaunchOptionsService
                     var root = file.ReadApp(appId);
                     var body = root?.GetTable("appinfo");
                     if (root is null || body is null) continue;   // app vanished from appinfo — skip it
+
+                    // Last chance to see what Steam shipped: a re-apply after an update overwrites it.
+                    _store.Rebase(appId, file.Entries[appId].ChangeNumber, LaunchOption.ReadAll(body));
                     LaunchOption.WriteAll(body, options);
                     replacements[appId] = root;
                 }
@@ -170,6 +201,149 @@ public class LaunchOptionsService
         {
             try { if (File.Exists(tmp)) File.Delete(tmp); } catch { /* best effort */ }
             if (wasRunning && restartSteam) _startSteam();
+        }
+    }
+
+    /// <summary>Put back the original launch options of every game this app has edited.</summary>
+    public RestoreResult RestoreAll(bool restartSteam = true) =>
+        Restore(_store.All.Select(m => m.AppId).ToList(), restartSteam);
+
+    /// <summary>
+    /// Put back the original launch options of these games and forget their edits.
+    ///
+    /// <para>
+    /// Nothing is lost if this fails, because the steps run in this order: back up launchmods.json, build
+    /// every game's replacement (a game that can't be read or written lands in
+    /// <see cref="RestoreResult.Failed"/> and doesn't stop the rest), back up appinfo.vdf, write the new
+    /// file to a temp path and swap it in, and only then delete the records of the games that were really
+    /// restored. A crash between the swap and the delete leaves a record for a game that's already back to
+    /// its original, which the next restore repairs.
+    /// </para>
+    /// <para>
+    /// Unlike <see cref="Apply"/>, the appinfo backup is mandatory here: this is the step that discards
+    /// the user's edits, so running short of disk stops it with nothing changed.
+    /// </para>
+    /// </summary>
+    public RestoreResult Restore(IReadOnlyList<int> appIds, bool restartSteam = true)
+    {
+        lock (_writeGate) return RestoreCore(appIds, restartSteam);
+    }
+
+    private RestoreResult RestoreCore(IReadOnlyList<int> appIds, bool restartSteam)
+    {
+        // Built only from the store, so a game this app never edited can't end up in the batch.
+        var mods = appIds.Select(_store.Get).OfType<LaunchMod>().ToList();
+        if (mods.Count == 0) return new RestoreResult([], []);
+
+        if (AppInfoPath is not { } path || !File.Exists(path))
+            return new RestoreResult([], [], Resources.Strings.Launch_NotFound);
+
+        bool wasRunning = _isSteamRunning();
+        string tmp = path + ".luatools.tmp";
+        try
+        {
+            if (wasRunning) _stopSteam();
+
+            // A Steam still running would write our edits back from memory after the records are gone.
+            if (_isSteamRunning())
+                return new RestoreResult([], [], Resources.Strings.Launch_Restore_SteamStillRunning, wasRunning);
+
+            if (!_store.TrySnapshot())
+                return new RestoreResult([], [], Resources.Strings.Launch_Restore_BackupFailed, wasRunning);
+
+            var restored = new List<int>();
+            var failed = new List<RestoreFailure>();
+            var replacements = new Dictionary<int, VdfTable>();
+
+            using (var file = new AppInfoFile(path))
+            {
+                foreach (var mod in mods)
+                {
+                    try
+                    {
+                        var root = file.ReadApp(mod.AppId);
+                        var body = root?.GetTable("appinfo");
+                        if (root is null || body is null)
+                        {
+                            failed.Add(new RestoreFailure(mod.AppId, Resources.Strings.Launch_NotFound));
+                            continue;
+                        }
+
+                        var live = LaunchOption.ReadAll(body);
+                        bool editIsLive = !LaunchModStore.Differs(live, mod.Desired);
+                        bool steamUpdated = file.Entries[mod.AppId].ChangeNumber != mod.ChangeNumber;
+                        // An older build could record the edit itself as the original (see Rebase).
+                        bool noOriginal = !LaunchModStore.Differs(mod.Original, mod.Desired);
+
+                        // Steam has rewritten the entries, so the edit is already gone. Writing the stored
+                        // original would put back a dead version or, with noOriginal, the edit itself.
+                        if (!editIsLive && (steamUpdated || noOriginal))
+                        {
+                            restored.Add(mod.AppId);
+                            continue;
+                        }
+
+                        // Saying "restored" here would forget the game with its edit still live.
+                        if (noOriginal)
+                        {
+                            failed.Add(new RestoreFailure(mod.AppId, Resources.Strings.Launch_NothingToRestore));
+                            continue;
+                        }
+
+                        // Staged but never applied: Steam already has the original.
+                        if (!LaunchModStore.Differs(live, mod.Original))
+                        {
+                            restored.Add(mod.AppId);
+                            continue;
+                        }
+
+                        LaunchOption.WriteAll(body, mod.Original);
+                        if (LaunchModStore.Differs(LaunchOption.ReadAll(body), mod.Original))
+                        {
+                            failed.Add(new RestoreFailure(mod.AppId, Resources.Strings.Launch_Restore_Mismatch));
+                            continue;
+                        }
+
+                        // Prove this game serializes now: inside SaveAs, one bad table would fail them all.
+                        BinaryVdf.Write(Stream.Null, root, _ => 0u, file.IndexedKeys);
+                        replacements[mod.AppId] = root;
+                    }
+                    catch (Exception ex)
+                    {
+                        AppLog.Log($"LaunchOptions: restore skipped app {mod.AppId}: {ex.GetType().Name}: {ex.Message}");
+                        failed.Add(new RestoreFailure(mod.AppId, ex.Message));
+                    }
+                }
+
+                if (replacements.Count > 0)
+                {
+                    if (!Backup(path, _backupDir ?? DefaultBackupDir(path)))
+                        return new RestoreResult([], [], Resources.Strings.Launch_Restore_BackupFailed, wasRunning);
+                    file.SaveAs(tmp, replacements);
+                }
+            }
+
+            if (replacements.Count > 0)
+            {
+                // Steam can be reopened while the file is rebuilt, which takes seconds on a real cache.
+                if (_isSteamRunning())
+                    return new RestoreResult([], [], Resources.Strings.Launch_Restore_SteamStillRunning, wasRunning);
+                File.Move(tmp, path, overwrite: true);
+            }
+
+            restored.AddRange(replacements.Keys);
+            _store.RemoveMany(restored);
+            return new RestoreResult(restored, failed, null, wasRunning);
+        }
+        catch (Exception ex)
+        {
+            AppLog.Log($"LaunchOptions: restore stopped, nothing changed: {ex.GetType().Name}: {ex.Message}");
+            return new RestoreResult([], [], ex.Message, wasRunning);
+        }
+        finally
+        {
+            try { if (File.Exists(tmp)) File.Delete(tmp); } catch { /* best effort */ }
+            if (wasRunning && restartSteam && !_isSteamRunning()) _startSteam();
         }
     }
 
@@ -210,13 +384,15 @@ public class LaunchOptionsService
     /// problem than the one it insures against, and the temp-then-swap below already prevents a torn
     /// write.
     /// </summary>
-    private static void Backup(string path, string backupDir)
+    /// <returns>Whether a backup now exists. <see cref="Apply"/> carries on without one;
+    /// <see cref="Restore"/> does not.</returns>
+    private static bool Backup(string path, string backupDir)
     {
         try
         {
             long size = new FileInfo(path).Length;
             var drive = new DriveInfo(Path.GetPathRoot(Path.GetFullPath(backupDir))!);
-            if (drive.AvailableFreeSpace < size * 2) return;
+            if (drive.AvailableFreeSpace < size * 2) return false;
 
             Directory.CreateDirectory(backupDir);
             string dest = Path.Combine(backupDir, $"appinfo-{DateTime.Now:yyyyMMdd-HHmmss}.vdf");
@@ -227,10 +403,13 @@ public class LaunchOptionsService
                          .OrderByDescending(f => f.CreationTimeUtc)
                          .Skip(MaxBackups))
                 try { old.Delete(); } catch { /* best effort */ }
+            return true;
         }
-        catch
+        catch (Exception ex)
         {
-            // A failed backup shouldn't block the edit — the .tmp swap is the real safety net.
+            // A failed backup shouldn't block an edit — the .tmp swap is the real safety net there.
+            AppLog.Log($"LaunchOptions: appinfo backup failed: {ex.GetType().Name}: {ex.Message}");
+            return false;
         }
     }
 }

@@ -858,4 +858,15 @@ L’activer ?</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Rien n’a été supprimé : impossible de confirmer que « {0} » est une sauvegarde supprimable sans risque (elle a changé, c’est un lien ou elle date de moins de 5 minutes). Actualisez la liste et réessayez.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Effet verre (Glassmorphism)</value></data>
   <data name="Settings_Glass_Hint" xml:space="preserve"><value>Barre de titre et menu latéral translucides sur le fond Acrylic de Windows 11. Les pages restent opaques pour que le texte garde son contraste. Désactivez-le sur les PC plus lents. Sous Windows 10 et en contraste élevé, le fond est toujours opaque.</value></data>
+  <data name="Launch_Overrides_Title" xml:space="preserve"><value>Toutes les options modifiées</value></data>
+  <data name="Launch_Overrides_Empty" xml:space="preserve"><value>LuaTools n'a modifié les options de lancement d'aucun jeu.</value></data>
+  <data name="Launch_RestoreAll" xml:space="preserve"><value>Tout restaurer</value></data>
+  <data name="Launch_RestoreAll_Title" xml:space="preserve"><value>Restaurer toutes les options de lancement ?</value></data>
+  <data name="Launch_RestoreAll_Body" xml:space="preserve"><value>Cela rétablit les options de lancement d'origine de {0} jeu(x) et annule vos modifications. Steam sera fermé puis rouvert. Continuer ?</value></data>
+  <data name="Launch_RestoreAll_Done" xml:space="preserve"><value>{0} jeu(x) restauré(s).</value></data>
+  <data name="Launch_RestoreAll_Partial" xml:space="preserve"><value>{0} jeu(x) restauré(s). Ceux-ci restent enregistrés et peuvent être réessayés : {1}</value></data>
+  <data name="Launch_RestoreAll_Failed" xml:space="preserve"><value>Rien n'a été modifié. {0}</value></data>
+  <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Impossible de créer la sauvegarde de sécurité. Vérifiez l'espace disque disponible.</value></data>
+  <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam ne s'est pas fermé.</value></data>
+  <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>Impossible de réécrire les options de lancement d'origine.</value></data>
 </root>

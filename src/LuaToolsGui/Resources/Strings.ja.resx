@@ -858,4 +858,15 @@ lua ファイル、その横にあるビルドの lua、保存済みのビルド
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>何も削除されませんでした: 「{0}」を安全に削除できるバックアップとして確認できませんでした (変更された、リンクである、または作成から 5 分未満です)。一覧を更新してもう一度お試しください。</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>ガラス効果 (Glassmorphism)</value></data>
   <data name="Settings_Glass_Hint" xml:space="preserve"><value>Windows 11 の Acrylic 背景の上に半透明のタイトル バーとサイド メニューを表示します。文字のコントラストを保つため、ページは不透明のままです。動作の遅い PC ではオフにしてください。Windows 10 とハイ コントラストでは常に不透明な背景になります。</value></data>
+  <data name="Launch_Overrides_Title" xml:space="preserve"><value>変更したすべての起動オプション</value></data>
+  <data name="Launch_Overrides_Empty" xml:space="preserve"><value>LuaTools はどのゲームの起動オプションも変更していません。</value></data>
+  <data name="Launch_RestoreAll" xml:space="preserve"><value>すべて復元</value></data>
+  <data name="Launch_RestoreAll_Title" xml:space="preserve"><value>すべての起動オプションを復元しますか?</value></data>
+  <data name="Launch_RestoreAll_Body" xml:space="preserve"><value>{0} 件のゲームの起動オプションを元に戻し、変更を破棄します。Steam は一度閉じて再度開きます。続行しますか?</value></data>
+  <data name="Launch_RestoreAll_Done" xml:space="preserve"><value>{0} 件のゲームを復元しました。</value></data>
+  <data name="Launch_RestoreAll_Partial" xml:space="preserve"><value>{0} 件のゲームを復元しました。次のゲームは保存されたままで、再試行できます: {1}</value></data>
+  <data name="Launch_RestoreAll_Failed" xml:space="preserve"><value>何も変更されていません。{0}</value></data>
+  <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>安全のためのバックアップを作成できませんでした。ディスクの空き容量を確認してください。</value></data>
+  <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam が終了しませんでした。</value></data>
+  <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>元の起動オプションを書き戻せませんでした。</value></data>
 </root>

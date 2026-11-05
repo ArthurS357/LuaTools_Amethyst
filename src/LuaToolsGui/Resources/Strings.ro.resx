@@ -858,4 +858,15 @@ O activezi?</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Nu s-a șters nimic: nu s-a putut confirma că „{0}” este o copie de rezervă care poate fi ștearsă în siguranță (s-a modificat, este un link sau are mai puțin de 5 minute). Reîmprospătează lista și încearcă din nou.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Efect de sticlă (Glassmorphism)</value></data>
   <data name="Settings_Glass_Hint" xml:space="preserve"><value>Bară de titlu și meniu lateral translucide peste fundalul Acrylic din Windows 11. Paginile rămân opace, ca textul să își păstreze contrastul. Dezactivează-l pe PC-urile mai lente. În Windows 10 și cu contrast ridicat fundalul este mereu opac.</value></data>
+  <data name="Launch_Overrides_Title" xml:space="preserve"><value>Toate opțiunile modificate</value></data>
+  <data name="Launch_Overrides_Empty" xml:space="preserve"><value>LuaTools nu a modificat opțiunile de lansare ale niciunui joc.</value></data>
+  <data name="Launch_RestoreAll" xml:space="preserve"><value>Restabilește tot</value></data>
+  <data name="Launch_RestoreAll_Title" xml:space="preserve"><value>Restabilești toate opțiunile de lansare?</value></data>
+  <data name="Launch_RestoreAll_Body" xml:space="preserve"><value>Aceasta readuce opțiunile de lansare originale pentru {0} joc(uri) și renunță la modificările tale. Steam va fi închis și redeschis. Continui?</value></data>
+  <data name="Launch_RestoreAll_Done" xml:space="preserve"><value>{0} joc(uri) restabilit(e).</value></data>
+  <data name="Launch_RestoreAll_Partial" xml:space="preserve"><value>{0} joc(uri) restabilit(e). Acestea rămân salvate și poți reîncerca: {1}</value></data>
+  <data name="Launch_RestoreAll_Failed" xml:space="preserve"><value>Nu s-a modificat nimic. {0}</value></data>
+  <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Nu s-a putut crea copia de siguranță. Verifică spațiul liber pe disc.</value></data>
+  <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam nu s-a închis.</value></data>
+  <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>Opțiunile de lansare originale nu au putut fi rescrise.</value></data>
 </root>

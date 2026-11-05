@@ -96,10 +96,46 @@ public class LaunchModStore
         }
     }
 
+    /// <summary>Forget several edits in one write, so a batch can't leave the file half-updated.</summary>
+    public void RemoveMany(IEnumerable<int> appIds)
+    {
+        lock (_gate)
+        {
+            bool any = false;
+            foreach (int appId in appIds) any |= _mods.Remove(appId);
+            if (any) Persist();
+        }
+    }
+
+    /// <summary>
+    /// Copy the current records to <c>launchmods.json.pre-restore</c> before a restore starts deleting
+    /// them. <see cref="Persist"/>'s .bak can't do this job: emptying the store deletes the file outright,
+    /// so after a full restore the .bak holds the state from one removal earlier, or nothing.
+    /// </summary>
+    /// <returns>False when the copy couldn't be written; the caller must not delete anything then.</returns>
+    public bool TrySnapshot()
+    {
+        lock (_gate)
+        {
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(_path)!);
+                AtomicFile.WriteAllText(_path + ".pre-restore", JsonSerializer.Serialize(_mods.Values.ToList(), JsonOpts));
+                return true;
+            }
+            catch (Exception ex)
+            {
+                AppLog.Log($"LaunchModStore: pre-restore snapshot failed: {ex.GetType().Name}: {ex.Message}");
+                return false;
+            }
+        }
+    }
+
     /// <summary>
     /// Re-base a stored snapshot when Steam has updated the app since it was taken — SteamEdit's trick.
     /// Without this, "restore original" would write back launch entries from a version of the game that
-    /// no longer exists.
+    /// no longer exists. Entries that match our own edit are not what Steam shipped, so they never replace
+    /// the original: that would leave "restore" with nothing to go back to.
     /// </summary>
     public bool Rebase(int appId, uint currentChangeNumber, IReadOnlyList<LaunchOption> currentOriginal)
     {
@@ -109,7 +145,8 @@ public class LaunchModStore
                 return false;
 
             mod.ChangeNumber = currentChangeNumber;
-            mod.Original = currentOriginal.Select(o => o.Clone()).ToList();
+            if (Differs(currentOriginal, mod.Desired))
+                mod.Original = currentOriginal.Select(o => o.Clone()).ToList();
             Persist();
             return true;
         }

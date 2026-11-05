@@ -29,6 +29,17 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.7.13.2", "2026-11-05",
+            "Launch options: a list of every game you changed, a safe Restore all, and a button to open the game's folder.",
+            [
+                "Manage → All launch overrides: lists every game whose launch options LuaTools changed, with its App ID, name and the current override.",
+                "Restore all puts every game back in one safe step. Your saved changes and Steam's app cache are backed up first, and if that backup fails, nothing is changed.",
+                "A game that can't be restored stays on the list with its saved options and doesn't stop the others. A game LuaTools never changed is left untouched.",
+                "Restore original in the launch options window no longer forgets a game when the write fails, and re-applying after a Steam update no longer records your edit as the original.",
+                "Show in folder opens the game's install folder, from the launch options window and from the list.",
+                "Translated in all 29 languages. No new dependency and no new network request.",
+            ]),
+
         new("1.7.13.1", "2026-11-03",
             "Denuvo Mode (Aliases) on the AmethystTool card: one switch for AmethystTool 1.3.5's compatibility mode for the Denuvo validator.",
             [

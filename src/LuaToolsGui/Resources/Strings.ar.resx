@@ -884,4 +884,15 @@ SHA-256 {3}
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>لم يُحذف أي شيء: تعذّر التأكد من أن "{0}" نسخة احتياطية يمكن إزالتها بأمان (تغيّرت، أو هي رابط، أو عمرها أقل من 5 دقائق). حدّث القائمة وحاول مجدداً.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>تأثير الزجاج (Glassmorphism)</value></data>
   <data name="Settings_Glass_Hint" xml:space="preserve"><value>شريط عنوان وقائمة جانبية شبه شفافين فوق خلفية Acrylic في Windows 11. تبقى الصفحات معتمة ليحتفظ النص بتباينه. أوقفه على الأجهزة الأبطأ. في Windows 10 ووضع التباين العالي تكون الخلفية معتمة دائماً.</value></data>
+  <data name="Launch_Overrides_Title" xml:space="preserve"><value>كل الخيارات المعدّلة</value></data>
+  <data name="Launch_Overrides_Empty" xml:space="preserve"><value>لم يغيّر LuaTools خيارات التشغيل لأي لعبة.</value></data>
+  <data name="Launch_RestoreAll" xml:space="preserve"><value>استعادة الكل</value></data>
+  <data name="Launch_RestoreAll_Title" xml:space="preserve"><value>هل تريد استعادة كل خيارات التشغيل؟</value></data>
+  <data name="Launch_RestoreAll_Body" xml:space="preserve"><value>سيعيد هذا خيارات التشغيل الأصلية لعدد {0} من الألعاب ويتجاهل تغييراتك. سيتم إغلاق Steam وإعادة فتحه. هل تريد المتابعة؟</value></data>
+  <data name="Launch_RestoreAll_Done" xml:space="preserve"><value>تمت استعادة {0} من الألعاب.</value></data>
+  <data name="Launch_RestoreAll_Partial" xml:space="preserve"><value>تمت استعادة {0} من الألعاب. تبقى هذه محفوظة ويمكن إعادة المحاولة: {1}</value></data>
+  <data name="Launch_RestoreAll_Failed" xml:space="preserve"><value>لم يتغير شيء. {0}</value></data>
+  <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>تعذّر إنشاء نسخة احتياطية. تحقق من المساحة الحرة على القرص.</value></data>
+  <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>لم يُغلق Steam.</value></data>
+  <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>تعذّرت إعادة كتابة خيارات التشغيل الأصلية.</value></data>
 </root>

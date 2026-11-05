@@ -93,11 +93,15 @@ public sealed class LaunchOption
             config.SetText("BetaKey", BetaKey);      // Steam's exact casing
             config.SetText("ownsdlc", OwnsDlc);
         }
-        else
+        else if (table.GetTable("config") is { } cfg)
         {
-            // Only drop `config` if we're the ones who emptied it — an entry that never had one stays
-            // without one, and one whose only config keys we don't model keeps them.
-            if (table.GetTable("config") is { } cfg && cfg.Items.Count == 0) table.Remove("config");
+            // Clear the keys we model, or an edit that set one could never be undone. Only drop `config`
+            // if that empties it — one that also holds keys we don't model keeps them.
+            cfg.Remove("oslist");
+            cfg.Remove("osarch");
+            cfg.Remove("BetaKey");
+            cfg.Remove("ownsdlc");
+            if (cfg.Items.Count == 0) table.Remove("config");
         }
         return table;
     }

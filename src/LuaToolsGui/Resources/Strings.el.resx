@@ -858,4 +858,15 @@ SHA-256 {3}
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Δεν διαγράφηκε τίποτα: δεν ήταν δυνατό να επιβεβαιωθεί ότι το «{0}» είναι αντίγραφο ασφαλείας που μπορεί να αφαιρεθεί με ασφάλεια (άλλαξε, είναι σύνδεσμος ή είναι νεότερο από 5 λεπτά). Ανανέωσε τη λίστα και δοκίμασε ξανά.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Εφέ γυαλιού (Glassmorphism)</value></data>
   <data name="Settings_Glass_Hint" xml:space="preserve"><value>Ημιδιαφανής γραμμή τίτλου και πλευρικό μενού πάνω από το φόντο Acrylic των Windows 11. Οι σελίδες μένουν αδιαφανείς ώστε το κείμενο να κρατά την αντίθεσή του. Απενεργοποίησέ το σε πιο αργούς υπολογιστές. Στα Windows 10 και σε υψηλή αντίθεση το φόντο είναι πάντα συμπαγές.</value></data>
+  <data name="Launch_Overrides_Title" xml:space="preserve"><value>Όλες οι τροποποιημένες επιλογές</value></data>
+  <data name="Launch_Overrides_Empty" xml:space="preserve"><value>Το LuaTools δεν έχει αλλάξει τις επιλογές εκκίνησης κανενός παιχνιδιού.</value></data>
+  <data name="Launch_RestoreAll" xml:space="preserve"><value>Επαναφορά όλων</value></data>
+  <data name="Launch_RestoreAll_Title" xml:space="preserve"><value>Επαναφορά όλων των επιλογών εκκίνησης;</value></data>
+  <data name="Launch_RestoreAll_Body" xml:space="preserve"><value>Αυτό επαναφέρει τις αρχικές επιλογές εκκίνησης για {0} παιχνίδι(α) και απορρίπτει τις αλλαγές σου. Το Steam θα κλείσει και θα ανοίξει ξανά. Συνέχεια;</value></data>
+  <data name="Launch_RestoreAll_Done" xml:space="preserve"><value>Έγινε επαναφορά {0} παιχνιδιού(ών).</value></data>
+  <data name="Launch_RestoreAll_Partial" xml:space="preserve"><value>Έγινε επαναφορά {0} παιχνιδιού(ών). Αυτά παραμένουν αποθηκευμένα και μπορείς να ξαναδοκιμάσεις: {1}</value></data>
+  <data name="Launch_RestoreAll_Failed" xml:space="preserve"><value>Δεν άλλαξε τίποτα. {0}</value></data>
+  <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Δεν ήταν δυνατή η δημιουργία αντιγράφου ασφαλείας. Έλεγξε τον ελεύθερο χώρο στον δίσκο.</value></data>
+  <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Το Steam δεν έκλεισε.</value></data>
+  <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>Δεν ήταν δυνατή η επανεγγραφή των αρχικών επιλογών εκκίνησης.</value></data>
 </root>

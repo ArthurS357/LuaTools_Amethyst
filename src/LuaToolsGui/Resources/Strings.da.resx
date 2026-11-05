@@ -858,4 +858,15 @@ Aktivér?</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Intet blev slettet: "{0}" kunne ikke bekræftes som en sikkerhedskopi, der trygt kan fjernes (den er ændret, er et link eller er under 5 minutter gammel). Opdater listen, og prøv igen.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Glaseffekt (Glassmorphism)</value></data>
   <data name="Settings_Glass_Hint" xml:space="preserve"><value>Gennemsigtig titellinje og sidemenu over Acrylic-baggrunden i Windows 11. Siderne forbliver uigennemsigtige, så teksten bevarer sin kontrast. Slå det fra på langsommere pc'er. I Windows 10 og med høj kontrast er baggrunden altid ensfarvet.</value></data>
+  <data name="Launch_Overrides_Title" xml:space="preserve"><value>Alle ændrede indstillinger</value></data>
+  <data name="Launch_Overrides_Empty" xml:space="preserve"><value>LuaTools har ikke ændret startindstillingerne for noget spil.</value></data>
+  <data name="Launch_RestoreAll" xml:space="preserve"><value>Gendan alle</value></data>
+  <data name="Launch_RestoreAll_Title" xml:space="preserve"><value>Gendan alle startindstillinger?</value></data>
+  <data name="Launch_RestoreAll_Body" xml:space="preserve"><value>Dette gendanner de oprindelige startindstillinger for {0} spil og kasserer dine ændringer. Steam lukkes og åbnes igen. Fortsæt?</value></data>
+  <data name="Launch_RestoreAll_Done" xml:space="preserve"><value>{0} spil gendannet.</value></data>
+  <data name="Launch_RestoreAll_Partial" xml:space="preserve"><value>{0} spil gendannet. Disse forbliver gemt og kan prøves igen: {1}</value></data>
+  <data name="Launch_RestoreAll_Failed" xml:space="preserve"><value>Intet blev ændret. {0}</value></data>
+  <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Kunne ikke oprette en sikkerhedskopi. Kontrollér den ledige diskplads.</value></data>
+  <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam lukkede ikke.</value></data>
+  <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>De oprindelige startindstillinger kunne ikke skrives tilbage.</value></data>
 </root>

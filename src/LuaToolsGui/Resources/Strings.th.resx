@@ -858,4 +858,15 @@ SHA-256 {3}
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>ไม่มีการลบสิ่งใด: ยืนยันไม่ได้ว่า "{0}" เป็นข้อมูลสำรองที่ลบได้อย่างปลอดภัย (มีการเปลี่ยนแปลง เป็นลิงก์ หรือสร้างมาไม่ถึง 5 นาที) รีเฟรชรายการแล้วลองอีกครั้ง</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>เอฟเฟกต์กระจก (Glassmorphism)</value></data>
   <data name="Settings_Glass_Hint" xml:space="preserve"><value>แถบชื่อเรื่องและเมนูด้านข้างแบบโปร่งแสงบนพื้นหลัง Acrylic ของ Windows 11 หน้าต่าง ๆ ยังคงทึบเพื่อให้ข้อความคงความคมชัด ปิดไว้บนพีซีที่ช้ากว่า บน Windows 10 และโหมดคอนทราสต์สูงจะใช้พื้นหลังทึบเสมอ</value></data>
+  <data name="Launch_Overrides_Title" xml:space="preserve"><value>ตัวเลือกที่เปลี่ยนทั้งหมด</value></data>
+  <data name="Launch_Overrides_Empty" xml:space="preserve"><value>LuaTools ยังไม่ได้เปลี่ยนตัวเลือกการเปิดของเกมใดเลย</value></data>
+  <data name="Launch_RestoreAll" xml:space="preserve"><value>คืนค่าทั้งหมด</value></data>
+  <data name="Launch_RestoreAll_Title" xml:space="preserve"><value>คืนค่าตัวเลือกการเปิดทั้งหมดหรือไม่?</value></data>
+  <data name="Launch_RestoreAll_Body" xml:space="preserve"><value>การทำเช่นนี้จะคืนตัวเลือกการเปิดเดิมของ {0} เกมและยกเลิกการเปลี่ยนแปลงของคุณ Steam จะปิดและเปิดใหม่ ดำเนินการต่อหรือไม่?</value></data>
+  <data name="Launch_RestoreAll_Done" xml:space="preserve"><value>คืนค่าแล้ว {0} เกม</value></data>
+  <data name="Launch_RestoreAll_Partial" xml:space="preserve"><value>คืนค่าแล้ว {0} เกม รายการเหล่านี้ยังบันทึกไว้และลองใหม่ได้: {1}</value></data>
+  <data name="Launch_RestoreAll_Failed" xml:space="preserve"><value>ไม่มีการเปลี่ยนแปลง {0}</value></data>
+  <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>ไม่สามารถสร้างข้อมูลสำรองได้ ตรวจสอบพื้นที่ว่างในดิสก์</value></data>
+  <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam ไม่ปิด</value></data>
+  <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>ไม่สามารถเขียนตัวเลือกการเปิดเดิมกลับได้</value></data>
 </root>

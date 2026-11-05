@@ -666,6 +666,17 @@ public static class Strings
     public static string Launch_Drift_Title => Get(nameof(Launch_Drift_Title));
     public static string Launch_Drift_Body => Get(nameof(Launch_Drift_Body));
     public static string Launch_Drift_Action => Get(nameof(Launch_Drift_Action));
+    public static string Launch_Overrides_Title => Get(nameof(Launch_Overrides_Title));
+    public static string Launch_Overrides_Empty => Get(nameof(Launch_Overrides_Empty));
+    public static string Launch_RestoreAll => Get(nameof(Launch_RestoreAll));
+    public static string Launch_RestoreAll_Title => Get(nameof(Launch_RestoreAll_Title));
+    public static string Launch_RestoreAll_Body => Get(nameof(Launch_RestoreAll_Body));
+    public static string Launch_RestoreAll_Done => Get(nameof(Launch_RestoreAll_Done));
+    public static string Launch_RestoreAll_Partial => Get(nameof(Launch_RestoreAll_Partial));
+    public static string Launch_RestoreAll_Failed => Get(nameof(Launch_RestoreAll_Failed));
+    public static string Launch_Restore_BackupFailed => Get(nameof(Launch_Restore_BackupFailed));
+    public static string Launch_Restore_SteamStillRunning => Get(nameof(Launch_Restore_SteamStillRunning));
+    public static string Launch_Restore_Mismatch => Get(nameof(Launch_Restore_Mismatch));
 
     // ── Auth errors ──
     // These replace hardcoded English literals that used to be thrown from AuthService.

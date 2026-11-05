@@ -858,4 +858,15 @@ Attivarlo?</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Non è stato eliminato nulla: impossibile confermare che "{0}" sia un backup eliminabile in sicurezza (è cambiato, è un collegamento o ha meno di 5 minuti). Aggiorna l’elenco e riprova.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Effetto vetro (Glassmorphism)</value></data>
   <data name="Settings_Glass_Hint" xml:space="preserve"><value>Barra del titolo e menu laterale traslucidi sullo sfondo Acrylic di Windows 11. Le pagine restano opache perché il testo mantenga il contrasto. Disattivalo sui PC più lenti. Con Windows 10 e il contrasto elevato lo sfondo è sempre opaco.</value></data>
+  <data name="Launch_Overrides_Title" xml:space="preserve"><value>Tutte le opzioni modificate</value></data>
+  <data name="Launch_Overrides_Empty" xml:space="preserve"><value>LuaTools non ha modificato le opzioni di avvio di nessun gioco.</value></data>
+  <data name="Launch_RestoreAll" xml:space="preserve"><value>Ripristina tutte</value></data>
+  <data name="Launch_RestoreAll_Title" xml:space="preserve"><value>Ripristinare tutte le opzioni di avvio?</value></data>
+  <data name="Launch_RestoreAll_Body" xml:space="preserve"><value>Questo ripristina le opzioni di avvio originali di {0} gioco/i e annulla le tue modifiche. Steam verrà chiuso e riaperto. Continuare?</value></data>
+  <data name="Launch_RestoreAll_Done" xml:space="preserve"><value>{0} gioco/i ripristinato/i.</value></data>
+  <data name="Launch_RestoreAll_Partial" xml:space="preserve"><value>{0} gioco/i ripristinato/i. Questi restano salvati e puoi riprovare: {1}</value></data>
+  <data name="Launch_RestoreAll_Failed" xml:space="preserve"><value>Non è stato modificato nulla. {0}</value></data>
+  <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Impossibile creare il backup di sicurezza. Controlla lo spazio libero su disco.</value></data>
+  <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam non si è chiuso.</value></data>
+  <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>Impossibile riscrivere le opzioni di avvio originali.</value></data>
 </root>

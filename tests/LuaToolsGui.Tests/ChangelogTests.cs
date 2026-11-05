@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.7.13.1");
+        AppVersion.Current.Should().Be("1.7.13.2");
     }
 
     [Fact]
@@ -51,6 +51,17 @@ public class ChangelogTests
 
         // One anchor per change the release was actually about, so an entry that got copied forward from
         // the previous version fails here rather than shipping a changelog describing the wrong release.
+        text.Should().ContainEquivalentOf("All launch overrides");           // the list
+        text.Should().ContainEquivalentOf("Restore all");                    // the batch restore
+        text.Should().ContainEquivalentOf("backed up first");                // mandatory backups
+        text.Should().ContainEquivalentOf("Show in folder");                 // opens the game's folder
+    }
+
+    [Fact]
+    public void The_1_7_13_1_entry_still_names_what_that_release_was_about()
+    {
+        string text = string.Join(" ", Changelog.Entries.Single(e => e.Version == "1.7.13.1").Highlights);
+
         text.Should().ContainEquivalentOf("Denuvo Mode (Aliases)");          // the switch on the card
         text.Should().ContainEquivalentOf("denuvo_aliases");                 // the key it writes
         text.Should().ContainEquivalentOf("written atomically");             // AtomicFile

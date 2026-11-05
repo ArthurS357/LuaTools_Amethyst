@@ -858,4 +858,15 @@ Włączyć?</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Nic nie zostało usunięte: nie udało się potwierdzić, że „{0}” to kopia zapasowa, którą można bezpiecznie usunąć (zmieniła się, jest dowiązaniem lub ma mniej niż 5 minut). Odśwież listę i spróbuj ponownie.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Efekt szkła (Glassmorphism)</value></data>
   <data name="Settings_Glass_Hint" xml:space="preserve"><value>Półprzezroczysty pasek tytułu i menu boczne na tle Acrylic systemu Windows 11. Strony pozostają nieprzezroczyste, aby tekst zachował kontrast. Wyłącz na wolniejszych komputerach. W Windows 10 i w trybie dużego kontrastu tło jest zawsze jednolite.</value></data>
+  <data name="Launch_Overrides_Title" xml:space="preserve"><value>Wszystkie zmienione opcje</value></data>
+  <data name="Launch_Overrides_Empty" xml:space="preserve"><value>LuaTools nie zmienił opcji uruchamiania żadnej gry.</value></data>
+  <data name="Launch_RestoreAll" xml:space="preserve"><value>Przywróć wszystkie</value></data>
+  <data name="Launch_RestoreAll_Title" xml:space="preserve"><value>Przywrócić wszystkie opcje uruchamiania?</value></data>
+  <data name="Launch_RestoreAll_Body" xml:space="preserve"><value>Spowoduje to przywrócenie oryginalnych opcji uruchamiania dla gier: {0} i odrzucenie Twoich zmian. Steam zostanie zamknięty i ponownie otwarty. Kontynuować?</value></data>
+  <data name="Launch_RestoreAll_Done" xml:space="preserve"><value>Przywrócono gry: {0}.</value></data>
+  <data name="Launch_RestoreAll_Partial" xml:space="preserve"><value>Przywrócono gry: {0}. Te pozostają zapisane i można spróbować ponownie: {1}</value></data>
+  <data name="Launch_RestoreAll_Failed" xml:space="preserve"><value>Nic nie zostało zmienione. {0}</value></data>
+  <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Nie udało się utworzyć kopii zapasowej. Sprawdź wolne miejsce na dysku.</value></data>
+  <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam się nie zamknął.</value></data>
+  <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>Nie udało się zapisać z powrotem oryginalnych opcji uruchamiania.</value></data>
 </root>

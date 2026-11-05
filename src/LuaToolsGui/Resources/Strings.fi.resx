@@ -858,4 +858,15 @@ Otetaanko käyttöön?</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Mitään ei poistettu: kohdetta "{0}" ei voitu vahvistaa turvallisesti poistettavaksi varmuuskopioksi (se on muuttunut, se on linkki tai alle 5 minuuttia vanha). Päivitä luettelo ja yritä uudelleen.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Lasiefekti (Glassmorphism)</value></data>
   <data name="Settings_Glass_Hint" xml:space="preserve"><value>Läpikuultava otsikkopalkki ja sivuvalikko Windows 11:n Acrylic-taustan päällä. Sivut pysyvät peittävinä, jotta tekstin kontrasti säilyy. Poista käytöstä hitaammissa tietokoneissa. Windows 10:ssä ja suuren kontrastin tilassa tausta on aina yhtenäinen.</value></data>
+  <data name="Launch_Overrides_Title" xml:space="preserve"><value>Kaikki muutetut asetukset</value></data>
+  <data name="Launch_Overrides_Empty" xml:space="preserve"><value>LuaTools ei ole muuttanut minkään pelin käynnistysasetuksia.</value></data>
+  <data name="Launch_RestoreAll" xml:space="preserve"><value>Palauta kaikki</value></data>
+  <data name="Launch_RestoreAll_Title" xml:space="preserve"><value>Palautetaanko kaikki käynnistysasetukset?</value></data>
+  <data name="Launch_RestoreAll_Body" xml:space="preserve"><value>Tämä palauttaa alkuperäiset käynnistysasetukset {0} peliin ja hylkää muutoksesi. Steam suljetaan ja avataan uudelleen. Jatketaanko?</value></data>
+  <data name="Launch_RestoreAll_Done" xml:space="preserve"><value>Palautettu pelejä: {0}.</value></data>
+  <data name="Launch_RestoreAll_Partial" xml:space="preserve"><value>Palautettu pelejä: {0}. Nämä pysyvät tallennettuina ja niitä voi yrittää uudelleen: {1}</value></data>
+  <data name="Launch_RestoreAll_Failed" xml:space="preserve"><value>Mitään ei muutettu. {0}</value></data>
+  <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Varmuuskopiota ei voitu luoda. Tarkista vapaa levytila.</value></data>
+  <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam ei sulkeutunut.</value></data>
+  <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>Alkuperäisiä käynnistysasetuksia ei voitu kirjoittaa takaisin.</value></data>
 </root>

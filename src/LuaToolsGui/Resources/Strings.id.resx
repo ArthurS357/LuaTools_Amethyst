@@ -858,4 +858,15 @@ Aktifkan?</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Tidak ada yang dihapus: "{0}" tidak dapat dipastikan sebagai cadangan yang aman untuk dihapus (berubah, berupa tautan, atau berumur kurang dari 5 menit). Segarkan daftar lalu coba lagi.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Efek kaca (Glassmorphism)</value></data>
   <data name="Settings_Glass_Hint" xml:space="preserve"><value>Bilah judul dan menu samping tembus pandang di atas latar Acrylic Windows 11. Halaman tetap padat agar teks tetap kontras. Matikan di PC yang lebih lambat. Di Windows 10 dan mode kontras tinggi, latar selalu padat.</value></data>
+  <data name="Launch_Overrides_Title" xml:space="preserve"><value>Semua opsi yang diubah</value></data>
+  <data name="Launch_Overrides_Empty" xml:space="preserve"><value>LuaTools belum mengubah opsi peluncuran game apa pun.</value></data>
+  <data name="Launch_RestoreAll" xml:space="preserve"><value>Pulihkan semua</value></data>
+  <data name="Launch_RestoreAll_Title" xml:space="preserve"><value>Pulihkan semua opsi peluncuran?</value></data>
+  <data name="Launch_RestoreAll_Body" xml:space="preserve"><value>Ini mengembalikan opsi peluncuran asli dari {0} game dan membuang perubahan Anda. Steam akan ditutup dan dibuka kembali. Lanjutkan?</value></data>
+  <data name="Launch_RestoreAll_Done" xml:space="preserve"><value>{0} game dipulihkan.</value></data>
+  <data name="Launch_RestoreAll_Partial" xml:space="preserve"><value>{0} game dipulihkan. Yang berikut tetap tersimpan dan dapat dicoba lagi: {1}</value></data>
+  <data name="Launch_RestoreAll_Failed" xml:space="preserve"><value>Tidak ada yang diubah. {0}</value></data>
+  <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Tidak dapat membuat cadangan keamanan. Periksa ruang disk yang tersedia.</value></data>
+  <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam tidak tertutup.</value></data>
+  <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>Opsi peluncuran asli tidak dapat ditulis kembali.</value></data>
 </root>

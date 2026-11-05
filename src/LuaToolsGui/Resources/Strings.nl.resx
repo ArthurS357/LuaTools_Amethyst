@@ -858,4 +858,15 @@ Inschakelen?</value></data>
   <data name="Settings_Backups_Err_BatchRefused" xml:space="preserve"><value>Er is niets verwijderd: "{0}" kon niet worden bevestigd als een back-up die veilig verwijderd kan worden (het is gewijzigd, is een koppeling of is jonger dan 5 minuten). Vernieuw de lijst en probeer het opnieuw.</value></data>
   <data name="Settings_Glass" xml:space="preserve"><value>Glaseffect (Glassmorphism)</value></data>
   <data name="Settings_Glass_Hint" xml:space="preserve"><value>Doorschijnende titelbalk en zijmenu boven de Acrylic-achtergrond van Windows 11. Pagina's blijven ondoorzichtig zodat tekst zijn contrast houdt. Schakel het uit op tragere pc's. Onder Windows 10 en bij hoog contrast is de achtergrond altijd effen.</value></data>
+  <data name="Launch_Overrides_Title" xml:space="preserve"><value>Alle gewijzigde startopties</value></data>
+  <data name="Launch_Overrides_Empty" xml:space="preserve"><value>LuaTools heeft bij geen enkele game de startopties gewijzigd.</value></data>
+  <data name="Launch_RestoreAll" xml:space="preserve"><value>Alles herstellen</value></data>
+  <data name="Launch_RestoreAll_Title" xml:space="preserve"><value>Alle startopties herstellen?</value></data>
+  <data name="Launch_RestoreAll_Body" xml:space="preserve"><value>Hiermee worden de oorspronkelijke startopties van {0} game(s) teruggezet en je wijzigingen verwijderd. Steam wordt gesloten en opnieuw geopend. Doorgaan?</value></data>
+  <data name="Launch_RestoreAll_Done" xml:space="preserve"><value>{0} game(s) hersteld.</value></data>
+  <data name="Launch_RestoreAll_Partial" xml:space="preserve"><value>{0} game(s) hersteld. Deze blijven opgeslagen en kun je opnieuw proberen: {1}</value></data>
+  <data name="Launch_RestoreAll_Failed" xml:space="preserve"><value>Er is niets gewijzigd. {0}</value></data>
+  <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Kan geen veiligheidsback-up maken. Controleer de vrije schijfruimte.</value></data>
+  <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam is niet afgesloten.</value></data>
+  <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>De oorspronkelijke startopties konden niet worden teruggezet.</value></data>
 </root>
