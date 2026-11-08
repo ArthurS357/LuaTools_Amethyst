@@ -46,7 +46,10 @@ SAMPLE_SIZE = 10
 # Hubcap errors, plugin sources, startup flow, consent prompts...) were translated into all 29 language
 # files in one pass, so every language file carries every key. When a new feature lands before its copy
 # is final, add its keys here (with a comment saying why) rather than copying English into 29 files.
-PENDING_TRANSLATION: frozenset[str] = frozenset()
+#
+# Fixes_Warn_InstalledWithoutFix / Fixes_Warn_LibraryFailed: Fixes tab banner and library warning; English
+# only until the Fixes tab design settles.
+PENDING_TRANSLATION: frozenset[str] = frozenset({"Fixes_Warn_InstalledWithoutFix", "Fixes_Warn_LibraryFailed"})
 
 
 def sample(keys: set[str]) -> str:

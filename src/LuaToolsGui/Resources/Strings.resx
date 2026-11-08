@@ -440,6 +440,8 @@ This deletes the .lua files from Steam\config\stplug-in. Restart Steam afterward
   <data name="Fixes_Count" xml:space="preserve"><value>{0} fixes</value></data>
   <data name="Fixes_Err_Load" xml:space="preserve"><value>Couldn't load fixes — check your connection.</value></data>
   <data name="Fixes_Empty_None" xml:space="preserve"><value>No fixes available yet.</value></data>
+  <data name="Fixes_Warn_InstalledWithoutFix" xml:space="preserve"><value>{0} of your installed games have no fix in the LuaTools catalog.</value></data>
+  <data name="Fixes_Warn_LibraryFailed" xml:space="preserve"><value>Couldn't read the Steam library; installed badges are hidden.</value></data>
   <data name="Fixes_SignIn" xml:space="preserve"><value>Sign in with Discord to download fixes.</value></data>
   <data name="Fixes_SignInRequired" xml:space="preserve"><value>Sign in required</value></data>
   <data name="Fixes_Toast_DownloadFailed" xml:space="preserve"><value>Download failed</value></data>

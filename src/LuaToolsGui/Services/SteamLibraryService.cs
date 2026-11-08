@@ -71,22 +71,32 @@ public partial class SteamLibraryService(SteamService steam)
     /// (4). Stricter than <see cref="GetInstalledAppIds"/>, which also counts a game still downloading; this
     /// is what the "Installed" badge on a card means. A manifest that cannot be read is simply not listed.
     /// </summary>
-    public HashSet<long> GetFullyInstalledAppIds()
+    public HashSet<long> GetFullyInstalledAppIds() => [.. ScanFullyInstalled().Games.Select(static g => g.AppId)];
+
+    /// <summary>
+    /// The fully installed games with the name their manifest carries, plus whether the library could be
+    /// read properly. <c>Failed</c> is true when Steam is not found, <c>libraryfolders.vdf</c> is missing
+    /// (extra libraries would be invisible) or the scan threw — an empty <c>Games</c> then means "unknown",
+    /// not "none installed". One pass: the ids and the names come from the same manifest read.
+    /// </summary>
+    public (List<InstalledGame> Games, bool Failed) ScanFullyInstalled()
     {
-        var ids = new HashSet<long>();
-        foreach (var (appId, acf) in EnumerateManifests())
+        var games = new List<InstalledGame>();
+        var (manifests, failed) = ScanManifests();
+        foreach (var (appId, acf) in manifests)
         {
             try
             {
-                if (StateFlagsRegex().Match(File.ReadAllText(acf)) is { Success: true } m
+                string text = File.ReadAllText(acf);
+                if (StateFlagsRegex().Match(text) is { Success: true } m
                     && long.TryParse(m.Groups[1].Value, out long flags)
                     && (flags & FullyInstalledFlag) != 0)
-                    ids.Add(appId);
+                    games.Add(new InstalledGame(appId, NameRegex().Match(text) is { Success: true } n ? Unescape(n.Groups[1].Value) : ""));
             }
             catch (IOException) { /* Steam is rewriting it right now — next refresh will see it */ }
             catch (UnauthorizedAccessException) { }
         }
-        return ids;
+        return (games, failed);
     }
 
     private const long FullyInstalledFlag = 4; // StateFlags bit: k_EAppStateFullyInstalled
@@ -94,14 +104,20 @@ public partial class SteamLibraryService(SteamService steam)
     [GeneratedRegex(@"""StateFlags""\s*""(\d+)""", RegexOptions.IgnoreCase)]
     private static partial Regex StateFlagsRegex();
 
+    [GeneratedRegex(@"""name""\s*""([^""]*)""", RegexOptions.IgnoreCase)]
+    private static partial Regex NameRegex();
+
     /// <summary>Every <c>appmanifest_&lt;appid&gt;.acf</c> across the libraries, with its path.</summary>
-    private IEnumerable<(long AppId, string Path)> EnumerateManifests()
+    private IEnumerable<(long AppId, string Path)> EnumerateManifests() => ScanManifests().Found;
+
+    private (List<(long AppId, string Path)> Found, bool Failed) ScanManifests()
     {
         const string prefix = "appmanifest_";
         var found = new List<(long, string)>();
         try
         {
-            if (steam.EffectivePath is not { } steamRoot) return found;
+            if (steam.EffectivePath is not { } steamRoot) return (found, true);
+            bool failed = !File.Exists(Path.Combine(steamRoot, "steamapps", "libraryfolders.vdf"));
 
             foreach (string library in GetLibraryRoots(steamRoot))
             {
@@ -116,9 +132,9 @@ public partial class SteamLibraryService(SteamService steam)
                         found.Add((appId, acf));
                 }
             }
+            return (found, failed);
         }
-        catch { /* unreadable library or odd path — report what was collected, not a failure */ }
-        return found;
+        catch { return (found, true); } // unreadable library or odd path — report what was collected, flagged
     }
 
     /// <summary>Every Steam library root (the main install plus any added libraries).</summary>

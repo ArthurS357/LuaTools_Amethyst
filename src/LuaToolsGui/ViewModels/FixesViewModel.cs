@@ -14,6 +14,9 @@ public partial class FixGameCardVm(DenuvoGameListing g) : ObservableObject
     public string Name { get; } = g.Name;
     public string? HeaderImage { get; } = g.HeaderImage;
     public int FixCount { get; } = g.FixCount;
+
+    /// <summary>Fully installed in the Steam library. Drives the same green badge as Manage.</summary>
+    public bool IsInstalled { get; init; }
     public IReadOnlyList<string> TagIds { get; } = g.Tags.Select(t => t.Id).ToList();
     public string FixCountLabel => string.Format(Resources.Strings.Fixes_Count, FixCount);
 
@@ -219,45 +222,117 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
 
     // ── Load ─────────────────────────────────────────────────────────
 
-    /// <param name="force">True to re-fetch even if already loaded (the Refresh button); otherwise the
-    /// listing loads once per session.</param>
+    // The whole catalog as the API sent it (kept across visits; Refresh re-fetches it).
+    private DenuvoListingsResponse? _catalog;
+    private bool _catalogFailed;
+
+    // The Steam library as last scanned. Failed means "could not be read", which is not "nothing installed".
+    private List<InstalledGame> _installed = [];
+    private bool _libraryFailed;
+
+    // One load at a time: the fix:// handler and the view's own Loaded both call LoadAsync, and the second
+    // must wait for the first (not cancel it, not race it on the shared state).
+    private readonly SemaphoreSlim _loadGate = new(1, 1);
+    private CancellationTokenSource _leaveCts = new();
+
+    /// <summary>Called by the view when the tab is left: loads started or queued before it stop.</summary>
+    public void CancelLoad() => Interlocked.Exchange(ref _leaveCts, new CancellationTokenSource()).Cancel();
+
+    [ObservableProperty] private bool _showBanner;
+    [ObservableProperty] private string _bannerText = "";
+    [ObservableProperty] private string _bannerNames = "";
+    [ObservableProperty] private bool _showLibraryWarning;
+
+    /// <summary>
+    /// Fetch the catalog (once per session) and join it with the games installed in the Steam library.
+    /// The library is rescanned on every call, so a game installed since the last visit shows up.
+    /// </summary>
+    /// <param name="force">True to re-fetch the catalog even if already loaded (the Refresh button).</param>
     public async Task LoadAsync(bool force = false)
     {
-        if (!force && _allGames.Count > 0) return; // load once per session
+        var ct = _leaveCts.Token;
+        try { await _loadGate.WaitAsync(ct); }
+        catch (OperationCanceledException) { return; }
+
+        bool left = false;
         IsLoading = true;
         try
         {
-            var data = await api.GetDenuvoListingsAsync();
-            if (data is null)
+            // Both in parallel: the library scan is file I/O, the catalog is a request.
+            var scanTask = Task.Run(() =>
             {
-                EmptyMessage = Resources.Strings.Fixes_Err_Load;
-                return;
+                try { return library.ScanFullyInstalled(); }
+                catch (Exception ex)
+                {
+                    AppLog.Log($"Fixes: library scan failed: {ex.GetType().Name}: {ex.Message}");
+                    return ([], true);
+                }
+            }, ct);
+
+            _catalogFailed = false;
+            if (force || _catalog is null)
+            {
+                var data = await api.GetDenuvoListingsAsync(ct);
+                if (data is null) _catalogFailed = true; else _catalog = data;
             }
+            (_installed, _libraryFailed) = await scanTask;
 
-            _allGames = data.Games.Select(g => new FixGameCardVm(g)).ToList();
-            Tags.Clear();
-            foreach (var t in data.Tags) Tags.Add(new TagPillVm(t));
-
-            // "My games" filter source: the same stplug-in scan the Manage page uses, so the toggle
-            // shows only games the user actually added. Scanned once per listing load, off the UI thread.
+            // "My games" filter source: games with a lua in stplug-in, a narrowing of the catalog.
             _installedAppIds = steam.StPlugInDir is { } dir
-                ? await Task.Run(() => LuaInstaller.EnumerateInstalled(dir).Select(i => i.AppId).ToHashSet())
+                ? await Task.Run(() => LuaInstaller.EnumerateInstalled(dir).Select(i => i.AppId).ToHashSet(), ct)
                 : [];
-            OnPropertyChanged(nameof(MyGamesHint));
-
-            ApplyFilter();
-            if (_allGames.Count == 0) EmptyMessage = Resources.Strings.Fixes_Empty_None;
+            Present();
+        }
+        catch (OperationCanceledException) when (ct.IsCancellationRequested)
+        {
+            left = true; // tab left — the next visit's load owns the state
         }
         catch (Exception ex)
         {
             AppLog.Log($"Fixes: game list load failed: {ex.GetType().Name}: {ex.Message}");
-            EmptyMessage = Resources.Strings.Fixes_Err_Load;
+            _catalogFailed = true;
+            Present();
         }
         finally
         {
-            IsLoading = false;
-            Loaded = true; // gates the filter pills: they appear only once the listing settled
+            if (!left)
+            {
+                IsLoading = false;
+                Loaded = true; // gates the filter pills: they appear only once the listing settled
+                OnPropertyChanged(nameof(CanFilter)); // Loaded may not have changed, the list may have
+            }
+            _loadGate.Release();
         }
+    }
+
+    /// <summary>Turn the catalog + library results into the grid, the banner and the empty message.</summary>
+    private void Present()
+    {
+        var games = _catalogFailed ? [] : _catalog?.Games ?? [];
+        var installedIds = _installed.Select(g => g.AppId).ToHashSet();
+        var catalogIds = games.Select(g => long.TryParse(g.AppId, out long id) ? id : -1).ToHashSet();
+        var without = InstalledFixes.FindInstalledWithoutFix(_installed, catalogIds);
+        var state = InstalledFixes.Resolve(_catalogFailed, games.Count, _libraryFailed, without.Count);
+
+        // A failed library hides the badges: "installed" is unknown, not false.
+        _allGames = InstalledFixes.JoinCatalogWithInstalled(games, installedIds)
+            .Select(c => new FixGameCardVm(c.Listing) { IsInstalled = state.ShowBadges && c.IsInstalled }).ToList();
+
+        Tags.Clear();
+        var used = _allGames.SelectMany(g => g.TagIds).ToHashSet();
+        if (SelectedTagId is { } sel && !used.Contains(sel)) SelectedTagId = null; // its games are gone
+        foreach (var t in (_catalog?.Tags ?? []).Where(t => used.Contains(t.Id)))
+            Tags.Add(new TagPillVm(t) { IsSelected = t.Id == SelectedTagId });
+
+        ShowBanner = state.ShowBanner;
+        ShowLibraryWarning = state.ShowLibraryWarning;
+        BannerText = string.Format(Resources.Strings.Fixes_Warn_InstalledWithoutFix, without.Count);
+        BannerNames = string.Join(Environment.NewLine, without.Select(g =>
+            g.Name.Length > 0 ? g.Name : string.Format(Resources.Strings.Common_AppFallback, g.AppId)));
+
+        OnPropertyChanged(nameof(MyGamesHint));
+        ApplyFilter();
+        EmptyMessage = InstalledFixes.EmptyMessage(state.Empty);
     }
 
     [RelayCommand]
@@ -302,10 +377,11 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
     /// </summary>
     public async Task OpenForAppIdAsync(long appId)
     {
-        if (_allGames.Count == 0)
+        if (_catalog is null)
             await LoadAsync();
 
-        var game = _allGames.FirstOrDefault(g => g.AppId == appId.ToString());
+        string id = appId.ToString();
+        var game = _allGames.FirstOrDefault(g => g.AppId == id);
         if (game is null) return;
 
         SearchText = "";

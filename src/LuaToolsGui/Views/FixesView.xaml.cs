@@ -19,6 +19,7 @@ public partial class FixesView : UserControl
         // On a page change, jump the grid back to the top (the new page starts fresh).
         _viewModel.ScrollToTop = ScrollGridToTop;
         Loaded += async (_, _) => await _viewModel.LoadAsync();
+        Unloaded += (_, _) => _viewModel.CancelLoad(); // switching tabs must not leave a load running
 
         // Markdig.Wpf wires each link's Click to this command (parameter = the URL). Open it in the
         // system browser. (It also sets NavigateUri; RequestNavigate is suppressed below so WPF doesn't

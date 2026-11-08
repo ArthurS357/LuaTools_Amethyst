@@ -52,6 +52,21 @@ public sealed class SteamLibraryInstalledTests : IDisposable
     }
 
     [Fact]
+    public void The_scan_returns_names_from_the_same_pass_and_flags_a_missing_libraryfolders_vdf()
+    {
+        Manifest(10, "\"AppState\"\n{\n\t\"appid\"\t\"10\"\n\t\"name\"\t\t\"Half-Life\"\n\t\"StateFlags\"\t\t\"4\"\n}");
+        Manifest(20, Acf(4)); // no name in the manifest
+
+        var (games, failed) = _library.ScanFullyInstalled();
+
+        games.Should().BeEquivalentTo(new[] { new InstalledGame(10, "Half-Life"), new InstalledGame(20, "") });
+        failed.Should().BeTrue("there is no libraryfolders.vdf, so other libraries could be invisible");
+
+        File.WriteAllText(Path.Combine(_dir, "steam", "steamapps", "libraryfolders.vdf"), "x");
+        _library.ScanFullyInstalled().Failed.Should().BeFalse();
+    }
+
+    [Fact]
     public void Non_manifest_files_and_non_numeric_ids_are_ignored()
     {
         File.WriteAllText(Path.Combine(_dir, "steam", "steamapps", "appmanifest_abc.acf"), Acf(4));

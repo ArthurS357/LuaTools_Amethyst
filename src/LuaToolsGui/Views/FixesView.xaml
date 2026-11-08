@@ -47,13 +47,43 @@
                 Icon="{ui:SymbolIcon ArrowSync24}" />
         </Grid>
 
-        <!-- Search -->
-        <ui:TextBox
-            Grid.Row="1"
-            Margin="0,14,0,0"
-            Icon="{ui:SymbolIcon Search24}"
-            PlaceholderText="{x:Static res:Strings.Common_SearchPlaceholder}"
-            Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+        <!-- Search, then the installed-without-fix banner and the library warning (each only when shown) -->
+        <StackPanel Grid.Row="1" Margin="0,14,0,0">
+            <ui:TextBox
+                Icon="{ui:SymbolIcon Search24}"
+                PlaceholderText="{x:Static res:Strings.Common_SearchPlaceholder}"
+                Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+            <Border
+                Margin="0,10,0,0"
+                Padding="10,4"
+                Background="{StaticResource WarningTintBrush}"
+                BorderBrush="{StaticResource WarningStrongBrush}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Visibility="{Binding ShowBanner, Converter={StaticResource BoolToVis}}">
+                <Expander Header="{Binding BannerText}" Foreground="{StaticResource WarningBrush}">
+                    <ScrollViewer MaxHeight="180" VerticalScrollBarVisibility="Auto">
+                        <TextBlock
+                            Foreground="{StaticResource TextMutedBrush}"
+                            Text="{Binding BannerNames}"
+                            TextWrapping="Wrap" />
+                    </ScrollViewer>
+                </Expander>
+            </Border>
+            <Border
+                Margin="0,10,0,0"
+                Padding="12,8"
+                Background="{StaticResource WarningTintBrush}"
+                BorderBrush="{StaticResource WarningStrongBrush}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Visibility="{Binding ShowLibraryWarning, Converter={StaticResource BoolToVis}}">
+                <TextBlock
+                    Foreground="{StaticResource WarningBrush}"
+                    Text="{x:Static res:Strings.Fixes_Warn_LibraryFailed}"
+                    TextWrapping="Wrap" />
+            </Border>
+        </StackPanel>
 
         <!-- "My games" toggle + tag filter pills (shown once the listing is loaded and non-empty) -->
         <StackPanel
@@ -208,7 +238,33 @@
                                     <StackPanel>
                                         <Border Height="116" Background="{StaticResource SurfaceCardHoverBrush}" ClipToBounds="True" CornerRadius="10,10,0,0">
                                             <!-- 248-wide tile: 2x would be 496, past header.jpg's 460, so cap at 460 (see the converter). -->
-                                            <Image Source="{Binding Cover, Converter={StaticResource ImagePathToSource}, ConverterParameter=460}" Stretch="UniformToFill" />
+                                            <Grid>
+                                                <Image Source="{Binding Cover, Converter={StaticResource ImagePathToSource}, ConverterParameter=460}" Stretch="UniformToFill" />
+                                                <!-- Installed badge: same as ManageView (Steam's manifest says the game is fully on disk) -->
+                                                <Border
+                                                    Margin="6,0,0,6"
+                                                    Padding="6,2"
+                                                    HorizontalAlignment="Left"
+                                                    VerticalAlignment="Bottom"
+                                                    Background="{StaticResource SuccessScrimBrush}"
+                                                    CornerRadius="4"
+                                                    Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <ui:SymbolIcon
+                                                            VerticalAlignment="Center"
+                                                            FontSize="11"
+                                                            Foreground="White"
+                                                            Symbol="CheckmarkCircle24" />
+                                                        <TextBlock
+                                                            Margin="4,0,0,0"
+                                                            VerticalAlignment="Center"
+                                                            FontSize="10.5"
+                                                            FontWeight="SemiBold"
+                                                            Foreground="White"
+                                                            Text="{x:Static res:Strings.Manage_Badge_Installed}" />
+                                                    </StackPanel>
+                                                </Border>
+                                            </Grid>
                                         </Border>
                                         <StackPanel Margin="12,8,12,10">
                                             <TextBlock
