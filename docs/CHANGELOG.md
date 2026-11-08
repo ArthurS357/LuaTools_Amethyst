@@ -1,5 +1,37 @@
 # Changelog
 
+## 1.7.13.3 — 2026-11-08
+
+Aba Fixes: catalogo completo do `lua.tools` com badge "Installed" e jogos instalados primeiro.
+
+### Novidades
+
+- **Catalogo completo com badge:** `FixesViewModel` junta o catalogo (`/api/denuvo/listings`) com os jogos instalados na
+  biblioteca Steam (`SteamLibraryService.ScanFullyInstalled`, mesma fonte do badge da Manage). Ordem fixa: instalados
+  primeiro, A-Z dentro de cada grupo (`InstalledFixes.JoinCatalogWithInstalled`). O badge e o markup do `ManageView.xaml`.
+- **Banner de instalados sem fix:** `InstalledFixes.FindInstalledWithoutFix` lista os instalados que o catalogo nao tem;
+  o banner (`Expander`, recolhido) mostra a contagem e, aberto, os nomes.
+- **Matriz de 4 estados (`InstalledFixes.Resolve`):** catalogo falhou suprime lista, badges e banner (`Fixes_Err_Load`);
+  biblioteca falhou mantem a lista sem badge nem banner e mostra `Fixes_Warn_LibraryFailed`; catalogo vazio e
+  `Fixes_Empty_None`. Falha da biblioteca = Steam nao achada, `libraryfolders.vdf` ausente ou scan que lancou.
+- **`luatools://fix/<appid>` de jogo nao instalado** continua abrindo o painel (a busca e no catalogo inteiro).
+
+### Correcoes
+
+- **`LoadAsync` serializado:** `SemaphoreSlim(1,1)`. O handler do link e o `Loaded` da view carregam ao mesmo tempo; a
+  segunda chamada espera a primeira em vez de correr nas mesmas variaveis. Sair da aba chama `CancelLoad()` (no `Unloaded`).
+- **Biblioteca relida a cada visita:** o catalogo carrega uma vez por sessao, a biblioteca nao; um jogo instalado depois
+  aparece sem reiniciar. O filtro de tag descarta tag selecionada que nao tem mais jogos.
+
+### Implementacao
+
+- `SteamLibraryService.ScanFullyInstalled()` devolve nomes (do `appmanifest`) e o flag de falha na mesma passada;
+  `GetFullyInstalledAppIds()` delega a ele.
+- 2 chaves novas (`Fixes_Warn_InstalledWithoutFix`, `Fixes_Warn_LibraryFailed`) so em ingles, em `PENDING_TRANSLATION`.
+  `Fixes_Empty_NoneInstalled`, da versao descartada, nunca foi publicada.
+- Testes: `InstalledFixesTests` (16), `SteamLibraryInstalledTests` (+1). Sem pacote novo e sem request de rede nova.
+- A dependencia do `lua.tools` (lista publica, sem pin nem digest) continua; independencia e projeto separado.
+
 ## 1.7.13.2 — 2026-11-05
 
 Launch options: lista de todos os jogos alterados, "Restore all" seguro e "Show in folder". Mecanismo do upstream v1.3.3

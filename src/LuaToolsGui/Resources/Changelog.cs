@@ -29,6 +29,16 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.7.13.3", "2026-11-08",
+            "Fixes tab: the whole LuaTools catalog, with an Installed badge on the games you have and those games first.",
+            [
+                "Fixes tab now lists the full LuaTools catalog with an Installed badge, the same one as Manage; installed games sort first, then A–Z.",
+                "A new banner warns when some of your installed games have no fix in the catalog; expand it to see which.",
+                "If the Steam library can't be read, the list stays and a message says the badges are hidden; a catalog that can't be loaded is reported on its own.",
+                "A fix link (luatools://fix/…) opens the game's fixes even when the game isn't installed.",
+                "The two new messages are in English for now. No new dependency and no new network request.",
+            ]),
+
         new("1.7.13.2", "2026-11-05",
             "Launch options: a list of every game you changed, a safe Restore all, and a button to open the game's folder.",
             [

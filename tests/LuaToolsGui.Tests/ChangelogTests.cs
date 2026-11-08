@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.7.13.2");
+        AppVersion.Current.Should().Be("1.7.13.3");
     }
 
     [Fact]
@@ -51,6 +51,19 @@ public class ChangelogTests
 
         // One anchor per change the release was actually about, so an entry that got copied forward from
         // the previous version fails here rather than shipping a changelog describing the wrong release.
+        text.Should().ContainEquivalentOf("full LuaTools catalog");          // the whole catalog
+        text.Should().ContainEquivalentOf("Installed badge");                // the badge
+        text.Should().ContainEquivalentOf("installed games sort first");     // the order
+        text.Should().ContainEquivalentOf("have no fix");                    // the banner
+        text.Should().ContainEquivalentOf("badges are hidden");              // library failure
+        text.Should().ContainEquivalentOf("luatools://fix");                 // link for a non-installed game
+    }
+
+    [Fact]
+    public void The_1_7_13_2_entry_still_names_what_that_release_was_about()
+    {
+        string text = string.Join(" ", Changelog.Entries.Single(e => e.Version == "1.7.13.2").Highlights);
+
         text.Should().ContainEquivalentOf("All launch overrides");           // the list
         text.Should().ContainEquivalentOf("Restore all");                    // the batch restore
         text.Should().ContainEquivalentOf("backed up first");                // mandatory backups
