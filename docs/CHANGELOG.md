@@ -1,5 +1,56 @@
 # Changelog
 
+## 1.8.0 — 2026-11-19
+
+Fechamento da 1.8.0: engine AmethystTool v1.5.3, dados do app em `%AppData%\LuaToolsAmethyst`, fallback DNS-over-HTTPS e as
+correcoes da auditoria do AGY (5 medios e 2 baixos aplicados; B-02 recusado).
+
+### Novidades
+
+- **Engine v1.5.3, sem mudanca de codigo:** o instalador resolve o `releases/latest` do repositorio e so aceita o asset
+  `AmethystTool-*.zip` (`AppConfig.AmethystToolAssetPrefix`). O release v1.5.3 publica `AmethystTool-v1.5.3.zip` com digest
+  sha256, que a verificacao fail-closed exige. A correcao do bug de inicializacao e da tag de familia e da engine C++.
+- **Pasta de dados propria:** `AppDataMigrator` COPIA `%AppData%\LuaToolsGui` para `%AppData%\LuaToolsAmethyst` na primeira
+  abertura (staging `.migrating`, promovido por um unico rename). A pasta legada continua intacta para o upstream. Se a copia
+  nao fecha, o app usa a pasta legada na sessao (`ApplyFallback`) e tenta de novo na proxima abertura. Roda so depois do mutex
+  de instancia unica.
+- **Vacina `DonateKeys`:** na migracao, o `settings.json` LEGADO recebe `"DonateKeys": false` (unica escrita na pasta
+  legada, uma vez so). `SettingsService.DonateKeys` e get-only `=> false`.
+- **Fallback Cloudflare DoH:** `DnsFallbackHttpHandler` + `CloudflareDohResolver`. Requisicao nova: GET
+  `https://1.1.1.1/dns-query?name=<host>&type=A` (JSON, so IPv4), so para os hosts de `AppConfig.DohFallbackHosts` e so em
+  HTTPS. `DnsMode` Auto (padrao: so apos falha de resolucao de nome), Always e Never, lido do `settings.json`, sem UI.
+  SNI e validacao de certificado ficam intactos (o `ConnectCallback` disca o IP; o TLS autentica o nome original).
+- **Botao Limpar Cache de Conteudo (AppInfo):** o texto de apoio (`Settings_ClearAppInfo_Tooltip`, en e pt-BR) agora diz
+  que e tambem o fallback definitivo se uma atualizacao da Steam mudar a assinatura que o motor (v1.5.1+) intercepta.
+
+### Correcoes (auditoria AGY)
+
+- **M-01:** `CopyTree` para no primeiro arquivo que falha (e nao entra nas subpastas seguintes). O chamador ja aborta a
+  migracao inteira, entao copiar o resto era I/O jogado fora.
+- **M-02:** o teste da ordem mutex -> migracao ignora linhas de comentario e exige que o `return;` da segunda instancia fique
+  antes do `MigrateIfNeeded()`.
+- **M-03:** `ParseDohJson` descarta respostas RFC 1918 (`10/8`, `172.16/12`, `192.168/16`) e link-local (`169.254/16`);
+  `CanUseDohForUri` aceita so `https://`.
+- **M-04:** promocao atomica quando a pasta nova existe sem estado: o log vai para o `.migrating` (o log atual vence o
+  legado), a pasta vazia e apagada sem recursao e um unico `Directory.Move(staging, currentFull)` promove tudo. Antes, um
+  merge arquivo a arquivo podia deixar a pasta meio preenchida, que passava por "ja migrada".
+- **M-05:** documentado em `MarkDnsFailed()` que o estado de falha do DNS persiste ate o app fechar e afeta todos os hosts da
+  allowlist.
+- **B-01:** `</summary>` duplicado e docs cruzados de `CurrentDirectory`, `DeleteTree` e `CopyTree` em `AppDataMigrator`.
+- **B-03:** comentarios que ainda citavam `%AppData%\LuaToolsGui` agora citam `LuaToolsAmethyst` (alem de `SettingsService`,
+  `AppLog` e `Program`, tambem `CacheService`, `GithubMirrors`, `InstallManifest`, `LuaVault`, `PluginInstallerService`,
+  `SteamlessService` e `UninstallCleanup`). So texto; o codigo ja usava `AppDataMigrator.CurrentDirectory`.
+- **B-02 recusado:** `IsInstalledLocally` nao exige `tools\*.exe`. Instalacoes anteriores a v1.5.1 nao tem as CLIs e
+  deixariam de contar como instaladas.
+
+### Implementacao
+
+- Testes novos: `ConfigGuardTests` (copia para na primeira falha, na raiz e em subpasta; promocao tudo-ou-nada com log
+  travado; ordem do mutex sem comentarios) e `DnsFallbackHttpHandlerTests` (RFC 1918 e bordas 172.15/172.32, `CanUseDohForUri`
+  so https, host da allowlist em http nunca usa DoH). Ancoras do `ChangelogTests` movidas para a 1.8.0, com um teste para a
+  1.7.13.5.
+- Sem pacote novo.
+
 ## 1.7.13.5 — 2026-11-19
 
 Integracao da engine AmethystTool v1.5.1 e revalidacao de redirect nos downloads de fix (F-09). A 1.7.13.4 nao foi

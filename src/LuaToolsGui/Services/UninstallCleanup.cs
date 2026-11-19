@@ -32,7 +32,7 @@ public sealed record CleanupReport
 ///   slots). Left behind, steam.exe keeps side-loading a proxy DLL that tries to start an application
 ///   that is no longer installed.</item>
 ///   <item><b>The <c>luatools://</c> protocol handler</b> in HKCU, pointing at a deleted executable.</item>
-///   <item><b>%AppData%\LuaToolsGui</b>, which holds the DPAPI-protected auth token, the Hubcap API key
+///   <item><b>%AppData%\LuaToolsAmethyst</b>, which holds the DPAPI-protected auth token, the Hubcap API key
 ///   and the caches. Leaving credentials behind after an uninstall is its own privacy problem.</item>
 /// </list>
 ///
@@ -75,7 +75,7 @@ public static class UninstallCleanup
     /// null or missing, and more than once.
     /// </summary>
     /// <param name="steamDir">Steam root, or null when it cannot be detected (then Steam-side steps are skipped).</param>
-    /// <param name="appDataDir">%AppData%\LuaToolsGui, or null to keep user data.</param>
+    /// <param name="appDataDir">%AppData%\LuaToolsAmethyst, or null to keep user data.</param>
     /// <param name="unregisterProtocol">False in tests, so a test never touches the real registry.</param>
     public static CleanupReport Run(string? steamDir, string? appDataDir, bool unregisterProtocol = true)
     {
@@ -178,7 +178,7 @@ public static class UninstallCleanup
     }
 
     /// <summary>
-    /// Delete %AppData%\LuaToolsGui. This holds the DPAPI-protected Supabase token and the Hubcap API key,
+    /// Delete %AppData%\LuaToolsAmethyst. This holds the DPAPI-protected Supabase token and the Hubcap API key,
     /// so removing it on uninstall is a deliberate privacy choice, not just tidiness.
     /// </summary>
     public static bool TryRemoveUserData(string appDataDir, List<string>? failures = null)

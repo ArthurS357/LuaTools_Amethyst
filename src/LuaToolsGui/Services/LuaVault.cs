@@ -73,8 +73,8 @@ internal class VaultIndex
 /// <para>
 /// Layout — files are content-addressed (the name IS the sha256 of the bytes):
 /// <code>
-/// %AppData%\LuaToolsGui\luavault\&lt;appid&gt;\index.json
-/// %AppData%\LuaToolsGui\luavault\&lt;appid&gt;\&lt;sha256&gt;.lua
+/// %AppData%\LuaToolsAmethyst\luavault\&lt;appid&gt;\index.json
+/// %AppData%\LuaToolsAmethyst\luavault\&lt;appid&gt;\&lt;sha256&gt;.lua
 /// </code>
 /// That gives dedupe for free, and makes <see cref="GetActiveHash"/> a pure function of what's on disk
 /// — so it stays correct even when Steam, another tool, or the user overwrites the live file behind

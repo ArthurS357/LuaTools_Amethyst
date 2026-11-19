@@ -14,7 +14,7 @@ namespace LuaToolsGui.Services;
 /// </para>
 ///
 /// <para>
-/// The FILE keeps its name (<c>%AppData%\LuaToolsGui\plugin-backend.log</c>) deliberately. It is what the
+/// The FILE keeps its name (<c>%AppData%\LuaToolsAmethyst\plugin-backend.log</c>) deliberately. It is what the
 /// README and the support answers tell people to send, and what the rotated <c>.1</c> generation on disk is
 /// already called; renaming it would orphan every existing log and every instruction that points at one,
 /// for no gain a user can see.

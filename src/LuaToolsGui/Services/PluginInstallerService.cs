@@ -64,7 +64,7 @@ public sealed record PluginStatus(
 /// Installs / updates / removes the LuaTools store-page plugin from GitHub releases (the app is the plugin
 /// MANAGER — it doesn't bundle the frontend). Each release of a source in
 /// <see cref="AppConfig.PluginSources"/> carries
-/// <c>plugin.zip</c> (the frontend, extracted to %AppData%\LuaToolsGui\plugin — where CefInjectorService
+/// <c>plugin.zip</c> (the frontend, extracted to %AppData%\LuaToolsAmethyst\plugin — where CefInjectorService
 /// reads it) plus one loader DLL per <see cref="Slots"/> entry, dropped into the Steam install root
 /// (steam.exe loads it). Modeled on <see cref="UnlockerService"/>: fetch release JSON, download assets
 /// via <see cref="GithubProxy"/> (mirror fallback), verify each by its sha256 digest, then place. The DLL
@@ -681,7 +681,7 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
                     ArchiveScreened: true), ct))
                 return (false, Resources.Strings.Download_Notice_Cancelled);
 
-            // 1) Frontend → %AppData%\LuaToolsGui\plugin (fresh). Deleting the directory rather than
+            // 1) Frontend → %AppData%\LuaToolsAmethyst\plugin (fresh). Deleting the directory rather than
             //    merging into it is what makes a SOURCE SWITCH a replacement: the previous source's files
             //    do not survive underneath the new one's. Past this line a failure is final.
             if (Directory.Exists(FrontendDir)) Directory.Delete(FrontendDir, recursive: true);

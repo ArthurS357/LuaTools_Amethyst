@@ -175,7 +175,7 @@ public sealed record InstallManifest(int SchemaVersion, IReadOnlyDictionary<stri
 
 /// <summary>
 /// Loads and saves <see cref="InstallManifest"/> at
-/// <c>%AppData%\LuaToolsGui\install-manifest.json</c>.
+/// <c>%AppData%\LuaToolsAmethyst\install-manifest.json</c>.
 ///
 /// <para>
 /// Its own file on purpose. <c>settings.json</c> is user-editable configuration with a documented shape;

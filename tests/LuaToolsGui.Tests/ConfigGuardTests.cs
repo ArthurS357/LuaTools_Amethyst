@@ -176,6 +176,79 @@ public sealed class ConfigGuardTests : IDisposable
     }
 
     [Fact]
+    public void The_copy_stops_at_the_first_locked_file_in_the_root()
+    {
+        string legacyDir = Path.Combine(_root, "LuaToolsGui");
+        Directory.CreateDirectory(legacyDir);
+        string a = Path.Combine(legacyDir, "a.dat");
+        string b = Path.Combine(legacyDir, "b.dat");
+        File.WriteAllText(a, "1");
+        File.WriteAllText(b, "2");
+
+        var logs = new List<string>();
+        using (File.Open(a, FileMode.Open, FileAccess.Read, FileShare.None))
+        using (File.Open(b, FileMode.Open, FileAccess.Read, FileShare.None))
+            AppDataMigrator.MigrateIfNeeded(legacyDir, Path.Combine(_root, "LuaToolsAmethyst"), logs.Add)
+                .Should().BeFalse();
+
+        logs.Count(l => l.Contains("could not copy")).Should().Be(1, "the second locked file is never attempted");
+    }
+
+    [Fact]
+    public void The_copy_stops_at_the_first_failing_subfolder()
+    {
+        string legacyDir = Path.Combine(_root, "LuaToolsGui");
+        string a = Path.Combine(legacyDir, "subA", "a.dat");
+        string b = Path.Combine(legacyDir, "subB", "b.dat");
+        Directory.CreateDirectory(Path.GetDirectoryName(a)!);
+        Directory.CreateDirectory(Path.GetDirectoryName(b)!);
+        File.WriteAllText(a, "1");
+        File.WriteAllText(b, "2");
+
+        var logs = new List<string>();
+        using (File.Open(a, FileMode.Open, FileAccess.Read, FileShare.None))
+        using (File.Open(b, FileMode.Open, FileAccess.Read, FileShare.None))
+            AppDataMigrator.MigrateIfNeeded(legacyDir, Path.Combine(_root, "LuaToolsAmethyst"), logs.Add)
+                .Should().BeFalse();
+
+        logs.Count(l => l.Contains("could not copy")).Should().Be(1, "the sibling folder is never entered");
+    }
+
+    [Fact]
+    public void Promotion_into_an_existing_stateless_folder_is_all_or_nothing()
+    {
+        // The new folder exists with only AppLog's log, and that log is held open. Folding it into staging
+        // fails, so NOTHING may be promoted: a per-entry merge would have moved settings.json and plugin\ in
+        // around the locked log and left a folder that reads as "already migrated" (HasState) with the rest
+        // of the legacy data missing.
+        string legacyDir = Path.Combine(_root, "LuaToolsGui");
+        string newDir = Path.Combine(_root, "LuaToolsAmethyst");
+        Directory.CreateDirectory(Path.Combine(legacyDir, "plugin"));
+        Directory.CreateDirectory(newDir);
+        File.WriteAllText(Path.Combine(legacyDir, "settings.json"), """{"ManagePageSize":48}""");
+        File.WriteAllText(Path.Combine(legacyDir, "plugin", "luatools.js"), "// plugin");
+        File.WriteAllText(Path.Combine(legacyDir, "plugin-backend.log"), "legacy log");
+        string log = Path.Combine(newDir, "plugin-backend.log");
+        File.WriteAllText(log, "current log");
+
+        using (File.Open(log, FileMode.Open, FileAccess.Read, FileShare.None))
+        {
+            AppDataMigrator.MigrateIfNeeded(legacyDir, newDir, _ => { }).Should().BeFalse();
+
+            File.Exists(Path.Combine(newDir, "settings.json")).Should().BeFalse();
+            Directory.Exists(Path.Combine(newDir, "plugin")).Should().BeFalse();
+            Directory.Exists(newDir + ".migrating").Should().BeFalse();
+            AppDataMigrator.EffectiveDirectory(legacyDir, newDir).Should().Be(legacyDir, "still owed, so retried");
+        }
+
+        AppDataMigrator.MigrateIfNeeded(legacyDir, newDir, _ => { }).Should().BeTrue();
+        File.ReadAllText(Path.Combine(newDir, "settings.json")).Should().Contain("48");
+        File.Exists(Path.Combine(newDir, "plugin", "luatools.js")).Should().BeTrue();
+        File.ReadAllText(log).Should().Be("current log", "the current log wins over the legacy copy");
+        Directory.Exists(newDir + ".migrating").Should().BeFalse();
+    }
+
+    [Fact]
     public void The_effective_folder_is_the_new_one_unless_a_migration_is_still_owed()
     {
         string legacyDir = Path.Combine(_root, "LuaToolsGui");
@@ -202,16 +275,22 @@ public sealed class ConfigGuardTests : IDisposable
     {
         // Main cannot be run from a test, so this pins the ORDER in the source: a second process must have
         // exited (the isFirst check) before anything may migrate, or two processes copy at once.
-        string program = File.ReadAllText(Path.Combine(RepoRoot(), "src", "LuaToolsGui", "Program.cs"));
+        // Comment lines are dropped first: a note that merely MENTIONS one of these calls must not satisfy (or
+        // break) the order.
+        string program = string.Join('\n',
+            File.ReadLines(Path.Combine(RepoRoot(), "src", "LuaToolsGui", "Program.cs"))
+                .Where(l => !l.TrimStart().StartsWith("//", StringComparison.Ordinal)));
 
         int mutex = program.IndexOf("new Mutex(", StringComparison.Ordinal);
         int secondInstanceExit = program.IndexOf("if (!isFirst)", StringComparison.Ordinal);
+        int leaves = program.IndexOf("return;", secondInstanceExit, StringComparison.Ordinal);
         int migrate = program.IndexOf("AppDataMigrator.MigrateIfNeeded()", StringComparison.Ordinal);
         int culture = program.IndexOf("ApplyUiCulture();", StringComparison.Ordinal);
 
         mutex.Should().BeGreaterThan(0);
         secondInstanceExit.Should().BeGreaterThan(mutex);
-        migrate.Should().BeGreaterThan(secondInstanceExit);
+        leaves.Should().BeGreaterThan(secondInstanceExit, "the second instance must leave through a return");
+        migrate.Should().BeGreaterThan(leaves, "the migration sits after the second instance's return");
         culture.Should().BeGreaterThan(migrate, "the UI culture is read from the migrated settings.json");
         program.Split("AppDataMigrator.MigrateIfNeeded()").Length.Should().Be(2, "exactly one call site");
     }

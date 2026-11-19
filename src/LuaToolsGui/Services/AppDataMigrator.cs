@@ -33,9 +33,9 @@ public static class AppDataMigrator
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), LegacyFolderName);
 
     /// <summary>Current roaming folder owned by LuaTools Amethyst (<c>%AppData%\LuaToolsAmethyst</c>). The
-    /// single source of the app's data path: every state file is placed relative to this.</summary>
-    /// Switches to <see cref="LegacyDirectory"/> for the session when a migration was needed but did not
-    /// finish (see <see cref="ApplyFallback"/>); only <c>Main</c> does that, before anything reads it.</summary>
+    /// single source of the app's data path: every state file is placed relative to this. Switches to
+    /// <see cref="LegacyDirectory"/> for the session when a migration was needed but did not finish (see
+    /// <see cref="ApplyFallback"/>); only <c>Main</c> does that, before anything reads it.</summary>
     public static string CurrentDirectory { get; private set; } =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), CurrentFolderName);
 
@@ -98,22 +98,17 @@ public static class AppDataMigrator
                 return false;
             }
 
-            if (!Directory.Exists(currentFull))
+            if (Directory.Exists(currentFull))
             {
-                Directory.Move(staging, currentFull);
+                // Present but stateless (HasState was false: empty, or only the log generation(s) AppLog wrote).
+                // Fold those logs into staging (the current log wins over a legacy copy), drop the empty shell and
+                // promote the whole staging folder with ONE rename. A failure anywhere in here leaves nothing
+                // promoted, so a half-merged folder can never read as "already migrated".
+                foreach (string logFile in Directory.EnumerateFiles(currentFull).ToList())
+                    File.Move(logFile, Path.Combine(staging, Path.GetFileName(logFile)), overwrite: true);
+                Directory.Delete(currentFull); // not recursive: anything left over throws instead of being lost
             }
-            else
-            {
-                // Present but stateless (empty, or only a log a failed earlier attempt wrote): merge in, keeping
-                // what is already there. Same volume, so these are renames.
-                foreach (string entry in Directory.EnumerateFileSystemEntries(staging).ToList())
-                {
-                    string target = Path.Combine(currentFull, Path.GetFileName(entry));
-                    if (Directory.Exists(entry) && !Directory.Exists(target)) Directory.Move(entry, target);
-                    else if (File.Exists(entry) && !File.Exists(target)) File.Move(entry, target);
-                }
-                DeleteTree(staging);
-            }
+            Directory.Move(staging, currentFull);
             staging = null;
 
             VaccinateLegacySettings(legacyFull, log);
@@ -191,8 +186,6 @@ public static class AppDataMigrator
         && Directory.EnumerateFileSystemEntries(dir).Any(e =>
             !Path.GetFileName(e).StartsWith("plugin-backend.log", StringComparison.OrdinalIgnoreCase));
 
-    /// <summary>Recursive copy. A file that cannot be read (locked by a running upstream, say) is skipped and
-    /// logged rather than aborting the whole migration.</summary>
     /// <summary>Recursive delete that also removes read-only files: <see cref="File.Copy(string, string, bool)"/> keeps
     /// the source's attributes, and a read-only file in staging would otherwise throw
     /// <see cref="UnauthorizedAccessException"/> and wedge every later attempt.</summary>
@@ -206,6 +199,9 @@ public static class AppDataMigrator
     private static bool HasContent(string dir) =>
         Directory.Exists(dir) && Directory.EnumerateFileSystemEntries(dir).Any();
 
+    /// <summary>Recursive copy that stops at the first file it cannot copy (locked by a running upstream, say):
+    /// logs it and reports it in <c>Failed</c>. The caller aborts the whole migration on any failure, so copying
+    /// the rest would be wasted I/O.</summary>
     private static (int Copied, int Failed) CopyTree(string sourceDir, string destinationDir, Action<string>? log)
     {
         int copied = 0, failed = 0;
@@ -218,10 +214,12 @@ public static class AppDataMigrator
                 File.Copy(file, Path.Combine(destinationDir, Path.GetFileName(file)), overwrite: false);
                 copied++;
             }
+            // ponytail: short-circuit para não desperdiçar I/O
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
                 failed++;
                 SafeLog(log, $"AppDataMigrator: could not copy '{Path.GetFileName(file)}': {ex.GetType().Name}: {ex.Message}");
+                return (copied, failed);
             }
         }
 
@@ -230,6 +228,7 @@ public static class AppDataMigrator
             var (c, f) = CopyTree(subDir, Path.Combine(destinationDir, Path.GetFileName(subDir)), log);
             copied += c;
             failed += f;
+            if (failed > 0) return (copied, failed);
         }
 
         return (copied, failed);

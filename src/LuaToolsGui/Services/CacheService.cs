@@ -11,7 +11,7 @@ public class CacheData
     public string? OpenSteamToolsInstalledZipDigest { get; set; }
 
     // ── DepotDownloaderMod install fingerprint ──
-    // The release tag of the tool currently extracted under %AppData%\LuaToolsGui\depotdownloader, and when
+    // The release tag of the tool currently extracted under %AppData%\LuaToolsAmethyst\depotdownloader, and when
     // its pin was last checked. The tag is what makes an existing exe REUSABLE: it has to equal
     // AppConfig.DepotDownloaderPinnedTag, so an exe left over from a previous pin is treated as absent
     // rather than run. The timestamp only throttles the GitHub lookup (EnsureToolAsync runs once per depot).
@@ -60,7 +60,7 @@ public class CacheData
 }
 
 /// <summary>
-/// Persists internal app state to %AppData%\LuaToolsGui\cache.json — distinct from user-facing
+/// Persists internal app state to %AppData%\LuaToolsAmethyst\cache.json — distinct from user-facing
 /// settings (SettingsService). Use this for values the app records about itself (versions/hashes
 /// of installed components, cached lookups), not for choices the user makes.
 /// </summary>

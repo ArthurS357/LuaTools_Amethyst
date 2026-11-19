@@ -29,6 +29,17 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.8.0", "2026-11-19",
+            "AmethystTool engine v1.5.3, your data in its own folder, and an optional Cloudflare DNS fallback for blocked regions.",
+            [
+                "AmethystTool engine v1.5.3 (its startup fix and family-tag fix live in the engine) installs from the latest release as before; the app needed no change to take it.",
+                "Your data now lives in %AppData%\\LuaToolsAmethyst. On first start it is copied from %AppData%\\LuaToolsGui, never moved: the old folder stays, so upstream LuaTools keeps working. If the copy cannot finish, the app keeps using the old folder and tries again next start.",
+                "The old folder's settings.json gets \"DonateKeys\": false once, so opening upstream LuaTools cannot upload Steam decryption keys over plain HTTP.",
+                "New network request: when system DNS cannot resolve a host on a fixed list (LuaTools, Hubcap, GitHub and its download mirrors), the app asks Cloudflare DNS-over-HTTPS (1.1.1.1/dns-query) for its IPv4 address. HTTPS only; TLS and certificate checks are unchanged, and private, loopback and link-local answers are refused. After one failure it stays on for every host on that list until you close the app.",
+                "The Clear content cache (AppInfo) button now says it is also the definitive fallback if a Steam update changes the signature the engine (v1.5.1+) hooks.",
+                "The DNS mode (DnsMode: Auto, Always or Never) is only editable in settings.json for now. The button's new text is in English and Portuguese (Brazil). No new dependency.",
+            ]),
+
         new("1.7.13.5", "2026-11-19",
             "AmethystTool engine v1.5.1: a content-cache rescue button, the engine's new CLIs kept on disk, and safer fix downloads.",
             [

@@ -15,7 +15,7 @@ public record SteamlessResult(int Patched, int Unchanged, int Total, string? Err
 /// <summary>
 /// Runs <c>Steamless.CLI.exe</c> (atom0s/Steamless) to strip SteamStub DRM from a game's executable(s).
 /// The tool is downloaded once from GitHub (via <see cref="GithubProxy"/>, so it works in blocked regions)
-/// and cached under %AppData%\LuaToolsGui\steamless. The target exe(s) are resolved precisely from Steam's
+/// and cached under %AppData%\LuaToolsAmethyst\steamless. The target exe(s) are resolved precisely from Steam's
 /// own launch config (<see cref="SteamDepotInfo"/> → config.launch); if that's unavailable we fall back to a
 /// filtered recursive scan of the install folder. Each patched exe is backed up to <c>&lt;exe&gt;.bak</c>
 /// first. Steamless silently no-ops on exes without DRM, so over-selection is harmless.

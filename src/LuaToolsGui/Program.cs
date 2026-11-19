@@ -55,7 +55,7 @@ public static class Program
             }
         }
 
-        // Only one instance may run: two copies share %AppData%\LuaToolsGui (auth.dat,
+        // Only one instance may run: two copies share %AppData%\LuaToolsAmethyst (auth.dat,
         // caches) and would lock each other's files (e.g. a token write failing on login).
         using var single = new Mutex(initiallyOwned: true, "LuaToolsGui.SingleInstance", out bool isFirst);
         if (!isFirst)

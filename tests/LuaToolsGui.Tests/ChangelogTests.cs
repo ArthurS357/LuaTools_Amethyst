@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.7.13.5");
+        AppVersion.Current.Should().Be("1.8.0");
     }
 
     [Fact]
@@ -51,6 +51,21 @@ public class ChangelogTests
 
         // One anchor per change the release was actually about, so an entry that got copied forward from
         // the previous version fails here rather than shipping a changelog describing the wrong release.
+        text.Should().ContainEquivalentOf("engine v1.5.3");                  // the engine
+        text.Should().ContainEquivalentOf("LuaToolsAmethyst");               // the new data folder
+        text.Should().ContainEquivalentOf("never moved");                    // copy, legacy folder stays
+        text.Should().ContainEquivalentOf("\"DonateKeys\": false");          // the legacy vaccine
+        text.Should().ContainEquivalentOf("Cloudflare DNS-over-HTTPS");      // the new network request
+        text.Should().ContainEquivalentOf("until you close the app");        // DoH state is session-wide
+        text.Should().ContainEquivalentOf("definitive fallback");            // the button text
+        text.Should().ContainEquivalentOf("only editable in settings.json"); // DnsMode has no UI
+    }
+
+    [Fact]
+    public void The_1_7_13_5_entry_still_names_what_that_release_was_about()
+    {
+        string text = string.Join(" ", Changelog.Entries.Single(e => e.Version == "1.7.13.5").Highlights);
+
         text.Should().ContainEquivalentOf("Clear content cache");            // the appinfo rescue
         text.Should().ContainEquivalentOf("backup folder");                  // backed up, never just deleted
         text.Should().ContainEquivalentOf("pattern_migrate.exe");            // the CLIs are kept

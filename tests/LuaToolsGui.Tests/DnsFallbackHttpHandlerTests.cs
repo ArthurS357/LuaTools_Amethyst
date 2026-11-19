@@ -160,6 +160,7 @@ public sealed class DnsFallbackHttpHandlerTests
     [InlineData("http://intranet/health")]                // Single-label host
     [InlineData("http://167.235.229.108/check_apis")]     // Bare IP literal
     [InlineData("https://example.com/not-allowlisted")]   // Outside AppConfig.DohFallbackHosts
+    [InlineData("http://lua.tools/api/test")]             // Allowlisted host, but plain http: HTTPS only
     public async Task Local_cdp_and_non_allowlisted_hosts_never_use_doh(string url)
     {
         var session = new DnsFallbackSession();
@@ -225,6 +226,49 @@ public sealed class DnsFallbackHttpHandlerTests
         addresses.Should().Equal(IPAddress.Parse("104.21.10.20"), IPAddress.Parse("172.67.15.30"));
         ttl.Should().Be(TimeSpan.FromSeconds(120));
     }
+
+    [Fact]
+    public void ParseDohJson_drops_rfc1918_and_link_local_answers_but_keeps_their_public_neighbours()
+    {
+        // Edges on purpose: 172.15 / 172.32 and 192.169 sit just outside the private ranges and are public.
+        const string json = """
+        {
+          "Status": 0,
+          "Answer": [
+            { "type": 1, "TTL": 60, "data": "10.0.0.1" },
+            { "type": 1, "TTL": 60, "data": "10.255.255.254" },
+            { "type": 1, "TTL": 60, "data": "172.16.0.1" },
+            { "type": 1, "TTL": 60, "data": "172.31.255.254" },
+            { "type": 1, "TTL": 60, "data": "192.168.1.1" },
+            { "type": 1, "TTL": 60, "data": "169.254.169.254" },
+            { "type": 1, "TTL": 60, "data": "172.15.0.1" },
+            { "type": 1, "TTL": 60, "data": "172.32.0.1" },
+            { "type": 1, "TTL": 60, "data": "192.169.0.1" },
+            { "type": 1, "TTL": 60, "data": "169.253.0.1" },
+            { "type": 1, "TTL": 60, "data": "104.21.10.20" }
+          ]
+        }
+        """;
+
+        var (addresses, _) = CloudflareDohResolver.ParseDohJson(json);
+
+        addresses.Should().Equal(
+            IPAddress.Parse("172.15.0.1"), IPAddress.Parse("172.32.0.1"), IPAddress.Parse("192.169.0.1"),
+            IPAddress.Parse("169.253.0.1"), IPAddress.Parse("104.21.10.20"));
+
+        CloudflareDohResolver.ParseDohJson("""{"Status":0,"Answer":[{"type":1,"TTL":60,"data":"192.168.0.10"}]}""")
+            .Addresses.Should().BeEmpty("an answer made only of private addresses yields nothing to dial");
+    }
+
+    [Theory]
+    [InlineData("https://lua.tools/api/test", true)]
+    [InlineData("HTTPS://API.GITHUB.COM/repos", true)]
+    [InlineData("http://lua.tools/api/test", false)]            // plain http is never eligible
+    [InlineData("http://api.github.com/repos", false)]
+    [InlineData("https://example.com/", false)]                 // not allowlisted
+    [InlineData("https://127.0.0.1/", false)]                   // loopback
+    public void CanUseDohForUri_is_https_only_and_allowlist_only(string url, bool expected) =>
+        DnsFallbackHttpHandler.CanUseDohForUri(new Uri(url)).Should().Be(expected);
 
     [Fact]
     public void ParseDohJson_rejects_nonzero_dns_status_and_clamps_ttl()

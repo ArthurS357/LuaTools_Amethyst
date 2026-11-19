@@ -33,7 +33,7 @@ public class AppSettings
     // (→ default 24) is distinguishable from an explicit choice.
     public int? ManagePageSize { get; set; }
 
-    // Folder the save-backup zips are written to. Null = %AppData%\LuaToolsGui\SaveBackups.
+    // Folder the save-backup zips are written to. Null = %AppData%\LuaToolsAmethyst\SaveBackups.
     public string? SaveBackupFolder { get; set; }
 
     // Save folders the user registered by hand, per appid. Together with the known Windows roots these are

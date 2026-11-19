@@ -89,6 +89,10 @@ public sealed class DnsFallbackSession
     /// <summary>True once a connection failure to an allowlisted host triggered DoH fallback in this session.</summary>
     public bool IsDnsFailed => Volatile.Read(ref _dnsFailed) != 0;
 
+    // The failure state persists until the app closes and affects EVERY host on the allowlist, not just the one
+    // whose lookup failed: after one name-resolution failure, all later requests to any allowlisted host resolve
+    // through Cloudflare DoH. Per-host state would need a dictionary and an expiry; session-wide is the cheap,
+    // deliberate ceiling (restart the app, or set DnsMode "Never", to leave it).
     public void MarkDnsFailed() => Volatile.Write(ref _dnsFailed, 1);
 
     internal void Reset() => Volatile.Write(ref _dnsFailed, 0);
@@ -148,7 +152,9 @@ public sealed class CloudflareDohResolver
 
     /// <summary>
     /// Parse a Cloudflare DNS-JSON response for IPv4 (<c>type == 1</c>) records. Rejects non-zero DNS
-    /// statuses, non-IPv4 answers, loopback addresses, and <c>0.0.0.0</c>. Pure and directly testable.
+    /// statuses, non-IPv4 answers, loopback addresses, <c>0.0.0.0</c>, RFC 1918 private ranges
+    /// (<c>10/8</c>, <c>172.16/12</c>, <c>192.168/16</c>) and link-local <c>169.254/16</c>. Pure and directly
+    /// testable.
     /// </summary>
     internal static (IPAddress[] Addresses, TimeSpan Ttl) ParseDohJson(string json)
     {
@@ -189,8 +195,9 @@ public sealed class CloudflareDohResolver
                 if (ip.AddressFamily != AddressFamily.InterNetwork)
                     continue;
 
-                // Never let a DoH response redirect a public host onto loopback or unspecified addresses.
-                if (IPAddress.IsLoopback(ip) || ip.Equals(IPAddress.Any))
+                // Never let a DoH response redirect a public host onto loopback, unspecified, private (RFC 1918)
+                // or link-local addresses: a forged answer could otherwise steer the connection into the LAN.
+                if (IPAddress.IsLoopback(ip) || ip.Equals(IPAddress.Any) || IsPrivateOrLinkLocal(ip))
                     continue;
 
                 addresses.Add(ip);
@@ -213,6 +220,16 @@ public sealed class CloudflareDohResolver
         {
             return ([], MinCacheTtl);
         }
+    }
+
+    /// <summary>RFC 1918 (<c>10/8</c>, <c>172.16/12</c>, <c>192.168/16</c>) or link-local (<c>169.254/16</c>). IPv4 only.</summary>
+    private static bool IsPrivateOrLinkLocal(IPAddress ip)
+    {
+        byte[] b = ip.GetAddressBytes();
+        return b[0] == 10
+            || (b[0] == 172 && b[1] is >= 16 and <= 31)
+            || (b[0] == 192 && b[1] == 168)
+            || (b[0] == 169 && b[1] == 254);
     }
 }
 
@@ -331,11 +348,11 @@ public sealed class DnsFallbackHttpHandler : DelegatingHandler
     public static bool CanUseDohForHost(string? host) =>
         !IsLocalOrBypassHost(host) && IsAllowlistedHost(host);
 
-    /// <summary>True when <paramref name="uri"/> is eligible for Cloudflare DoH fallback.</summary>
+    /// <summary>True when <paramref name="uri"/> is eligible for Cloudflare DoH fallback. HTTPS only: a DoH-pinned
+    /// address on a plain-http request would send the traffic in clear to whatever the resolver answered.</summary>
     public static bool CanUseDohForUri(Uri? uri) =>
         uri is { IsAbsoluteUri: true, IsLoopback: false }
-        && (uri.Scheme.Equals(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase)
-            || uri.Scheme.Equals(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase))
+        && uri.Scheme.Equals(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase)
         && CanUseDohForHost(uri.Host);
 
     protected override async Task<HttpResponseMessage> SendAsync(

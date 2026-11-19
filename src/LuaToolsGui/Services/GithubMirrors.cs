@@ -13,7 +13,7 @@ namespace LuaToolsGui.Services;
 /// </para>
 ///
 /// <para>
-/// Configure by editing <c>%AppData%\LuaToolsGui\settings.json</c>:
+/// Configure by editing <c>%AppData%\LuaToolsAmethyst\settings.json</c>:
 /// <code>
 ///   "GithubDownloadMirrors": []                              // disable mirrors entirely (direct only)
 ///   "GithubDownloadMirrors": ["https://my-proxy.example/"]   // use your own

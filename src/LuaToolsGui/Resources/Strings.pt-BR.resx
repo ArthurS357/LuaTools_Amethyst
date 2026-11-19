@@ -617,7 +617,7 @@ Isso exclui os arquivos .lua de Steam\config\stplug-in. Reinicie o Steam depois 
   <data name="Settings_Backups_Confirm_Delete" xml:space="preserve"><value>Apagar</value></data>
   <data name="Settings_Backups_Cancel" xml:space="preserve"><value>Cancelar</value></data>
   <data name="Settings_Btn_ClearAppInfo" xml:space="preserve"><value>Limpar Cache de Conteúdo (AppInfo)</value></data>
-  <data name="Settings_ClearAppInfo_Tooltip" xml:space="preserve"><value>Use isso se um jogo instalado estiver dando erro de “Configuração de Conteúdo Inválida”. Fecha a Steam, move appcache\appinfo.vdf para uma pasta de backup ao lado e reinicia a Steam, que reconstrói o arquivo.</value></data>
+  <data name="Settings_ClearAppInfo_Tooltip" xml:space="preserve"><value>Use isso se um jogo instalado estiver dando erro de “Configuração de Conteúdo Inválida”. É também o fallback definitivo caso uma atualização da Steam mude a assinatura que o motor AmethystTool (v1.5.1+) intercepta. Fecha a Steam, move appcache\appinfo.vdf para uma pasta de backup ao lado e reinicia a Steam, que reconstrói o arquivo.</value></data>
   <data name="Settings_ClearAppInfo_Confirm_Body" xml:space="preserve"><value>A Steam será fechada, o appinfo.vdf movido para uma pasta de backup ao lado e a Steam reiniciada para reconstruí-lo. A primeira abertura demora mais. Opções de inicialização alteradas pelo LuaTools serão oferecidas para reaplicar na próxima vez que o LuaTools abrir. Continuar?</value></data>
   <data name="Settings_ClearAppInfo_Confirm_Go" xml:space="preserve"><value>Limpar cache</value></data>
   <data name="Settings_ClearAppInfo_Done" xml:space="preserve"><value>Cache de conteúdo limpo. A Steam o reconstrói na próxima vez que abrir.</value></data>
