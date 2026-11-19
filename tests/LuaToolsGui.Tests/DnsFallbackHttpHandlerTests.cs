@@ -1,6 +1,7 @@
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Net.Sockets;
 using System.Reflection;
 using AwesomeAssertions;
 using LuaToolsGui.Services;
@@ -40,7 +41,7 @@ public sealed class DnsFallbackHttpHandlerTests
 
             // Attempt 1 has no DoH resolution -> simulate ISP DNS / connection failure.
             if (resolved is null)
-                throw new HttpRequestException("Simulated DNS failure");
+                throw DnsFailure();
 
             return new HttpResponseMessage(HttpStatusCode.OK)
             {
@@ -187,7 +188,7 @@ public sealed class DnsFallbackHttpHandlerTests
     public async Task Auto_mode_does_not_mark_session_failed_when_doh_returns_no_addresses()
     {
         var session = new DnsFallbackSession();
-        var inner = new StubHandler(_ => throw new HttpRequestException("offline"));
+        var inner = new StubHandler(_ => throw DnsFailure());
 
         using var handler = new DnsFallbackHttpHandler(
             inner, () => DnsMode.Auto, (_, _) => Task.FromResult(Array.Empty<IPAddress>()),
@@ -267,6 +268,72 @@ public sealed class DnsFallbackHttpHandlerTests
         requests.Should().HaveCount(2, "second lookup within 60 s TTL must hit the cache; third after expiry re-queries");
         requests[0].RequestUri!.AbsoluteUri.Should().Be("https://1.1.1.1/dns-query?name=lua.tools&type=A");
         requests[0].Headers.Accept.ToString().Should().Contain("application/dns-json");
+    }
+
+    /// <summary>What SocketsHttpHandler throws when the system resolver fails: the SocketException is the inner.</summary>
+    private static HttpRequestException DnsFailure(SocketError code = SocketError.HostNotFound) =>
+        new("name resolution failed", new SocketException((int)code));
+
+    [Theory]
+    [InlineData(SocketError.ConnectionReset)]    // a VPN or firewall dropping the connection
+    [InlineData(SocketError.ConnectionRefused)]
+    [InlineData(SocketError.TimedOut)]
+    public async Task Auto_mode_ignores_connection_failures_that_are_not_dns(SocketError code)
+    {
+        var session = new DnsFallbackSession();
+        int dohCalls = 0, innerCalls = 0;
+        var inner = new StubHandler(_ => { innerCalls++; throw new HttpRequestException("connect", new SocketException((int)code)); });
+        using var handler = new DnsFallbackHttpHandler(
+            inner, () => DnsMode.Auto, (_, _) => { dohCalls++; return Task.FromResult(new[] { FakeCloudflareIp }); },
+            session, _ => { });
+        using var client = new HttpClient(handler);
+
+        await FluentActions.Awaiting(() => client.GetAsync("https://lua.tools/api/test"))
+            .Should().ThrowAsync<HttpRequestException>();
+
+        dohCalls.Should().Be(0, "hostnames must not go to a third-party resolver for a non-DNS failure");
+        innerCalls.Should().Be(1);
+        session.IsDnsFailed.Should().BeFalse();
+    }
+
+    [Theory]
+    [InlineData(SocketError.HostNotFound)]
+    [InlineData(SocketError.TryAgain)]
+    [InlineData(SocketError.NoData)]
+    public async Task Auto_mode_falls_back_for_each_name_resolution_error(SocketError code)
+    {
+        var session = new DnsFallbackSession();
+        var inner = new StubHandler(req => req.Options.TryGetValue(DnsFallbackHttpHandler.ResolvedAddressesKey, out _)
+            ? new HttpResponseMessage(HttpStatusCode.OK)
+            : throw DnsFailure(code));
+        using var handler = new DnsFallbackHttpHandler(
+            inner, () => DnsMode.Auto, (_, _) => Task.FromResult(new[] { FakeCloudflareIp }), session, _ => { });
+        using var client = new HttpClient(handler);
+
+        (await client.GetAsync("https://lua.tools/api/test")).StatusCode.Should().Be(HttpStatusCode.OK);
+        session.IsDnsFailed.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task The_retry_restarts_from_the_original_uri_after_a_redirect_rewrote_it()
+    {
+        var session = new DnsFallbackSession();
+        var seen = new List<Uri?>();
+        var inner = new StubHandler(req =>
+        {
+            seen.Add(req.RequestUri);
+            if (seen.Count > 1) return new HttpResponseMessage(HttpStatusCode.OK);
+            req.RequestUri = new Uri("https://github.com/redirected/elsewhere"); // what an auto-followed redirect does
+            throw DnsFailure();
+        });
+        using var handler = new DnsFallbackHttpHandler(
+            inner, () => DnsMode.Auto, (_, _) => Task.FromResult(new[] { FakeCloudflareIp }), session, _ => { });
+        using var client = new HttpClient(handler);
+
+        await client.GetAsync("https://lua.tools/api/test");
+
+        seen.Should().HaveCount(2);
+        seen[1].Should().Be(new Uri("https://lua.tools/api/test"));
     }
 
     // ── CDP & F-09 isolation guards ──────────────────────────────────────────

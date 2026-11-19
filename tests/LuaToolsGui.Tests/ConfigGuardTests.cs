@@ -144,7 +144,121 @@ public sealed class ConfigGuardTests : IDisposable
         Directory.Exists(newDir).Should().BeFalse();
     }
 
+    // ── All-or-nothing copy, fallback, read-only ─────────────────────────────
+
+    [Fact]
+    public void A_file_that_cannot_be_copied_aborts_the_migration_and_leaves_no_new_folder()
+    {
+        string legacyDir = Path.Combine(_root, "LuaToolsGui");
+        string newDir = Path.Combine(_root, "LuaToolsAmethyst");
+        Directory.CreateDirectory(legacyDir);
+        File.WriteAllText(Path.Combine(legacyDir, "settings.json"), "{\"ManagePageSize\":48}");
+        string locked = Path.Combine(legacyDir, "auth.dat");
+        File.WriteAllText(locked, "token");
+
+        var logs = new List<string>();
+        using (File.Open(locked, FileMode.Open, FileAccess.Read, FileShare.None)) // upstream holding it open
+        {
+            AppDataMigrator.MigrateIfNeeded(legacyDir, newDir, logs.Add).Should().BeFalse();
+
+            Directory.Exists(newDir).Should().BeFalse("a half-filled folder would read as already migrated");
+            Directory.Exists(newDir + ".migrating").Should().BeFalse();
+            // The app keeps its configuration by staying on the legacy folder this session.
+            AppDataMigrator.EffectiveDirectory(legacyDir, newDir).Should().Be(legacyDir);
+            logs.Should().Contain(l => l.Contains("aborted"));
+        }
+        File.ReadAllText(Path.Combine(legacyDir, "settings.json")).Should().Contain("48");
+
+        // Next start, nothing is holding it: the retry goes through and the new folder takes over.
+        AppDataMigrator.MigrateIfNeeded(legacyDir, newDir, _ => { }).Should().BeTrue();
+        File.Exists(Path.Combine(newDir, "auth.dat")).Should().BeTrue();
+        AppDataMigrator.EffectiveDirectory(legacyDir, newDir).Should().Be(newDir);
+    }
+
+    [Fact]
+    public void The_effective_folder_is_the_new_one_unless_a_migration_is_still_owed()
+    {
+        string legacyDir = Path.Combine(_root, "LuaToolsGui");
+        string newDir = Path.Combine(_root, "LuaToolsAmethyst");
+
+        AppDataMigrator.EffectiveDirectory(legacyDir, newDir).Should().Be(newDir, "fresh install: nothing legacy");
+
+        Directory.CreateDirectory(legacyDir);
+        AppDataMigrator.EffectiveDirectory(legacyDir, newDir).Should().Be(newDir, "an empty legacy folder is nothing");
+
+        File.WriteAllText(Path.Combine(legacyDir, "settings.json"), "{}");
+        AppDataMigrator.EffectiveDirectory(legacyDir, newDir).Should().Be(legacyDir);
+
+        Directory.CreateDirectory(newDir);
+        File.WriteAllText(Path.Combine(newDir, "plugin-backend.log"), "just a log");
+        AppDataMigrator.EffectiveDirectory(legacyDir, newDir).Should().Be(legacyDir, "a log is not state");
+
+        File.WriteAllText(Path.Combine(newDir, "settings.json"), "{}");
+        AppDataMigrator.EffectiveDirectory(legacyDir, newDir).Should().Be(newDir);
+    }
+
+    [Fact]
+    public void Program_takes_the_single_instance_mutex_before_it_migrates()
+    {
+        // Main cannot be run from a test, so this pins the ORDER in the source: a second process must have
+        // exited (the isFirst check) before anything may migrate, or two processes copy at once.
+        string program = File.ReadAllText(Path.Combine(RepoRoot(), "src", "LuaToolsGui", "Program.cs"));
+
+        int mutex = program.IndexOf("new Mutex(", StringComparison.Ordinal);
+        int secondInstanceExit = program.IndexOf("if (!isFirst)", StringComparison.Ordinal);
+        int migrate = program.IndexOf("AppDataMigrator.MigrateIfNeeded()", StringComparison.Ordinal);
+        int culture = program.IndexOf("ApplyUiCulture();", StringComparison.Ordinal);
+
+        mutex.Should().BeGreaterThan(0);
+        secondInstanceExit.Should().BeGreaterThan(mutex);
+        migrate.Should().BeGreaterThan(secondInstanceExit);
+        culture.Should().BeGreaterThan(migrate, "the UI culture is read from the migrated settings.json");
+        program.Split("AppDataMigrator.MigrateIfNeeded()").Length.Should().Be(2, "exactly one call site");
+    }
+
+    private static string RepoRoot()
+    {
+        var dir = new DirectoryInfo(AppContext.BaseDirectory);
+        while (dir is not null && !File.Exists(Path.Combine(dir.FullName, "LuaToolsGui.sln")))
+            dir = dir.Parent;
+        return dir?.FullName ?? throw new DirectoryNotFoundException("LuaToolsGui.sln not found above the test output.");
+    }
+
+    [Fact]
+    public void A_stale_staging_folder_with_a_read_only_file_is_still_cleared()
+    {
+        string legacyDir = Path.Combine(_root, "LuaToolsGui");
+        string newDir = Path.Combine(_root, "LuaToolsAmethyst");
+        Directory.CreateDirectory(legacyDir);
+        File.WriteAllText(Path.Combine(legacyDir, "settings.json"), "{}");
+        Directory.CreateDirectory(newDir + ".migrating");
+        string stale = Path.Combine(newDir + ".migrating", "stale.json");
+        File.WriteAllText(stale, "x");
+        File.SetAttributes(stale, FileAttributes.ReadOnly);
+
+        AppDataMigrator.MigrateIfNeeded(legacyDir, newDir, _ => { }).Should().BeTrue();
+
+        Directory.Exists(newDir + ".migrating").Should().BeFalse();
+        File.Exists(Path.Combine(newDir, "stale.json")).Should().BeFalse();
+    }
+
     // ── Legacy settings.json vaccine ─────────────────────────────────────────
+
+    [Fact]
+    public void A_hand_edited_legacy_settings_json_with_comments_and_trailing_commas_is_still_vaccinated()
+    {
+        string legacyDir = Path.Combine(_root, "LuaToolsGui");
+        Directory.CreateDirectory(legacyDir);
+        string legacy = Path.Combine(legacyDir, "settings.json");
+        File.WriteAllText(legacy, "{\n  // my note\n  \"ManagePageSize\": 48,\n}");
+
+        AppDataMigrator.MigrateIfNeeded(legacyDir, Path.Combine(_root, "LuaToolsAmethyst"), _ => { })
+            .Should().BeTrue();
+
+        using var doc = JsonDocument.Parse(File.ReadAllText(legacy));
+        doc.RootElement.GetProperty("DonateKeys").ValueKind.Should().Be(JsonValueKind.False);
+        doc.RootElement.GetProperty("ManagePageSize").GetInt32().Should().Be(48);
+    }
 
     [Theory]
     [InlineData("""{"SelectedMode":"OpenSteamTools","ManagePageSize":48}""")]              // key absent

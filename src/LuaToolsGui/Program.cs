@@ -32,17 +32,6 @@ public static class Program
             .OnBeforeUninstallFastCallback(_ => RunUninstallCleanup())
             .Run();
 
-        // One-time first-boot migration from %AppData%\LuaToolsGui to %AppData%\LuaToolsAmethyst.
-        // Must run BEFORE ApplyUiCulture() (which reads settings.json and may write to AppLog).
-        Services.AppDataMigrator.MigrateIfNeeded();
-
-        // Set the UI culture before any WPF element is created, so x:Static resource lookups (which
-        // resolve once at parse time) pick up the right language from the first frame.
-        ApplyUiCulture();
-
-        // Register the luatools:// protocol handler so browser links can open the app.
-        Services.ProtocolService.Register();
-
         // Check if we were launched with a luatools:// protocol URL.
         string? protocolUrl = null;
         bool startMinimized = false;
@@ -74,7 +63,12 @@ public static class Program
             // Launched from a browser protocol link → write the URL to a temp file so the live
             // instance can pick it up, then signal it to surface and handle the URL.
             if (protocolUrl is not null)
+            {
+                // Same data folder the live instance resolved: without this a fallback to the legacy folder
+                // would have the link written where nobody reads it, and create the new folder on the way.
+                Services.AppDataMigrator.ApplyFallback();
                 Services.ProtocolService.WritePending(protocolUrl);
+            }
 
             // Already running (possibly hidden in the tray) — poke the live instance to surface its
             // window, then bow out. This is what users expect when they relaunch the app.
@@ -127,7 +121,20 @@ public static class Program
             return;
         }
 
-        // First instance — store the URL so App.OnStartup can route it.
+        // First instance. Only now, with the mutex held, may the data folder be migrated: a second process
+        // must exit above without touching it, and two migrations must never run at once.
+        // One-time first-boot migration from %AppData%\LuaToolsGui to %AppData%\LuaToolsAmethyst. Must run
+        // BEFORE ApplyUiCulture() (which reads settings.json and may write to AppLog).
+        Services.AppDataMigrator.MigrateIfNeeded();
+
+        // Set the UI culture before any WPF element is created, so x:Static resource lookups (which
+        // resolve once at parse time) pick up the right language from the first frame.
+        ApplyUiCulture();
+
+        // Register the luatools:// protocol handler so browser links can open the app.
+        Services.ProtocolService.Register();
+
+        // Store the URL so App.OnStartup can route it.
         StartupUrl = protocolUrl;
         StartMinimized = startMinimized;
         SessionTrayLock = trayLocked;

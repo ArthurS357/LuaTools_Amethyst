@@ -34,15 +34,36 @@ public static class AppDataMigrator
 
     /// <summary>Current roaming folder owned by LuaTools Amethyst (<c>%AppData%\LuaToolsAmethyst</c>). The
     /// single source of the app's data path: every state file is placed relative to this.</summary>
-    public static string CurrentDirectory { get; } =
+    /// Switches to <see cref="LegacyDirectory"/> for the session when a migration was needed but did not
+    /// finish (see <see cref="ApplyFallback"/>); only <c>Main</c> does that, before anything reads it.</summary>
+    public static string CurrentDirectory { get; private set; } =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), CurrentFolderName);
 
     /// <summary>
     /// Copy <see cref="LegacyDirectory"/> into <see cref="CurrentDirectory"/> if the legacy folder has content
-    /// and the new folder does not exist yet (or exists but is empty). Never modifies the legacy folder.
+    /// and the new folder holds no state yet. All or nothing: a file that cannot be copied aborts the whole
+    /// migration, and the app keeps using the legacy folder (see <see cref="ApplyFallback"/>) so the next start
+    /// tries again instead of finding a half-filled new folder and calling it done.
     /// </summary>
-    /// <returns><c>true</c> if migration ran; <c>false</c> if skipped (nothing to migrate or already migrated).</returns>
-    public static bool MigrateIfNeeded() => MigrateIfNeeded(LegacyDirectory, CurrentDirectory, AppLog.Log);
+    /// <remarks>Call only after the single-instance mutex is held: two processes must never migrate at once.</remarks>
+    /// <returns><c>true</c> if migration ran; <c>false</c> if skipped or aborted.</returns>
+    public static bool MigrateIfNeeded()
+    {
+        // Held back until the fallback is decided: the first AppLog call fixes the log's path from
+        // CurrentDirectory, and it must not be the new folder a failed migration leaves unused.
+        var pending = new List<string>();
+        bool migrated = MigrateIfNeeded(LegacyDirectory, CurrentDirectory, pending.Add);
+        ApplyFallback();
+        foreach (string message in pending) AppLog.Log(message);
+        return migrated;
+    }
+
+    /// <summary>Use the legacy folder for this session if it has content and the new one has no state: the
+    /// migration failed or has not happened, and an empty new folder would show the user a blank app.</summary>
+    public static void ApplyFallback() => CurrentDirectory = EffectiveDirectory(LegacyDirectory, CurrentDirectory);
+
+    internal static string EffectiveDirectory(string legacyDir, string currentDir) =>
+        HasContent(legacyDir) && !HasState(currentDir) ? legacyDir : currentDir;
 
     /// <summary>Testable seam accepting explicit source/destination directories and a log sink.</summary>
     internal static bool MigrateIfNeeded(string legacyDir, string currentDir, Action<string>? log = null)
@@ -58,7 +79,7 @@ public static class AppDataMigrator
             if (string.Equals(legacyFull, currentFull, StringComparison.OrdinalIgnoreCase))
                 return false;
 
-            if (!Directory.Exists(legacyFull) || !Directory.EnumerateFileSystemEntries(legacyFull).Any())
+            if (!HasContent(legacyFull))
                 return false;
 
             // If the new directory already holds state, it wins and the legacy folder is ignored.
@@ -66,9 +87,16 @@ public static class AppDataMigrator
                 return false;
 
             staging = currentFull + ".migrating";
-            if (Directory.Exists(staging)) Directory.Delete(staging, recursive: true); // a previous attempt died
+            if (Directory.Exists(staging)) DeleteTree(staging); // a previous attempt died
 
             var (copied, failed) = CopyTree(legacyFull, staging, log);
+            if (failed > 0)
+            {
+                // Promoting a partial copy would make HasState true and block every retry, stranding what was
+                // skipped. Leave nothing behind (the finally deletes staging) and let the caller fall back.
+                SafeLog(log, $"AppDataMigrator: aborted, {failed} file(s) could not be copied; keeping '{legacyFull}' in use and retrying next start.");
+                return false;
+            }
 
             if (!Directory.Exists(currentFull))
             {
@@ -84,7 +112,7 @@ public static class AppDataMigrator
                     if (Directory.Exists(entry) && !Directory.Exists(target)) Directory.Move(entry, target);
                     else if (File.Exists(entry) && !File.Exists(target)) File.Move(entry, target);
                 }
-                Directory.Delete(staging, recursive: true);
+                DeleteTree(staging);
             }
             staging = null;
 
@@ -92,7 +120,6 @@ public static class AppDataMigrator
 
             SafeLog(log,
                 $"AppDataMigrator: copied {copied} file(s) from '{legacyFull}' to '{currentFull}'"
-                + (failed > 0 ? $" ({failed} skipped due to I/O errors)" : "")
                 + "; legacy directory kept (only settings.json gets DonateKeys=false).");
 
             return copied > 0;
@@ -105,7 +132,7 @@ public static class AppDataMigrator
         finally
         {
             if (staging is not null)
-                try { if (Directory.Exists(staging)) Directory.Delete(staging, recursive: true); } catch { /* best effort */ }
+                try { if (Directory.Exists(staging)) DeleteTree(staging); } catch { /* best effort */ }
         }
     }
 
@@ -113,6 +140,12 @@ public static class AppDataMigrator
     /// Writes <c>"DonateKeys": false</c> into the LEGACY <c>settings.json</c>. Upstream LuaTools reads that file
     /// and treats an absent key as <c>true</c>, which uploads Steam decryption keys over plain HTTP; this keeps
     /// the user safe even if they open the upstream app. The one deliberate write into the legacy folder.
+    ///
+    /// <para>
+    /// One-time by design: it runs only when the migration does. Keeping the legacy file vaccinated afterwards
+    /// would need a runtime watcher on another app's file, which is not worth it; the new app never reads
+    /// that file again, and a later upstream rewrite is that app's behaviour, not ours.
+    /// </para>
     ///
     /// <para>
     /// Parsed as a <see cref="JsonNode"/> so every property the upstream owns survives. Never creates the file,
@@ -127,7 +160,9 @@ public static class AppDataMigrator
         {
             if (!File.Exists(path)) return;
 
-            if (JsonNode.Parse(File.ReadAllText(path)) is not JsonObject root)
+            // Tolerant of a hand-edited file (trailing commas, comments); the rewrite drops the comments.
+            var lenient = new JsonDocumentOptions { AllowTrailingCommas = true, CommentHandling = JsonCommentHandling.Skip };
+            if (JsonNode.Parse(File.ReadAllText(path), documentOptions: lenient) is not JsonObject root)
             {
                 SafeLog(log, "AppDataMigrator: legacy settings.json is not a JSON object; DonateKeys not vaccinated.");
                 return;
@@ -158,6 +193,19 @@ public static class AppDataMigrator
 
     /// <summary>Recursive copy. A file that cannot be read (locked by a running upstream, say) is skipped and
     /// logged rather than aborting the whole migration.</summary>
+    /// <summary>Recursive delete that also removes read-only files: <see cref="File.Copy(string, string, bool)"/> keeps
+    /// the source's attributes, and a read-only file in staging would otherwise throw
+    /// <see cref="UnauthorizedAccessException"/> and wedge every later attempt.</summary>
+    private static void DeleteTree(string dir)
+    {
+        foreach (string file in Directory.EnumerateFiles(dir, "*", SearchOption.AllDirectories))
+            File.SetAttributes(file, FileAttributes.Normal);
+        Directory.Delete(dir, recursive: true);
+    }
+
+    private static bool HasContent(string dir) =>
+        Directory.Exists(dir) && Directory.EnumerateFileSystemEntries(dir).Any();
+
     private static (int Copied, int Failed) CopyTree(string sourceDir, string destinationDir, Action<string>? log)
     {
         int copied = 0, failed = 0;

@@ -360,24 +360,36 @@ public sealed class DnsFallbackHttpHandler : DelegatingHandler
             return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
         }
 
-        // Auto mode, first attempt: try normal system DNS first. On connection failure (HttpRequestException),
-        // mark DNS as failed for this session, resolve via Cloudflare DoH, and retry the request.
+        // Auto mode, first attempt: try normal system DNS first. On a NAME-RESOLUTION failure, mark DNS as
+        // failed for this session, resolve via Cloudflare DoH, and retry the request.
+        var originalUri = uri;
         try
         {
             return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
         }
-        catch (HttpRequestException) when (!cancellationToken.IsCancellationRequested)
+        catch (HttpRequestException ex) when (IsDnsFailure(ex) && !cancellationToken.IsCancellationRequested)
         {
             var ips = await TryResolveDohAsync(host, cancellationToken).ConfigureAwait(false);
             if (ips.Length == 0)
                 throw;
 
             _session.MarkDnsFailed();
-            SafeLog($"DnsFallback: connection to '{host}' failed; switching session to Cloudflare DoH ({ips.Length} IPv4).");
+            SafeLog($"DnsFallback: DNS lookup for '{host}' failed; switching session to Cloudflare DoH ({ips.Length} IPv4).");
             request.Options.Set(ResolvedAddressesKey, new DohResolution(host, ips));
+            // The failed attempt may have followed redirects, and SocketsHttpHandler rewrites RequestUri as it
+            // goes: restart from the host the DoH addresses were resolved for.
+            request.RequestUri = originalUri;
             return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
         }
     }
+
+    /// <summary>
+    /// Only a failed name lookup is DNS trouble. A reset, a refused connection, a TLS error or a timeout
+    /// (a VPN or firewall dropping traffic, say) is not, and answering it with DoH would flip the whole
+    /// session onto Cloudflare and send the hostnames to a third party for nothing.
+    /// </summary>
+    private static bool IsDnsFailure(HttpRequestException ex) =>
+        ex.InnerException is SocketException { SocketErrorCode: SocketError.HostNotFound or SocketError.TryAgain or SocketError.NoData };
 
     private async Task<IPAddress[]> TryResolveDohAsync(string host, CancellationToken ct)
     {
