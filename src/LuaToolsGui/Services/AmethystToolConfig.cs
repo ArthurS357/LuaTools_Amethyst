@@ -49,9 +49,29 @@ internal static partial class AmethystToolConfig
     /// Whether the switch is on in <paramref name="toml"/>. Absent key, absent section or any value other
     /// than <c>true</c> reads as off — off is AmethystTool's own default.
     /// </summary>
-    public static bool ReadDenuvoAliases(string toml)
+    public static bool ReadDenuvoAliases(string toml) => ReadBool(toml, Section, Key, defaultValue: false);
+
+    /// <summary><c>[manifest] failover</c> (engine v1.5.1): provider failover with a circuit breaker. On by
+    /// default in the engine, so a config written before v1.5.1 — no such key — reads as on.</summary>
+    public static bool ReadManifestFailover(string toml) => ReadBool(toml, "manifest", "failover", defaultValue: true);
+
+    /// <summary><c>[shadow] record</c> (engine v1.5.0): the maintainer-only fingerprint recorder. Off by
+    /// default.</summary>
+    public static bool ReadShadowRecord(string toml) => ReadBool(toml, "shadow", "record", defaultValue: false);
+
+    /// <summary>
+    /// A boolean key as AmethystTool would read it: <c>[section] key</c>, or <c>section.key</c> at the root.
+    /// <paramref name="defaultValue"/> when the key or section is absent or the value is neither
+    /// <c>true</c> nor <c>false</c> — the engine's own default is what it falls back to as well.
+    /// </summary>
+    internal static bool ReadBool(string toml, string section, string key, bool defaultValue)
     {
         ArgumentNullException.ThrowIfNull(toml);
+
+        string s = Regex.Escape(section), k = Regex.Escape(key);
+        var header = new Regex($@"^\s*\[\s*{s}\s*\]\s*(#.*)?$");
+        var keyLine = new Regex($@"^\s*{k}\s*=\s*(?<value>[^#]*?)\s*(#.*)?$");
+        var dotted = new Regex($@"^\s*{s}\s*\.\s*{k}\s*=\s*(?<value>[^#]*?)\s*(#.*)?$");
 
         bool inSection = false, atRoot = true;
         foreach (var line in ScanLines(SplitLines(toml)))
@@ -61,16 +81,22 @@ internal static partial class AmethystToolConfig
             if (AnyHeader().IsMatch(line.Text))
             {
                 atRoot = false;
-                inSection = SectionHeader().IsMatch(line.Text);
+                inSection = header.IsMatch(line.Text);
                 continue;
             }
 
-            Match m = inSection ? KeyLine().Match(line.Text)
-                : atRoot ? DottedKeyLine().Match(line.Text)
+            Match m = inSection ? keyLine.Match(line.Text)
+                : atRoot ? dotted.Match(line.Text)
                 : Match.Empty;
-            if (m.Success) return m.Groups["value"].Value.Trim() == "true";
+            if (m.Success)
+                return m.Groups["value"].Value.Trim() switch
+                {
+                    "true" => true,
+                    "false" => false,
+                    _ => defaultValue,
+                };
         }
-        return false;
+        return defaultValue;
     }
 
     /// <summary>

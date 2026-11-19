@@ -348,6 +348,59 @@ public class LaunchOptionsService
     }
 
     /// <summary>
+    /// Settings → Maintenance's last resort for a corrupt content cache ("Invalid content configuration"):
+    /// take appinfo.vdf away so Steam rebuilds it from PICS on its next start.
+    ///
+    /// <para>
+    /// MOVED into the backup folder, never deleted: the backup and the removal are one rename on Steam's own
+    /// drive, so there is no moment where neither copy exists and no 373 MB copy that needs free space. And
+    /// only with Steam confirmed closed — a running client would write its in-memory cache straight back.
+    /// Staged launch-option edits survive in <see cref="LaunchModStore"/>, but the rebuilt file does not have
+    /// them: the drift check at the next app start offers to re-apply them.
+    /// </para>
+    /// </summary>
+    /// <returns><see cref="ApplyResult.Error"/> is the move's failure or a Steam that would not close (file
+    /// untouched), or a Steam that came back up during the move (file moved, but Steam may write its
+    /// in-memory cache back on exit: retry with Steam closed).</returns>
+    public ApplyResult ClearAppInfo(bool restartSteam = true)
+    {
+        lock (_writeGate)
+        {
+            if (AppInfoPath is not { } path || !File.Exists(path))
+                return new ApplyResult(false, Resources.Strings.Settings_ClearAppInfo_NoFile);
+
+            bool wasRunning = _isSteamRunning();
+            try
+            {
+                if (wasRunning) _stopSteam();
+                if (_isSteamRunning())
+                    return new ApplyResult(false, Resources.Strings.Launch_Restore_SteamStillRunning, wasRunning);
+
+                string backupDir = _backupDir ?? DefaultBackupDir(path);
+                Directory.CreateDirectory(backupDir);
+                string dest = Path.Combine(backupDir, $"appinfo-{DateTime.Now:yyyyMMdd-HHmmss}.vdf");
+                File.Move(path, dest, overwrite: true);
+                PruneBackups(backupDir); // a ~373 MB file per click otherwise; the one just moved is newest
+                AppLog.Log($"LaunchOptions: appinfo.vdf moved to {dest}; Steam rebuilds it on next start");
+
+                // Opened between the check and the move: it may hold the old cache in memory.
+                if (_isSteamRunning())
+                    return new ApplyResult(false, Resources.Strings.Launch_Restore_SteamStillRunning, wasRunning);
+                return new ApplyResult(true, null, wasRunning);
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                AppLog.Log($"LaunchOptions: clearing appinfo.vdf failed, nothing changed: {ex.Message}");
+                return new ApplyResult(false, ex.Message, wasRunning);
+            }
+            finally
+            {
+                if (wasRunning && restartSteam && !_isSteamRunning()) _startSteam();
+            }
+        }
+    }
+
+    /// <summary>
     /// Which staged edits no longer match what's in appinfo — i.e. Steam has overwritten them. Runs off
     /// the UI thread; returns an empty list when nothing is staged so the common case costs nothing.
     /// </summary>
@@ -397,12 +450,7 @@ public class LaunchOptionsService
             Directory.CreateDirectory(backupDir);
             string dest = Path.Combine(backupDir, $"appinfo-{DateTime.Now:yyyyMMdd-HHmmss}.vdf");
             File.Copy(path, dest, overwrite: true);
-
-            foreach (var old in new DirectoryInfo(backupDir)
-                         .GetFiles("appinfo-*.vdf")
-                         .OrderByDescending(f => f.CreationTimeUtc)
-                         .Skip(MaxBackups))
-                try { old.Delete(); } catch { /* best effort */ }
+            PruneBackups(backupDir);
             return true;
         }
         catch (Exception ex)
@@ -412,4 +460,28 @@ public class LaunchOptionsService
             return false;
         }
     }
+
+    /// <summary>
+    /// Keep the newest <see cref="MaxBackups"/> by the timestamp in the NAME, not CreationTimeUtc:
+    /// <see cref="ClearAppInfo"/> MOVES the live file in, and a move keeps its original creation time. Files
+    /// whose name carries no parseable stamp are left alone, so a stray <c>appinfo-old.vdf</c> can neither
+    /// outrank nor evict a real backup.
+    /// </summary>
+    private static void PruneBackups(string backupDir)
+    {
+        foreach (var old in new DirectoryInfo(backupDir)
+                     .GetFiles("appinfo-*.vdf")
+                     .Select(f => (File: f, Stamp: BackupStamp(f.Name)))
+                     .Where(b => b.Stamp is not null)
+                     .OrderByDescending(b => b.Stamp)
+                     .Skip(MaxBackups))
+            try { old.File.Delete(); } catch { /* best effort */ }
+    }
+
+    internal static DateTime? BackupStamp(string fileName) =>
+        fileName.StartsWith("appinfo-", StringComparison.Ordinal) && fileName.EndsWith(".vdf", StringComparison.Ordinal)
+        && DateTime.TryParseExact(fileName["appinfo-".Length..^".vdf".Length], "yyyyMMdd-HHmmss",
+            System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var stamp)
+            ? stamp
+            : null;
 }

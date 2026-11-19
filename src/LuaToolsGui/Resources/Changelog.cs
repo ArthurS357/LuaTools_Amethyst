@@ -29,6 +29,16 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.7.13.5", "2026-11-19",
+            "AmethystTool engine v1.5.1: a content-cache rescue button, the engine's new CLIs kept on disk, and safer fix downloads.",
+            [
+                "Settings > Maintenance has a new Clear content cache (AppInfo) button for an installed game stuck on \"Invalid content configuration\": it closes Steam, moves appinfo.vdf into a backup folder and restarts Steam.",
+                "Installing AmethystTool v1.5.1 now keeps version_pin.exe and pattern_migrate.exe from the release's tools folder, in the app's own data folder, never next to steam.exe.",
+                "The engine's new [manifest] failover and [shadow] record settings are read with the engine's defaults, and toggling Denuvo Mode never touches them.",
+                "Signed fix downloads re-check every redirect hop: plain http, IP addresses and localhost names are refused at any hop, and a redirect loop stops after 5.",
+                "The new button's text is in English and Portuguese (Brazil) for now. No new dependency.",
+            ]),
+
         new("1.7.13.3", "2026-11-08",
             "Fixes tab: the whole LuaTools catalog, with an Installed badge on the games you have and those games first.",
             [

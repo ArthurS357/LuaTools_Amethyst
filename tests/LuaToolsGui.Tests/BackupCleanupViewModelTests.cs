@@ -35,14 +35,67 @@ public sealed class BackupCleanupViewModelTests : IDisposable
         public override DateTimeOffset GetUtcNow() => now;
     }
 
+    /// <summary>appinfo.vdf the stubbed launch service points at. Steam control is stubbed so no test here can
+    /// ever close the developer's real Steam.</summary>
+    private string AppInfoPath => Path.Combine(_root, "appcache", "appinfo.vdf");
+
+    private int _steamStops;
+
     private BackupCleanupViewModel Vm(string steamPath, Func<int, long, Task<bool>>? confirm = null)
     {
         var settings = new SettingsService(Path.Combine(_tmp, "cfg")) { SteamPathOverride = steamPath };
-        return new BackupCleanupViewModel(new BackupService(), new SteamService(settings), new ToastService())
+        return new BackupCleanupViewModel(new BackupService(), new SteamService(settings), new ToastService(),
+            new LuaToolsGui.Services.AppInfo.LaunchOptionsService(() => AppInfoPath, () => false,
+                () => _steamStops++, () => { },
+                new LuaToolsGui.Services.AppInfo.LaunchModStore(Path.Combine(_tmp, "launchmods.json")),
+                Path.Combine(_tmp, "appinfo-backup")))
         {
             Clock = new FixedClock(new DateTimeOffset(Now)),
             ConfirmDelete = confirm ?? ((_, _) => Task.FromResult(true)),
         };
+    }
+
+    private void SeedAppInfo()
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(AppInfoPath)!);
+        File.WriteAllBytes(AppInfoPath, [1, 2, 3]);
+    }
+
+    [Fact]
+    public async Task Clear_appinfo_declined_changes_nothing()
+    {
+        SeedAppInfo();
+        var vm = Vm(_root);
+        vm.ConfirmClearAppInfo = () => Task.FromResult(false);
+
+        await vm.ClearAppInfoCommand.ExecuteAsync(null);
+
+        File.Exists(AppInfoPath).Should().BeTrue();
+        Directory.Exists(Path.Combine(_tmp, "appinfo-backup")).Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task Clear_appinfo_confirmed_moves_the_file_into_the_backup()
+    {
+        SeedAppInfo();
+        var vm = Vm(_root);
+        vm.ConfirmClearAppInfo = () => Task.FromResult(true);
+
+        await vm.ClearAppInfoCommand.ExecuteAsync(null);
+
+        File.Exists(AppInfoPath).Should().BeFalse();
+        Directory.GetFiles(Path.Combine(_tmp, "appinfo-backup"), "appinfo-*.vdf").Should().ContainSingle();
+    }
+
+    [Fact]
+    public async Task Clear_appinfo_with_no_file_reports_and_touches_nothing()
+    {
+        var vm = Vm(_root);
+        vm.ConfirmClearAppInfo = () => Task.FromResult(true);
+
+        await vm.ClearAppInfoCommand.ExecuteAsync(null); // error toast, no throw
+
+        _steamStops.Should().Be(0);
     }
 
     private string Backup(string prefix, DateTime local, int bytes = 1)

@@ -150,6 +150,21 @@ public static class AmethystToolPlan
         "amethysttool.toml",
     ];
 
+    /// <summary>Folder inside the release archive (engine v1.5.1+) that carries the maintenance CLIs.</summary>
+    public const string ToolsDirectory = "tools";
+
+    /// <summary>
+    /// The CLIs taken from <see cref="ToolsDirectory"/>. An allow-list for the same reason as
+    /// <see cref="PayloadFiles"/>. They go to the app's own state folder, NEVER the Steam root: nothing
+    /// there loads them, and the root stays limited to what steam.exe needs. Optional — releases before
+    /// v1.5.1 carry none, and their absence never fails an install.
+    /// </summary>
+    public static readonly IReadOnlyList<string> ToolFiles =
+    [
+        "version_pin.exe",
+        "pattern_migrate.exe",
+    ];
+
     /// <summary>Prefix of the per-install backup folder created inside the Steam root.</summary>
     public const string BackupDirectoryPrefix = "AmethystTool-backup-";
 

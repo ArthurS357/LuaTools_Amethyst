@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.7.13.3");
+        AppVersion.Current.Should().Be("1.7.13.5");
     }
 
     [Fact]
@@ -51,6 +51,18 @@ public class ChangelogTests
 
         // One anchor per change the release was actually about, so an entry that got copied forward from
         // the previous version fails here rather than shipping a changelog describing the wrong release.
+        text.Should().ContainEquivalentOf("Clear content cache");            // the appinfo rescue
+        text.Should().ContainEquivalentOf("backup folder");                  // backed up, never just deleted
+        text.Should().ContainEquivalentOf("pattern_migrate.exe");            // the CLIs are kept
+        text.Should().ContainEquivalentOf("[manifest] failover");            // the new config keys
+        text.Should().ContainEquivalentOf("every redirect hop");             // F-09
+    }
+
+    [Fact]
+    public void The_1_7_13_3_entry_still_names_what_that_release_was_about()
+    {
+        string text = string.Join(" ", Changelog.Entries.Single(e => e.Version == "1.7.13.3").Highlights);
+
         text.Should().ContainEquivalentOf("full LuaTools catalog");          // the whole catalog
         text.Should().ContainEquivalentOf("Installed badge");                // the badge
         text.Should().ContainEquivalentOf("installed games sort first");     // the order

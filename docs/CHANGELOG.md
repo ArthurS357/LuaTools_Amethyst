@@ -1,5 +1,42 @@
 # Changelog
 
+## 1.7.13.5 — 2026-11-19
+
+Integracao da engine AmethystTool v1.5.1 e revalidacao de redirect nos downloads de fix (F-09). A 1.7.13.4 nao foi
+publicada; o F-09 entra aqui.
+
+### Novidades
+
+- **Limpar Cache de Conteudo (AppInfo):** botao em Configuracoes > Manutencao (`BackupCleanupViewModel.ClearAppInfoCommand`)
+  para o erro "Configuracao de Conteudo Invalida". `LaunchOptionsService.ClearAppInfo` fecha a Steam, recusa se ela
+  continuar aberta, MOVE `appcache\appinfo.vdf` para `appcache\luatools-backup\appinfo-<data>.vdf` (backup e remocao num
+  rename so, sem copia de ~373 MB) e reabre a Steam, que reconstroi o arquivo via PICS. Pede confirmacao antes.
+- **CLIs da engine preservadas:** o zip v1.5.1 traz `tools\version_pin.exe` e `tools\pattern_migrate.exe`. O plano so
+  copiava os 4 arquivos do allow-list e o temp era apagado, entao `tools\` se perdia. `AmethystToolService.InstallTools`
+  copia esses dois nomes (allow-list `AmethystToolPlan.ToolFiles`), do zip ja verificado e triado, para
+  `%AppData%\LuaToolsGui\amethysttool\tools`, nunca para a raiz da Steam. Release sem `tools\` nao falha. O uninstall
+  apaga a pasta. Sem UI para executa-las ainda.
+- **Config v1.5.1:** `AmethystToolConfig.ReadManifestFailover` (default `true`) e `ReadShadowRecord` (default `false`)
+  sobre um `ReadBool` generico; `ReadDenuvoAliases` delega a ele. A edicao continua por linha, entao `[manifest] failover`
+  e `[shadow] record` sobrevivem ao toggle do Modo Denuvo byte a byte.
+
+### Correcoes
+
+- **F-09, redirect revalidado:** downloads de fix assinados seguem redirect a mao (`FixDownloadHttp`, sem auto-redirect e
+  sem cookies); cada hop passa por `ValidateRedirectHop` (https, nome DNS, sem loopback/IP literal, sem `localhost.` nem
+  `*.localhost`), com limite de 5 hops e um orcamento de tempo unico para a cadeia.
+- **Rotacao de backup do appinfo por nome:** `Backup()` ordenava por `CreationTimeUtc`; um arquivo movido mantem a data de
+  criacao antiga e seria apagado como o mais velho. Agora ordena pelo timestamp do nome.
+- **Flatten do zip com pasta envelope** tambem sobe subpastas, para `tools\` nao ficar para tras.
+
+### Implementacao
+
+- Retry manual de `wudrm` no C#: nao existia. A unica espera da GUI (`SteamGameLauncher.StartSteamAndWaitAsync`) aguarda o
+  processo da Steam, nao o motor; o failover e todo da engine.
+- 5 chaves novas (`Settings_Btn_ClearAppInfo`, `Settings_ClearAppInfo_*`) em ingles e pt-BR, em `PENDING_TRANSLATION`.
+- Testes: `AmethystEngine151Tests` (17), `SignedDownloadRedirectTests`, ancoras do `ChangelogTests`. Mutacao manual:
+  default do failover, delete sem backup e flatten sem subpasta, todos mortos. Sem pacote novo.
+
 ## 1.7.13.3 — 2026-11-08
 
 Aba Fixes: catalogo completo do `lua.tools` com badge "Installed" e jogos instalados primeiro.

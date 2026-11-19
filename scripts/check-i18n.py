@@ -49,7 +49,13 @@ SAMPLE_SIZE = 10
 #
 # Fixes_Warn_InstalledWithoutFix / Fixes_Warn_LibraryFailed: Fixes tab banner and library warning; English
 # only until the Fixes tab design settles.
-PENDING_TRANSLATION: frozenset[str] = frozenset({"Fixes_Warn_InstalledWithoutFix", "Fixes_Warn_LibraryFailed"})
+# Settings_Btn_ClearAppInfo / Settings_ClearAppInfo_*: Settings > Maintenance "clear content cache" button
+# (engine v1.5.1 rescue tool); English + pt-BR only until the copy settles.
+PENDING_TRANSLATION: frozenset[str] = frozenset({
+    "Fixes_Warn_InstalledWithoutFix", "Fixes_Warn_LibraryFailed",
+    "Settings_Btn_ClearAppInfo", "Settings_ClearAppInfo_Tooltip", "Settings_ClearAppInfo_Confirm_Body",
+    "Settings_ClearAppInfo_Confirm_Go", "Settings_ClearAppInfo_Done", "Settings_ClearAppInfo_NoFile",
+})
 
 
 def sample(keys: set[str]) -> str:

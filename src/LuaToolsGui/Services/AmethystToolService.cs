@@ -53,6 +53,10 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LuaToolsGui", "amethysttool");
     private static string ManifestPath => Path.Combine(StateDir, "installed.json");
 
+    /// <summary>Where the release's maintenance CLIs (<see cref="AmethystToolPlan.ToolFiles"/>) are kept for
+    /// later use — beside the app's state, not in the Steam root.</summary>
+    public static string ToolsDir => Path.Combine(StateDir, AmethystToolPlan.ToolsDirectory);
+
     private string? SteamDir => steam.EffectivePath;
 
     private GithubRelease? _cachedLatest;
@@ -390,7 +394,7 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
             if (!await notice.ReviewAsync(new DownloadReview(
                     AppConfig.AmethystToolOwner, AppConfig.AmethystToolRepo, latest.TagName,
                     asset.Name, zipSha,
-                    FileCount: plan.Steps.Count,
+                    FileCount: plan.Steps.Count + StagedTools(staged).Count,
                     ArchiveScreened: true), ct))
                 return (false, Resources.Strings.Download_Notice_Cancelled);
 
@@ -408,6 +412,8 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
             // a partial payload, and relaunching Steam onto a proxy DLL whose target is missing is worse
             // than leaving Steam closed with a failure reported. The backup folder still has the originals.
             if (wasRunning) steam.StartSteam();
+
+            InstallTools(staged, ToolsDir);
 
             WriteManifest(new Manifest
             {
@@ -502,13 +508,48 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
         }
     }
 
+    /// <summary>The allow-listed CLIs present under <c>tools\</c> in the staging folder.</summary>
+    private static List<string> StagedTools(string staged) =>
+        [.. AmethystToolPlan.ToolFiles
+            .Select(name => Path.Combine(staged, AmethystToolPlan.ToolsDirectory, name))
+            .Where(File.Exists)];
+
+    /// <summary>
+    /// Copy the release's maintenance CLIs out of the staging folder before it is deleted. Only the names in
+    /// <see cref="AmethystToolPlan.ToolFiles"/>, from the already verified and screened archive. Best effort:
+    /// the engine is installed by now, and a missing CLI must not turn that into a reported failure.
+    /// </summary>
+    /// <returns>The names copied.</returns>
+    internal static IReadOnlyList<string> InstallTools(string staged, string toolsDir)
+    {
+        var copied = new List<string>();
+        try
+        {
+            // Start empty: a CLI an older release shipped and this one dropped must not outlive it.
+            if (Directory.Exists(toolsDir)) Directory.Delete(toolsDir, recursive: true);
+            foreach (string source in StagedTools(staged))
+            {
+                Directory.CreateDirectory(toolsDir);
+                string name = Path.GetFileName(source);
+                File.Copy(source, Path.Combine(toolsDir, name), overwrite: true);
+                copied.Add(name);
+            }
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            AppLog.Log($"amethysttool: could not keep the release CLIs: {ex.Message}");
+        }
+        if (copied.Count > 0) AppLog.Log($"amethysttool: CLIs kept in {toolsDir}: {string.Join(", ", copied)}");
+        return copied;
+    }
+
     /// <summary>
     /// The release archive puts its files at the root, but a zip built with a wrapping folder is a normal
     /// packaging accident. When extraction produced exactly one directory and no files, treat that
     /// directory's contents as the payload. Only one level is unwrapped, and only from a folder the
-    /// already-screened archive produced.
+    /// already-screened archive produced. Subfolders come up too, so <c>tools\</c> survives the unwrap.
     /// </summary>
-    private static void FlattenStagedLayout(string staged)
+    internal static void FlattenStagedLayout(string staged)
     {
         var files = Directory.GetFiles(staged, "*", SearchOption.TopDirectoryOnly);
         var dirs = Directory.GetDirectories(staged);
@@ -516,6 +557,12 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
 
         foreach (string file in Directory.GetFiles(dirs[0], "*", SearchOption.TopDirectoryOnly))
             File.Move(file, Path.Combine(staged, Path.GetFileName(file)), overwrite: true);
+
+        foreach (string sub in Directory.GetDirectories(dirs[0]))
+        {
+            string target = Path.Combine(staged, Path.GetFileName(sub));
+            if (!Directory.Exists(target)) Directory.Move(sub, target);
+        }
     }
 
     /// <summary>
@@ -595,6 +642,8 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
     private static void ClearManifest()
     {
         try { if (File.Exists(ManifestPath)) File.Delete(ManifestPath); }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException) { /* best effort */ }
+        try { if (Directory.Exists(ToolsDir)) Directory.Delete(ToolsDir, recursive: true); }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException) { /* best effort */ }
     }
 

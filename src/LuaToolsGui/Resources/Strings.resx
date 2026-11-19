@@ -879,6 +879,12 @@ Enable it?</value></data>
   <data name="Settings_Backups_Confirm_Body" xml:space="preserve"><value>Permanently delete {0} item(s) ({1})? You won't be able to roll back earlier AmethystTool installs or plugin removals.</value></data>
   <data name="Settings_Backups_Confirm_Delete" xml:space="preserve"><value>Delete</value></data>
   <data name="Settings_Backups_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Settings_Btn_ClearAppInfo" xml:space="preserve"><value>Clear content cache (AppInfo)</value></data>
+  <data name="Settings_ClearAppInfo_Tooltip" xml:space="preserve"><value>Use this if an installed game gives an “Invalid content configuration” error. Closes Steam, moves appcache\appinfo.vdf into a backup folder next to it, and restarts Steam, which rebuilds the file.</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Body" xml:space="preserve"><value>Steam will be closed, appinfo.vdf moved to a backup folder next to it, and Steam restarted to rebuild it. The first start takes longer. Launch options changed with LuaTools are offered for re-apply the next time LuaTools starts. Continue?</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Go" xml:space="preserve"><value>Clear cache</value></data>
+  <data name="Settings_ClearAppInfo_Done" xml:space="preserve"><value>Content cache cleared. Steam rebuilds it the next time it starts.</value></data>
+  <data name="Settings_ClearAppInfo_NoFile" xml:space="preserve"><value>Steam has no content cache (appinfo.vdf) to clear.</value></data>
   <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>{0} item(s) deleted ({1} freed)</value></data>
   <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>{0} item(s) could not be deleted. Close Steam and try again.</value></data>
   <data name="Settings_Backups_Column_Name" xml:space="preserve"><value>Name</value></data>

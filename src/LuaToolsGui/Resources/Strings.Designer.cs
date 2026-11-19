@@ -171,6 +171,12 @@ public static class Strings
     public static string Settings_Backups_Confirm_Body => Get(nameof(Settings_Backups_Confirm_Body));
     public static string Settings_Backups_Confirm_Delete => Get(nameof(Settings_Backups_Confirm_Delete));
     public static string Settings_Backups_Cancel => Get(nameof(Settings_Backups_Cancel));
+    public static string Settings_Btn_ClearAppInfo => Get(nameof(Settings_Btn_ClearAppInfo));
+    public static string Settings_ClearAppInfo_Tooltip => Get(nameof(Settings_ClearAppInfo_Tooltip));
+    public static string Settings_ClearAppInfo_Confirm_Body => Get(nameof(Settings_ClearAppInfo_Confirm_Body));
+    public static string Settings_ClearAppInfo_Confirm_Go => Get(nameof(Settings_ClearAppInfo_Confirm_Go));
+    public static string Settings_ClearAppInfo_Done => Get(nameof(Settings_ClearAppInfo_Done));
+    public static string Settings_ClearAppInfo_NoFile => Get(nameof(Settings_ClearAppInfo_NoFile));
     public static string Settings_Backups_Toast_Deleted => Get(nameof(Settings_Backups_Toast_Deleted));
     public static string Settings_Backups_Toast_Failed => Get(nameof(Settings_Backups_Toast_Failed));
     public static string Settings_Backups_Err_BatchRefused => Get(nameof(Settings_Backups_Err_BatchRefused));

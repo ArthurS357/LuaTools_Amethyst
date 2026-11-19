@@ -4,6 +4,7 @@ using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LuaToolsGui.Services;
+using LuaToolsGui.Services.AppInfo;
 using LuaToolsGui.Services.Backups;
 
 namespace LuaToolsGui.ViewModels;
@@ -45,12 +46,15 @@ public partial class BackupCleanupViewModel : ObservableObject
     private readonly BackupService _backups;
     private readonly SteamService _steam;
     private readonly ToastService _toast;
+    private readonly LaunchOptionsService _launch;
 
-    public BackupCleanupViewModel(BackupService backups, SteamService steam, ToastService toast)
+    public BackupCleanupViewModel(BackupService backups, SteamService steam, ToastService toast,
+        LaunchOptionsService launch)
     {
         _backups = backups;
         _steam = steam;
         _toast = toast;
+        _launch = launch;
     }
 
     /// <summary>Test seam: the age filter's "now".</summary>
@@ -58,6 +62,9 @@ public partial class BackupCleanupViewModel : ObservableObject
 
     /// <summary>Test seam: asks before deleting (folder count, total bytes); true = go ahead.</summary>
     internal Func<int, long, Task<bool>> ConfirmDelete { get; set; } = ConfirmWithDialogAsync;
+
+    /// <summary>Test seam: asks before clearing appinfo.vdf; true = go ahead.</summary>
+    internal Func<Task<bool>> ConfirmClearAppInfo { get; set; } = ConfirmClearAppInfoWithDialogAsync;
 
     public ObservableCollection<BackupEntryViewModel> Entries { get; } = [];
 
@@ -123,6 +130,29 @@ public partial class BackupCleanupViewModel : ObservableObject
     [RelayCommand]
     private Task DeleteOlderThan30Days() => DeleteAsync(OldEntries());
 
+    /// <summary>
+    /// "Clear content cache (AppInfo)": the rescue for an installed game stuck on "Invalid content
+    /// configuration". Confirmed first because it closes Steam; <see cref="LaunchOptionsService.ClearAppInfo"/>
+    /// backs the file up (by moving it) and refuses while Steam is still running.
+    /// </summary>
+    [RelayCommand]
+    private async Task ClearAppInfo()
+    {
+        if (_busy) return;
+        _busy = true;
+        try
+        {
+            if (!await ConfirmClearAppInfo()) return;
+
+            // Off the UI thread: stopping Steam waits for it to exit.
+            var result = await Task.Run(() => _launch.ClearAppInfo());
+            _toast.Show(Resources.Strings.Settings_Btn_ClearAppInfo,
+                result.Ok ? Resources.Strings.Settings_ClearAppInfo_Done : result.Error ?? "?",
+                error: !result.Ok);
+        }
+        finally { _busy = false; }
+    }
+
     private IReadOnlyList<BackupEntry> OldEntries() =>
         BackupInventory.OlderThan(Entries.Select(e => e.Entry), Clock.GetUtcNow().UtcDateTime, OldAfterDays);
 
@@ -158,6 +188,18 @@ public partial class BackupCleanupViewModel : ObservableObject
             : result.Errors.Count > 0
                 ? string.Format(CultureInfo.CurrentCulture, Resources.Strings.Settings_Backups_Toast_Failed, result.Errors.Count)
                 : null;
+
+    private static async Task<bool> ConfirmClearAppInfoWithDialogAsync()
+    {
+        var box = new Wpf.Ui.Controls.MessageBox
+        {
+            Title = Resources.Strings.Settings_Btn_ClearAppInfo,
+            Content = Resources.Strings.Settings_ClearAppInfo_Confirm_Body,
+            PrimaryButtonText = Resources.Strings.Settings_ClearAppInfo_Confirm_Go,
+            CloseButtonText = Resources.Strings.Settings_Backups_Cancel,
+        };
+        return await box.ShowDialogAsync() == Wpf.Ui.Controls.MessageBoxResult.Primary;
+    }
 
     private static async Task<bool> ConfirmWithDialogAsync(int count, long bytes)
     {

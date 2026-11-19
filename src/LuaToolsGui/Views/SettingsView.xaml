@@ -851,6 +851,24 @@
                         </StackPanel>
                     </StackPanel>
                 </Border>
+                <!-- Rescue for "Invalid content configuration": closes Steam, moves appinfo.vdf aside, restarts it. -->
+                <Border Style="{StaticResource SettingsCard}">
+                    <StackPanel Margin="14,12" IsEnabled="{Binding HasSteamConfigured}">
+                        <ui:Button
+                            HorizontalAlignment="Left"
+                            Appearance="Caution"
+                            Command="{Binding ClearAppInfoCommand}"
+                            Content="{x:Static res:Strings.Settings_Btn_ClearAppInfo}"
+                            Icon="{ui:SymbolIcon Warning24}"
+                            ToolTip="{x:Static res:Strings.Settings_ClearAppInfo_Tooltip}" />
+                        <TextBlock
+                            Margin="0,6,0,0"
+                            FontSize="12"
+                            Foreground="{StaticResource TextDimBrush}"
+                            Text="{x:Static res:Strings.Settings_ClearAppInfo_Tooltip}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
             </StackPanel>
 
             <!-- The "Community" section held a single toggle: donate Steam decryption keys. That feature
