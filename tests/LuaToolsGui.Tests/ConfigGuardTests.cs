@@ -144,6 +144,75 @@ public sealed class ConfigGuardTests : IDisposable
         Directory.Exists(newDir).Should().BeFalse();
     }
 
+    // ── Legacy settings.json vaccine ─────────────────────────────────────────
+
+    [Theory]
+    [InlineData("""{"SelectedMode":"OpenSteamTools","ManagePageSize":48}""")]              // key absent
+    [InlineData("""{"SelectedMode":"OpenSteamTools","ManagePageSize":48,"DonateKeys":true}""")] // explicit true
+    public void Migration_vaccinates_the_legacy_settings_json_and_keeps_its_other_keys(string legacyJson)
+    {
+        string legacyDir = Path.Combine(_root, "LuaToolsGui");
+        string newDir = Path.Combine(_root, "LuaToolsAmethyst");
+        Directory.CreateDirectory(legacyDir);
+        File.WriteAllText(Path.Combine(legacyDir, "settings.json"), legacyJson);
+
+        AppDataMigrator.MigrateIfNeeded(legacyDir, newDir, _ => { }).Should().BeTrue();
+
+        using var doc = JsonDocument.Parse(File.ReadAllText(Path.Combine(legacyDir, "settings.json")));
+        doc.RootElement.GetProperty("DonateKeys").ValueKind.Should().Be(JsonValueKind.False,
+            "upstream reads this file and treats an absent key as true, which leaks Steam decryption keys");
+        doc.RootElement.GetProperty("SelectedMode").GetString().Should().Be("OpenSteamTools");
+        doc.RootElement.GetProperty("ManagePageSize").GetInt32().Should().Be(48);
+        File.Exists(Path.Combine(newDir, "settings.json")).Should().BeTrue("the copy still happens");
+    }
+
+    [Fact]
+    public void Migration_does_not_rewrite_a_legacy_settings_json_that_is_already_vaccinated()
+    {
+        string legacyDir = Path.Combine(_root, "LuaToolsGui");
+        Directory.CreateDirectory(legacyDir);
+        string legacy = Path.Combine(legacyDir, "settings.json");
+        const string original = """{"DonateKeys":false,"X":1}""";
+        File.WriteAllText(legacy, original);
+
+        AppDataMigrator.MigrateIfNeeded(legacyDir, Path.Combine(_root, "LuaToolsAmethyst"), _ => { });
+
+        File.ReadAllText(legacy).Should().Be(original, "no write, so the compact formatting survives");
+    }
+
+    [Fact]
+    public void Migration_never_creates_a_legacy_settings_json()
+    {
+        string legacyDir = Path.Combine(_root, "LuaToolsGui");
+        Directory.CreateDirectory(Path.Combine(legacyDir, "plugin"));
+        File.WriteAllText(Path.Combine(legacyDir, "plugin", "luatools.js"), "// plugin");
+
+        AppDataMigrator.MigrateIfNeeded(legacyDir, Path.Combine(_root, "LuaToolsAmethyst"), _ => { })
+            .Should().BeTrue();
+
+        File.Exists(Path.Combine(legacyDir, "settings.json")).Should().BeFalse();
+    }
+
+    [Theory]
+    [InlineData("{ this is not json")]
+    [InlineData("[1,2,3]")] // valid JSON, not an object
+    public void A_bad_legacy_settings_json_is_left_untouched_and_the_migration_still_runs(string legacyJson)
+    {
+        string legacyDir = Path.Combine(_root, "LuaToolsGui");
+        string newDir = Path.Combine(_root, "LuaToolsAmethyst");
+        Directory.CreateDirectory(legacyDir);
+        string legacy = Path.Combine(legacyDir, "settings.json");
+        File.WriteAllText(legacy, legacyJson);
+        File.WriteAllText(Path.Combine(legacyDir, "other.json"), "{}");
+
+        var logs = new List<string>();
+        AppDataMigrator.MigrateIfNeeded(legacyDir, newDir, logs.Add).Should().BeTrue();
+
+        File.ReadAllText(legacy).Should().Be(legacyJson);
+        File.Exists(Path.Combine(newDir, "other.json")).Should().BeTrue();
+        logs.Should().Contain(l => l.Contains("DonateKeys") || l.Contains("vaccinate"));
+    }
+
     // ── DonateKeys vaccine ───────────────────────────────────────────────────
 
     [Fact]

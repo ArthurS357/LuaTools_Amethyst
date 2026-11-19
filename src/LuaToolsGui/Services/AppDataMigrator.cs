@@ -1,4 +1,6 @@
 using System.IO;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace LuaToolsGui.Services;
 
@@ -14,8 +16,9 @@ namespace LuaToolsGui.Services;
 /// </para>
 ///
 /// <para>
-/// <b>Copy, never move.</b> The legacy folder is left byte-for-byte as it was, so an upstream install that
-/// still reads it keeps working. The copy goes to a sibling staging folder first and is renamed into place
+/// <b>Copy, never move.</b> The legacy folder keeps every file, so an upstream install that still reads it
+/// keeps working; the only change is <c>"DonateKeys": false</c> in its <c>settings.json</c> (see
+/// <see cref="VaccinateLegacySettings"/>). The copy goes to a sibling staging folder first and is renamed into place
 /// only when complete: a copy interrupted half-way (crash, power loss) leaves no partial
 /// <c>LuaToolsAmethyst</c> that the next boot would mistake for "already migrated".
 /// </para>
@@ -85,10 +88,12 @@ public static class AppDataMigrator
             }
             staging = null;
 
+            VaccinateLegacySettings(legacyFull, log);
+
             SafeLog(log,
                 $"AppDataMigrator: copied {copied} file(s) from '{legacyFull}' to '{currentFull}'"
                 + (failed > 0 ? $" ({failed} skipped due to I/O errors)" : "")
-                + "; legacy directory left untouched.");
+                + "; legacy directory kept (only settings.json gets DonateKeys=false).");
 
             return copied > 0;
         }
@@ -101,6 +106,43 @@ public static class AppDataMigrator
         {
             if (staging is not null)
                 try { if (Directory.Exists(staging)) Directory.Delete(staging, recursive: true); } catch { /* best effort */ }
+        }
+    }
+
+    /// <summary>
+    /// Writes <c>"DonateKeys": false</c> into the LEGACY <c>settings.json</c>. Upstream LuaTools reads that file
+    /// and treats an absent key as <c>true</c>, which uploads Steam decryption keys over plain HTTP; this keeps
+    /// the user safe even if they open the upstream app. The one deliberate write into the legacy folder.
+    ///
+    /// <para>
+    /// Parsed as a <see cref="JsonNode"/> so every property the upstream owns survives. Never creates the file,
+    /// leaves a file that is not a JSON object untouched, and never throws: a bad upstream file must not stop
+    /// this app's own migration.
+    /// </para>
+    /// </summary>
+    private static void VaccinateLegacySettings(string legacyDir, Action<string>? log)
+    {
+        string path = Path.Combine(legacyDir, "settings.json");
+        try
+        {
+            if (!File.Exists(path)) return;
+
+            if (JsonNode.Parse(File.ReadAllText(path)) is not JsonObject root)
+            {
+                SafeLog(log, "AppDataMigrator: legacy settings.json is not a JSON object; DonateKeys not vaccinated.");
+                return;
+            }
+
+            if (root["DonateKeys"] is JsonValue v && v.TryGetValue<bool>(out bool current) && !current)
+                return; // already false: no write, no mtime bump
+
+            root["DonateKeys"] = false;
+            AtomicFile.WriteAllText(path, root.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+            SafeLog(log, "AppDataMigrator: legacy settings.json vaccinated with DonateKeys=false.");
+        }
+        catch (Exception ex) when (ex is JsonException or IOException or UnauthorizedAccessException)
+        {
+            SafeLog(log, $"AppDataMigrator: could not vaccinate legacy settings.json (left as is): {ex.GetType().Name}: {ex.Message}");
         }
     }
 
