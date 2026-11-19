@@ -181,6 +181,34 @@ public class AmethystEngine151Tests : IDisposable
     }
 
     [Fact]
+    public void The_cli_folder_lives_under_the_migrated_app_data_folder()
+    {
+        AmethystToolService.ToolsDir.Should().StartWith(AppDataMigrator.CurrentDirectory + Path.DirectorySeparatorChar);
+        AmethystToolService.ToolsDir.Should().NotStartWith(AppDataMigrator.LegacyDirectory + Path.DirectorySeparatorChar);
+    }
+
+    [Fact]
+    public void Clis_already_extracted_under_the_legacy_folder_come_along_with_the_migration()
+    {
+        string legacy = Path.Combine(_dir, AppDataMigrator.LegacyFolderName);
+        string current = Path.Combine(_dir, AppDataMigrator.CurrentFolderName);
+        string legacyTools = Path.Combine(legacy, "amethysttool", AmethystToolPlan.ToolsDirectory);
+        Directory.CreateDirectory(legacyTools);
+        foreach (string name in AmethystToolPlan.ToolFiles)
+            File.WriteAllText(Path.Combine(legacyTools, name), "cli " + name);
+
+        AppDataMigrator.MigrateIfNeeded(legacy, current, _ => { }).Should().BeTrue();
+
+        // Same relative layout ToolsDir uses, so the GUI finds them without a reinstall.
+        string relative = Path.GetRelativePath(AppDataMigrator.CurrentDirectory, AmethystToolService.ToolsDir);
+        foreach (string name in AmethystToolPlan.ToolFiles)
+        {
+            File.ReadAllText(Path.Combine(current, relative, name)).Should().Be("cli " + name);
+            File.Exists(Path.Combine(legacyTools, name)).Should().BeTrue("the legacy copy stays for upstream");
+        }
+    }
+
+    [Fact]
     public void A_later_release_without_a_cli_does_not_leave_the_old_copy()
     {
         string toolsDir = Path.Combine(_dir, "state", "tools");

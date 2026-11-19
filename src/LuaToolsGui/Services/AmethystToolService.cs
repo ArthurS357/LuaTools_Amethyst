@@ -50,7 +50,7 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
     /// Steam root. Kept beside the app's other state rather than in the Steam root, which stays limited to
     /// exactly the four payload files plus any backup folder.</summary>
     private static string StateDir => Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LuaToolsGui", "amethysttool");
+        AppDataMigrator.CurrentDirectory, "amethysttool");
     private static string ManifestPath => Path.Combine(StateDir, "installed.json");
 
     /// <summary>Where the release's maintenance CLIs (<see cref="AmethystToolPlan.ToolFiles"/>) are kept for
