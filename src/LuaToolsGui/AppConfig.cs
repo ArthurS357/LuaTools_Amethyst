@@ -344,4 +344,30 @@ public static class AppConfig
         "https://ghfast.top/",     // download-only
         "https://gh.ddlc.top/",    // download-only
     ];
+
+    // ── Cloudflare DNS-over-HTTPS fallback (v1.8.0) ───────────────────────────────────
+    // Used ONLY for the allowlisted hosts below when system DNS fails (DnsMode.Auto) or when
+    // DnsMode.Always is selected. Never used for localhost, 127.0.0.1, local traffic, or Steam CDP.
+    public const string DohEndpointUrl = "https://1.1.1.1/dns-query";
+    public static readonly TimeSpan DohTimeout = TimeSpan.FromSeconds(5);
+
+    /// <summary>
+    /// Hosts eligible for Cloudflare DoH IPv4 fallback. Explicitly scoped so local/CDP traffic and
+    /// unrelated domains never send hostnames to a third-party DNS resolver.
+    /// </summary>
+    public static readonly string[] DohFallbackHosts =
+    [
+        "lua.tools",
+        "db.lua.tools",
+        "hubcapmanifest.com",
+        "applist.morrenus.xyz",
+        "github.com",
+        "api.github.com",
+        "raw.githubusercontent.com",
+        "objects.githubusercontent.com",
+        "release-assets.githubusercontent.com",
+        "ghproxy.net",
+        "ghfast.top",
+        "gh.ddlc.top",
+    ];
 }

@@ -17,7 +17,7 @@ namespace LuaToolsGui.Services;
 public class GithubProxy
 {
     // 5-min timeout matches the old UnlockerService client (large asset downloads on slow mirrors).
-    private readonly HttpClient _http = new() { Timeout = TimeSpan.FromMinutes(5) };
+    private readonly HttpClient _http = new(DnsFallbackHttpHandler.CreateDefault()) { Timeout = TimeSpan.FromMinutes(5) };
 
     /// <summary>Hosts a download may originate from. HTTPS only — a plain-http asset URL would be
     /// modifiable in transit regardless of any later hash check.</summary>

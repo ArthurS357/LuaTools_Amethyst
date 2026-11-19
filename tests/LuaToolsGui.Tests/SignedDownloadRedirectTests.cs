@@ -131,7 +131,7 @@ public sealed class SignedDownloadRedirectTests
     public void FixDownloadClient_DoesNotAutoRedirect()
     {
         var client = new LuaToolsApiClient(null!, null!, null!, null!, null!);
-        HandlerOf(client.FixDownloadHttp).AllowAutoRedirect.Should().BeFalse();
+        AllowAutoRedirectOf(client.FixDownloadHttp).Should().BeFalse();
     }
 
     /// <summary>The dedicated client must not leak into the others: the API client and the CDP client
@@ -146,8 +146,8 @@ public sealed class SignedDownloadRedirectTests
             var cdp = new CefInjectorService(new SteamService(new SettingsService(dir)),
                 Microsoft.Extensions.Logging.Abstractions.NullLogger<CefInjectorService>.Instance);
 
-            HandlerOf(PrivateHttp(api)).AllowAutoRedirect.Should().BeTrue();
-            HandlerOf(PrivateHttp(cdp)).AllowAutoRedirect.Should().BeTrue();
+            AllowAutoRedirectOf(PrivateHttp(api)).Should().BeTrue();
+            AllowAutoRedirectOf(PrivateHttp(cdp)).Should().BeTrue();
         }
         finally { try { Directory.Delete(dir, recursive: true); } catch (IOException) { /* best effort */ } }
     }
@@ -164,9 +164,19 @@ public sealed class SignedDownloadRedirectTests
     private static HttpClient PrivateHttp(object owner) =>
         (HttpClient)owner.GetType().GetField("_http", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(owner)!;
 
-    private static HttpClientHandler HandlerOf(HttpClient http) =>
-        (HttpClientHandler)typeof(HttpMessageInvoker)
+    private static bool AllowAutoRedirectOf(HttpClient http)
+    {
+        var handler = (HttpMessageHandler)typeof(HttpMessageInvoker)
             .GetField("_handler", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(http)!;
+        while (handler is DelegatingHandler delegating)
+            handler = delegating.InnerHandler!;
+        return handler switch
+        {
+            HttpClientHandler h => h.AllowAutoRedirect,
+            SocketsHttpHandler s => s.AllowAutoRedirect,
+            _ => throw new InvalidOperationException($"Unexpected inner handler type: {handler.GetType().FullName}"),
+        };
+    }
 
     /// <summary>Answers each request from <c>answer</c>, after <c>delay</c>; never follows a redirect itself.</summary>
     private sealed class Chain(Func<Uri, HttpResponseMessage> answer, TimeSpan delay = default) : HttpMessageHandler

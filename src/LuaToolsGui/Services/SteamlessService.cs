@@ -23,7 +23,7 @@ public record SteamlessResult(int Patched, int Unchanged, int Total, string? Err
 public class SteamlessService(GithubProxy gh, SteamLibraryService library, SteamDepotInfo depots)
 {
     private static readonly string ToolDir =
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LuaToolsGui", "steamless");
+        Path.Combine(AppDataMigrator.CurrentDirectory, "steamless");
     private static string CliPath => Path.Combine(ToolDir, "Steamless.CLI.exe");
 
     private static readonly JsonSerializerOptions JsonOpts = new() { PropertyNameCaseInsensitive = true };

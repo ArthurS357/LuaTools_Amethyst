@@ -2,6 +2,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace LuaToolsGui.Services;
 
@@ -18,9 +19,15 @@ public class AppSettings
     // tell "never set" (→ default ON) from an explicit user choice.
     public bool? AutoUpdateApps { get; set; }
 
-    // NOTE: `DonateKeys` used to live here (default ON). The feature that read it — uploading Steam
-    // decryption keys over plain HTTP — was removed, so the setting went with it. A leftover value in an
-    // existing settings.json is simply ignored on load.
+    // Config Guard vaccine. The feature that read this (uploading Steam decryption keys over plain HTTP) was
+    // removed, but upstream LuaTools treats an ABSENT key as true. Get-only, so it is always written as false
+    // and a "DonateKeys": true read from disk is ignored: nothing has to remember to stamp it.
+    public bool DonateKeys => false;
+
+    // Cloudflare DNS-over-HTTPS fallback mode (Auto | Always | Never) for allowlisted hosts in AppConfig.
+    // Nullable so "never set" (→ default Auto) is distinguishable from an explicit choice.
+    [JsonConverter(typeof(DnsModeJsonConverter))]
+    public DnsMode? DnsMode { get; set; }
 
     // Manage-page results-per-page. 0 = "All" (single infinite scroll). Nullable so "never set"
     // (→ default 24) is distinguishable from an explicit choice.
@@ -143,9 +150,8 @@ public class AppSettings
 
 public sealed class SettingsService
 {
-    /// <summary>The app's real storage location: %AppData%\LuaToolsGui.</summary>
-    internal static string DefaultDirectory { get; } =
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LuaToolsGui");
+    /// <summary>The app's real storage location: %AppData%\LuaToolsAmethyst.</summary>
+    internal static string DefaultDirectory => AppDataMigrator.CurrentDirectory;
 
     // Instance (not static) so tests can point an instance at a temp folder. These were static readonly,
     // which meant any test of the load/save/migrate logic would read and overwrite the developer's real
@@ -170,16 +176,20 @@ public sealed class SettingsService
     /// <see cref="LogSanitizer"/> — its name is narrower than its actual role.</summary>
     private readonly Action<string> _log;
 
-    public SettingsService() : this(DefaultDirectory) { }
+    private readonly bool _publishGlobal;
+
+    public SettingsService() : this(DefaultDirectory, publishGlobal: true) { }
 
     /// <summary>Test seam: an isolated directory, and optionally a failing encryptor plus a capturing log
     /// sink so the DPAPI fallback can be exercised on a machine where DPAPI works perfectly well.</summary>
     internal SettingsService(
-        string directory, Func<byte[], byte[]>? encrypt = null, Action<string>? log = null)
+        string directory, Func<byte[], byte[]>? encrypt = null, Action<string>? log = null,
+        bool publishGlobal = false)
     {
         // Assigned before Load()/MigrateHubcapKey(), both of which can reach Protect().
         _encrypt = encrypt ?? (data => ProtectedData.Protect(data, null, DataProtectionScope.CurrentUser));
         _log = log ?? AppLog.Log;
+        _publishGlobal = publishGlobal;
 
         _dir = directory;
         _filePath = Path.Combine(directory, "settings.json");
@@ -193,6 +203,9 @@ public sealed class SettingsService
         // this service is constructed first in the DI graph, and because Velopack's downloader reaches
         // Candidates from a context with no DI scope. No-op when neither key is present.
         GithubMirrors.Configure(_settings.GithubDownloadMirrors, _settings.GithubApiMirrors);
+
+        if (_publishGlobal)
+            DnsFallbackSession.Shared.Mode = DnsMode;
     }
 
     /// <summary>User-chosen Steam folder. Null = auto-detect from registry. Persisted only when set.</summary>
@@ -512,6 +525,18 @@ public sealed class SettingsService
         set { _settings.PluginSource = string.IsNullOrWhiteSpace(value) ? null : value; Save(); }
     }
 
+    /// <summary>Cloudflare DoH fallback mode for allowlisted hosts (default <see cref="Services.DnsMode.Auto"/>).</summary>
+    public DnsMode DnsMode
+    {
+        get => _settings.DnsMode ?? DnsMode.Auto;
+        set
+        {
+            _settings.DnsMode = value;
+            if (_publishGlobal) DnsFallbackSession.Shared.Mode = value;
+            Save();
+        }
+    }
+
     private void Load()
     {
         // Prefer the primary file; fall back to the last-good .bak. Crucially, NEVER silently reset a
@@ -592,7 +617,8 @@ public sealed class SettingsService
             && _settings.PluginAutoUpdate is null
             && _settings.PluginSource is null
             && _settings.GithubDownloadMirrors is null
-            && _settings.GithubApiMirrors is null;
+            && _settings.GithubApiMirrors is null
+            && _settings.DnsMode is null;
         if (empty)
         {
             foreach (string p in new[] { _filePath, _bakPath, _tmpPath })

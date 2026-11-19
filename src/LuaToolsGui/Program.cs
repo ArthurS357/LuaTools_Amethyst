@@ -32,6 +32,10 @@ public static class Program
             .OnBeforeUninstallFastCallback(_ => RunUninstallCleanup())
             .Run();
 
+        // One-time first-boot migration from %AppData%\LuaToolsGui to %AppData%\LuaToolsAmethyst.
+        // Must run BEFORE ApplyUiCulture() (which reads settings.json and may write to AppLog).
+        Services.AppDataMigrator.MigrateIfNeeded();
+
         // Set the UI culture before any WPF element is created, so x:Static resource lookups (which
         // resolve once at parse time) pick up the right language from the first frame.
         ApplyUiCulture();
@@ -153,8 +157,7 @@ public static class Program
     {
         try
         {
-            string appData = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LuaToolsGui");
+            string appData = Services.AppDataMigrator.CurrentDirectory;
 
             var report = Services.UninstallCleanup.Run(
                 Services.UninstallCleanup.DetectSteamDir(), appData);
@@ -298,15 +301,13 @@ public static class Program
     private static bool IsSupported(string tag) =>
         SupportedLanguages.Contains(tag, StringComparer.OrdinalIgnoreCase);
 
-    /// <summary>Read just the "Language" key from %AppData%\LuaToolsGui\settings.json without spinning up
+    /// <summary>Read just the "Language" key from %AppData%\LuaToolsAmethyst\settings.json without spinning up
     /// the DI container (this runs before App is constructed).</summary>
     private static string? ReadSavedLanguage()
     {
         try
         {
-            string path = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                "LuaToolsGui", "settings.json");
+            string path = Path.Combine(Services.AppDataMigrator.CurrentDirectory, "settings.json");
             if (!File.Exists(path)) return null;
 
             using var doc = JsonDocument.Parse(File.ReadAllText(path));

@@ -412,13 +412,12 @@ public class CefInjectorService : IHostedService
 
     private string? FindLuaToolsJs()
     {
-        string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         // The frontend is no longer bundled with the app — PluginInstallerService downloads it from
-        // GitHub releases into %AppData%\LuaToolsGui\plugin. If it isn't installed yet, nothing injects.
+        // GitHub releases into %AppData%\LuaToolsAmethyst\plugin. If it isn't installed yet, nothing injects.
         string[] candidates =
         {
-            Path.Combine(appData, "LuaToolsGui", "plugin", "public", "luatools.js"),
-            Path.Combine(appData, "LuaToolsGui", "plugin", "luatools.js"),
+            Path.Combine(AppDataMigrator.CurrentDirectory, "plugin", "public", "luatools.js"),
+            Path.Combine(AppDataMigrator.CurrentDirectory, "plugin", "luatools.js"),
         };
         foreach (var path in candidates)
             if (File.Exists(path)) return path;

@@ -224,8 +224,7 @@ public sealed class InstallManifestService
     }
 
     /// <summary>The app's own state folder — the same one every other local manifest lives in.</summary>
-    public static string StateDirectory => Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LuaToolsGui");
+    public static string StateDirectory => AppDataMigrator.CurrentDirectory;
 
     /// <summary>Single source of truth for where the record lives; nothing else spells this path.</summary>
     public static string FilePath => Path.Combine(StateDirectory, ManifestFileName);

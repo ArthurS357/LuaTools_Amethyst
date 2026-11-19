@@ -25,7 +25,8 @@ public class LuaToolsApiClient(
     private static readonly string InterimDownloadsFolder =
         Path.Combine(Path.GetTempPath(), "LuaToolsGui", "downloads");
 
-    private readonly HttpClient _http = new()
+    private readonly HttpClient _http = new(
+        DnsFallbackHttpHandler.CreateDefault(getMode: () => settings?.DnsMode ?? DnsMode.Auto))
     {
         BaseAddress = new Uri(AppConfig.ApiBaseUrl),
         Timeout = TimeSpan.FromMinutes(5), // large manifest zips on slow connections

@@ -19,7 +19,7 @@ public partial class App : Application
 
     /// <summary>Where an unhandled exception is recorded, so a crash leaves evidence behind.</summary>
     private static readonly string CrashLogPath = System.IO.Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LuaToolsGui", "crash.log");
+        AppDataMigrator.CurrentDirectory, "crash.log");
 
     /// <summary>
     /// Catch-all for exceptions nothing else handles. There was previously NO global handler of any kind:
@@ -736,10 +736,23 @@ public partial class App : Application
         try
         {
             var cache = _host.Services.GetRequiredService<CacheService>();
+            var settings = _host.Services.GetRequiredService<SettingsService>();
             var steam = _host.Services.GetRequiredService<SteamService>();
             var toasts = _host.Services.GetRequiredService<ToastService>();
             var unlocker = _host.Services.GetRequiredService<UnlockerService>();
+            var amethyst = _host.Services.GetRequiredService<AmethystToolService>();
             var installer = _host.Services.GetRequiredService<PluginInstallerService>();
+
+            // Config Guard: if SelectedMode is null or unrecognized (e.g. cleared or overwritten by
+            // upstream LuaTools), recover safely so onboarding never breaks and an existing AmethystTool
+            // install keeps its default backend.
+            string? recoveredMode = ActiveBackendPolicy.RecoverSelectedMode(
+                settings.SelectedMode, amethyst.IsInstalledLocally());
+            if (!string.Equals(recoveredMode, settings.SelectedMode, StringComparison.Ordinal))
+            {
+                AppLog.Log($"ConfigGuard: SelectedMode '{settings.SelectedMode ?? "<null>"}' was missing or unrecognized; restored to '{recoveredMode ?? "<null>"}'.");
+                settings.SelectedMode = recoveredMode;
+            }
 
             // AmethystTool counts here too: it is a Mode by the test that matters (it holds the same proxy
             // DLLs), and it is NOT an UnlockerMode, so SelectedMode reads null while it is active. Without

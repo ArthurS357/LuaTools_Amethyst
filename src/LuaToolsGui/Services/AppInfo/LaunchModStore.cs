@@ -34,8 +34,7 @@ public sealed class LaunchMod
 /// </summary>
 public class LaunchModStore
 {
-    private static readonly string Dir =
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LuaToolsGui");
+    private static readonly string Dir = AppDataMigrator.CurrentDirectory;
     private static readonly string FilePath = Path.Combine(Dir, "launchmods.json");
 
     private static readonly JsonSerializerOptions JsonOpts = new() { WriteIndented = true };

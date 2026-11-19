@@ -60,8 +60,7 @@ public record AppOverview(
 /// </summary>
 public class SteamAppInfoCache
 {
-    private static readonly string Dir =
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LuaToolsGui");
+    private static readonly string Dir = AppDataMigrator.CurrentDirectory;
     // Full raw appdetails 'data' blob per appid — the single on-disk source of truth. Name + header image
     // (the fast in-RAM index below) are derived from these on demand; there is no separate appinfo.json.
     private static readonly string DetailsDir = Path.Combine(Dir, "details");

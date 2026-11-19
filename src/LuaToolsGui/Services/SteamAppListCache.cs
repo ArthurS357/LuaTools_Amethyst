@@ -16,10 +16,10 @@ public class SteamAppListCache
     private const string SteamUrl = "https://api.steampowered.com/ISteamApps/GetAppList/v2/";
 
     private static readonly string CacheFile =
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LuaToolsGui", "steam-applist.json");
+        Path.Combine(AppDataMigrator.CurrentDirectory, "steam-applist.json");
     private static readonly TimeSpan MaxAge = TimeSpan.FromDays(14);
 
-    private readonly HttpClient _http = new() { Timeout = TimeSpan.FromSeconds(60) };
+    private readonly HttpClient _http = new(DnsFallbackHttpHandler.CreateDefault()) { Timeout = TimeSpan.FromSeconds(60) };
     private readonly ConcurrentDictionary<long, string> _names = new();
     private Task? _loadTask;
 

@@ -21,7 +21,7 @@ public enum SignInCancelChoice { TryAgain, UseManualCode, Dismiss }
 public class AuthService
 {
     private static readonly string DefaultAuthFile = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LuaToolsGui", "auth.dat");
+        AppDataMigrator.CurrentDirectory, "auth.dat");
 
     /// <summary>
     /// GoTrue <c>error_code</c>s that prove the refresh token itself is dead (revoked, rotated away, session
@@ -51,7 +51,7 @@ public class AuthService
     private Exception? _transientRefreshError;
     private DateTimeOffset _refreshBackoffUntil;
 
-    public AuthService() : this(new HttpClientHandler(), DefaultAuthFile) { }
+    public AuthService() : this(DnsFallbackHttpHandler.CreateDefault(), DefaultAuthFile) { }
 
     /// <summary>Test seam: a fake handler and a throwaway token file instead of the real ones.</summary>
     internal AuthService(HttpMessageHandler handler, string authFile)

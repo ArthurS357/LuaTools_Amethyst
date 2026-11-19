@@ -57,7 +57,7 @@ public sealed class PersistenceTests : IDisposable
         var fresh = new SettingsService(_dir);
         fresh.SaveBackupFolder.Should().BeNull();
         fresh.EffectiveSaveBackupFolder.Should().Be(SettingsService.DefaultSaveBackupFolder);
-        SettingsService.DefaultSaveBackupFolder.Should().EndWith(Path.Combine("LuaToolsGui", "SaveBackups"));
+        SettingsService.DefaultSaveBackupFolder.Should().EndWith(Path.Combine("LuaToolsAmethyst", "SaveBackups"));
 
         string custom = Path.Combine(_dir, "OneDrive", "saves");
         fresh.SaveBackupFolder = custom;

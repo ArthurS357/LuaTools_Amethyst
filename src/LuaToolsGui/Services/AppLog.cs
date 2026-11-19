@@ -26,8 +26,7 @@ public static class AppLog
 
     /// <summary>Production never reassigns this; the test assembly redirects it to a temp dir before any test runs.</summary>
     public static string FilePath { get; internal set; } = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-        "LuaToolsGui", "plugin-backend.log");
+        AppDataMigrator.CurrentDirectory, "plugin-backend.log");
 
     /// <summary>Roll the log once it passes this size. Without a cap the file grew for the lifetime of the
     /// install — every bridge call appends a line, and the store-page frontend now logs through here too.

@@ -76,6 +76,26 @@ public static class ActiveBackendPolicy
         string.Equals(selectedMode, AmethystToolToken, StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
+    /// Recover a missing or unrecognized <c>SelectedMode</c> (for example, after upstream LuaTools wiped
+    /// <c>"AmethystTool"</c> or wrote an upstream-only token like <c>"Bst"</c>) so startup and onboarding
+    /// never break.
+    ///
+    /// <para>
+    /// A valid value is preserved untouched. When the persisted value resolves to
+    /// <see cref="ActiveBackend.None"/>: if AmethystTool is already installed in Steam, the fork's default
+    /// (<see cref="AmethystToolToken"/>) is restored; otherwise <c>null</c> is returned so first-run
+    /// onboarding runs cleanly with the default recommendation instead of choking on an unknown token.
+    /// </para>
+    /// </summary>
+    public static string? RecoverSelectedMode(string? selectedMode, bool amethystInstalledLocally)
+    {
+        if (Resolve(selectedMode) != ActiveBackend.None)
+            return selectedMode;
+
+        return amethystInstalledLocally ? AmethystToolToken : null;
+    }
+
+    /// <summary>
     /// Whether <paramref name="candidate"/>'s files sitting in the Steam root can still be the bytes
     /// steam.exe loads, given who holds the slot.
     ///

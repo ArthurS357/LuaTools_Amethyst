@@ -107,12 +107,10 @@ public partial class HubcapService
     /// <summary>Production constructor — the one the DI container resolves.</summary>
     public HubcapService() : this(CreateDefaultHandler(), DefaultMetadataTimeout) { }
 
-    /// <summary><see cref="SocketsHttpHandler"/> rather than <see cref="HttpClientHandler"/> because the
-    /// connection-lifetime knob lives on the former; the latter merely wraps it and hides that.</summary>
-    private static HttpMessageHandler CreateDefaultHandler() => new SocketsHttpHandler
-    {
-        PooledConnectionLifetime = PooledConnectionLifetime,
-    };
+    /// <summary><see cref="SocketsHttpHandler"/> wrapped by <see cref="DnsFallbackHttpHandler"/> so
+    /// connection lifetime rotation and Cloudflare DoH fallback both apply to hubcapmanifest.com.</summary>
+    private static HttpMessageHandler CreateDefaultHandler() =>
+        DnsFallbackHttpHandler.CreateDefault(pooledConnectionLifetime: PooledConnectionLifetime);
 
     /// <summary>
     /// Test seam. The handler was previously baked into a field initializer, so nothing about this class

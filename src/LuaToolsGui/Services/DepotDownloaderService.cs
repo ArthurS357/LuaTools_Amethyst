@@ -125,7 +125,7 @@ public sealed partial class DepotDownloaderService(
     LuaInstaller installer)
 {
     private static readonly string ToolDir = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LuaToolsGui", "depotdownloader");
+        AppDataMigrator.CurrentDirectory, "depotdownloader");
 
     private static string ExePath => Path.Combine(ToolDir, "DepotDownloaderMod.exe");
 
