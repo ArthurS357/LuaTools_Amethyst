@@ -31,6 +31,15 @@ public class LuaToolsApiClient(
         Timeout = TimeSpan.FromMinutes(5), // large manifest zips on slow connections
     };
 
+    // Signed fix downloads only. Redirects are followed by hand (SendCheckingRedirectsAsync) so every hop
+    // is screened like the first URL; _http keeps auto-redirect for the API endpoints. No Timeout here: one
+    // budget covers all hops, so a redirect chain cannot multiply it. No cookies: a host in one chain must
+    // not get them replayed on a later download.
+    internal readonly HttpClient FixDownloadHttp =
+        new(new HttpClientHandler { AllowAutoRedirect = false, UseCookies = false }) { Timeout = Timeout.InfiniteTimeSpan };
+
+    private static readonly TimeSpan SignedDownloadHeadersBudget = TimeSpan.FromMinutes(5); // same as _http
+
     private static readonly JsonSerializerOptions JsonOpts = new() { PropertyNameCaseInsensitive = true };
 
     // ── Endpoints ───────────────────────────────────────────────────
@@ -326,13 +335,71 @@ public class LuaToolsApiClient(
     /// what no legitimate signed link is: plain http (the zip is extracted into the game folder), an IP
     /// literal (loopback, link-local, LAN), localhost, or any other scheme.
     /// </remarks>
-    // ponytail: checks the URL the API returned, not where HttpClient's auto-redirect lands, and not what a
-    // name resolves to. Pin the R2 hostname (and recheck res.RequestMessage.RequestUri) once it is known.
+    // ponytail: checks the name (on every redirect hop, see ValidateRedirectHop), not what it resolves to.
+    // Pin the R2 hostname once it is known.
     internal static bool IsFollowableSignedUrl(string url) =>
         Uri.TryCreate(url, UriKind.Absolute, out var uri)
         && uri.Scheme == Uri.UriSchemeHttps
         && uri.HostNameType == UriHostNameType.Dns
-        && !uri.IsLoopback;
+        && !uri.IsLoopback
+        // IsLoopback misses "localhost." (trailing dot) and the *.localhost names RFC 6761 reserves.
+        && uri.IdnHost.TrimEnd('.') is var host
+        && !host.Equals("localhost", StringComparison.OrdinalIgnoreCase)
+        && !host.EndsWith(".localhost", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Redirects followed for one signed download. A presigned R2 link answers directly; a CDN or custom
+    /// domain in front may add one or two. 5 leaves headroom and still ends a redirect loop fast.
+    /// </summary>
+    internal const int MaxRedirectHops = 5;
+
+    // No EmptyHost: System.Uri refuses an http(s) URI without a host, so none reaches this check.
+    internal enum HopVerdict { Ok, NotHttps, InvalidScheme, LoopbackOrIpLiteral, TooManyHops }
+
+    /// <summary>
+    /// Whether redirect number <paramref name="hop"/> (1-based) to the absolute <paramref name="next"/> may
+    /// be followed. The verdict is <see cref="IsFollowableSignedUrl"/>'s; the rest only names the refusal.
+    /// </summary>
+    internal static HopVerdict ValidateRedirectHop(Uri next, int hop)
+    {
+        if (hop > MaxRedirectHops) return HopVerdict.TooManyHops;
+        if (IsFollowableSignedUrl(next.AbsoluteUri)) return HopVerdict.Ok;
+        if (next.Scheme == Uri.UriSchemeHttp) return HopVerdict.NotHttps;
+        return next.Scheme == Uri.UriSchemeHttps ? HopVerdict.LoopbackOrIpLiteral : HopVerdict.InvalidScheme;
+    }
+
+    /// <summary>
+    /// GET <paramref name="url"/>, following redirects by hand: each hop goes through
+    /// <see cref="ValidateRedirectHop"/> before any request to it, and one refused hop fails the whole
+    /// download. <paramref name="headersBudget"/> covers every hop until the final headers arrive; the body
+    /// is the stall timeout's job. <paramref name="http"/> must not auto-redirect.
+    /// </summary>
+    internal static async Task<HttpResponseMessage> SendCheckingRedirectsAsync(
+        HttpClient http, Uri url, TimeSpan headersBudget, CancellationToken ct)
+    {
+        using var budget = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        budget.CancelAfter(headersBudget);
+
+        for (int hop = 1; ; hop++)
+        {
+            var res = await http.SendAsync(
+                new HttpRequestMessage(HttpMethod.Get, url), HttpCompletionOption.ResponseHeadersRead, budget.Token);
+            if ((int)res.StatusCode is not (300 or 301 or 302 or 303 or 307 or 308)
+                || res.Headers.Location is not { } location)
+                return res;
+            res.Dispose();
+
+            var next = location.IsAbsoluteUri ? location : new Uri(url, location);
+            var verdict = ValidateRedirectHop(next, hop);
+            if (verdict != HopVerdict.Ok)
+            {
+                AppLog.Log($"Signed download refused: {GithubProxy.Redact(next.AbsoluteUri)} (redirect {hop}: {verdict})");
+                throw new ApiException(Resources.Strings.Api_Err_LinkRefused);
+            }
+            AppLog.Log($"Signed download redirect {hop}: {GithubProxy.Redact(next.AbsoluteUri)}");
+            url = next;
+        }
+    }
 
     /// <summary>Download a file from an absolute URL with NO auth header (e.g. a signed R2 link).</summary>
     internal async Task<DownloadedFile> DownloadFromUrlAsync(
@@ -346,9 +413,8 @@ public class LuaToolsApiClient(
             throw new ApiException(Resources.Strings.Api_Err_LinkRefused);
         }
 
-        // New request (not via SendAsync) so no Bearer header and the absolute URL isn't prefixed.
-        var req = new HttpRequestMessage(HttpMethod.Get, url);
-        var res = await _http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, ct);
+        // Not via SendAsync: no Bearer header, the absolute URL isn't prefixed, and redirects are screened.
+        var res = await SendCheckingRedirectsAsync(FixDownloadHttp, new Uri(url), SignedDownloadHeadersBudget, ct);
         if (!res.IsSuccessStatusCode)
             throw new ApiException(string.Format(Resources.Strings.Api_Err_DownloadFailed, (int)res.StatusCode), res.StatusCode);
         return await SaveResponseAsync(res, fallbackName, AsFraction(progress), ct);
