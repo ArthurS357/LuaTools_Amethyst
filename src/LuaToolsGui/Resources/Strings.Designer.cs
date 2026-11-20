@@ -177,7 +177,13 @@ public static class Strings
     public static string Settings_ClearAppInfo_Confirm_Go => Get(nameof(Settings_ClearAppInfo_Confirm_Go));
     public static string Settings_ClearAppInfo_Done => Get(nameof(Settings_ClearAppInfo_Done));
     public static string Settings_ClearAppInfo_NoFile => Get(nameof(Settings_ClearAppInfo_NoFile));
-    public static string Settings_Backups_Toast_Deleted => Get(nameof(Settings_Backups_Toast_Deleted));
+    public static string Settings_Section_Network => Get(nameof(Settings_Section_Network));
+    public static string Settings_Dns => Get(nameof(Settings_Dns));
+    public static string Settings_Dns_Auto => Get(nameof(Settings_Dns_Auto));
+    public static string Settings_Dns_Always => Get(nameof(Settings_Dns_Always));
+    public static string Settings_Dns_Never => Get(nameof(Settings_Dns_Never));
+    public static string Settings_Dns_Hint => Get(nameof(Settings_Dns_Hint));
+    public static string Settings_Backups_Toast_Deleted =>Get(nameof(Settings_Backups_Toast_Deleted));
     public static string Settings_Backups_Toast_Failed => Get(nameof(Settings_Backups_Toast_Failed));
     public static string Settings_Backups_Err_BatchRefused => Get(nameof(Settings_Backups_Err_BatchRefused));
     public static string Settings_Backups_Column_Name => Get(nameof(Settings_Backups_Column_Name));

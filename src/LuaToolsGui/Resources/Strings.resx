@@ -885,6 +885,12 @@ Enable it?</value></data>
   <data name="Settings_ClearAppInfo_Confirm_Go" xml:space="preserve"><value>Clear cache</value></data>
   <data name="Settings_ClearAppInfo_Done" xml:space="preserve"><value>Content cache cleared. Steam rebuilds it the next time it starts.</value></data>
   <data name="Settings_ClearAppInfo_NoFile" xml:space="preserve"><value>Steam has no content cache (appinfo.vdf) to clear.</value></data>
+  <data name="Settings_Section_Network" xml:space="preserve"><value>NETWORK</value></data>
+  <data name="Settings_Dns" xml:space="preserve"><value>DNS fallback (Cloudflare DoH)</value></data>
+  <data name="Settings_Dns_Auto" xml:space="preserve"><value>Auto (default) - fallback only if system DNS fails</value></data>
+  <data name="Settings_Dns_Always" xml:space="preserve"><value>Always - use Cloudflare DNS (DoH)</value></data>
+  <data name="Settings_Dns_Never" xml:space="preserve"><value>Never - never use external DNS</value></data>
+  <data name="Settings_Dns_Hint" xml:space="preserve"><value>Only affects LuaTools, Hubcap and GitHub hosts, over HTTPS. When active, those host names are sent to Cloudflare (1.1.1.1). Applies immediately.</value></data>
   <data name="Settings_Backups_Toast_Deleted" xml:space="preserve"><value>{0} item(s) deleted ({1} freed)</value></data>
   <data name="Settings_Backups_Toast_Failed" xml:space="preserve"><value>{0} item(s) could not be deleted. Close Steam and try again.</value></data>
   <data name="Settings_Backups_Column_Name" xml:space="preserve"><value>Name</value></data>

@@ -16,6 +16,10 @@ public record LanguageOption(string Display, string? Tag);
 /// settings.json persists; <see cref="Display"/> is localised and must never be stored.</summary>
 public record AccentOption(string Display, string Id);
 
+/// <summary>A selectable DNS-over-HTTPS fallback mode. <see cref="Mode"/> is what settings.json persists;
+/// <see cref="Display"/> is localised and must never be stored.</summary>
+public record DnsModeOption(string Display, DnsMode Mode);
+
 public partial class SettingsViewModel : ObservableObject
 {
     private readonly SettingsService _settings;
@@ -70,6 +74,23 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private bool _fastFetch;
 
     partial void OnFastFetchChanged(bool value) => _settings.FastFetch = value;
+
+    // ── Network ─────────────────────────────────────────────────────
+    public ObservableCollection<DnsModeOption> DnsModeOptions { get; } =
+    [
+        new(Resources.Strings.Settings_Dns_Auto, DnsMode.Auto),
+        new(Resources.Strings.Settings_Dns_Always, DnsMode.Always),
+        new(Resources.Strings.Settings_Dns_Never, DnsMode.Never),
+    ];
+
+    [ObservableProperty] private DnsModeOption _selectedDnsMode = null!;
+
+    // SettingsService.DnsMode saves settings.json AND publishes to DnsFallbackSession.Shared; the handler
+    // reads the mode per request (getMode), so the change is live — no relaunch.
+    partial void OnSelectedDnsModeChanged(DnsModeOption value)
+    {
+        if (value is not null) _settings.DnsMode = value.Mode;
+    }
 
     // ── Startup behavior ────────────────────────────────────────────
     private const string RunKeyPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
@@ -334,6 +355,7 @@ public partial class SettingsViewModel : ObservableObject
         RefreshCustomSaveFolders();
         _autoUpdateApps = settings.AutoUpdateApps; // init from saved value (default ON) without triggering Save
         _fastFetch = settings.FastFetch;
+        _selectedDnsMode = DnsModeOptions.First(o => o.Mode == settings.DnsMode); // field init: no write-back
         _startWithWindows = settings.StartWithWindows; // default OFF — init without triggering the registry write
         _minimizeToTray = settings.MinimizeToTray;
         _enableGlassmorphism = settings.EnableGlassmorphism; // default ON — init without re-applying or saving

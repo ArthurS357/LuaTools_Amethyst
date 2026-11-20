@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.8.1 — 2026-11-20
+
+Seletor do modo de DNS em Configuracoes > Rede. O `DnsMode` da 1.8.0 so mudava editando o `settings.json`.
+
+### Novidades
+
+- **Configuracoes > Rede:** `ComboBox` com `Auto` (padrao, so apos falha de resolucao de nome), `Always` (Cloudflare DoH
+  sempre) e `Never` (nunca DNS externo). `SettingsViewModel.SelectedDnsMode` le o valor salvo ao abrir (sem regravar) e, ao
+  trocar, chama `SettingsService.DnsMode`, que grava o `settings.json` e publica em `DnsFallbackSession.Shared`. O
+  `DnsFallbackHttpHandler` le o modo a cada requisicao, entao vale na hora, sem reiniciar. Nenhuma mudanca no handler.
+- **Textos:** seis chaves novas (`Settings_Section_Network`, `Settings_Dns`, `Settings_Dns_Auto|Always|Never|Hint`) em ingles e
+  pt-BR. As outras 27 linguas caem para o ingles; as chaves estao em `PENDING_TRANSLATION` do `check-i18n.py`.
+- A nota da 1.8.0 deixou de dizer que o modo so se edita no `settings.json`: agora diz que, naquela versao, era so por la.
+
+### Implementacao
+
+- Testes novos: `DnsModeSettingTests` (abre em Auto sem gravar; Always e Never persistem e sobrevivem a recarga) e
+  `The_1_8_0_entry_still_names_what_that_release_was_about` no `ChangelogTests`, que ganhou ancoras da 1.8.1.
+- Sem pacote novo e sem requisicao de rede nova.
+
 ## 1.8.0 — 2026-11-19
 
 Fechamento da 1.8.0: engine AmethystTool v1.5.3, dados do app em `%AppData%\LuaToolsAmethyst`, fallback DNS-over-HTTPS e as
@@ -18,7 +38,8 @@ correcoes da auditoria do AGY (5 medios e 2 baixos aplicados; B-02 recusado).
   legada, uma vez so). `SettingsService.DonateKeys` e get-only `=> false`.
 - **Fallback Cloudflare DoH:** `DnsFallbackHttpHandler` + `CloudflareDohResolver`. Requisicao nova: GET
   `https://1.1.1.1/dns-query?name=<host>&type=A` (JSON, so IPv4), so para os hosts de `AppConfig.DohFallbackHosts` e so em
-  HTTPS. `DnsMode` Auto (padrao: so apos falha de resolucao de nome), Always e Never, lido do `settings.json`, sem UI.
+  HTTPS. `DnsMode` Auto (padrao: so apos falha de resolucao de nome), Always e Never, lido do `settings.json`; sem UI nesta
+  versao (o seletor chega na 1.8.1, em Configuracoes > Rede).
   SNI e validacao de certificado ficam intactos (o `ConnectCallback` disca o IP; o TLS autentica o nome original).
 - **Botao Limpar Cache de Conteudo (AppInfo):** o texto de apoio (`Settings_ClearAppInfo_Tooltip`, en e pt-BR) agora diz
   que e tambem o fallback definitivo se uma atualizacao da Steam mudar a assinatura que o motor (v1.5.1+) intercepta.

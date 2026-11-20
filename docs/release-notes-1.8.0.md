@@ -49,7 +49,8 @@ regiões com bloqueio e as correções da auditoria.
 
 - **O DNS pela Cloudflare não foi testado com um bloqueio real de provedor.** Os testes simulam a falha de resolução e a
   resposta da Cloudflare; não houve teste com o app atrás de um provedor que realmente bloqueie `lua.tools` ou `github.com`.
-- **`DnsMode` não tem tela.** Só se muda editando o `settings.json` (`"DnsMode": "Never"` para desligar).
+- **`DnsMode` não tem tela nesta versão.** Só se muda editando o `settings.json` (`"DnsMode": "Never"` para desligar). A
+  1.8.1 adiciona o seletor em Configurações > Rede.
 - **A engine v1.5.3 não foi testada ao vivo.** Confirmei apenas que o release publica `AmethystTool-v1.5.3.zip` com hash
   SHA-256 na API do GitHub; a instalação real não foi repetida.
 - **`tools\*.exe` continuam opcionais (recusa do B-02).** O app não exige `version_pin.exe` e `pattern_migrate.exe` para

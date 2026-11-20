@@ -445,6 +445,32 @@
                 </StackPanel>
             </Border>
 
+            <!-- Network (Cloudflare DoH fallback mode). Applies live: SettingsService publishes it to the
+                 shared DnsFallbackSession and the HTTP handler reads the mode on every request. -->
+            <TextBlock Style="{StaticResource SectionHeader}" Text="{x:Static res:Strings.Settings_Section_Network}" />
+            <Border Style="{StaticResource SettingsCard}">
+                <StackPanel Margin="14,12">
+                    <TextBlock
+                        FontSize="13"
+                        FontWeight="Medium"
+                        Text="{x:Static res:Strings.Settings_Dns}" />
+                    <ComboBox
+                        Margin="0,8,0,0"
+                        MinWidth="220"
+                        HorizontalAlignment="Left"
+                        AutomationProperties.Name="{x:Static res:Strings.Settings_Dns}"
+                        DisplayMemberPath="Display"
+                        ItemsSource="{Binding DnsModeOptions}"
+                        SelectedItem="{Binding SelectedDnsMode}" />
+                    <TextBlock
+                        Margin="0,8,0,0"
+                        FontSize="12"
+                        Foreground="{StaticResource TextDimBrush}"
+                        Text="{x:Static res:Strings.Settings_Dns_Hint}"
+                        TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+
             <!-- General (language) -->
             <TextBlock Style="{StaticResource SectionHeader}" Text="{x:Static res:Strings.Settings_Section_General}" />
             <Border Style="{StaticResource SettingsCard}">

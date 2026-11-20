@@ -29,6 +29,14 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.8.1", "2026-11-20",
+            "A Network setting for the Cloudflare DNS fallback: pick Auto, Always or Never from Settings.",
+            [
+                "Settings > Network has a new DNS fallback selector for the Cloudflare DNS-over-HTTPS fallback added in 1.8.0: Auto (default, only if system DNS fails), Always or Never. Until now it could only be changed by editing settings.json.",
+                "The choice is saved to settings.json and applies immediately, without restarting the app. Always sends the names of the hosts on the fixed list to Cloudflare (1.1.1.1) before connecting; Never keeps every lookup on system DNS.",
+                "The new texts are in English and Portuguese (Brazil) for now. No new dependency and no new network request.",
+            ]),
+
         new("1.8.0", "2026-11-19",
             "AmethystTool engine v1.5.3, your data in its own folder, and an optional Cloudflare DNS fallback for blocked regions.",
             [
@@ -37,7 +45,7 @@ public static class Changelog
                 "The old folder's settings.json gets \"DonateKeys\": false once, so opening upstream LuaTools cannot upload Steam decryption keys over plain HTTP.",
                 "New network request: when system DNS cannot resolve a host on a fixed list (LuaTools, Hubcap, GitHub and its download mirrors), the app asks Cloudflare DNS-over-HTTPS (1.1.1.1/dns-query) for its IPv4 address. HTTPS only; TLS and certificate checks are unchanged, and private, loopback and link-local answers are refused. After one failure it stays on for every host on that list until you close the app.",
                 "The Clear content cache (AppInfo) button now says it is also the definitive fallback if a Steam update changes the signature the engine (v1.5.1+) hooks.",
-                "The DNS mode (DnsMode: Auto, Always or Never) is only editable in settings.json for now. The button's new text is in English and Portuguese (Brazil). No new dependency.",
+                "The DNS mode (DnsMode: Auto, Always or Never) is set in settings.json in this version; 1.8.1 adds a selector under Settings > Network. The button's new text is in English and Portuguese (Brazil). No new dependency.",
             ]),
 
         new("1.7.13.5", "2026-11-19",
