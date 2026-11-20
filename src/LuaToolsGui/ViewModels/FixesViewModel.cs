@@ -498,7 +498,7 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
                 if (p is not null) Progress = p.Value * 100;
             });
 
-            var file = await api.DownloadDenuvoAsync(fix.Id, slot, fallback, prog);
+            var file = await api.DownloadDenuvoAsync(fix.Id, slot, fallback, prog, appid: game.AppId);
 
             if (slot == "manifest")
                 InstallManifest(file, appId, game.Name);

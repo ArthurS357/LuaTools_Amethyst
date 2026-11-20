@@ -18,6 +18,10 @@ public static class AppConfig
 
     public const string ApiBaseUrl = "https://lua.tools";
 
+    // LuaTools-Catalog: the Fixes catalog (lua.tools listing + our own orphan fixes), refreshed every 6 h by a
+    // GitHub Action. Read first; lua.tools is the fallback. raw.githubusercontent.com is on DohFallbackHosts.
+    public const string CatalogUrl = "https://raw.githubusercontent.com/ArthurS357/LuaTools-Catalog/main/catalog.json";
+
     // Bot-provisioned (Discord /login placeholder) accounts use this email domain. Detecting it on
     // startup lets the app prompt the user to re-link their full lua.tools account.
     public const string BotAccountEmailDomain = "@bot.lua.tools";

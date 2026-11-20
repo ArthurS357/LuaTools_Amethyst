@@ -38,7 +38,9 @@ public class DenuvoListingsOfflineTests : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    /// <summary>Answers each request from <see cref="Respond"/>; flipping it flips "the network".</summary>
+    /// <summary>Answers each request to lua.tools from <see cref="Respond"/>; flipping it flips "the network".
+    /// The LuaTools-Catalog host always says 404 here, so these tests keep exercising the lua.tools tier and the
+    /// disk copy; the catalog tier has its own tests in CatalogFallbackTests.</summary>
     private sealed class Stub : HttpMessageHandler
     {
         public Func<HttpResponseMessage> Respond { get; set; } = () => new(HttpStatusCode.OK)
@@ -49,8 +51,10 @@ public class DenuvoListingsOfflineTests : IDisposable
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct)
         {
-            Calls++;
             ct.ThrowIfCancellationRequested();
+            if (request.RequestUri!.Host == "raw.githubusercontent.com")
+                return Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound));
+            Calls++;
             return Task.FromResult(Respond());
         }
     }

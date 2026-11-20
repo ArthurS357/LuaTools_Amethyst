@@ -299,6 +299,7 @@ Isso exclui os arquivos .lua de Steam\config\stplug-in. Reinicie o Steam depois 
   <data name="Fixes_Manifest" xml:space="preserve"><value>Manifesto</value></data>
   <data name="Fixes_Fix" xml:space="preserve"><value>Correção</value></data>
   <data name="Fixes_Count" xml:space="preserve"><value>{0} correções</value></data>
+  <data name="Api_Err_FixHashMismatch" xml:space="preserve"><value>O fix baixado não confere com o checksum publicado e foi descartado.</value></data>
   <data name="Fixes_OfflineMode" xml:space="preserve"><value>Modo offline: exibindo catálogo salvo em {0}.</value></data>
   <data name="Fixes_Err_Load" xml:space="preserve"><value>Não foi possível carregar as correções — verifique sua conexão.</value></data>
   <data name="Fixes_Empty_None" xml:space="preserve"><value>Nenhuma correção disponível ainda.</value></data>

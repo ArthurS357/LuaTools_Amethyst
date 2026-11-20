@@ -14,24 +14,28 @@ public sealed record DenuvoListingsResult(DenuvoListingsResponse Data, DateTime?
 }
 
 /// <summary>
-/// The last good <c>/api/denuvo/listings</c> body, kept at <c>%AppData%\LuaToolsAmethyst\cache\denuvo_listings.json</c>
-/// so the Fixes tab still has a catalog when lua.tools (or the user's connection) is down. A file on disk and
-/// nothing else: no request of its own, no index, and its age is the file's last-write time.
+/// The last good Fixes catalog body, kept under <c>%AppData%\LuaToolsAmethyst\cache</c> so the Fixes tab still
+/// has a catalog when the network is down. Two files, one per source: <see cref="FileName"/> holds lua.tools'
+/// <c>/api/denuvo/listings</c> body and <see cref="CatalogFileName"/> holds the LuaTools-Catalog
+/// <c>catalog.json</c> (which also carries the orphan fixes). They are kept apart so a lua.tools answer, served
+/// while the catalog repository is unreachable, can never overwrite a copy that has orphan fixes in it. A file on
+/// disk and nothing else: no request of its own, and its age is the file's last-write time.
 /// </summary>
 internal static class DenuvoListingsCache
 {
     internal const string FileName = "denuvo_listings.json";
+    internal const string CatalogFileName = "catalog.json";
 
     /// <summary>Older than this and the copy is ignored: a day-old catalog is a hint, a week-old one is a lie.</summary>
     internal static readonly TimeSpan MaxAge = TimeSpan.FromHours(24);
 
     /// <summary>Atomic (temp + rename), best effort: a cache that cannot be written must never fail the load.</summary>
-    internal static void Save(string directory, string json)
+    internal static void Save(string directory, string json, string fileName = FileName)
     {
         try
         {
             Directory.CreateDirectory(directory);
-            string path = Path.Combine(directory, FileName);
+            string path = Path.Combine(directory, fileName);
             string tmp = path + ".tmp";
             File.WriteAllText(tmp, json);
             File.Move(tmp, path, overwrite: true);
@@ -42,20 +46,35 @@ internal static class DenuvoListingsCache
         }
     }
 
-    /// <summary>The saved catalog, or null when there is none, it is older than <see cref="MaxAge"/>, or it
-    /// cannot be read (a corrupt copy is no better than a missing one).</summary>
-    internal static DenuvoListingsResult? TryLoad(string directory, JsonSerializerOptions options, DateTime? now = null)
+    /// <summary>The newest usable saved copy (and its raw body, for the orphan fixes), or null when neither
+    /// file exists, is within <see cref="MaxAge"/>, or can be read (a corrupt copy is no better than a missing one).</summary>
+    internal static (DenuvoListingsResult Result, string Json)? TryLoadNewest(
+        string directory, JsonSerializerOptions options, DateTime? now = null)
+    {
+        (DenuvoListingsResult Result, string Json)? newest = null;
+        foreach (string fileName in new[] { CatalogFileName, FileName })
+        {
+            if (TryLoad(directory, fileName, options, now) is { } candidate
+                && (newest is null || candidate.Result.CachedAt > newest.Value.Result.CachedAt))
+                newest = candidate;
+        }
+        return newest;
+    }
+
+    private static (DenuvoListingsResult Result, string Json)? TryLoad(
+        string directory, string fileName, JsonSerializerOptions options, DateTime? now)
     {
         try
         {
-            string path = Path.Combine(directory, FileName);
+            string path = Path.Combine(directory, fileName);
             if (!File.Exists(path)) return null;
 
             var savedAt = File.GetLastWriteTime(path);
             if ((now ?? DateTime.Now) - savedAt > MaxAge) return null;
 
-            var data = JsonSerializer.Deserialize<DenuvoListingsResponse>(File.ReadAllText(path), options);
-            return data is null ? null : new DenuvoListingsResult(data, savedAt);
+            string json = File.ReadAllText(path);
+            var data = JsonSerializer.Deserialize<DenuvoListingsResponse>(json, options);
+            return data is null ? null : (new DenuvoListingsResult(data, savedAt), json);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)
         {

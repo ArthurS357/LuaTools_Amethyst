@@ -246,62 +246,143 @@ public class LuaToolsApiClient(
     /// tests point it at a temp folder.</summary>
     internal string? CacheDirectory { get; init; }
 
+    /// <summary>How long the catalog repository gets before lua.tools is tried: the shared client's own
+    /// timeout is 5 minutes, which would turn an unreachable GitHub into a five-minute blank tab.</summary>
+    internal TimeSpan CatalogTimeout { get; init; } = TimeSpan.FromSeconds(15);
+
+    // The orphan fixes of the catalog last served (live or from disk), swapped as a whole. Empty when the
+    // listing came from lua.tools, which has none.
+    private IReadOnlyDictionary<string, OrphanGame> _orphans = new Dictionary<string, OrphanGame>();
+
+    // The orphan fixes GetDenuvoFixesAsync actually listed per game. Only these may take the orphan
+    // download path: an orphan fix that lost a duplicate-id tie to an official one was not listed, so its id
+    // still means the official fix and must go through lua.tools.
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<string, IReadOnlyDictionary<string, OrphanFix>>
+        _listedOrphans = new();
+
     /// <summary>
     /// Public — every game that has at least one Denuvo fix, plus the tag catalogue.
     ///
     /// <para>
-    /// Network first. Any failure (an exception, a non-2xx such as a 503 during maintenance, a body that does
-    /// not parse) falls back to the copy saved by the last good answer, returned with
-    /// <see cref="DenuvoListingsResult.CachedAt"/> set so the page can say it is not live. With no usable
-    /// copy the behaviour is what it always was: null for a bad status, the original exception otherwise.
-    /// A cancelled call is not a failure and never reads the cache.
+    /// Three tiers. (1) The LuaTools-Catalog <c>catalog.json</c> on GitHub, with a short timeout. (2) lua.tools'
+    /// own listing, the behaviour before the catalog existed. (3) The copy saved by the last good answer, newest
+    /// of the two sources, returned with <see cref="DenuvoListingsResult.CachedAt"/> set so the page can say it
+    /// is not live. A tier fails on an exception, a non-2xx (a 503 during maintenance, a 404 for a catalog that
+    /// moved) or a body that does not parse. With nothing usable anywhere the behaviour is what it always was:
+    /// null for a bad status, lua.tools' exception otherwise. A cancelled call is not a failure and never
+    /// reads the cache.
     /// </para>
     /// </summary>
     public async Task<DenuvoListingsResult?> GetDenuvoListingsAsync(CancellationToken ct = default)
     {
         string dir = CacheDirectory ?? Path.Combine(SettingsService.DefaultDirectory, "cache");
         ExceptionDispatchInfo? failure = null;
+        var tiers = new (string Url, string CacheFile, TimeSpan? Limit)[]
+        {
+            (AppConfig.CatalogUrl, DenuvoListingsCache.CatalogFileName, CatalogTimeout),
+            ("/api/denuvo/listings", DenuvoListingsCache.FileName, null),
+        };
+        foreach (var (url, cacheFile, limit) in tiers)
+        {
+            failure = null; // only the last tier's failure is ever rethrown
+            try
+            {
+                using var budget = CancellationTokenSource.CreateLinkedTokenSource(ct);
+                if (limit is { } span) budget.CancelAfter(span);
+
+                using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                if (limit is not null) request.Headers.UserAgent.ParseAdd(AppVersion.UserAgent); // no bearer, no cookies of ours: a third-party host
+                using var res = await _http.SendAsync(request, budget.Token);
+                if (!res.IsSuccessStatusCode) continue;
+
+                string body = await res.Content.ReadAsStringAsync(budget.Token);
+                var fresh = JsonSerializer.Deserialize<DenuvoListingsResponse>(body, JsonOpts);
+                if (fresh is null) continue;
+
+                // An empty catalog is a server hiccup far more often than the truth: do not let it
+                // overwrite a good copy.
+                if (fresh.Games.Count > 0) DenuvoListingsCache.Save(dir, body, cacheFile);
+                _orphans = OrphanFixCatalog.Parse(body);
+                return new DenuvoListingsResult(fresh, null);
+            }
+            catch (Exception ex) when (!ct.IsCancellationRequested)
+            {
+                failure = ExceptionDispatchInfo.Capture(ex);
+            }
+        }
+
+        if (DenuvoListingsCache.TryLoadNewest(dir, JsonOpts) is { } saved)
+        {
+            _orphans = OrphanFixCatalog.Parse(saved.Json);
+            return saved.Result;
+        }
+        failure?.Throw();
+        return null;
+    }
+
+    /// <summary>
+    /// Public — one game's fixes (id/title/desc/tags + which download slots exist): lua.tools' own, then the
+    /// catalog's orphan fixes for the game, official first. A repeated id keeps the official one. A game
+    /// lua.tools does not know (404, or unreachable) still lists its orphan fixes.
+    /// </summary>
+    public async Task<DenuvoFixesResponse?> GetDenuvoFixesAsync(string appid, CancellationToken ct = default)
+    {
+        DenuvoFixesResponse? official = null;
+        ExceptionDispatchInfo? failure = null;
         try
         {
-            var res = await _http.GetAsync("/api/denuvo/listings", ct);
-            if (res.IsSuccessStatusCode)
-            {
-                string body = await res.Content.ReadAsStringAsync(ct);
-                var fresh = JsonSerializer.Deserialize<DenuvoListingsResponse>(body, JsonOpts);
-                if (fresh is not null)
-                {
-                    // An empty catalog is a server hiccup far more often than the truth: do not let it
-                    // overwrite a good copy.
-                    if (fresh.Games.Count > 0) DenuvoListingsCache.Save(dir, body);
-                    return new DenuvoListingsResult(fresh, null);
-                }
-            }
+            var res = await _http.GetAsync($"/api/denuvo/fixes?appid={Uri.EscapeDataString(appid)}", ct);
+            if (res.IsSuccessStatusCode) official = await ReadJsonAsync<DenuvoFixesResponse>(res, ct); // 404 = none
         }
         catch (Exception ex) when (!ct.IsCancellationRequested)
         {
             failure = ExceptionDispatchInfo.Capture(ex);
         }
 
-        if (DenuvoListingsCache.TryLoad(dir, JsonOpts) is { } offline) return offline;
-        failure?.Throw();
-        return null;
-    }
+        if (!_orphans.TryGetValue(appid, out var orphan))
+        {
+            _listedOrphans.TryRemove(appid, out _);
+            failure?.Throw();
+            return official;
+        }
 
-    /// <summary>Public — one game's fixes (id/title/desc/tags + which download slots exist).</summary>
-    public async Task<DenuvoFixesResponse?> GetDenuvoFixesAsync(string appid, CancellationToken ct = default)
-    {
-        var res = await _http.GetAsync($"/api/denuvo/fixes?appid={Uri.EscapeDataString(appid)}", ct);
-        if (!res.IsSuccessStatusCode) return null; // 404 = no fixes for this appid
-        return await ReadJsonAsync<DenuvoFixesResponse>(res, ct);
+        var fixes = new List<DenuvoFix>(official?.Fixes ?? []);
+        var ids = fixes.Select(f => f.Id).ToHashSet(StringComparer.Ordinal);
+        var listed = new Dictionary<string, OrphanFix>(StringComparer.Ordinal);
+        foreach (var candidate in orphan.Fixes)
+        {
+            if (!ids.Add(candidate.Fix.Id)) continue;
+            fixes.Add(candidate.Fix);
+            listed[candidate.Fix.Id] = candidate;
+        }
+        _listedOrphans[appid] = listed;
+
+        return new DenuvoFixesResponse
+        {
+            AppId = appid,
+            Name = official?.Name ?? orphan.Name,
+            HeaderImage = official?.HeaderImage ?? orphan.HeaderImage,
+            Fixes = fixes,
+        };
     }
 
     /// <summary>
-    /// Auth — download a fix's "manifest" or "fix" slot. The endpoint returns a short-lived signed
-    /// R2 URL (counts toward 25/day); we then fetch the file from that URL. Caller must be signed in.
+    /// Download a fix's "manifest" or "fix" slot. A fix that <see cref="GetDenuvoFixesAsync"/> listed from the
+    /// catalog (pass its <paramref name="appid"/>) comes from the public link in <c>catalog.json</c> and must
+    /// match the SHA-256 published beside it. Any other fix takes the lua.tools path: auth, the daily limit,
+    /// and a short-lived signed R2 URL; the caller must be signed in.
     /// </summary>
     public async Task<DownloadedFile> DownloadDenuvoAsync(
-        string fixId, string slot, string fallbackName, IProgress<double?>? progress, CancellationToken ct = default)
+        string fixId, string slot, string fallbackName, IProgress<double?>? progress, CancellationToken ct = default,
+        string? appid = null)
     {
+        if (appid is not null && _listedOrphans.TryGetValue(appid, out var listed) && listed.TryGetValue(fixId, out var orphan))
+        {
+            if (!orphan.Downloads.TryGetValue(slot, out var link))
+                throw new ApiException(Resources.Strings.Api_Err_LinkEmpty);
+            return await DownloadVerifiedAsync(link, fallbackName, progress, ct);
+        }
+
         // 1. Ask the API for a signed URL (auth + daily-limit gate live here).
         var res = await SendAsync(HttpMethod.Get,
             $"/api/denuvo/download?fix={Uri.EscapeDataString(fixId)}&slot={Uri.EscapeDataString(slot)}", ct);
@@ -311,6 +392,22 @@ public class LuaToolsApiClient(
 
         // 2. Fetch the file from R2 (no auth header — the signed URL carries its own credentials).
         return await DownloadFromUrlAsync(signed.Url, fallbackName, progress, ct);
+    }
+
+    /// <summary>
+    /// Download an orphan fix's file and keep it only if it hashes to the digest the catalog published.
+    /// Fail-closed: a mismatch (or a file that cannot be read back) deletes the staged file and throws, so
+    /// nothing downstream ever sees bytes that were not the ones the catalog named.
+    /// </summary>
+    internal async Task<DownloadedFile> DownloadVerifiedAsync(
+        OrphanDownload link, string fallbackName, IProgress<double?>? progress, CancellationToken ct)
+    {
+        var file = await DownloadFromUrlAsync(link.Url, fallbackName, progress, ct);
+        if (AssetIntegrity.Matches(file.FilePath, link.Sha256)) return file;
+
+        try { File.Delete(file.FilePath); } catch { /* best effort */ }
+        AppLog.Log($"Orphan fix {file.FileName} failed its SHA-256 check and was discarded.");
+        throw new ApiException(Resources.Strings.Api_Err_FixHashMismatch);
     }
 
     // ── Plumbing ────────────────────────────────────────────────────
