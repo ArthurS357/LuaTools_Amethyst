@@ -30,10 +30,11 @@ public static class Changelog
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
         new("1.8.1", "2026-11-20",
-            "A Network setting for the Cloudflare DNS fallback: pick Auto, Always or Never from Settings.",
+            "A Network setting for the Cloudflare DNS fallback, and a Fixes catalog that still shows when lua.tools is down.",
             [
                 "Settings > Network has a new DNS fallback selector for the Cloudflare DNS-over-HTTPS fallback added in 1.8.0: Auto (default, only if system DNS fails), Always or Never. Until now it could only be changed by editing settings.json.",
                 "The choice is saved to settings.json and applies immediately, without restarting the app. Always sends the names of the hosts on the fixed list to Cloudflare (1.1.1.1) before connecting; Never keeps every lookup on system DNS.",
+                "The Fixes tab keeps a saved copy of the catalog (%AppData%\\LuaToolsAmethyst\\cache\\denuvo_listings.json). If lua.tools cannot be reached or answers with an error, the tab shows that copy with an Offline mode banner saying when it was saved, instead of looking broken. The copy is used for up to 24 hours; Refresh switches back to the live catalog once the connection is back.",
                 "The new texts are in English and Portuguese (Brazil) for now. No new dependency and no new network request.",
             ]),
 

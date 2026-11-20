@@ -225,6 +225,7 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
     // The whole catalog as the API sent it (kept across visits; Refresh re-fetches it).
     private DenuvoListingsResponse? _catalog;
     private bool _catalogFailed;
+    private DateTime? _catalogCachedAt; // non-null = _catalog is the offline copy saved at that time
 
     // The Steam library as last scanned. Failed means "could not be read", which is not "nothing installed".
     private List<InstalledGame> _installed = [];
@@ -242,6 +243,14 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
     [ObservableProperty] private string _bannerText = "";
     [ObservableProperty] private string _bannerNames = "";
     [ObservableProperty] private bool _showLibraryWarning;
+
+    /// <summary>"Offline mode: showing the catalog saved on …" while the grid is the on-disk copy; null
+    /// (banner hidden) when the catalog is live or could not be loaded at all.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowOfflineBanner))]
+    private string? _offlineBannerText;
+
+    public bool ShowOfflineBanner => OfflineBannerText is not null;
 
     /// <summary>
     /// Fetch the catalog (once per session) and join it with the games installed in the Steam library.
@@ -272,8 +281,9 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
             _catalogFailed = false;
             if (force || _catalog is null)
             {
-                var data = await api.GetDenuvoListingsAsync(ct);
-                if (data is null) _catalogFailed = true; else _catalog = data;
+                var result = await api.GetDenuvoListingsAsync(ct);
+                if (result is null) _catalogFailed = true;
+                else (_catalog, _catalogCachedAt) = (result.Data, result.CachedAt);
             }
             (_installed, _libraryFailed) = await scanTask;
 
@@ -324,6 +334,9 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
         foreach (var t in (_catalog?.Tags ?? []).Where(t => used.Contains(t.Id)))
             Tags.Add(new TagPillVm(t) { IsSelected = t.Id == SelectedTagId });
 
+        OfflineBannerText = !_catalogFailed && _catalogCachedAt is { } saved
+            ? string.Format(Resources.Strings.Fixes_OfflineMode, saved.ToString("g"))
+            : null;
         ShowBanner = state.ShowBanner;
         ShowLibraryWarning = state.ShowLibraryWarning;
         BannerText = string.Format(Resources.Strings.Fixes_Warn_InstalledWithoutFix, without.Count);

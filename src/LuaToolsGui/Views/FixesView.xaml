@@ -53,6 +53,20 @@
                 Icon="{ui:SymbolIcon Search24}"
                 PlaceholderText="{x:Static res:Strings.Common_SearchPlaceholder}"
                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+            <!-- Offline copy of the catalog (lua.tools unreachable): says the app is fine, just not live. -->
+            <Border
+                Margin="0,10,0,0"
+                Padding="12,8"
+                Background="{StaticResource SurfaceCardBrush}"
+                BorderBrush="{StaticResource BorderSubtleBrush}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Visibility="{Binding ShowOfflineBanner, Converter={StaticResource BoolToVis}}">
+                <TextBlock
+                    Foreground="{StaticResource TextMutedBrush}"
+                    Text="{Binding OfflineBannerText}"
+                    TextWrapping="Wrap" />
+            </Border>
             <Border
                 Margin="0,10,0,0"
                 Padding="10,4"

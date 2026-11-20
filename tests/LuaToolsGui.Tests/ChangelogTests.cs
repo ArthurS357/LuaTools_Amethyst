@@ -54,6 +54,8 @@ public class ChangelogTests
         text.Should().ContainEquivalentOf("Settings > Network");             // where the selector lives
         text.Should().ContainEquivalentOf("Auto (default");                  // the three modes, default first
         text.Should().ContainEquivalentOf("applies immediately");            // no restart
+        text.Should().ContainEquivalentOf("Offline mode banner");            // the offline Fixes catalog
+        text.Should().ContainEquivalentOf("up to 24 hours");                 // its TTL
         text.Should().ContainEquivalentOf("no new network request");         // the selector adds none
     }
 

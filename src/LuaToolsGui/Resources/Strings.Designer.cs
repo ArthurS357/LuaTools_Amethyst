@@ -425,6 +425,7 @@ public static class Strings
     public static string Fixes_Err_Load => Get(nameof(Fixes_Err_Load));
     public static string Fixes_Empty_None => Get(nameof(Fixes_Empty_None));
     public static string Fixes_Warn_InstalledWithoutFix => Get(nameof(Fixes_Warn_InstalledWithoutFix));
+    public static string Fixes_OfflineMode => Get(nameof(Fixes_OfflineMode));
     public static string Fixes_Warn_LibraryFailed => Get(nameof(Fixes_Warn_LibraryFailed));
     public static string Fixes_SignIn => Get(nameof(Fixes_SignIn));
     public static string Fixes_SignInRequired => Get(nameof(Fixes_SignInRequired));

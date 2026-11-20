@@ -2,6 +2,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Runtime.ExceptionServices;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using LuaToolsGui.Models;
@@ -241,12 +242,49 @@ public class LuaToolsApiClient(
 
     // ── Denuvo fixes ────────────────────────────────────────────────
 
-    /// <summary>Public — every game that has at least one Denuvo fix, plus the tag catalogue.</summary>
-    public async Task<DenuvoListingsResponse?> GetDenuvoListingsAsync(CancellationToken ct = default)
+    /// <summary>Where the offline copy of the Fixes catalog lives. Null = <c>%AppData%\LuaToolsAmethyst\cache</c>;
+    /// tests point it at a temp folder.</summary>
+    internal string? CacheDirectory { get; init; }
+
+    /// <summary>
+    /// Public — every game that has at least one Denuvo fix, plus the tag catalogue.
+    ///
+    /// <para>
+    /// Network first. Any failure (an exception, a non-2xx such as a 503 during maintenance, a body that does
+    /// not parse) falls back to the copy saved by the last good answer, returned with
+    /// <see cref="DenuvoListingsResult.CachedAt"/> set so the page can say it is not live. With no usable
+    /// copy the behaviour is what it always was: null for a bad status, the original exception otherwise.
+    /// A cancelled call is not a failure and never reads the cache.
+    /// </para>
+    /// </summary>
+    public async Task<DenuvoListingsResult?> GetDenuvoListingsAsync(CancellationToken ct = default)
     {
-        var res = await _http.GetAsync("/api/denuvo/listings", ct);
-        if (!res.IsSuccessStatusCode) return null;
-        return await ReadJsonAsync<DenuvoListingsResponse>(res, ct);
+        string dir = CacheDirectory ?? Path.Combine(SettingsService.DefaultDirectory, "cache");
+        ExceptionDispatchInfo? failure = null;
+        try
+        {
+            var res = await _http.GetAsync("/api/denuvo/listings", ct);
+            if (res.IsSuccessStatusCode)
+            {
+                string body = await res.Content.ReadAsStringAsync(ct);
+                var fresh = JsonSerializer.Deserialize<DenuvoListingsResponse>(body, JsonOpts);
+                if (fresh is not null)
+                {
+                    // An empty catalog is a server hiccup far more often than the truth: do not let it
+                    // overwrite a good copy.
+                    if (fresh.Games.Count > 0) DenuvoListingsCache.Save(dir, body);
+                    return new DenuvoListingsResult(fresh, null);
+                }
+            }
+        }
+        catch (Exception ex) when (!ct.IsCancellationRequested)
+        {
+            failure = ExceptionDispatchInfo.Capture(ex);
+        }
+
+        if (DenuvoListingsCache.TryLoad(dir, JsonOpts) is { } offline) return offline;
+        failure?.Throw();
+        return null;
     }
 
     /// <summary>Public — one game's fixes (id/title/desc/tags + which download slots exist).</summary>

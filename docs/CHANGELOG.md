@@ -2,9 +2,21 @@
 
 ## 1.8.1 — 2026-11-20
 
-Seletor do modo de DNS em Configuracoes > Rede. O `DnsMode` da 1.8.0 so mudava editando o `settings.json`.
+Seletor do modo de DNS em Configuracoes > Rede (o `DnsMode` da 1.8.0 so mudava editando o `settings.json`) e catalogo da aba
+Correcao em cache offline.
 
 ### Novidades
+
+- **Cache offline do catalogo (aba Correcao):** `LuaToolsApiClient.GetDenuvoListingsAsync` tenta a rede primeiro e, a cada
+  resposta boa, grava o corpo JSON em `%AppData%\LuaToolsAmethyst\cache\denuvo_listings.json` (`DenuvoListingsCache`, escrita
+  atomica, so quando o catalogo tem jogos: um `games: []` nao sobrescreve uma copia boa). Em qualquer falha (excecao, status
+  nao-2xx como 503, corpo que nao le) devolve a copia se ela tiver ate 24 h (TTL pela data de modificacao do arquivo), num
+  `DenuvoListingsResult` com `CachedAt` preenchido. Sem copia utilizavel, o comportamento antigo continua: `null` para status
+  ruim, a excecao original para falha de rede. Cancelamento nunca le o cache. Nao ha requisicao nova nem mudanca no
+  `HttpClient`/`DnsFallbackHttpHandler`; a camada atua na resposta.
+- **Aviso na aba:** `FixesViewModel.OfflineBannerText` (`Fixes_OfflineMode`, en e pt-BR) mostra "Modo offline: exibindo
+  catalogo salvo em {data}" so enquanto a grade e a copia; some no Atualizar seguinte que alcanca a rede. A aba nao tenta a
+  rede sozinha ao ser reaberta enquanto esta offline: so no Atualizar.
 
 - **Configuracoes > Rede:** `ComboBox` com `Auto` (padrao, so apos falha de resolucao de nome), `Always` (Cloudflare DoH
   sempre) e `Never` (nunca DNS externo). `SettingsViewModel.SelectedDnsMode` le o valor salvo ao abrir (sem regravar) e, ao
@@ -16,6 +28,10 @@ Seletor do modo de DNS em Configuracoes > Rede. O `DnsMode` da 1.8.0 so mudava e
 
 ### Implementacao
 
+- `DenuvoListingsOfflineTests` (11): resposta boa grava a copia; falha de rede e 503 devolvem a copia como offline; sem copia
+  a falha continua igual; copia com mais de 24 h, corrompida ou de catalogo vazio nao e usada nem sobrescreve; cancelamento nao
+  le o cache; o aviso aparece so enquanto a grade e a copia e some no Atualizar com rede. Mutacao: sem a gravacao do cache 6
+  testes falham; sem o aviso o teste da aba falha.
 - Testes novos: `DnsModeSettingTests` (abre em Auto sem gravar; Always e Never persistem e sobrevivem a recarga) e
   `The_1_8_0_entry_still_names_what_that_release_was_about` no `ChangelogTests`, que ganhou ancoras da 1.8.1.
 - Sem pacote novo e sem requisicao de rede nova.
