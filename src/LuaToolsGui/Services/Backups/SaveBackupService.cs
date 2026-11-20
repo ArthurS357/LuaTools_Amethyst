@@ -73,7 +73,8 @@ public sealed partial class SaveBackupService
     /// <summary>Read from settings on every use, so changing the folder takes effect without a restart.</summary>
     public SaveBackupService(SteamService steam, SettingsService settings)
         : this(() => steam.EffectivePath, () => settings.EffectiveSaveBackupFolder, null,
-               SaveRoots.Current(), settings.GetCustomSaveFolders, settings.AddCustomSaveFolder) { }
+               SaveRoots.Current(), settings.GetCustomSaveFolders, settings.AddCustomSaveFolder)
+    { }
 
     // The internal constructors default to NO known roots and no custom folders, so a test never reads
     // the developer's real Documents or AppData.
@@ -203,7 +204,7 @@ public sealed partial class SaveBackupService
     public bool AddCustomFolder(long appId, string path) =>
         appId > 0 && SaveLocationCatalog.IsAcceptableCustomFolder(path) && _addCustomFolder(appId, path);
 
-    private static readonly char[] ExtraInvalidNameChars =[':', '?', '*', '"', '<', '>', '|', '/', '\\'];
+    private static readonly char[] ExtraInvalidNameChars = [':', '?', '*', '"', '<', '>', '|', '/', '\\'];
 
     private static readonly HashSet<string> ReservedDeviceNames = new(StringComparer.OrdinalIgnoreCase)
     {

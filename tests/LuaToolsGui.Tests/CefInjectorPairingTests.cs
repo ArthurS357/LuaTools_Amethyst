@@ -43,7 +43,7 @@ internal sealed class NodePage : IDisposable
         try
         {
             using var p = Process.Start(new ProcessStartInfo("node", "--version")
-                { RedirectStandardOutput = true, UseShellExecute = false, CreateNoWindow = true })!;
+            { RedirectStandardOutput = true, UseShellExecute = false, CreateNoWindow = true })!;
             p.WaitForExit(5000);
             return p.ExitCode == 0;
         }
@@ -60,8 +60,12 @@ internal sealed class NodePage : IDisposable
         File.WriteAllText(_file, Harness);
         _node = Process.Start(new ProcessStartInfo("node", $"\"{_file}\"")
         {
-            RedirectStandardInput = true, RedirectStandardOutput = true, UseShellExecute = false, CreateNoWindow = true,
-            StandardInputEncoding = new UTF8Encoding(false), StandardOutputEncoding = Encoding.UTF8,
+            RedirectStandardInput = true,
+            RedirectStandardOutput = true,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            StandardInputEncoding = new UTF8Encoding(false),
+            StandardOutputEncoding = Encoding.UTF8,
         })!;
     }
 

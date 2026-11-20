@@ -382,7 +382,9 @@ public sealed class AuthProviderDefenseTests : IDisposable
     private static HttpResponseMessage Session(string refreshToken) =>
         Respond(HttpStatusCode.OK, JsonSerializer.Serialize(new
         {
-            access_token = "access-" + refreshToken, refresh_token = refreshToken, expires_in = 3600,
+            access_token = "access-" + refreshToken,
+            refresh_token = refreshToken,
+            expires_in = 3600,
         }));
 
     private sealed class BrowserOpened : Exception;

@@ -42,7 +42,9 @@ public sealed class OnboardingCompletionTests : IDisposable
         File.WriteAllBytes(Path.Combine(_dir, "auth.dat"), ProtectedData.Protect(
             JsonSerializer.SerializeToUtf8Bytes(new StoredAuth
             {
-                RefreshToken = "r", AccessToken = "a", ExpiresAt = DateTimeOffset.UtcNow.AddMinutes(30),
+                RefreshToken = "r",
+                AccessToken = "a",
+                ExpiresAt = DateTimeOffset.UtcNow.AddMinutes(30),
             }), null, DataProtectionScope.CurrentUser));
         cache.OnboardingComplete.Should().BeFalse();
 
