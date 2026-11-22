@@ -1,5 +1,38 @@
 # Changelog
 
+## 1.8.2 — 2026-11-21
+
+Catalogo independente (espelho `ArthurS357/LuaTools-Catalog`), correcoes orfas com SHA-256 fail-closed e o endurecimento da
+auditoria de seguranca pos-F2.
+
+### Novidades
+
+- **Catalogo independente:** `GetDenuvoListingsAsync` le o `catalog.json` do espelho no GitHub (15 s), depois o `lua.tools` e
+  por fim a copia em disco, guardada por fonte; serve a copia utilizavel mais nova, entao uma resposta do `lua.tools` nunca
+  apaga uma copia com correcoes orfas.
+- **Correcoes orfas (`source: "merged"`):** `OrphanFixCatalog` le o `fixes[]` do catalogo e so aceita links https publicos com
+  SHA-256 valido. `GetDenuvoFixesAsync` lista as oficiais e depois as orfas (id repetido fica com a oficial).
+  `DownloadDenuvoAsync` baixa a orfa pelo link do catalogo e descarta, fail-closed, se o SHA-256 diferir; o arquivo fica
+  travado (`OpenPinned`) do hash ate a aplicacao.
+
+### Seguranca (auditoria pos-F2, lotes 1 a 3)
+
+- `SteamlessService`: digest sempre o compilado no app, repo fixo `atom0s/Steamless`, arquivo triado (`FixAnalyzer`) antes de
+  extrair, executaveis de lancamento so dentro da pasta de instalacao.
+- `CefInjectorService`: injeta so em `https://store.steampowered.com` (host parseado, nao substring).
+- Nomes de staging fixos (`AmethystToolService`, `UnlockerService`, `HubcapService`): nome remoto nunca vira caminho.
+- `GithubProxy`: redirecionamento manual com validacao por salto (https, host nomeado publico, limite); espelhos sem IP,
+  loopback, `*.local` ou rotulo unico. `CoverCache`: https publico, salto a salto, 2 MB e prazo de leitura.
+- `DnsFallbackHttpHandler`: sem cookies por padrao. Links de descricao de fix: so `http(s)` absoluto.
+- Log e UI: `ForLog` neutraliza CR/LF e trunca; `auth.dat` loga so o tipo da excecao; a pasta do perfil e mascarada em toasts;
+  `installdir` do appmanifest precisa ficar em `steamapps\common`.
+
+### Implementacao
+
+- Testes novos: `CatalogFallbackTests` (23), `TrustBoundaryHardeningTests` (37), `DownloadHardeningTests` (50),
+  `HygieneHardeningTests` (51). `ChangelogTests` ganhou ancoras da 1.8.2 e o teste da 1.8.1.
+- Sem pacote novo.
+
 ## 1.8.1 — 2026-11-20
 
 Seletor do modo de DNS em Configuracoes > Rede (o `DnsMode` da 1.8.0 so mudava editando o `settings.json`) e catalogo da aba

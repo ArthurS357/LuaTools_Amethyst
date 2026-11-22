@@ -29,6 +29,16 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.8.2", "2026-11-21",
+            "An independent Fixes catalog mirror, fixes that official lists do not carry, and a round of security hardening.",
+            [
+                "The Fixes catalog now has its own mirror (ArthurS357/LuaTools-Catalog on GitHub). The app reads it first, then lua.tools, then the saved offline copy, so the tab keeps working when either site is down.",
+                "Orphan fixes (listed in the mirror but not by lua.tools) appear in the game's fix list. A repeated id keeps the official one. An orphan fix is downloaded only if its SHA-256 matches the catalog, otherwise it is discarded, and the file stays locked until it is applied.",
+                "Downloads are checked harder: the Steamless digest is always the one compiled into the app, GitHub redirects are validated hop by hop, mirrors must be public named hosts, and cover images are limited to https, 2 MB and a read deadline.",
+                "Smaller hardening: the Steam store bridge is injected only into store.steampowered.com, staged files use fixed local names, fix links open only as http(s), and DNS-fallback requests no longer keep cookies.",
+                "Logs and on-screen messages are cleaner: user input is sanitized before it is logged, and your Windows profile folder is masked in toasts. No new dependency.",
+            ]),
+
         new("1.8.1", "2026-11-20",
             "A Network setting for the Cloudflare DNS fallback, and a Fixes catalog that still shows when lua.tools is down.",
             [

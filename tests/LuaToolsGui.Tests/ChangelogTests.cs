@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.8.1");
+        AppVersion.Current.Should().Be("1.8.2");
     }
 
     [Fact]
@@ -51,6 +51,20 @@ public class ChangelogTests
 
         // One anchor per change the release was actually about, so an entry that got copied forward from
         // the previous version fails here rather than shipping a changelog describing the wrong release.
+        text.Should().ContainEquivalentOf("LuaTools-Catalog");               // the independent mirror
+        text.Should().ContainEquivalentOf("saved offline copy");             // GitHub, lua.tools, then disk
+        text.Should().ContainEquivalentOf("Orphan fixes");                   // fixes only the mirror lists
+        text.Should().ContainEquivalentOf("SHA-256 matches");                // fail-closed digest
+        text.Should().ContainEquivalentOf("hop by hop");                     // redirect validation
+        text.Should().ContainEquivalentOf("store.steampowered.com");         // bridge host restriction
+        text.Should().ContainEquivalentOf("no longer keep cookies");         // useCookies = false
+    }
+
+    [Fact]
+    public void The_1_8_1_entry_still_names_what_that_release_was_about()
+    {
+        string text = string.Join(" ", Changelog.Entries.Single(e => e.Version == "1.8.1").Highlights);
+
         text.Should().ContainEquivalentOf("Settings > Network");             // where the selector lives
         text.Should().ContainEquivalentOf("Auto (default");                  // the three modes, default first
         text.Should().ContainEquivalentOf("applies immediately");            // no restart
