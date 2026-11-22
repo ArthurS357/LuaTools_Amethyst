@@ -29,7 +29,7 @@ de segurança nos downloads, links e logs.
 ## Build e testes
 
 - Suíte de testes completa verde. Nenhuma dependência nova.
-- 161 testes novos nesta versão cobrem o catálogo, os downloads, o Steamless, as capas e a higiene de logs.
+- 162 testes novos nesta versão (2.540 na 1.8.1, 2.702 nesta) cobrem o catálogo, os downloads, o Steamless, as capas e a higiene de logs.
 - A versão 1.8.2 foi conferida ao vivo antes do release: catálogo pelo espelho com `source: "merged"` em um jogo real
   (Moon Sweepers, 5335510), download com SHA-256 e redirecionamento do GitHub, aviso offline e requisições sem cookies.
 
