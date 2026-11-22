@@ -17,7 +17,25 @@ namespace LuaToolsGui.Services;
 public class GithubProxy
 {
     // 5-min timeout matches the old UnlockerService client (large asset downloads on slow mirrors).
-    private readonly HttpClient _http = new(DnsFallbackHttpHandler.CreateDefault()) { Timeout = TimeSpan.FromMinutes(5) };
+    private static readonly TimeSpan HeadersBudget = TimeSpan.FromMinutes(5);
+
+    private readonly HttpClient _http;
+
+    // Redirects are followed by hand, hop by hop (LuaToolsApiClient.SendCheckingRedirectsAsync): a mirror or a
+    // hostile API answer must not be able to bounce a download to http://, a LAN host or an IP literal.
+    // GitHub's own hop (github.com -> release-assets.githubusercontent.com) is a public https host and passes.
+    public GithubProxy() : this(DnsFallbackHttpHandler.CreateDefault(allowAutoRedirect: false, useCookies: false)) { }
+
+    internal GithubProxy(HttpMessageHandler handler) => _http = new HttpClient(handler) { Timeout = HeadersBudget };
+
+    private static void ApiHeaders(HttpRequestMessage req)
+    {
+        req.Headers.TryAddWithoutValidation("User-Agent", AppVersion.UserAgent);
+        req.Headers.TryAddWithoutValidation("Accept", "application/vnd.github+json");
+    }
+
+    private static void DownloadHeaders(HttpRequestMessage req) =>
+        req.Headers.TryAddWithoutValidation("User-Agent", AppVersion.UserAgent);
 
     /// <summary>Hosts a download may originate from. HTTPS only — a plain-http asset URL would be
     /// modifiable in transit regardless of any later hash check.</summary>
@@ -133,10 +151,8 @@ public class GithubProxy
         {
             try
             {
-                using var req = new HttpRequestMessage(HttpMethod.Get, candidate);
-                req.Headers.TryAddWithoutValidation("User-Agent", "LuaToolsGui");
-                req.Headers.TryAddWithoutValidation("Accept", "application/vnd.github+json");
-                var res = await _http.SendAsync(req, ct);
+                var res = await LuaToolsApiClient.SendCheckingRedirectsAsync(
+                    _http, new Uri(candidate), HeadersBudget, ct, ApiHeaders);
                 if (res.IsSuccessStatusCode)
                 {
                     // A held-onto failure from an earlier candidate is now dead weight — dispose it here
@@ -178,9 +194,8 @@ public class GithubProxy
         {
             try
             {
-                using var req = new HttpRequestMessage(HttpMethod.Get, candidate);
-                req.Headers.TryAddWithoutValidation("User-Agent", "LuaToolsGui");
-                using var res = await _http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, ct);
+                using var res = await LuaToolsApiClient.SendCheckingRedirectsAsync(
+                    _http, new Uri(candidate), HeadersBudget, ct, DownloadHeaders);
                 res.EnsureSuccessStatusCode();
 
                 long? total = res.Content.Headers.ContentLength;

@@ -75,6 +75,9 @@ internal static class OrphanFixCatalog
     {
         if (raw.ValueKind != JsonValueKind.Object || Text(raw, "id") is not { Length: > 0 } id) return null;
 
+        // Decision (F2): no fixed host allowlist for the download link. The catalog is ours to curate, so the
+        // trust anchor is the SHA-256 beside the link (fail-closed in DownloadVerifiedAsync, file pinned until
+        // applied); IsFollowableSignedUrl only keeps the link a public https name.
         var downloads = new Dictionary<string, OrphanDownload>();
         if (raw.TryGetProperty("downloads", out var slots) && slots.ValueKind == JsonValueKind.Object)
         {

@@ -79,13 +79,22 @@ public class SteamlessService(GithubProxy gh, SteamLibraryService library, Steam
                 string[] repo = AppConfig.SteamlessRepo.Split('/');
                 await gh.DownloadAssetAsync(asset.DownloadUrl, repo[0], repo[1], zipPath, progress, ct);
 
-                // Open ONCE with FileShare.None, hash through that handle, and extract through the SAME
-                // handle. Nothing can substitute the file between the check and the use, because nothing
-                // else can open it at all while we hold it.
-                using var stream = new FileStream(
-                    zipPath, FileMode.Open, FileAccess.Read, FileShare.None);
+                // Open ONCE, pinned (FileShare.Read: readers may look, nobody can write, replace or delete),
+                // hash through that handle, screen the archive, and extract through the SAME handle. Nothing
+                // can substitute the file between the check and the use.
+                using var stream = AssetIntegrity.OpenPinned(zipPath);
 
                 if (!AssetIntegrity.MatchesStream(stream, expected)) return null;
+
+                // The hash proves it is the release we pinned, not that the archive is sane: refuse a
+                // decompression bomb, an absurd entry count, a path escape or a duplicate destination before
+                // anything is written into the tool folder. Executables are expected here (not blocking).
+                if (FixAnalyzer.AnalyzeArchive(zipPath, ToolDir, luaProfile: LuaScreeningProfile.ApplicationCode)
+                    is { Blocked: true } analysis)
+                {
+                    AppLog.Log($"Steamless: archive refused before extraction: {analysis.BlockReason}");
+                    return null;
+                }
 
                 stream.Position = 0;
                 using var archive = new ZipArchive(stream, ZipArchiveMode.Read);
@@ -99,7 +108,11 @@ public class SteamlessService(GithubProxy gh, SteamLibraryService library, Steam
             return File.Exists(CliPath) ? CliPath : null;
         }
         catch (OperationCanceledException) { throw; }
-        catch { return null; }
+        catch (Exception ex)
+        {
+            AppLog.Log($"Steamless: could not install the tool: {ex.GetType().Name}: {LogSanitizer.SanitizePath(ex.Message)}");
+            return null;
+        }
         finally { _toolGate.Release(); }
     }
 

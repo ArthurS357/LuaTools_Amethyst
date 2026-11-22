@@ -39,8 +39,12 @@ public partial class SteamLibraryService(SteamService steam)
                 var m = InstallDirRegex().Match(File.ReadAllText(acf));
                 if (!m.Success) continue;
 
+                // The manifest is a file any program can write: a rooted or ".." installdir would point
+                // Fix/Steamless/uninstall at a folder outside steamapps\common.
                 string installDir = Unescape(m.Groups[1].Value);
-                string full = Path.Combine(library, "steamapps", "common", installDir);
+                if (FixAnalyzer.IsAbsoluteOrRooted(installDir)
+                    || !FixAnalyzer.IsContained(Path.Combine(library, "steamapps", "common"), installDir, out string full))
+                    continue;
                 if (Directory.Exists(full)) return full;
             }
         }

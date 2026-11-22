@@ -461,28 +461,38 @@ public partial class HubcapService
     private static async Task<T?> ReadJsonAsync<T>(HttpResponseMessage res, CancellationToken ct) =>
         JsonSerializer.Deserialize<T>(await res.Content.ReadAsStringAsync(ct), JsonOpts);
 
-    private static async Task<DownloadedFile> SaveResponseAsync(
+    internal static async Task<DownloadedFile> SaveResponseAsync(
         HttpResponseMessage res, string fallbackName,
         IProgress<Downloads.DownloadProgress>? progress, CancellationToken ct)
     {
-        string fileName = res.Content.Headers.ContentDisposition?.FileName?.Trim('"') ?? fallbackName;
-        foreach (char c in Path.GetInvalidFileNameChars()) fileName = fileName.Replace(c, '_');
+        // Same rule as every other staged download: separators replaced, "."/".." and device names refused.
+        string fileName = LuaToolsApiClient.StagedFileName(res.Content.Headers.ContentDisposition?.FileName, fallbackName);
 
         Directory.CreateDirectory(InterimDownloadsFolder);
         string filePath = Path.Combine(InterimDownloadsFolder, fileName);
 
         long? total = res.Content.Headers.ContentLength;
-        await using var src = await res.Content.ReadAsStreamAsync(ct);
-        await using var dst = File.Create(filePath);
-
-        var buffer = new byte[81920];
         long written = 0;
-        int read;
-        while ((read = await src.ReadAsync(buffer, ct)) > 0)
+        try
         {
-            await dst.WriteAsync(buffer.AsMemory(0, read), ct);
-            written += read;
-            progress?.Report(new Downloads.DownloadProgress(written, total));
+            await using var src = await res.Content.ReadAsStreamAsync(ct);
+            await using var dst = File.Create(filePath);
+
+            var buffer = new byte[81920];
+            int read;
+            while ((read = await src.ReadAsync(buffer, ct)) > 0)
+            {
+                await dst.WriteAsync(buffer.AsMemory(0, read), ct);
+                written += read;
+                progress?.Report(new Downloads.DownloadProgress(written, total));
+            }
+        }
+        catch
+        {
+            // The caller never gets a DownloadedFile for a failed or cancelled body, so nothing downstream
+            // knows this path to clean it up. The streams are already closed here.
+            try { File.Delete(filePath); } catch { /* best effort */ }
+            throw;
         }
 
         // One final report so a zero-length or single-chunk body still settles the bar at 100%.

@@ -587,8 +587,10 @@ public class AuthService
             byte[] plain = ProtectedData.Unprotect(File.ReadAllBytes(_authFile), null, DataProtectionScope.CurrentUser);
             return JsonSerializer.Deserialize<StoredAuth>(plain);
         }
-        catch
+        catch (Exception ex)
         {
+            // Type only: the file holds the session, and a parse/decrypt message must never echo its content.
+            AppLog.Log($"Auth: stored session could not be read: {ex.GetType().Name}");
             return null;
         }
     }
@@ -616,9 +618,11 @@ public class AuthService
                 await Task.Delay(150);
                 if (_refreshToken != auth.RefreshToken) return;
             }
-            catch
+            catch (Exception ex)
             {
-                return; // locked/denied — stay signed in for this session, just don't persist
+                // Locked/denied — stay signed in for this session, just don't persist. Type only (see LoadStored).
+                AppLog.Log($"Auth: stored session could not be saved: {ex.GetType().Name}");
+                return;
             }
         }
     }

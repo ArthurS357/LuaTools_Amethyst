@@ -56,7 +56,7 @@ internal static class GithubMirrors
         if (api is not null) _api = Sanitize(api);
     }
 
-    private static string[] Sanitize(IReadOnlyList<string> mirrors)
+    internal static string[] Sanitize(IReadOnlyList<string> mirrors)
     {
         var result = new List<string>(mirrors.Count);
         foreach (string mirror in mirrors)
@@ -66,6 +66,10 @@ internal static class GithubMirrors
             string trimmed = mirror.Trim();
             if (!Uri.TryCreate(trimmed, UriKind.Absolute, out var uri)) continue;
             if (uri.Scheme != Uri.UriSchemeHttps) continue; // a plain-http mirror is modifiable in transit
+            // Every GitHub download would be sent to it: a LAN/loopback/IP-literal or single-label host is
+            // never a public proxy (same policy as the DoH handler).
+            if (uri.HostNameType != UriHostNameType.Dns || uri.IsLoopback
+                || DnsFallbackHttpHandler.IsLocalOrBypassHost(uri.Host)) continue;
 
             // Candidates() concatenates "<mirror><full github url>", so a missing slash silently produces
             // a malformed URL that just fails every time.

@@ -272,7 +272,7 @@ public sealed class DnsFallbackHttpHandler : DelegatingHandler
     /// honors DoH-resolved IPv4 addresses while preserving TLS SNI and certificate validation.</summary>
     public static DnsFallbackHttpHandler CreateDefault(
         bool allowAutoRedirect = true,
-        bool useCookies = true,
+        bool useCookies = false,
         TimeSpan? pooledConnectionLifetime = null,
         DnsFallbackSession? session = null,
         Func<DnsMode>? getMode = null,
@@ -458,7 +458,11 @@ public sealed class DnsFallbackHttpHandler : DelegatingHandler
                         addresses = redirectIps;
                 }
                 catch (OperationCanceledException) when (ct.IsCancellationRequested) { throw; }
-                catch { /* fall through to system DNS */ }
+                catch (Exception ex)
+                {
+                    // Falls through to system DNS. Type only: the message can carry resolver detail.
+                    AppLog.Log($"DnsFallback: DoH lookup for redirect target '{targetHost}' failed: {ex.GetType().Name}");
+                }
             }
         }
 

@@ -453,22 +453,27 @@ public class LuaToolsApiClient(
         HttpCompletionOption completion = HttpCompletionOption.ResponseContentRead)
     {
         // All callers of SendAsync are login-gated endpoints; the caller ensures the user is signed in.
-        var req = new HttpRequestMessage(method, url);
+        using var req = new HttpRequestMessage(method, url);
         req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await auth.GetValidAccessTokenAsync());
 
         var res = await _http.SendAsync(req, completion, ct);
         if (res.IsSuccessStatusCode) return res;
 
-        string message = $"Request failed ({(int)res.StatusCode})";
-        try
+        // A failure is never handed back, so nobody else will dispose it: with ResponseHeadersRead an
+        // undisposed non-2xx response holds its connection until the finalizer runs.
+        using (res)
         {
-            var err = JsonSerializer.Deserialize<ApiError>(await res.Content.ReadAsStringAsync(ct), JsonOpts);
-            if (!string.IsNullOrWhiteSpace(err?.Error)) message = err.Error;
-        }
-        catch { /* non-JSON error body */ }
+            string message = $"Request failed ({(int)res.StatusCode})";
+            try
+            {
+                var err = JsonSerializer.Deserialize<ApiError>(await res.Content.ReadAsStringAsync(ct), JsonOpts);
+                if (!string.IsNullOrWhiteSpace(err?.Error)) message = err.Error;
+            }
+            catch { /* non-JSON error body */ }
 
-        if (res.StatusCode == HttpStatusCode.Unauthorized) message = "Session expired — please sign in again.";
-        throw new ApiException(message, res.StatusCode);
+            if (res.StatusCode == HttpStatusCode.Unauthorized) message = "Session expired — please sign in again.";
+            throw new ApiException(message, res.StatusCode);
+        }
     }
 
     private static async Task<T?> ReadJsonAsync<T>(HttpResponseMessage res, CancellationToken ct) =>
@@ -494,7 +499,7 @@ public class LuaToolsApiClient(
     private async Task<DownloadedFile> DownloadFileAsync(
         string url, string fallbackName, IProgress<Downloads.DownloadProgress>? progress, CancellationToken ct)
     {
-        var res = await SendAsync(HttpMethod.Get, url, ct, HttpCompletionOption.ResponseHeadersRead);
+        using var res = await SendAsync(HttpMethod.Get, url, ct, HttpCompletionOption.ResponseHeadersRead);
         return await SaveResponseAsync(res, fallbackName, progress, ct);
     }
 
@@ -548,15 +553,17 @@ public class LuaToolsApiClient(
     /// is the stall timeout's job. <paramref name="http"/> must not auto-redirect.
     /// </summary>
     internal static async Task<HttpResponseMessage> SendCheckingRedirectsAsync(
-        HttpClient http, Uri url, TimeSpan headersBudget, CancellationToken ct)
+        HttpClient http, Uri url, TimeSpan headersBudget, CancellationToken ct,
+        Action<HttpRequestMessage>? configure = null)
     {
         using var budget = CancellationTokenSource.CreateLinkedTokenSource(ct);
         budget.CancelAfter(headersBudget);
 
         for (int hop = 1; ; hop++)
         {
-            var res = await http.SendAsync(
-                new HttpRequestMessage(HttpMethod.Get, url), HttpCompletionOption.ResponseHeadersRead, budget.Token);
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
+            configure?.Invoke(request); // applied to every hop: headers are not carried over by hand
+            var res = await http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, budget.Token);
             if ((int)res.StatusCode is not (300 or 301 or 302 or 303 or 307 or 308)
                 || res.Headers.Location is not { } location)
                 return res;
@@ -587,7 +594,7 @@ public class LuaToolsApiClient(
         }
 
         // Not via SendAsync: no Bearer header, the absolute URL isn't prefixed, and redirects are screened.
-        var res = await SendCheckingRedirectsAsync(FixDownloadHttp, new Uri(url), SignedDownloadHeadersBudget, ct);
+        using var res = await SendCheckingRedirectsAsync(FixDownloadHttp, new Uri(url), SignedDownloadHeadersBudget, ct);
         if (!res.IsSuccessStatusCode)
             throw new ApiException(string.Format(Resources.Strings.Api_Err_DownloadFailed, (int)res.StatusCode), res.StatusCode);
         return await SaveResponseAsync(res, fallbackName, AsFraction(progress), ct, folder);

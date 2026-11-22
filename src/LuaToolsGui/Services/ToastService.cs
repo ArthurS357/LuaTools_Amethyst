@@ -30,6 +30,10 @@ public class ToastService
         var dispatcher = Application.Current?.Dispatcher;
         if (dispatcher is null) return;
 
+        // Toast text is on screen and ends up in screenshots and bug reports; error messages from any service
+        // can carry a path under the user's profile, so the profile folder is masked here, once, for all.
+        message = LogSanitizer.SanitizePath(message);
+
         void Post() => _snackbar.Show(
             title, message,
             error ? ControlAppearance.Caution : ControlAppearance.Secondary,
@@ -48,6 +52,8 @@ public class ToastService
     {
         var dispatcher = Application.Current?.Dispatcher;
         if (dispatcher is null) return;
+
+        message = LogSanitizer.SanitizePath(message); // see Show
 
         void Post()
         {

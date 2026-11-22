@@ -81,7 +81,7 @@ public partial class App : Application
             // Sanitized for the same reason as the log — this text is shown on screen and can be
             // screenshotted into a bug report.
             var toast = _host.Services.GetRequiredService<ToastService>();
-            toast.Show("LuaTools", $"{ex.GetType().Name}: {LogSanitizer.Sanitize(ex.Message)}", error: true);
+            toast.Show("LuaTools", $"{ex.GetType().Name}: {LogSanitizer.SanitizePath(ex.Message)}", error: true);
         }
         catch { /* no UI available */ }
     }
@@ -335,7 +335,7 @@ public partial class App : Application
         {
             LogCrash("OnStartup", ex);
             MessageBox.Show(
-                string.Format(LuaToolsGui.Resources.Strings.App_StartupFailed, LogSanitizer.Sanitize(ex.Message), CrashLogPath),
+                string.Format(LuaToolsGui.Resources.Strings.App_StartupFailed, LogSanitizer.SanitizePath(ex.Message), CrashLogPath),
                 "LuaTools", MessageBoxButton.OK, MessageBoxImage.Error);
             Shutdown(1);
         }
@@ -1281,6 +1281,25 @@ public partial class App : Application
         base.OnExit(e);
     }
 
+    internal const string RelaunchExeVariable = "LUATOOLS_RELAUNCH_EXE";
+
+    /// <summary>
+    /// The delayed-start command. The exe path travels in an environment variable rather than inside the
+    /// command line: cmd expands <c>%…%</c> in the command text even within quotes, so an install path such as
+    /// <c>C:\100%tools\</c> was mangled, while a variable's VALUE is inserted verbatim.
+    /// </summary>
+    internal static System.Diagnostics.ProcessStartInfo RelaunchStartInfo(string exe)
+    {
+        var psi = new System.Diagnostics.ProcessStartInfo("cmd.exe",
+            $"/c timeout /t 2 /nobreak >nul & start \"\" \"%{RelaunchExeVariable}%\"")
+        {
+            CreateNoWindow = true,
+            UseShellExecute = false,
+        };
+        psi.Environment[RelaunchExeVariable] = exe;
+        return psi;
+    }
+
     /// <summary>Relaunch the app (used after a language change). The single-instance mutex is released
     /// only when THIS process exits, so we start the new instance via a short delayed shell command — by
     /// the time it launches the exe, our mutex is free and the new instance won't bow out.</summary>
@@ -1292,13 +1311,7 @@ public partial class App : Application
             if (exe is not null)
             {
                 // cmd: wait ~1.2s for this process's mutex to release, then start the exe detached.
-                var psi = new System.Diagnostics.ProcessStartInfo("cmd.exe",
-                    $"/c timeout /t 2 /nobreak >nul & start \"\" \"{exe}\"")
-                {
-                    CreateNoWindow = true,
-                    UseShellExecute = false,
-                };
-                System.Diagnostics.Process.Start(psi);
+                System.Diagnostics.Process.Start(RelaunchStartInfo(exe));
             }
         }
         catch { /* if relaunch fails, the user can reopen manually */ }

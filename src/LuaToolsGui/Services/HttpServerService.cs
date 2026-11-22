@@ -432,7 +432,7 @@ public class HttpServerService : IHostedService
                 source = s.GetString() ?? "";
         }
         catch (Exception ex) { AppLog.Log($"HTTP /add-source: request body is not valid JSON: {ex.GetType().Name}: {ex.Message}"); }
-        AppLog.Log($"/add-source/{appId} body='{body}' parsed source='{source}'");
+        AppLog.Log($"/add-source/{appId} body='{ForLog(body)}' parsed source='{ForLog(source)}'");
         if (string.IsNullOrWhiteSpace(source)) return (400, JsonErr("source is required"));
 
         _services.GetRequiredService<PluginAddService>().Pick(appId, source);
@@ -691,10 +691,16 @@ public class HttpServerService : IHostedService
 
         // CR/LF neutralized: the body is attacker-controlled (any local page can POST here), and a raw
         // newline would let it forge what looks like a genuine log line.
-        message = message.Replace("\r", "\\r").Replace("\n", "\\n");
-        if (message.Length > 2000) message = message[..2000] + "…";
-        AppLog.Log("[plugin] " + message);
+        AppLog.Log("[plugin] " + ForLog(message));
         return (200, Json(new { success = true }));
+    }
+
+    /// <summary>Request text for a log line: CR/LF neutralized (a raw newline would forge a log line) and cut
+    /// at <paramref name="max"/> characters (any local page can POST here).</summary>
+    internal static string ForLog(string? text, int max = 2000)
+    {
+        string s = (text ?? "").Replace("\r", "\\r").Replace("\n", "\\n");
+        return s.Length > max ? s[..max] + "…" : s;
     }
 
     /// <summary>Marshal a fire-and-forget UI action onto the WPF dispatcher and ack immediately.</summary>
