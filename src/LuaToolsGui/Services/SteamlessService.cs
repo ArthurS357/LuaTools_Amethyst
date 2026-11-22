@@ -158,11 +158,7 @@ public class SteamlessService(GithubProxy gh, SteamLibraryService library, Steam
         var info = await depots.GetAsync(appId, ct);
         if (info is { LaunchExes.Count: > 0 })
         {
-            var resolved = info.LaunchExes
-                .Select(rel => Path.Combine(installDir, rel))
-                .Where(File.Exists)
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .ToList();
+            var resolved = ContainedLaunchExes(installDir, info.LaunchExes);
             if (resolved.Count > 0) return resolved;
         }
 
@@ -176,6 +172,20 @@ public class SteamlessService(GithubProxy gh, SteamLibraryService library, Steam
         }
         catch { return []; }
     }
+
+    /// <summary>
+    /// The launch executables that really are inside <paramref name="installDir"/> and exist. The entries
+    /// come from api.steamcmd.net, so a rooted path or a <c>..</c> escape would make Steamless patch (and
+    /// replace) an executable anywhere the user can write; those are dropped, never repaired.
+    /// </summary>
+    internal static List<string> ContainedLaunchExes(string installDir, IEnumerable<string> launchExes) =>
+        launchExes
+            .Where(rel => !FixAnalyzer.IsAbsoluteOrRooted(rel))
+            .Select(rel => FixAnalyzer.IsContained(installDir, rel, out string full) ? full : null)
+            .OfType<string>()
+            .Where(File.Exists)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
 
     /// <summary>
     /// The SHA-256 this download must match, or <see langword="null"/> to refuse the download entirely.
@@ -198,12 +208,13 @@ public class SteamlessService(GithubProxy gh, SteamLibraryService library, Steam
 
     private static async Task RunCliAsync(string cliPath, string exePath, CancellationToken ct)
     {
-        var psi = new ProcessStartInfo(cliPath, $"\"{exePath}\"")
+        var psi = new ProcessStartInfo(cliPath)
         {
             UseShellExecute = false,
             CreateNoWindow = true,
             WorkingDirectory = Path.GetDirectoryName(cliPath) ?? Environment.CurrentDirectory,
         };
+        psi.ArgumentList.Add(exePath); // one argument, quoted by the runtime — not a hand-built command line
         using var proc = Process.Start(psi) ?? throw new InvalidOperationException("Failed to start Steamless.");
         await proc.WaitForExitAsync(ct);
     }

@@ -34,10 +34,27 @@ public partial class FixesView : UserControl
         e.Handled = true;
     }
 
+    /// <summary>
+    /// The link text comes from a fix description served by lua.tools or the catalog, and
+    /// <see cref="SteamService.OpenUrl"/> hands it to ShellExecute — so only an absolute http(s) address gets
+    /// through (no <c>file:</c>, UNC, <c>ms-msdt:</c>, <c>steam:</c>, <c>javascript:</c>). OpenUrl itself stays
+    /// as it is: other callers use it for folders and steam:// links.
+    /// </summary>
+    internal static bool TryGetWebUrl(string? url, out string absolute)
+    {
+        absolute = "";
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)
+            || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+            return false;
+
+        absolute = uri.AbsoluteUri;
+        return true;
+    }
+
     private static void Open(string? url)
     {
-        if (string.IsNullOrWhiteSpace(url)) return;
-        try { SteamService.OpenUrl(url); } catch { /* bad/blocked URL — ignore */ }
+        if (!TryGetWebUrl(url, out string absolute)) return;
+        try { SteamService.OpenUrl(absolute); } catch { /* bad/blocked URL — ignore */ }
     }
 
     // MarkdownViewer hosts its own (non-scrolling) FlowDocumentScrollViewer that swallows the mouse

@@ -273,24 +273,87 @@ public class CatalogFallbackTests : IDisposable
         Uri? asked = null;
         var api = await ListedAsync(fixHost: req => { asked = req.RequestUri; return Bytes(FixBytes); });
 
-        var file = await api.DownloadDenuvoAsync("orphan-1", "fix", "fix.zip", null, appid: "300");
+        using var file = await api.DownloadDenuvoAsync("orphan-1", "fix", "fix.zip", null, appid: "300");
         _staged.Add(file.FilePath);
 
         asked.Should().Be(new Uri(FixUrl));
         (await File.ReadAllBytesAsync(file.FilePath)).Should().Equal(FixBytes);
     }
 
+    private static string DownloadsRoot => Path.Combine(Path.GetTempPath(), "LuaToolsGui", "downloads");
+
+    /// <summary>Every staged file/folder under the interim downloads root, to compare before and after.</summary>
+    private static HashSet<string> StagedEntries() =>
+        Directory.Exists(DownloadsRoot)
+            ? Directory.EnumerateFileSystemEntries(DownloadsRoot, "*", SearchOption.AllDirectories).ToHashSet()
+            : [];
+
     [Fact]
     public async Task An_orphan_fix_whose_sha_does_not_match_is_discarded_and_refused()
     {
-        string? staged = null;
-        var api = await ListedAsync(sha: new string('0', 64),
-            fixHost: req => { staged = Path.Combine(Path.GetTempPath(), "LuaToolsGui", "downloads", "fix.zip"); return Bytes(FixBytes); });
+        var before = StagedEntries();
+        var api = await ListedAsync(sha: new string('0', 64), fixHost: _ => Bytes(FixBytes));
 
         var download = () => api.DownloadDenuvoAsync("orphan-1", "fix", "fix.zip", null, appid: "300");
 
         await download.Should().ThrowAsync<ApiException>().WithMessage(Resources.Strings.Api_Err_FixHashMismatch);
-        File.Exists(staged).Should().BeFalse("the bytes were not the ones the catalog named");
+        StagedEntries().Except(before).Should().BeEmpty(
+            "the bytes were not the ones the catalog named: neither the file nor its per-download folder may stay");
+    }
+
+    // ── Item 6: unique staging folder + the verified file stays pinned ────────────────────────────────
+
+    [Fact]
+    public async Task An_orphan_fix_is_staged_in_a_folder_of_its_own_under_its_real_name()
+    {
+        var api = await ListedAsync(fixHost: _ => Bytes(FixBytes));
+
+        using var first = await api.DownloadDenuvoAsync("orphan-1", "fix", "fix.zip", null, appid: "300");
+        using var second = await api.DownloadDenuvoAsync("orphan-1", "fix", "fix.zip", null, appid: "300");
+        _staged.Add(first.FilePath);
+        _staged.Add(second.FilePath);
+
+        Path.GetFileName(first.FilePath).Should().Be("fix.zip", "the name is build identity and is kept");
+        Path.GetDirectoryName(first.FilePath).Should().NotBe(Path.GetDirectoryName(second.FilePath),
+            "two downloads of the same name must not share a path");
+        Path.GetDirectoryName(Path.GetDirectoryName(first.FilePath)).Should().Be(DownloadsRoot);
+        first.OwnedDirectory.Should().Be(Path.GetDirectoryName(first.FilePath));
+    }
+
+    [Fact]
+    public async Task A_verified_orphan_fix_is_pinned_until_it_is_released()
+    {
+        var api = await ListedAsync(fixHost: _ => Bytes(FixBytes));
+        using var file = await api.DownloadDenuvoAsync("orphan-1", "fix", "fix.zip", null, appid: "300");
+        _staged.Add(file.FilePath);
+
+        // Readers (the screening, ZipFile.OpenRead in the apply step) are unaffected...
+        (await File.ReadAllBytesAsync(file.FilePath)).Should().Equal(FixBytes);
+        using (var reader = ZipLikeOpenRead(file.FilePath)) reader.Length.Should().Be(FixBytes.Length);
+        // ...but the checked file cannot be replaced, truncated or deleted from under the handle.
+        new Action(() => File.Delete(file.FilePath)).Should().Throw<IOException>();
+        new Action(() => File.WriteAllBytes(file.FilePath, [1, 2, 3])).Should().Throw<IOException>();
+        File.Exists(file.FilePath).Should().BeTrue();
+
+        file.Discard();
+
+        File.Exists(file.FilePath).Should().BeFalse("Discard releases the pin first, then deletes");
+        Directory.Exists(file.OwnedDirectory!).Should().BeFalse();
+    }
+
+    // FileShare.Read, which is how ZipFile.OpenRead and File.OpenRead open a file.
+    private static FileStream ZipLikeOpenRead(string path) =>
+        new(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+    [Fact]
+    public void Discarding_a_file_without_a_pin_or_folder_just_deletes_it()
+    {
+        string path = Path.Combine(_dir, "plain.zip");
+        File.WriteAllText(path, "x");
+
+        new DownloadedFile(path, "plain.zip").Discard();
+
+        File.Exists(path).Should().BeFalse();
     }
 
     [Fact]

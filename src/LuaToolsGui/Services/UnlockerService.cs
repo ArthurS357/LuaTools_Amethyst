@@ -278,6 +278,10 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
         }
 
         string staging = Path.Combine(Path.GetTempPath(), "LuaToolsGui", "mode", Guid.NewGuid().ToString("N"));
+        // Every staged file is opened with AssetIntegrity.OpenPinned right after it lands and stays open until
+        // the copy into the Steam root is done — including the user's wait in the review below. Otherwise the
+        // file that was verified is not the one that is copied. Disposed before the staging folder is deleted.
+        var pins = new List<FileStream>();
         try
         {
             Directory.CreateDirectory(staging);
@@ -296,12 +300,14 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
                 // would land outside staging (Path.Combine drops staging for a rooted name). Display only.
                 string zipPath = Path.Combine(staging, "mode.zip");
                 await DownloadToFileAsync(def, asset.DownloadUrl, zipPath, progress, ct);
+                pins.Add(AssetIntegrity.OpenPinned(zipPath));
 
                 zipDigest = AssetIntegrity.Sha256OfFile(zipPath);
                 if (!AssetIntegrity.Matches(zipPath, asset.Digest))
                     return ModeInstallResult.Fail(Resources.Strings.Unlocker_Err_DownloadVerification);
 
                 staged = ExtractWanted(zipPath, def.PlaceFiles, staging);
+                pins.AddRange(staged.Values.Select(AssetIntegrity.OpenPinned));
                 var missing = def.PlaceFiles.Where(f => !staged.ContainsKey(f)).ToList();
                 if (missing.Count > 0)
                     return ModeInstallResult.Fail(string.Format(Resources.Strings.Unlocker_Err_DownloadMissing, string.Join(", ", missing)));
@@ -319,6 +325,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
 
                     string dest = Path.Combine(staging, file);
                     await DownloadToFileAsync(def, asset.DownloadUrl, dest, progress, ct);
+                    pins.Add(AssetIntegrity.OpenPinned(dest));
 
                     if (!AssetIntegrity.Matches(dest, asset.Digest))
                         return ModeInstallResult.Fail(string.Format(Resources.Strings.Unlocker_Err_FileVerification, file));
@@ -401,6 +408,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
         }
         finally
         {
+            foreach (var pin in pins) pin.Dispose(); // a held handle would block the delete below
             try { Directory.Delete(staging, recursive: true); } catch { /* best effort */ }
         }
     }

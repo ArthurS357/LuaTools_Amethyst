@@ -498,7 +498,9 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
                 if (p is not null) Progress = p.Value * 100;
             });
 
-            var file = await api.DownloadDenuvoAsync(fix.Id, slot, fallback, prog, appid: game.AppId);
+            // Disposed on every exit (screening refusal, exception): an orphan fix's file is held open by a
+            // pin until then, and an open handle blocks its deletion.
+            using var file = await api.DownloadDenuvoAsync(fix.Id, slot, fallback, prog, appid: game.AppId);
 
             if (slot == "manifest")
                 InstallManifest(file, appId, game.Name);
@@ -533,7 +535,7 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
         var result = isZip
             ? installer.InstallZip(file.FilePath, appId, forceLocked: true)
             : installer.InstallLuaFile(file.FilePath, appId, forceLocked: true);
-        DeleteStaged(file.FilePath); // consumed by the install — drop the temp staging copy
+        file.Discard(); // consumed by the install — release the pin and drop the temp staging copy
 
         if (result.AnyFailed)
         {
@@ -597,7 +599,7 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
         }
         finally
         {
-            DeleteStaged(file.FilePath); // the service is done with it — drop the temp staging copy
+            file.Discard(); // the service is done with it — release the pin and drop the temp staging copy
         }
     }
 

@@ -36,7 +36,16 @@ public class CoverCache
         return hash.Equals(PlaceholderSha256, StringComparison.OrdinalIgnoreCase);
     }
 
-    private readonly HttpClient _http = new() { Timeout = TimeSpan.FromSeconds(20) };
+    // A cover is a ~20-100 KB header.jpg; anything near this is not one.
+    internal const int MaxCoverBytes = 2 * 1024 * 1024;
+    private static readonly TimeSpan FetchBudget = TimeSpan.FromSeconds(20);
+
+    private readonly HttpClient _http;
+
+    // Redirects are followed by hand (SendCheckingRedirectsAsync), so the handler must not follow them itself.
+    public CoverCache() : this(new HttpClientHandler { AllowAutoRedirect = false, UseCookies = false }) { }
+
+    internal CoverCache(HttpMessageHandler handler) => _http = new HttpClient(handler) { Timeout = FetchBudget };
     private readonly SemaphoreSlim _ioGate = new(1, 1);
     private readonly ConcurrentDictionary<long, Task<string?>> _inFlight = new();
     private readonly ConcurrentDictionary<long, byte> _noCover = new(); // appids with no usable cover (this session)
@@ -88,17 +97,52 @@ public class CoverCache
         return _inFlight.GetOrAdd(appid, _ => DownloadAsync(appid, path, remoteUrl, ct));
     }
 
+    /// <summary>
+    /// The cover's bytes, or null for anything that is not one (a refused redirect hop throws
+    /// <see cref="ApiException"/>; the caller treats any failure as "no cover"). <paramref name="remoteUrl"/> comes from
+    /// the catalog or lua.tools, so it gets the same screening as a signed download (https, public named
+    /// host, every redirect hop checked) and the body is read under a size cap and a deadline. As elsewhere
+    /// the host NAME is checked, not what it resolves to (see <see cref="LuaToolsApiClient.IsFollowableSignedUrl"/>).
+    /// </summary>
+    internal async Task<byte[]?> FetchAsync(string remoteUrl, CancellationToken ct)
+    {
+        if (!LuaToolsApiClient.IsFollowableSignedUrl(remoteUrl)) return null;
+
+        using var res = await LuaToolsApiClient.SendCheckingRedirectsAsync(_http, new Uri(remoteUrl), FetchBudget, ct);
+        // A 404 etc. is simply "no cover from this source".
+        if (!res.IsSuccessStatusCode || res.Content.Headers.ContentLength > MaxCoverBytes) return null;
+
+        using var body = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        body.CancelAfter(FetchBudget);
+        byte[]? bytes = await ReadCappedAsync(await res.Content.ReadAsStreamAsync(body.Token), MaxCoverBytes, body.Token);
+
+        // A real cover is a JPEG: reject error/HTML bodies that slip through with a 200 by the magic bytes,
+        // not the size. The predictable CDN URL can also serve Steam's grey placeholder (a valid JPEG) —
+        // reject it so the caller falls back to the real appdetails header_image.
+        return bytes is null || bytes.Length < MinValidBytes || !IsJpeg(bytes) || IsHeaderCapsulePlaceholder(bytes)
+            ? null
+            : bytes;
+    }
+
+    /// <summary>The whole stream, or null as soon as it holds more than <paramref name="max"/> bytes.</summary>
+    internal static async Task<byte[]?> ReadCappedAsync(Stream source, int max, CancellationToken ct)
+    {
+        using var buffer = new MemoryStream();
+        var chunk = new byte[16 * 1024];
+        int read;
+        while ((read = await source.ReadAsync(chunk, ct)) > 0)
+        {
+            if (buffer.Length + read > max) return null;
+            buffer.Write(chunk, 0, read);
+        }
+        return buffer.ToArray();
+    }
+
     private async Task<string?> DownloadAsync(long appid, string path, string remoteUrl, CancellationToken ct)
     {
         try
         {
-            byte[] bytes = await _http.GetByteArrayAsync(remoteUrl, ct);
-            // A 404 throws (caught below); a real cover is a JPEG. Reject error/HTML bodies that
-            // slip through with a 200 by checking the magic bytes, not the size.
-            if (bytes.Length < MinValidBytes || !IsJpeg(bytes)) return null;
-            // The predictable CDN URL can serve Steam's grey placeholder (a valid JPEG) — reject it so
-            // the caller falls back to the real appdetails header_image.
-            if (IsHeaderCapsulePlaceholder(bytes)) return null;
+            if (await FetchAsync(remoteUrl, ct) is not { } bytes) return null;
 
             await _ioGate.WaitAsync(ct);
             try

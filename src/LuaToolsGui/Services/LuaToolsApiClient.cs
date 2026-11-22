@@ -14,7 +14,26 @@ public class ApiException(string message, HttpStatusCode? status = null) : Excep
     public HttpStatusCode? Status { get; } = status;
 }
 
-public record DownloadedFile(string FilePath, string FileName);
+/// <summary>
+/// A staged download. <see cref="Pin"/> is set only for an orphan fix, whose bytes are verified against a
+/// published SHA-256: it is the handle <see cref="AssetIntegrity.OpenPinned"/> took BEFORE hashing, kept so
+/// the checked file cannot be swapped before it is screened and applied. The holder must call
+/// <see cref="Dispose"/> (or <see cref="Discard"/>) — a held pin blocks deleting the file.
+/// </summary>
+public sealed record DownloadedFile(
+    string FilePath, string FileName, IDisposable? Pin = null, string? OwnedDirectory = null) : IDisposable
+{
+    public void Dispose() => Pin?.Dispose();
+
+    /// <summary>Release the pin, then remove the staged file and the per-download folder it lived in.</summary>
+    public void Discard()
+    {
+        Dispose();
+        try { File.Delete(FilePath); } catch { /* best effort */ }
+        if (OwnedDirectory is not null)
+            try { Directory.Delete(OwnedDirectory); } catch { /* best effort; non-recursive, so only when empty */ }
+    }
+}
 
 /// <summary>Typed client for the lua.tools web API, authenticated with a Supabase bearer token.</summary>
 public class LuaToolsApiClient(
@@ -402,10 +421,27 @@ public class LuaToolsApiClient(
     internal async Task<DownloadedFile> DownloadVerifiedAsync(
         OrphanDownload link, string fallbackName, IProgress<double?>? progress, CancellationToken ct)
     {
-        var file = await DownloadFromUrlAsync(link.Url, fallbackName, progress, ct);
-        if (AssetIntegrity.Matches(file.FilePath, link.Sha256)) return file;
+        // A folder of its own (the file keeps its real name: that name is build identity), so the staging
+        // path is not predictable and two downloads cannot share one.
+        string folder = Path.Combine(InterimDownloadsFolder, Guid.NewGuid().ToString("N"));
+        var file = await DownloadFromUrlAsync(link.Url, fallbackName, progress, ct, folder);
 
-        try { File.Delete(file.FilePath); } catch { /* best effort */ }
+        // Pin first, hash through the pin, and hand the pin to the caller: nothing can replace the file
+        // between this check and the screening/extraction that follows (see AssetIntegrity.OpenPinned).
+        FileStream? pin = null;
+        try
+        {
+            pin = AssetIntegrity.OpenPinned(file.FilePath);
+            if (AssetIntegrity.MatchesStream(pin, link.Sha256))
+                return file with { Pin = pin, OwnedDirectory = folder };
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            // A file that cannot be opened or read back cannot be verified: same outcome as a mismatch.
+        }
+
+        pin?.Dispose();
+        (file with { OwnedDirectory = folder }).Discard();
         AppLog.Log($"Orphan fix {file.FileName} failed its SHA-256 check and was discarded.");
         throw new ApiException(Resources.Strings.Api_Err_FixHashMismatch);
     }
@@ -471,17 +507,18 @@ public class LuaToolsApiClient(
     /// what no legitimate signed link is: plain http (the zip is extracted into the game folder), an IP
     /// literal (loopback, link-local, LAN), localhost, or any other scheme.
     /// </remarks>
-    // ponytail: checks the name (on every redirect hop, see ValidateRedirectHop), not what it resolves to.
+    // ponytail: checks the name (on every redirect hop, see ValidateRedirectHop), not what it resolves to,
+    // so a public name that RESOLVES to a LAN address (DNS rebinding) still passes. A connect-time check
+    // would need its own SocketsHttpHandler.ConnectCallback, which the DoH fallback handler already owns.
     // Pin the R2 hostname once it is known.
     internal static bool IsFollowableSignedUrl(string url) =>
         Uri.TryCreate(url, UriKind.Absolute, out var uri)
         && uri.Scheme == Uri.UriSchemeHttps
         && uri.HostNameType == UriHostNameType.Dns
         && !uri.IsLoopback
-        // IsLoopback misses "localhost." (trailing dot) and the *.localhost names RFC 6761 reserves.
-        && uri.IdnHost.TrimEnd('.') is var host
-        && !host.Equals("localhost", StringComparison.OrdinalIgnoreCase)
-        && !host.EndsWith(".localhost", StringComparison.OrdinalIgnoreCase);
+        && !DnsFallbackHttpHandler.IsLocalOrBypassHost(uri.IdnHost);
+    // IsLocalOrBypassHost is the DoH handler's policy: it also covers what IsLoopback misses ("localhost."
+    // with a trailing dot, the *.localhost names RFC 6761 reserves) plus *.local and single-label names.
 
     /// <summary>
     /// Redirects followed for one signed download. A presigned R2 link answers directly; a CDN or custom
@@ -539,7 +576,7 @@ public class LuaToolsApiClient(
 
     /// <summary>Download a file from an absolute URL with NO auth header (e.g. a signed R2 link).</summary>
     internal async Task<DownloadedFile> DownloadFromUrlAsync(
-        string url, string fallbackName, IProgress<double?>? progress, CancellationToken ct)
+        string url, string fallbackName, IProgress<double?>? progress, CancellationToken ct, string? folder = null)
     {
         if (!IsFollowableSignedUrl(url))
         {
@@ -553,7 +590,7 @@ public class LuaToolsApiClient(
         var res = await SendCheckingRedirectsAsync(FixDownloadHttp, new Uri(url), SignedDownloadHeadersBudget, ct);
         if (!res.IsSuccessStatusCode)
             throw new ApiException(string.Format(Resources.Strings.Api_Err_DownloadFailed, (int)res.StatusCode), res.StatusCode);
-        return await SaveResponseAsync(res, fallbackName, AsFraction(progress), ct);
+        return await SaveResponseAsync(res, fallbackName, AsFraction(progress), ct, folder);
     }
 
     /// <summary>
