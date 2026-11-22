@@ -292,7 +292,9 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
                 if (asset is null) return ModeInstallResult.Fail(Resources.Strings.Unlocker_Err_ReleaseMissingDownload);
                 zipAssetName = asset.Name;
 
-                string zipPath = Path.Combine(staging, asset.Name);
+                // Fixed local name: asset.Name is remote text — "..\..\Release.zip" or "C:\x\Release.zip"
+                // would land outside staging (Path.Combine drops staging for a rooted name). Display only.
+                string zipPath = Path.Combine(staging, "mode.zip");
                 await DownloadToFileAsync(def, asset.DownloadUrl, zipPath, progress, ct);
 
                 zipDigest = AssetIntegrity.Sha256OfFile(zipPath);

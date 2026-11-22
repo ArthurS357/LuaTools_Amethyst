@@ -73,8 +73,8 @@ public static class AppConfig
     // both-fields problem, because a mirror cannot change a compiled-in constant.
     //
     // Verified by two independent direct-TLS downloads from github.com on 2026-08-15 (610,646 bytes).
-    // SteamlessService uses this ONLY when the API reports no digest at all — a digest that is present
-    // but wrong or malformed still fails, and it applies to this one asset name only.
+    // SteamlessService uses this for this one asset name ALWAYS, ignoring any digest in the release JSON
+    // (a mirror can serve its own digest); any other asset needs a well-formed published digest.
     // When atom0s publishes a newer release, update BOTH fields together (or drop them once the new
     // release carries a real digest).
     public const string SteamlessPinnedAssetName = "Steamless.v3.1.0.5.-.by.atom0s.zip";

@@ -157,7 +157,7 @@ public class CefInjectorService : IHostedService
                             // to the home page, which has no "/app/" in its URL, so the old "/app/"-only filter
                             // meant the icon/popup never appeared there. luatools.js itself gates the per-game
                             // "Add via LuaTools" button to /app/ pages internally, so injecting store-wide is safe.
-                            if (tab.Url?.Contains("store.steampowered.com", StringComparison.OrdinalIgnoreCase) == true
+                            if (IsSteamStoreUrl(tab.Url)
                                 && !string.IsNullOrEmpty(tab.WebSocketDebuggerUrl)
                                 && !string.IsNullOrEmpty(tab.Id))
                             {
@@ -195,6 +195,17 @@ public class CefInjectorService : IHostedService
             }
         }
     }
+
+    /// <summary>
+    /// Whether a tab is the Steam store, by parsed https host. The injected script gets the authenticated
+    /// local bridge (<see cref="HttpServerService.TokenHeader"/> is added on the backend call below), so a
+    /// substring match — <c>https://evil.example/?store.steampowered.com</c>,
+    /// <c>https://store.steampowered.com.evil.example/</c> — would hand that bridge to any page.
+    /// </summary>
+    internal static bool IsSteamStoreUrl(string? url) =>
+        Uri.TryCreate(url, UriKind.Absolute, out var uri)
+        && uri.Scheme == Uri.UriSchemeHttps
+        && uri.Host.Equals("store.steampowered.com", StringComparison.OrdinalIgnoreCase);
 
     private Task ProcessSingleTab(string tabId, string wsUrl, CancellationToken ct) =>
         DrainPendingAsync(e => EvaluateReturnAsync(tabId, wsUrl, e, ct), CallBackendMethod);

@@ -74,7 +74,10 @@ public class SteamlessService(GithubProxy gh, SteamLibraryService library, Steam
             try
             {
                 string zipPath = Path.Combine(staging, "steamless.zip");
-                await gh.DownloadAsync(asset.DownloadUrl, zipPath, progress, ct);
+                // Pinned to atom0s/Steamless, not merely to a GitHub host: this zip is EXECUTED, and the URL
+                // comes from release JSON an API mirror may have served. See GithubProxy.IsAssetUrlForRepo.
+                string[] repo = AppConfig.SteamlessRepo.Split('/');
+                await gh.DownloadAssetAsync(asset.DownloadUrl, repo[0], repo[1], zipPath, progress, ct);
 
                 // Open ONCE with FileShare.None, hash through that handle, and extract through the SAME
                 // handle. Nothing can substitute the file between the check and the use, because nothing
@@ -178,29 +181,20 @@ public class SteamlessService(GithubProxy gh, SteamLibraryService library, Steam
     /// The SHA-256 this download must match, or <see langword="null"/> to refuse the download entirely.
     ///
     /// <para>
-    /// Normally that is simply the digest GitHub published for the asset. The exception is the pinned
-    /// fallback: Steamless v3.1.0.5 predates GitHub populating the <c>digest</c> field, so its asset
-    /// reports <c>null</c> and a strict check would permanently disable "Remove Steam DRM".
+    /// The asset named in <see cref="AppConfig.SteamlessPinnedAssetName"/> is checked against the digest
+    /// compiled into this build, ALWAYS — never against the one in the release JSON. That JSON may have been
+    /// served by an API mirror, and a mirror that also names its own file can supply a matching digest, so a
+    /// published digest is not a trust anchor there. (v3.1.0.5 also predates GitHub's <c>digest</c> field.)
     /// </para>
     ///
     /// <para>
-    /// The fallback is deliberately narrow. It applies only when the API reports <b>no digest at all</b>,
-    /// and only to the exact asset name pinned in <see cref="AppConfig.SteamlessPinnedAssetName"/>. A
-    /// digest that is present but malformed, or present and simply different, still fails — those are the
-    /// tampering cases, and falling back there would be a hole rather than a fix.
+    /// Any other asset must carry a well-formed published digest; absent or malformed means refuse.
     /// </para>
     /// </summary>
-    private static string? ResolveExpectedDigest(GithubAsset asset)
-    {
-        bool apiPublishedNoDigest = string.IsNullOrWhiteSpace(asset.Digest);
-
-        if (!apiPublishedNoDigest)
-            return AssetIntegrity.ParseDigest(asset.Digest); // present ⇒ must be valid AND will be matched
-
-        return asset.Name.Equals(AppConfig.SteamlessPinnedAssetName, StringComparison.OrdinalIgnoreCase)
+    internal static string? ResolveExpectedDigest(GithubAsset asset) =>
+        asset.Name.Equals(AppConfig.SteamlessPinnedAssetName, StringComparison.OrdinalIgnoreCase)
             ? AssetIntegrity.ParseDigest(AppConfig.SteamlessPinnedSha256)
-            : null; // unknown asset with no digest — nothing trustworthy to verify against
-    }
+            : AssetIntegrity.ParseDigest(asset.Digest);
 
     private static async Task RunCliAsync(string cliPath, string exePath, CancellationToken ct)
     {

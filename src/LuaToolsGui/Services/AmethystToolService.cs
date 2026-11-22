@@ -356,7 +356,9 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
             // Pinned to the repository, not merely to a GitHub host: the URL below comes from release JSON
             // that an API mirror may have served, and what it points at is copied next to steam.exe.
             // See GithubProxy.IsAssetUrlForRepo.
-            string zipPath = Path.Combine(tmp, asset.Name);
+            // Local staging name is fixed: asset.Name is remote text (a mirror can make it "AmethystTool-..\..\x.zip")
+            // and is only used for display below.
+            string zipPath = Path.Combine(tmp, "amethysttool.zip");
             await gh.DownloadAssetAsync(asset.DownloadUrl, AppConfig.AmethystToolOwner,
                 AppConfig.AmethystToolRepo, zipPath, progress, ct);
 
