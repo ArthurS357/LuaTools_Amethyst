@@ -29,6 +29,14 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.8.3", "2026-11-23",
+            "Internal build: safer Hubcap key storage, log hardening and small fixes.",
+            [
+                "If Windows cannot encrypt your Hubcap key (DPAPI), it is now kept in memory for the session only and never written to settings.json. Settings shows a notice, and the key must be entered again after a restart.",
+                "Log lines now hide your Windows profile folder as %USERPROFILE%, in addition to credentials.",
+                "Switching the DNS fallback back to Auto clears an earlier DNS failure; API responses are now disposed promptly.",
+            ]),
+
         new("1.8.2", "2026-11-21",
             "An independent Fixes catalog mirror, fixes that official lists do not carry, and a round of security hardening.",
             [

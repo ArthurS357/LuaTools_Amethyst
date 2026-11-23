@@ -203,7 +203,7 @@ public class LuaToolsApiClient(
     {
         try
         {
-            var res = await SendAsync(HttpMethod.Get, "/api/me/supporter-status", ct);
+            using var res = await SendAsync(HttpMethod.Get, "/api/me/supporter-status", ct);
             return await ReadJsonAsync<SupporterStatus>(res, ct);
         }
         catch { return null; }
@@ -211,7 +211,7 @@ public class LuaToolsApiClient(
 
     public async Task<DlcInfo?> GetDlcInfoAsync(string appid, string baseAppId, CancellationToken ct = default)
     {
-        var res = await SendAsync(HttpMethod.Get, $"/api/dlc/info?appid={appid}&base={baseAppId}", ct);
+        using var res = await SendAsync(HttpMethod.Get, $"/api/dlc/info?appid={appid}&base={baseAppId}", ct);
         return await ReadJsonAsync<DlcInfo>(res, ct);
     }
 
@@ -403,7 +403,7 @@ public class LuaToolsApiClient(
         }
 
         // 1. Ask the API for a signed URL (auth + daily-limit gate live here).
-        var res = await SendAsync(HttpMethod.Get,
+        using var res = await SendAsync(HttpMethod.Get,
             $"/api/denuvo/download?fix={Uri.EscapeDataString(fixId)}&slot={Uri.EscapeDataString(slot)}", ct);
         var signed = await ReadJsonAsync<DenuvoDownloadResponse>(res, ct);
         if (string.IsNullOrWhiteSpace(signed?.Url))

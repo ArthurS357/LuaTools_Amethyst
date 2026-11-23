@@ -186,7 +186,7 @@ public sealed class SettingsService
         string directory, Func<byte[], byte[]>? encrypt = null, Action<string>? log = null,
         bool publishGlobal = false)
     {
-        // Assigned before Load()/MigrateHubcapKey(), both of which can reach Protect().
+        // Assigned before Load()/MigrateHubcapKey(), both of which can reach TryProtect().
         _encrypt = encrypt ?? (data => ProtectedData.Protect(data, null, DataProtectionScope.CurrentUser));
         _log = log ?? AppLog.Log;
         _publishGlobal = publishGlobal;
@@ -346,19 +346,31 @@ public sealed class SettingsService
     /// </summary>
     public string? HubcapApiKey
     {
-        get => Unprotect(_settings.HubcapApiKey);
+        get => _sessionHubcapKey ?? Unprotect(_settings.HubcapApiKey);
         set
         {
-            _settings.HubcapApiKey = string.IsNullOrWhiteSpace(value) ? null : Protect(value);
+            string? plain = string.IsNullOrWhiteSpace(value) ? null : value;
+            _sessionHubcapKey = null;
+            _settings.HubcapApiKey = plain is null ? null : TryProtect(plain);
+            // Fail-closed: when DPAPI refused, the key lives only in this process and disk keeps nothing.
+            if (plain is not null && _settings.HubcapApiKey is null) _sessionHubcapKey = plain;
             Save();
         }
     }
+
+    /// <summary>True when DPAPI failed and the Hubcap key is held in memory only: it works this session
+    /// and is gone after a restart. The UI surfaces this so the user is not surprised.</summary>
+    public bool HubcapKeyIsSessionOnly => _sessionHubcapKey is not null;
+
+    private string? _sessionHubcapKey;
 
     /// <summary>Marks a value as DPAPI-protected. Its absence is what identifies a pre-migration
     /// plaintext key, so it must never change.</summary>
     private const string ProtectedPrefix = "dpapi:";
 
-    private string Protect(string plain)
+    /// <summary>The "dpapi:" blob, or null when DPAPI is unavailable. NEVER returns the plain text: a
+    /// credential is not written to a world-readable settings.json as a fallback.</summary>
+    private string? TryProtect(string plain)
     {
         try
         {
@@ -367,17 +379,10 @@ public sealed class SettingsService
         }
         catch (Exception ex)
         {
-            // DPAPI unavailable (unusual, but possible on a broken profile). Storing the key as-is keeps
-            // the feature working; losing the user's key would not.
-            //
-            // That trade is defensible, but it was made SILENTLY: the key quietly downgraded to plain text
-            // in a world-readable file, and because Unprotect() reads a missing "dpapi:" prefix as a
-            // pre-migration plaintext key, the downgrade was permanent and left no trace anywhere. Now it
-            // says so. The message names the failure type only — never the value being protected — and the
-            // sink sanitizes on top of that.
+            // The message names the failure type only, never the value; the sink sanitizes on top.
             SafeLog($"SettingsService: DPAPI unavailable ({ex.GetType().Name}). "
-                  + "The Hubcap API key is being stored UNENCRYPTED in settings.json.");
-            return plain;
+                  + "The Hubcap API key is kept in memory for this session only and is NOT written to settings.json.");
+            return null;
         }
     }
 
@@ -391,7 +396,7 @@ public sealed class SettingsService
     {
         if (string.IsNullOrEmpty(stored)) return null;
         if (!stored.StartsWith(ProtectedPrefix, StringComparison.Ordinal))
-            return stored; // written before the migration, or by a fallback Protect() above
+            return stored; // written before the migration (see MigrateHubcapKey)
 
         try
         {
@@ -414,7 +419,10 @@ public sealed class SettingsService
         string? stored = _settings.HubcapApiKey;
         if (string.IsNullOrEmpty(stored) || stored.StartsWith(ProtectedPrefix, StringComparison.Ordinal))
             return;
-        _settings.HubcapApiKey = Protect(stored);
+        // DPAPI down: scrub the legacy plaintext from disk and keep it for this session only (fail-closed).
+        string? protectedKey = TryProtect(stored);
+        _settings.HubcapApiKey = protectedKey;
+        if (protectedKey is null) _sessionHubcapKey = stored;
         Save();
     }
 
@@ -532,7 +540,12 @@ public sealed class SettingsService
         set
         {
             _settings.DnsMode = value;
-            if (_publishGlobal) DnsFallbackSession.Shared.Mode = value;
+            if (_publishGlobal)
+            {
+                DnsFallbackSession.Shared.Mode = value;
+                // Back to Auto = a clean slate: a DNS failure seen under another mode must not keep forcing DoH.
+                if (value == DnsMode.Auto) DnsFallbackSession.Shared.Reset();
+            }
             Save();
         }
     }

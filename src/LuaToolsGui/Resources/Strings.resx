@@ -107,6 +107,7 @@
   <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>That doesn't look like a valid key.</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>Couldn't verify the key — it may be invalid, expired, or Hubcap is unreachable.</value></data>
   <data name="Settings_HubcapKeyRejected" xml:space="preserve"><value>Hubcap rejected that key. Check it was copied in full and hasn't expired.</value></data>
+  <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows could not encrypt the key (DPAPI is unavailable), so it is kept in memory for this session only and is not saved. Enter it again after restarting the app.</value></data>
   <data name="Settings_HubcapKeyOffline" xml:space="preserve"><value>Couldn't reach Hubcap. Check your connection and try again — the key was not changed.</value></data>
   <data name="Settings_HubcapKeyRateLimited" xml:space="preserve"><value>Hubcap is rate-limiting this key right now. Try again shortly.</value></data>
   <data name="Settings_HubcapExpiryExpired" xml:space="preserve"><value>Your Hubcap key expired on {0}. Validate a new one to keep using Hubcap sources.</value></data>

@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.8.2");
+        AppVersion.Current.Should().Be("1.8.3");
     }
 
     [Fact]
@@ -45,9 +45,9 @@ public class ChangelogTests
     }
 
     [Fact]
-    public void The_current_entry_names_the_changes_the_release_was_about()
+    public void The_1_8_2_entry_still_names_what_that_release_was_about()
     {
-        string text = string.Join(" ", Changelog.Entries[0].Highlights);
+        string text = string.Join(" ", Changelog.Entries.Single(e => e.Version == "1.8.2").Highlights);
 
         // One anchor per change the release was actually about, so an entry that got copied forward from
         // the previous version fails here rather than shipping a changelog describing the wrong release.

@@ -300,6 +300,8 @@ Isso exclui os arquivos .lua de Steam\config\stplug-in. Reinicie o Steam depois 
   <data name="Fixes_Fix" xml:space="preserve"><value>Correção</value></data>
   <data name="Fixes_Count" xml:space="preserve"><value>{0} correções</value></data>
   <data name="Api_Err_FixHashMismatch" xml:space="preserve"><value>O fix baixado não confere com o checksum publicado e foi descartado.</value></data>
+  <data name="Fixes_Warn_InstalledWithoutFix" xml:space="preserve"><value>{0} dos seus jogos instalados não têm correção no catálogo do LuaTools.</value></data>
+  <data name="Fixes_Warn_LibraryFailed" xml:space="preserve"><value>Não foi possível ler a biblioteca da Steam; os selos de instalado estão ocultos.</value></data>
   <data name="Fixes_OfflineMode" xml:space="preserve"><value>Modo offline: exibindo catálogo salvo em {0}.</value></data>
   <data name="Fixes_Err_Load" xml:space="preserve"><value>Não foi possível carregar as correções — verifique sua conexão.</value></data>
   <data name="Fixes_Empty_None" xml:space="preserve"><value>Nenhuma correção disponível ainda.</value></data>
@@ -700,6 +702,7 @@ Isso exclui os arquivos .lua de Steam\config\stplug-in. Reinicie o Steam depois 
   <data name="Settings_ChooseSaveBackupFolder" xml:space="preserve"><value>Escolha a pasta dos backups de save</value></data>
   <data name="Nav_Plugin" xml:space="preserve"><value>Plugin</value></data>
   <data name="Settings_HubcapKeyRejected" xml:space="preserve"><value>A Hubcap rejeitou essa chave. Confira se ela foi copiada por inteiro e se não expirou.</value></data>
+  <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>O Windows não conseguiu criptografar a chave (DPAPI indisponível); ela fica só na memória nesta sessão e não é salva. Digite-a novamente ao reiniciar o app.</value></data>
   <data name="Settings_HubcapKeyOffline" xml:space="preserve"><value>Não foi possível acessar a Hubcap. Verifique sua conexão e tente novamente — a chave não foi alterada.</value></data>
   <data name="Settings_HubcapKeyRateLimited" xml:space="preserve"><value>A Hubcap está limitando as requisições desta chave no momento. Tente novamente em instantes.</value></data>
   <data name="Settings_HubcapExpiryExpired" xml:space="preserve"><value>Sua chave da Hubcap expirou em {0}. Valide uma nova para continuar usando as fontes da Hubcap.</value></data>

@@ -360,6 +360,8 @@ public partial class SettingsViewModel : ObservableObject
         _minimizeToTray = settings.MinimizeToTray;
         _enableGlassmorphism = settings.EnableGlassmorphism; // default ON — init without re-applying or saving
         _hubcapIsKeyConfigured = !string.IsNullOrEmpty(settings.HubcapApiKey);
+        if (settings.HubcapKeyIsSessionOnly) // legacy plaintext key scrubbed from disk at startup
+            ShowHubcapStatus(Resources.Strings.Settings_HubcapKeySessionOnly, isError: true);
 
         // Select the saved language (or "System default") without firing the restart prompt.
         _suppressLanguagePrompt = true;
@@ -656,6 +658,9 @@ public partial class SettingsViewModel : ObservableObject
             HubcapKeyInput = "";
             HubcapKeyStatus = null;
             HubcapStats = ok.Value;
+            // DPAPI failed: the key works this session but was not written to disk. Say so.
+            if (_settings.HubcapKeyIsSessionOnly)
+                ShowHubcapStatus(Resources.Strings.Settings_HubcapKeySessionOnly, isError: true);
         }
         catch (OperationCanceledException)
         {
