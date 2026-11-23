@@ -153,6 +153,7 @@ public class DownloadsPageTests
     [InlineData("Services", "PluginAddService.cs")]              // the Steam store plugin
     [InlineData("Services", "HttpServerService.cs")]             // the HTTP bridge
     [InlineData("ViewModels", "BuildsViewModel.DepotDownload.cs")] // the Depots page
+    [InlineData("ViewModels", "FixesViewModel.cs")]              // the Fixes / Denuvo page
     public void Every_download_entry_point_enqueues_instead_of_downloading_inline(string dir, string file)
     {
         string src = Source(dir, file);

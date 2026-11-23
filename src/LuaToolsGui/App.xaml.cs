@@ -1090,8 +1090,14 @@ public partial class App : Application
         download.NavigateToAdd = () => Dispatcher.Invoke(window.NavigateToAdd);
         // The Add page's queued source rows link to the Downloads page, same as the Depots page's notice.
         download.NavigateToDownloads = () => Dispatcher.Invoke(window.NavigateToDownloads);
-        _host.Services.GetRequiredService<DownloadsViewModel>().RevealItem =
-            _ => Dispatcher.Invoke(window.NavigateToAdd);
+        _host.Services.GetRequiredService<DownloadsViewModel>().RevealItem = item =>
+            Dispatcher.Invoke(() =>
+            {
+                if (item.Job.Kind is Services.Downloads.DownloadKind.DenuvoFix or Services.Downloads.DownloadKind.FixManifest)
+                    window.NavigateToFixes();
+                else
+                    window.NavigateToAdd();
+            });
         _host.Services.GetRequiredService<BuildsViewModel>().NavigateToDownloads =
             () => Dispatcher.Invoke(window.NavigateToDownloads);
 

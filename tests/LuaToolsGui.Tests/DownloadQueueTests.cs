@@ -1,9 +1,17 @@
 using System.IO;
+using System.IO.Compression;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Windows.Threading;
 using AwesomeAssertions;
+using LuaToolsGui.Models;
 using LuaToolsGui.Services;
 using LuaToolsGui.Services.Downloads;
+using LuaToolsGui.ViewModels;
 using Xunit;
 
 namespace LuaToolsGui.Tests;
@@ -591,6 +599,389 @@ public sealed class DownloadQueueTests : IDisposable
 
         stopped.Should().BeTrue();
         item.Status.Should().Be(DownloadStatus.Cancelled);
+    }
+
+    // ── Fixes / Denuvo integration (#26 — Lote K3) ───────────────────
+
+    private sealed class DelegateHandler(Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> handler)
+        : HttpMessageHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct) =>
+            handler(request, ct);
+    }
+
+    private static AuthService CreateSignedInAuth(string authFile)
+    {
+        var auth = new AuthService(new DelegateHandler((_, _) =>
+            Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK))), authFile);
+        typeof(AuthService).GetField("_accessToken", BindingFlags.NonPublic | BindingFlags.Instance)!
+            .SetValue(auth, "test-access-token");
+        typeof(AuthService).GetField("_refreshToken", BindingFlags.NonPublic | BindingFlags.Instance)!
+            .SetValue(auth, "test-refresh-token");
+        typeof(AuthService).GetField("_expiresAt", BindingFlags.NonPublic | BindingFlags.Instance)!
+            .SetValue(auth, DateTimeOffset.UtcNow.AddHours(1));
+        return auth;
+    }
+
+    private static byte[] CreateZipBytes(string entryName, string content)
+    {
+        using var ms = new MemoryStream();
+        using (var zip = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
+        {
+            var entry = zip.CreateEntry(entryName);
+            using var writer = new StreamWriter(entry.Open(), Encoding.UTF8);
+            writer.Write(content);
+        }
+        return ms.ToArray();
+    }
+
+    private (FixesViewModel Vm, LuaToolsApiClient Api, SteamService Steam, string SteamRoot, string GameInstallDir)
+        CreateFixesVm(
+            DownloadQueue queue,
+            AuthService auth,
+            Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> apiRespond,
+            Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> r2Respond,
+            long installedAppId = 12345)
+    {
+        string steamRoot = Path.Combine(_dir, "steam_" + Guid.NewGuid().ToString("N")[..8]);
+        string stPlugIn = Path.Combine(steamRoot, "config", "stplug-in");
+        string steamApps = Path.Combine(steamRoot, "steamapps");
+        string gameInstallDir = Path.Combine(steamApps, "common", "TestDenuvoGame");
+        Directory.CreateDirectory(stPlugIn);
+        Directory.CreateDirectory(gameInstallDir);
+        File.WriteAllText(Path.Combine(steamApps, $"appmanifest_{installedAppId}.acf"),
+            "\"AppState\"\n{\n\t\"appid\"\t\"" + installedAppId + "\"\n\t\"name\"\t\"Test Denuvo Game\"\n\t\"installdir\"\t\"TestDenuvoGame\"\n\t\"StateFlags\"\t\"4\"\n}");
+
+        var settings = new SettingsService(_dir) { SteamPathOverride = steamRoot };
+        var cache = new CacheService(Path.Combine(_dir, "cache_" + Guid.NewGuid().ToString("N")[..8]));
+        var steam = new SteamService(settings);
+        var vault = new LuaVault(() => steam.StPlugInDir, Path.Combine(_dir, "vault_" + Guid.NewGuid().ToString("N")[..8]));
+        var installer = new LuaInstaller(steam, settings, cache, vault);
+
+        var api = new LuaToolsApiClient(auth, null!, null!, null!, null!)
+        {
+            CacheDirectory = Path.Combine(_dir, "apicache_" + Guid.NewGuid().ToString("N")[..8]),
+        };
+        typeof(LuaToolsApiClient).GetField("_http", BindingFlags.NonPublic | BindingFlags.Instance)!
+            .SetValue(api, new HttpClient(new DelegateHandler(apiRespond)) { BaseAddress = new Uri("https://lua.tools") });
+        typeof(LuaToolsApiClient).GetField("FixDownloadHttp", BindingFlags.NonPublic | BindingFlags.Instance)!
+            .SetValue(api, new HttpClient(new DelegateHandler(r2Respond)));
+
+        var vm = new FixesViewModel(
+            api, auth, installer, steam,
+            new SteamLibraryService(steam), new CoverCache(), new ToastService(), settings,
+            new DenuvoFixService(), queue)
+        {
+            RestartSteamOverride = () => false,
+        };
+        return (vm, api, steam, steamRoot, gameInstallDir);
+    }
+
+    private static FixItemVm MakeFixVm(string id, bool hasManifest = true, bool hasFix = true, bool gameInstalled = true) =>
+        new(new DenuvoFix
+        {
+            Id = id,
+            Title = $"Build {id}",
+            HasManifest = hasManifest,
+            HasFix = hasFix,
+            ManifestFilename = $"{id}_manifest.zip",
+            FixFilename = $"{id}_fix.zip",
+            CreatedAt = "2026-11-20T00:00:00Z",
+        })
+        {
+            GameInstalled = gameInstalled,
+            IsApplied = false,
+        };
+
+    [Fact]
+    public async Task Enqueuing_manifest_and_fix_slots_or_multiple_fixes_for_same_game_never_collides()
+    {
+        // Deliberately not started so all enqueued items stay Queued and we can assert distinct queue rows
+        // and dedupe keys without racing completion.
+        var queue = new DownloadQueue(NewCache(), _host.Dispatcher);
+        var auth = CreateSignedInAuth(Path.Combine(_dir, "auth_nocollide.dat"));
+        var (vm, _, _, _, _) = CreateFixesVm(
+            queue, auth,
+            (_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)),
+            (_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)));
+
+        var fix1 = MakeFixVm("fix-alpha");
+        var fix2 = MakeFixVm("fix-beta");
+        var nullAppGame = new FixGameCardVm(new DenuvoGameListing { AppId = "", Name = "AppIdLess Game", FixCount = 2 });
+
+        var item1Manifest = await vm.EnqueueFixDownloadAsync(fix1, "manifest", nullAppGame);
+        var item1Fix = await vm.EnqueueFixDownloadAsync(fix1, "fix", nullAppGame);
+        var item2Fix = await vm.EnqueueFixDownloadAsync(fix2, "fix", nullAppGame);
+        var item1ManifestDuplicate = await vm.EnqueueFixDownloadAsync(fix1, "manifest", nullAppGame);
+
+        item1Manifest.Should().NotBeNull();
+        item1Fix.Should().NotBeNull();
+        item2Fix.Should().NotBeNull();
+
+        // Keyed by (fix.Id, slot): manifest vs fix of the same fix, and two fixes of the same game (even with
+        // empty/null SteamAppId -> AppId 0), produce distinct items and DownloadKinds.
+        item1Manifest!.Job.Kind.Should().Be(DownloadKind.FixManifest);
+        item1Manifest.Job.DedupeKey.Should().Be("fix:fix-alpha:manifest");
+        item1Manifest.Job.AppId.Should().Be(0);
+
+        item1Fix!.Job.Kind.Should().Be(DownloadKind.DenuvoFix);
+        item1Fix.Job.DedupeKey.Should().Be("fix:fix-alpha:fix");
+
+        item2Fix!.Job.Kind.Should().Be(DownloadKind.DenuvoFix);
+        item2Fix.Job.DedupeKey.Should().Be("fix:fix-beta:fix");
+
+        item1Manifest.Should().NotBeSameAs(item1Fix);
+        item1Fix.Should().NotBeSameAs(item2Fix);
+        item1ManifestDuplicate.Should().BeSameAs(item1Manifest, "same (fix.Id, slot) deduplicates to the active item");
+        _host.On(() => queue.Items.Count).Should().Be(3);
+
+        fix1.IsManifestDownloading.Should().BeTrue();
+        fix1.IsFixDownloading.Should().BeTrue();
+        fix1.CanDownloadManifest.Should().BeFalse();
+        fix1.CanDownloadFix.Should().BeFalse();
+        fix2.IsFixDownloading.Should().BeTrue();
+        fix2.IsManifestDownloading.Should().BeFalse();
+        fix2.CanDownloadManifest.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Guest_click_prompts_sign_in_before_enqueue_and_signed_url_is_granted_inside_worker()
+    {
+        Directory.CreateDirectory(_dir);
+        int grantCalls = 0;
+        int r2Calls = 0;
+        byte[] manifestZip = CreateZipBytes("12345.lua", "addappid(12345)\n");
+
+        Task<HttpResponseMessage> ApiRespond(HttpRequestMessage req, CancellationToken _)
+        {
+            if (req.RequestUri!.PathAndQuery.StartsWith("/api/denuvo/download", StringComparison.Ordinal))
+            {
+                Interlocked.Increment(ref grantCalls);
+                return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent("{\"url\":\"https://r2.example.com/signed/12345.zip\",\"filename\":\"12345.zip\"}"),
+                });
+            }
+            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound));
+        }
+
+        Task<HttpResponseMessage> R2Respond(HttpRequestMessage req, CancellationToken _)
+        {
+            Interlocked.Increment(ref r2Calls);
+            var content = new ByteArrayContent(manifestZip);
+            content.Headers.ContentLength = manifestZip.Length;
+            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = content });
+        }
+
+        // 1. Guest user: prompts sign-in on click and does NOT enqueue when still guest.
+        var unstartedQueue = new DownloadQueue(NewCache(), _host.Dispatcher);
+        var guestAuth = new AuthService(new DelegateHandler((_, _) =>
+            Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK))), Path.Combine(_dir, "guest_empty.dat"));
+        int signInPromptCount = 0;
+        var (guestVm, _, _, _, _) = CreateFixesVm(unstartedQueue, guestAuth, ApiRespond, R2Respond);
+        guestVm.RequestSignIn = () =>
+        {
+            signInPromptCount++;
+            return Task.CompletedTask; // user dismissed sign-in modal
+        };
+
+        var fix = MakeFixVm("fix-signin");
+        var game = new FixGameCardVm(new DenuvoGameListing { AppId = "12345", Name = "Test Denuvo Game", FixCount = 1 });
+        var guestItem = await guestVm.EnqueueFixDownloadAsync(fix, "manifest", game);
+
+        signInPromptCount.Should().Be(1);
+        guestItem.Should().BeNull();
+        _host.On(() => unstartedQueue.Items.Count).Should().Be(0);
+        grantCalls.Should().Be(0);
+
+        // 2. Signed-in user: Enqueue happens immediately, but /api/denuvo/download is NOT called until the queue pump runs the worker.
+        var signedInAuth = CreateSignedInAuth(Path.Combine(_dir, "signed_in.dat"));
+        var (signedVm, _, _, steamRoot, _) = CreateFixesVm(unstartedQueue, signedInAuth, ApiRespond, R2Respond);
+
+        var queuedItem = await signedVm.EnqueueFixDownloadAsync(fix, "manifest", game);
+        queuedItem.Should().NotBeNull();
+        grantCalls.Should().Be(0, "the signed URL grant must run inside the queue worker, never before Enqueue");
+        r2Calls.Should().Be(0);
+
+        // Now start the queue pump: the worker runs, requests the signed URL, downloads the bytes, and installs the manifest.
+        await unstartedQueue.StartAsync(CancellationToken.None);
+        var result = await queuedItem!.Completion.WaitAsync(Timeout);
+
+        result!.Ok.Should().BeTrue();
+        grantCalls.Should().Be(1);
+        r2Calls.Should().Be(1);
+        File.Exists(Path.Combine(steamRoot, "config", "stplug-in", "12345.lua")).Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Byte_progress_and_cross_cancellation_stay_synchronized_between_queue_and_fix_card()
+    {
+        Directory.CreateDirectory(_dir);
+        var queue = await StartedAsync();
+        var auth = CreateSignedInAuth(Path.Combine(_dir, "auth_progress.dat"));
+
+        var streamGate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var firstChunkRead = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        byte[] payload = new byte[4096];
+        Array.Fill(payload, (byte)'A');
+
+        Task<HttpResponseMessage> ApiRespond(HttpRequestMessage req, CancellationToken _) =>
+            Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent("{\"url\":\"https://r2.example.com/signed/fix.zip\",\"filename\":\"fix.zip\"}"),
+            });
+
+        Task<HttpResponseMessage> R2Respond(HttpRequestMessage req, CancellationToken ct)
+        {
+            var stream = new GatedChunkStream(payload, firstChunkSize: 2048, firstChunkRead, streamGate.Task);
+            var content = new StreamContent(stream);
+            content.Headers.ContentLength = payload.Length;
+            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = content });
+        }
+
+        var (vm, _, _, _, _) = CreateFixesVm(queue, auth, ApiRespond, R2Respond);
+        var fix = MakeFixVm("fix-sync");
+        var game = new FixGameCardVm(new DenuvoGameListing { AppId = "12345", Name = "Test Denuvo Game", FixCount = 1 });
+
+        // Enqueue the "fix" slot and wait until the first 2048 of 4096 bytes have been read.
+        var item = await vm.EnqueueFixDownloadAsync(fix, "fix", game);
+        item.Should().NotBeNull();
+        await firstChunkRead.Task.WaitAsync(Timeout);
+        await WaitForAsync(() => item!.BytesRead >= 2048 && fix.DownloadProgress >= 50);
+
+        item!.TotalBytes.Should().Be(4096);
+        item.BytesRead.Should().Be(2048);
+        fix.IsDownloading.Should().BeTrue();
+        fix.CanCancelDownload.Should().BeTrue();
+        fix.DownloadProgress.Should().BeApproximately(50, 1.0);
+
+        // Simulate navigating away / recreating the FixItemVm list and calling SyncFixesWithQueue:
+        var reloadedFix = MakeFixVm("fix-sync");
+        typeof(FixesViewModel).GetField("_allFixes", BindingFlags.NonPublic | BindingFlags.Instance)!
+            .SetValue(vm, new List<FixItemVm> { reloadedFix });
+        vm.SyncFixesWithQueue();
+
+        reloadedFix.IsDownloading.Should().BeTrue("SyncFixesWithQueue re-attaches active queue jobs after navigation");
+        reloadedFix.DownloadProgress.Should().BeApproximately(50, 1.0);
+        reloadedFix.CanCancelDownload.Should().BeTrue();
+
+        // Cancel from the card's CancelDownloadCommand -> cancels the DownloadItem in the queue.
+        vm.CancelDownloadCommand.Execute(reloadedFix);
+        await item.Completion.WaitAsync(Timeout);
+        await WaitForAsync(() => !reloadedFix.IsDownloading);
+
+        item.Status.Should().Be(DownloadStatus.Cancelled);
+        reloadedFix.IsDownloading.Should().BeFalse();
+        reloadedFix.CanCancelDownload.Should().BeFalse();
+
+        // Now enqueue the "manifest" slot and cancel from the DownloadQueue side (the Downloads tab).
+        var item2 = await vm.EnqueueFixDownloadAsync(reloadedFix, "manifest", game);
+        item2.Should().NotBeNull();
+        await WaitForAsync(() => reloadedFix.IsManifestDownloading);
+
+        queue.Cancel(item2!);
+        await item2!.Completion.WaitAsync(Timeout);
+        await WaitForAsync(() => !reloadedFix.IsDownloading);
+
+        item2.Status.Should().Be(DownloadStatus.Cancelled);
+        reloadedFix.IsManifestDownloading.Should().BeFalse();
+        reloadedFix.CanCancelDownload.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task Retrying_a_failed_DenuvoFix_or_FixManifest_in_DownloadQueue_requests_fresh_url_and_applies()
+    {
+        Directory.CreateDirectory(_dir);
+        var queue = await StartedAsync();
+        var auth = CreateSignedInAuth(Path.Combine(_dir, "auth_retry.dat"));
+        byte[] validFixZip = CreateZipBytes("denuvo_patch.dll", "patched-bytes");
+
+        int grantAttempt = 0;
+        Task<HttpResponseMessage> ApiRespond(HttpRequestMessage req, CancellationToken _)
+        {
+            int attempt = Interlocked.Increment(ref grantAttempt);
+            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent($"{{\"url\":\"https://r2.example.com/signed/attempt-{attempt}.zip\",\"filename\":\"fix.zip\"}}"),
+            });
+        }
+
+        Task<HttpResponseMessage> R2Respond(HttpRequestMessage req, CancellationToken _)
+        {
+            // First signed URL fails; second signed URL (on Retry) succeeds with a valid zip.
+            if (req.RequestUri!.AbsolutePath.Contains("attempt-1", StringComparison.Ordinal))
+                return Task.FromResult(new HttpResponseMessage(HttpStatusCode.ServiceUnavailable));
+
+            var content = new ByteArrayContent(validFixZip);
+            content.Headers.ContentLength = validFixZip.Length;
+            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = content });
+        }
+
+        var (vm, _, _, _, gameInstallDir) = CreateFixesVm(queue, auth, ApiRespond, R2Respond);
+        var fix = MakeFixVm("fix-retryable");
+        typeof(FixesViewModel).GetField("_allFixes", BindingFlags.NonPublic | BindingFlags.Instance)!
+            .SetValue(vm, new List<FixItemVm> { fix });
+        var game = new FixGameCardVm(new DenuvoGameListing { AppId = "12345", Name = "Test Denuvo Game", FixCount = 1 });
+
+        var firstItem = await vm.EnqueueFixDownloadAsync(fix, "fix", game);
+        firstItem.Should().NotBeNull();
+        await firstItem!.Completion.WaitAsync(Timeout);
+        await WaitForAsync(() => firstItem.Status == DownloadStatus.Failed);
+
+        firstItem.CanRetry.Should().BeTrue();
+        fix.IsApplied.Should().BeFalse();
+        grantAttempt.Should().Be(1);
+
+        // Retry from DownloadQueue (what the Downloads tab Retry button calls):
+        var retriedItem = queue.Retry(firstItem);
+        var retryResult = await retriedItem.Completion.WaitAsync(Timeout);
+        await WaitForAsync(() => fix.IsApplied);
+
+        retryResult!.Ok.Should().BeTrue();
+        grantAttempt.Should().Be(2, "Retry re-runs the worker callback and requests a fresh signed URL");
+        fix.IsApplied.Should().BeTrue();
+        File.Exists(Path.Combine(gameInstallDir, "denuvo_patch.dll")).Should().BeTrue();
+    }
+
+    private sealed class GatedChunkStream(
+        byte[] data,
+        int firstChunkSize,
+        TaskCompletionSource firstChunkRead,
+        Task gate) : Stream
+    {
+        private int _offset;
+
+        public override bool CanRead => true;
+        public override bool CanSeek => false;
+        public override bool CanWrite => false;
+        public override long Length => data.Length;
+        public override long Position { get => _offset; set => throw new NotSupportedException(); }
+        public override void Flush() { }
+        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+        public override void SetLength(long value) => throw new NotSupportedException();
+        public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+
+        public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+        {
+            if (_offset == 0)
+            {
+                int toCopy = Math.Min(firstChunkSize, Math.Min(buffer.Length, data.Length));
+                data.AsMemory(0, toCopy).CopyTo(buffer);
+                _offset += toCopy;
+                firstChunkRead.TrySetResult();
+                return toCopy;
+            }
+
+            await gate.WaitAsync(cancellationToken);
+            if (_offset >= data.Length) return 0;
+            int rest = Math.Min(buffer.Length, data.Length - _offset);
+            data.AsMemory(_offset, rest).CopyTo(buffer);
+            _offset += rest;
+            return rest;
+        }
+
+        public override int Read(byte[] buffer, int offset, int count) =>
+            ReadAsync(buffer.AsMemory(offset, count)).AsTask().GetAwaiter().GetResult();
     }
 
     /// <summary>Poll a dispatcher-owned condition. The pump settles state asynchronously by design.</summary>

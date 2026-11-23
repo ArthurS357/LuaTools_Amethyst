@@ -365,7 +365,7 @@ public sealed class DownloadQueue : IHostedService
 
                 if (!proceed || ct.IsCancellationRequested)
                 {
-                    DeleteStaged(file.FilePath);
+                    DiscardStaged(file);
                     await _dispatcher.InvokeAsync(() => Finish(
                         item, DownloadStatus.Cancelled, Resources.Strings.Add_Status_Cancelled, null));
                     return;
@@ -388,21 +388,24 @@ public sealed class DownloadQueue : IHostedService
             // A pause cancels the same token a real cancel does. Leave the item parked in Paused and keep
             // its bytes: Resume re-enters this method and skips the depots already finished.
             if (item.PauseRequested || Superseded()) return;
-            if (file is not null) DeleteStaged(file.FilePath);
+            DiscardStaged(file);
             await _dispatcher.InvokeAsync(() => Finish(
                 item, DownloadStatus.Cancelled, Resources.Strings.Downloads_Err_Cancelled, null));
         }
         catch (Exception ex)
         {
-            if (file is not null) DeleteStaged(file.FilePath);
+            DiscardStaged(file);
             if (Superseded()) return;
             AppLog.Log($"DownloadQueue: job failed ({item.Job.DedupeKey}): {LogSanitizer.Sanitize(ex)}");
 
             // Both of these carry a message meant for the user; anything else is unexpected, so it gets the
             // generic text and the detail goes to the log above.
+            string genericError = item.Job.Kind is DownloadKind.DenuvoFix or DownloadKind.FixManifest
+                ? Resources.Strings.Fixes_Toast_DownloadFailed_Body
+                : Resources.Strings.Add_Err_Download;
             string message = ex is ApiException or DownloadAbortedException
                 ? LogSanitizer.Sanitize(ex.Message)
-                : Resources.Strings.Add_Err_Download;
+                : genericError;
 
             // Some aborts are not failures — they settle as Cancelled so they do not read as something
             // having broken.
@@ -414,6 +417,7 @@ public sealed class DownloadQueue : IHostedService
         }
         finally
         {
+            file?.Dispose();
             Kick();
         }
     }
@@ -475,10 +479,10 @@ public sealed class DownloadQueue : IHostedService
         catch (Exception ex) { AppLog.Log($"DownloadQueue: persisting history failed: {LogSanitizer.Sanitize(ex)}"); }
     }
 
-    /// <summary>Best-effort delete of a staged file the install never consumed.</summary>
-    private static void DeleteStaged(string path)
+    /// <summary>Best-effort release and delete of a staged file (and its per-download directory, if any) that the install never consumed.</summary>
+    private static void DiscardStaged(DownloadedFile? file)
     {
-        try { if (File.Exists(path)) File.Delete(path); }
+        try { file?.Discard(); }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { /* best effort */ }
     }
 }

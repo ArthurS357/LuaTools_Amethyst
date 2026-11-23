@@ -392,8 +392,8 @@ public class LuaToolsApiClient(
     /// and a short-lived signed R2 URL; the caller must be signed in.
     /// </summary>
     public async Task<DownloadedFile> DownloadDenuvoAsync(
-        string fixId, string slot, string fallbackName, IProgress<double?>? progress, CancellationToken ct = default,
-        string? appid = null)
+        string fixId, string slot, string fallbackName, IProgress<Downloads.DownloadProgress>? progress,
+        CancellationToken ct = default, string? appid = null)
     {
         if (appid is not null && _listedOrphans.TryGetValue(appid, out var listed) && listed.TryGetValue(fixId, out var orphan))
         {
@@ -403,14 +403,24 @@ public class LuaToolsApiClient(
         }
 
         // 1. Ask the API for a signed URL (auth + daily-limit gate live here).
+        string signedUrl = await RequestDenuvoDownloadUrlAsync(fixId, slot, ct);
+
+        // 2. Fetch the file from R2 (no auth header — the signed URL carries its own credentials).
+        return await DownloadFromUrlAsync(signedUrl, fallbackName, progress, ct);
+    }
+
+    /// <summary>
+    /// Request a short-lived signed download URL for a Denuvo fix slot. Executed inside the queue worker's
+    /// download callback so a queued job cannot outlive its signed link.
+    /// </summary>
+    internal async Task<string> RequestDenuvoDownloadUrlAsync(string fixId, string slot, CancellationToken ct = default)
+    {
         using var res = await SendAsync(HttpMethod.Get,
             $"/api/denuvo/download?fix={Uri.EscapeDataString(fixId)}&slot={Uri.EscapeDataString(slot)}", ct);
         var signed = await ReadJsonAsync<DenuvoDownloadResponse>(res, ct);
         if (string.IsNullOrWhiteSpace(signed?.Url))
             throw new ApiException(Resources.Strings.Api_Err_LinkEmpty);
-
-        // 2. Fetch the file from R2 (no auth header — the signed URL carries its own credentials).
-        return await DownloadFromUrlAsync(signed.Url, fallbackName, progress, ct);
+        return signed.Url;
     }
 
     /// <summary>
@@ -419,7 +429,7 @@ public class LuaToolsApiClient(
     /// nothing downstream ever sees bytes that were not the ones the catalog named.
     /// </summary>
     internal async Task<DownloadedFile> DownloadVerifiedAsync(
-        OrphanDownload link, string fallbackName, IProgress<double?>? progress, CancellationToken ct)
+        OrphanDownload link, string fallbackName, IProgress<Downloads.DownloadProgress>? progress, CancellationToken ct)
     {
         // A folder of its own (the file keeps its real name: that name is build identity), so the staging
         // path is not predictable and two downloads cannot share one.
@@ -583,7 +593,8 @@ public class LuaToolsApiClient(
 
     /// <summary>Download a file from an absolute URL with NO auth header (e.g. a signed R2 link).</summary>
     internal async Task<DownloadedFile> DownloadFromUrlAsync(
-        string url, string fallbackName, IProgress<double?>? progress, CancellationToken ct, string? folder = null)
+        string url, string fallbackName, IProgress<Downloads.DownloadProgress>? progress, CancellationToken ct,
+        string? folder = null)
     {
         if (!IsFollowableSignedUrl(url))
         {
@@ -597,7 +608,7 @@ public class LuaToolsApiClient(
         using var res = await SendCheckingRedirectsAsync(FixDownloadHttp, new Uri(url), SignedDownloadHeadersBudget, ct);
         if (!res.IsSuccessStatusCode)
             throw new ApiException(string.Format(Resources.Strings.Api_Err_DownloadFailed, (int)res.StatusCode), res.StatusCode);
-        return await SaveResponseAsync(res, fallbackName, AsFraction(progress), ct, folder);
+        return await SaveResponseAsync(res, fallbackName, progress, ct, folder);
     }
 
     /// <summary>

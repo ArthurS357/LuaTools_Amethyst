@@ -104,10 +104,11 @@ public class DenuvoFixService
     /// from, since that is unknowable until the file has been extracted. So the record starts as a promise
     /// and ends as a fact, and a crash in between still leaves something the user can revert.
     /// </remarks>
-    public FixApplyResult Apply(string zipPath, long appId, string fixId, string installDir)
+    public FixApplyResult Apply(string zipPath, long appId, string fixId, string installDir, CancellationToken ct = default)
     {
         try
         {
+            ct.ThrowIfCancellationRequested();
             string fixKey = SafeFixKey(fixId);
             string fixDir = Path.Combine(installDir, FixRecordDir);
             string recordPath = Path.Combine(fixDir, $"{fixKey}.json");
@@ -121,6 +122,7 @@ public class DenuvoFixService
 
             foreach (var entry in archive.Entries)
             {
+                ct.ThrowIfCancellationRequested();
                 if (string.IsNullOrEmpty(entry.Name)) continue; // directory entry
                 string relPath = entry.FullName.Replace('\\', '/');
 
@@ -139,6 +141,8 @@ public class DenuvoFixService
                 // with the other's contents, or silently restore nothing once the .bak was consumed.
                 plan.Add((relPath, dest, File.Exists(dest) ? $"{fixKey}/{relPath}.bak" : null, entry));
             }
+
+            ct.ThrowIfCancellationRequested();
 
             // ── Phase 2: commit. Nothing has been touched yet, so failing here costs nothing. ──────
             var provisional = new DenuvoFixRecord
@@ -223,6 +227,10 @@ public class DenuvoFixService
             return failed > 0
                 ? new FixApplyResult(FixApplyOutcome.PartiallyApplied, failed, null)
                 : new FixApplyResult(FixApplyOutcome.Applied, 0, null);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
         }
         catch (Exception ex)
         {

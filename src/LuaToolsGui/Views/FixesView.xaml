@@ -571,7 +571,7 @@
                                                         CommandParameter="{Binding}"
                                                         Content="{x:Static res:Strings.Fixes_Manifest}"
                                                         Icon="{ui:SymbolIcon Document24}"
-                                                        IsEnabled="{Binding DataContext.NotBusy, ElementName=Root}"
+                                                        IsEnabled="{Binding CanDownloadManifest}"
                                                         Visibility="{Binding HasManifest, Converter={StaticResource BoolToVis}}" />
                                                     <ui:Button
                                                         Margin="{DynamicResource SpaceLeft8}"
@@ -580,34 +580,40 @@
                                                         CommandParameter="{Binding}"
                                                         Content="{x:Static res:Strings.Fixes_Fix}"
                                                         Icon="{ui:SymbolIcon Wrench24}"
+                                                        IsEnabled="{Binding CanDownloadFix}"
                                                         ToolTip="{Binding FixHint}"
-                                                        Visibility="{Binding HasFix, Converter={StaticResource BoolToVis}}">
-                                                        <!--
-                                                            Two independent reasons to disable: the fix itself is not
-                                                            applicable (game not installed, or already applied) and a
-                                                            download is in flight. Expressed as a Style so both can
-                                                            apply — a local IsEnabled attribute would beat the trigger.
-                                                        -->
-                                                        <ui:Button.Style>
-                                                            <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
-                                                                <Setter Property="IsEnabled" Value="{Binding CanDownloadFix}" />
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding DataContext.IsBusy, ElementName=Root}" Value="True">
-                                                                        <Setter Property="IsEnabled" Value="False" />
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </ui:Button.Style>
-                                                    </ui:Button>
+                                                        Visibility="{Binding HasFix, Converter={StaticResource BoolToVis}}" />
                                                     <ui:Button
                                                         Margin="{DynamicResource SpaceLeft8}"
                                                         Command="{Binding DataContext.RevertFixCommand, ElementName=Root}"
                                                         CommandParameter="{Binding}"
                                                         Content="{x:Static res:Strings.Fixes_Revert}"
                                                         Icon="{ui:SymbolIcon ArrowUndo24}"
-                                                        IsEnabled="{Binding DataContext.NotBusy, ElementName=Root}"
+                                                        IsEnabled="{Binding CanRevert}"
                                                         Visibility="{Binding IsApplied, Converter={StaticResource BoolToVis}}" />
+                                                    <ui:Button
+                                                        Margin="{DynamicResource SpaceLeft8}"
+                                                        Command="{Binding DataContext.CancelDownloadCommand, ElementName=Root}"
+                                                        CommandParameter="{Binding}"
+                                                        Content="{x:Static res:Strings.Downloads_Action_Cancel}"
+                                                        Visibility="{Binding CanCancelDownload, Converter={StaticResource BoolToVis}}" />
                                                 </StackPanel>
+
+                                                <ProgressBar
+                                                    Height="4"
+                                                    Margin="{DynamicResource SpaceTop8}"
+                                                    IsIndeterminate="{Binding IsProgressIndeterminate}"
+                                                    Maximum="100"
+                                                    Value="{Binding DownloadProgress, Mode=OneWay}"
+                                                    Visibility="{Binding IsDownloading, Converter={StaticResource BoolToVis}}" />
+
+                                                <TextBlock
+                                                    Margin="{DynamicResource SpaceTop4}"
+                                                    Foreground="{StaticResource TextSecondaryBrush}"
+                                                    Style="{StaticResource TextCaption}"
+                                                    Text="{Binding DownloadStatus}"
+                                                    TextWrapping="Wrap"
+                                                    Visibility="{Binding DownloadStatus, Converter={StaticResource NullToCollapsed}}" />
                                             </StackPanel>
                                         </Border>
                                     </DataTemplate>

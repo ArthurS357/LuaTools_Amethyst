@@ -8,6 +8,12 @@ public enum DownloadKind
 
     /// <summary>Raw depot content pulled by <see cref="DepotDownloaderService"/>.</summary>
     Depot,
+
+    /// <summary>A Denuvo fix's version-pinned manifest slot from the Fixes tab.</summary>
+    FixManifest,
+
+    /// <summary>A Denuvo fix's archive slot extracted into the game install folder from the Fixes tab.</summary>
+    DenuvoFix,
 }
 
 /// <summary>
