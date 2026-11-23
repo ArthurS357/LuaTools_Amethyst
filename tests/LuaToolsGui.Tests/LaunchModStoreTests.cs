@@ -1,4 +1,5 @@
 using System.IO;
+using System.Text.Json;
 using LuaToolsGui.Services.AppInfo;
 using Xunit;
 
@@ -160,5 +161,137 @@ public class LaunchModStoreTests : IDisposable
 
         Assert.True(store.IsEmpty);
         Assert.True(File.Exists(_path + ".corrupt"));   // moved aside for recovery, not overwritten
+    }
+
+    // ── MEDIUM-4: v2 format, legacy v1 migration, raw VDF fidelity, fail-closed ──
+
+    [Fact]
+    public void LegacyV1ArrayFormat_LoadsWithoutDataLoss_AndMigratesToV2OnSave()
+    {
+        // Legacy format shipped before v1.8.4: top-level JSON array, no Version envelope, no OriginalLaunchVdf.
+        const string legacyJson = """
+            [
+              {
+                "AppId": 603750,
+                "ChangeNumber": 42,
+                "Original": [{ "Index": "0", "SourceIndex": "0", "Executable": "Game.exe", "Type": "default", "OsList": "windows" }],
+                "Desired":  [{ "Index": "0", "SourceIndex": "0", "Executable": "Mod.exe", "Arguments": "-dev", "Type": "default", "OsList": "windows" }],
+                "SavedAt": "2026-11-05T12:00:00Z"
+              }
+            ]
+            """;
+        File.WriteAllText(_path, legacyJson);
+
+        var store = new LaunchModStore(_path);
+        var loaded = store.Get(603750);
+
+        Assert.NotNull(loaded);
+        Assert.Equal(42u, loaded!.ChangeNumber);
+        Assert.Equal("Game.exe", loaded.Original[0].Executable);
+        Assert.Equal("Mod.exe", loaded.Desired[0].Executable);
+        Assert.Equal("-dev", loaded.Desired[0].Arguments);
+        Assert.Null(loaded.OriginalLaunchVdf);
+
+        // Next write migrates to the v2 envelope while keeping the original snapshot intact.
+        store.Save(603750, 42, Options("Ignored.exe"), Options("Mod2.exe"));
+        using (var doc = JsonDocument.Parse(File.ReadAllText(_path)))
+        {
+            Assert.Equal(JsonValueKind.Object, doc.RootElement.ValueKind);
+            Assert.Equal(LaunchModStore.CurrentFormatVersion, doc.RootElement.GetProperty("Version").GetInt32());
+            Assert.Equal(1, doc.RootElement.GetProperty("Mods").GetArrayLength());
+        }
+
+        var reopened = new LaunchModStore(_path);
+        Assert.Equal("Game.exe", reopened.Get(603750)!.Original[0].Executable);
+        Assert.Equal("Mod2.exe", reopened.Get(603750)!.Desired[0].Executable);
+    }
+
+    [Fact]
+    public void SaveWithRawLaunchTable_PersistsAndPreservesUnmodelledVdfKeysAndRawBytes()
+    {
+        var rawLaunch = new VdfTable();
+        var entry0 = new VdfTable();
+        entry0.Items.Add(VdfProperty.Text("executable", "Game.exe"));
+        entry0.Items.Add(VdfProperty.Text("vacmodulefilename", "vac_mod.dll"));
+        entry0.Items.Add(new VdfProperty("custom_int", VdfType.Int32, 1337));
+        entry0.Items.Add(new VdfProperty("raw_non_utf8", VdfType.String, new byte[] { 0xFF, 0xFE, 0x41 }));
+        var descLoc = new VdfTable();
+        descLoc.Items.Add(VdfProperty.Text("english", "Play Game"));
+        descLoc.Items.Add(VdfProperty.Text("english", "Duplicate Key")); // VDF allows duplicate keys
+        entry0.Items.Add(VdfProperty.Table("description_loc", descLoc));
+        rawLaunch.Items.Add(VdfProperty.Table("0", entry0));
+
+        var store = new LaunchModStore(_path);
+        store.Save(603750, 42, Options("Game.exe"), Options("Mod.exe"), rawLaunch);
+
+        // Second save must NOT clobber OriginalLaunchVdf.
+        store.Save(603750, 42, Options("Mod.exe"), Options("Mod2.exe"), new VdfTable());
+
+        var reopened = new LaunchModStore(_path);
+        var mod = reopened.Get(603750)!;
+        Assert.True(LaunchModStore.TryDecodeRawLaunch(mod.OriginalLaunchVdf, out var decoded));
+        var restored0 = decoded!.GetTable("0")!;
+        Assert.Equal("vac_mod.dll", restored0.GetText("vacmodulefilename"));
+        Assert.Equal(1337, (int)restored0.Find("custom_int")!.Value);
+        Assert.Equal(new byte[] { 0xFF, 0xFE, 0x41 }, (byte[])restored0.Find("raw_non_utf8")!.Value);
+        var restoredLoc = restored0.GetTable("description_loc")!;
+        Assert.Equal(2, restoredLoc.Items.Count);
+        Assert.Equal("Duplicate Key", restoredLoc.Items[1].AsText());
+    }
+
+    [Theory]
+    [InlineData("""{"Version":99,"Mods":[]}""")]                                      // unknown future version
+    [InlineData("""{"Version":0,"Mods":[]}""")]                                       // invalid version 0
+    [InlineData("""{"Version":2}""")]                                                 // missing Mods
+    [InlineData("""{"Version":2,"Mods":"not-an-array"}""")]                           // wrong Mods type
+    [InlineData("123")]                                                               // non-object/non-array root
+    [InlineData("""{"Version":2,"Mods":[{"AppId":0,"Original":[],"Desired":[]}]}""")] // non-positive AppId
+    [InlineData("""{"Version":2,"Mods":[{"AppId":1,"Original":[],"Desired":[]},{"AppId":1,"Original":[],"Desired":[]}]}""")] // duplicate AppId
+    [InlineData("""{"Version":2,"Mods":[{"AppId":1,"Original":null,"Desired":[]}]}""")]
+    [InlineData("""{"Version":2,"Mods":[{"AppId":1,"Original":[],"Desired":[],"OriginalLaunchVdf":""}]}""")]         // empty base64
+    [InlineData("""{"Version":2,"Mods":[{"AppId":1,"Original":[],"Desired":[],"OriginalLaunchVdf":"!!!not-b64"}]}""")]
+    [InlineData("""{"Version":2,"Mods":[{"AppId":1,"Original":[],"Desired":[],"OriginalLaunchVdf":"AA=="}]}""")]     // truncated VDF table
+    [InlineData("""{"Version":2,"Mods":[{"AppId":1,"Original":[],"Desired":[],"OriginalLaunchVdf":"CAg="}]}""")]     // trailing garbage after End
+    [InlineData("""{"Version":2,"Mods":[{"AppId":1,"Original":[],"Desired":[],"OriginalLaunchVdf":"VQAA"}]}""")]     // unsupported VDF type 0x55
+    public void MaliciousOrCorruptPayload_FailsClosedAndQuarantinesFile(string json)
+    {
+        File.WriteAllText(_path, json);
+
+        var store = new LaunchModStore(_path);
+
+        Assert.True(store.IsEmpty);
+        Assert.True(File.Exists(_path + ".corrupt"));
+    }
+
+    [Fact]
+    public void DeeplyNestedRawLaunchVdf_IsRejectedFailClosedWithoutStackOverflow()
+    {
+        // Build a hostile inline-key VDF nested deeper than BinaryVdf.MaxDepth (64).
+        using var ms = new MemoryStream();
+        for (int i = 0; i < BinaryVdf.MaxDepth + 10; i++)
+        {
+            ms.WriteByte((byte)VdfType.Table);
+            ms.WriteByte((byte)'a');
+            ms.WriteByte(0);
+        }
+        for (int i = 0; i < BinaryVdf.MaxDepth + 11; i++)
+            ms.WriteByte((byte)VdfType.End);
+
+        string hostileBase64 = Convert.ToBase64String(ms.ToArray());
+        Assert.False(LaunchModStore.TryDecodeRawLaunch(hostileBase64, out _));
+
+        File.WriteAllText(_path, $$"""
+            {"Version":2,"Mods":[{"AppId":10,"Original":[],"Desired":[],"OriginalLaunchVdf":"{{hostileBase64}}"}]}
+            """);
+        var store = new LaunchModStore(_path);
+        Assert.True(store.IsEmpty);
+        Assert.True(File.Exists(_path + ".corrupt"));
+    }
+
+    [Fact]
+    public void OversizedRawLaunchVdf_IsRejectedBeforeDecoding()
+    {
+        string huge = new('A', ((LaunchModStore.MaxRawLaunchBytes + 2) / 3) * 4 + 4);
+        Assert.False(LaunchModStore.TryDecodeRawLaunch(huge, out _));
     }
 }

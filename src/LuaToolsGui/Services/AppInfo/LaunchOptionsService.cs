@@ -8,7 +8,11 @@ public sealed record LaunchState(
     uint ChangeNumber,
     IReadOnlyList<LaunchOption> Current,
     string? InstallDir,
-    bool IsModded);
+    bool IsModded)
+{
+    /// <summary>Raw <c>config.launch</c> table snapshot from appinfo.vdf, preserving unmodelled keys.</summary>
+    internal VdfTable? RawLaunch { get; init; }
+}
 
 /// <summary>Outcome of writing appinfo.vdf.</summary>
 public sealed record ApplyResult(bool Ok, string? Error = null, bool SteamWasRunning = false);
@@ -104,22 +108,30 @@ public class LaunchOptionsService
         if (body is null) return null;
 
         var current = LaunchOption.ReadAll(body);
+        var rawLaunch = body.GetTable("config")?.GetTable("launch")?.Clone();
         uint changeNumber = file.Entries[appId].ChangeNumber;
 
         // If Steam updated the app since we snapshotted it, the snapshot describes a version that no
         // longer exists — refresh it from what's live now.
-        _store.Rebase(appId, changeNumber, current);
+        _store.Rebase(appId, changeNumber, current, rawLaunch);
+        if (rawLaunch is not null && _store.Get(appId) is { OriginalLaunchVdf: null } existing
+            && !LaunchModStore.Differs(current, existing.Original))
+            _store.EnsureOriginalRawLaunch(appId, rawLaunch);
 
         return new LaunchState(appId, changeNumber, current,
             body.GetTable("config")?.GetText("installdir"),
-            _store.Get(appId) is not null);
+            _store.Get(appId) is not null)
+        {
+            RawLaunch = rawLaunch,
+        };
     }
 
     /// <summary>Record an edit without touching appinfo.vdf. Applying is a separate, confirmed step
     /// because it has to close Steam.</summary>
     public void Stage(int appId, uint changeNumber,
-                      IReadOnlyList<LaunchOption> current, IReadOnlyList<LaunchOption> desired) =>
-        _store.Save(appId, changeNumber, current, desired);
+                      IReadOnlyList<LaunchOption> current, IReadOnlyList<LaunchOption> desired,
+                      VdfTable? rawLaunch = null) =>
+        _store.Save(appId, changeNumber, current, desired, rawLaunch);
 
     /// <summary>Stage a return to the snapshot taken before we first edited this game.</summary>
     public IReadOnlyList<LaunchOption>? StageRestore(int appId) => _store.Get(appId)?.Original;
@@ -179,7 +191,12 @@ public class LaunchOptionsService
                     if (root is null || body is null) continue;   // app vanished from appinfo — skip it
 
                     // Last chance to see what Steam shipped: a re-apply after an update overwrites it.
-                    _store.Rebase(appId, file.Entries[appId].ChangeNumber, LaunchOption.ReadAll(body));
+                    var liveOptions = LaunchOption.ReadAll(body);
+                    var liveRawLaunch = body.GetTable("config")?.GetTable("launch")?.Clone();
+                    _store.Rebase(appId, file.Entries[appId].ChangeNumber, liveOptions, liveRawLaunch);
+                    if (liveRawLaunch is not null && _store.Get(appId) is { OriginalLaunchVdf: null } existing
+                        && !LaunchModStore.Differs(liveOptions, existing.Original))
+                        _store.EnsureOriginalRawLaunch(appId, liveRawLaunch);
                     LaunchOption.WriteAll(body, options);
                     replacements[appId] = root;
                 }
@@ -297,7 +314,23 @@ public class LaunchOptionsService
                             continue;
                         }
 
-                        LaunchOption.WriteAll(body, mod.Original);
+                        if (mod.OriginalLaunchVdf is not null)
+                        {
+                            if (!LaunchModStore.TryDecodeRawLaunch(mod.OriginalLaunchVdf, out var rawLaunch))
+                            {
+                                failed.Add(new RestoreFailure(mod.AppId, Resources.Strings.Launch_Restore_Mismatch));
+                                continue;
+                            }
+
+                            var cfg = body.EnsureTable("config");
+                            cfg.Remove("launch");
+                            cfg.Items.Add(VdfProperty.Table("launch", rawLaunch));
+                        }
+                        else
+                        {
+                            LaunchOption.WriteAll(body, mod.Original);
+                        }
+
                         if (LaunchModStore.Differs(LaunchOption.ReadAll(body), mod.Original))
                         {
                             failed.Add(new RestoreFailure(mod.AppId, Resources.Strings.Launch_Restore_Mismatch));

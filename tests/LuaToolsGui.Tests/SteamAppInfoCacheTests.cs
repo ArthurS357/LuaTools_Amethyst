@@ -198,7 +198,7 @@ public sealed class SteamAppInfoCacheNegativeMemoTests : IDisposable
     public async Task NegativeMemo_WithNoBlobOnDisk_StillHitsTheNetwork()
     {
         var stub = new StubHandler();
-        var appInfo = new SteamAppInfoCache(new CacheService(_dir), stub);
+        var appInfo = new SteamAppInfoCache(new CacheService(_dir), stub, Path.Combine(_dir, "details"));
 
         Assert.Null(appInfo.GetCached(AppId)); // memoizes the miss
 

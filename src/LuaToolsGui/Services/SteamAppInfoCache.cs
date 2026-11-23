@@ -60,10 +60,10 @@ public record AppOverview(
 /// </summary>
 public class SteamAppInfoCache
 {
-    private static readonly string Dir = AppDataMigrator.CurrentDirectory;
+    private static readonly string DefaultDetailsDir = Path.Combine(AppDataMigrator.CurrentDirectory, "details");
     // Full raw appdetails 'data' blob per appid — the single on-disk source of truth. Name + header image
     // (the fast in-RAM index below) are derived from these on demand; there is no separate appinfo.json.
-    private static readonly string DetailsDir = Path.Combine(Dir, "details");
+    private readonly string _detailsDir;
 
     private readonly HttpClient _http;
     // In-memory fast path for name/header-image. Populated by network resolves, and lazily rehydrated from
@@ -83,14 +83,15 @@ public class SteamAppInfoCache
     private const int MaxPerWindow = 190; // small safety margin under the measured 200
     private DateTime _lastPersist = DateTime.MinValue;
 
-    public SteamAppInfoCache(CacheService cache) : this(cache, new HttpClientHandler()) { }
+    public SteamAppInfoCache(CacheService cache) : this(cache, new HttpClientHandler(), null) { }
 
-    /// <summary>Test seam: swap in a stub handler so lookups can be checked by counting the requests that
-    /// actually go out, rather than by hitting the real API.</summary>
-    internal SteamAppInfoCache(CacheService cache, HttpMessageHandler handler)
+    /// <summary>Test seam: swap in a stub handler and/or an isolated details directory so tests never
+    /// touch the real API or <c>%AppData%</c>.</summary>
+    internal SteamAppInfoCache(CacheService cache, HttpMessageHandler handler, string? detailsDir = null)
     {
         _http = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(15) };
         _cache2 = cache;
+        _detailsDir = detailsDir ?? DefaultDetailsDir;
         // Restore the rolling window from a previous run so we don't burst fresh into a counting window.
         var now = DateTime.UtcNow;
         foreach (long ms in _cache2.GetSteamApiRequestTimes())
@@ -143,7 +144,7 @@ public class SteamAppInfoCache
 
     /// <summary>Derive name + header image from the cached /details blob, or null if it's absent, empty
     /// (the delisted "{}" marker), or unparseable.</summary>
-    private static SteamAppInfo? ReadInfoFromDetails(long appid)
+    private SteamAppInfo? ReadInfoFromDetails(long appid)
     {
         try
         {
@@ -323,7 +324,7 @@ public class SteamAppInfoCache
     /// game in the library. Same sharing as <c>File.ReadAllText</c>, so a concurrent write behaves as before.
     /// Throws on a malformed blob, like <c>JsonDocument.Parse(string)</c> did; every caller already catches.
     /// </summary>
-    private static JsonDocument? OpenDetails(long appid)
+    private JsonDocument? OpenDetails(long appid)
     {
         string path = DetailsPath(appid);
         if (!File.Exists(path)) return null;
@@ -337,7 +338,8 @@ public class SteamAppInfoCache
         d.ValueKind == JsonValueKind.Object && !d.EnumerateObject().Any();
 
     /// <summary>Parse the cached full blob into the fields the Manage filters use. Null if not cached
-    /// yet (the caller treats that as "details loading"). Memoized so repeated filters don't re-parse.</summary>
+    /// yet (the caller treats that as "details loading"). Memoized (hits and misses) so repeated filters
+    /// don't touch disk on the UI thread; invalidated when <see cref="SaveFullDetailsAsync"/> writes a blob.</summary>
     public AppFilterData? GetFilterData(long appid)
     {
         if (_filterCache.TryGetValue(appid, out var memo)) return memo;
@@ -345,7 +347,11 @@ public class SteamAppInfoCache
         try
         {
             using var doc = OpenDetails(appid);
-            if (doc is null) return null;
+            if (doc is null)
+            {
+                _filterCache.TryAdd(appid, null);
+                return null;
+            }
             var d = doc.RootElement;
 
             string? type = d.TryGetProperty("type", out var t) ? t.GetString() : null;
@@ -421,8 +427,15 @@ public class SteamAppInfoCache
         }
     }
 
-    private readonly ConcurrentDictionary<long, AppFilterData> _filterCache = new();
+    private readonly ConcurrentDictionary<long, AppFilterData?> _filterCache = new();
     private readonly ConcurrentDictionary<long, AppOverview> _overviewCache = new();
+
+    /// <summary>Same lookup as <see cref="GetOverview"/> for UI callers: a RAM hit returns at once,
+    /// a miss reads and parses the blob on the thread pool.</summary>
+    public Task<AppOverview?> GetOverviewAsync(long appid, CancellationToken ct = default) =>
+        _overviewCache.TryGetValue(appid, out var memo)
+            ? Task.FromResult<AppOverview?>(memo)
+            : Task.Run(() => GetOverview(appid), ct);
 
     /// <summary>
     /// Blurb + studio + genres from the cached blob, for the Manage flyout. Null when the app has no
@@ -487,7 +500,7 @@ public class SteamAppInfoCache
     public async Task<GameDetails?> ResolveGameDetailsAsync(long appid, CancellationToken ct = default)
     {
         await EnsureFullDetailsAsync(appid, ct); // interactive priority; caches the blob to details\<appid>.json
-        return GetGameDetails(appid);
+        return await Task.Run(() => GetGameDetails(appid), ct);
     }
 
     /// <summary>Build <see cref="GameDetails"/> from the cached Steam appdetails blob (same field mapping
@@ -600,21 +613,24 @@ public class SteamAppInfoCache
             if (ct.IsCancellationRequested) return;
             if (HasFullDetails(appid)) continue;
             await EnsureFullDetailsAsync(appid, ct, background: true); // yields to interactive Add/tile lookups
+            GetFilterData(appid); // warm filter RAM cache off-UI before onProgress refreshes dropdowns/counts
             onProgress?.Invoke();
             // Small gap so backfill stays a trickle and yields to interactive lookups.
             try { await Task.Delay(TimeSpan.FromMilliseconds(750), ct); } catch (OperationCanceledException) { return; }
         }
     }
 
-    internal static string DetailsPath(long appid) => Path.Combine(DetailsDir, $"{appid}.json");
+    internal string DetailsPath(long appid) => Path.Combine(_detailsDir, $"{appid}.json");
 
     private async Task SaveFullDetailsAsync(long appid, string rawJson)
     {
         try
         {
-            Directory.CreateDirectory(DetailsDir);
+            Directory.CreateDirectory(_detailsDir);
             // Atomic: HasFullDetails is just File.Exists, so a truncated blob would read as cached forever.
             await Task.Run(() => AtomicFile.WriteAllText(DetailsPath(appid), rawJson));
+            _filterCache.TryRemove(appid, out _);
+            _overviewCache.TryRemove(appid, out _);
         }
         catch { /* best effort */ }
     }

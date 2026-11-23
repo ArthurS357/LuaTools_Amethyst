@@ -669,4 +669,150 @@ public class LaunchRestoreTests : IDisposable
         Assert.False(vm.IsModded);
         Assert.True(closed);
     }
+
+    // ── MEDIUM-4: unmodelled VDF keys survive reorder/delete + restore ──
+
+    private static void WriteAppInfoWithUnmodelledKeys(string path, int appId)
+    {
+        string[] keys =
+        [
+            "appinfo", "config", "launch", "executable", "type", "0", "1",
+            "vacmodulefilename", "description_loc", "english", "custom_flag",
+        ];
+        var lookup = new Dictionary<string, uint>(StringComparer.Ordinal);
+        for (int i = 0; i < keys.Length; i++) lookup[keys[i]] = (uint)i;
+
+        var entry0 = new VdfTable();
+        entry0.Items.Add(VdfProperty.Text("executable", "Game.exe"));
+        entry0.Items.Add(VdfProperty.Text("type", "default"));
+        entry0.Items.Add(VdfProperty.Text("vacmodulefilename", "vac.dll"));
+        var descLoc = new VdfTable();
+        descLoc.Items.Add(VdfProperty.Text("english", "Play Game"));
+        entry0.Items.Add(VdfProperty.Table("description_loc", descLoc));
+
+        var entry1 = new VdfTable();
+        entry1.Items.Add(VdfProperty.Text("executable", "Editor.exe"));
+        entry1.Items.Add(VdfProperty.Text("type", "option1"));
+        entry1.Items.Add(VdfProperty.Text("custom_flag", "keep-me"));
+
+        var launch = new VdfTable();
+        launch.Items.Add(VdfProperty.Table("0", entry0));
+        launch.Items.Add(VdfProperty.Table("1", entry1));
+
+        var config = new VdfTable();
+        config.Items.Add(VdfProperty.Table("launch", launch));
+        var appinfo = new VdfTable();
+        appinfo.Items.Add(VdfProperty.Table("config", config));
+        var root = new VdfTable();
+        root.Items.Add(VdfProperty.Table("appinfo", appinfo));
+
+        using var blob = new MemoryStream();
+        BinaryVdf.Write(blob, root, k => lookup[k], indexedKeys: true);
+        byte[] body = blob.ToArray();
+
+        var meta = new byte[60];
+        BitConverter.GetBytes(Change).CopyTo(meta, 36);
+        SHA1.HashData(body).CopyTo(meta, 40);
+
+        using var f = File.Create(path);
+        BinaryVdf.WriteUInt32(f, AppInfoFile.Magic29);
+        BinaryVdf.WriteUInt32(f, 1);
+        long offsetPos = f.Position;
+        f.Write(BitConverter.GetBytes(0L));
+        BinaryVdf.WriteInt32(f, appId);
+        BinaryVdf.WriteInt32(f, meta.Length + body.Length);
+        f.Write(meta);
+        f.Write(body);
+        BinaryVdf.WriteInt32(f, 0);
+        long table = f.Position;
+        BinaryVdf.WriteInt32(f, keys.Length);
+        foreach (string k in keys) BinaryVdf.WriteCString(f, Encoding.UTF8.GetBytes(k));
+        f.Position = offsetPos;
+        f.Write(BitConverter.GetBytes(table));
+    }
+
+    [Fact]
+    public void Restore_AfterReorderAndDelete_PreservesUnmodelledVdfKeys()
+    {
+        WriteAppInfoWithUnmodelledKeys(_appInfo, GameA);
+
+        var state = _service.Read(GameA)!;
+        // Simulate deleting entry "0" (Game.exe with vacmodulefilename + description_loc) and renumbering "1" to "0".
+        var desired = new List<LaunchOption> { state.Current[1].Clone() };
+        LaunchOption.Renumber(desired);
+
+        _service.Stage(GameA, state.ChangeNumber, state.Current, desired, state.RawLaunch);
+        Assert.True(_service.Apply(new Dictionary<int, IReadOnlyList<LaunchOption>> { [GameA] = desired }, false).Ok);
+
+        // Confirm unmodelled keys of entry 0 are really gone from the live appinfo while edited.
+        using (var editedFile = new AppInfoFile(_appInfo))
+        {
+            var editedLaunch = editedFile.ReadAppBody(GameA)!.GetTable("config")!.GetTable("launch")!;
+            Assert.Single(editedLaunch.Items);
+            Assert.Null(editedLaunch.GetTable("0")!.GetText("vacmodulefilename"));
+        }
+
+        // Restore must put BOTH entries AND all unmodelled keys back on their exact original entries.
+        var result = _service.RestoreAll(restartSteam: false);
+        Assert.True(result.Ok);
+
+        using var restoredFile = new AppInfoFile(_appInfo);
+        var restoredLaunch = restoredFile.ReadAppBody(GameA)!.GetTable("config")!.GetTable("launch")!;
+        Assert.Equal(2, restoredLaunch.Items.Count);
+        var r0 = restoredLaunch.GetTable("0")!;
+        Assert.Equal("Game.exe", r0.GetText("executable"));
+        Assert.Equal("vac.dll", r0.GetText("vacmodulefilename"));
+        Assert.Equal("Play Game", r0.GetTable("description_loc")!.GetText("english"));
+        var r1 = restoredLaunch.GetTable("1")!;
+        Assert.Equal("Editor.exe", r1.GetText("executable"));
+        Assert.Equal("keep-me", r1.GetText("custom_flag"));
+    }
+
+    [Fact]
+    public void Restore_LegacyV1RecordWithoutRawVdf_StillRestoresModelledFieldsGracefully()
+    {
+        // Pre-1.8.4 legacy array file on disk after an edit was already applied.
+        WriteAppInfo(_appInfo, new App(GameA, "ModA.exe"));
+        File.WriteAllText(_storePath, $$"""
+            [
+              {
+                "AppId": {{GameA}},
+                "ChangeNumber": {{Change}},
+                "Original": [{ "Index": "0", "SourceIndex": "0", "Executable": "A.exe", "Type": "default" }],
+                "Desired":  [{ "Index": "0", "SourceIndex": "0", "Executable": "ModA.exe", "Type": "default" }]
+              }
+            ]
+            """);
+
+        var legacyStore = new LaunchModStore(_storePath);
+        var svc = new LaunchOptionsService(() => _appInfo, () => false, () => { }, () => { }, legacyStore, _backupDir);
+
+        var result = svc.RestoreAll(restartSteam: false);
+
+        Assert.True(result.Ok);
+        Assert.Equal([GameA], result.Restored);
+        Assert.Equal("A.exe", svc.Read(GameA)!.Current[0].Executable);
+        Assert.True(legacyStore.IsEmpty);
+    }
+
+    [Fact]
+    public void Restore_TamperedRawLaunchMismatchingOriginal_FailsClosedAndKeepsRecord()
+    {
+        EditAndApply(GameA, "ModA.exe");
+        // Tamper the raw snapshot to describe a different executable than mod.Original ("A.exe").
+        var wrongLaunch = new VdfTable();
+        var wrongEntry = new VdfTable();
+        wrongEntry.Items.Add(VdfProperty.Text("executable", "Evil.exe"));
+        wrongEntry.Items.Add(VdfProperty.Text("type", "default"));
+        wrongLaunch.Items.Add(VdfProperty.Table("0", wrongEntry));
+        _store.Get(GameA)!.OriginalLaunchVdf = LaunchModStore.EncodeRawLaunch(wrongLaunch);
+
+        byte[] appInfoBefore = File.ReadAllBytes(_appInfo);
+        var result = _service.RestoreAll(restartSteam: false);
+
+        Assert.False(result.Ok);
+        Assert.Equal(GameA, Assert.Single(result.Failed).AppId);
+        Assert.Equal(appInfoBefore, File.ReadAllBytes(_appInfo));
+        Assert.NotNull(_store.Get(GameA));
+    }
 }

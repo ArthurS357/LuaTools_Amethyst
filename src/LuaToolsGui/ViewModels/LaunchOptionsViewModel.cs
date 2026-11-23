@@ -300,7 +300,7 @@ public partial class LaunchOptionsViewModel : ObservableObject
             return;
         }
 
-        _launch.Stage((int)AppId, _state.ChangeNumber, _state.Current, desired);
+        _launch.Stage((int)AppId, _state.ChangeNumber, _state.Current, desired, _state.RawLaunch);
         IsModded = true;
 
         if (_confirm(Resources.Strings.Launch_ApplyNow_Body, Resources.Strings.Launch_ApplyNow_Title))

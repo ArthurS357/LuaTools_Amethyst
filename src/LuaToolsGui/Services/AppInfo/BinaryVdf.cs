@@ -111,23 +111,44 @@ public sealed class VdfTable
 /// </summary>
 public static class BinaryVdf
 {
+    /// <summary>Defensive ceiling against hostile/corrupt VDF nesting blowing the managed stack.</summary>
+    public const int MaxDepth = 64;
+
     /// <summary>Parse one object and everything nested under it. The stream is left just past its
     /// terminator.</summary>
-    public static VdfTable Read(Stream s, IReadOnlyList<string> strings, bool indexedKeys)
+    public static VdfTable Read(Stream s, IReadOnlyList<string> strings, bool indexedKeys) =>
+        ReadCore(s, strings, indexedKeys, depth: 0, strict: false);
+
+    /// <summary>Parse an inline-key VDF table strictly: requires explicit table/string terminators and
+    /// enforces <see cref="MaxDepth"/>. Used for untrusted/persisted raw snapshots.</summary>
+    internal static VdfTable ReadStrict(Stream s) =>
+        ReadCore(s, [], indexedKeys: false, depth: 0, strict: true);
+
+    private static VdfTable ReadCore(Stream s, IReadOnlyList<string> strings, bool indexedKeys, int depth, bool strict)
     {
+        if (depth > MaxDepth)
+            throw new InvalidDataException($"Binary VDF nesting depth exceeds limit ({MaxDepth}).");
+
         var table = new VdfTable();
         while (true)
         {
             int marker = s.ReadByte();
-            if (marker < 0 || marker == (int)VdfType.End || marker == (int)VdfType.EndAlt) return table;
+            if (marker < 0)
+            {
+                if (strict) throw new InvalidDataException("Unexpected end of VDF table.");
+                return table;
+            }
+            if (marker == (int)VdfType.End || marker == (int)VdfType.EndAlt) return table;
 
             var type = (VdfType)marker;
-            string name = indexedKeys ? strings[(int)ReadUInt32(s)] : ReadCString(s);
+            string name = indexedKeys
+                ? ReadIndexedKey(s, strings)
+                : (strict ? ReadCStringStrict(s) : ReadCString(s));
 
             object value = type switch
             {
-                VdfType.Table => Read(s, strings, indexedKeys),
-                VdfType.String => ReadCStringBytes(s),
+                VdfType.Table => ReadCore(s, strings, indexedKeys, depth + 1, strict),
+                VdfType.String => strict ? ReadCStringBytesStrict(s) : ReadCStringBytes(s),
                 VdfType.Int32 or VdfType.Pointer or VdfType.Color => ReadInt32(s),
                 VdfType.UInt64 => ReadUInt64(s),
                 VdfType.Int64 => ReadInt64(s),
@@ -136,6 +157,14 @@ public static class BinaryVdf
             };
             table.Items.Add(new VdfProperty(name, type, value));
         }
+    }
+
+    private static string ReadIndexedKey(Stream s, IReadOnlyList<string> strings)
+    {
+        uint idx = ReadUInt32(s);
+        if (idx >= (uint)strings.Count)
+            throw new InvalidDataException($"VDF string index {idx} out of range.");
+        return strings[(int)idx];
     }
 
     /// <summary>Serialize an object. <paramref name="intern"/> maps a key to its string-table index
@@ -205,7 +234,21 @@ public static class BinaryVdf
         return buffer.ToArray();
     }
 
+    private static byte[] ReadCStringBytesStrict(Stream s)
+    {
+        var buffer = new MemoryStream();
+        while (true)
+        {
+            int b = s.ReadByte();
+            if (b < 0) throw new InvalidDataException("Unterminated VDF string.");
+            if (b == 0) return buffer.ToArray();
+            buffer.WriteByte((byte)b);
+        }
+    }
+
     public static string ReadCString(Stream s) => Encoding.UTF8.GetString(ReadCStringBytes(s));
+
+    private static string ReadCStringStrict(Stream s) => Encoding.UTF8.GetString(ReadCStringBytesStrict(s));
 
     public static void WriteCString(Stream s, byte[] raw)
     {

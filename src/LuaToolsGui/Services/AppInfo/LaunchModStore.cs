@@ -1,5 +1,7 @@
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace LuaToolsGui.Services.AppInfo;
 
@@ -19,6 +21,13 @@ public sealed class LaunchMod
     /// <summary>What the entries should look like.</summary>
     public List<LaunchOption> Desired { get; set; } = [];
 
+    /// <summary>Raw <c>config.launch</c> VDF table captured before the first edit (base64 of inline-key
+    /// <see cref="BinaryVdf"/>). Preserves unmodelled Steam keys (<c>vacmodulefilename</c>,
+    /// <c>description_loc</c>, custom sub-tables, duplicate keys, non-UTF-8 bytes) across reorders and
+    /// deletions. Null for legacy v1 records migrated from older builds.</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? OriginalLaunchVdf { get; set; }
+
     public DateTime SavedAt { get; set; } = DateTime.UtcNow;
 }
 
@@ -34,6 +43,19 @@ public sealed class LaunchMod
 /// </summary>
 public class LaunchModStore
 {
+    public const int CurrentFormatVersion = 2;
+
+    /// <summary>Upper bound for a single app's raw <c>config.launch</c> VDF snapshot (1 MiB). Real
+    /// launch tables are a few KB; capping refuses hostile/bloated files before decoding.</summary>
+    internal const int MaxRawLaunchBytes = 1024 * 1024;
+    private const int MaxRawLaunchBase64Length = ((MaxRawLaunchBytes + 2) / 3) * 4;
+
+    private sealed class StoreEnvelope
+    {
+        public int Version { get; set; }
+        public List<LaunchMod>? Mods { get; set; }
+    }
+
     private static readonly string Dir = AppDataMigrator.CurrentDirectory;
     private static readonly string FilePath = Path.Combine(Dir, "launchmods.json");
 
@@ -65,7 +87,7 @@ public class LaunchModStore
     /// <summary>Record an edit. The snapshot is only captured the FIRST time a game is modified —
     /// re-saving must not overwrite the original with our own previous edit.</summary>
     public void Save(int appId, uint changeNumber, IReadOnlyList<LaunchOption> current,
-                     IReadOnlyList<LaunchOption> desired)
+                     IReadOnlyList<LaunchOption> desired, VdfTable? originalLaunchTable = null)
     {
         lock (_gate)
         {
@@ -76,6 +98,7 @@ public class LaunchModStore
                     AppId = appId,
                     ChangeNumber = changeNumber,
                     Original = current.Select(o => o.Clone()).ToList(),
+                    OriginalLaunchVdf = originalLaunchTable is not null ? EncodeRawLaunch(originalLaunchTable) : null,
                 };
                 _mods[appId] = mod;
             }
@@ -119,7 +142,7 @@ public class LaunchModStore
             try
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(_path)!);
-                AtomicFile.WriteAllText(_path + ".pre-restore", JsonSerializer.Serialize(_mods.Values.ToList(), JsonOpts));
+                AtomicFile.WriteAllText(_path + ".pre-restore", SerializeStore());
                 return true;
             }
             catch (Exception ex)
@@ -136,7 +159,8 @@ public class LaunchModStore
     /// no longer exists. Entries that match our own edit are not what Steam shipped, so they never replace
     /// the original: that would leave "restore" with nothing to go back to.
     /// </summary>
-    public bool Rebase(int appId, uint currentChangeNumber, IReadOnlyList<LaunchOption> currentOriginal)
+    public bool Rebase(int appId, uint currentChangeNumber, IReadOnlyList<LaunchOption> currentOriginal,
+                       VdfTable? currentLaunchTable = null)
     {
         lock (_gate)
         {
@@ -145,9 +169,61 @@ public class LaunchModStore
 
             mod.ChangeNumber = currentChangeNumber;
             if (Differs(currentOriginal, mod.Desired))
+            {
                 mod.Original = currentOriginal.Select(o => o.Clone()).ToList();
+                mod.OriginalLaunchVdf = currentLaunchTable is not null ? EncodeRawLaunch(currentLaunchTable) : null;
+            }
             Persist();
             return true;
+        }
+    }
+
+    /// <summary>Backfill the raw VDF snapshot onto a legacy v1 record while the live appinfo still holds
+    /// Steam's unmodified entries, migrating the file to v2 on disk.</summary>
+    internal void EnsureOriginalRawLaunch(int appId, VdfTable? currentLaunchTable)
+    {
+        if (currentLaunchTable is null) return;
+        lock (_gate)
+        {
+            if (!_mods.TryGetValue(appId, out var mod) || mod.OriginalLaunchVdf is not null)
+                return;
+
+            mod.OriginalLaunchVdf = EncodeRawLaunch(currentLaunchTable);
+            Persist();
+        }
+    }
+
+    // ── raw VDF snapshot codec ──────────────────────────────────────
+
+    internal static string EncodeRawLaunch(VdfTable launchTable)
+    {
+        using var ms = new MemoryStream();
+        BinaryVdf.Write(ms, launchTable, static _ => 0u, indexedKeys: false);
+        return Convert.ToBase64String(ms.ToArray());
+    }
+
+    internal static bool TryDecodeRawLaunch(string? base64, [NotNullWhen(true)] out VdfTable? table)
+    {
+        table = null;
+        if (string.IsNullOrWhiteSpace(base64) || base64.Length > MaxRawLaunchBase64Length) return false;
+
+        byte[] bytes;
+        try { bytes = Convert.FromBase64String(base64); }
+        catch (FormatException) { return false; }
+
+        if (bytes.Length is 0 or > MaxRawLaunchBytes) return false;
+
+        try
+        {
+            using var ms = new MemoryStream(bytes, writable: false);
+            var parsed = BinaryVdf.ReadStrict(ms);
+            if (ms.Position != ms.Length) return false;
+            table = parsed;
+            return true;
+        }
+        catch (Exception ex) when (ex is InvalidDataException or EndOfStreamException)
+        {
+            return false;
         }
     }
 
@@ -158,8 +234,7 @@ public class LaunchModStore
         try
         {
             if (!File.Exists(_path)) return;
-            var loaded = JsonSerializer.Deserialize<List<LaunchMod>>(File.ReadAllText(_path), JsonOpts);
-            if (loaded is not null) _mods = loaded.ToDictionary(m => m.AppId);
+            _mods = ParseAndValidate(File.ReadAllText(_path));
         }
         catch (Exception ex)
         {
@@ -170,6 +245,56 @@ public class LaunchModStore
             _mods = [];
         }
     }
+
+    /// <summary>Parse either the v2 envelope (<c>{"Version":2,"Mods":[...]}</c>) or a legacy v1 array
+    /// (<c>[...]</c>) and validate every entry fail-closed.</summary>
+    private static Dictionary<int, LaunchMod> ParseAndValidate(string json)
+    {
+        using var doc = JsonDocument.Parse(json);
+        List<LaunchMod>? loaded;
+        if (doc.RootElement.ValueKind == JsonValueKind.Array)
+        {
+            loaded = doc.RootElement.Deserialize<List<LaunchMod>>(JsonOpts);
+        }
+        else if (doc.RootElement.ValueKind == JsonValueKind.Object)
+        {
+            if (!doc.RootElement.TryGetProperty("Version", out var verEl)
+                || verEl.ValueKind != JsonValueKind.Number
+                || !verEl.TryGetInt32(out int version)
+                || version != CurrentFormatVersion)
+                throw new InvalidDataException("Unsupported launchmods.json format version.");
+
+            if (!doc.RootElement.TryGetProperty("Mods", out var modsEl)
+                || modsEl.ValueKind != JsonValueKind.Array)
+                throw new InvalidDataException("Missing or invalid Mods array in launchmods.json.");
+
+            loaded = modsEl.Deserialize<List<LaunchMod>>(JsonOpts);
+        }
+        else
+        {
+            throw new InvalidDataException("Unexpected JSON root in launchmods.json.");
+        }
+
+        if (loaded is null) throw new InvalidDataException("Empty launchmods.json payload.");
+
+        var map = new Dictionary<int, LaunchMod>(loaded.Count);
+        foreach (var mod in loaded)
+        {
+            if (mod is null || mod.AppId <= 0 || mod.Original is null || mod.Desired is null)
+                throw new InvalidDataException("Invalid LaunchMod entry.");
+            if (mod.Original.Any(static o => o is null) || mod.Desired.Any(static o => o is null))
+                throw new InvalidDataException("Null LaunchOption entry.");
+            if (mod.OriginalLaunchVdf is not null && !TryDecodeRawLaunch(mod.OriginalLaunchVdf, out _))
+                throw new InvalidDataException($"Corrupt OriginalLaunchVdf for app {mod.AppId}.");
+            if (!map.TryAdd(mod.AppId, mod))
+                throw new InvalidDataException($"Duplicate LaunchMod entry for app {mod.AppId}.");
+        }
+
+        return map;
+    }
+
+    private string SerializeStore() => JsonSerializer.Serialize(
+        new StoreEnvelope { Version = CurrentFormatVersion, Mods = _mods.Values.ToList() }, JsonOpts);
 
     /// <summary>Atomic write (tmp → move) with a .bak, same as SettingsService — a torn file here loses
     /// every recorded edit AND the snapshots needed to undo them.</summary>
@@ -185,7 +310,7 @@ public class LaunchModStore
             }
 
             string tmp = _path + ".tmp";
-            File.WriteAllText(tmp, JsonSerializer.Serialize(_mods.Values.ToList(), JsonOpts));
+            File.WriteAllText(tmp, SerializeStore());
             try { if (File.Exists(_path)) File.Copy(_path, _path + ".bak", overwrite: true); }
             catch { /* best effort */ }
             File.Move(tmp, _path, overwrite: true);

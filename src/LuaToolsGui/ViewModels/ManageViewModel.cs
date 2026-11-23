@@ -358,7 +358,9 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
     private async Task OpenDetailAsync(LuaTileViewModel tile)
     {
         SelectedTile = tile;
-        Overview = _appInfo.GetOverview(tile.AppId); // instant when the blob is already on disk
+        Overview = null;
+        var overview = await _appInfo.GetOverviewAsync(tile.AppId);
+        if (SelectedTile == tile) Overview = overview;
 
         // The flyout binds its cover to SelectedTile.Cover. When opened from outside Manage
         // (Home → game detail) the tile was never rendered/scrolled into view, so its cover
@@ -369,7 +371,10 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
         // interactive priority, then fill the section in. Re-checked afterwards because the user can
         // close the flyout or switch games while that request is in flight.
         if (Overview is null && await _appInfo.EnsureFullDetailsAsync(tile.AppId) && SelectedTile == tile)
-            Overview = _appInfo.GetOverview(tile.AppId);
+        {
+            var fetched = await _appInfo.GetOverviewAsync(tile.AppId);
+            if (SelectedTile == tile) Overview = fetched;
+        }
     }
 
     [RelayCommand]
@@ -729,6 +734,8 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
                     {
                         var info = new FileInfo(f.Path);
                         string? name = _appList.GetName(f.AppId) ?? ParseLuaName(f.Path) ?? _appInfo.GetCached(f.AppId)?.Name;
+                        // Warm filter metadata off the UI thread so PopulateFilterOptions / ApplyFilter hit RAM only.
+                        _appInfo.GetFilterData(f.AppId);
                         bool placeholder = name is null;
                         // Base = when added to the folder; if edited since (LastWrite later), use that — newer is more relevant.
                         var added = info.LastWriteTime > info.CreationTime ? info.LastWriteTime : info.CreationTime;

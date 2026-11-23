@@ -205,22 +205,22 @@ public sealed class SteamAppListCacheLoadTests : IDisposable
 }
 
 /// <summary>
-/// docs/code-audit-2026-11-02.md M2: <c>GetCachedAsync</c> reads the blob off the calling thread, memoizes it,
-/// and is safe under concurrency. Needs a real blob, and the details dir is the real %AppData% one, so each test
-/// uses an appid no game has and removes its file afterwards.
+/// docs/code-audit-2026-11-02.md M2: <c>GetCachedAsync</c>, <c>PreloadAsync</c>, <c>GetOverviewAsync</c>,
+/// <c>ResolveGameDetailsAsync</c>, and <c>GetFilterData</c> run against an isolated temp details directory
+/// via the internal seam — zero reads or writes in the machine's real <c>%AppData%</c>.
 /// </summary>
 public sealed class SteamAppInfoCacheAsyncTests : IDisposable
 {
     private readonly string _dir = Path.Combine(Path.GetTempPath(), "luatools_appinfo_" + Guid.NewGuid().ToString("N"));
-    private readonly List<string> _blobs = [];
+    private string DetailsDir => Path.Combine(_dir, "details");
 
     public void Dispose()
     {
-        foreach (var blob in _blobs) try { File.Delete(blob); } catch (Exception e) when (e is IOException or UnauthorizedAccessException) { }
         try { if (Directory.Exists(_dir)) Directory.Delete(_dir, recursive: true); } catch (IOException) { }
     }
 
-    private SteamAppInfoCache NewCache() => new(new CacheService(_dir), new NeverCalled());
+    private SteamAppInfoCache NewCache(HttpMessageHandler? handler = null) =>
+        new(new CacheService(_dir), handler ?? new NeverCalled(), DetailsDir);
 
     private sealed class NeverCalled : HttpMessageHandler
     {
@@ -228,25 +228,45 @@ public sealed class SteamAppInfoCacheAsyncTests : IDisposable
             throw new InvalidOperationException("the async disk read must not touch the network");
     }
 
-    private void WriteBlob(long appid, string json)
+    private sealed class StaticJsonHandler(string body) : HttpMessageHandler
     {
-        string path = SteamAppInfoCache.DetailsPath(appid);
+        public int Calls { get; private set; }
+
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct)
+        {
+            Calls++;
+            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(body, Encoding.UTF8) });
+        }
+    }
+
+    private string WriteBlob(SteamAppInfoCache cache, long appid, string json)
+    {
+        string path = cache.DetailsPath(appid);
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
         File.WriteAllText(path, json);
-        _blobs.Add(path);
+        return path;
+    }
+
+    [Fact]
+    public void Details_path_is_isolated_to_the_injected_directory()
+    {
+        var cache = NewCache();
+        string path = cache.DetailsPath(9_999_999_800);
+
+        Path.GetFullPath(path).Should().StartWith(Path.GetFullPath(DetailsDir) + Path.DirectorySeparatorChar);
     }
 
     [Fact]
     public async Task A_miss_is_read_from_the_blob_and_then_memoized()
     {
         const long id = 9_999_999_801;
-        WriteBlob(id, """{"name":"Spacewar","header_image":"https://x/h.jpg"}""");
         var cache = NewCache();
+        string path = WriteBlob(cache, id, """{"name":"Spacewar","header_image":"https://x/h.jpg"}""");
 
         var info = await cache.GetCachedAsync(id);
 
         info.Should().Be(new SteamAppInfo("Spacewar", "https://x/h.jpg"));
-        File.Delete(SteamAppInfoCache.DetailsPath(id));
+        File.Delete(path);
         cache.GetCached(id).Should().Be(info, "the sync path is now a RAM hit, with no disk read");
         (await cache.GetCachedAsync(id)).Should().Be(info);
     }
@@ -255,9 +275,9 @@ public sealed class SteamAppInfoCacheAsyncTests : IDisposable
     public async Task A_missing_or_corrupt_blob_resolves_to_null_without_throwing()
     {
         const long corrupt = 9_999_999_802, missing = 9_999_999_803, delisted = 9_999_999_804;
-        WriteBlob(corrupt, "{ not json");
-        WriteBlob(delisted, "{}");
         var cache = NewCache();
+        WriteBlob(cache, corrupt, "{ not json");
+        WriteBlob(cache, delisted, "{}");
 
         (await cache.GetCachedAsync(corrupt)).Should().BeNull();
         (await cache.GetCachedAsync(missing)).Should().BeNull();
@@ -268,8 +288,8 @@ public sealed class SteamAppInfoCacheAsyncTests : IDisposable
     public async Task Concurrent_lookups_of_one_appid_all_get_the_same_answer()
     {
         const long id = 9_999_999_805;
-        WriteBlob(id, """{"name":"Portal"}""");
         var cache = NewCache();
+        WriteBlob(cache, id, """{"name":"Portal"}""");
 
         var results = await Task.WhenAll(Enumerable.Range(0, 64).Select(_ => cache.GetCachedAsync(id)));
 
@@ -280,13 +300,13 @@ public sealed class SteamAppInfoCacheAsyncTests : IDisposable
     public async Task Preload_warms_the_sync_path_for_a_whole_batch()
     {
         const long a = 9_999_999_806, b = 9_999_999_807;
-        WriteBlob(a, """{"name":"A"}""");
-        WriteBlob(b, """{"name":"B"}""");
         var cache = NewCache();
+        string pathA = WriteBlob(cache, a, """{"name":"A"}""");
+        string pathB = WriteBlob(cache, b, """{"name":"B"}""");
 
         await cache.PreloadAsync([a, b, a]);
-        File.Delete(SteamAppInfoCache.DetailsPath(a));
-        File.Delete(SteamAppInfoCache.DetailsPath(b));
+        File.Delete(pathA);
+        File.Delete(pathB);
 
         cache.GetCached(a)!.Name.Should().Be("A");
         cache.GetCached(b)!.Name.Should().Be("B");
@@ -301,8 +321,64 @@ public sealed class SteamAppInfoCacheAsyncTests : IDisposable
 
         Func<Task> miss = () => cache.GetCachedAsync(9_999_999_808, cts.Token);
         Func<Task> preload = () => cache.PreloadAsync([9_999_999_808], cts.Token);
+        Func<Task> overview = () => cache.GetOverviewAsync(9_999_999_808, cts.Token);
 
         await miss.Should().ThrowAsync<OperationCanceledException>();
         await preload.Should().ThrowAsync<OperationCanceledException>();
+        await overview.Should().ThrowAsync<OperationCanceledException>();
+    }
+
+    [Fact]
+    public async Task GetOverviewAsync_reads_from_isolated_blob_and_memoizes()
+    {
+        const long id = 9_999_999_809;
+        var cache = NewCache();
+        string path = WriteBlob(cache, id, """
+            {"short_description":"Build &amp; explore","developers":["Studio A"],"publishers":["Pub B"],
+             "genres":[{"description":"RPG"}]}
+            """);
+
+        var overview = await cache.GetOverviewAsync(id);
+
+        overview.Should().NotBeNull();
+        overview!.ShortDescription.Should().Be("Build & explore");
+        overview.DeveloperLabel.Should().Be("Studio A");
+        overview.HasDistinctPublisher.Should().BeTrue();
+        File.Delete(path);
+        (await cache.GetOverviewAsync(id)).Should().BeSameAs(overview, "subsequent calls hit RAM");
+    }
+
+    [Fact]
+    public async Task ResolveGameDetailsAsync_reads_cached_blob_off_thread_without_network()
+    {
+        const long id = 9_999_999_810;
+        var cache = NewCache();
+        WriteBlob(cache, id, """{"steam_appid":9999999810,"name":"Half-Life","type":"game","genres":[{"description":"Action"}]}""");
+
+        var details = await cache.ResolveGameDetailsAsync(id);
+
+        details.Should().NotBeNull();
+        details!.Name.Should().Be("Half-Life");
+        details.AppId.Should().Be(id);
+    }
+
+    [Fact]
+    public async Task GetFilterData_negative_memo_is_invalidated_when_EnsureFullDetailsAsync_saves_the_blob()
+    {
+        const long id = 9_999_999_811;
+        var stub = new StaticJsonHandler($$"""
+            {"{{id}}":{"success":true,"data":{"steam_appid":{{id}},"type":"game","name":"Test",
+              "is_free":true,"genres":[{"description":"Indie"}]} } }
+            """);
+        var cache = NewCache(stub);
+
+        cache.GetFilterData(id).Should().BeNull("no blob on disk yet; memoizes miss");
+        (await cache.EnsureFullDetailsAsync(id)).Should().BeTrue();
+
+        var data = cache.GetFilterData(id);
+        data.Should().NotBeNull("saving the blob invalidated the negative filter memo");
+        data!.IsFree.Should().BeTrue();
+        data.Genres.Should().Equal("Indie");
+        stub.Calls.Should().Be(1);
     }
 }
