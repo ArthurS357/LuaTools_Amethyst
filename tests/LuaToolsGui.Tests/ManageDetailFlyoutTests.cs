@@ -42,6 +42,8 @@ public class ManageDetailFlyoutTests(ThemeHost host)
             "the flyout body should use a single outer ScrollViewer instead of a nested inner scroller");
 
         var scroller = scrollers[0];
+        ((string?)scroller.Attribute("Grid.Row")).Should().Be("1",
+            "the ScrollViewer must sit in the star row below the pinned close button");
         ((string?)scroller.Attribute("VerticalScrollBarVisibility")).Should().Be("Auto");
         ((string?)scroller.Attribute("HorizontalScrollBarVisibility")).Should().Be("Disabled");
 
@@ -68,6 +70,11 @@ public class ManageDetailFlyoutTests(ThemeHost host)
             var firstCol = rowGrid.Element(Wpf + "Grid.ColumnDefinitions")!.Elements(Wpf + "ColumnDefinition").First();
             ((string?)firstCol.Attribute("Width")).Should().Be("Auto",
                 $"{labelKey} must auto-size so localized labels (e.g. Desenvolvedor) do not overflow into the value");
+            ((string?)firstCol.Attribute("SharedSizeGroup")).Should().Be("MetaLabel",
+                $"{labelKey} must share its label column width with sibling metadata rows");
+            rowGrid.Ancestors().Should().Contain(
+                a => string.Equals((string?)a.Attribute("Grid.IsSharedSizeScope"), "True", StringComparison.Ordinal),
+                $"{labelKey} requires an ancestor with Grid.IsSharedSizeScope=\"True\" for SharedSizeGroup to align");
 
             var valueBlock = rowGrid.Elements(Wpf + "TextBlock")
                 .Single(tb => (string?)tb.Attribute("Grid.Column") == "1");

@@ -76,33 +76,6 @@ public class NullToCollapsedConverter : IValueConverter
         throw new NotSupportedException();
 }
 
-/// <summary>
-/// Collapse a block unless there is something to show AND enough room to show a useful amount of it.
-/// Bind [0] = a has-content bool, [1] = the AVAILABLE height, with the minimum in px as
-/// ConverterParameter.
-///
-/// <para>
-/// [1] must be the height of the CONTAINER, never of the element being hidden. Binding a control's own
-/// Visibility to its own ActualHeight is circular: collapsing drives the height to 0, which fails the
-/// test the other way and flips it back, and WPF oscillates.
-/// </para>
-/// </summary>
-public class MinHeightToVisibilityConverter : IMultiValueConverter
-{
-    public object Convert(object?[] values, Type targetType, object? parameter, CultureInfo culture)
-    {
-        bool hasContent = values.Length > 0 && values[0] is true;
-        double available = values.Length > 1 && values[1] is double h ? h : 0;
-        double min = double.TryParse(parameter?.ToString(), NumberStyles.Any,
-                                     CultureInfo.InvariantCulture, out double m) ? m : 0;
-
-        return hasContent && available >= min ? Visibility.Visible : Visibility.Collapsed;
-    }
-
-    public object[] ConvertBack(object? value, Type[] targetTypes, object? parameter, CultureInfo culture) =>
-        throw new NotSupportedException();
-}
-
 /// <summary>Multi-binding equality: true when all bound values are equal. Used by the pager to mark the
 /// active page button (binds the button's page number + the current page).</summary>
 public class EqualityMultiConverter : IMultiValueConverter

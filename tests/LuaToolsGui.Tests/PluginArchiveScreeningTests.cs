@@ -337,8 +337,10 @@ public sealed class PluginArchiveScreeningTests : IDisposable
         File.ReadAllText(mainLuaPath).Should().Be(afterFirst);
     }
 
-    [Fact]
-    public void NeutralizeBackendAutoLaunchSource_does_not_corrupt_multiline_exec_calls_while_still_neutralizing_auto_launch()
+    [Theory]
+    [InlineData("\n")]
+    [InlineData("\r\n")]
+    public void NeutralizeBackendAutoLaunchSource_does_not_corrupt_multiline_exec_calls_while_still_neutralizing_auto_launch(string eol)
     {
         const string multilineLua = """
             local function ensure_backend_running()
@@ -354,14 +356,16 @@ public sealed class PluginArchiveScreeningTests : IDisposable
             end
             """;
 
-        string patched = PluginInstallerService.NeutralizeBackendAutoLaunchSource(multilineLua);
+        string input = multilineLua.ReplaceLineEndings(eol);
+        string patched = PluginInstallerService.NeutralizeBackendAutoLaunchSource(input);
+        string normalized = patched.ReplaceLineEndings("\n");
 
         // 1. ensure_backend_running() is short-circuited and its call in on_load() is commented out.
-        patched.Should().Contain("if true then return end -- neutralized by LuaTools Amethyst (Steam opens clean)");
-        patched.Should().Contain("-- ensure_backend_running() -- neutralized by LuaTools Amethyst (Steam opens clean)");
+        normalized.Should().Contain("if true then return end -- neutralized by LuaTools Amethyst (Steam opens clean)");
+        normalized.Should().Contain("-- ensure_backend_running() -- neutralized by LuaTools Amethyst (Steam opens clean)");
 
         // 2. The multi-line m_utils.exec( ... ) is NOT half-commented (which would leave dangling argument/closing lines).
-        patched.Should().NotContain("-- m_utils.exec(");
-        patched.Should().Contain("    m_utils.exec(\n        'start \"\" \"' .. exe_path .. '\" --minimized'\n    )");
+        normalized.Should().NotContain("-- m_utils.exec(");
+        normalized.Should().Contain("    m_utils.exec(\n        'start \"\" \"' .. exe_path .. '\" --minimized'\n    )");
     }
 }

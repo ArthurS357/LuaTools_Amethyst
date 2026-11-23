@@ -370,6 +370,7 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
     private readonly HashSet<FixItemVm> _trackedFixes = [];
     private readonly SemaphoreSlim _installGate = new(1, 1);
     private int _pendingManifestInstalls;
+    private int _restartOwed;
     public ObservableCollection<TagPillVm> FixTags { get; } = [];
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasFixTags))]
@@ -783,10 +784,17 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
             FixInstallOutcome outcome;
             if (isManifest)
             {
-                // If another manifest install is already queued at the gate behind this one, let the last one
-                // in the burst perform the Steam restart so two concurrent manifest jobs never restart Steam twice.
+                // If another manifest install is already queued at the gate behind this one, defer the Steam
+                // restart to the tail of the burst so concurrent manifest jobs never restart Steam twice.
                 bool shouldRestartSteam = Volatile.Read(ref _pendingManifestInstalls) <= 1;
                 outcome = InstallManifestCore(file, appId, gameName, shouldRestartSteam);
+                if (outcome.JobResult.Ok)
+                {
+                    if (shouldRestartSteam)
+                        Interlocked.Exchange(ref _restartOwed, 0);
+                    else
+                        Interlocked.Exchange(ref _restartOwed, 1);
+                }
             }
             else
             {
@@ -797,12 +805,24 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
         }
         finally
         {
-            if (isManifest)
-                Interlocked.Decrement(ref _pendingManifestInstalls);
-            if (acquired)
-                _installGate.Release();
+            try
+            {
+                if (isManifest
+                    && Interlocked.Decrement(ref _pendingManifestInstalls) == 0
+                    && Interlocked.Exchange(ref _restartOwed, 0) == 1)
+                {
+                    TryRestartSteam();
+                }
+            }
+            finally
+            {
+                if (acquired)
+                    _installGate.Release();
+            }
         }
     }
+
+    private bool TryRestartSteam() => RestartSteamOverride?.Invoke() ?? steam.RestartSteam();
 
     private JobResult RecordInstallOutcome(string itemId, FixInstallOutcome outcome)
     {
@@ -940,7 +960,7 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
                 IsError: true);
         }
 
-        bool restarted = shouldRestartSteam && (RestartSteamOverride?.Invoke() ?? steam.RestartSteam());
+        bool restarted = shouldRestartSteam && TryRestartSteam();
         string okBody = restarted
             ? string.Format(Resources.Strings.Fixes_Toast_FixInstalled_Restarting, gameName)
             : string.Format(Resources.Strings.Fixes_Toast_FixInstalled_Restart, gameName);

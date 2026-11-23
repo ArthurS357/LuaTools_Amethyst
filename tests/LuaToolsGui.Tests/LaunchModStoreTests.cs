@@ -420,4 +420,45 @@ public class LaunchModStoreTests : IDisposable
         Assert.Single(timestampedBaks);
         Assert.Contains("\"ChangeNumber\": 777", File.ReadAllText(timestampedBaks[0]));
     }
+
+    [Fact]
+    public void ConsecutiveLoadsOfIdenticalInvalidFile_DoNotProliferateBackups()
+    {
+        const string withInvalidEntry = """
+            {
+              "Version": 2,
+              "Mods": [
+                {
+                  "AppId": 603750,
+                  "ChangeNumber": 10,
+                  "Original": [{ "Index": "0", "SourceIndex": "0", "Executable": "ValidOrig.exe", "Type": "default", "OsList": "windows" }],
+                  "Desired":  [{ "Index": "0", "SourceIndex": "0", "Executable": "ValidMod.exe", "Type": "default", "OsList": "windows" }]
+                },
+                {
+                  "AppId": 0,
+                  "ChangeNumber": 42,
+                  "Original": [],
+                  "Desired": []
+                }
+              ]
+            }
+            """;
+        File.WriteAllText(_path, withInvalidEntry);
+
+        // Two consecutive loads without Persist(): only the initial .bak should be created, no .bak.<ts>.
+        _ = new LaunchModStore(_path);
+        _ = new LaunchModStore(_path);
+
+        var allBackups = Directory.GetFiles(_tmp, "launchmods.json.bak*");
+        Assert.Single(allBackups);
+        Assert.Equal(_path + ".bak", allBackups[0]);
+
+        // After the invalid file changes, one timestamped backup is created, and reopening it again does not duplicate it.
+        File.WriteAllText(_path, withInvalidEntry.Replace("42", "84", StringComparison.Ordinal));
+        _ = new LaunchModStore(_path);
+        _ = new LaunchModStore(_path);
+
+        var backupsAfterChange = Directory.GetFiles(_tmp, "launchmods.json.bak*");
+        Assert.Equal(2, backupsAfterChange.Length);
+    }
 }

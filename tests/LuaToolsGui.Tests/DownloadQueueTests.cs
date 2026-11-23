@@ -1057,6 +1057,105 @@ public sealed class DownloadQueueTests : IDisposable
         restartCalls.Should().BeInRange(1, 2);
     }
 
+    [Fact]
+    public async Task Coalesced_steam_restart_still_fires_when_trailing_manifest_install_fails_or_is_cancelled()
+    {
+        Directory.CreateDirectory(_dir);
+        // Unstarted queue: we invoke Job.InstallAsync directly to control exact gate ordering without flakiness.
+        var queue = new DownloadQueue(NewCache(), _host.Dispatcher);
+        var auth = CreateSignedInAuth(Path.Combine(_dir, "auth_owed.dat"));
+
+        var (vm, _, _, _, _) = CreateFixesVm(
+            queue, auth,
+            (_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)),
+            (_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)));
+
+        int restartCalls = 0;
+        var gateHeld = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var releaseGate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        vm.RestartSteamOverride = () =>
+        {
+            if (Interlocked.Increment(ref restartCalls) == 1)
+            {
+                gateHeld.TrySetResult();
+                releaseGate.Task.Wait(Timeout);
+            }
+            return true;
+        };
+
+        var game = new FixGameCardVm(new DenuvoGameListing { AppId = "12345", Name = "Test Denuvo Game", FixCount = 3 });
+        var itemHold = (await vm.EnqueueFixDownloadAsync(MakeFixVm("owed-hold"), "manifest", game))!;
+        var itemOk = (await vm.EnqueueFixDownloadAsync(MakeFixVm("owed-ok"), "manifest", game))!;
+        var itemFail = (await vm.EnqueueFixDownloadAsync(MakeFixVm("owed-fail"), "manifest", game))!;
+
+        DownloadedFile StageBytes(string name, byte[] bytes)
+        {
+            string p = Path.Combine(_dir, name);
+            File.WriteAllBytes(p, bytes);
+            return new DownloadedFile(p, name);
+        }
+
+        byte[] validZip = CreateZipBytes("12345.lua", "addappid(12345)\n");
+        byte[] corruptZip = Encoding.UTF8.GetBytes("not a zip archive");
+
+        // 1. itemHold enters _installGate and pauses inside RestartSteamOverride.
+        var holdTask = Task.Run(() => itemHold.Job.InstallAsync(StageBytes("hold_12345.zip", validZip), itemHold, CancellationToken.None));
+        await gateHeld.Task.WaitAsync(Timeout);
+
+        // 2. itemOk and itemFail both enter RunSerializedInstallAsync synchronously up to _installGate.WaitAsync,
+        //    so _pendingManifestInstalls is guaranteed to be 3 before itemHold releases the gate.
+        var okTask = itemOk.Job.InstallAsync(StageBytes("ok_12345.zip", validZip), itemOk, CancellationToken.None);
+        var failTask = itemFail.Job.InstallAsync(StageBytes("fail_12345.zip", corruptZip), itemFail, CancellationToken.None);
+
+        releaseGate.TrySetResult();
+
+        var resHold = await holdTask.WaitAsync(Timeout);
+        var resOk = await okTask.WaitAsync(Timeout);
+        var resFail = await failTask.WaitAsync(Timeout);
+
+        resHold.Ok.Should().BeTrue();
+        resOk.Ok.Should().BeTrue();
+        resFail.Ok.Should().BeFalse("corrupt zip fails manifest screening/installation");
+        Volatile.Read(ref restartCalls).Should().Be(2,
+            "itemOk deferred its restart because itemFail was pending behind it; when itemFail failed, the owed restart must still fire");
+
+        // 3. Same burst scenario when the trailing manifest job is cancelled while waiting at _installGate.
+        int restartBeforeCancelBurst = Volatile.Read(ref restartCalls);
+        var gateHeld2 = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var releaseGate2 = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        vm.RestartSteamOverride = () =>
+        {
+            int count = Interlocked.Increment(ref restartCalls);
+            if (count == restartBeforeCancelBurst + 1)
+            {
+                gateHeld2.TrySetResult();
+                releaseGate2.Task.Wait(Timeout);
+            }
+            return true;
+        };
+
+        var itemHold2 = (await vm.EnqueueFixDownloadAsync(MakeFixVm("owed-hold-2"), "manifest", game))!;
+        var itemOk2 = (await vm.EnqueueFixDownloadAsync(MakeFixVm("owed-ok-2"), "manifest", game))!;
+        var itemCancel = (await vm.EnqueueFixDownloadAsync(MakeFixVm("owed-cancel"), "manifest", game))!;
+
+        var holdTask2 = Task.Run(() => itemHold2.Job.InstallAsync(StageBytes("hold2_12345.zip", validZip), itemHold2, CancellationToken.None));
+        await gateHeld2.Task.WaitAsync(Timeout);
+
+        using var ctsCancel = new CancellationTokenSource();
+        var okTask2 = itemOk2.Job.InstallAsync(StageBytes("ok2_12345.zip", validZip), itemOk2, CancellationToken.None);
+        var cancelTask = itemCancel.Job.InstallAsync(StageBytes("cancel_12345.zip", validZip), itemCancel, ctsCancel.Token);
+
+        ctsCancel.Cancel();
+        releaseGate2.TrySetResult();
+
+        (await holdTask2.WaitAsync(Timeout)).Ok.Should().BeTrue();
+        (await okTask2.WaitAsync(Timeout)).Ok.Should().BeTrue();
+        await FluentActions.Awaiting(() => cancelTask.WaitAsync(Timeout)).Should().ThrowAsync<OperationCanceledException>();
+
+        Volatile.Read(ref restartCalls).Should().Be(restartBeforeCancelBurst + 2,
+            "cancelling the trailing manifest job must not drop the Steam restart owed to itemOk2");
+    }
+
     private sealed class GatedChunkStream(
         byte[] data,
         int firstChunkSize,

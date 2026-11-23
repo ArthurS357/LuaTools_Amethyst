@@ -1079,12 +1079,17 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
                     continue;
                 }
 
-                if (((insideEnsureBackend && ContainsExecCall(trimmed))
-                     || (ContainsExecCall(trimmed) && MentionsLuaToolsLaunch(trimmed)))
-                    && IsSelfContainedLuaCallLine(trimmed))
+                bool isExecCandidate = (insideEnsureBackend && ContainsExecCall(trimmed))
+                    || (ContainsExecCall(trimmed) && MentionsLuaToolsLaunch(trimmed));
+                if (isExecCandidate)
                 {
-                    output.Add($"{indent}-- {trimmed.TrimEnd()} {NeutralizedAutoLaunchMarker}");
-                    continue;
+                    if (IsSelfContainedLuaCallLine(trimmed))
+                    {
+                        output.Add($"{indent}-- {trimmed.TrimEnd()} {NeutralizedAutoLaunchMarker}");
+                        continue;
+                    }
+
+                    AppLog.Log($"PluginInstaller: skipped multiline exec call in backend/main.lua line {i + 1} (left intact to avoid syntax corruption)");
                 }
             }
 

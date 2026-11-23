@@ -31,7 +31,6 @@
             <local:ResourceKeyToBrushConverter x:Key="ResourceKeyToBrush" />
             <local:ImagePathToSourceConverter x:Key="ImagePathToSource" />
             <local:EqualityMultiConverter x:Key="EqualityMulti" />
-            <local:MinHeightToVisibilityConverter x:Key="MinHeightToVis" />
             <local:FilterOptionDisplayConverter x:Key="FilterOptionDisplay" />
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
 

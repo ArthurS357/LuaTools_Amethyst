@@ -131,8 +131,8 @@ public class LaunchModStore
 
     /// <summary>
     /// Copy the current records to <c>launchmods.json.pre-restore</c> before a restore starts deleting
-    /// them. <see cref="Persist"/>'s .bak can't do this job: emptying the store deletes the file outright,
-    /// so after a full restore the .bak holds the state from one removal earlier, or nothing.
+    /// them. <see cref="Persist"/>'s <c>.bak</c> can't do this job: it preserves only the initial
+    /// pre-edit snapshot (not a rolling backup), and emptying the store deletes the live file outright.
     /// </summary>
     /// <returns>False when the copy couldn't be written; the caller must not delete anything then.</returns>
     public bool TrySnapshot()
@@ -268,6 +268,8 @@ public class LaunchModStore
 
             if (!allowTimestampedFallback) return;
 
+            if (MatchesLatestBackup(path, bakPath)) return;
+
             string stamp = DateTime.UtcNow.ToString("yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture);
             string baseDest = $"{bakPath}.{stamp}";
             string dest = baseDest;
@@ -278,6 +280,21 @@ public class LaunchModStore
             File.Copy(path, dest, overwrite: false);
         }
         catch { /* best effort */ }
+    }
+
+    private static bool MatchesLatestBackup(string path, string bakPath)
+    {
+        string? dir = Path.GetDirectoryName(bakPath);
+        if (string.IsNullOrEmpty(dir) || !Directory.Exists(dir)) return false;
+
+        string latestBackup = Directory.GetFiles(dir, Path.GetFileName(bakPath) + ".*")
+            .OrderByDescending(File.GetLastWriteTimeUtc)
+            .ThenByDescending(static p => p, StringComparer.Ordinal)
+            .FirstOrDefault() ?? bakPath;
+
+        if (!File.Exists(latestBackup)) return false;
+        if (new FileInfo(path).Length != new FileInfo(latestBackup).Length) return false;
+        return File.ReadAllBytes(path).AsSpan().SequenceEqual(File.ReadAllBytes(latestBackup));
     }
 
     private static void QuarantineCorruptFile(string path)
