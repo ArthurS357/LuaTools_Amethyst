@@ -1,0 +1,43 @@
+<!--
+    Spacing and corner tokens for the Amethyst redesign (1.8.3).
+
+    The views carried 705 literal Margin/Padding values on a mixed 2/4/6/8/10/12/14/16/18 grid and 102
+    CornerRadius literals in 12 values. Pages migrate onto a 4-unit grid and three radii.
+
+    Only the shapes the views actually repeat are declared: uniform (padding), top (vertical rhythm in a
+    stack, the most common margin by far: "0,8,0,0" x55, "0,12,0,0" x36, "0,4,0,0" x35) and left (gap
+    between siblings in a row: "8,0,0,0" x48). A one-off thickness stays a literal at its call site; it
+    does not earn a token.
+-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ── Uniform (padding) ──────────────────────────────────────────────────────── -->
+    <Thickness x:Key="SpaceAll4">4</Thickness>
+    <Thickness x:Key="SpaceAll8">8</Thickness>
+    <Thickness x:Key="SpaceAll12">12</Thickness>
+    <Thickness x:Key="SpaceAll16">16</Thickness>
+    <Thickness x:Key="SpaceAll24">24</Thickness>
+    <Thickness x:Key="SpaceAll32">32</Thickness>
+
+    <!-- ── Top (stack rhythm) ─────────────────────────────────────────────────────── -->
+    <Thickness x:Key="SpaceTop4">0,4,0,0</Thickness>
+    <Thickness x:Key="SpaceTop8">0,8,0,0</Thickness>
+    <Thickness x:Key="SpaceTop12">0,12,0,0</Thickness>
+    <Thickness x:Key="SpaceTop16">0,16,0,0</Thickness>
+    <Thickness x:Key="SpaceTop24">0,24,0,0</Thickness>
+    <Thickness x:Key="SpaceTop32">0,32,0,0</Thickness>
+
+    <!-- ── Left (gap between siblings in a row) ───────────────────────────────────── -->
+    <Thickness x:Key="SpaceLeft4">4,0,0,0</Thickness>
+    <Thickness x:Key="SpaceLeft8">8,0,0,0</Thickness>
+    <Thickness x:Key="SpaceLeft12">12,0,0,0</Thickness>
+    <Thickness x:Key="SpaceLeft16">16,0,0,0</Thickness>
+
+    <!-- ── Corners ────────────────────────────────────────────────────────────────── -->
+    <CornerRadius x:Key="RadiusSmall">4</CornerRadius>    <!-- chips, badges, inputs -->
+    <CornerRadius x:Key="RadiusMedium">8</CornerRadius>   <!-- buttons, list rows, inner panels -->
+    <CornerRadius x:Key="RadiusLarge">12</CornerRadius>   <!-- cards, dialogs -->
+
+</ResourceDictionary>

@@ -1,0 +1,67 @@
+<!--
+    Type ramp for the Amethyst redesign (1.8.3).
+
+    The views carried 396 literal FontSize values in 21 distinct sizes (12, 11.5, 13, 11, 12.5, 10.5, 9.5…)
+    when the job needs seven. This file is the seven, and the floor: nothing below 11.
+
+    Every style here is KEYED on purpose. An implicit TextBlock style would restyle every page at once and
+    break the "zero visual diff until the page is migrated" rule of the rollout; pages opt in one by one.
+
+    Colour is left to inheritance (each page sets TextElement.Foreground from TextFillColorPrimaryBrush)
+    except for Caption, the one role that is secondary by definition. Brushes are referenced through
+    {DynamicResource}: this dictionary is merged next to Colors.xaml, not inside it, and a dynamic reference
+    resolves regardless of load order and follows the live accent switch.
+-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- ── Sizes ──────────────────────────────────────────────────────────────────── -->
+    <sys:Double x:Key="FontSizeCaption">11</sys:Double>   <!-- hints, metadata, timestamps; the floor -->
+    <sys:Double x:Key="FontSizeBody">13</sys:Double>      <!-- default reading size -->
+    <sys:Double x:Key="FontSizeSubtitle">16</sys:Double>  <!-- card titles, empty/error state messages -->
+    <sys:Double x:Key="FontSizeTitle">20</sys:Double>     <!-- section titles inside a page -->
+    <sys:Double x:Key="FontSizeHeader">28</sys:Double>    <!-- page header (PageHeaderStyle) -->
+    <sys:Double x:Key="FontSizeDisplay">42</sys:Double>   <!-- hero numbers / onboarding -->
+
+    <!-- ── Roles ──────────────────────────────────────────────────────────────────── -->
+    <Style x:Key="TextCaption" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource FontSizeCaption}" />
+        <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style x:Key="TextBody" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource FontSizeBody}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style x:Key="TextBodyStrong" BasedOn="{StaticResource TextBody}" TargetType="TextBlock">
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style x:Key="TextSubtitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource FontSizeSubtitle}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style x:Key="TextTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource FontSizeTitle}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style x:Key="TextHeader" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource FontSizeHeader}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style x:Key="TextDisplay" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource FontSizeDisplay}" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+</ResourceDictionary>

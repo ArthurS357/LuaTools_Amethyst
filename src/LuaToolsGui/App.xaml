@@ -15,6 +15,13 @@
                      App.ApplyAccentPalette() at startup, because those read WPF-UI's accent resources
                      rather than these. See Themes/Colors.xaml for the palette and its contrast table. -->
                 <ResourceDictionary Source="pack://application:,,,/Themes/Colors.xaml" />
+                <!-- Design-system foundation (1.8.3). After the palette, and none of them redefines a
+                     palette or WPF-UI key, so the order above (and PromoteSurfaceOverrides' reverse scan)
+                     is unaffected. Every style in them is keyed: pages opt in one at a time. The
+                     components BasedOn WPF-UI styles are further down, at this dictionary's top level. -->
+                <ResourceDictionary Source="pack://application:,,,/Themes/Typography.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Themes/Spacing.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Themes/Controls.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <local:InverseBoolToVisibilityConverter x:Key="InverseBoolToVis" />
@@ -26,6 +33,74 @@
             <local:MinHeightToVisibilityConverter x:Key="MinHeightToVis" />
             <local:FilterOptionDisplayConverter x:Key="FilterOptionDisplay" />
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
+
+            <!-- ══ Design-system components derived from WPF-UI's own styles (1.8.3) ══════════════════
+                 These live HERE, not in Themes/Controls.xaml, on purpose: a {StaticResource} inside a
+                 dictionary merged by Source cannot see its sibling dictionaries, so BasedOn a WPF-UI style
+                 throws there (and {x:Type ListBoxItem} quietly resolves to the classic Windows style).
+                 From this top-level dictionary the lookup reaches the merged WPF-UI dictionaries above.
+                 Hover, pressed, disabled and the keyboard focus ring (DefaultControlFocusVisualStyle) all
+                 come from WPF-UI's templates. Keyed: nothing changes until a page opts in. -->
+
+            <!-- Icon-only button. Its accessible name IS its ToolTip, so a caller that sets the (localized)
+                 ToolTip cannot ship a button a screen reader announces as a bare glyph. 32x32 hit target. -->
+            <Style x:Key="IconButtonStyle" BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
+                <Setter Property="Appearance" Value="Transparent" />
+                <Setter Property="Padding" Value="{DynamicResource SpaceAll8}" />
+                <Setter Property="MinWidth" Value="32" />
+                <Setter Property="MinHeight" Value="32" />
+                <Setter Property="AutomationProperties.Name" Value="{Binding ToolTip, RelativeSource={RelativeSource Self}}" />
+            </Style>
+
+            <!-- Destructive action (delete, uninstall, clear history, restore all). WPF-UI's own Danger
+                 appearance, the one ManageView's bulk delete already uses, so every destructive button
+                 reads the same. -->
+            <Style x:Key="DangerButtonStyle" BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
+                <Setter Property="Appearance" Value="Danger" />
+            </Style>
+
+            <!-- List row container. Replaces the four hand-copied ItemContainerStyles (Builds,
+                 LaunchOptions, LaunchOverrides, SaveBackup); selection visuals stay WPF-UI's. WPF-UI's own
+                 ListBoxItem does NOT carry its keyboard focus ring (measured, DesignFoundationTests), so a
+                 keyboard user tabbing through a list saw no focus at all: the ring is set here. -->
+            <Style x:Key="ListItemStyle" BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
+                <Setter Property="FocusVisualStyle" Value="{StaticResource DefaultControlFocusVisualStyle}" />
+                <Setter Property="Padding" Value="8,4" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            </Style>
+
+            <!-- Pager over any PagedListViewModel:
+                 <ContentControl Content="{Binding}" ContentTemplate="{StaticResource PagerTemplate}" />.
+                 The arrows get their ToolTip (and so their accessible name) from the Lote C i18n keys;
+                 until then no view consumes this template. -->
+            <DataTemplate x:Key="PagerTemplate">
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                    <ui:Button
+                        Command="{Binding PrevPageCommand}"
+                        IsEnabled="{Binding CanGoPrev}"
+                        Style="{StaticResource IconButtonStyle}">
+                        <ui:Button.Icon>
+                            <ui:SymbolIcon Symbol="ChevronLeft24" />
+                        </ui:Button.Icon>
+                    </ui:Button>
+                    <TextBlock
+                        MinWidth="96"
+                        Margin="8,0"
+                        VerticalAlignment="Center"
+                        FontSize="{DynamicResource FontSizeCaption}"
+                        Foreground="{DynamicResource TextMutedBrush}"
+                        Text="{Binding PageLabel}"
+                        TextAlignment="Center" />
+                    <ui:Button
+                        Command="{Binding NextPageCommand}"
+                        IsEnabled="{Binding CanGoNext}"
+                        Style="{StaticResource IconButtonStyle}">
+                        <ui:Button.Icon>
+                            <ui:SymbolIcon Symbol="ChevronRight24" />
+                        </ui:Button.Icon>
+                    </ui:Button>
+                </StackPanel>
+            </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

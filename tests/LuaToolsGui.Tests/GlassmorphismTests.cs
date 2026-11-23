@@ -182,35 +182,63 @@ public class GlassmorphismTests : IDisposable
 
     [Theory]
     [MemberData(nameof(EveryPalette))]
-    public void Shell_text_stays_readable_on_glass_over_the_worst_case_backdrop_and_AA_over_a_dark_desktop(string id)
+    public void Shell_text_is_AA_on_glass_over_the_worst_case_backdrop_and_over_a_dark_desktop(string id)
     {
-        // 1.7.12.10 priority call: the shell is 65% so the blur is visible (80% read as a solid window). That
-        // gives up the AA guarantee over a bright desktop, so the strict 4.5:1 is checked over a dark desktop
-        // (#363636, dark Acrylic over black) and only the 3:1 floor over the worst case (#989898).
+        // 1.8.3: the shell is back to AA over the brightest backdrop dark Acrylic produces (#989898). 1.7.12.10
+        // had traded that for a 3:1 floor at 65%; ShellAlpha is now the lowest alpha that clears 4.5:1 here.
         var p = AccentPalette.FromId(id);
-        var n = p.Neutrals;
-        var surfaces = p.SurfaceColors(new DictionaryColors(Palette));
-
-        // On the bare shell: nav labels, the footer's version/"signed in as" line (TextDim), the sign-in
-        // wait text (TextMuted), the sign-in error (Danger), accent text.
-        var bare = new[] { n.TextPrimaryKey, n.TextSecondaryKey, n.TextMutedKey, n.TextDimKey, "Danger400Color", p.SoftKey };
-        // Nav labels also sit on the hover/selected wash, the lightest fill in the rail.
-        var nav = new[] { n.TextPrimaryKey, n.TextSecondaryKey };
-
         foreach ((byte g, double min, string where) in new[]
         {
             (GlassPolicy.WorstCaseBackdropGrey, GlassPolicy.MinShellTextContrast, "worst-case backdrop"),
             (GlassPolicy.DarkDesktopBackdropGrey, 4.5, "dark desktop"),
         })
         {
-            var shell = Over(surfaces[GlassPolicy.GlassShellBrushKey], Color.FromRgb(g, g, g));
-            foreach (string key in bare)
-                Contrast(Get(key), shell).Should().BeGreaterThanOrEqualTo(min, $"'{key}' on the glass shell, {where} ({id})");
-
-            var hovered = Over(surfaces["SurfaceElevatedBrush"], shell);
-            foreach (string key in nav)
-                Contrast(Get(key), hovered).Should().BeGreaterThanOrEqualTo(min, $"'{key}' on a hovered nav item, {where} ({id})");
+            var (ratio, what) = WorstShellText(p, GlassPolicy.ShellAlpha, g);
+            ratio.Should().BeGreaterThanOrEqualTo(min, $"{what}, {where} ({id})");
         }
+    }
+
+    [Fact]
+    public void The_shell_text_floor_is_WCAG_AA_for_normal_text()
+    {
+        // The nav labels are body-size text, so the 3:1 large-text level does not cover them. Lowering this
+        // constant is how the 1.7.12.10 trade-off would come back; it has to be a visible decision.
+        GlassPolicy.MinShellTextContrast.Should().BeGreaterThanOrEqualTo(4.5);
+    }
+
+    [Fact]
+    public void ShellAlpha_is_the_lowest_alpha_that_keeps_the_shell_AA()
+    {
+        // Every alpha step is blur the user loses, so the policy must not sit above the minimum either: every
+        // palette passes at ShellAlpha, and one step lower at least one of them fails.
+        foreach (var p in AccentPalette.All)
+            WorstShellText(p, GlassPolicy.ShellAlpha, GlassPolicy.WorstCaseBackdropGrey).Ratio.Should().BeGreaterThanOrEqualTo(4.5, p.Id);
+
+        AccentPalette.All.Min(p => WorstShellText(p, (byte)(GlassPolicy.ShellAlpha - 1), GlassPolicy.WorstCaseBackdropGrey).Ratio).Should().BeLessThan(4.5,
+            $"0x{GlassPolicy.ShellAlpha - 1:X2} would already be AA, so ShellAlpha gives up blur for nothing");
+    }
+
+    /// <summary>
+    /// The lowest-contrast shell text token, bare or on a hovered nav item, with the shell at <paramref name="alpha"/>
+    /// over a <paramref name="grey"/> backdrop. One token list for both the AA check and the minimum-alpha check,
+    /// so they cannot drift apart.
+    /// </summary>
+    private static (double Ratio, string What) WorstShellText(AccentPalette p, byte alpha, byte grey)
+    {
+        var n = p.Neutrals;
+        var surfaces = p.SurfaceColors(new DictionaryColors(Palette));
+        var window = Get(n.SurfaceBaseKey);
+        var shell = Over(Color.FromArgb(alpha, window.R, window.G, window.B), Color.FromRgb(grey, grey, grey));
+        var hovered = Over(surfaces["SurfaceElevatedBrush"], shell);
+
+        // On the bare shell: nav labels, the footer's version/"signed in as" line (TextDim), the sign-in wait
+        // text (TextMuted), the sign-in error (Danger), accent text. Nav labels also sit on the hover/selected
+        // wash, the lightest fill in the rail.
+        var bare = new[] { n.TextPrimaryKey, n.TextSecondaryKey, n.TextMutedKey, n.TextDimKey, "Danger400Color", p.SoftKey }
+            .Select(k => (Contrast(Get(k), shell), $"'{k}' on the glass shell"));
+        var nav = new[] { n.TextPrimaryKey, n.TextSecondaryKey }
+            .Select(k => (Contrast(Get(k), hovered), $"'{k}' on a hovered nav item"));
+        return bare.Concat(nav).MinBy(t => t.Item1);
     }
 
     [Fact]

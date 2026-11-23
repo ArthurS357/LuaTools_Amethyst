@@ -9,8 +9,8 @@ using Xunit;
 namespace LuaToolsGui.Tests;
 
 /// <summary>
-/// A real <see cref="Application"/> on a private STA thread, with the same three merged dictionaries
-/// App.xaml declares.
+/// A real <see cref="Application"/> on a private STA thread, whose resources are App.xaml's own resource
+/// dictionary, parsed from the source (see <see cref="LoadAppResources"/>).
 ///
 /// <para>
 /// This is what the older theme tests were missing, and the reason a whole feature shipped inert. They
@@ -43,15 +43,9 @@ public sealed class ThemeHost : IDisposable
                 // ShutdownMode matters: without it, Application would try to exit once no window remains.
                 ShutdownMode = ShutdownMode.OnExplicitShutdown,
             };
-            var resources = new ResourceDictionary();
-            resources.MergedDictionaries.Add(new Wpf.Ui.Markup.ThemesDictionary
-            {
-                Theme = Wpf.Ui.Appearance.ApplicationTheme.Dark,
-            });
-            resources.MergedDictionaries.Add(new Wpf.Ui.Markup.ControlsDictionary());
-            resources.MergedDictionaries.Add((ResourceDictionary)Application.LoadComponent(
-                new Uri("/LuaTools;component/Themes/Colors.xaml", UriKind.Relative)));
-            app.Resources = resources;
+            // App.xaml's resources verbatim: the merge order, the top-level components BasedOn WPF-UI styles
+            // (which only resolve from there) and the converters. A hand-built copy drifted once already.
+            app.Resources = LoadAppResources();
 
             captured = Dispatcher.CurrentDispatcher;
             ready.Set();
@@ -79,6 +73,36 @@ public sealed class ThemeHost : IDisposable
     public void Apply(AccentPalette palette) => On(_ => LuaToolsGui.App.ApplyAccentPalette(palette));
 
     public void Dispose() => _dispatcher.InvokeShutdown();
+
+    /// <summary>
+    /// App.xaml's &lt;Application.Resources&gt; dictionary, parsed from the source file. Two rewrites make it
+    /// loadable outside the app: <c>local:</c> gains the assembly name, and the <c>pack://application</c>
+    /// theme URIs name the LuaTools assembly (the test host is not the application assembly).
+    /// </summary>
+    private static ResourceDictionary LoadAppResources()
+    {
+        var dir = new System.IO.DirectoryInfo(AppContext.BaseDirectory);
+        while (dir is not null && !System.IO.File.Exists(System.IO.Path.Combine(dir.FullName, "LuaToolsGui.sln")))
+            dir = dir.Parent;
+        string appXaml = System.IO.Path.Combine(
+            dir?.FullName ?? throw new System.IO.DirectoryNotFoundException("LuaToolsGui.sln not found above the test output."),
+            "src", "LuaToolsGui", "App.xaml");
+
+        string source = System.IO.File.ReadAllText(appXaml)
+            .Replace("\"clr-namespace:LuaToolsGui\"", "\"clr-namespace:LuaToolsGui;assembly=LuaTools\"", StringComparison.Ordinal)
+            .Replace("pack://application:,,,/Themes/", "pack://application:,,,/LuaTools;component/Themes/", StringComparison.Ordinal);
+
+        System.Xml.Linq.XNamespace wpf = "http://schemas.microsoft.com/winfx/2006/xaml/presentation";
+        var root = System.Xml.Linq.XDocument.Parse(source).Root!;
+        var dictionary = root.Element(wpf + "Application.Resources")?.Element(wpf + "ResourceDictionary")
+            ?? throw new InvalidOperationException(
+                "App.xaml no longer wraps its resources in <Application.Resources><ResourceDictionary>; update ThemeHost.LoadAppResources.");
+        // Prefixes used only inside attribute values ({x:Type ui:Button}, TargetType="ui:Button") are not
+        // carried over by ToString(), so restate every declaration of the Application root on the subtree.
+        foreach (var ns in root.Attributes().Where(a => a.IsNamespaceDeclaration))
+            dictionary.SetAttributeValue(ns.Name, ns.Value);
+        return (ResourceDictionary)System.Windows.Markup.XamlReader.Parse(dictionary.ToString());
+    }
 }
 
 /// <summary>
