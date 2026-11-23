@@ -18,13 +18,7 @@
 
         <!--  One live queue row: cover, title/source, progress + metrics, action buttons.  -->
         <DataTemplate x:Key="QueueItemTemplate" DataType="{x:Type downloads:DownloadItem}">
-            <Border
-                Margin="0,0,0,8"
-                Padding="14"
-                Background="{DynamicResource SurfaceCardBrush}"
-                BorderBrush="{DynamicResource BorderStrongBrush}"
-                BorderThickness="1"
-                CornerRadius="10">
+            <Border Margin="0,0,0,8" Style="{StaticResource CardStyle}">
 
                 <!--  The row's own DataContext is the item, so the commands are reached through the page.  -->
                 <Border.Tag>
@@ -61,7 +55,7 @@
                         Margin="0,0,12,0"
                         VerticalAlignment="Top"
                         Background="{DynamicResource SurfaceInsetBrush}"
-                        CornerRadius="6">
+                        CornerRadius="{DynamicResource RadiusMedium}">
                         <Image
                             Source="{Binding CoverPath, Converter={StaticResource ImagePathToSource}, ConverterParameter=184}"
                             Stretch="UniformToFill" />
@@ -73,33 +67,33 @@
                             Text="{Binding Title}"
                             TextTrimming="CharacterEllipsis" />
 
-                        <StackPanel Margin="0,2,0,0" Orientation="Horizontal">
+                        <StackPanel Margin="{DynamicResource SpaceTop4}" Orientation="Horizontal">
                             <TextBlock
-                                FontSize="12"
+                                FontSize="{DynamicResource FontSizeCaption}"
                                 Foreground="{DynamicResource TextSecondaryBrush}"
                                 Text="{Binding SubTitle}"
                                 TextTrimming="CharacterEllipsis" />
                             <TextBlock
-                                Margin="6,0"
-                                FontSize="12"
+                                Margin="4,0"
+                                FontSize="{DynamicResource FontSizeCaption}"
                                 Foreground="{DynamicResource TextDimBrush}"
                                 Text="·" />
                             <TextBlock
-                                FontSize="12"
+                                FontSize="{DynamicResource FontSizeCaption}"
                                 Foreground="{DynamicResource TextSecondaryBrush}"
                                 Text="{Binding StatusLabel}" />
                         </StackPanel>
 
                         <!--  "Action required": the download is done but waiting on a confirmation.  -->
                         <Border
-                            Margin="0,6,0,0"
+                            Margin="{DynamicResource SpaceTop8}"
                             Padding="8,3"
                             HorizontalAlignment="Left"
                             Background="{DynamicResource WarningTintBrush}"
-                            CornerRadius="4"
+                            CornerRadius="{DynamicResource RadiusSmall}"
                             Visibility="{Binding NeedsAction, Converter={StaticResource BoolToVis}}">
                             <TextBlock
-                                FontSize="11"
+                                FontSize="{DynamicResource FontSizeCaption}"
                                 FontWeight="SemiBold"
                                 Foreground="{DynamicResource WarningBrush}"
                                 Text="{x:Static res:Strings.Downloads_ActionRequired}" />
@@ -107,15 +101,15 @@
 
                         <!--  Multi-step detail, e.g. a depot job's "Depot 3 of 12 · Downloading".  -->
                         <TextBlock
-                            Margin="0,4,0,0"
-                            FontSize="11"
+                            Margin="{DynamicResource SpaceTop4}"
+                            FontSize="{DynamicResource FontSizeCaption}"
                             Foreground="{DynamicResource TextDimBrush}"
                             Text="{Binding Detail}"
                             Visibility="{Binding HasDetail, Converter={StaticResource BoolToVis}}" />
 
                         <ProgressBar
                             Height="4"
-                            Margin="0,8,0,0"
+                            Margin="{DynamicResource SpaceTop8}"
                             AutomationProperties.Name="{Binding Title}"
                             IsIndeterminate="{Binding IsIndeterminate}"
                             Maximum="100"
@@ -124,29 +118,29 @@
 
                         <!--  Size · rate · ETA. Each hides itself when it has nothing to say.  -->
                         <StackPanel
-                            Margin="0,5,0,0"
+                            Margin="{DynamicResource SpaceTop8}"
                             Orientation="Horizontal"
                             Visibility="{Binding ShowProgress, Converter={StaticResource BoolToVis}}">
                             <TextBlock
-                                FontSize="11"
+                                FontSize="{DynamicResource FontSizeCaption}"
                                 Foreground="{DynamicResource TextSecondaryBrush}"
                                 Text="{Binding SizeLabel}" />
                             <TextBlock
-                                Margin="8,0,0,0"
-                                FontSize="11"
+                                Margin="{DynamicResource SpaceLeft8}"
+                                FontSize="{DynamicResource FontSizeCaption}"
                                 Foreground="{DynamicResource TextDimBrush}"
                                 Text="{Binding RateLabel}" />
                             <TextBlock
-                                Margin="8,0,0,0"
-                                FontSize="11"
+                                Margin="{DynamicResource SpaceLeft8}"
+                                FontSize="{DynamicResource FontSizeCaption}"
                                 Foreground="{DynamicResource TextDimBrush}"
                                 Text="{Binding EtaLabel}" />
                         </StackPanel>
 
                         <!--  Outcome line. Red only for a real failure; a cancel is not an error.  -->
                         <TextBlock
-                            Margin="0,5,0,0"
-                            FontSize="11"
+                            Margin="{DynamicResource SpaceTop8}"
+                            FontSize="{DynamicResource FontSizeCaption}"
                             Text="{Binding Message}"
                             TextWrapping="Wrap"
                             Visibility="{Binding HasMessage, Converter={StaticResource BoolToVis}}">
@@ -175,7 +169,8 @@
                             Content="{x:Static res:Strings.Downloads_Action_Review}"
                             Visibility="{Binding NeedsAction, Converter={StaticResource BoolToVis}}" />
                         <ui:Button
-                            Margin="4,0,0,0"
+                            Style="{StaticResource IconButtonStyle}"
+                            Margin="{DynamicResource SpaceLeft4}"
                             AutomationProperties.Name="{x:Static res:Strings.Downloads_Action_Pause}"
                             Command="{Binding DataContext.PauseCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                             CommandParameter="{Binding}"
@@ -183,7 +178,7 @@
                             ToolTip="{x:Static res:Strings.Downloads_Action_Pause}"
                             Visibility="{Binding CanPause, Converter={StaticResource BoolToVis}}" />
                         <ui:Button
-                            Margin="4,0,0,0"
+                            Margin="{DynamicResource SpaceLeft4}"
                             Appearance="Primary"
                             AutomationProperties.Name="{x:Static res:Strings.Downloads_Action_Resume}"
                             Command="{Binding DataContext.ResumeCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -192,7 +187,8 @@
                             Icon="{ui:SymbolIcon Play24}"
                             Visibility="{Binding CanResume, Converter={StaticResource BoolToVis}}" />
                         <ui:Button
-                            Margin="4,0,0,0"
+                            Style="{StaticResource IconButtonStyle}"
+                            Margin="{DynamicResource SpaceLeft4}"
                             AutomationProperties.Name="{x:Static res:Strings.Downloads_Action_MoveUp}"
                             Command="{Binding DataContext.MoveUpCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                             CommandParameter="{Binding}"
@@ -200,7 +196,8 @@
                             ToolTip="{x:Static res:Strings.Downloads_Action_MoveUp}"
                             Visibility="{Binding CanReorder, Converter={StaticResource BoolToVis}}" />
                         <ui:Button
-                            Margin="4,0,0,0"
+                            Style="{StaticResource IconButtonStyle}"
+                            Margin="{DynamicResource SpaceLeft4}"
                             AutomationProperties.Name="{x:Static res:Strings.Downloads_Action_MoveDown}"
                             Command="{Binding DataContext.MoveDownCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                             CommandParameter="{Binding}"
@@ -208,21 +205,22 @@
                             ToolTip="{x:Static res:Strings.Downloads_Action_MoveDown}"
                             Visibility="{Binding CanReorder, Converter={StaticResource BoolToVis}}" />
                         <ui:Button
-                            Margin="4,0,0,0"
+                            Margin="{DynamicResource SpaceLeft4}"
                             AutomationProperties.Name="{x:Static res:Strings.Downloads_Action_Cancel}"
                             Command="{Binding DataContext.CancelCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                             CommandParameter="{Binding}"
                             Content="{x:Static res:Strings.Downloads_Action_Cancel}"
                             Visibility="{Binding CanCancel, Converter={StaticResource BoolToVis}}" />
                         <ui:Button
-                            Margin="4,0,0,0"
+                            Margin="{DynamicResource SpaceLeft4}"
                             AutomationProperties.Name="{x:Static res:Strings.Downloads_Action_Retry}"
                             Command="{Binding DataContext.RetryCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                             CommandParameter="{Binding}"
                             Content="{x:Static res:Strings.Downloads_Action_Retry}"
                             Visibility="{Binding CanRetry, Converter={StaticResource BoolToVis}}" />
                         <ui:Button
-                            Margin="4,0,0,0"
+                            Style="{StaticResource IconButtonStyle}"
+                            Margin="{DynamicResource SpaceLeft4}"
                             AutomationProperties.Name="{x:Static res:Strings.Downloads_Action_Remove}"
                             Command="{Binding DataContext.RemoveCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                             CommandParameter="{Binding}"
@@ -268,16 +266,16 @@
                         <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" />
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                FontSize="11"
+                                FontSize="{DynamicResource FontSizeCaption}"
                                 Foreground="{DynamicResource TextSecondaryBrush}"
                                 Text="{Binding SubTitle}" />
                             <TextBlock
-                                Margin="6,0"
-                                FontSize="11"
+                                Margin="4,0"
+                                FontSize="{DynamicResource FontSizeCaption}"
                                 Foreground="{DynamicResource TextDimBrush}"
                                 Text="·" />
                             <TextBlock
-                                FontSize="11"
+                                FontSize="{DynamicResource FontSizeCaption}"
                                 Text="{Binding StatusLabel}">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
@@ -291,8 +289,8 @@
                                 </TextBlock.Style>
                             </TextBlock>
                             <TextBlock
-                                Margin="6,0,0,0"
-                                FontSize="11"
+                                Margin="{DynamicResource SpaceLeft8}"
+                                FontSize="{DynamicResource FontSizeCaption}"
                                 Foreground="{DynamicResource TextDimBrush}"
                                 Text="{Binding SizeLabel}" />
                         </StackPanel>
@@ -300,15 +298,15 @@
                     <TextBlock
                         Grid.Column="1"
                         VerticalAlignment="Center"
-                        FontSize="11"
+                        FontSize="{DynamicResource FontSizeCaption}"
                         Foreground="{DynamicResource TextDimBrush}"
                         Text="{Binding WhenLabel}" />
                     <!--  Always visible, matching the queue rows above. Removing a history row deletes a
                           record, never a file, so it acts immediately with no prompt.  -->
                     <ui:Button
+                            Style="{StaticResource IconButtonStyle}"
                         Grid.Column="2"
-                        Margin="10,0,0,0"
-                        Padding="6,3"
+                        Margin="{DynamicResource SpaceLeft12}"
                         VerticalAlignment="Center"
                         AutomationProperties.Name="{x:Static res:Strings.Downloads_Action_Remove}"
                         Command="{Binding DataContext.RemoveHistoryEntryCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -324,16 +322,10 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel MaxWidth="900" Margin="8,16,16,24">
 
-                <TextBlock
-                    FontSize="22"
-                    FontWeight="Bold"
-                    Text="{x:Static res:Strings.Downloads_Title}" />
-                <TextBlock
-                    Margin="0,6,0,0"
-                    FontSize="13"
-                    Foreground="{DynamicResource TextSecondaryBrush}"
-                    Text="{x:Static res:Strings.Downloads_Subtitle}"
-                    TextWrapping="Wrap" />
+                <HeaderedContentControl
+                    Header="{x:Static res:Strings.Downloads_Title}"
+                    Style="{StaticResource PageHeaderStyle}"
+                    Tag="{x:Static res:Strings.Downloads_Subtitle}" />
 
                 <!--  Empty state: nothing queued AND nothing in history.  -->
                 <HeaderedContentControl
@@ -343,21 +335,20 @@
 
                 <!--  Queue  -->
                 <TextBlock
-                    Margin="0,20,0,10"
-                    FontSize="14"
-                    FontWeight="SemiBold"
+                    Style="{StaticResource SectionHeaderStyle}"
                     Text="{x:Static res:Strings.Downloads_Section_Active}"
                     Visibility="{Binding HasItems, Converter={StaticResource BoolToVis}}" />
                 <ItemsControl ItemTemplate="{StaticResource QueueItemTemplate}" ItemsSource="{Binding Queue.Items}" />
 
-                <!--  History  -->
-                <Grid Margin="0,20,0,10" Visibility="{Binding HasHistory, Converter={StaticResource BoolToVis}}">
+                <!--  History. Both children sit on the bottom edge: the header's own 8 px bottom margin puts
+                      its text where the button's centre is.  -->
+                <Grid Visibility="{Binding HasHistory, Converter={StaticResource BoolToVis}}">
                     <TextBlock
-                        VerticalAlignment="Center"
-                        FontSize="14"
-                        FontWeight="SemiBold"
+                        VerticalAlignment="Bottom"
+                        Style="{StaticResource SectionHeaderStyle}"
                         Text="{x:Static res:Strings.Downloads_Section_History}" />
                     <ui:Button
+                        VerticalAlignment="Bottom"
                         HorizontalAlignment="Right"
                         Appearance="Danger"
                         AutomationProperties.Name="{x:Static res:Strings.Downloads_Action_ClearHistory}"
@@ -365,10 +356,8 @@
                         Content="{x:Static res:Strings.Downloads_Action_ClearHistory}" />
                 </Grid>
                 <Border
-                    Background="{DynamicResource SurfaceCardBrush}"
-                    BorderBrush="{DynamicResource BorderStrongBrush}"
-                    BorderThickness="1"
-                    CornerRadius="10"
+                    Padding="0"
+                    Style="{StaticResource CardStyle}"
                     Visibility="{Binding HasHistory, Converter={StaticResource BoolToVis}}">
                     <ItemsControl ItemTemplate="{StaticResource HistoryItemTemplate}" ItemsSource="{Binding Queue.History}" />
                 </Border>

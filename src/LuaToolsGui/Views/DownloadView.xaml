@@ -31,7 +31,7 @@
                             x:Name="Bd"
                             Padding="{TemplateBinding Padding}"
                             Background="{TemplateBinding Background}"
-                            CornerRadius="6">
+                            CornerRadius="{DynamicResource RadiusMedium}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -39,13 +39,13 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel>
                                     <TextBlock
-                                        FontSize="12.5"
+                                        FontSize="{DynamicResource FontSizeBody}"
                                         Foreground="{StaticResource TextPrimaryBrush}"
                                         Text="{Binding Title}"
                                         TextTrimming="CharacterEllipsis" />
                                     <TextBlock
                                         Margin="0,1,0,0"
-                                        FontSize="10.5"
+                                        FontSize="{DynamicResource FontSizeCaption}"
                                         Foreground="{StaticResource TextDimBrush}"
                                         Text="{Binding Meta}" />
                                 </StackPanel>
@@ -55,10 +55,10 @@
                                     Padding="5,1"
                                     VerticalAlignment="Top"
                                     Background="{StaticResource SurfaceInsetBrush}"
-                                    CornerRadius="4"
+                                    CornerRadius="{DynamicResource RadiusSmall}"
                                     Visibility="{Binding IsDlc, Converter={StaticResource BoolToVis}}">
                                     <TextBlock
-                                        FontSize="9.5"
+                                        FontSize="{DynamicResource FontSizeCaption}"
                                         FontWeight="SemiBold"
                                         Foreground="{StaticResource AccentSoftBrush}"
                                         Text="DLC" />
@@ -69,10 +69,10 @@
                                     Padding="5,1"
                                     VerticalAlignment="Top"
                                     Background="{StaticResource WarningInsetBrush}"
-                                    CornerRadius="4"
+                                    CornerRadius="{DynamicResource RadiusSmall}"
                                     Visibility="{Binding IsShared, Converter={StaticResource BoolToVis}}">
                                     <TextBlock
-                                        FontSize="9.5"
+                                        FontSize="{DynamicResource FontSizeCaption}"
                                         FontWeight="SemiBold"
                                         Foreground="{StaticResource WarningSoftBrush}"
                                         Text="{x:Static res:Strings.Confirm_Shared}" />
@@ -109,7 +109,7 @@
                             Background="{StaticResource SurfaceCardBrush}"
                             BorderBrush="{StaticResource BorderDefaultBrush}"
                             BorderThickness="1"
-                            CornerRadius="8">
+                            CornerRadius="{DynamicResource RadiusMedium}">
                             <StackPanel>
                                 <Border CornerRadius="7,7,0,0">
                                     <Image
@@ -120,7 +120,7 @@
                                 <TextBlock
                                     Height="34"
                                     Margin="8,6,8,8"
-                                    FontSize="12"
+                                    FontSize="{DynamicResource FontSizeCaption}"
                                     Foreground="{StaticResource TextSecondaryBrush}"
                                     Text="{Binding Name}"
                                     TextTrimming="CharacterEllipsis"
@@ -143,15 +143,10 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel MaxWidth="640" Margin="8,16,8,24">
 
-            <TextBlock
-                FontSize="22"
-                FontWeight="Bold"
-                Text="{x:Static res:Strings.Add_Title}" />
-            <TextBlock
-                Margin="0,4,0,16"
-                FontSize="13"
-                Foreground="{StaticResource TextMutedBrush}"
-                Text="{x:Static res:Strings.Add_Subtitle}" />
+            <HeaderedContentControl
+                Header="{x:Static res:Strings.Add_Title}"
+                Style="{StaticResource PageHeaderStyle}"
+                Tag="{x:Static res:Strings.Add_Subtitle}" />
 
             <!-- Search -->
             <ui:TextBox
@@ -161,11 +156,11 @@
 
             <!-- Autocomplete results -->
             <Border
-                Margin="0,6,0,0"
+                Margin="{DynamicResource SpaceTop8}"
                 Background="{StaticResource SurfaceRaisedBrush}"
                 BorderBrush="{StaticResource BorderDefaultBrush}"
                 BorderThickness="1"
-                CornerRadius="10"
+                CornerRadius="{DynamicResource RadiusLarge}"
                 Visibility="{Binding IsResultsOpen, Converter={StaticResource BoolToVis}}">
                 <ItemsControl ItemsSource="{Binding SearchResults}">
                     <ItemsControl.ItemTemplate>
@@ -187,7 +182,7 @@
                                     <Border
                                         Width="60"
                                         Height="28"
-                                        CornerRadius="4">
+                                        CornerRadius="{DynamicResource RadiusSmall}">
                                         <Border.Background>
                                             <ImageBrush ImageSource="{Binding Icon}" Stretch="UniformToFill" />
                                         </Border.Background>
@@ -196,13 +191,13 @@
                                         Grid.Column="1"
                                         Margin="10,0"
                                         VerticalAlignment="Center"
-                                        FontSize="13"
+                                        FontSize="{DynamicResource FontSizeBody}"
                                         Text="{Binding Name}"
                                         TextTrimming="CharacterEllipsis" />
                                     <TextBlock
                                         Grid.Column="2"
                                         VerticalAlignment="Center"
-                                        FontSize="11.5"
+                                        FontSize="{DynamicResource FontSizeCaption}"
                                         Foreground="{StaticResource TextDimBrush}"
                                         Text="{Binding AppId}" />
                                 </Grid>
@@ -221,18 +216,18 @@
             <!-- Featured rows (Steam top-sellers / new-releases). Idle-only: the whole block hides once you
                  search or pick a game. Two stacked labeled rows, each a horizontally-scrolling card strip. -->
             <StackPanel
-                Margin="0,18,0,0"
+                Margin="{DynamicResource SpaceTop16}"
                 Visibility="{Binding ShowFeatured, Converter={StaticResource BoolToVis}}">
 
                 <!-- Top Sellers row -->
                 <StackPanel Visibility="{Binding HasTopSellers, Converter={StaticResource BoolToVis}}">
                     <TextBlock
-                        FontSize="13"
+                        FontSize="{DynamicResource FontSizeBody}"
                         FontWeight="SemiBold"
                         Foreground="{StaticResource TextSecondaryBrush}"
                         Text="{x:Static res:Strings.Add_Featured_TopSellers}" />
                     <ScrollViewer
-                        Margin="0,8,0,0"
+                        Margin="{DynamicResource SpaceTop8}"
                         HorizontalScrollBarVisibility="Auto"
                         PreviewMouseWheel="FeaturedStrip_PreviewMouseWheel"
                         VerticalScrollBarVisibility="Disabled">
@@ -247,14 +242,14 @@
                 </StackPanel>
 
                 <!-- New Releases row -->
-                <StackPanel Margin="0,16,0,0" Visibility="{Binding HasNewReleases, Converter={StaticResource BoolToVis}}">
+                <StackPanel Margin="{DynamicResource SpaceTop16}" Visibility="{Binding HasNewReleases, Converter={StaticResource BoolToVis}}">
                     <TextBlock
-                        FontSize="13"
+                        FontSize="{DynamicResource FontSizeBody}"
                         FontWeight="SemiBold"
                         Foreground="{StaticResource TextSecondaryBrush}"
                         Text="{x:Static res:Strings.Add_Featured_NewReleases}" />
                     <ScrollViewer
-                        Margin="0,8,0,0"
+                        Margin="{DynamicResource SpaceTop8}"
                         HorizontalScrollBarVisibility="Auto"
                         PreviewMouseWheel="FeaturedStrip_PreviewMouseWheel"
                         VerticalScrollBarVisibility="Disabled">
@@ -271,11 +266,11 @@
 
             <!-- Game info card -->
             <Border
-                Margin="0,14,0,0"
+                Margin="{DynamicResource SpaceTop12}"
                 Background="{StaticResource SurfaceCardBrush}"
                 BorderBrush="{StaticResource BorderSubtleBrush}"
                 BorderThickness="1"
-                CornerRadius="8"
+                CornerRadius="{DynamicResource RadiusMedium}"
                 Visibility="{Binding HasDetails, Converter={StaticResource BoolToVis}}">
                 <StackPanel>
                     <Border
@@ -286,35 +281,35 @@
                     <StackPanel Margin="12,8,12,10">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                FontSize="14.5"
+                                FontSize="{DynamicResource FontSizeBody}"
                                 FontWeight="SemiBold"
                                 Text="{Binding Details.Name}" />
                             <Border
-                                Margin="8,0,0,0"
+                                Margin="{DynamicResource SpaceLeft8}"
                                 Padding="6,1.5"
                                 VerticalAlignment="Center"
                                 Background="{StaticResource AccentTintStrongBrush}"
                                 BorderBrush="{StaticResource AccentOutlineBrush}"
                                 BorderThickness="1"
-                                CornerRadius="4"
+                                CornerRadius="{DynamicResource RadiusSmall}"
                                 Visibility="{Binding Details.IsDlc, Converter={StaticResource BoolToVis}}">
                                 <TextBlock
-                                    FontSize="10.5"
+                                    FontSize="{DynamicResource FontSizeCaption}"
                                     FontWeight="SemiBold"
                                     Foreground="{StaticResource AccentBrush}"
                                     Text="DLC" />
                             </Border>
                         </StackPanel>
                         <TextBlock
-                            Margin="0,3,0,0"
-                            FontSize="11.5"
+                            Margin="{DynamicResource SpaceTop4}"
+                            FontSize="{DynamicResource FontSizeCaption}"
                             Foreground="{StaticResource TextDimBrush}">
                             <Run Text="{Binding Details.AppId, Mode=OneWay}" />
                             <Run Text=" · " />
                             <Run Text="{Binding GenresText, Mode=OneWay}" />
                         </TextBlock>
                         <TextBlock
-                            FontSize="11"
+                            FontSize="{DynamicResource FontSizeCaption}"
                             Foreground="{StaticResource TextDisabledBrush}"
                             Text="{Binding Details.ReleaseDate, StringFormat={x:Static res:Strings.Add_Released}}"
                             Visibility="{Binding Details.ReleaseDate, Converter={StaticResource NullToCollapsed}}" />
@@ -324,7 +319,7 @@
 
             <!-- FastFetch toggle -->
             <Grid
-                Margin="0,12,0,0"
+                Margin="{DynamicResource SpaceTop12}"
                 Visibility="{Binding HasDetails, Converter={StaticResource BoolToVis}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -332,11 +327,11 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock
-                        FontSize="13"
+                        FontSize="{DynamicResource FontSizeBody}"
                         FontWeight="Medium"
                         Text="{x:Static res:Strings.Add_FastFetch}" />
                     <TextBlock
-                        FontSize="11"
+                        FontSize="{DynamicResource FontSizeCaption}"
                         Foreground="{StaticResource TextDimBrush}"
                         Text="{x:Static res:Strings.Add_FastFetch_Hint}" />
                 </StackPanel>
@@ -348,7 +343,7 @@
 
             <!-- Fetch button -->
             <ui:Button
-                Margin="0,14,0,0"
+                Margin="{DynamicResource SpaceTop12}"
                 HorizontalAlignment="Stretch"
                 Appearance="Primary"
                 Command="{Binding FetchCommand}"
@@ -364,8 +359,8 @@
 
             <!-- Error -->
             <TextBlock
-                Margin="0,12,0,0"
-                FontSize="13"
+                Margin="{DynamicResource SpaceTop12}"
+                FontSize="{DynamicResource FontSizeBody}"
                 Foreground="{StaticResource DangerBrush}"
                 Text="{Binding Error}"
                 TextWrapping="Wrap"
@@ -373,9 +368,9 @@
 
             <!-- Install result banner (green on success, amber on partial/failed) -->
             <Border
-                Margin="0,12,0,0"
+                Margin="{DynamicResource SpaceTop12}"
                 Padding="12,9"
-                CornerRadius="8"
+                CornerRadius="{DynamicResource RadiusMedium}"
                 Visibility="{Binding HasInstallResult, Converter={StaticResource BoolToVis}}">
                 <Border.Style>
                     <Style TargetType="Border">
@@ -415,7 +410,7 @@
                         Grid.Column="1"
                         Margin="10,0"
                         VerticalAlignment="Center"
-                        FontSize="13"
+                        FontSize="{DynamicResource FontSizeBody}"
                         Text="{Binding InstallStatus}"
                         TextWrapping="Wrap" />
                     <!-- Reveal only makes sense on a successful install. -->
@@ -430,7 +425,7 @@
 
             <!-- Manifest sources -->
             <ItemsControl
-                Margin="0,12,0,0"
+                Margin="{DynamicResource SpaceTop12}"
                 ItemsSource="{Binding Sources}"
                 Visibility="{Binding HasSources, Converter={StaticResource BoolToVis}}">
                 <ItemsControl.ItemTemplate>
@@ -441,7 +436,7 @@
                             Background="{StaticResource SurfaceGhostBrush}"
                             BorderBrush="{StaticResource BorderSubtleBrush}"
                             BorderThickness="1"
-                            CornerRadius="8">
+                            CornerRadius="{DynamicResource RadiusMedium}">
                             <StackPanel>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -454,12 +449,12 @@
 
                                     <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                                         <TextBlock
-                                            FontSize="13.5"
+                                            FontSize="{DynamicResource FontSizeBody}"
                                             FontWeight="Medium"
                                             Text="{Binding DisplayName}" />
                                         <ui:SymbolIcon
-                                            Margin="6,0,0,0"
-                                            FontSize="15"
+                                            Margin="{DynamicResource SpaceLeft8}"
+                                            FontSize="{DynamicResource FontSizeSubtitle}"
                                             Foreground="{StaticResource WarningBrush}"
                                             Symbol="Key24"
                                             ToolTip="{x:Static res:Strings.Add_RequiresOwnKey}"
@@ -477,28 +472,28 @@
                                             Background="{StaticResource SuccessTintBrush}"
                                             BorderBrush="{StaticResource SuccessTintStrongBrush}"
                                             BorderThickness="1"
-                                            CornerRadius="4"
+                                            CornerRadius="{DynamicResource RadiusSmall}"
                                             Visibility="{Binding StatsText, Converter={StaticResource NullToCollapsed}}">
                                             <TextBlock
-                                                FontSize="11"
+                                                FontSize="{DynamicResource FontSizeCaption}"
                                                 FontWeight="SemiBold"
                                                 Foreground="{StaticResource SuccessBrush}"
                                                 Text="{Binding StatsText}" />
                                         </Border>
                                         <Border
-                                            Margin="4,0,0,0"
+                                            Margin="{DynamicResource SpaceLeft4}"
                                             Padding="5,1"
                                             Background="{StaticResource WarningTintBrush}"
-                                            CornerRadius="4"
+                                            CornerRadius="{DynamicResource RadiusSmall}"
                                             Visibility="{Binding IsSupporter, Converter={StaticResource BoolToVis}}">
                                             <StackPanel Orientation="Horizontal">
                                                 <ui:SymbolIcon
-                                                    FontSize="10"
+                                                    FontSize="{DynamicResource FontSizeCaption}"
                                                     Foreground="{StaticResource WarningStrongBrush}"
                                                     Symbol="Star24" />
                                                 <TextBlock
                                                     Margin="3,0,0,0"
-                                                    FontSize="10"
+                                                    FontSize="{DynamicResource FontSizeCaption}"
                                                     FontWeight="SemiBold"
                                                     Foreground="{StaticResource WarningStrongBrush}"
                                                     Text="{x:Static res:Strings.Add_Supporter}" />
@@ -513,13 +508,13 @@
                                         Padding="6,2"
                                         VerticalAlignment="Center"
                                         BorderThickness="1"
-                                        CornerRadius="4"
+                                        CornerRadius="{DynamicResource RadiusSmall}"
                                         Visibility="{Binding ShowStatus, Converter={StaticResource BoolToVis}}">
                                         <Border.BorderBrush>
                                             <Binding Converter="{StaticResource StatusToBrush}" Path="Status" />
                                         </Border.BorderBrush>
                                         <TextBlock
-                                            FontSize="10.5"
+                                            FontSize="{DynamicResource FontSizeCaption}"
                                             FontWeight="SemiBold"
                                             Foreground="{Binding Status, Converter={StaticResource StatusToBrush}}"
                                             Text="{Binding StatusLabel}" />
@@ -531,7 +526,7 @@
                                         Padding="8,5"
                                         Command="{Binding OpenDiscordCommand}"
                                         Content="{x:Static res:Strings.Add_Discord}"
-                                        FontSize="11.5"
+                                        FontSize="{DynamicResource FontSizeCaption}"
                                         ToolTip="{x:Static res:Strings.Add_JoinDiscord}"
                                         Visibility="{Binding DiscordUrl, Converter={StaticResource NullToCollapsed}}" />
 
@@ -547,7 +542,7 @@
                                     <TextBlock
                                         Grid.Column="4"
                                         VerticalAlignment="Center"
-                                        FontSize="11.5"
+                                        FontSize="{DynamicResource FontSizeCaption}"
                                         Foreground="{StaticResource AccentBrush}"
                                         Text="{x:Static res:Strings.Add_NeedsHubcapKey}"
                                         ToolTip="{x:Static res:Strings.Add_NeedsHubcapKey_Tip}"
@@ -560,21 +555,21 @@
                                       copy of the real one - everything live about it (bytes, speed, pause, cancel)
                                       is on the Downloads page, which is what the link opens.  -->
                                 <StackPanel
-                                    Margin="0,8,0,0"
+                                    Margin="{DynamicResource SpaceTop8}"
                                     Orientation="Horizontal"
                                     Visibility="{Binding IsDownloading, Converter={StaticResource BoolToVis}}">
                                     <TextBlock
                                         VerticalAlignment="Center"
-                                        FontSize="11.5"
+                                        FontSize="{DynamicResource FontSizeCaption}"
                                         Foreground="{StaticResource TextSecondaryBrush}"
                                         Text="{x:Static res:Strings.Downloads_Status_Queued}" />
                                     <ui:Button
-                                        Margin="8,0,0,0"
+                                        Margin="{DynamicResource SpaceLeft8}"
                                         Padding="8,3"
                                         AutomationProperties.Name="{x:Static res:Strings.Nav_Downloads}"
                                         Command="{Binding DataContext.OpenDownloadsCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                         Content="{x:Static res:Strings.Nav_Downloads}"
-                                        FontSize="11.5"
+                                        FontSize="{DynamicResource FontSizeCaption}"
                                         Icon="{ui:SymbolIcon ArrowDownload24}" />
                                 </StackPanel>
                             </StackPanel>
@@ -584,7 +579,7 @@
             </ItemsControl>
 
             <!-- DLC info -->
-            <StackPanel Margin="0,12,0,0" Visibility="{Binding HasDlcInfo, Converter={StaticResource BoolToVis}}">
+            <StackPanel Margin="{DynamicResource SpaceTop12}" Visibility="{Binding HasDlcInfo, Converter={StaticResource BoolToVis}}">
                 <!-- Stat tiles -->
                 <UniformGrid Columns="3">
                     <Border
@@ -593,16 +588,16 @@
                         Background="{StaticResource SurfaceGhostBrush}"
                         BorderBrush="{StaticResource BorderSubtleBrush}"
                         BorderThickness="1"
-                        CornerRadius="8">
+                        CornerRadius="{DynamicResource RadiusMedium}">
                         <StackPanel HorizontalAlignment="Center">
                             <TextBlock
                                 HorizontalAlignment="Center"
-                                FontSize="20"
+                                FontSize="{DynamicResource FontSizeTitle}"
                                 FontWeight="Bold"
                                 Foreground="{StaticResource AccentBrush}"
                                 Text="{Binding DlcInfo.DepotCount}" />
                             <TextBlock
-                                FontSize="11"
+                                FontSize="{DynamicResource FontSizeCaption}"
                                 Foreground="{StaticResource TextDimBrush}"
                                 Text="{x:Static res:Strings.Add_Depots}" />
                         </StackPanel>
@@ -613,36 +608,36 @@
                         Background="{StaticResource SurfaceGhostBrush}"
                         BorderBrush="{StaticResource BorderSubtleBrush}"
                         BorderThickness="1"
-                        CornerRadius="8">
+                        CornerRadius="{DynamicResource RadiusMedium}">
                         <StackPanel HorizontalAlignment="Center">
                             <TextBlock
                                 HorizontalAlignment="Center"
-                                FontSize="20"
+                                FontSize="{DynamicResource FontSizeTitle}"
                                 FontWeight="Bold"
                                 Foreground="{StaticResource SuccessBrush}"
                                 Text="{Binding DlcInfo.HaveCount}" />
                             <TextBlock
-                                FontSize="11"
+                                FontSize="{DynamicResource FontSizeCaption}"
                                 Foreground="{StaticResource TextDimBrush}"
                                 Text="{x:Static res:Strings.Add_Available}" />
                         </StackPanel>
                     </Border>
                     <Border
-                        Margin="4,0,0,0"
+                        Margin="{DynamicResource SpaceLeft4}"
                         Padding="0,10"
                         Background="{StaticResource SurfaceGhostBrush}"
                         BorderBrush="{StaticResource BorderSubtleBrush}"
                         BorderThickness="1"
-                        CornerRadius="8">
+                        CornerRadius="{DynamicResource RadiusMedium}">
                         <StackPanel HorizontalAlignment="Center">
                             <TextBlock
                                 HorizontalAlignment="Center"
-                                FontSize="20"
+                                FontSize="{DynamicResource FontSizeTitle}"
                                 FontWeight="Bold"
                                 Foreground="{StaticResource AlertBrush}"
                                 Text="{Binding DlcInfo.MissingCount}" />
                             <TextBlock
-                                FontSize="11"
+                                FontSize="{DynamicResource FontSizeCaption}"
                                 Foreground="{StaticResource TextDimBrush}"
                                 Text="{x:Static res:Strings.Add_Missing}" />
                         </StackPanel>
@@ -652,7 +647,7 @@
                 <!-- Depot list -->
                 <ItemsControl
                     MaxHeight="220"
-                    Margin="0,10,0,0"
+                    Margin="{DynamicResource SpaceTop8}"
                     ItemsSource="{Binding DlcDepots}">
                     <ItemsControl.Template>
                         <ControlTemplate TargetType="ItemsControl">
@@ -667,7 +662,7 @@
                                 Margin="0,0,0,5"
                                 Padding="10,6"
                                 BorderThickness="1"
-                                CornerRadius="6">
+                                CornerRadius="{DynamicResource RadiusMedium}">
                                 <Border.Style>
                                     <Style TargetType="Border">
                                         <Setter Property="Background" Value="{StaticResource AlertTintBrush}" />
@@ -688,17 +683,17 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock
                                         FontFamily="Consolas"
-                                        FontSize="12.5"
+                                        FontSize="{DynamicResource FontSizeBody}"
                                         Text="{Binding DepotId}" />
                                     <TextBlock
                                         Grid.Column="1"
                                         Margin="0,0,10,0"
-                                        FontSize="11"
+                                        FontSize="{DynamicResource FontSizeCaption}"
                                         Foreground="{StaticResource TextDimBrush}"
                                         Text="{Binding Meta}" />
                                     <TextBlock
                                         Grid.Column="2"
-                                        FontSize="10.5"
+                                        FontSize="{DynamicResource FontSizeCaption}"
                                         FontWeight="Bold"
                                         Foreground="{StaticResource AlertBrush}"
                                         Text="{x:Static res:Strings.Add_NoKey}"
@@ -711,7 +706,7 @@
 
                 <!-- Generate -->
                 <ui:Button
-                    Margin="0,10,0,0"
+                    Margin="{DynamicResource SpaceTop8}"
                     HorizontalAlignment="Stretch"
                     Appearance="Primary"
                     Command="{Binding GenerateDlcCommand}"
@@ -725,9 +720,9 @@
                     </ui:Button.Content>
                 </ui:Button>
                 <TextBlock
-                    Margin="0,8,0,0"
+                    Margin="{DynamicResource SpaceTop8}"
                     HorizontalAlignment="Center"
-                    FontSize="11.5"
+                    FontSize="{DynamicResource FontSizeCaption}"
                     Foreground="{StaticResource TextDimBrush}"
                     Text="{x:Static res:Strings.Add_DlcHint}"
                     TextAlignment="Center"
@@ -736,12 +731,12 @@
 
             <!-- Already have files? Drag them in -->
             <TextBlock
-                Margin="0,24,0,0"
-                FontSize="13"
+                Margin="{DynamicResource SpaceTop24}"
+                FontSize="{DynamicResource FontSizeBody}"
                 FontWeight="SemiBold"
                 Foreground="{StaticResource TextSecondaryBrush}"
                 Text="{x:Static res:Strings.Add_AlreadyHaveFiles}" />
-            <views:DropZone Margin="0,8,0,0" DataContext="{Binding Drop}" />
+            <views:DropZone Margin="{DynamicResource SpaceTop8}" DataContext="{Binding Drop}" />
         </StackPanel>
     </ScrollViewer>
 
@@ -752,13 +747,13 @@
         <Border
             Width="460"
             MaxHeight="560"
-            Margin="24"
+            Margin="{DynamicResource SpaceAll24}"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Background="{StaticResource SurfaceOverlayBrush}"
             BorderBrush="{StaticResource BorderProminentBrush}"
             BorderThickness="1"
-            CornerRadius="12">
+            CornerRadius="{DynamicResource RadiusLarge}">
             <Grid Margin="20">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -768,25 +763,25 @@
                 </Grid.RowDefinitions>
 
                 <TextBlock
-                    FontSize="17"
+                    FontSize="{DynamicResource FontSizeSubtitle}"
                     FontWeight="Bold"
                     Text="{Binding ConfirmTitle}"
                     TextWrapping="Wrap" />
                 <TextBlock
                     Grid.Row="1"
-                    Margin="0,4,0,0"
-                    FontSize="12"
+                    Margin="{DynamicResource SpaceTop4}"
+                    FontSize="{DynamicResource FontSizeCaption}"
                     Foreground="{StaticResource TextMutedBrush}"
                     Text="{x:Static res:Strings.Confirm_ReviewChanges}" />
 
                 <ScrollViewer
                     Grid.Row="2"
-                    Margin="0,14,0,0"
+                    Margin="{DynamicResource SpaceTop12}"
                     VerticalScrollBarVisibility="Auto">
                     <StackPanel>
                         <!-- No changes note -->
                         <TextBlock
-                            FontSize="12.5"
+                            FontSize="{DynamicResource FontSizeBody}"
                             Foreground="{StaticResource TextDimBrush}"
                             Text="{Binding ConfirmNoChanges}"
                             TextWrapping="Wrap"
@@ -795,25 +790,25 @@
                         <!-- Adding -->
                         <StackPanel Visibility="{Binding HasDiffAdded, Converter={StaticResource BoolToVis}}">
                             <TextBlock
-                                FontSize="13"
+                                FontSize="{DynamicResource FontSizeBody}"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource SuccessTextBrush}"
                                 Text="{Binding DiffAdded.Count, StringFormat={x:Static res:Strings.Confirm_Adding}}" />
                             <ItemsControl
-                                Margin="0,6,0,0"
+                                Margin="{DynamicResource SpaceTop8}"
                                 ItemTemplate="{StaticResource DiffRowTemplate}"
                                 ItemsSource="{Binding DiffAdded}" />
                         </StackPanel>
 
                         <!-- Removing -->
-                        <StackPanel Margin="0,10,0,0" Visibility="{Binding HasDiffRemoved, Converter={StaticResource BoolToVis}}">
+                        <StackPanel Margin="{DynamicResource SpaceTop8}" Visibility="{Binding HasDiffRemoved, Converter={StaticResource BoolToVis}}">
                             <TextBlock
-                                FontSize="13"
+                                FontSize="{DynamicResource FontSizeBody}"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource WarningSoftBrush}"
                                 Text="{Binding DiffRemoved.Count, StringFormat={x:Static res:Strings.Confirm_Removing}}" />
                             <ItemsControl
-                                Margin="0,6,0,0"
+                                Margin="{DynamicResource SpaceTop8}"
                                 ItemTemplate="{StaticResource DiffRowTemplate}"
                                 ItemsSource="{Binding DiffRemoved}" />
                         </StackPanel>
@@ -823,7 +818,7 @@
                 <!-- Actions -->
                 <StackPanel
                     Grid.Row="3"
-                    Margin="0,16,0,0"
+                    Margin="{DynamicResource SpaceTop16}"
                     HorizontalAlignment="Right"
                     Orientation="Horizontal">
                     <ui:Button
