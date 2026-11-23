@@ -195,7 +195,6 @@ public class DesignFoundationTests(ThemeHost host)
 
     [Theory]
     [InlineData("IconButtonStyle")]
-    [InlineData("DangerButtonStyle")]
     [InlineData("ListItemStyle")]
     public void Every_focusable_component_shows_a_keyboard_focus_ring(string key)
     {
@@ -212,7 +211,6 @@ public class DesignFoundationTests(ThemeHost host)
 
     [Theory]
     [InlineData("IconButtonStyle", typeof(global::Wpf.Ui.Controls.Button))]
-    [InlineData("DangerButtonStyle", typeof(global::Wpf.Ui.Controls.Button))]
     [InlineData("ListItemStyle", typeof(ListBoxItem))]
     public void WPF_UI_derived_components_are_based_on_WPF_UIs_own_style(string key, Type control)
     {
@@ -267,12 +265,16 @@ public class DesignFoundationTests(ThemeHost host)
     // ── Ratchet ─────────────────────────────────────────────────────
 
     /// <summary>
-    /// Literal values still hardcoded in the pages, measured on 2026-11-23 (Lote B, before any page moved).
-    /// LOWER these as each lote migrates a page onto Typography.xaml / Spacing.xaml. They never go up.
+    /// Literal values still hardcoded in Views/*.xaml (pages AND dialogs, which live there) and MainWindow.xaml.
+    /// Measured 2026-11-23: 209 / 485 / 50 before any page moved (Lote B), 2 / 149 / 7 after Lote H2.
+    /// What is left on purpose: FontSize 42 (BuildsDetailPane hero number) and 32 (ManageView empty icon);
+    /// CornerRadius for top-only corners (no token for a partial radius), the circular avatar and a 3 px bar;
+    /// Margin/Padding mostly in DownloadView and ManageView (Lotes F, G) plus each page's root margin.
+    /// They never go up; lower them when one of those goes.
     /// </summary>
-    private const int FontSizeCeiling = 128;
-    private const int MarginPaddingCeiling = 341;
-    private const int CornerRadiusCeiling = 35;
+    private const int FontSizeCeiling = 2;
+    private const int MarginPaddingCeiling = 149;
+    private const int CornerRadiusCeiling = 7;
 
     private static readonly (string Name, Regex Pattern, int Ceiling)[] Literals =
     [

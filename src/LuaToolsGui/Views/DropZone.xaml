@@ -19,8 +19,8 @@
         <!-- The drop box -->
         <Border
             MinHeight="92"
-            Padding="16,14"
-            CornerRadius="10"
+            Padding="{DynamicResource SpaceAll16}"
+            CornerRadius="{DynamicResource RadiusLarge}"
             SnapsToDevicePixels="True">
             <Border.Style>
                 <Style TargetType="Border">
@@ -42,38 +42,35 @@
                 Orientation="Horizontal">
                 <ui:SymbolIcon
                     VerticalAlignment="Center"
-                    FontSize="22"
+                    FontSize="{DynamicResource FontSizeTitle}"
                     Foreground="{StaticResource AccentBrush}"
                     Symbol="ArrowDownload24" />
-                <StackPanel Margin="14,0,0,0" VerticalAlignment="Center">
+                <StackPanel Margin="{DynamicResource SpaceLeft16}" VerticalAlignment="Center">
                     <TextBlock
-                        FontSize="13.5"
-                        FontWeight="SemiBold"
                         Foreground="{StaticResource TextPrimaryBrush}"
+                        Style="{StaticResource TextBodyStrong}"
                         Text="{x:Static res:Strings.Drop_Title}" />
                     <!-- The box also takes a dragged SteamDB / Steam store link (installs that appid) —
                          a separate line because Drop_Title is already translated into 29 languages and
                          rewording it would leave every one of them describing the old behaviour. -->
                     <TextBlock
-                        Margin="0,2,0,0"
-                        FontSize="11.5"
-                        Foreground="{StaticResource TextMutedBrush}"
+                        Margin="{DynamicResource SpaceTop4}"
+                        Style="{StaticResource TextCaption}"
                         Text="{x:Static res:Strings.Drop_LinkHint}" />
 
                     <!-- Alternative to dragging: pick files from a dialog. Reuses the same install path. -->
                     <ui:Button
-                        Margin="0,8,0,0"
-                        Padding="10,5"
+                        Margin="{DynamicResource SpaceTop8}"
                         HorizontalAlignment="Left"
                         Click="OnBrowseClick"
                         Content="{x:Static res:Strings.Drop_BrowseFiles}"
-                        FontSize="11.5"
+                        FontSize="{DynamicResource FontSizeCaption}"
                         Icon="{ui:SymbolIcon FolderOpen24}" />
 
                     <!-- Result banner (inline under the hint) -->
                     <TextBlock
-                        Margin="0,8,0,0"
-                        FontSize="12"
+                        Margin="{DynamicResource SpaceTop8}"
+                        FontSize="{DynamicResource FontSizeCaption}"
                         Text="{Binding ResultText}"
                         TextWrapping="Wrap"
                         Visibility="{Binding HasResult, Converter={StaticResource BoolToVis}}">

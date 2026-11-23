@@ -36,47 +36,31 @@
             <!-- Header -->
             <StackPanel Grid.Row="0">
                 <TextBlock
-                    FontSize="17"
-                    FontWeight="Bold"
+                    Style="{StaticResource TextSubtitle}"
                     Text="{Binding GameName}"
-                    TextTrimming="CharacterEllipsis" />
+                    TextTrimming="CharacterEllipsis"
+                    TextWrapping="NoWrap" />
                 <TextBlock
-                    Margin="0,2,0,0"
-                    FontSize="11.5"
-                    Foreground="{StaticResource TextMutedBrush}"
+                    Margin="{DynamicResource SpaceTop4}"
+                    Style="{StaticResource TextCaption}"
                     Text="{Binding AppId, StringFormat={x:Static res:Strings.Common_AppId}}" />
             </StackPanel>
 
             <!-- Loading (indexing the 373 MB cache takes a couple of seconds) -->
-            <StackPanel
+            <ContentControl
                 Grid.Row="1"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}">
-                <ui:ProgressRing
-                    Width="28"
-                    Height="28"
-                    HorizontalAlignment="Center"
-                    IsIndeterminate="True" />
-                <TextBlock
-                    Margin="0,10,0,0"
-                    FontSize="12"
-                    Foreground="{StaticResource TextMutedBrush}"
-                    Text="{x:Static res:Strings.Launch_Loading}" />
-            </StackPanel>
+                Content="{x:Static res:Strings.Launch_Loading}"
+                Style="{StaticResource LoadingStateStyle}"
+                Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}" />
 
-            <TextBlock
+            <HeaderedContentControl
                 Grid.Row="1"
-                Margin="0,20,0,0"
-                VerticalAlignment="Top"
-                FontSize="12"
-                Foreground="{StaticResource DangerBrush}"
-                Text="{Binding Error}"
-                TextWrapping="Wrap"
+                Header="{Binding Error}"
+                Style="{StaticResource ErrorStateStyle}"
                 Visibility="{Binding Error, Converter={StaticResource NullToCollapsed}}" />
 
             <!-- Editor -->
-            <Grid Grid.Row="1" Margin="0,14,0,0">
+            <Grid Grid.Row="1" Margin="{DynamicResource SpaceTop16}">
                 <Grid.Style>
                     <Style TargetType="Grid">
                         <Setter Property="Visibility" Value="Collapsed" />
@@ -97,12 +81,7 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Entry list + list actions -->
-                <Border
-                    Padding="8"
-                    Background="{StaticResource SurfaceCardBrush}"
-                    BorderBrush="{StaticResource BorderStrongBrush}"
-                    BorderThickness="1"
-                    CornerRadius="8">
+                <Border Padding="{DynamicResource SpaceAll8}" Style="{StaticResource CardStyle}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
@@ -110,30 +89,25 @@
                         </Grid.RowDefinitions>
 
                         <ListBox
-                            Margin="-4,0,-4,0"
                             Background="Transparent"
                             BorderThickness="0"
+                            ItemContainerStyle="{StaticResource ListItemStyle}"
                             ItemsSource="{Binding Entries}"
                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                             SelectedItem="{Binding Selected}">
-                            <ListBox.ItemContainerStyle>
-                                <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
-                                    <Setter Property="Padding" Value="6,5" />
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                </Style>
-                            </ListBox.ItemContainerStyle>
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel>
                                         <TextBlock
-                                            FontSize="12.5"
+                                            FontSize="{DynamicResource FontSizeBody}"
                                             Text="{Binding Title}"
                                             TextTrimming="CharacterEllipsis" />
                                         <TextBlock
-                                            FontSize="10.5"
                                             Foreground="{StaticResource TextDimBrush}"
+                                            Style="{StaticResource TextCaption}"
                                             Text="{Binding Subtitle}"
-                                            TextTrimming="CharacterEllipsis" />
+                                            TextTrimming="CharacterEllipsis"
+                                            TextWrapping="NoWrap" />
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
@@ -141,22 +115,21 @@
 
                         <UniformGrid
                             Grid.Row="1"
-                            Margin="0,8,0,0"
+                            Margin="{DynamicResource SpaceTop8}"
                             Columns="4">
                             <ui:Button
-                                Margin="0,0,3,0"
                                 HorizontalAlignment="Stretch"
                                 Command="{Binding AddEntryCommand}"
                                 Content="{x:Static res:Strings.Launch_Add}" />
                             <ui:Button
-                                Margin="3,0"
+                                Margin="{DynamicResource SpaceLeft4}"
                                 HorizontalAlignment="Stretch"
                                 Appearance="Danger"
                                 Command="{Binding DeleteEntryCommand}"
                                 Content="{x:Static res:Strings.Launch_Delete}"
                                 IsEnabled="{Binding HasSelection}" />
                             <ui:Button
-                                Margin="3,0"
+                                Margin="{DynamicResource SpaceLeft4}"
                                 HorizontalAlignment="Stretch"
                                 AutomationProperties.Name="{x:Static res:Strings.Downloads_Action_MoveUp}"
                                 Command="{Binding MoveUpCommand}"
@@ -164,7 +137,7 @@
                                 IsEnabled="{Binding HasSelection}"
                                 ToolTip="{x:Static res:Strings.Downloads_Action_MoveUp}" />
                             <ui:Button
-                                Margin="3,0,0,0"
+                                Margin="{DynamicResource SpaceLeft4}"
                                 HorizontalAlignment="Stretch"
                                 AutomationProperties.Name="{x:Static res:Strings.Downloads_Action_MoveDown}"
                                 Command="{Binding MoveDownCommand}"
@@ -178,63 +151,57 @@
                 <!-- Fields for the selected entry -->
                 <ScrollViewer
                     Grid.Column="1"
-                    Margin="14,0,0,0"
+                    Margin="{DynamicResource SpaceLeft16}"
                     VerticalScrollBarVisibility="Auto">
                     <StackPanel
-                        Margin="0,0,6,0"
+                        Margin="{DynamicResource SpaceAll4}"
                         DataContext="{Binding Selected}"
                         Visibility="{Binding Converter={StaticResource NullToCollapsed}}">
                         <TextBlock
-                            FontSize="11.5"
-                            Foreground="{StaticResource TextMutedBrush}"
+                            Style="{StaticResource TextCaption}"
                             Text="{x:Static res:Strings.Launch_Field_Executable}" />
-                        <ui:TextBox Margin="0,4,0,0" Text="{Binding Executable, UpdateSourceTrigger=PropertyChanged}" />
+                        <ui:TextBox Margin="{DynamicResource SpaceTop4}" Text="{Binding Executable, UpdateSourceTrigger=PropertyChanged}" />
 
                         <TextBlock
-                            Margin="0,12,0,0"
-                            FontSize="11.5"
-                            Foreground="{StaticResource TextMutedBrush}"
+                            Margin="{DynamicResource SpaceTop12}"
+                            Style="{StaticResource TextCaption}"
                             Text="{x:Static res:Strings.Launch_Field_Arguments}" />
-                        <ui:TextBox Margin="0,4,0,0" Text="{Binding Arguments, UpdateSourceTrigger=PropertyChanged}" />
+                        <ui:TextBox Margin="{DynamicResource SpaceTop4}" Text="{Binding Arguments, UpdateSourceTrigger=PropertyChanged}" />
 
                         <TextBlock
-                            Margin="0,12,0,0"
-                            FontSize="11.5"
-                            Foreground="{StaticResource TextMutedBrush}"
+                            Margin="{DynamicResource SpaceTop12}"
+                            Style="{StaticResource TextCaption}"
                             Text="{x:Static res:Strings.Launch_Field_WorkingDir}" />
-                        <ui:TextBox Margin="0,4,0,0" Text="{Binding WorkingDir, UpdateSourceTrigger=PropertyChanged}" />
+                        <ui:TextBox Margin="{DynamicResource SpaceTop4}" Text="{Binding WorkingDir, UpdateSourceTrigger=PropertyChanged}" />
 
                         <TextBlock
-                            Margin="0,12,0,0"
-                            FontSize="11.5"
-                            Foreground="{StaticResource TextMutedBrush}"
+                            Margin="{DynamicResource SpaceTop12}"
+                            Style="{StaticResource TextCaption}"
                             Text="{x:Static res:Strings.Launch_Field_Description}" />
-                        <ui:TextBox Margin="0,4,0,0" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" />
+                        <ui:TextBox Margin="{DynamicResource SpaceTop4}" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" />
 
-                        <Grid Margin="0,12,0,0">
+                        <Grid Margin="{DynamicResource SpaceTop12}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <StackPanel Margin="0,0,6,0">
+                            <StackPanel>
                                 <TextBlock
-                                    FontSize="11.5"
-                                    Foreground="{StaticResource TextMutedBrush}"
+                                    Style="{StaticResource TextCaption}"
                                     Text="{x:Static res:Strings.Launch_Field_Os}" />
                                 <ComboBox
-                                    Margin="0,4,0,0"
+                                    Margin="{DynamicResource SpaceTop4}"
                                     HorizontalAlignment="Stretch"
                                     IsEditable="True"
                                     ItemsSource="{Binding DataContext.OsOptions, ElementName=Root}"
                                     Text="{Binding OsList, UpdateSourceTrigger=PropertyChanged}" />
                             </StackPanel>
-                            <StackPanel Grid.Column="1" Margin="6,0,0,0">
+                            <StackPanel Grid.Column="1" Margin="{DynamicResource SpaceLeft12}">
                                 <TextBlock
-                                    FontSize="11.5"
-                                    Foreground="{StaticResource TextMutedBrush}"
+                                    Style="{StaticResource TextCaption}"
                                     Text="{x:Static res:Strings.Launch_Field_Type}" />
                                 <ComboBox
-                                    Margin="0,4,0,0"
+                                    Margin="{DynamicResource SpaceTop4}"
                                     HorizontalAlignment="Stretch"
                                     IsEditable="True"
                                     ItemsSource="{Binding DataContext.TypeOptions, ElementName=Root}"
@@ -242,30 +209,28 @@
                             </StackPanel>
                         </Grid>
 
-                        <Grid Margin="0,12,0,0">
+                        <Grid Margin="{DynamicResource SpaceTop12}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <StackPanel Margin="0,0,6,0">
+                            <StackPanel>
                                 <TextBlock
-                                    FontSize="11.5"
-                                    Foreground="{StaticResource TextMutedBrush}"
+                                    Style="{StaticResource TextCaption}"
                                     Text="{x:Static res:Strings.Launch_Field_BetaKey}" />
                                 <ComboBox
-                                    Margin="0,4,0,0"
+                                    Margin="{DynamicResource SpaceTop4}"
                                     HorizontalAlignment="Stretch"
                                     IsEditable="True"
                                     ItemsSource="{Binding DataContext.BranchOptions, ElementName=Root}"
                                     Text="{Binding BetaKey, UpdateSourceTrigger=PropertyChanged}"
                                     ToolTip="{x:Static res:Strings.Launch_Field_BetaKey_Tip}" />
                             </StackPanel>
-                            <StackPanel Grid.Column="1" Margin="6,0,0,0">
+                            <StackPanel Grid.Column="1" Margin="{DynamicResource SpaceLeft12}">
                                 <TextBlock
-                                    FontSize="11.5"
-                                    Foreground="{StaticResource TextMutedBrush}"
+                                    Style="{StaticResource TextCaption}"
                                     Text="{x:Static res:Strings.Launch_Field_OwnsDlc}" />
-                                <ui:TextBox Margin="0,4,0,0" Text="{Binding OwnsDlc, UpdateSourceTrigger=PropertyChanged}" />
+                                <ui:TextBox Margin="{DynamicResource SpaceTop4}" Text="{Binding OwnsDlc, UpdateSourceTrigger=PropertyChanged}" />
                             </StackPanel>
                         </Grid>
                     </StackPanel>
@@ -273,42 +238,42 @@
             </Grid>
 
             <!-- Footer -->
-            <Grid Grid.Row="2" Margin="0,14,0,0">
+            <Grid Grid.Row="2" Margin="{DynamicResource SpaceTop16}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock
-                        FontSize="11"
                         Foreground="{StaticResource TextDimBrush}"
+                        Style="{StaticResource TextCaption}"
                         Text="{Binding InstallPath, StringFormat={x:Static res:Strings.Launch_InstallPath}}"
                         TextTrimming="CharacterEllipsis"
+                        TextWrapping="NoWrap"
                         Visibility="{Binding InstallPath, Converter={StaticResource NullToCollapsed}}" />
                     <TextBlock
-                        Margin="0,2,0,0"
-                        FontSize="10.5"
+                        Margin="{DynamicResource SpaceTop4}"
                         Foreground="{StaticResource WarningSoftBrush}"
-                        Text="{x:Static res:Strings.Launch_SteamRestartNote}"
-                        TextWrapping="Wrap" />
+                        Style="{StaticResource TextCaption}"
+                        Text="{x:Static res:Strings.Launch_SteamRestartNote}" />
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                     <ui:Button
-                        Margin="0,0,8,0"
                         Command="{Binding ShowInFolderCommand}"
                         Content="{x:Static res:Strings.Downloads_Action_ShowInFolder}" />
                     <ui:Button
+                        Margin="{DynamicResource SpaceLeft8}"
                         Command="{Binding RestoreCommand}"
                         Content="{x:Static res:Strings.Launch_Restore}"
                         IsEnabled="{Binding IsModded}"
                         ToolTip="{x:Static res:Strings.Launch_Restore_Tip}" />
                     <ui:Button
-                        Margin="8,0,0,0"
+                        Margin="{DynamicResource SpaceLeft8}"
                         Command="{Binding CancelCommand}"
                         Content="{x:Static res:Strings.Builds_Action_Cancel}" />
                     <ui:Button
-                        Margin="8,0,0,0"
+                        Margin="{DynamicResource SpaceLeft8}"
                         Appearance="Primary"
                         Command="{Binding SaveCommand}"
                         Content="{x:Static res:Strings.Builds_Action_Save}"

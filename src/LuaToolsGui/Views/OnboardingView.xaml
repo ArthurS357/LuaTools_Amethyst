@@ -15,7 +15,7 @@
         <!-- Segmented Yes/No button: Primary when its bound bool matches this button's value. -->
         <Style x:Key="ChoiceButton" BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
             <Setter Property="MinWidth" Value="92" />
-            <Setter Property="Margin" Value="6,0,0,0" />
+            <Setter Property="Margin" Value="{DynamicResource SpaceLeft8}" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
         </Style>
     </UserControl.Resources>
@@ -25,32 +25,26 @@
     <Grid Background="{StaticResource ScrimLightBrush}">
         <Border
             MaxWidth="640"
-            Margin="16"
-            Padding="30,32"
+            Margin="{DynamicResource SpaceAll16}"
+            Padding="{DynamicResource SpaceAll32}"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Background="{StaticResource SurfaceOverlayBrush}"
             BorderBrush="{StaticResource BorderProminentBrush}"
-            BorderThickness="1"
-            CornerRadius="14">
+            Style="{StaticResource CardStyle}">
             <StackPanel>
                 <!-- Title -->
-                <TextBlock
-                    FontSize="21"
-                    FontWeight="Bold"
-                    Text="{x:Static res:Strings.Onboarding_Title}"
-                    TextWrapping="Wrap" />
+                <TextBlock Style="{StaticResource TextTitle}" Text="{x:Static res:Strings.Onboarding_Title}" />
 
                 <!-- Sign in (guest only) -->
                 <StackPanel Visibility="{Binding IsGuest, Converter={StaticResource BoolToVis}}">
                     <TextBlock
-                        Margin="0,16,0,0"
-                        FontSize="13"
+                        Margin="{DynamicResource SpaceTop16}"
                         Foreground="{StaticResource TextMutedBrush}"
-                        Text="{x:Static res:Strings.Onboarding_SignIn_Blurb}"
-                        TextWrapping="Wrap" />
+                        Style="{StaticResource TextBody}"
+                        Text="{x:Static res:Strings.Onboarding_SignIn_Blurb}" />
                     <ui:Button
-                        Margin="0,10,0,0"
+                        Margin="{DynamicResource SpaceTop12}"
                         HorizontalAlignment="Left"
                         Appearance="Primary"
                         Command="{Binding SignInCommand}"
@@ -59,28 +53,27 @@
                         Visibility="{Binding IsSigningIn, Converter={StaticResource InverseBoolToVis}}" />
                     <!-- Signing-in spinner -->
                     <StackPanel
-                        Margin="0,10,0,0"
+                        Margin="{DynamicResource SpaceTop12}"
                         Orientation="Horizontal"
                         Visibility="{Binding IsSigningIn, Converter={StaticResource BoolToVis}}">
                         <ui:ProgressRing Width="16" Height="16" IsIndeterminate="True" />
                         <TextBlock
-                            Margin="8,0,0,0"
+                            Margin="{DynamicResource SpaceLeft8}"
                             VerticalAlignment="Center"
-                            FontSize="12"
                             Foreground="{StaticResource TextMutedBrush}"
+                            Style="{StaticResource TextCaption}"
                             Text="{x:Static res:Strings.Nav_WaitingForBrowser}" />
                     </StackPanel>
                     <!-- Sign-in error -->
                     <TextBlock
-                        Margin="0,8,0,0"
-                        FontSize="11.5"
+                        Margin="{DynamicResource SpaceTop8}"
                         Foreground="{StaticResource DangerBrush}"
+                        Style="{StaticResource TextCaption}"
                         Text="{Binding StatusLine}"
-                        TextWrapping="Wrap"
                         Visibility="{Binding StatusLine, Converter={StaticResource NullToCollapsed}}" />
                     <!-- Any failed browser sign-in: one click to the /login code box (same as MainWindow). -->
                     <ui:Button
-                        Margin="0,6,0,0"
+                        Margin="{DynamicResource SpaceTop8}"
                         HorizontalAlignment="Left"
                         Appearance="Secondary"
                         Command="{Binding UseManualCodeCommand}"
@@ -90,26 +83,25 @@
                 </StackPanel>
                 <!-- Signed-in confirmation -->
                 <TextBlock
-                    Margin="0,16,0,0"
-                    FontSize="13"
-                    FontWeight="SemiBold"
+                    Margin="{DynamicResource SpaceTop16}"
                     Foreground="{StaticResource SuccessTextBrush}"
+                    Style="{StaticResource TextBodyStrong}"
                     Text="{x:Static res:Strings.Onboarding_SignedIn}"
                     Visibility="{Binding IsSignedIn, Converter={StaticResource BoolToVis}}" />
 
-                <Border Height="1" Margin="0,24,0,0" Background="{StaticResource SurfaceStrongBrush}" />
+                <Border Margin="{DynamicResource SpaceTop24}" Style="{StaticResource RowDividerStyle}" />
 
                 <!-- Apply recommended settings -->
-                <Grid Margin="0,24,0,0">
+                <Grid Margin="{DynamicResource SpaceTop24}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <StackPanel Margin="0,0,28,0" VerticalAlignment="Center">
-                        <TextBlock FontSize="14" FontWeight="SemiBold" Text="{x:Static res:Strings.Onboarding_Recommended_Title}" />
-                        <TextBlock Margin="0,2,0,0" FontSize="12" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Onboarding_Recommended_Detail}" TextWrapping="Wrap" />
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Style="{StaticResource TextBodyStrong}" Text="{x:Static res:Strings.Onboarding_Recommended_Title}" />
+                        <TextBlock Margin="{DynamicResource SpaceTop4}" Foreground="{StaticResource TextDimBrush}" Style="{StaticResource TextCaption}" Text="{x:Static res:Strings.Onboarding_Recommended_Detail}" />
                     </StackPanel>
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal">
+                    <StackPanel Grid.Column="1" Margin="{DynamicResource SpaceLeft16}" VerticalAlignment="Center" Orientation="Horizontal">
                         <ui:Button Command="{Binding SetApplyRecommendedCommand}" Content="{x:Static res:Strings.Onboarding_Yes}">
                             <ui:Button.CommandParameter><sys:Boolean>True</sys:Boolean></ui:Button.CommandParameter>
                             <ui:Button.Style>
@@ -138,16 +130,16 @@
                 </Grid>
 
                 <!-- Install plugin -->
-                <Grid Margin="0,22,0,0">
+                <Grid Margin="{DynamicResource SpaceTop24}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <StackPanel Margin="0,0,28,0" VerticalAlignment="Center">
-                        <TextBlock FontSize="14" FontWeight="SemiBold" Text="{x:Static res:Strings.Onboarding_Plugin_Title}" />
-                        <TextBlock Margin="0,2,0,0" FontSize="12" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Onboarding_Plugin_Detail}" TextWrapping="Wrap" />
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Style="{StaticResource TextBodyStrong}" Text="{x:Static res:Strings.Onboarding_Plugin_Title}" />
+                        <TextBlock Margin="{DynamicResource SpaceTop4}" Foreground="{StaticResource TextDimBrush}" Style="{StaticResource TextCaption}" Text="{x:Static res:Strings.Onboarding_Plugin_Detail}" />
                     </StackPanel>
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal">
+                    <StackPanel Grid.Column="1" Margin="{DynamicResource SpaceLeft16}" VerticalAlignment="Center" Orientation="Horizontal">
                         <ui:Button Command="{Binding SetInstallPluginCommand}" Content="{x:Static res:Strings.Onboarding_Yes}">
                             <ui:Button.CommandParameter><sys:Boolean>True</sys:Boolean></ui:Button.CommandParameter>
                             <ui:Button.Style>
@@ -177,14 +169,14 @@
 
                 <!-- Let's go! -->
                 <ui:Button
-                    Margin="0,28,0,0"
-                    Padding="0,10"
+                    Margin="{DynamicResource SpaceTop32}"
+                    Padding="{DynamicResource SpaceAll12}"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Center"
                     Appearance="Primary"
                     Command="{Binding FinishCommand}"
                     Content="{x:Static res:Strings.Onboarding_Go}"
-                    FontSize="14"
+                    FontSize="{DynamicResource FontSizeSubtitle}"
                     IsEnabled="{Binding NotBusy}" />
             </StackPanel>
         </Border>

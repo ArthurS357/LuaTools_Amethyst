@@ -21,30 +21,16 @@
             <StackPanel MaxWidth="760" Margin="8,16,16,8">
 
                 <!-- Header -->
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel>
-                        <TextBlock
-                            FontSize="22"
-                            FontWeight="Bold"
-                            Text="{x:Static res:Strings.Mode_Title}" />
-                        <TextBlock
-                            Margin="0,2,0,0"
-                            FontSize="13"
-                            Foreground="{StaticResource TextMutedBrush}"
-                            Text="{x:Static res:Strings.Mode_Subtitle}" />
-                    </StackPanel>
+                <HeaderedContentControl
+                    Header="{x:Static res:Strings.Mode_Title}"
+                    Style="{StaticResource PageHeaderStyle}"
+                    Tag="{x:Static res:Strings.Mode_Subtitle}">
                     <ui:Button
-                        Grid.Column="1"
-                        VerticalAlignment="Top"
                         Command="{Binding CheckForUpdatesCommand}"
                         Content="{x:Static res:Strings.Mode_CheckForUpdates}"
                         Icon="{ui:SymbolIcon ArrowSync24}"
                         IsEnabled="{Binding NotBusy}" />
-                </Grid>
+                </HeaderedContentControl>
 
                 <!-- AmethystTool, first on the page. A Mode, not a plugin: it writes the same dwmapi.dll /
                      xinput1_4.dll next to steam.exe that every card below does, so it competes for the same
@@ -54,14 +40,9 @@
                      model, bound through Amethyst. Progress goes to the page's docked bar, not to a bar of
                      its own; confirmation goes through the page's overlay, not a MessageBox. -->
                 <Border
-                    Margin="0,18,0,12"
-                    Padding="18"
-                    Background="{StaticResource SurfaceCardBrush}"
-                    BorderBrush="{StaticResource BorderStrongBrush}"
-                    BorderThickness="1"
-                    CornerRadius="10"
                     DataContext="{Binding Amethyst}"
-                    KeyboardNavigation.TabNavigation="Local">
+                    KeyboardNavigation.TabNavigation="Local"
+                    Style="{StaticResource CardStyle}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -75,20 +56,19 @@
                                     Foreground="{StaticResource AccentBrush}"
                                     Symbol="Wrench24" />
                                 <TextBlock
-                                    Margin="10,0,0,0"
+                                    Margin="{DynamicResource SpaceLeft12}"
                                     VerticalAlignment="Center"
-                                    FontSize="15"
-                                    FontWeight="SemiBold"
+                                    Style="{StaticResource TextSubtitle}"
                                     Text="{x:Static res:Strings.Amethyst_CardTitle}" />
                                 <!-- Recommended: unconditional, this template is the AmethystTool card only. -->
                                 <Border
-                                    Margin="10,0,0,0"
-                                    Padding="7,2"
+                                    Margin="{DynamicResource SpaceLeft12}"
+                                    Padding="{DynamicResource SpaceAll4}"
                                     VerticalAlignment="Center"
                                     Background="{StaticResource SuccessTintBrush}"
-                                    CornerRadius="4">
+                                    CornerRadius="{DynamicResource RadiusSmall}">
                                     <TextBlock
-                                        FontSize="10.5"
+                                        FontSize="{DynamicResource FontSizeCaption}"
                                         FontWeight="SemiBold"
                                         Foreground="{StaticResource SuccessTextBrush}"
                                         Text="{x:Static res:Strings.Mode_Recommended}" />
@@ -99,27 +79,27 @@
                                      file presence is what used to light ACTIVE here and on a Mode card at
                                      the same time. -->
                                 <Border
-                                    Margin="10,0,0,0"
-                                    Padding="7,2"
+                                    Margin="{DynamicResource SpaceLeft12}"
+                                    Padding="{DynamicResource SpaceAll4}"
                                     VerticalAlignment="Center"
                                     Background="{StaticResource AccentBadgeBrush}"
-                                    CornerRadius="4"
+                                    CornerRadius="{DynamicResource RadiusSmall}"
                                     Visibility="{Binding IsActive, Converter={StaticResource BoolToVis}}">
                                     <TextBlock
-                                        FontSize="10.5"
+                                        FontSize="{DynamicResource FontSizeCaption}"
                                         FontWeight="SemiBold"
                                         Foreground="{StaticResource AccentSoftBrush}"
                                         Text="{x:Static res:Strings.Mode_Active}" />
                                 </Border>
                                 <Border
-                                    Margin="6,0,0,0"
-                                    Padding="7,2"
+                                    Margin="{DynamicResource SpaceLeft8}"
+                                    Padding="{DynamicResource SpaceAll4}"
                                     VerticalAlignment="Center"
                                     Background="{StaticResource WarningTintBrush}"
-                                    CornerRadius="4"
+                                    CornerRadius="{DynamicResource RadiusSmall}"
                                     Visibility="{Binding UpdateAvailable, Converter={StaticResource BoolToVis}}">
                                     <TextBlock
-                                        FontSize="10.5"
+                                        FontSize="{DynamicResource FontSizeCaption}"
                                         FontWeight="SemiBold"
                                         Foreground="{StaticResource WarningBrush}"
                                         Text="{x:Static res:Strings.Mode_UpdateAvailable}" />
@@ -127,40 +107,39 @@
                             </StackPanel>
 
                             <TextBlock
-                                Margin="0,6,0,0"
-                                FontSize="12"
+                                Margin="{DynamicResource SpaceTop8}"
                                 Foreground="{StaticResource TextDimBrush}"
-                                Text="{x:Static res:Strings.Amethyst_Description}"
-                                TextWrapping="Wrap" />
+                                Style="{StaticResource TextCaption}"
+                                Text="{x:Static res:Strings.Amethyst_Description}" />
 
                             <!-- Status line, worded like the cards above it. -->
                             <TextBlock
-                                Margin="0,6,0,0"
-                                FontSize="12.5"
+                                Margin="{DynamicResource SpaceTop8}"
                                 Foreground="{StaticResource TextMutedBrush}"
-                                Text="{Binding Status}"
-                                TextWrapping="Wrap" />
+                                Style="{StaticResource TextBody}"
+                                Text="{Binding Status}" />
 
                             <!-- Installed version, and where it is going if an update is pending. -->
-                            <StackPanel Margin="0,6,0,0" Orientation="Horizontal">
+                            <StackPanel Margin="{DynamicResource SpaceTop8}" Orientation="Horizontal">
                                 <TextBlock
-                                    FontSize="12.5"
+                                    FontSize="{DynamicResource FontSizeBody}"
                                     Foreground="{StaticResource TextDimBrush}"
                                     Text="{x:Static res:Strings.Plugin_Row_InstalledVersion}" />
                                 <TextBlock
-                                    Margin="8,0,0,0"
-                                    FontSize="12.5"
+                                    Margin="{DynamicResource SpaceLeft8}"
+                                    FontSize="{DynamicResource FontSizeBody}"
                                     FontWeight="SemiBold"
                                     Foreground="{StaticResource TextPrimaryBrush}"
                                     Text="{Binding InstalledVersion}" />
                                 <StackPanel Orientation="Horizontal" Visibility="{Binding UpdateAvailable, Converter={StaticResource BoolToVis}}">
                                     <TextBlock
-                                        Margin="7,0,7,0"
-                                        FontSize="12.5"
+                                        Margin="{DynamicResource SpaceLeft8}"
+                                        FontSize="{DynamicResource FontSizeBody}"
                                         Foreground="{StaticResource TextDimBrush}"
                                         Text="&#x2192;" />
                                     <TextBlock
-                                        FontSize="12.5"
+                                        Margin="{DynamicResource SpaceLeft8}"
+                                        FontSize="{DynamicResource FontSizeBody}"
                                         FontWeight="SemiBold"
                                         Foreground="{StaticResource WarningBrush}"
                                         Text="{Binding LatestVersion}" />
@@ -170,29 +149,26 @@
                             <!-- Installed, but placed before install records existed: say why Uninstall is
                                  unavailable instead of leaving a button that does nothing. -->
                             <TextBlock
-                                Margin="0,6,0,0"
-                                FontSize="11.5"
+                                Margin="{DynamicResource SpaceTop8}"
                                 Foreground="{StaticResource TextDimBrush}"
+                                Style="{StaticResource TextCaption}"
                                 Text="{x:Static res:Strings.Mode_Uninstall_NoRecord}"
-                                TextWrapping="Wrap"
                                 Visibility="{Binding ShowNoRecordHint, Converter={StaticResource BoolToVis}}" />
 
                             <!-- Offline / rate-limit line. -->
                             <TextBlock
-                                Margin="0,6,0,0"
-                                FontSize="12"
+                                Margin="{DynamicResource SpaceTop8}"
                                 Foreground="{StaticResource WarningStrongBrush}"
+                                Style="{StaticResource TextCaption}"
                                 Text="{Binding StatusLine}"
-                                TextWrapping="Wrap"
                                 Visibility="{Binding StatusLine, Converter={StaticResource NullToCollapsed}}" />
 
                             <!-- Where the files this install displaced were kept. -->
                             <TextBlock
-                                Margin="0,6,0,0"
-                                FontSize="11.5"
+                                Margin="{DynamicResource SpaceTop8}"
                                 Foreground="{StaticResource InfoBrush}"
+                                Style="{StaticResource TextCaption}"
                                 Text="{Binding BackupLine}"
-                                TextWrapping="Wrap"
                                 Visibility="{Binding BackupLine, Converter={StaticResource NullToCollapsed}}" />
 
                             <!-- Denuvo Mode (Aliases): [compatibility] denuvo_aliases in amethysttool.toml.
@@ -201,8 +177,8 @@
                                  back. Enabled only with AmethystTool installed and its toml present, and
                                  never while the page is busy (an install replaces that very file). -->
                             <Border
-                                Margin="0,12,0,0"
-                                Padding="0,12,0,0"
+                                Margin="{DynamicResource SpaceTop12}"
+                                Padding="{DynamicResource SpaceTop12}"
                                 BorderBrush="{StaticResource BorderStrongBrush}"
                                 BorderThickness="0,1,0,0">
                                 <Grid>
@@ -211,20 +187,16 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Style="{StaticResource TextBodyStrong}" Text="{x:Static res:Strings.Amethyst_Denuvo_Label}" />
                                         <TextBlock
-                                            FontSize="13"
-                                            FontWeight="Medium"
-                                            Text="{x:Static res:Strings.Amethyst_Denuvo_Label}" />
-                                        <TextBlock
-                                            Margin="0,4,0,0"
-                                            FontSize="12"
+                                            Margin="{DynamicResource SpaceTop4}"
                                             Foreground="{StaticResource TextDimBrush}"
-                                            Text="{x:Static res:Strings.Amethyst_Denuvo_Hint}"
-                                            TextWrapping="Wrap" />
+                                            Style="{StaticResource TextCaption}"
+                                            Text="{x:Static res:Strings.Amethyst_Denuvo_Hint}" />
                                     </StackPanel>
                                     <ui:ToggleSwitch
                                         Grid.Column="1"
-                                        Margin="12,0,0,0"
+                                        Margin="{DynamicResource SpaceLeft12}"
                                         VerticalAlignment="Center"
                                         AutomationProperties.HelpText="{x:Static res:Strings.Amethyst_Denuvo_Hint}"
                                         AutomationProperties.Name="{x:Static res:Strings.Amethyst_Denuvo_Label}"
@@ -235,7 +207,7 @@
                             </Border>
                         </StackPanel>
 
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <StackPanel Grid.Column="1" Margin="{DynamicResource SpaceLeft16}" VerticalAlignment="Center">
                             <ui:Button
                                 MinWidth="120"
                                 HorizontalAlignment="Stretch"
@@ -256,7 +228,7 @@
                                 </ui:Button.Style>
                             </ui:Button>
                             <ui:Button
-                                Margin="0,8,0,0"
+                                Margin="{DynamicResource SpaceTop8}"
                                 HorizontalAlignment="Stretch"
                                 HorizontalContentAlignment="Center"
                                 AutomationProperties.Name="{x:Static res:Strings.Mode_Btn_Uninstall}"
@@ -271,16 +243,10 @@
                 </Border>
 
                 <!-- Mode cards -->
-                <ItemsControl Margin="0,0,0,0" ItemsSource="{Binding Cards}">
+                <ItemsControl ItemsSource="{Binding Cards}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border
-                                Margin="0,0,0,12"
-                                Padding="18"
-                                Background="{StaticResource SurfaceCardBrush}"
-                                BorderBrush="{StaticResource BorderStrongBrush}"
-                                BorderThickness="1"
-                                CornerRadius="10">
+                            <Border Margin="{DynamicResource SpaceTop12}" Style="{StaticResource CardStyle}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
@@ -293,62 +259,60 @@
                                                 Foreground="{StaticResource AccentBrush}"
                                                 Symbol="Wrench24" />
                                             <TextBlock
-                                                Margin="10,0,0,0"
+                                                Margin="{DynamicResource SpaceLeft12}"
                                                 VerticalAlignment="Center"
-                                                FontSize="15"
-                                                FontWeight="SemiBold"
+                                                Style="{StaticResource TextSubtitle}"
                                                 Text="{Binding Title}" />
                                             <!-- BetterSteamTools: blue "Upstream" badge (the project AmethystTool forks). -->
                                             <Border
-                                                Margin="10,0,0,0"
-                                                Padding="7,2"
+                                                Margin="{DynamicResource SpaceLeft12}"
+                                                Padding="{DynamicResource SpaceAll4}"
                                                 VerticalAlignment="Center"
                                                 Background="{StaticResource InfoTintBrush}"
-                                                CornerRadius="4"
+                                                CornerRadius="{DynamicResource RadiusSmall}"
                                                 Visibility="{Binding IsUpstream, Converter={StaticResource BoolToVis}}">
                                                 <TextBlock
-                                                    FontSize="10.5"
+                                                    FontSize="{DynamicResource FontSizeCaption}"
                                                     FontWeight="SemiBold"
                                                     Foreground="{StaticResource InfoBrush}"
                                                     Text="{x:Static res:Strings.Mode_Badge_Upstream}" />
                                             </Border>
                                             <!-- Nightly: amber "Experimental" badge. -->
                                             <Border
-                                                Margin="10,0,0,0"
-                                                Padding="7,2"
+                                                Margin="{DynamicResource SpaceLeft12}"
+                                                Padding="{DynamicResource SpaceAll4}"
                                                 VerticalAlignment="Center"
                                                 Background="{StaticResource WarningTintBrush}"
-                                                CornerRadius="4"
+                                                CornerRadius="{DynamicResource RadiusSmall}"
                                                 Visibility="{Binding IsExperimental, Converter={StaticResource BoolToVis}}">
                                                 <TextBlock
-                                                    FontSize="10.5"
+                                                    FontSize="{DynamicResource FontSizeCaption}"
                                                     FontWeight="SemiBold"
                                                     Foreground="{StaticResource WarningBrush}"
                                                     Text="{x:Static res:Strings.Mode_Experimental}" />
                                             </Border>
                                             <Border
-                                                Margin="6,0,0,0"
-                                                Padding="7,2"
+                                                Margin="{DynamicResource SpaceLeft8}"
+                                                Padding="{DynamicResource SpaceAll4}"
                                                 VerticalAlignment="Center"
                                                 Background="{StaticResource AccentBadgeBrush}"
-                                                CornerRadius="4"
+                                                CornerRadius="{DynamicResource RadiusSmall}"
                                                 Visibility="{Binding IsActive, Converter={StaticResource BoolToVis}}">
                                                 <TextBlock
-                                                    FontSize="10.5"
+                                                    FontSize="{DynamicResource FontSizeCaption}"
                                                     FontWeight="SemiBold"
                                                     Foreground="{StaticResource AccentSoftBrush}"
                                                     Text="{x:Static res:Strings.Mode_Active}" />
                                             </Border>
                                         </StackPanel>
                                         <TextBlock
-                                            Margin="0,6,0,0"
-                                            FontSize="12"
+                                            Margin="{DynamicResource SpaceTop8}"
                                             Foreground="{StaticResource TextDimBrush}"
-                                            Text="{Binding Description}"
-                                            TextWrapping="Wrap" />
+                                            Style="{StaticResource TextCaption}"
+                                            Text="{Binding Description}" />
                                         <!-- Third-party warning: telemetry + DonateKeys (BetterSteamTools card only). -->
                                         <StackPanel
-                                            Margin="0,6,0,0"
+                                            Margin="{DynamicResource SpaceTop8}"
                                             Orientation="Horizontal"
                                             Visibility="{Binding ShowPrivacyWarning, Converter={StaticResource BoolToVis}}">
                                             <ui:SymbolIcon
@@ -357,29 +321,27 @@
                                                 Symbol="Warning24" />
                                             <TextBlock
                                                 MaxWidth="560"
-                                                Margin="6,0,0,0"
-                                                FontSize="12"
+                                                Margin="{DynamicResource SpaceLeft8}"
                                                 Foreground="{StaticResource WarningBrush}"
-                                                Text="{x:Static res:Strings.Mode_Warn_Telemetry}"
-                                                TextWrapping="Wrap" />
+                                                Style="{StaticResource TextBody}"
+                                                Text="{x:Static res:Strings.Mode_Warn_Telemetry}" />
                                         </StackPanel>
                                         <TextBlock
-                                            Margin="0,6,0,0"
-                                            FontSize="12.5"
+                                            Margin="{DynamicResource SpaceTop8}"
                                             Foreground="{StaticResource TextMutedBrush}"
-                                            Text="{Binding StatusText}"
-                                            TextWrapping="Wrap" />
+                                            Style="{StaticResource TextBody}"
+                                            Text="{Binding StatusText}" />
                                         <!-- Active, but nothing recorded: say why Uninstall is disabled. -->
                                         <TextBlock
-                                            Margin="0,6,0,0"
-                                            FontSize="11.5"
+                                            Margin="{DynamicResource SpaceTop8}"
                                             Foreground="{StaticResource TextDimBrush}"
+                                            Style="{StaticResource TextCaption}"
                                             Text="{x:Static res:Strings.Mode_Uninstall_NoRecord}"
-                                            TextWrapping="Wrap"
                                             Visibility="{Binding ShowNoRecordHint, Converter={StaticResource BoolToVis}}" />
                                     </StackPanel>
                                     <StackPanel
                                         Grid.Column="1"
+                                        Margin="{DynamicResource SpaceLeft16}"
                                         VerticalAlignment="Center">
                                         <ui:Button
                                             HorizontalAlignment="Stretch"
@@ -390,7 +352,7 @@
                                             IsEnabled="{Binding DataContext.NotBusy, ElementName=Root}" />
                                         <!-- Active mode only: takes the files it recorded back out. -->
                                         <ui:Button
-                                            Margin="0,8,0,0"
+                                            Margin="{DynamicResource SpaceTop8}"
                                             HorizontalAlignment="Stretch"
                                             HorizontalContentAlignment="Center"
                                             Appearance="Danger"
@@ -413,14 +375,14 @@
         <!-- Fixed bottom dock: shared progress. -->
         <StackPanel Grid.Row="1" MaxWidth="760" Margin="8,0,16,16">
 
-                <!-- Shared progress while installing/switching -->
-                <ProgressBar
-                    Height="6"
-                    Margin="0,2,0,0"
-                    IsIndeterminate="{Binding IsProgressIndeterminate}"
-                    Maximum="100"
-                    Value="{Binding Progress}"
-                    Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}" />
+            <!-- Shared progress while installing/switching -->
+            <ProgressBar
+                Height="6"
+                Margin="{DynamicResource SpaceTop4}"
+                IsIndeterminate="{Binding IsProgressIndeterminate}"
+                Maximum="100"
+                Value="{Binding Progress}"
+                Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}" />
 
         </StackPanel>
 
@@ -432,35 +394,28 @@
             Visibility="{Binding IsConfirming, Converter={StaticResource BoolToVis}}">
             <Border
                 MaxWidth="420"
-                Margin="8"
-                Padding="20"
+                Margin="{DynamicResource SpaceAll8}"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Background="{StaticResource SurfaceOverlayBrush}"
                 BorderBrush="{StaticResource BorderProminentBrush}"
-                BorderThickness="1"
-                CornerRadius="12">
+                Style="{StaticResource CardStyle}">
                 <StackPanel>
+                    <TextBlock Style="{StaticResource TextSubtitle}" Text="{Binding ConfirmTitle}" />
                     <TextBlock
-                        FontSize="16"
-                        FontWeight="Bold"
-                        Text="{Binding ConfirmTitle}"
-                        TextWrapping="Wrap" />
-                    <TextBlock
-                        Margin="0,8,0,0"
-                        FontSize="12.5"
+                        Margin="{DynamicResource SpaceTop8}"
                         Foreground="{StaticResource TextMutedBrush}"
-                        Text="{Binding ConfirmBody}"
-                        TextWrapping="Wrap" />
+                        Style="{StaticResource TextBody}"
+                        Text="{Binding ConfirmBody}" />
                     <StackPanel
-                        Margin="0,16,0,0"
+                        Margin="{DynamicResource SpaceTop16}"
                         HorizontalAlignment="Right"
                         Orientation="Horizontal">
                         <ui:Button
-                            Margin="0,0,8,0"
                             Command="{Binding CancelConfirmCommand}"
                             Content="{x:Static res:Strings.Mode_Cancel}" />
                         <ui:Button
+                            Margin="{DynamicResource SpaceLeft8}"
                             Appearance="Primary"
                             Command="{Binding ConfirmCommand}"
                             Content="{x:Static res:Strings.Mode_CloseSteamContinue}"

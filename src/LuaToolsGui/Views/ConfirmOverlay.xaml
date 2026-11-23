@@ -14,14 +14,15 @@
         <!-- One diff row: clickable → SteamDB. Real name on top, "id · size · OS · lang" below, DLC/SHARED chip right. -->
         <DataTemplate x:Key="DiffRowTemplate">
             <Button
-                Margin="0,0,0,2"
-                Padding="6,4"
+                Margin="{DynamicResource SpaceTop4}"
+                Padding="{DynamicResource SpaceAll8}"
                 HorizontalContentAlignment="Stretch"
                 Background="Transparent"
                 BorderThickness="0"
                 Command="{Binding DataContext.OpenSteamDbCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 CommandParameter="{Binding}"
                 Cursor="Hand"
+                FocusVisualStyle="{StaticResource DefaultControlFocusVisualStyle}"
                 ToolTip="{x:Static res:Strings.Confirm_OpenSteamDb}">
                 <Button.Template>
                     <ControlTemplate TargetType="Button">
@@ -29,7 +30,7 @@
                             x:Name="Bd"
                             Padding="{TemplateBinding Padding}"
                             Background="{TemplateBinding Background}"
-                            CornerRadius="6">
+                            CornerRadius="{DynamicResource RadiusMedium}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -37,40 +38,39 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel>
                                     <TextBlock
-                                        FontSize="12.5"
+                                        FontSize="{DynamicResource FontSizeBody}"
                                         Foreground="{StaticResource TextPrimaryBrush}"
                                         Text="{Binding Title}"
                                         TextTrimming="CharacterEllipsis" />
                                     <TextBlock
-                                        Margin="0,1,0,0"
-                                        FontSize="10.5"
                                         Foreground="{StaticResource TextDimBrush}"
+                                        Style="{StaticResource TextCaption}"
                                         Text="{Binding Meta}" />
                                 </StackPanel>
                                 <Border
                                     Grid.Column="1"
-                                    Margin="8,1,0,0"
-                                    Padding="5,1"
+                                    Margin="{DynamicResource SpaceLeft8}"
+                                    Padding="{DynamicResource SpaceAll4}"
                                     VerticalAlignment="Top"
                                     Background="{StaticResource SurfaceInsetBrush}"
-                                    CornerRadius="4"
+                                    CornerRadius="{DynamicResource RadiusSmall}"
                                     Visibility="{Binding IsDlc, Converter={StaticResource BoolToVis}}">
                                     <TextBlock
-                                        FontSize="9.5"
+                                        FontSize="{DynamicResource FontSizeCaption}"
                                         FontWeight="SemiBold"
                                         Foreground="{StaticResource AccentSoftBrush}"
                                         Text="DLC" />
                                 </Border>
                                 <Border
                                     Grid.Column="1"
-                                    Margin="8,1,0,0"
-                                    Padding="5,1"
+                                    Margin="{DynamicResource SpaceLeft8}"
+                                    Padding="{DynamicResource SpaceAll4}"
                                     VerticalAlignment="Top"
                                     Background="{StaticResource WarningInsetBrush}"
-                                    CornerRadius="4"
+                                    CornerRadius="{DynamicResource RadiusSmall}"
                                     Visibility="{Binding IsShared, Converter={StaticResource BoolToVis}}">
                                     <TextBlock
-                                        FontSize="9.5"
+                                        FontSize="{DynamicResource FontSizeCaption}"
                                         FontWeight="SemiBold"
                                         Foreground="{StaticResource WarningSoftBrush}"
                                         Text="{x:Static res:Strings.Confirm_Shared}" />
@@ -96,14 +96,12 @@
         <Border
             MaxWidth="460"
             MaxHeight="560"
-            Margin="8"
-            Padding="18"
+            Margin="{DynamicResource SpaceAll8}"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Background="{StaticResource SurfaceOverlayBrush}"
             BorderBrush="{StaticResource BorderProminentBrush}"
-            BorderThickness="1"
-            CornerRadius="12">
+            Style="{StaticResource CardStyle}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -112,50 +110,42 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <TextBlock
-                    FontSize="16"
-                    FontWeight="Bold"
-                    Text="{Binding ConfirmTitle}"
-                    TextWrapping="Wrap" />
+                <TextBlock Style="{StaticResource TextSubtitle}" Text="{Binding ConfirmTitle}" />
                 <TextBlock
                     Grid.Row="1"
-                    Margin="0,4,0,0"
-                    FontSize="12"
-                    Foreground="{StaticResource TextMutedBrush}"
+                    Margin="{DynamicResource SpaceTop4}"
+                    Style="{StaticResource TextCaption}"
                     Text="{x:Static res:Strings.Confirm_ReviewChanges}" />
 
                 <ScrollViewer
                     Grid.Row="2"
-                    Margin="0,12,0,0"
+                    Margin="{DynamicResource SpaceTop12}"
                     VerticalScrollBarVisibility="Auto">
                     <StackPanel>
                         <TextBlock
-                            FontSize="12.5"
                             Foreground="{StaticResource TextDimBrush}"
+                            Style="{StaticResource TextBody}"
                             Text="{Binding ConfirmNoChanges}"
-                            TextWrapping="Wrap"
                             Visibility="{Binding ConfirmNoChanges, Converter={StaticResource NullToCollapsed}}" />
 
                         <StackPanel Visibility="{Binding HasAdded, Converter={StaticResource BoolToVis}}">
                             <TextBlock
-                                FontSize="13"
-                                FontWeight="SemiBold"
                                 Foreground="{StaticResource SuccessTextBrush}"
+                                Style="{StaticResource TextBodyStrong}"
                                 Text="{Binding Added.Count, StringFormat={x:Static res:Strings.Confirm_Adding}}" />
                             <ItemsControl
-                                Margin="0,6,0,0"
+                                Margin="{DynamicResource SpaceTop4}"
                                 ItemTemplate="{StaticResource DiffRowTemplate}"
                                 ItemsSource="{Binding Added}" />
                         </StackPanel>
 
-                        <StackPanel Margin="0,10,0,0" Visibility="{Binding HasRemoved, Converter={StaticResource BoolToVis}}">
+                        <StackPanel Margin="{DynamicResource SpaceTop12}" Visibility="{Binding HasRemoved, Converter={StaticResource BoolToVis}}">
                             <TextBlock
-                                FontSize="13"
-                                FontWeight="SemiBold"
                                 Foreground="{StaticResource WarningSoftBrush}"
+                                Style="{StaticResource TextBodyStrong}"
                                 Text="{Binding Removed.Count, StringFormat={x:Static res:Strings.Confirm_Removing}}" />
                             <ItemsControl
-                                Margin="0,6,0,0"
+                                Margin="{DynamicResource SpaceTop4}"
                                 ItemTemplate="{StaticResource DiffRowTemplate}"
                                 ItemsSource="{Binding Removed}" />
                         </StackPanel>
@@ -164,14 +154,14 @@
 
                 <StackPanel
                     Grid.Row="3"
-                    Margin="0,14,0,0"
+                    Margin="{DynamicResource SpaceTop16}"
                     HorizontalAlignment="Right"
                     Orientation="Horizontal">
                     <ui:Button
-                        Margin="0,0,8,0"
                         Command="{Binding CancelOverwriteCommand}"
                         Content="{x:Static res:Strings.Confirm_Skip}" />
                     <ui:Button
+                        Margin="{DynamicResource SpaceLeft8}"
                         Appearance="Primary"
                         Command="{Binding ConfirmOverwriteCommand}"
                         Content="{x:Static res:Strings.Confirm_Replace}"

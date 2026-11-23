@@ -16,8 +16,8 @@
       * Nothing here is BasedOn a WPF-UI style. A {StaticResource} inside a dictionary merged by Source is
         resolved lazily and cannot see its sibling dictionaries: BasedOn="{StaticResource {x:Type ui:Button}}"
         here throws, and {x:Type ListBoxItem} silently falls back to the CLASSIC Windows style (measured,
-        DesignFoundationTests). The WPF-UI-derived components (IconButtonStyle, DangerButtonStyle,
-        ListItemStyle, PagerTemplate) therefore live in App.xaml's own top-level resources, where the lookup
+        DesignFoundationTests). The WPF-UI-derived components (IconButtonStyle, ListItemStyle,
+        PagerTemplate) therefore live in App.xaml's own top-level resources, where the lookup
         does reach the merged WPF-UI dictionaries. Merging ui:ControlsDictionary in here instead was rejected:
         it redefines 8 accent brushes Colors.xaml overrides and would shadow them, killing the accent switch.
 -->

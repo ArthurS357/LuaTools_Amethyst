@@ -35,46 +35,42 @@
 
             <StackPanel Grid.Row="0">
                 <TextBlock
-                    FontSize="17"
-                    FontWeight="Bold"
+                    Style="{StaticResource TextSubtitle}"
                     Text="{Binding GameName}"
-                    TextTrimming="CharacterEllipsis" />
+                    TextTrimming="CharacterEllipsis"
+                    TextWrapping="NoWrap" />
                 <TextBlock
-                    Margin="0,2,0,0"
-                    FontSize="11.5"
-                    Foreground="{StaticResource TextMutedBrush}"
+                    Margin="{DynamicResource SpaceTop4}"
+                    Style="{StaticResource TextCaption}"
                     Text="{Binding AppId, StringFormat={x:Static res:Strings.Common_AppId}}" />
                 <TextBlock
-                    Margin="0,12,0,0"
-                    FontSize="12.5"
-                    FontWeight="SemiBold"
+                    Margin="{DynamicResource SpaceTop12}"
+                    Style="{StaticResource TextBodyStrong}"
                     Text="{x:Static res:Strings.Saves_Locations_Title}" />
                 <TextBlock
-                    Margin="0,4,0,0"
-                    FontSize="11.5"
-                    Foreground="{StaticResource TextMutedBrush}"
+                    Margin="{DynamicResource SpaceTop4}"
+                    Style="{StaticResource TextCaption}"
                     Text="{x:Static res:Strings.Saves_Locations_None}"
-                    TextWrapping="Wrap"
                     Visibility="{Binding HasNoLocations, Converter={StaticResource BoolToVis}}" />
                 <ItemsControl
                     MaxHeight="130"
-                    Margin="0,4,0,0"
+                    Margin="{DynamicResource SpaceTop4}"
                     ItemsSource="{Binding Locations}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <CheckBox
-                                Margin="0,2,0,0"
+                                Margin="{DynamicResource SpaceTop4}"
                                 IsChecked="{Binding IsSelected}"
                                 IsEnabled="{Binding DataContext.NotBusy, ElementName=Root}">
                                 <StackPanel>
                                     <TextBlock
-                                        FontSize="12.5"
+                                        FontSize="{DynamicResource FontSizeBody}"
                                         Text="{Binding Title}"
                                         TextTrimming="CharacterEllipsis"
                                         ToolTip="{Binding Location.Path}" />
                                     <TextBlock
-                                        FontSize="10.5"
                                         Foreground="{StaticResource TextDimBrush}"
+                                        Style="{StaticResource TextCaption}"
                                         Text="{Binding Subtitle}" />
                                 </StackPanel>
                             </CheckBox>
@@ -82,14 +78,14 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
                 <ui:Button
-                    Margin="0,8,0,0"
+                    Margin="{DynamicResource SpaceTop8}"
                     HorizontalAlignment="Left"
                     Command="{Binding AddFolderCommand}"
                     Content="{x:Static res:Strings.Saves_AddFolder}"
                     Icon="{ui:SymbolIcon FolderAdd24}"
                     IsEnabled="{Binding NotBusy}" />
                 <ui:Button
-                    Margin="0,12,0,0"
+                    Margin="{DynamicResource SpaceTop12}"
                     HorizontalAlignment="Stretch"
                     Appearance="Primary"
                     Command="{Binding CreateCommand}"
@@ -97,7 +93,7 @@
                     Icon="{ui:SymbolIcon FolderZip24}"
                     IsEnabled="{Binding NotBusy}" />
                 <ui:Button
-                    Margin="0,8,0,0"
+                    Margin="{DynamicResource SpaceTop8}"
                     HorizontalAlignment="Stretch"
                     Command="{Binding ImportCommand}"
                     Content="{x:Static res:Strings.Saves_Import}"
@@ -107,24 +103,23 @@
 
             <TextBlock
                 Grid.Row="1"
-                Margin="0,24,0,0"
+                Margin="{DynamicResource SpaceTop24}"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Top"
-                FontSize="12"
-                Foreground="{StaticResource TextMutedBrush}"
+                Style="{StaticResource TextCaption}"
                 Text="{x:Static res:Strings.Saves_Empty}"
                 Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}" />
 
             <ListBox
                 Grid.Row="1"
-                Margin="0,12,0,0"
+                Margin="{DynamicResource SpaceTop12}"
                 Background="Transparent"
                 BorderThickness="0"
                 ItemsSource="{Binding Items}"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListBox.ItemContainerStyle>
-                    <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <!-- Rows are not selectable or tab stops here: the buttons inside them are. -->
+                    <Style BasedOn="{StaticResource ListItemStyle}" TargetType="ListBoxItem">
                         <Setter Property="Focusable" Value="False" />
                     </Style>
                 </ListBox.ItemContainerStyle>
@@ -137,12 +132,12 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center">
                                 <TextBlock
-                                    FontSize="12.5"
+                                    FontSize="{DynamicResource FontSizeBody}"
                                     Text="{Binding Title}"
                                     TextTrimming="CharacterEllipsis" />
                                 <TextBlock
-                                    FontSize="10.5"
                                     Foreground="{StaticResource TextDimBrush}"
+                                    Style="{StaticResource TextCaption}"
                                     Text="{Binding Subtitle}" />
                             </StackPanel>
                             <StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -152,7 +147,7 @@
                                     Content="{x:Static res:Strings.Saves_Restore}"
                                     IsEnabled="{Binding DataContext.NotBusy, ElementName=Root}" />
                                 <ui:Button
-                                    Margin="6,0,0,0"
+                                    Margin="{DynamicResource SpaceLeft8}"
                                     Appearance="Danger"
                                     Command="{Binding DataContext.DeleteCommand, ElementName=Root}"
                                     CommandParameter="{Binding}"
@@ -166,7 +161,7 @@
 
             <ui:Button
                 Grid.Row="2"
-                Margin="0,14,0,0"
+                Margin="{DynamicResource SpaceTop16}"
                 HorizontalAlignment="Right"
                 Click="Close_Click"
                 Content="{x:Static res:Strings.Saves_Close}" />

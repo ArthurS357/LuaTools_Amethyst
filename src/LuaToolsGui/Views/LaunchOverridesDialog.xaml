@@ -35,23 +35,18 @@
             <TextBlock
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                FontSize="13"
                 Foreground="{StaticResource TextMutedBrush}"
+                Style="{StaticResource TextBody}"
                 Text="{x:Static res:Strings.Launch_Overrides_Empty}"
                 Visibility="{Binding HasRows, Converter={StaticResource InverseBoolToVis}}" />
 
             <ListBox
                 Background="Transparent"
                 BorderThickness="0"
+                ItemContainerStyle="{StaticResource ListItemStyle}"
                 ItemsSource="{Binding Rows}"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 Visibility="{Binding HasRows, Converter={StaticResource BoolToVis}}">
-                <ListBox.ItemContainerStyle>
-                    <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
-                        <Setter Property="Padding" Value="8,6" />
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    </Style>
-                </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type vm:LaunchOverrideRow}">
                         <Grid Tag="{Binding DataContext, ElementName=Root}">
@@ -69,25 +64,25 @@
                             </Grid.ContextMenu>
                             <StackPanel>
                                 <TextBlock
-                                    FontSize="13"
-                                    FontWeight="SemiBold"
+                                    Style="{StaticResource TextBodyStrong}"
                                     Text="{Binding Name}"
-                                    TextTrimming="CharacterEllipsis" />
+                                    TextTrimming="CharacterEllipsis"
+                                    TextWrapping="NoWrap" />
                                 <TextBlock
-                                    FontSize="11"
-                                    Foreground="{StaticResource TextMutedBrush}"
+                                    Style="{StaticResource TextCaption}"
                                     Text="{Binding AppId, StringFormat={x:Static res:Strings.Common_AppId}}" />
                                 <TextBlock
-                                    Margin="0,2,0,0"
-                                    FontSize="11"
+                                    Margin="{DynamicResource SpaceTop4}"
                                     Foreground="{StaticResource TextDimBrush}"
+                                    Style="{StaticResource TextCaption}"
                                     Text="{Binding Overrides}"
                                     TextTrimming="CharacterEllipsis"
+                                    TextWrapping="NoWrap"
                                     ToolTip="{Binding Overrides}" />
                             </StackPanel>
                             <ui:Button
                                 Grid.Column="1"
-                                Margin="10,0,0,0"
+                                Margin="{DynamicResource SpaceLeft12}"
                                 VerticalAlignment="Center"
                                 Command="{Binding DataContext.ShowInFolderCommand, ElementName=Root}"
                                 CommandParameter="{Binding}"
@@ -100,22 +95,24 @@
             <!-- Footer -->
             <StackPanel
                 Grid.Row="1"
-                Margin="0,14,0,0"
+                Margin="{DynamicResource SpaceTop16}"
                 HorizontalAlignment="Right"
                 Orientation="Horizontal">
                 <ui:ProgressRing
                     Width="20"
                     Height="20"
-                    Margin="0,0,10,0"
                     IsIndeterminate="True"
                     Visibility="{Binding RestoreAllCommand.IsRunning, Converter={StaticResource BoolToVis}}" />
                 <ui:Button
-                    Margin="0,0,8,0"
+                    Margin="{DynamicResource SpaceLeft12}"
                     Appearance="Danger"
                     Command="{Binding RestoreAllCommand}"
                     Content="{x:Static res:Strings.Launch_RestoreAll}"
                     Visibility="{Binding HasRows, Converter={StaticResource BoolToVis}}" />
-                <ui:Button Click="Close_Click" Content="{x:Static res:Strings.Saves_Close}" />
+                <ui:Button
+                    Margin="{DynamicResource SpaceLeft8}"
+                    Click="Close_Click"
+                    Content="{x:Static res:Strings.Saves_Close}" />
             </StackPanel>
         </Grid>
     </Grid>

@@ -16,25 +16,13 @@
             <StackPanel MaxWidth="760" Margin="8,16,16,24">
 
                 <!-- Header -->
-                <TextBlock
-                    FontSize="22"
-                    FontWeight="Bold"
-                    Text="{x:Static res:Strings.Plugin_Title}" />
-                <TextBlock
-                    Margin="0,2,0,0"
-                    FontSize="13"
-                    Foreground="{StaticResource TextMutedBrush}"
-                    Text="{x:Static res:Strings.Plugin_Subtitle}"
-                    TextWrapping="Wrap" />
+                <HeaderedContentControl
+                    Header="{x:Static res:Strings.Plugin_Title}"
+                    Style="{StaticResource PageHeaderStyle}"
+                    Tag="{x:Static res:Strings.Plugin_Subtitle}" />
 
                 <!-- Status card -->
-                <Border
-                    Margin="0,18,0,0"
-                    Padding="18"
-                    Background="{StaticResource SurfaceCardBrush}"
-                    BorderBrush="{StaticResource BorderStrongBrush}"
-                    BorderThickness="1"
-                    CornerRadius="10">
+                <Border Style="{StaticResource CardStyle}">
                     <StackPanel>
 
                         <StackPanel Orientation="Horizontal">
@@ -43,43 +31,43 @@
                                 Foreground="{StaticResource InfoBrush}"
                                 Symbol="PuzzlePiece24" />
                             <TextBlock
-                                Margin="10,0,0,0"
+                                Margin="{DynamicResource SpaceLeft12}"
                                 VerticalAlignment="Center"
-                                FontSize="15"
-                                FontWeight="SemiBold"
+                                Style="{StaticResource TextSubtitle}"
                                 Text="{x:Static res:Strings.Plugin_CardTitle}" />
                             <Border
-                                Margin="10,0,0,0"
-                                Padding="7,2"
+                                Margin="{DynamicResource SpaceLeft12}"
+                                Padding="{DynamicResource SpaceAll4}"
                                 VerticalAlignment="Center"
                                 Background="{StaticResource AccentBadgeBrush}"
-                                CornerRadius="4"
+                                CornerRadius="{DynamicResource RadiusSmall}"
                                 Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
                                 <TextBlock
-                                    FontSize="10.5"
+                                    FontSize="{DynamicResource FontSizeCaption}"
                                     FontWeight="SemiBold"
                                     Foreground="{StaticResource AccentSoftBrush}"
                                     Text="{x:Static res:Strings.Plugin_Status_Installed}" />
                             </Border>
                             <Border
-                                Margin="6,0,0,0"
-                                Padding="7,2"
+                                Margin="{DynamicResource SpaceLeft8}"
+                                Padding="{DynamicResource SpaceAll4}"
                                 VerticalAlignment="Center"
                                 Background="{StaticResource WarningTintBrush}"
-                                CornerRadius="4"
+                                CornerRadius="{DynamicResource RadiusSmall}"
                                 Visibility="{Binding UpdateAvailable, Converter={StaticResource BoolToVis}}">
                                 <TextBlock
-                                    FontSize="10.5"
+                                    FontSize="{DynamicResource FontSizeCaption}"
                                     FontWeight="SemiBold"
                                     Foreground="{StaticResource WarningBrush}"
                                     Text="{x:Static res:Strings.Plugin_Badge_UpdateAvailable}" />
                             </Border>
                         </StackPanel>
 
-                        <!-- Status rows: each has a leading colored status glyph so state reads at a glance. -->
-                        <Grid Margin="0,16,0,0">
+                        <!-- Status rows: each has a leading colored status glyph so state reads at a glance.
+                             Rows breathe through a top margin on every cell (SpaceTop4), not a pair of literals. -->
+                        <Grid Margin="{DynamicResource SpaceTop16}">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="26" />
+                                <ColumnDefinition Width="28" />
                                 <ColumnDefinition Width="140" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
@@ -91,55 +79,55 @@
                             </Grid.RowDefinitions>
 
                             <!-- Version -->
-                            <ui:SymbolIcon Grid.Row="0" Grid.Column="0" Margin="0,4" VerticalAlignment="Center" FontSize="16" Foreground="{StaticResource TextDimBrush}" Symbol="Tag24" />
-                            <TextBlock Grid.Row="0" Grid.Column="1" Margin="0,4" VerticalAlignment="Center" FontSize="12.5" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Plugin_Row_InstalledVersion}" />
-                            <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,4" VerticalAlignment="Center" Orientation="Horizontal">
-                                <TextBlock FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" Text="{Binding InstalledVersion}" />
+                            <ui:SymbolIcon Grid.Row="0" Grid.Column="0" Margin="{DynamicResource SpaceTop4}" VerticalAlignment="Center" FontSize="{DynamicResource FontSizeSubtitle}" Foreground="{StaticResource TextDimBrush}" Symbol="Tag24" />
+                            <TextBlock Grid.Row="0" Grid.Column="1" Margin="{DynamicResource SpaceTop4}" VerticalAlignment="Center" FontSize="{DynamicResource FontSizeBody}" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Plugin_Row_InstalledVersion}" />
+                            <StackPanel Grid.Row="0" Grid.Column="2" Margin="{DynamicResource SpaceTop4}" VerticalAlignment="Center" Orientation="Horizontal">
+                                <TextBlock FontSize="{DynamicResource FontSizeBody}" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" Text="{Binding InstalledVersion}" />
                                 <!-- Update available: arrow to the newer tag, amber. -->
                                 <StackPanel Orientation="Horizontal" Visibility="{Binding UpdateAvailable, Converter={StaticResource BoolToVis}}">
-                                    <TextBlock Margin="7,0,7,0" FontSize="12.5" Foreground="{StaticResource TextDimBrush}" Text="→" />
-                                    <TextBlock FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource WarningBrush}" Text="{Binding LatestVersion}" />
+                                    <TextBlock Margin="{DynamicResource SpaceLeft8}" FontSize="{DynamicResource FontSizeBody}" Foreground="{StaticResource TextDimBrush}" Text="→" />
+                                    <TextBlock Margin="{DynamicResource SpaceLeft8}" FontSize="{DynamicResource FontSizeBody}" FontWeight="SemiBold" Foreground="{StaticResource WarningBrush}" Text="{Binding LatestVersion}" />
                                 </StackPanel>
                                 <!-- Up to date pill, green. -->
-                                <Border Margin="8,0,0,0" Padding="6,1" Background="{StaticResource SuccessTintBrush}" CornerRadius="4"
+                                <Border Margin="{DynamicResource SpaceLeft8}" Padding="{DynamicResource SpaceAll4}" Background="{StaticResource SuccessTintBrush}" CornerRadius="{DynamicResource RadiusSmall}"
                                         Visibility="{Binding ShowUpToDate, Converter={StaticResource BoolToVis}}">
-                                    <TextBlock FontSize="10.5" FontWeight="SemiBold" Foreground="{StaticResource SuccessTextBrush}" Text="{x:Static res:Strings.Plugin_Status_UpToDate}" />
+                                    <TextBlock FontSize="{DynamicResource FontSizeCaption}" FontWeight="SemiBold" Foreground="{StaticResource SuccessTextBrush}" Text="{x:Static res:Strings.Plugin_Status_UpToDate}" />
                                 </Border>
                             </StackPanel>
 
                             <!-- Frontend -->
-                            <Grid Grid.Row="1" Grid.Column="0" Margin="0,4" VerticalAlignment="Center">
-                                <ui:SymbolIcon FontSize="16" Foreground="{StaticResource SuccessTextBrush}" Symbol="CheckmarkCircle24" Visibility="{Binding FrontendInstalled, Converter={StaticResource BoolToVis}}" />
-                                <ui:SymbolIcon FontSize="16" Foreground="{StaticResource TextDimBrush}" Symbol="DismissCircle24" Visibility="{Binding FrontendInstalled, Converter={StaticResource InverseBoolToVis}}" />
+                            <Grid Grid.Row="1" Grid.Column="0" Margin="{DynamicResource SpaceTop4}" VerticalAlignment="Center">
+                                <ui:SymbolIcon FontSize="{DynamicResource FontSizeSubtitle}" Foreground="{StaticResource SuccessTextBrush}" Symbol="CheckmarkCircle24" Visibility="{Binding FrontendInstalled, Converter={StaticResource BoolToVis}}" />
+                                <ui:SymbolIcon FontSize="{DynamicResource FontSizeSubtitle}" Foreground="{StaticResource TextDimBrush}" Symbol="DismissCircle24" Visibility="{Binding FrontendInstalled, Converter={StaticResource InverseBoolToVis}}" />
                             </Grid>
-                            <TextBlock Grid.Row="1" Grid.Column="1" Margin="0,4" VerticalAlignment="Center" FontSize="12.5" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Plugin_Row_Frontend}" />
-                            <TextBlock Grid.Row="1" Grid.Column="2" Margin="0,4" VerticalAlignment="Center" FontSize="12.5" Foreground="{StaticResource TextPrimaryBrush}" Text="{Binding FrontendStatus}" />
+                            <TextBlock Grid.Row="1" Grid.Column="1" Margin="{DynamicResource SpaceTop4}" VerticalAlignment="Center" FontSize="{DynamicResource FontSizeBody}" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Plugin_Row_Frontend}" />
+                            <TextBlock Grid.Row="1" Grid.Column="2" Margin="{DynamicResource SpaceTop4}" VerticalAlignment="Center" FontSize="{DynamicResource FontSizeBody}" Foreground="{StaticResource TextPrimaryBrush}" Text="{Binding FrontendStatus}" />
 
                             <!-- Loader (winmm.dll) -->
-                            <Grid Grid.Row="2" Grid.Column="0" Margin="0,4" VerticalAlignment="Center">
-                                <ui:SymbolIcon FontSize="16" Foreground="{StaticResource SuccessTextBrush}" Symbol="CheckmarkCircle24" Visibility="{Binding DllOk, Converter={StaticResource BoolToVis}}" />
-                                <ui:SymbolIcon FontSize="16" Foreground="{StaticResource WarningBrush}" Symbol="Warning24" Visibility="{Binding DllOutOfDate, Converter={StaticResource BoolToVis}}" />
+                            <Grid Grid.Row="2" Grid.Column="0" Margin="{DynamicResource SpaceTop4}" VerticalAlignment="Center">
+                                <ui:SymbolIcon FontSize="{DynamicResource FontSizeSubtitle}" Foreground="{StaticResource SuccessTextBrush}" Symbol="CheckmarkCircle24" Visibility="{Binding DllOk, Converter={StaticResource BoolToVis}}" />
+                                <ui:SymbolIcon FontSize="{DynamicResource FontSizeSubtitle}" Foreground="{StaticResource WarningBrush}" Symbol="Warning24" Visibility="{Binding DllOutOfDate, Converter={StaticResource BoolToVis}}" />
                                 <!-- Installed, but nothing was published to compare it against (offline, or
                                      the active source is broken). Neutral on purpose: amber here would be
                                      asserting the file is stale, which is exactly what is not known. -->
-                                <ui:SymbolIcon FontSize="16" Foreground="{StaticResource TextDimBrush}" Symbol="Info24" Visibility="{Binding DllUnknown, Converter={StaticResource BoolToVis}}" />
-                                <ui:SymbolIcon FontSize="16" Foreground="{StaticResource TextDimBrush}" Symbol="DismissCircle24" Visibility="{Binding DllNotInstalled, Converter={StaticResource BoolToVis}}" />
+                                <ui:SymbolIcon FontSize="{DynamicResource FontSizeSubtitle}" Foreground="{StaticResource TextDimBrush}" Symbol="Info24" Visibility="{Binding DllUnknown, Converter={StaticResource BoolToVis}}" />
+                                <ui:SymbolIcon FontSize="{DynamicResource FontSizeSubtitle}" Foreground="{StaticResource TextDimBrush}" Symbol="DismissCircle24" Visibility="{Binding DllNotInstalled, Converter={StaticResource BoolToVis}}" />
                             </Grid>
-                            <TextBlock Grid.Row="2" Grid.Column="1" Margin="0,4" VerticalAlignment="Center" FontSize="12.5" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Plugin_Row_Loader}" />
-                            <TextBlock Grid.Row="2" Grid.Column="2" Margin="0,4" VerticalAlignment="Center" FontSize="12.5" Foreground="{StaticResource TextPrimaryBrush}" Text="{Binding DllStatus}" />
+                            <TextBlock Grid.Row="2" Grid.Column="1" Margin="{DynamicResource SpaceTop4}" VerticalAlignment="Center" FontSize="{DynamicResource FontSizeBody}" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Plugin_Row_Loader}" />
+                            <TextBlock Grid.Row="2" Grid.Column="2" Margin="{DynamicResource SpaceTop4}" VerticalAlignment="Center" FontSize="{DynamicResource FontSizeBody}" Foreground="{StaticResource TextPrimaryBrush}" Text="{Binding DllStatus}" />
 
                             <!-- Source: the creator this install comes from. Chosen by the user in the
                                  cards below and never changed on their behalf, so this row states a fact
                                  about the install rather than reporting where a fallback ended up. -->
-                            <ui:SymbolIcon Grid.Row="3" Grid.Column="0" Margin="0,4" VerticalAlignment="Center" FontSize="16" Foreground="{StaticResource TextDimBrush}" Symbol="CloudArrowDown24" />
-                            <TextBlock Grid.Row="3" Grid.Column="1" Margin="0,4" VerticalAlignment="Center" FontSize="12.5" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Plugin_Row_Source}" />
+                            <ui:SymbolIcon Grid.Row="3" Grid.Column="0" Margin="{DynamicResource SpaceTop4}" VerticalAlignment="Center" FontSize="{DynamicResource FontSizeSubtitle}" Foreground="{StaticResource TextDimBrush}" Symbol="CloudArrowDown24" />
+                            <TextBlock Grid.Row="3" Grid.Column="1" Margin="{DynamicResource SpaceTop4}" VerticalAlignment="Center" FontSize="{DynamicResource FontSizeBody}" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Plugin_Row_Source}" />
                             <TextBlock
                                 Grid.Row="3"
                                 Grid.Column="2"
-                                Margin="0,4"
+                                Margin="{DynamicResource SpaceTop4}"
                                 VerticalAlignment="Center"
                                 AutomationProperties.Name="{x:Static res:Strings.Plugin_Row_Source}"
-                                FontSize="12.5"
+                                FontSize="{DynamicResource FontSizeBody}"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource TextPrimaryBrush}"
                                 Text="{Binding ActiveSource}"
@@ -150,46 +138,44 @@
                              switched to the other creator, so this is what tells the user their plugin is
                              stuck and that picking another source below is the way out. -->
                         <Border
-                            Margin="0,14,0,0"
-                            Padding="10,8"
+                            Margin="{DynamicResource SpaceTop16}"
+                            Padding="{DynamicResource SpaceAll12}"
                             Background="{StaticResource AlertTintStrongBrush}"
                             BorderBrush="{StaticResource DangerBrush}"
                             BorderThickness="1"
-                            CornerRadius="6"
+                            CornerRadius="{DynamicResource RadiusMedium}"
                             Visibility="{Binding ActiveSourceError, Converter={StaticResource NullToCollapsed}}">
                             <StackPanel Orientation="Horizontal">
                                 <ui:SymbolIcon
                                     VerticalAlignment="Top"
-                                    FontSize="16"
+                                    FontSize="{DynamicResource FontSizeSubtitle}"
                                     Foreground="{StaticResource DangerBrush}"
                                     Symbol="ErrorCircle24" />
                                 <TextBlock
-                                    Margin="10,0,0,0"
+                                    Margin="{DynamicResource SpaceLeft12}"
                                     VerticalAlignment="Center"
                                     AutomationProperties.LiveSetting="Assertive"
-                                    FontSize="11.5"
                                     Foreground="{StaticResource DangerBrush}"
-                                    Text="{Binding ActiveSourceError}"
-                                    TextWrapping="Wrap" />
+                                    Style="{StaticResource TextBody}"
+                                    Text="{Binding ActiveSourceError}" />
                             </StackPanel>
                         </Border>
 
                         <!-- Millennium coexisting info -->
                         <Border
-                            Margin="0,14,0,0"
-                            Padding="10,8"
+                            Margin="{DynamicResource SpaceTop16}"
+                            Padding="{DynamicResource SpaceAll12}"
                             Background="{StaticResource InfoTintBrush}"
-                            CornerRadius="6"
+                            CornerRadius="{DynamicResource RadiusMedium}"
                             Visibility="{Binding MillenniumCoexisting, Converter={StaticResource BoolToVis}}">
                             <TextBlock
-                                FontSize="11.5"
                                 Foreground="{StaticResource InfoBrush}"
-                                Text="{x:Static res:Strings.Plugin_Millennium_Coexisting}"
-                                TextWrapping="Wrap" />
+                                Style="{StaticResource TextCaption}"
+                                Text="{x:Static res:Strings.Plugin_Millennium_Coexisting}" />
                         </Border>
 
                         <!-- Buttons -->
-                        <StackPanel Margin="0,16,0,0" Orientation="Horizontal">
+                        <StackPanel Margin="{DynamicResource SpaceTop16}" Orientation="Horizontal">
                             <ui:Button
                                 MinWidth="120"
                                 HorizontalContentAlignment="Center"
@@ -210,8 +196,8 @@
                                 </ui:Button.Style>
                             </ui:Button>
                             <ui:Button
-                                Margin="10,0,0,0"
                                 MinWidth="110"
+                                Margin="{DynamicResource SpaceLeft8}"
                                 HorizontalContentAlignment="Center"
                                 Appearance="Danger"
                                 Command="{Binding UninstallCommand}"
@@ -219,7 +205,7 @@
                                 IsEnabled="{Binding CanUninstall}"
                                 Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}" />
                             <ui:Button
-                                Margin="10,0,0,0"
+                                Margin="{DynamicResource SpaceLeft8}"
                                 HorizontalContentAlignment="Center"
                                 Command="{Binding CheckForUpdatesCommand}"
                                 Content="{x:Static res:Strings.Plugin_Btn_CheckForUpdates}"
@@ -229,7 +215,7 @@
                         <!-- Progress -->
                         <ProgressBar
                             Height="6"
-                            Margin="0,14,0,0"
+                            Margin="{DynamicResource SpaceTop16}"
                             IsIndeterminate="{Binding IsProgressIndeterminate}"
                             Maximum="100"
                             Value="{Binding Progress}"
@@ -237,11 +223,10 @@
 
                         <!-- Status line (offline/errors) -->
                         <TextBlock
-                            Margin="0,10,0,0"
-                            FontSize="12"
+                            Margin="{DynamicResource SpaceTop12}"
                             Foreground="{StaticResource WarningStrongBrush}"
+                            Style="{StaticResource TextCaption}"
                             Text="{Binding StatusLine}"
-                            TextWrapping="Wrap"
                             Visibility="{Binding StatusLine, Converter={StaticResource NullToCollapsed}}" />
 
                     </StackPanel>
@@ -256,37 +241,24 @@
                      There is no fallback behind this list: the active card is what gets installed, and
                      a broken source shows its reason here instead of quietly handing the install to the
                      other creator. -->
+                <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="{x:Static res:Strings.Plugin_Sources_Header}" />
                 <TextBlock
-                    Margin="2,26,0,0"
-                    FontSize="11"
-                    FontWeight="SemiBold"
-                    Foreground="{StaticResource TextDimBrush}"
-                    Text="{x:Static res:Strings.Plugin_Sources_Header}" />
-                <TextBlock
-                    Margin="2,6,0,0"
-                    FontSize="12"
                     Foreground="{StaticResource TextMutedBrush}"
-                    Text="{x:Static res:Strings.Plugin_Sources_Subtitle}"
-                    TextWrapping="Wrap" />
+                    Style="{StaticResource TextCaption}"
+                    Text="{x:Static res:Strings.Plugin_Sources_Subtitle}" />
 
                 <ItemsControl
-                    Margin="0,12,0,0"
                     AutomationProperties.Name="{x:Static res:Strings.Plugin_Sources_Header}"
                     ItemsSource="{Binding Sources}"
                     KeyboardNavigation.TabNavigation="Continue">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border
-                                Margin="0,0,0,12"
-                                Padding="18"
-                                Background="{StaticResource SurfaceCardBrush}"
-                                BorderThickness="1"
-                                CornerRadius="10">
-                                <!-- The active card is outlined in the accent rather than only badged:
-                                     the badge alone puts the whole signal on a 10.5px word, and the
-                                     outline is what makes "which one am I on" readable without it. -->
+                            <!-- The active card is outlined in the accent rather than only badged:
+                                 the badge alone puts the whole signal on an 11px word, and the
+                                 outline is what makes "which one am I on" readable without it. -->
+                            <Border Margin="{DynamicResource SpaceTop12}">
                                 <Border.Style>
-                                    <Style TargetType="Border">
+                                    <Style BasedOn="{StaticResource CardStyle}" TargetType="Border">
                                         <Setter Property="BorderBrush" Value="{StaticResource BorderStrongBrush}" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsActive}" Value="True">
@@ -308,35 +280,34 @@
                                                 Foreground="{StaticResource AccentBrush}"
                                                 Symbol="PuzzlePiece24" />
                                             <TextBlock
-                                                Margin="10,0,0,0"
+                                                Margin="{DynamicResource SpaceLeft12}"
                                                 VerticalAlignment="Center"
-                                                FontSize="15"
-                                                FontWeight="SemiBold"
+                                                Style="{StaticResource TextSubtitle}"
                                                 Text="{Binding Slug}" />
                                             <Border
-                                                Margin="10,0,0,0"
-                                                Padding="7,2"
+                                                Margin="{DynamicResource SpaceLeft12}"
+                                                Padding="{DynamicResource SpaceAll4}"
                                                 VerticalAlignment="Center"
                                                 Background="{StaticResource AccentBadgeBrush}"
-                                                CornerRadius="4"
+                                                CornerRadius="{DynamicResource RadiusSmall}"
                                                 Visibility="{Binding IsActive, Converter={StaticResource BoolToVis}}">
                                                 <TextBlock
                                                     AutomationProperties.Name="{x:Static res:Strings.Plugin_Source_Active}"
-                                                    FontSize="10.5"
+                                                    FontSize="{DynamicResource FontSizeCaption}"
                                                     FontWeight="SemiBold"
                                                     Foreground="{StaticResource AccentSoftBrush}"
                                                     Text="{x:Static res:Strings.Plugin_Source_Active}" />
                                             </Border>
                                             <!-- Which entry a user who has never chosen is on. -->
                                             <Border
-                                                Margin="6,0,0,0"
-                                                Padding="7,2"
+                                                Margin="{DynamicResource SpaceLeft8}"
+                                                Padding="{DynamicResource SpaceAll4}"
                                                 VerticalAlignment="Center"
                                                 Background="{StaticResource SurfaceStrongBrush}"
-                                                CornerRadius="4"
+                                                CornerRadius="{DynamicResource RadiusSmall}"
                                                 Visibility="{Binding IsDefault, Converter={StaticResource BoolToVis}}">
                                                 <TextBlock
-                                                    FontSize="10.5"
+                                                    FontSize="{DynamicResource FontSizeCaption}"
                                                     FontWeight="SemiBold"
                                                     Foreground="{StaticResource TextMutedBrush}"
                                                     Text="{x:Static res:Strings.Plugin_Source_Default}" />
@@ -344,28 +315,26 @@
                                         </StackPanel>
 
                                         <TextBlock
-                                            Margin="0,6,0,0"
-                                            FontSize="12"
+                                            Margin="{DynamicResource SpaceTop8}"
                                             Foreground="{StaticResource TextDimBrush}"
-                                            Text="{Binding Creator}"
-                                            TextWrapping="Wrap" />
+                                            Style="{StaticResource TextCaption}"
+                                            Text="{Binding Creator}" />
 
                                         <TextBlock
-                                            Margin="0,6,0,0"
-                                            FontSize="12.5"
+                                            Margin="{DynamicResource SpaceTop8}"
                                             Foreground="{StaticResource TextMutedBrush}"
-                                            Text="{Binding StatusText}"
-                                            TextWrapping="Wrap" />
+                                            Style="{StaticResource TextBody}"
+                                            Text="{Binding StatusText}" />
 
                                         <!-- What this source publishes right now. -->
-                                        <StackPanel Margin="0,6,0,0" Orientation="Horizontal">
+                                        <StackPanel Margin="{DynamicResource SpaceTop8}" Orientation="Horizontal">
                                             <TextBlock
-                                                FontSize="12.5"
+                                                FontSize="{DynamicResource FontSizeBody}"
                                                 Foreground="{StaticResource TextDimBrush}"
                                                 Text="{x:Static res:Strings.Plugin_Source_LatestVersion}" />
                                             <TextBlock
-                                                Margin="8,0,0,0"
-                                                FontSize="12.5"
+                                                Margin="{DynamicResource SpaceLeft8}"
+                                                FontSize="{DynamicResource FontSizeBody}"
                                                 FontWeight="SemiBold"
                                                 Foreground="{StaticResource TextPrimaryBrush}"
                                                 Text="{Binding LatestVersion}" />
@@ -374,15 +343,14 @@
                                         <!-- Why this source cannot be installed from. Stated on the card
                                              it belongs to, so choosing between sources is informed. -->
                                         <TextBlock
-                                            Margin="0,6,0,0"
-                                            FontSize="11.5"
+                                            Margin="{DynamicResource SpaceTop8}"
                                             Foreground="{StaticResource WarningStrongBrush}"
+                                            Style="{StaticResource TextCaption}"
                                             Text="{Binding ProblemText}"
-                                            TextWrapping="Wrap"
                                             Visibility="{Binding ProblemText, Converter={StaticResource NullToCollapsed}}" />
                                     </StackPanel>
 
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <StackPanel Grid.Column="1" Margin="{DynamicResource SpaceLeft16}" VerticalAlignment="Center">
                                         <!-- Switching is the only action a non-active card offers; the
                                              active one is driven by the Install/Update button above,
                                              which is the same split the Mode page uses. -->
@@ -405,59 +373,42 @@
                 </ItemsControl>
 
                 <!-- "What this does" — fills the page and explains the plugin at a glance. -->
-                <TextBlock
-                    Margin="2,26,0,0"
-                    FontSize="11"
-                    FontWeight="SemiBold"
-                    Foreground="{StaticResource TextDimBrush}"
-                    Text="{x:Static res:Strings.Plugin_About_Header}" />
+                <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="{x:Static res:Strings.Plugin_About_Header}" />
 
-                <StackPanel Margin="0,10,0,0">
-                    <StackPanel.Resources>
-                        <Style x:Key="FeatureRow" TargetType="Border">
-                            <Setter Property="Margin" Value="0,0,0,8" />
-                            <Setter Property="Padding" Value="14,12" />
-                            <Setter Property="Background" Value="{StaticResource SurfaceCardBrush}" />
-                            <Setter Property="BorderBrush" Value="{StaticResource BorderStrongBrush}" />
-                            <Setter Property="BorderThickness" Value="1" />
-                            <Setter Property="CornerRadius" Value="10" />
-                        </Style>
-                    </StackPanel.Resources>
-
-                    <Border Style="{StaticResource FeatureRow}">
+                <StackPanel>
+                    <Border Margin="{DynamicResource SpaceTop8}" Style="{StaticResource CardStyle}">
                         <StackPanel Orientation="Horizontal">
-                            <Border Width="34" Height="34" VerticalAlignment="Center" Background="{StaticResource AccentTintHoverBrush}" CornerRadius="8">
-                                <ui:SymbolIcon FontSize="18" Foreground="{StaticResource AccentBrush}" Symbol="AddCircle24" />
+                            <Border Width="36" Height="36" VerticalAlignment="Center" Background="{StaticResource AccentTintHoverBrush}" CornerRadius="{DynamicResource RadiusMedium}">
+                                <ui:SymbolIcon FontSize="{DynamicResource FontSizeTitle}" Foreground="{StaticResource AccentBrush}" Symbol="AddCircle24" />
                             </Border>
-                            <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" FontSize="12.5" Foreground="{StaticResource TextSecondaryBrush}" Text="{x:Static res:Strings.Plugin_Feature_StoreButton}" TextWrapping="Wrap" />
+                            <TextBlock Margin="{DynamicResource SpaceLeft12}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" Style="{StaticResource TextBody}" Text="{x:Static res:Strings.Plugin_Feature_StoreButton}" />
                         </StackPanel>
                     </Border>
 
-                    <Border Style="{StaticResource FeatureRow}">
+                    <Border Margin="{DynamicResource SpaceTop8}" Style="{StaticResource CardStyle}">
                         <StackPanel Orientation="Horizontal">
-                            <Border Width="34" Height="34" VerticalAlignment="Center" Background="{StaticResource AccentTintHoverBrush}" CornerRadius="8">
-                                <ui:SymbolIcon FontSize="18" Foreground="{StaticResource AccentBrush}" Symbol="ArrowSync24" />
+                            <Border Width="36" Height="36" VerticalAlignment="Center" Background="{StaticResource AccentTintHoverBrush}" CornerRadius="{DynamicResource RadiusMedium}">
+                                <ui:SymbolIcon FontSize="{DynamicResource FontSizeTitle}" Foreground="{StaticResource AccentBrush}" Symbol="ArrowSync24" />
                             </Border>
-                            <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" FontSize="12.5" Foreground="{StaticResource TextSecondaryBrush}" Text="{x:Static res:Strings.Plugin_Feature_AutoUpdate}" TextWrapping="Wrap" />
+                            <TextBlock Margin="{DynamicResource SpaceLeft12}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" Style="{StaticResource TextBody}" Text="{x:Static res:Strings.Plugin_Feature_AutoUpdate}" />
                         </StackPanel>
                     </Border>
 
-                    <Border Style="{StaticResource FeatureRow}">
+                    <Border Margin="{DynamicResource SpaceTop8}" Style="{StaticResource CardStyle}">
                         <StackPanel Orientation="Horizontal">
-                            <Border Width="34" Height="34" VerticalAlignment="Center" Background="{StaticResource AccentTintHoverBrush}" CornerRadius="8">
-                                <ui:SymbolIcon FontSize="18" Foreground="{StaticResource AccentBrush}" Symbol="PuzzlePiece24" />
+                            <Border Width="36" Height="36" VerticalAlignment="Center" Background="{StaticResource AccentTintHoverBrush}" CornerRadius="{DynamicResource RadiusMedium}">
+                                <ui:SymbolIcon FontSize="{DynamicResource FontSizeTitle}" Foreground="{StaticResource AccentBrush}" Symbol="PuzzlePiece24" />
                             </Border>
-                            <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" FontSize="12.5" Foreground="{StaticResource TextSecondaryBrush}" Text="{x:Static res:Strings.Plugin_Feature_Millennium}" TextWrapping="Wrap" />
+                            <TextBlock Margin="{DynamicResource SpaceLeft12}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" Style="{StaticResource TextBody}" Text="{x:Static res:Strings.Plugin_Feature_Millennium}" />
                         </StackPanel>
                     </Border>
                 </StackPanel>
 
                 <TextBlock
-                    Margin="2,10,0,0"
-                    FontSize="11.5"
+                    Margin="{DynamicResource SpaceTop12}"
                     Foreground="{StaticResource TextDimBrush}"
-                    Text="{x:Static res:Strings.Plugin_Footer}"
-                    TextWrapping="Wrap" />
+                    Style="{StaticResource TextCaption}"
+                    Text="{x:Static res:Strings.Plugin_Footer}" />
 
             </StackPanel>
         </ScrollViewer>

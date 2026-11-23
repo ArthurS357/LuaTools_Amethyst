@@ -53,13 +53,6 @@
                 <Setter Property="AutomationProperties.Name" Value="{Binding ToolTip, RelativeSource={RelativeSource Self}}" />
             </Style>
 
-            <!-- Destructive action (delete, uninstall, clear history, restore all). WPF-UI's own Danger
-                 appearance, the one ManageView's bulk delete already uses, so every destructive button
-                 reads the same. -->
-            <Style x:Key="DangerButtonStyle" BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
-                <Setter Property="Appearance" Value="Danger" />
-            </Style>
-
             <!-- List row container. Replaces the four hand-copied ItemContainerStyles (Builds,
                  LaunchOptions, LaunchOverrides, SaveBackup); selection visuals stay WPF-UI's. WPF-UI's own
                  ListBoxItem does NOT carry its keyboard focus ring (measured, DesignFoundationTests), so a
