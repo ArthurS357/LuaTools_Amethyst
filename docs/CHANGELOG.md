@@ -1,5 +1,38 @@
 # Changelog
 
+## 1.8.3 — 2026-11-23 (build interna, sem tag nem release)
+
+Redesign visual com design system, acessibilidade e fechamento de pendencias. So existe na `main` e em pacote local; a proxima
+versao publica e a 1.9.0.
+
+### Novidades
+
+- **Design system:** `Themes/Typography.xaml` (6 tamanhos, piso 11), `Spacing.xaml` (grade de 4 e 3 raios) e `Controls.xaml`
+  (card, cabecalho de pagina e de secao, divisor, estados vazio/erro/carregando); estilos derivados do WPF-UI no topo do
+  `App.xaml` (`IconButtonStyle`, `ListItemStyle`, `PagerTemplate`). Todas as telas e dialogos migrados. `ManageView` e
+  `BuildsView` divididas em `UserControl`s. Catraca de literais (`DesignFoundationTests`) de 396/705/102 para 2/149/7.
+- **Vidro:** `ShellAlpha` 0xA6 -> 0xC9; texto do shell com contraste AA (>= 4,5:1) nas 3 paletas sobre desktop claro.
+- **Acessibilidade:** nome acessivel e `ToolTip` nos botoes so-glifo e no paginador; anel de foco de teclado; `Appearance="Danger"`
+  nas acoes destrutivas.
+- **Estados:** vazio/carregando em Downloads e Add; o banner de jogos instalados sem fix virou `ui:InfoBar` dispensavel, com a
+  escolha gravada em `settings.json`.
+
+### Seguranca e correcoes
+
+- **Chave Hubcap (M1):** se o DPAPI nao conseguir criptografar, a chave fica so em memoria na sessao, nunca em texto puro no
+  disco, e Configuracoes avisa (`Settings_HubcapKeySessionOnly`).
+- `AppLog` passa pelo `SanitizePath`; respostas 2xx do `LuaToolsApiClient` agora sao descartadas com `using`; voltar o DNS para
+  `Auto` chama `DnsFallbackHttpHandler.Reset()`.
+- **Corrigido:** a aba Correcao lancava excecao ao carregar (`ui:InfoBar.Message` e string e recebia um `ScrollViewer`).
+- Pacotes: VirtualizingWrapPanel 2.5.4, AwesomeAssertions 9.6.0, xunit 2.9.3, Microsoft.NET.Test.Sdk 18.12.0.
+- Removido `DangerButtonStyle` (nenhuma tela o usava).
+
+### Implementacao
+
+- Testes novos, entre outros: `DesignFoundationTests`, `ViewSplitTests`, `AccessibilityDangerTests`, `StateComponentsViewTests` e
+  `ViewLoadSmokeTests` (carrega as telas migradas contra os recursos do app). 2.702 -> 2.803.
+- 29 idiomas x 809 chaves; 19 chaves seguem so em ingles (`PENDING_TRANSLATION`).
+
 ## 1.8.2 — 2026-11-21
 
 Catalogo independente (espelho `ArthurS357/LuaTools-Catalog`), correcoes orfas com SHA-256 fail-closed e o endurecimento da

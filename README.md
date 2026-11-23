@@ -13,7 +13,7 @@ enable/disable), manages unlocker modes, launches games through Steam, and injec
 into Steam's store pages. It ships translated in 29 languages and installs via Velopack; updating itself
 is opt-in (see [Updating](#updating)).
 
-Current version: **1.7.13.1** · Repository: <https://github.com/ArthurS357/LuaTools_Amethyst>
+Latest public release: **[v1.8.2](https://github.com/ArthurS357/LuaTools_Amethyst/releases/tag/v1.8.2)** · The `main` branch is **1.8.3**, an internal build that has no release or tag; the next public release is 1.9.0 · Repository: <https://github.com/ArthurS357/LuaTools_Amethyst>
 
 ### Checking which build you are running
 
@@ -34,7 +34,7 @@ back analytics and the Steam key upload. Reinstall from the repository above.
 | DonateKeys | **On by default.** Scraped per-depot `DecryptionKey` values out of Steam's `config.vdf` and uploaded them over plain HTTP to a bare IP | **Removed.** See below |
 | Cleartext requests | Key upload + manifest lookups | Only one metadata lookup remains, and it announces itself |
 | App auto-update | Points at the official release feed | **Off by default**; opt in to this fork's own repo with `AppUpdateRepos`, official repos refused ([Updating](#updating)) |
-| Theme | Default | "Amethyst" purple palette, centralised and contrast-checked |
+| Theme | Default | "Amethyst" purple palette, centralised and contrast-checked; type, spacing and corner tokens, a visible keyboard focus ring, and a translucent shell that keeps WCAG AA text contrast |
 
 ### Why DonateKeys was not re-enabled
 
@@ -168,6 +168,28 @@ Everything else — sign-in, manifest/plugin/unlocker downloads, GitHub access �
 A second HTTP URL used to exist: a hardcoded `http://167.235.229.108/<appid>` download source in the
 built-in fallback list. It turned out to be dead data (nothing ever read the field), so it was deleted
 rather than gated.
+
+---
+
+## Where the Fixes catalog comes from
+
+The Fixes tab no longer depends on a single site. It reads, in order:
+
+1. **This project's own catalog mirror**, [`ArthurS357/LuaTools-Catalog`](https://github.com/ArthurS357/LuaTools-Catalog)
+   (`catalog.json`, refreshed by a GitHub Action). It carries the lua.tools listing **plus fixes lua.tools does not list**.
+2. **lua.tools**, if the mirror cannot be reached.
+3. **A saved copy on disk**, so the tab still opens with the network cut. The page says when it is showing the saved copy.
+
+A fix that only the mirror carries (an "orphan", `source: "merged"` in the catalog) is held to a stricter rule than the
+rest: it is downloaded only from a public `https` link, and only if its **SHA-256 matches the catalog**. A mismatch discards
+the file; there is no "download anyway". The file stays opened and locked from the moment it is hashed until it is applied,
+so it cannot be swapped in between. Installed games with no fix at all in the catalog are listed in a banner you can close;
+the app remembers that you closed it.
+
+**DNS fallback.** If your system DNS fails for LuaTools, Hubcap or GitHub hosts, the app can resolve them through Cloudflare
+DoH (`1.1.1.1`, HTTPS only). **Settings → Network** has three modes: *Auto* (default: only after a real DNS failure),
+*Always* and *Never*. When it is active, those host names are sent to Cloudflare; nothing else is. Switching back to *Auto*
+forgets an earlier failure in the same session.
 
 ---
 
@@ -307,7 +329,7 @@ Three things about it are worth knowing before you press it:
 The Plugin page's card, and every card on the Mode page, have an **Uninstall** button. It works from an
 **install record**, not from a list of file names — and that distinction is the whole reason it is safe to press.
 
-LuaTools keeps that record in `%AppData%\LuaToolsGui\install-manifest.json`: which plugin placed which
+LuaTools keeps that record in `%AppData%\LuaToolsAmethyst\install-manifest.json`: which plugin placed which
 files in your Steam folder, when, and what each one hashed to. Uninstall removes exactly those, and:
 
 - **A file another install still needs is kept.** `dwmapi.dll` and `xinput1_4.dll` are placed by
@@ -452,7 +474,7 @@ is deliberately no setting for that. Instead:
    Get-FileHash .\winmm.dll -Algorithm SHA256
    ```
    Only if they match, place the file yourself: loader DLLs and Mode DLLs go in the Steam root (next to
-   `steam.exe`, with Steam fully closed); `plugin.zip` extracts to `%AppData%\LuaToolsGui\plugin`. You are
+   `steam.exe`, with Steam fully closed); `plugin.zip` extracts to `%AppData%\LuaToolsAmethyst\plugin`. You are
    performing the verification the app would have performed — if the hashes differ, do not use the file.
 4. **A release with no published digest cannot be verified at all.** GitHub only began populating the
    asset `digest` field in mid-2025, so older releases carry none. The app refuses those rather than
@@ -501,6 +523,13 @@ One deliberate exception: a headless `luatools://install/silent/<appid>` launch 
 trigger — still exits once it has reported the result, unless you have explicitly asked for a tray-resident
 app. It does not leave behind a process you never started.
 
+## The Downloads page
+
+Manifest and depot downloads share one queue, and the **Downloads** tab shows everything the app is fetching right now and
+what it fetched before. It is empty until something has been added from the **Add** page or fetched from **Depots**.
+Destructive actions anywhere in the app (uninstall, delete, clear history, restore all) use the red *Danger* button and are
+never the default button of a dialog.
+
 ## Playing a game from the Manage tab
 
 Each game in **Manage** has a primary action button, and the same action is on the card's right-click
@@ -530,6 +559,18 @@ no raw-string fallback. See `SteamLaunchPolicy` (the decision, pure and tested) 
 
 ## Recent features
 
+Public through 1.8.2 unless marked *(main, unreleased)*:
+
+- **Independent Fixes catalog** with an offline copy and checked orphan fixes (see above) — 1.8.2.
+- **DNS fallback** with a Settings → Network selector — 1.8.0 / 1.8.1.
+- **Hardening round after the catalog** — 1.8.2: the Steamless download pinned to `atom0s/Steamless` and screened, the CEF
+  bridge restricted to `https://store.steampowered.com`, fixed staging file names, redirects checked hop by hop, cookies off
+  for the DoH client, log lines and toasts that hide your profile folder.
+- **Hubcap key kept safe** *(main, unreleased)*: stored with Windows DPAPI; if DPAPI cannot encrypt it, it is kept in memory for
+  the session only and never written to `settings.json`, and Settings tells you to enter it again after a restart.
+- **Redesigned UI** *(main, unreleased)*: one set of type, spacing and corner tokens across every page and dialog, names and
+  tooltips on icon-only buttons, a keyboard focus ring, empty/loading/error states, and a closable banner for installed games
+  with no fix. The accent still switches live.
 - **Install status.** The Manage tab shows which games are already installed on disk.
 - **Save backup.** Back up and restore game progress, with custom folders supported and backups organised
   in one folder per game name.
@@ -540,9 +581,10 @@ no raw-string fallback. See `SteamLaunchPolicy` (the decision, pure and tested) 
 
 ## Configuration
 
-Settings live in `%AppData%\LuaToolsGui\settings.json`. Most are managed from the Settings page; the
+Settings live in `%AppData%\LuaToolsAmethyst\settings.json`. Most are managed from the Settings page; the
 keys below are advanced and have no UI. The file is only written when something is worth persisting, so
-it may not exist until you change a setting — you can create it by hand.
+it may not exist until you change a setting — you can create it by hand. (Before 1.8.0 the folder was
+`%AppData%\LuaToolsGui`, shared with upstream LuaTools; it is copied once on first start and the old folder is left in place.)
 
 ### GitHub mirrors
 
@@ -588,6 +630,10 @@ cannot substitute a different project's content.
 | `PluginAutoUpdate` | `false` | `true` lets the store-page plugin update itself unattended |
 | `PluginSource` | unset | Which creator's plugin build is active — set from the Plugin page, not by hand |
 
+**The Hubcap API key** is stored with Windows DPAPI (current-user scope) and is never written to `settings.json` in clear.
+If DPAPI cannot encrypt it, the key stays in memory for that session only and Settings says so. **Log lines and toasts** hide
+your Windows profile folder (`%USERPROFILE%`) as well as credentials.
+
 <a id="pluginsource"></a>
 `PluginSource` holds `"owner/repo"` and is written by the Plugin page when you press *Use this source*.
 Unset means "never chosen", which is what lets an existing install keep the source it actually came from
@@ -627,8 +673,8 @@ A full example:
 
 ## Building
 
-Needs the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) (the released installer only
-needs the .NET 10 **Desktop Runtime**).
+Needs the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0). The released installer is
+self-contained (about 84 MB) and needs no .NET runtime on the machine.
 
 Both projects target `net10.0-windows` as of 1.5.4. The move off `net8.0-windows` is a support deadline,
 not a feature: .NET 8 stops receiving security fixes in November 2026, and .NET 10 is LTS until November
@@ -648,10 +694,14 @@ py scripts/check-i18n.py
 ```
 
 ```bash
+py scripts/check-encoding.py
+```
+
+```bash
 dotnet format LuaToolsGui.sln --verify-no-changes
 ```
 
-All four must pass before a release. `check-i18n.py` validates the 29 translation files against the
+All five must pass before a release (CI runs build, test, `check-encoding.py` and `check-i18n.py`). `check-i18n.py` validates the 29 translation files against the
 English baseline — key parity, no duplicate keys, valid XML, matching `{0}` placeholders, and that
 `Strings.Designer.cs` exposes every key. It resolves the repository from its own location, so it can be
 run from any working directory (`--root` overrides that). `dotnet format` reads its rules from
@@ -668,7 +718,7 @@ you to reconstruct it:
 ```
 
 It publishes a self-contained single-file `win-x64` build and writes
-`src/LuaToolsGui/bin/Release/<tfm>/win-x64/publish/LuaTools.exe` (~165 MB). `-RepoRoot`, `-Configuration`
+`src/LuaToolsGui/bin/Release/<tfm>/win-x64/publish/LuaTools.exe` (~178 MB). `-RepoRoot`, `-Configuration`
 and `-Runtime` are accepted if you need to override any of them. A non-zero exit code means the publish
 failed; nothing downstream should run.
 
@@ -676,13 +726,18 @@ It resolves `<tfm>` by reading `TargetFramework` out of the project rather than 
 1.5.4 move to `net10.0-windows` needed no change to the published path.
 
 This produces the **binary only**. Packaging it into an installer is a separate `vpk pack` step and is
-deliberately not part of the script.
+deliberately not part of the script. The local command, run from the repository root:
 
-> **Carry the TFM move into `vpk pack`.** That step is manual and lives outside this repo, so nothing here
-> updates it for you. A framework-dependent Velopack build names the runtime its setup bootstraps on a
-> clean machine — that argument has to go from the .NET 8 desktop runtime to the .NET 10 one
-> (`--framework net10.0-x64-desktop`), or the installer provisions a runtime the 1.5.4 binary will not
-> start on. The `packId` does **not** change: it keys every existing install and renaming it orphans them.
+```powershell
+vpk pack --packId LuaToolsAmethyst --packVersion <x.y.z> `
+  --packDir src\LuaToolsGui\bin\Release\net10.0-windows\win-x64\publish `
+  --mainExe LuaTools.exe --packTitle "LuaTools Amethyst" --packAuthors LuaToolsAmethyst `
+  --icon src\LuaToolsGui\icon.ico --outputDir Releases\vpk-<x.y.z>-local --yes
+```
+
+> **The `packId` never changes**: it keys every existing install and renaming it orphans them. The pack version is
+> the app version. Packages are published manually, not by a workflow; `Releases/` is git-ignored. A build on `main`
+> with no tag (1.8.3 today) is only ever packed locally.
 
 ### Code signing (optional)
 
@@ -746,9 +801,10 @@ risk; on a shared or long-lived build machine, prefer a dedicated, access-contro
 
 ```
 src/LuaToolsGui/     the application (Models, Services, ViewModels, Views, Themes, Resources)
+  Themes/            palette (Colors.xaml) and the design system: Typography, Spacing and Controls.xaml
 tests/               xUnit suite
-scripts/             build-release.ps1, check-i18n.py
-docs/                CHANGELOG and the security audit
+scripts/             build-release.ps1, check-i18n.py, check-encoding.py
+docs/                CHANGELOG, audits and per-release notes
 .github/workflows/   build + test on Windows, i18n check on Linux
 ```
 
@@ -812,8 +868,12 @@ package is therefore pinned to `[4.3.0]` in
 [`LuaToolsGui.csproj`](src/LuaToolsGui/LuaToolsGui.csproj) — the bracket form makes NuGet refuse to
 substitute another version instead of silently resolving one.
 
+Other pinned versions are in [`Directory.Packages.props`](Directory.Packages.props) (central package management):
+CommunityToolkit.Mvvm, Microsoft.Extensions.Hosting, Velopack, VirtualizingWrapPanel, Markdig.Wpf and, for tests, xunit,
+AwesomeAssertions and Microsoft.NET.Test.Sdk.
+
 If you deliberately upgrade it, **run the app once**. A startup guard verifies the accent actually
-applied and, if it did not, writes a `THEME:` line to `%AppData%\LuaToolsGui\crash.log` and shows a
+applied and, if it did not, writes a `THEME:` line to `%AppData%\LuaToolsAmethyst\crash.log` and shows a
 warning. Without that check the failure is invisible: nothing throws, and the app just quietly reverts to
 grey chrome with the Windows accent colour. `App.VerifyAccentApplied` documents how to re-map the keys.
 
@@ -823,7 +883,8 @@ grey chrome with the Windows accent colour. `App.VerifyAccentApplied` documents 
 
 Uninstalling through Windows **Apps & features** runs a cleanup hook that removes what Velopack itself
 does not: the CDP marker next to `steam.exe`, the loader DLLs in the Steam root, the `luatools://`
-protocol registration, and `%AppData%\LuaToolsGui` (which holds your saved token and API key).
+protocol registration, and `%AppData%\LuaToolsAmethyst` (which holds your saved token and API key). The legacy
+`%AppData%\LuaToolsGui` folder is shared with upstream LuaTools and is left alone.
 
 The CDP marker matters most: while it exists, Steam opens an **unauthenticated debug port** on
 `127.0.0.1:8080` on every launch, which lets any local process drive Steam's built-in browser under your
@@ -844,7 +905,7 @@ hand after any change to the removal path:
    - `dir /a "<Steam>\.cef-enable-remote-debugging"` — the junction exists.
    - `<Steam>\winmm.dll` and `winmm_real.dll` exist.
    - `reg query "HKCU\Software\Classes\luatools"` returns a key.
-   - `%AppData%\LuaToolsGui\` exists.
+   - `%AppData%\LuaToolsAmethyst\` exists.
 4. **Fully close Steam** (tray included). A running Steam locks `winmm.dll`; the hook reports the failure
    and continues rather than blocking, which is correct but leaves the file behind.
 5. Uninstall via Windows Apps & features.

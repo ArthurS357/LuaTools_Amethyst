@@ -19,9 +19,9 @@ dotnet test
 
 ### Releases
 
-Official builds are packaged and signed by the maintainers, so the release tooling isn't part of
-this repo. Released builds are framework-dependent (~10 MB) and the setup auto-installs the .NET 10
-Desktop Runtime on a clean machine. Self-update through Velopack is opt-in (`AppUpdateRepos`, see the README).
+Official builds are packaged by the maintainers. The `vpk pack` command is in the README ("Building"); the build script is
+`scripts/build-release.ps1`. Released builds are self-contained (the Setup is about 84 MB, no runtime needed) and, for now,
+not code-signed, so Windows SmartScreen may warn. Self-update through Velopack is opt-in (`AppUpdateRepos`, see the README).
 
 To produce a local build for testing, `dotnet publish -c Release` is enough.
 
@@ -32,7 +32,8 @@ To produce a local build for testing, `dotnet publish -c Release` is enough.
 | `src/LuaToolsGui/` | The application: `Views/` (XAML), `ViewModels/`, `Services/`, `Models/`, `Resources/` (localization) |
 | `src/LuaToolsGui/AppConfig.cs` | All compiled-in endpoints, mirrors and public client values |
 | `tests/LuaToolsGui.Tests/` | xUnit tests |
-| `scripts/check-i18n.py` | Translation validator, run by CI on every RESX change |
+| `src/LuaToolsGui/Themes/` | Palette plus the design system (`Typography`, `Spacing`, `Controls.xaml`); new UI uses these tokens, not literal sizes or margins |
+| `scripts/check-i18n.py`, `scripts/check-encoding.py` | Translation and encoding validators, run by CI |
 
 ## Contribution Guidelines
 
