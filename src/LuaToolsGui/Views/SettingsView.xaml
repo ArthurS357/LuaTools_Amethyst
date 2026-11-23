@@ -4,160 +4,121 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:LuaToolsGui.Views"
     xmlns:res="clr-namespace:LuaToolsGui.Resources"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:vm="clr-namespace:LuaToolsGui.ViewModels"
     d:DataContext="{d:DesignInstance Type=vm:SettingsViewModel}"
     TextElement.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-        mc:Ignorable="d">
-
-    <UserControl.Resources>
-        <!-- Section card: one bordered container that groups a section's rows. -->
-        <Style x:Key="SettingsCard" TargetType="Border">
-            <Setter Property="Background" Value="{StaticResource SurfaceGhostBrush}" />
-            <Setter Property="BorderBrush" Value="{StaticResource BorderSubtleBrush}" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="8" />
-        </Style>
-        <!-- Section header (small grey uppercase label above each card). -->
-        <Style x:Key="SectionHeader" TargetType="TextBlock">
-            <Setter Property="Margin" Value="0,24,0,8" />
-            <Setter Property="FontSize" Value="13" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
-        </Style>
-        <!-- Thin divider between rows inside a card. -->
-        <Style x:Key="RowDivider" TargetType="Border">
-            <Setter Property="Height" Value="1" />
-            <Setter Property="Background" Value="{StaticResource SurfaceCardHoverBrush}" />
-            <Setter Property="Margin" Value="14,0" />
-        </Style>
-    </UserControl.Resources>
+    mc:Ignorable="d">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel MaxWidth="640" Margin="8,16,8,24">
-            <TextBlock
-                FontSize="22"
-                FontWeight="Bold"
-                Text="{x:Static res:Strings.Settings_Title}" />
+            <HeaderedContentControl Header="{x:Static res:Strings.Settings_Title}" Style="{StaticResource PageHeaderStyle}" />
 
-            <!-- Account -->
+            <!-- Account. The first header sits right under the page header, which already leaves the gap. -->
             <TextBlock
-                Margin="0,20,0,8"
-                Style="{StaticResource SectionHeader}"
+                Margin="0,0,0,8"
+                Style="{StaticResource SectionHeaderStyle}"
                 Text="{x:Static res:Strings.Settings_Section_Account}" />
             <!-- One card holds the account row(s) + the lua.tools hint. -->
-            <Border Style="{StaticResource SettingsCard}">
+            <Border Style="{StaticResource CardStyle}">
                 <StackPanel>
                     <!-- Signed-in account -->
-                    <StackPanel
-                        Margin="14,12"
-                        Visibility="{Binding IsRealUser, Converter={StaticResource BoolToVis}}">
-                    <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <Border
-                        Width="40"
-                        Height="40"
-                        CornerRadius="20">
-                        <Border.Background>
-                            <ImageBrush ImageSource="{Binding AvatarUrl}" Stretch="UniformToFill" />
-                        </Border.Background>
-                    </Border>
-                    <StackPanel
-                        Grid.Column="1"
-                        Margin="12,0"
-                        VerticalAlignment="Center">
-                        <TextBlock
-                            FontSize="14"
-                            FontWeight="SemiBold"
-                            Text="{Binding DisplayName}" />
-                        <TextBlock
-                            FontSize="12"
-                            Foreground="{StaticResource TextDimBrush}"
-                            Text="{Binding Email}" />
-                    </StackPanel>
-                        <ui:Button
-                            Grid.Column="2"
-                            Command="{Binding SignOutCommand}"
-                            Content="{x:Static res:Strings.Settings_SignOut}"
-                            Icon="{ui:SymbolIcon SignOut24}" />
-                    </Grid>
-
-                    <!-- Bot-provisioned: prompt to re-link the full lua.tools account. -->
-                    <Border
-                        Margin="0,10,0,0"
-                        Padding="12"
-                        Background="{StaticResource WarningTintBrush}"
-                        BorderBrush="{StaticResource WarningOutlineBrush}"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        Visibility="{Binding ShowBotLinkBanner, Converter={StaticResource BoolToVis}}">
-                        <StackPanel>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <StackPanel>
-                                    <TextBlock
-                                        FontWeight="SemiBold"
-                                        Text="{x:Static res:Strings.Settings_BotLink_Title}" />
-                                    <TextBlock
-                                        Margin="0,2,0,0"
-                                        FontSize="12"
-                                        Foreground="{StaticResource TextMutedBrush}"
-                                        Text="{x:Static res:Strings.Settings_BotLink_Body}"
-                                        TextWrapping="Wrap" />
-                                </StackPanel>
-                                <ui:Button
-                                    Grid.Column="1"
-                                    Margin="8,0,0,0"
-                                    VerticalAlignment="Top"
-                                    Command="{Binding DismissBotBannerCommand}"
-                                    Content="{x:Static res:Strings.Settings_BotLink_Dismiss}" />
-                            </Grid>
-                            <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
-                                <ui:TextBox
-                                    Width="120"
-                                    CharacterCasing="Upper"
-                                    MaxLength="6"
-                                    PlaceholderText="{x:Static res:Strings.Settings_BotCode_Placeholder}"
-                                    Text="{Binding CodeInput, UpdateSourceTrigger=PropertyChanged}" />
-                                <ui:Button
-                                    Margin="8,0,0,0"
-                                    Command="{Binding SignInWithCodeCommand}"
-                                    Content="{x:Static res:Strings.Settings_BotCode_Redeem}"
-                                    Icon="{ui:SymbolIcon Link24}"
-                                    IsEnabled="{Binding CanRedeemCode}" />
+                    <StackPanel Visibility="{Binding IsRealUser, Converter={StaticResource BoolToVis}}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Border
+                                Width="40"
+                                Height="40"
+                                CornerRadius="20">
+                                <Border.Background>
+                                    <ImageBrush ImageSource="{Binding AvatarUrl}" Stretch="UniformToFill" />
+                                </Border.Background>
+                            </Border>
+                            <StackPanel
+                                Grid.Column="1"
+                                Margin="{DynamicResource SpaceLeft12}"
+                                VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource TextBodyStrong}" Text="{Binding DisplayName}" />
+                                <TextBlock Style="{StaticResource TextCaption}" Text="{Binding Email}" />
                             </StackPanel>
-                            <TextBlock
-                                Margin="0,8,0,0"
-                                FontSize="11.5"
-                                Foreground="{StaticResource DangerBrush}"
-                                Text="{Binding CodeError}"
-                                TextWrapping="Wrap"
-                                Visibility="{Binding CodeError, Converter={StaticResource NullToCollapsed}}" />
-                        </StackPanel>
-                    </Border>
+                            <ui:Button
+                                Grid.Column="2"
+                                Margin="{DynamicResource SpaceLeft12}"
+                                Command="{Binding SignOutCommand}"
+                                Content="{x:Static res:Strings.Settings_SignOut}"
+                                Icon="{ui:SymbolIcon SignOut24}" />
+                        </Grid>
+
+                        <!-- Bot-provisioned: prompt to re-link the full lua.tools account. -->
+                        <Border
+                            Margin="{DynamicResource SpaceTop12}"
+                            Padding="{DynamicResource SpaceAll12}"
+                            Background="{StaticResource WarningTintBrush}"
+                            BorderBrush="{StaticResource WarningOutlineBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{DynamicResource RadiusMedium}"
+                            Visibility="{Binding ShowBotLinkBanner, Converter={StaticResource BoolToVis}}">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource TextBodyStrong}" Text="{x:Static res:Strings.Settings_BotLink_Title}" />
+                                        <TextBlock
+                                            Margin="{DynamicResource SpaceTop4}"
+                                            Style="{StaticResource TextCaption}"
+                                            Text="{x:Static res:Strings.Settings_BotLink_Body}" />
+                                    </StackPanel>
+                                    <ui:Button
+                                        Grid.Column="1"
+                                        Margin="{DynamicResource SpaceLeft8}"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding DismissBotBannerCommand}"
+                                        Content="{x:Static res:Strings.Settings_BotLink_Dismiss}" />
+                                </Grid>
+                                <StackPanel Margin="{DynamicResource SpaceTop12}" Orientation="Horizontal">
+                                    <ui:TextBox
+                                        Width="120"
+                                        CharacterCasing="Upper"
+                                        MaxLength="6"
+                                        PlaceholderText="{x:Static res:Strings.Settings_BotCode_Placeholder}"
+                                        Text="{Binding CodeInput, UpdateSourceTrigger=PropertyChanged}" />
+                                    <ui:Button
+                                        Margin="{DynamicResource SpaceLeft8}"
+                                        Command="{Binding SignInWithCodeCommand}"
+                                        Content="{x:Static res:Strings.Settings_BotCode_Redeem}"
+                                        Icon="{ui:SymbolIcon Link24}"
+                                        IsEnabled="{Binding CanRedeemCode}" />
+                                </StackPanel>
+                                <TextBlock
+                                    Margin="{DynamicResource SpaceTop8}"
+                                    Foreground="{StaticResource DangerBrush}"
+                                    Style="{StaticResource TextCaption}"
+                                    Text="{Binding CodeError}"
+                                    Visibility="{Binding CodeError, Converter={StaticResource NullToCollapsed}}" />
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
 
                     <!-- Guest -->
-                    <StackPanel
-                        Margin="14,12"
-                        Visibility="{Binding IsGuest, Converter={StaticResource BoolToVis}}">
+                    <StackPanel Visibility="{Binding IsGuest, Converter={StaticResource BoolToVis}}">
 
                         <!-- Login-required banner: shown when redirected from a protected action. -->
                         <Border
-                            Margin="0,0,0,10"
-                            Padding="12"
+                            Margin="0,0,0,12"
+                            Padding="{DynamicResource SpaceAll12}"
                             Background="{StaticResource InfoTintBrush}"
                             BorderBrush="{StaticResource InfoOutlineBrush}"
                             BorderThickness="1"
-                            CornerRadius="8"
+                            CornerRadius="{DynamicResource RadiusMedium}"
                             Visibility="{Binding LoginRequiredMessage, Converter={StaticResource NullToCollapsed}}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -166,23 +127,24 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                     <ui:SymbolIcon
-                                        Margin="0,0,8,0"
-                                        FontSize="16"
+                                        FontSize="{DynamicResource FontSizeSubtitle}"
                                         Foreground="{StaticResource InfoBrush}"
                                         Symbol="Info24" />
                                     <TextBlock
+                                        Margin="{DynamicResource SpaceLeft8}"
                                         VerticalAlignment="Center"
-                                        FontSize="13"
-                                        Text="{Binding LoginRequiredMessage}"
-                                        TextWrapping="Wrap" />
+                                        Style="{StaticResource TextBody}"
+                                        Text="{Binding LoginRequiredMessage}" />
                                 </StackPanel>
+                                <!-- Glyph-only: IconButtonStyle makes the ToolTip the accessible name as well,
+                                     and the explicit Name below is what AccessibilityDangerTests looks for. -->
                                 <ui:Button
                                     Grid.Column="1"
-                                    Margin="8,0,0,0"
-                                    Appearance="Secondary"
+                                    Margin="{DynamicResource SpaceLeft8}"
                                     AutomationProperties.Name="{x:Static res:Strings.Settings_BotLink_Dismiss}"
                                     Command="{Binding DismissLoginRequiredCommand}"
                                     Content="✕"
+                                    Style="{StaticResource IconButtonStyle}"
                                     ToolTip="{x:Static res:Strings.Settings_BotLink_Dismiss}" />
                             </Grid>
                         </Border>
@@ -193,14 +155,8 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock
-                                    FontSize="14"
-                                    FontWeight="SemiBold"
-                                    Text="{x:Static res:Strings.Settings_BrowsingAsGuest}" />
-                                <TextBlock
-                                    FontSize="12"
-                                    Foreground="{StaticResource TextDimBrush}"
-                                    Text="{x:Static res:Strings.Settings_GuestHint}" />
+                                <TextBlock Style="{StaticResource TextBodyStrong}" Text="{x:Static res:Strings.Settings_BrowsingAsGuest}" />
+                                <TextBlock Style="{StaticResource TextCaption}" Text="{x:Static res:Strings.Settings_GuestHint}" />
                             </StackPanel>
                             <ui:Button
                                 Grid.Column="1"
@@ -211,13 +167,12 @@
                         </Grid>
 
                         <!-- Discord bot code: redeem a /login code without the browser flow. -->
-                        <Border Style="{StaticResource RowDivider}" Margin="0,12,0,0" />
+                        <Border Margin="{DynamicResource SpaceTop12}" Style="{StaticResource RowDividerStyle}" />
                         <TextBlock
-                            Margin="0,12,0,0"
-                            FontSize="12"
-                            Foreground="{StaticResource TextMutedBrush}"
+                            Margin="{DynamicResource SpaceTop12}"
+                            Style="{StaticResource TextCaption}"
                             Text="{x:Static res:Strings.Settings_BotCode_Hint}" />
-                        <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
+                        <StackPanel Margin="{DynamicResource SpaceTop8}" Orientation="Horizontal">
                             <ui:TextBox
                                 x:Name="CodeBox"
                                 Width="120"
@@ -226,27 +181,26 @@
                                 PlaceholderText="{x:Static res:Strings.Settings_BotCode_Placeholder}"
                                 Text="{Binding CodeInput, UpdateSourceTrigger=PropertyChanged}" />
                             <ui:Button
-                                Margin="8,0,0,0"
+                                Margin="{DynamicResource SpaceLeft8}"
                                 Command="{Binding SignInWithCodeCommand}"
                                 Content="{x:Static res:Strings.Settings_BotCode_Redeem}"
                                 Icon="{ui:SymbolIcon Key24}"
                                 IsEnabled="{Binding CanRedeemCode}" />
                         </StackPanel>
                         <TextBlock
-                            Margin="0,8,0,0"
-                            FontSize="11.5"
+                            Margin="{DynamicResource SpaceTop8}"
                             Foreground="{StaticResource DangerBrush}"
+                            Style="{StaticResource TextCaption}"
                             Text="{Binding CodeError}"
-                            TextWrapping="Wrap"
                             Visibility="{Binding CodeError, Converter={StaticResource NullToCollapsed}}" />
                     </StackPanel>
                 </StackPanel>
             </Border>
 
             <!-- Hubcap API key -->
-            <TextBlock Style="{StaticResource SectionHeader}" Text="{x:Static res:Strings.Settings_Section_Hubcap}" />
-            <Border Style="{StaticResource SettingsCard}">
-                <StackPanel Margin="14,12">
+            <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="{x:Static res:Strings.Settings_Section_Hubcap}" />
+            <Border Style="{StaticResource CardStyle}">
+                <StackPanel>
                     <!-- Active key: stats card -->
                     <StackPanel Visibility="{Binding HubcapIsKeyConfigured, Converter={StaticResource BoolToVis}}">
                         <!-- Key-expiry warning. Deliberately the FIRST thing in the configured block and
@@ -257,12 +211,12 @@
                              disagree. A failed stats call leaves it null, so a dropped connection never
                              invents a warning about a healthy key. -->
                         <Border
-                            Margin="0,0,0,10"
-                            Padding="10,8"
+                            Margin="0,0,0,12"
+                            Padding="{DynamicResource SpaceAll8}"
                             Background="{StaticResource SurfaceGhostBrush}"
                             BorderBrush="{Binding HubcapExpiryWarningColor, Converter={StaticResource ResourceKeyToBrush}}"
                             BorderThickness="1"
-                            CornerRadius="6"
+                            CornerRadius="{DynamicResource RadiusMedium}"
                             Visibility="{Binding HubcapExpiryWarning, Converter={StaticResource NullToCollapsed}}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -272,21 +226,20 @@
                                 <!-- Icon carries no information the text doesn't; it is there so the row
                                      reads as an alert at a glance rather than as one more line of copy. -->
                                 <ui:SymbolIcon
-                                    Margin="0,0,8,0"
                                     VerticalAlignment="Top"
-                                    FontSize="16"
+                                    FontSize="{DynamicResource FontSizeSubtitle}"
                                     Foreground="{Binding HubcapExpiryWarningColor, Converter={StaticResource ResourceKeyToBrush}}"
                                     Symbol="Warning24" />
                                 <TextBlock
                                     Grid.Column="1"
-                                    FontSize="12"
+                                    Margin="{DynamicResource SpaceLeft8}"
                                     Foreground="{StaticResource TextSecondaryBrush}"
-                                    Text="{Binding HubcapExpiryWarning}"
-                                    TextWrapping="Wrap" />
+                                    Style="{StaticResource TextCaption}"
+                                    Text="{Binding HubcapExpiryWarning}" />
                             </Grid>
                         </Border>
                         <!-- Active badge + Refresh -->
-                        <Grid Margin="0,0,0,10">
+                        <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
@@ -305,8 +258,14 @@
                                 Icon="{ui:SymbolIcon Dismiss24}" />
                         </Grid>
                         <!-- Usage progress card -->
-                        <Border Margin="0,0,0,10" Padding="12" Background="{StaticResource SurfaceGhostBrush}" BorderBrush="{StaticResource BorderSubtleBrush}" BorderThickness="1" CornerRadius="6"
-                                Visibility="{Binding ShowHubcapStats, Converter={StaticResource BoolToVis}}">
+                        <Border
+                            Margin="{DynamicResource SpaceTop12}"
+                            Padding="{DynamicResource SpaceAll12}"
+                            Background="{StaticResource SurfaceGhostBrush}"
+                            BorderBrush="{StaticResource BorderSubtleBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{DynamicResource RadiusMedium}"
+                            Visibility="{Binding ShowHubcapStats, Converter={StaticResource BoolToVis}}">
                             <StackPanel>
                                 <!-- Real ProgressBar (Fluent-styled, same as PluginView/ModeView/FixesView).
                                      HubcapUsagePercent is 0.0–1.0, so Maximum="1"; ProgressBar clamps past it.
@@ -317,9 +276,10 @@
                                     Maximum="1"
                                     Minimum="0"
                                     Value="{Binding HubcapUsagePercent, Mode=OneWay}" />
-                                <TextBlock Margin="0,8,0,0" FontSize="13"
-                                           Text="{Binding HubcapStatsText}"
-                                           TextWrapping="Wrap" />
+                                <TextBlock
+                                    Margin="{DynamicResource SpaceTop8}"
+                                    Style="{StaticResource TextBody}"
+                                    Text="{Binding HubcapStatsText}" />
                             </StackPanel>
                         </Border>
                     </StackPanel>
@@ -329,17 +289,12 @@
                          HubcapIsKeyConfigured, bringing this block back). The onboarding copy below reads
                          wrong when a key already exists, hence the collapse. -->
                     <StackPanel Visibility="{Binding HubcapIsKeyConfigured, Converter={StaticResource InverseBoolToVis}}">
+                        <TextBlock Style="{StaticResource TextBodyStrong}" Text="{x:Static res:Strings.Settings_HubcapKey}" />
                         <TextBlock
-                            FontSize="13"
-                            FontWeight="Medium"
-                            Text="{x:Static res:Strings.Settings_HubcapKey}" />
-                        <TextBlock
-                            Margin="0,4,0,0"
-                            FontSize="12"
-                            Foreground="{StaticResource TextDimBrush}"
-                            Text="{x:Static res:Strings.Settings_HubcapKey_Hint}"
-                            TextWrapping="Wrap" />
-                        <Grid Margin="0,8,0,0">
+                            Margin="{DynamicResource SpaceTop4}"
+                            Style="{StaticResource TextCaption}"
+                            Text="{x:Static res:Strings.Settings_HubcapKey_Hint}" />
+                        <Grid Margin="{DynamicResource SpaceTop8}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
@@ -365,7 +320,7 @@
                                 PlaceholderText="{x:Static res:Strings.Settings_HubcapKeyPlaceholder}" />
                             <ui:Button
                                 Grid.Column="1"
-                                Margin="8,0,0,0"
+                                Margin="{DynamicResource SpaceLeft8}"
                                 Appearance="Primary"
                                 Command="{Binding ValidateAndSaveHubcapKeyCommand}"
                                 Content="{x:Static res:Strings.Settings_HubcapValidate}"
@@ -374,17 +329,16 @@
                         <!-- Error text (only ever set by the two ValidateAndSaveHubcapKeyAsync failure paths,
                              so it can never be orphaned by this collapse). -->
                         <TextBlock
-                            Margin="0,8,0,0"
-                            FontSize="12"
+                            Margin="{DynamicResource SpaceTop8}"
                             Foreground="{Binding HubcapKeyStatusColor, Converter={StaticResource ResourceKeyToBrush}}"
+                            Style="{StaticResource TextCaption}"
                             Text="{Binding HubcapKeyStatus}"
-                            TextWrapping="Wrap"
                             Visibility="{Binding HubcapKeyStatus, Converter={StaticResource NullToCollapsed}}" />
                         <!-- "Get a key" link -->
                         <TextBlock
-                            Margin="0,8,0,0"
-                            FontSize="12"
-                            Foreground="{StaticResource TextDimBrush}">
+                            Margin="{DynamicResource SpaceTop8}"
+                            Foreground="{StaticResource TextDimBrush}"
+                            Style="{StaticResource TextCaption}">
                             <Run Text="{x:Static res:Strings.Settings_HubcapGetKey}" />
                             <Hyperlink Command="{Binding OpenHubcapCommand}" Foreground="{StaticResource AccentBrush}">hubcapmanifest.com</Hyperlink>
                         </TextBlock>
@@ -393,55 +347,45 @@
             </Border>
 
             <!-- Install behavior (Auto Update Apps + FastFetch) -->
-            <TextBlock Style="{StaticResource SectionHeader}" Text="{x:Static res:Strings.Settings_Section_Install}" />
-            <Border Style="{StaticResource SettingsCard}">
+            <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="{x:Static res:Strings.Settings_Section_Install}" />
+            <Border Padding="0" Style="{StaticResource CardStyle}">
                 <StackPanel>
                     <!-- Auto Update Apps -->
-                    <Grid Margin="14,12">
+                    <Grid Margin="{DynamicResource SpaceAll16}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center">
+                            <TextBlock Style="{StaticResource TextBodyStrong}" Text="{x:Static res:Strings.Settings_AutoUpdateApps}" />
                             <TextBlock
-                                FontSize="13"
-                                FontWeight="Medium"
-                                Text="{x:Static res:Strings.Settings_AutoUpdateApps}" />
-                            <TextBlock
-                                Margin="0,4,0,0"
-                                FontSize="12"
-                                Foreground="{StaticResource TextDimBrush}"
-                                Text="{x:Static res:Strings.Settings_AutoUpdateApps_Hint}"
-                                TextWrapping="Wrap" />
+                                Margin="{DynamicResource SpaceTop4}"
+                                Style="{StaticResource TextCaption}"
+                                Text="{x:Static res:Strings.Settings_AutoUpdateApps_Hint}" />
                         </StackPanel>
                         <ui:ToggleSwitch
                             Grid.Column="1"
-                            Margin="12,0,0,0"
+                            Margin="{DynamicResource SpaceLeft12}"
                             VerticalAlignment="Center"
                             IsChecked="{Binding AutoUpdateApps, Mode=TwoWay}" />
                     </Grid>
-                    <Border Style="{StaticResource RowDivider}" />
+                    <Border Style="{StaticResource RowDividerStyle}" />
                     <!-- FastFetch (same persisted setting as the Add screen's toggle) -->
-                    <Grid Margin="14,12">
+                    <Grid Margin="{DynamicResource SpaceAll16}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center">
+                            <TextBlock Style="{StaticResource TextBodyStrong}" Text="{x:Static res:Strings.Add_FastFetch}" />
                             <TextBlock
-                                FontSize="13"
-                                FontWeight="Medium"
-                                Text="{x:Static res:Strings.Add_FastFetch}" />
-                            <TextBlock
-                                Margin="0,4,0,0"
-                                FontSize="12"
-                                Foreground="{StaticResource TextDimBrush}"
-                                Text="{x:Static res:Strings.Add_FastFetch_Hint}"
-                                TextWrapping="Wrap" />
+                                Margin="{DynamicResource SpaceTop4}"
+                                Style="{StaticResource TextCaption}"
+                                Text="{x:Static res:Strings.Add_FastFetch_Hint}" />
                         </StackPanel>
                         <ui:ToggleSwitch
                             Grid.Column="1"
-                            Margin="12,0,0,0"
+                            Margin="{DynamicResource SpaceLeft12}"
                             VerticalAlignment="Center"
                             IsChecked="{Binding FastFetch, Mode=TwoWay}" />
                     </Grid>
@@ -450,15 +394,12 @@
 
             <!-- Network (Cloudflare DoH fallback mode). Applies live: SettingsService publishes it to the
                  shared DnsFallbackSession and the HTTP handler reads the mode on every request. -->
-            <TextBlock Style="{StaticResource SectionHeader}" Text="{x:Static res:Strings.Settings_Section_Network}" />
-            <Border Style="{StaticResource SettingsCard}">
-                <StackPanel Margin="14,12">
-                    <TextBlock
-                        FontSize="13"
-                        FontWeight="Medium"
-                        Text="{x:Static res:Strings.Settings_Dns}" />
+            <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="{x:Static res:Strings.Settings_Section_Network}" />
+            <Border Style="{StaticResource CardStyle}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource TextBodyStrong}" Text="{x:Static res:Strings.Settings_Dns}" />
                     <ComboBox
-                        Margin="0,8,0,0"
+                        Margin="{DynamicResource SpaceTop8}"
                         MinWidth="220"
                         HorizontalAlignment="Left"
                         AutomationProperties.Name="{x:Static res:Strings.Settings_Dns}"
@@ -466,35 +407,28 @@
                         ItemsSource="{Binding DnsModeOptions}"
                         SelectedItem="{Binding SelectedDnsMode}" />
                     <TextBlock
-                        Margin="0,8,0,0"
-                        FontSize="12"
-                        Foreground="{StaticResource TextDimBrush}"
-                        Text="{x:Static res:Strings.Settings_Dns_Hint}"
-                        TextWrapping="Wrap" />
+                        Margin="{DynamicResource SpaceTop8}"
+                        Style="{StaticResource TextCaption}"
+                        Text="{x:Static res:Strings.Settings_Dns_Hint}" />
                 </StackPanel>
             </Border>
 
             <!-- General (language) -->
-            <TextBlock Style="{StaticResource SectionHeader}" Text="{x:Static res:Strings.Settings_Section_General}" />
-            <Border Style="{StaticResource SettingsCard}">
-                <StackPanel Margin="14,12">
-                    <TextBlock
-                        FontSize="13"
-                        FontWeight="Medium"
-                        Text="{x:Static res:Strings.Settings_Language}" />
+            <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="{x:Static res:Strings.Settings_Section_General}" />
+            <Border Style="{StaticResource CardStyle}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource TextBodyStrong}" Text="{x:Static res:Strings.Settings_Language}" />
                     <ComboBox
-                        Margin="0,8,0,0"
+                        Margin="{DynamicResource SpaceTop8}"
                         MinWidth="220"
                         HorizontalAlignment="Left"
                         DisplayMemberPath="Display"
                         ItemsSource="{Binding LanguageOptions}"
                         SelectedItem="{Binding SelectedLanguage}" />
                     <TextBlock
-                        Margin="0,8,0,0"
-                        FontSize="12"
-                        Foreground="{StaticResource TextDimBrush}"
-                        Text="{x:Static res:Strings.Settings_Language_Hint}"
-                        TextWrapping="Wrap" />
+                        Margin="{DynamicResource SpaceTop8}"
+                        Style="{StaticResource TextCaption}"
+                        Text="{x:Static res:Strings.Settings_Language_Hint}" />
 
                     <!-- Accent colour. Unlike the language above this needs no relaunch: App mutates the
                          palette brush objects in place, so views holding them by StaticResource repaint.
@@ -506,11 +440,10 @@
                          the picker differs from what is painted, so "already applied" reads off the
                          control instead of being discovered by clicking and seeing nothing happen. -->
                     <TextBlock
-                        Margin="0,18,0,0"
-                        FontSize="13"
-                        FontWeight="Medium"
+                        Margin="{DynamicResource SpaceTop16}"
+                        Style="{StaticResource TextBodyStrong}"
                         Text="{x:Static res:Strings.Settings_Accent}" />
-                    <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
+                    <StackPanel Margin="{DynamicResource SpaceTop8}" Orientation="Horizontal">
                         <ComboBox
                             MinWidth="220"
                             DisplayMemberPath="Display"
@@ -519,41 +452,34 @@
                         <!-- IsEnabled is not bound: a Button driven by a Command already disables itself
                              from CanExecute, and binding it as well would give the same state two owners. -->
                         <ui:Button
-                            Margin="8,0,0,0"
+                            Margin="{DynamicResource SpaceLeft8}"
                             Appearance="Primary"
                             Command="{Binding ApplyAccentChangeCommand}"
                             Content="{x:Static res:Strings.Settings_Accent_Apply}"
                             Icon="{ui:SymbolIcon Checkmark24}" />
                     </StackPanel>
                     <TextBlock
-                        Margin="0,8,0,0"
-                        FontSize="12"
-                        Foreground="{StaticResource TextDimBrush}"
-                        Text="{x:Static res:Strings.Settings_Accent_Hint}"
-                        TextWrapping="Wrap" />
+                        Margin="{DynamicResource SpaceTop8}"
+                        Style="{StaticResource TextCaption}"
+                        Text="{x:Static res:Strings.Settings_Accent_Hint}" />
 
                     <!-- Glass effect. Applies live, like the accent (MainWindow.ApplyGlass); off = the solid
                          window, also what Windows 10 and high contrast always get (Themes/GlassPolicy.cs). -->
-                    <Grid Margin="0,18,0,0">
+                    <Grid Margin="{DynamicResource SpaceTop16}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center">
+                            <TextBlock Style="{StaticResource TextBodyStrong}" Text="{x:Static res:Strings.Settings_Glass}" />
                             <TextBlock
-                                FontSize="13"
-                                FontWeight="Medium"
-                                Text="{x:Static res:Strings.Settings_Glass}" />
-                            <TextBlock
-                                Margin="0,4,0,0"
-                                FontSize="12"
-                                Foreground="{StaticResource TextDimBrush}"
-                                Text="{x:Static res:Strings.Settings_Glass_Hint}"
-                                TextWrapping="Wrap" />
+                                Margin="{DynamicResource SpaceTop4}"
+                                Style="{StaticResource TextCaption}"
+                                Text="{x:Static res:Strings.Settings_Glass_Hint}" />
                         </StackPanel>
                         <ui:ToggleSwitch
                             Grid.Column="1"
-                            Margin="12,0,0,0"
+                            Margin="{DynamicResource SpaceLeft12}"
                             VerticalAlignment="Center"
                             AutomationProperties.Name="{x:Static res:Strings.Settings_Glass}"
                             IsChecked="{Binding EnableGlassmorphism, Mode=TwoWay}" />
@@ -562,14 +488,11 @@
             </Border>
 
             <!-- Steam -->
-            <TextBlock Style="{StaticResource SectionHeader}" Text="{x:Static res:Strings.Settings_Section_Steam}" />
-            <Border Style="{StaticResource SettingsCard}">
-                <StackPanel Margin="14,12">
-                    <TextBlock
-                        FontSize="13"
-                        FontWeight="Medium"
-                        Text="{x:Static res:Strings.Settings_SteamLocation}" />
-                    <Grid Margin="0,8,0,0">
+            <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="{x:Static res:Strings.Settings_Section_Steam}" />
+            <Border Style="{StaticResource CardStyle}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource TextBodyStrong}" Text="{x:Static res:Strings.Settings_SteamLocation}" />
+                    <Grid Margin="{DynamicResource SpaceTop8}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
@@ -581,41 +504,39 @@
                             Text="{Binding SteamPath, Mode=OneWay}" />
                         <ui:Button
                             Grid.Column="1"
-                            Margin="8,0,0,0"
+                            Margin="{DynamicResource SpaceLeft8}"
                             Command="{Binding OverrideSteamFolderCommand}"
                             Content="{x:Static res:Strings.Settings_Change}" />
                         <ui:Button
                             Grid.Column="2"
-                            Margin="8,0,0,0"
+                            Margin="{DynamicResource SpaceLeft8}"
                             Command="{Binding OpenSteamFolderCommand}"
                             Content="{x:Static res:Strings.Settings_Open}"
                             Icon="{ui:SymbolIcon FolderOpen24}" />
                         <ui:Button
                             Grid.Column="3"
-                            Margin="8,0,0,0"
+                            Margin="{DynamicResource SpaceLeft8}"
                             Command="{Binding ClearSteamOverrideCommand}"
                             Content="{x:Static res:Strings.Settings_ResetToAuto}"
                             Visibility="{Binding IsSteamOverridden, Converter={StaticResource BoolToVis}}" />
                     </Grid>
                     <TextBlock
-                        Margin="0,8,0,0"
-                        FontSize="12"
+                        Margin="{DynamicResource SpaceTop8}"
                         Foreground="{StaticResource TextDimBrush}"
+                        Style="{StaticResource TextCaption}"
                         Text="{Binding SteamSource}" />
                     <TextBlock
-                        Margin="0,6,0,0"
-                        FontSize="12"
+                        Margin="{DynamicResource SpaceTop8}"
                         Foreground="{StaticResource DangerBrush}"
+                        Style="{StaticResource TextCaption}"
                         Text="{Binding SteamWarning}"
-                        TextWrapping="Wrap"
                         Visibility="{Binding SteamWarning, Converter={StaticResource NullToCollapsed}}" />
 
                     <TextBlock
-                        Margin="0,16,0,0"
-                        FontSize="13"
-                        FontWeight="Medium"
+                        Margin="{DynamicResource SpaceTop16}"
+                        Style="{StaticResource TextBodyStrong}"
                         Text="{x:Static res:Strings.Settings_SaveBackupFolder}" />
-                    <Grid Margin="0,8,0,0">
+                    <Grid Margin="{DynamicResource SpaceTop8}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
@@ -627,44 +548,39 @@
                             Text="{Binding SaveBackupFolder, Mode=OneWay}" />
                         <ui:Button
                             Grid.Column="1"
-                            Margin="8,0,0,0"
+                            Margin="{DynamicResource SpaceLeft8}"
                             Command="{Binding ChangeSaveBackupFolderCommand}"
                             Content="{x:Static res:Strings.Settings_Change}" />
                         <ui:Button
                             Grid.Column="2"
-                            Margin="8,0,0,0"
+                            Margin="{DynamicResource SpaceLeft8}"
                             Command="{Binding OpenSaveBackupFolderCommand}"
                             Content="{x:Static res:Strings.Settings_Open}"
                             Icon="{ui:SymbolIcon FolderOpen24}" />
                         <ui:Button
                             Grid.Column="3"
-                            Margin="8,0,0,0"
+                            Margin="{DynamicResource SpaceLeft8}"
                             Command="{Binding ResetSaveBackupFolderCommand}"
                             Content="{x:Static res:Strings.Settings_ResetToAuto}"
                             Visibility="{Binding IsSaveBackupFolderCustom, Converter={StaticResource BoolToVis}}" />
                     </Grid>
                     <TextBlock
-                        Margin="0,8,0,0"
-                        FontSize="12"
-                        Foreground="{StaticResource TextDimBrush}"
-                        Text="{x:Static res:Strings.Settings_SaveBackupFolder_Hint}"
-                        TextWrapping="Wrap" />
+                        Margin="{DynamicResource SpaceTop8}"
+                        Style="{StaticResource TextCaption}"
+                        Text="{x:Static res:Strings.Settings_SaveBackupFolder_Hint}" />
 
                     <TextBlock
-                        Margin="0,16,0,0"
-                        FontSize="13"
-                        FontWeight="Medium"
+                        Margin="{DynamicResource SpaceTop16}"
+                        Style="{StaticResource TextBodyStrong}"
                         Text="{x:Static res:Strings.Settings_CustomSaveFolders}" />
                     <TextBlock
-                        Margin="0,4,0,0"
-                        FontSize="12"
-                        Foreground="{StaticResource TextDimBrush}"
-                        Text="{x:Static res:Strings.Settings_CustomSaveFolders_Hint}"
-                        TextWrapping="Wrap" />
-                    <ItemsControl Margin="0,8,0,0" ItemsSource="{Binding CustomSaveFolders}">
+                        Margin="{DynamicResource SpaceTop4}"
+                        Style="{StaticResource TextCaption}"
+                        Text="{x:Static res:Strings.Settings_CustomSaveFolders_Hint}" />
+                    <ItemsControl Margin="{DynamicResource SpaceTop8}" ItemsSource="{Binding CustomSaveFolders}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin="0,2,0,0">
+                                <Grid Margin="{DynamicResource SpaceTop4}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
@@ -673,18 +589,18 @@
                                     <TextBlock
                                         MinWidth="80"
                                         VerticalAlignment="Center"
-                                        FontSize="12"
+                                        FontSize="{DynamicResource FontSizeCaption}"
                                         Text="{Binding AppId}" />
                                     <TextBlock
                                         Grid.Column="1"
                                         VerticalAlignment="Center"
-                                        FontSize="12"
+                                        FontSize="{DynamicResource FontSizeCaption}"
                                         Text="{Binding Path}"
                                         TextTrimming="CharacterEllipsis"
                                         ToolTip="{Binding Path}" />
                                     <ui:Button
                                         Grid.Column="2"
-                                        Margin="8,0,0,0"
+                                        Margin="{DynamicResource SpaceLeft8}"
                                         Command="{Binding DataContext.RemoveCustomSaveFolderCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                         CommandParameter="{Binding}"
                                         Content="{x:Static res:Strings.Settings_CustomSaveFolders_Remove}" />
@@ -692,7 +608,7 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    <Grid Margin="0,8,0,0">
+                    <Grid Margin="{DynamicResource SpaceTop8}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="140" />
                             <ColumnDefinition Width="Auto" />
@@ -702,205 +618,69 @@
                             Text="{Binding NewCustomSaveAppId, UpdateSourceTrigger=PropertyChanged}" />
                         <ui:Button
                             Grid.Column="1"
-                            Margin="8,0,0,0"
+                            Margin="{DynamicResource SpaceLeft8}"
                             Command="{Binding AddCustomSaveFolderCommand}"
                             Content="{x:Static res:Strings.Settings_CustomSaveFolders_Add}"
                             Icon="{ui:SymbolIcon FolderAdd24}" />
                     </Grid>
                     <TextBlock
-                        Margin="0,6,0,0"
-                        FontSize="12"
+                        Margin="{DynamicResource SpaceTop8}"
                         Foreground="{StaticResource DangerBrush}"
+                        Style="{StaticResource TextCaption}"
                         Text="{Binding CustomSaveFolderError}"
-                        TextWrapping="Wrap"
                         Visibility="{Binding CustomSaveFolderError, Converter={StaticResource NullToCollapsed}}" />
                 </StackPanel>
             </Border>
 
             <!-- Startup -->
-            <TextBlock Style="{StaticResource SectionHeader}" Text="{x:Static res:Strings.Settings_Section_Startup}" />
-            <Border Style="{StaticResource SettingsCard}">
+            <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="{x:Static res:Strings.Settings_Section_Startup}" />
+            <Border Padding="0" Style="{StaticResource CardStyle}">
                 <StackPanel>
                     <!-- Start with Windows -->
-                    <Grid Margin="14,12">
+                    <Grid Margin="{DynamicResource SpaceAll16}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center">
+                            <TextBlock Style="{StaticResource TextBodyStrong}" Text="{x:Static res:Strings.Settings_StartWithWindows}" />
                             <TextBlock
-                                FontSize="13"
-                                FontWeight="Medium"
-                                Text="{x:Static res:Strings.Settings_StartWithWindows}" />
-                            <TextBlock
-                                Margin="0,4,0,0"
-                                FontSize="12"
-                                Foreground="{StaticResource TextDimBrush}"
-                                Text="{x:Static res:Strings.Settings_StartWithWindows_Hint}"
-                                TextWrapping="Wrap" />
+                                Margin="{DynamicResource SpaceTop4}"
+                                Style="{StaticResource TextCaption}"
+                                Text="{x:Static res:Strings.Settings_StartWithWindows_Hint}" />
                         </StackPanel>
                         <ui:ToggleSwitch
                             Grid.Column="1"
-                            Margin="12,0,0,0"
+                            Margin="{DynamicResource SpaceLeft12}"
                             VerticalAlignment="Center"
                             IsChecked="{Binding StartWithWindows, Mode=TwoWay}" />
                     </Grid>
-                    <Border Style="{StaticResource RowDivider}" />
+                    <Border Style="{StaticResource RowDividerStyle}" />
                     <!-- Minimize to System Tray -->
-                    <Grid Margin="14,12">
+                    <Grid Margin="{DynamicResource SpaceAll16}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center">
+                            <TextBlock Style="{StaticResource TextBodyStrong}" Text="{x:Static res:Strings.Settings_MinimizeToTray}" />
                             <TextBlock
-                                FontSize="13"
-                                FontWeight="Medium"
-                                Text="{x:Static res:Strings.Settings_MinimizeToTray}" />
-                            <TextBlock
-                                Margin="0,4,0,0"
-                                FontSize="12"
-                                Foreground="{StaticResource TextDimBrush}"
-                                Text="{x:Static res:Strings.Settings_MinimizeToTray_Hint}"
-                                TextWrapping="Wrap" />
+                                Margin="{DynamicResource SpaceTop4}"
+                                Style="{StaticResource TextCaption}"
+                                Text="{x:Static res:Strings.Settings_MinimizeToTray_Hint}" />
                         </StackPanel>
                         <ui:ToggleSwitch
                             Grid.Column="1"
-                            Margin="12,0,0,0"
+                            Margin="{DynamicResource SpaceLeft12}"
                             VerticalAlignment="Center"
                             IsChecked="{Binding MinimizeToTray, Mode=TwoWay}" />
                     </Grid>
                 </StackPanel>
             </Border>
 
-            <!-- Maintenance: backup folders the app left in the Steam root. Own view-model (BackupCleanupViewModel),
-                 set as this section's DataContext from code-behind. -->
-            <StackPanel x:Name="BackupsSection">
-                <TextBlock Style="{StaticResource SectionHeader}" Text="{x:Static res:Strings.Settings_Maintenance_Title}" />
-                <Border Style="{StaticResource SettingsCard}">
-                    <StackPanel Margin="14,12">
-                        <TextBlock
-                            FontSize="13"
-                            FontWeight="Medium"
-                            Text="{x:Static res:Strings.Settings_Backups_Title}" />
-                        <TextBlock
-                            Margin="0,4,0,0"
-                            FontSize="12"
-                            Foreground="{StaticResource TextDimBrush}"
-                            Text="{x:Static res:Strings.Settings_Backups_Subtitle}"
-                            TextWrapping="Wrap" />
-                        <TextBlock
-                            Margin="0,8,0,0"
-                            FontSize="12"
-                            Foreground="{StaticResource DangerBrush}"
-                            Text="{x:Static res:Strings.Settings_Backups_NoSteam}"
-                            TextWrapping="Wrap"
-                            Visibility="{Binding HasNoSteam, Converter={StaticResource BoolToVis}}" />
-                        <StackPanel Margin="0,10,0,0" IsEnabled="{Binding HasSteamConfigured}">
-                            <TextBlock
-                                FontSize="12"
-                                Foreground="{StaticResource TextDimBrush}"
-                                Text="{x:Static res:Strings.Settings_Backups_Empty}"
-                                Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}" />
-                            <Grid Margin="0,0,0,4" Visibility="{Binding HasEntries, Converter={StaticResource BoolToVis}}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="28" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="80" />
-                                    <ColumnDefinition Width="140" />
-                                    <ColumnDefinition Width="90" />
-                                    <ColumnDefinition Width="60" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="1" FontSize="11" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Settings_Backups_Column_Name}" />
-                                <TextBlock Grid.Column="2" FontSize="11" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Settings_Backups_Column_Type}" />
-                                <TextBlock Grid.Column="3" FontSize="11" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Settings_Backups_Column_Date}" />
-                                <TextBlock Grid.Column="4" FontSize="11" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Settings_Backups_Column_Size}" />
-                                <TextBlock Grid.Column="5" FontSize="11" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Settings_Backups_Column_Files}" />
-                            </Grid>
-                            <ScrollViewer MaxHeight="240" VerticalScrollBarVisibility="Auto">
-                                <ItemsControl ItemsSource="{Binding Entries}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Margin="0,2">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="28" />
-                                                    <ColumnDefinition Width="*" />
-                                                    <ColumnDefinition Width="80" />
-                                                    <ColumnDefinition Width="140" />
-                                                    <ColumnDefinition Width="90" />
-                                                    <ColumnDefinition Width="60" />
-                                                </Grid.ColumnDefinitions>
-                                                <!-- WPF-UI's implicit CheckBox style sets MinWidth=120 and Padding 11: in a
-                                                     28 px column that pushed the box out and left a sliver of accent fill.
-                                                     Same fix as BuildsView's Lock box. -->
-                                                <CheckBox
-                                                    MinWidth="0"
-                                                    Padding="0"
-                                                    VerticalAlignment="Center"
-                                                    AutomationProperties.Name="{Binding Name}"
-                                                    IsChecked="{Binding IsSelected, Mode=TwoWay}" />
-                                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                    <TextBlock FontSize="12" Text="{Binding Name}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Entry.FullPath}" />
-                                                    <TextBlock
-                                                        FontSize="10.5"
-                                                        Foreground="{StaticResource DangerBrush}"
-                                                        Text="{x:Static res:Strings.Settings_Backups_UnknownWarning}"
-                                                        TextWrapping="Wrap"
-                                                        Visibility="{Binding IsUnknown, Converter={StaticResource BoolToVis}}" />
-                                                </StackPanel>
-                                                <StackPanel Grid.Column="2" VerticalAlignment="Center" Orientation="Horizontal">
-                                                    <ui:SymbolIcon FontSize="14" Symbol="Document24" Visibility="{Binding IsFile, Converter={StaticResource BoolToVis}}" />
-                                                    <ui:SymbolIcon FontSize="14" Symbol="Folder24" Visibility="{Binding IsFile, Converter={StaticResource InverseBoolToVis}}" />
-                                                    <TextBlock Margin="4,0,0,0" VerticalAlignment="Center" FontSize="12" Text="{Binding TypeLabel}" />
-                                                </StackPanel>
-                                                <TextBlock Grid.Column="3" VerticalAlignment="Center" FontSize="12" Text="{Binding CreatedLabel}" />
-                                                <TextBlock Grid.Column="4" VerticalAlignment="Center" FontSize="12" Text="{Binding SizeLabel}" />
-                                                <TextBlock Grid.Column="5" VerticalAlignment="Center" FontSize="12" Text="{Binding FileCountLabel}" />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
-                            <WrapPanel Margin="0,10,0,0">
-                                <ui:Button
-                                    Command="{Binding RefreshCommand}"
-                                    Content="{x:Static res:Strings.Settings_Backups_Refresh}"
-                                    Icon="{ui:SymbolIcon ArrowSync24}" />
-                                <ui:Button
-                                    Margin="8,0,0,0"
-                                    Appearance="Danger"
-                                    Command="{Binding DeleteSelectedCommand}"
-                                    Content="{x:Static res:Strings.Settings_Backups_DeleteSelected}"
-                                    Icon="{ui:SymbolIcon Delete24}" />
-                                <ui:Button
-                                    Margin="8,0,0,0"
-                                    Appearance="Danger"
-                                    Command="{Binding DeleteOlderThan30DaysCommand}"
-                                    Content="{x:Static res:Strings.Settings_Backups_DeleteOlder}"
-                                    IsEnabled="{Binding HasOld}" />
-                            </WrapPanel>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
-                <!-- Rescue for "Invalid content configuration": closes Steam, moves appinfo.vdf aside, restarts it. -->
-                <Border Style="{StaticResource SettingsCard}">
-                    <StackPanel Margin="14,12" IsEnabled="{Binding HasSteamConfigured}">
-                        <ui:Button
-                            HorizontalAlignment="Left"
-                            Appearance="Caution"
-                            Command="{Binding ClearAppInfoCommand}"
-                            Content="{x:Static res:Strings.Settings_Btn_ClearAppInfo}"
-                            Icon="{ui:SymbolIcon Warning24}"
-                            ToolTip="{x:Static res:Strings.Settings_ClearAppInfo_Tooltip}" />
-                        <TextBlock
-                            Margin="0,6,0,0"
-                            FontSize="12"
-                            Foreground="{StaticResource TextDimBrush}"
-                            Text="{x:Static res:Strings.Settings_ClearAppInfo_Tooltip}"
-                            TextWrapping="Wrap" />
-                    </StackPanel>
-                </Border>
-            </StackPanel>
+            <!-- Maintenance (SettingsBackupsSection): own view-model (BackupCleanupViewModel), set as its
+                 DataContext from code-behind. -->
+            <local:SettingsBackupsSection x:Name="BackupsSection" />
 
             <!-- The "Community" section held a single toggle: donate Steam decryption keys. That feature
                  was removed (it uploaded keys over plain HTTP and defaulted to on), so the whole section

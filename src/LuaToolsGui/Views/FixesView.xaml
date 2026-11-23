@@ -31,94 +31,88 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <StackPanel>
-                <TextBlock FontSize="22" FontWeight="Bold" Text="{x:Static res:Strings.Fixes_Title}" />
-            </StackPanel>
+        <HeaderedContentControl
+            Grid.Row="0"
+            Header="{x:Static res:Strings.Fixes_Title}"
+            Style="{StaticResource PageHeaderStyle}">
             <ui:Button
-                Grid.Column="1"
-                VerticalAlignment="Top"
                 Command="{Binding RefreshCommand}"
                 Content="{x:Static res:Strings.Manage_Refresh}"
                 Icon="{ui:SymbolIcon ArrowSync24}" />
-        </Grid>
+        </HeaderedContentControl>
 
         <!-- Search, then the installed-without-fix banner and the library warning (each only when shown) -->
-        <StackPanel Grid.Row="1" Margin="0,14,0,0">
+        <StackPanel Grid.Row="1">
             <ui:TextBox
                 Icon="{ui:SymbolIcon Search24}"
                 PlaceholderText="{x:Static res:Strings.Common_SearchPlaceholder}"
                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
             <!-- Offline copy of the catalog (lua.tools unreachable): says the app is fine, just not live. -->
             <Border
-                Margin="0,10,0,0"
-                Padding="12,8"
+                Margin="{DynamicResource SpaceTop12}"
+                Padding="{DynamicResource SpaceAll12}"
                 Background="{StaticResource SurfaceCardBrush}"
                 BorderBrush="{StaticResource BorderSubtleBrush}"
                 BorderThickness="1"
-                CornerRadius="8"
+                CornerRadius="{DynamicResource RadiusMedium}"
                 Visibility="{Binding ShowOfflineBanner, Converter={StaticResource BoolToVis}}">
                 <TextBlock
                     Foreground="{StaticResource TextMutedBrush}"
-                    Text="{Binding OfflineBannerText}"
-                    TextWrapping="Wrap" />
+                    Style="{StaticResource TextBody}"
+                    Text="{Binding OfflineBannerText}" />
             </Border>
             <!-- Installed games with no fix in the catalog (#33). Closable: the close button sets IsOpen false,
                  which the view model persists (settings.json FixesOrphanBannerDismissed) so it stays closed. -->
             <ui:InfoBar
-                Margin="0,10,0,0"
+                Margin="{DynamicResource SpaceTop12}"
                 IsClosable="True"
                 IsOpen="{Binding ShowBanner, Mode=TwoWay}"
                 Severity="Warning"
                 Title="{Binding BannerText}">
-                <ui:InfoBar.Message>
-                    <ScrollViewer MaxHeight="120" VerticalScrollBarVisibility="Auto">
-                        <TextBlock Text="{Binding BannerNames}" TextWrapping="Wrap" />
-                    </ScrollViewer>
-                </ui:InfoBar.Message>
+                <!-- Content, not Message: Message is a string property and a ScrollViewer there throws on load. -->
+                <ScrollViewer MaxHeight="120" VerticalScrollBarVisibility="Auto">
+                    <TextBlock Text="{Binding BannerNames}" TextWrapping="Wrap" />
+                </ScrollViewer>
             </ui:InfoBar>
             <Border
-                Margin="0,10,0,0"
-                Padding="12,8"
+                Margin="{DynamicResource SpaceTop12}"
+                Padding="{DynamicResource SpaceAll12}"
                 Background="{StaticResource WarningTintBrush}"
                 BorderBrush="{StaticResource WarningStrongBrush}"
                 BorderThickness="1"
-                CornerRadius="8"
+                CornerRadius="{DynamicResource RadiusMedium}"
                 Visibility="{Binding ShowLibraryWarning, Converter={StaticResource BoolToVis}}">
                 <TextBlock
                     Foreground="{StaticResource WarningBrush}"
-                    Text="{x:Static res:Strings.Fixes_Warn_LibraryFailed}"
-                    TextWrapping="Wrap" />
+                    Style="{StaticResource TextBody}"
+                    Text="{x:Static res:Strings.Fixes_Warn_LibraryFailed}" />
             </Border>
         </StackPanel>
 
         <!-- "My games" toggle + tag filter pills (shown once the listing is loaded and non-empty) -->
         <StackPanel
             Grid.Row="2"
-            Margin="0,12,0,0"
+            Margin="{DynamicResource SpaceTop12}"
             Orientation="Horizontal"
             Visibility="{Binding CanFilter, Converter={StaticResource BoolToVis}}">
             <ToggleButton
-                Margin="0,0,8,6"
+                Margin="{DynamicResource SpaceAll4}"
                 Cursor="Hand"
+                FocusVisualStyle="{StaticResource DefaultControlFocusVisualStyle}"
                 IsChecked="{Binding MyGamesOnly}"
                 ToolTip="{Binding MyGamesHint}">
                 <ToggleButton.Template>
                     <ControlTemplate TargetType="ToggleButton">
                         <Border
                             x:Name="Pill"
-                            Padding="10,4"
+                            Padding="{DynamicResource SpaceAll8}"
                             Background="{StaticResource AccentTintBrush}"
                             BorderBrush="{StaticResource AccentOutlineBrush}"
                             BorderThickness="1"
-                            CornerRadius="6">
+                            CornerRadius="{DynamicResource RadiusSmall}">
                             <TextBlock
                                 x:Name="PillText"
-                                FontSize="11.5"
+                                FontSize="{DynamicResource FontSizeCaption}"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource AccentBrush}"
                                 Text="{x:Static res:Strings.Fixes_MyGames}" />
@@ -138,80 +132,73 @@
                 </ToggleButton.Template>
             </ToggleButton>
             <ItemsControl ItemsSource="{Binding Tags}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Button
-                        Margin="0,0,6,6"
-                        Command="{Binding DataContext.SelectTagCommand, ElementName=Root}"
-                        CommandParameter="{Binding Id}"
-                        Cursor="Hand">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border
-                                    x:Name="Pill"
-                                    Padding="10,4"
-                                    Background="{StaticResource AccentTintBrush}"
-                                    BorderBrush="{StaticResource AccentOutlineBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="6">
-                                    <TextBlock
-                                        x:Name="PillText"
-                                        FontSize="11.5"
-                                        FontWeight="SemiBold"
-                                        Foreground="{StaticResource AccentBrush}"
-                                        Text="{Binding Name}" />
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <!-- Active: filled accent. -->
-                                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                        <Setter TargetName="Pill" Property="Background" Value="{StaticResource AccentBrush}" />
-                                        <Setter TargetName="Pill" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
-                                        <Setter TargetName="PillText" Property="Foreground" Value="{StaticResource TextOnAccentBrush}" />
-                                    </DataTrigger>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="Pill" Property="Background" Value="{StaticResource AccentTintStrongBrush}" />
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button
+                            Margin="{DynamicResource SpaceAll4}"
+                            Command="{Binding DataContext.SelectTagCommand, ElementName=Root}"
+                            CommandParameter="{Binding Id}"
+                            Cursor="Hand"
+                            FocusVisualStyle="{StaticResource DefaultControlFocusVisualStyle}">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border
+                                        x:Name="Pill"
+                                        Padding="{DynamicResource SpaceAll8}"
+                                        Background="{StaticResource AccentTintBrush}"
+                                        BorderBrush="{StaticResource AccentOutlineBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="{DynamicResource RadiusSmall}">
+                                        <TextBlock
+                                            x:Name="PillText"
+                                            FontSize="{DynamicResource FontSizeCaption}"
+                                            FontWeight="SemiBold"
+                                            Foreground="{StaticResource AccentBrush}"
+                                            Text="{Binding Name}" />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <!-- Active: filled accent. -->
+                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                            <Setter TargetName="Pill" Property="Background" Value="{StaticResource AccentBrush}" />
+                                            <Setter TargetName="Pill" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                                            <Setter TargetName="PillText" Property="Foreground" Value="{StaticResource TextOnAccentBrush}" />
+                                        </DataTrigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="Pill" Property="Background" Value="{StaticResource AccentTintStrongBrush}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
             </ItemsControl>
         </StackPanel>
 
         <!-- Loading -->
-        <StackPanel
+        <ContentControl
             Grid.Row="3"
-            Margin="0,40,0,0"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Top"
-            Orientation="Horizontal"
-            Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}">
-            <ui:ProgressRing Width="20" Height="20" IsIndeterminate="True" />
-            <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" Foreground="{StaticResource TextMutedBrush}" Text="{x:Static res:Strings.Fixes_Loading}" />
-        </StackPanel>
+            Content="{x:Static res:Strings.Fixes_Loading}"
+            Style="{StaticResource LoadingStateStyle}"
+            Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}" />
 
         <!-- Empty -->
-        <TextBlock
+        <HeaderedContentControl
             Grid.Row="3"
-            Margin="0,40,0,0"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Top"
-            Foreground="{StaticResource TextMutedBrush}"
-            Text="{Binding EmptyMessage}"
+            Header="{Binding EmptyMessage}"
+            Style="{StaticResource EmptyStateStyle}"
             Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}" />
 
         <!-- Game grid -->
         <vwp:VirtualizingItemsControl
             x:Name="GameScroller"
             Grid.Row="3"
-            Margin="0,14,0,0"
+            Margin="{DynamicResource SpaceTop12}"
             ItemsSource="{Binding Items}"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -229,8 +216,7 @@
                     <Button
                         Width="248"
                         Height="180"
-                        Margin="0,0,12,12"
-                        Padding="0"
+                        Margin="{DynamicResource SpaceAll8}"
                         HorizontalContentAlignment="Stretch"
                         VerticalContentAlignment="Stretch"
                         Background="{StaticResource SurfaceCardBrush}"
@@ -238,38 +224,40 @@
                         BorderThickness="1"
                         Command="{Binding DataContext.OpenGameCommand, ElementName=Root}"
                         CommandParameter="{Binding}"
-                        Cursor="Hand">
+                        Cursor="Hand"
+                        FocusVisualStyle="{StaticResource DefaultControlFocusVisualStyle}">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Border
                                     Background="{TemplateBinding Background}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="{TemplateBinding BorderThickness}"
-                                    CornerRadius="10">
+                                    CornerRadius="{DynamicResource RadiusLarge}">
                                     <StackPanel>
-                                        <Border Height="116" Background="{StaticResource SurfaceCardHoverBrush}" ClipToBounds="True" CornerRadius="10,10,0,0">
+                                        <!-- Top corners only (no token for a partial radius); ClipToBounds keeps the cover inside them. -->
+                                        <Border Height="116" Background="{StaticResource SurfaceCardHoverBrush}" ClipToBounds="True" CornerRadius="12,12,0,0">
                                             <!-- 248-wide tile: 2x would be 496, past header.jpg's 460, so cap at 460 (see the converter). -->
                                             <Grid>
                                                 <Image Source="{Binding Cover, Converter={StaticResource ImagePathToSource}, ConverterParameter=460}" Stretch="UniformToFill" />
                                                 <!-- Installed badge: same as ManageView (Steam's manifest says the game is fully on disk) -->
                                                 <Border
-                                                    Margin="6,0,0,6"
-                                                    Padding="6,2"
+                                                    Margin="{DynamicResource SpaceAll8}"
+                                                    Padding="{DynamicResource SpaceAll4}"
                                                     HorizontalAlignment="Left"
                                                     VerticalAlignment="Bottom"
                                                     Background="{StaticResource SuccessScrimBrush}"
-                                                    CornerRadius="4"
+                                                    CornerRadius="{DynamicResource RadiusSmall}"
                                                     Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
                                                     <StackPanel Orientation="Horizontal">
                                                         <ui:SymbolIcon
                                                             VerticalAlignment="Center"
-                                                            FontSize="11"
+                                                            FontSize="{DynamicResource FontSizeCaption}"
                                                             Foreground="White"
                                                             Symbol="CheckmarkCircle24" />
                                                         <TextBlock
-                                                            Margin="4,0,0,0"
+                                                            Margin="{DynamicResource SpaceLeft4}"
                                                             VerticalAlignment="Center"
-                                                            FontSize="10.5"
+                                                            FontSize="{DynamicResource FontSizeCaption}"
                                                             FontWeight="SemiBold"
                                                             Foreground="White"
                                                             Text="{x:Static res:Strings.Manage_Badge_Installed}" />
@@ -277,14 +265,18 @@
                                                 </Border>
                                             </Grid>
                                         </Border>
-                                        <StackPanel Margin="12,8,12,10">
+                                        <StackPanel Margin="{DynamicResource SpaceAll12}">
                                             <TextBlock
-                                                FontSize="13"
-                                                FontWeight="SemiBold"
                                                 Foreground="{StaticResource TextPrimaryBrush}"
+                                                Style="{StaticResource TextBodyStrong}"
                                                 Text="{Binding Name}"
-                                                TextTrimming="CharacterEllipsis" />
-                                            <TextBlock Margin="0,3,0,0" FontSize="11.5" Foreground="{StaticResource TextDimBrush}" Text="{Binding FixCountLabel}" />
+                                                TextTrimming="CharacterEllipsis"
+                                                TextWrapping="NoWrap" />
+                                            <TextBlock
+                                                Margin="{DynamicResource SpaceTop4}"
+                                                Foreground="{StaticResource TextDimBrush}"
+                                                Style="{StaticResource TextCaption}"
+                                                Text="{Binding FixCountLabel}" />
                                         </StackPanel>
                                     </StackPanel>
                                 </Border>
@@ -296,10 +288,11 @@
         </vwp:VirtualizingItemsControl>
 
         <!-- Pager bar: page numbers centered across the full width, with results-per-page overlaid at the
-             right. Shown once game cards are present. (Mirrors ManageView's pager.) -->
+             right. Shown once game cards are present. Numbered like ManageView's pager (not PagerTemplate,
+             which only has prev / label / next). -->
         <Grid
             Grid.Row="4"
-            Margin="0,12,0,2"
+            Margin="{DynamicResource SpaceTop12}"
             Visibility="{Binding ShowItems, Converter={StaticResource BoolToVis}}">
 
             <!-- Centered group: ‹ prev | page numbers (fixed-width zone) | › next. -->
@@ -313,12 +306,11 @@
                 </Grid.ColumnDefinitions>
                 <ui:Button
                     Grid.Column="0"
-                    Margin="2,0"
-                    Padding="8,4"
-                    Command="{Binding PrevPageCommand}"
+                    Padding="{DynamicResource SpaceAll8}"
                     AutomationProperties.Name="{x:Static res:Strings.Pager_Prev}"
+                    Command="{Binding PrevPageCommand}"
                     Content="‹"
-                    FontSize="14"
+                    FontSize="{DynamicResource FontSizeBody}"
                     IsEnabled="{Binding CanGoPrev}"
                     ToolTip="{x:Static res:Strings.Pager_Prev}" />
                 <ItemsControl Grid.Column="1" HorizontalAlignment="Center" ItemsSource="{Binding PageNumbers}">
@@ -332,7 +324,7 @@
                             <Grid>
                                 <!-- Ellipsis gap (sentinel 0): non-clickable "…" -->
                                 <TextBlock
-                                    Margin="6,0"
+                                    Margin="{DynamicResource SpaceLeft8}"
                                     VerticalAlignment="Center"
                                     Foreground="{StaticResource TextDimBrush}"
                                     Text="…">
@@ -349,12 +341,12 @@
                                 </TextBlock>
                                 <!-- Page-number button -->
                                 <ui:Button
-                                    Margin="2,0"
-                                    Padding="8,4"
+                                    Margin="{DynamicResource SpaceLeft4}"
+                                    Padding="{DynamicResource SpaceAll8}"
                                     Command="{Binding DataContext.GoToPageCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                     CommandParameter="{Binding}"
                                     Content="{Binding}"
-                                    FontSize="13">
+                                    FontSize="{DynamicResource FontSizeBody}">
                                     <ui:Button.Style>
                                         <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
                                             <Style.Triggers>
@@ -382,12 +374,12 @@
                 </ItemsControl>
                 <ui:Button
                     Grid.Column="2"
-                    Margin="2,0"
-                    Padding="8,4"
-                    Command="{Binding NextPageCommand}"
+                    Margin="{DynamicResource SpaceLeft4}"
+                    Padding="{DynamicResource SpaceAll8}"
                     AutomationProperties.Name="{x:Static res:Strings.Pager_Next}"
+                    Command="{Binding NextPageCommand}"
                     Content="›"
-                    FontSize="14"
+                    FontSize="{DynamicResource FontSizeBody}"
                     IsEnabled="{Binding CanGoNext}"
                     ToolTip="{x:Static res:Strings.Pager_Next}" />
             </Grid>
@@ -398,13 +390,12 @@
                 VerticalAlignment="Center"
                 Orientation="Horizontal">
                 <TextBlock
-                    Margin="0,0,8,0"
                     VerticalAlignment="Center"
-                    FontSize="11.5"
-                    Foreground="{StaticResource TextMutedBrush}"
+                    Style="{StaticResource TextCaption}"
                     Text="{x:Static res:Strings.Manage_ResultsPerPage}" />
                 <ComboBox
                     MinWidth="72"
+                    Margin="{DynamicResource SpaceLeft8}"
                     ItemTemplate="{StaticResource FilterOptionTemplate}"
                     ItemsSource="{Binding PageSizeOptions}"
                     SelectedItem="{Binding SelectedPageSize}" />
@@ -425,7 +416,7 @@
                 Background="{StaticResource SurfaceOverlayBrush}"
                 BorderBrush="{StaticResource SurfaceActiveBrush}"
                 BorderThickness="1,0,0,0">
-                <Grid Margin="20" DataContext="{Binding SelectedGame}">
+                <Grid Margin="{DynamicResource SpaceAll24}" DataContext="{Binding SelectedGame}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -437,34 +428,31 @@
                     <ui:Button
                         HorizontalAlignment="Right"
                         Click="Close_Click"
-                        Icon="{ui:SymbolIcon Dismiss24}" />
+                        Icon="{ui:SymbolIcon Dismiss24}"
+                        Style="{StaticResource IconButtonStyle}"
+                        ToolTip="{x:Static res:Strings.Saves_Close}" />
 
                     <!-- Game header -->
-                    <StackPanel Grid.Row="1" Margin="0,4,0,0">
-                        <Border Height="150" Background="{StaticResource SurfaceCardHoverBrush}" ClipToBounds="True" CornerRadius="8">
+                    <StackPanel Grid.Row="1" Margin="{DynamicResource SpaceTop4}">
+                        <Border Height="150" Background="{StaticResource SurfaceCardHoverBrush}" ClipToBounds="True" CornerRadius="{DynamicResource RadiusMedium}">
                             <Image Source="{Binding Cover, Converter={StaticResource ImagePathToSource}}" Stretch="UniformToFill" />
                         </Border>
-                        <TextBlock Margin="0,10,0,0" FontSize="16" FontWeight="Bold" Text="{Binding Name}" TextWrapping="Wrap" />
-                        <TextBlock FontSize="11.5" Foreground="{StaticResource TextDimBrush}" Text="{Binding AppId, StringFormat='App ID: {0}'}" />
+                        <TextBlock Margin="{DynamicResource SpaceTop12}" Style="{StaticResource TextSubtitle}" Text="{Binding Name}" />
+                        <TextBlock Style="{StaticResource TextCaption}" Text="{Binding AppId, StringFormat='App ID: {0}'}" />
                     </StackPanel>
 
                     <!-- Fixes list -->
-                    <ScrollViewer Grid.Row="2" Margin="0,14,0,0" VerticalScrollBarVisibility="Auto"
+                    <ScrollViewer Grid.Row="2" Margin="{DynamicResource SpaceTop12}" VerticalScrollBarVisibility="Auto"
                                   DataContext="{Binding DataContext, ElementName=Root}">
                         <StackPanel>
                             <!-- Loading fixes -->
-                            <StackPanel
-                                Margin="0,8,0,0"
-                                HorizontalAlignment="Center"
-                                Orientation="Horizontal"
-                                Visibility="{Binding IsLoadingFixes, Converter={StaticResource BoolToVis}}">
-                                <ui:ProgressRing Width="16" Height="16" IsIndeterminate="True" />
-                                <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{StaticResource TextMutedBrush}" Text="{x:Static res:Strings.Common_Loading}" />
-                            </StackPanel>
+                            <ContentControl
+                                Content="{x:Static res:Strings.Common_Loading}"
+                                Style="{StaticResource LoadingStateStyle}"
+                                Visibility="{Binding IsLoadingFixes, Converter={StaticResource BoolToVis}}" />
 
                             <!-- Per-game tag filter (only when this game's fixes span multiple tags) -->
                             <ItemsControl
-                                Margin="0,0,0,10"
                                 ItemsSource="{Binding FixTags}"
                                 Visibility="{Binding HasFixTags, Converter={StaticResource BoolToVis}}">
                                 <ItemsControl.ItemsPanel>
@@ -473,20 +461,21 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Button
-                                            Margin="0,0,6,6"
+                                            Margin="{DynamicResource SpaceAll4}"
                                             Command="{Binding DataContext.SelectFixTagCommand, ElementName=Root}"
                                             CommandParameter="{Binding Id}"
-                                            Cursor="Hand">
+                                            Cursor="Hand"
+                                            FocusVisualStyle="{StaticResource DefaultControlFocusVisualStyle}">
                                             <Button.Template>
                                                 <ControlTemplate TargetType="Button">
                                                     <Border
                                                         x:Name="Pill"
-                                                        Padding="10,4"
+                                                        Padding="{DynamicResource SpaceAll8}"
                                                         Background="{StaticResource AccentTintBrush}"
                                                         BorderBrush="{StaticResource AccentOutlineBrush}"
                                                         BorderThickness="1"
-                                                        CornerRadius="6">
-                                                        <TextBlock x:Name="PillText" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" Text="{Binding Name}" />
+                                                        CornerRadius="{DynamicResource RadiusSmall}">
+                                                        <TextBlock x:Name="PillText" FontSize="{DynamicResource FontSizeCaption}" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" Text="{Binding Name}" />
                                                     </Border>
                                                     <ControlTemplate.Triggers>
                                                         <DataTrigger Binding="{Binding IsSelected}" Value="True">
@@ -508,34 +497,28 @@
                             <ItemsControl ItemsSource="{Binding Fixes}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Border
-                                            Margin="0,0,0,10"
-                                            Padding="14,12"
-                                            Background="{StaticResource SurfaceCardBrush}"
-                                            BorderBrush="{StaticResource BorderStrongBrush}"
-                                            BorderThickness="1"
-                                            CornerRadius="8">
+                                        <Border Margin="{DynamicResource SpaceTop12}" Style="{StaticResource CardStyle}">
                                             <StackPanel>
-                                                <TextBlock FontSize="13.5" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}"
-                                                           Text="{Binding Title, StringFormat={x:Static res:Strings.Fixes_Build}}" TextWrapping="Wrap" />
-                                                <TextBlock Margin="0,2,0,0" FontSize="11" Foreground="{StaticResource TextDimBrush}" Text="{Binding DateLabel}" />
+                                                <TextBlock Foreground="{StaticResource TextPrimaryBrush}" Style="{StaticResource TextBodyStrong}"
+                                                           Text="{Binding Title, StringFormat={x:Static res:Strings.Fixes_Build}}" />
+                                                <TextBlock Margin="{DynamicResource SpaceTop4}" Style="{StaticResource TextCaption}" Text="{Binding DateLabel}" />
 
                                                 <!-- Tag chips -->
-                                                <ItemsControl Margin="0,6,0,0" ItemsSource="{Binding Tags}">
+                                                <ItemsControl Margin="{DynamicResource SpaceTop8}" ItemsSource="{Binding Tags}">
                                                     <ItemsControl.ItemsPanel>
                                                         <ItemsPanelTemplate><WrapPanel Orientation="Horizontal" /></ItemsPanelTemplate>
                                                     </ItemsControl.ItemsPanel>
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
-                                                            <Border Margin="0,0,5,5" Padding="6,1" Background="{StaticResource SurfaceInsetBrush}" CornerRadius="4">
-                                                                <TextBlock FontSize="10" FontWeight="SemiBold" Foreground="{StaticResource AccentSoftBrush}" Text="{Binding Name}" />
+                                                            <Border Margin="{DynamicResource SpaceAll4}" Padding="{DynamicResource SpaceAll4}" Background="{StaticResource SurfaceInsetBrush}" CornerRadius="{DynamicResource RadiusSmall}">
+                                                                <TextBlock FontSize="{DynamicResource FontSizeCaption}" FontWeight="SemiBold" Foreground="{StaticResource AccentSoftBrush}" Text="{Binding Name}" />
                                                             </Border>
                                                         </DataTemplate>
                                                     </ItemsControl.ItemTemplate>
                                                 </ItemsControl>
 
                                                 <markdig:MarkdownViewer
-                                                    Margin="0,4,0,0"
+                                                    Margin="{DynamicResource SpaceTop4}"
                                                     Markdown="{Binding Description}"
                                                     PreviewMouseWheel="Markdown_PreviewMouseWheel"
                                                     Visibility="{Binding Description, Converter={StaticResource NullToCollapsed}}">
@@ -544,7 +527,7 @@
                                                              document-sized (huge headings) and too big for the flyout. -->
                                                         <Style x:Key="{x:Static markdig:Styles.DocumentStyleKey}" TargetType="{x:Type FlowDocument}">
                                                             <Setter Property="FontFamily" Value="Segoe UI" />
-                                                            <Setter Property="FontSize" Value="12.5" />
+                                                            <Setter Property="FontSize" Value="{StaticResource FontSizeBody}" />
                                                             <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
                                                             <Setter Property="PagePadding" Value="0" />
                                                         </Style>
@@ -553,19 +536,19 @@
                                                             <Setter Property="LineHeight" Value="18" />
                                                         </Style>
                                                         <Style x:Key="{x:Static markdig:Styles.Heading1StyleKey}" TargetType="{x:Type Paragraph}">
-                                                            <Setter Property="FontSize" Value="15" />
+                                                            <Setter Property="FontSize" Value="{StaticResource FontSizeSubtitle}" />
                                                             <Setter Property="FontWeight" Value="Bold" />
                                                             <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
                                                             <Setter Property="Margin" Value="0,8,0,4" />
                                                         </Style>
                                                         <Style x:Key="{x:Static markdig:Styles.Heading2StyleKey}" TargetType="{x:Type Paragraph}">
-                                                            <Setter Property="FontSize" Value="13.5" />
+                                                            <Setter Property="FontSize" Value="{StaticResource FontSizeBody}" />
                                                             <Setter Property="FontWeight" Value="SemiBold" />
                                                             <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
                                                             <Setter Property="Margin" Value="0,8,0,3" />
                                                         </Style>
                                                         <Style x:Key="{x:Static markdig:Styles.Heading3StyleKey}" TargetType="{x:Type Paragraph}">
-                                                            <Setter Property="FontSize" Value="12.5" />
+                                                            <Setter Property="FontSize" Value="{StaticResource FontSizeBody}" />
                                                             <Setter Property="FontWeight" Value="SemiBold" />
                                                             <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
                                                             <Setter Property="Margin" Value="0,6,0,2" />
@@ -582,9 +565,8 @@
                                                 </markdig:MarkdownViewer>
 
                                                 <!-- Download buttons -->
-                                                <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                                                <StackPanel Margin="{DynamicResource SpaceTop12}" Orientation="Horizontal">
                                                     <ui:Button
-                                                        Margin="0,0,8,0"
                                                         Command="{Binding DataContext.DownloadManifestCommand, ElementName=Root}"
                                                         CommandParameter="{Binding}"
                                                         Content="{x:Static res:Strings.Fixes_Manifest}"
@@ -592,6 +574,7 @@
                                                         IsEnabled="{Binding DataContext.NotBusy, ElementName=Root}"
                                                         Visibility="{Binding HasManifest, Converter={StaticResource BoolToVis}}" />
                                                     <ui:Button
+                                                        Margin="{DynamicResource SpaceLeft8}"
                                                         Appearance="Primary"
                                                         Command="{Binding DataContext.DownloadFixCommand, ElementName=Root}"
                                                         CommandParameter="{Binding}"
@@ -617,7 +600,7 @@
                                                         </ui:Button.Style>
                                                     </ui:Button>
                                                     <ui:Button
-                                                        Margin="8,0,0,0"
+                                                        Margin="{DynamicResource SpaceLeft8}"
                                                         Command="{Binding DataContext.RevertFixCommand, ElementName=Root}"
                                                         CommandParameter="{Binding}"
                                                         Content="{x:Static res:Strings.Fixes_Revert}"
@@ -637,7 +620,7 @@
                     <ProgressBar
                         Grid.Row="3"
                         Height="6"
-                        Margin="0,10,0,0"
+                        Margin="{DynamicResource SpaceTop12}"
                         IsIndeterminate="{Binding DataContext.IsProgressIndeterminate, ElementName=Root}"
                         Maximum="100"
                         Value="{Binding DataContext.Progress, ElementName=Root}"
@@ -650,42 +633,35 @@
                     <Grid
                         Grid.Row="0"
                         Grid.RowSpan="4"
-                        Margin="-20"
+                        Margin="-24"
                         Background="{StaticResource ScrimBrush}"
                         Visibility="{Binding DataContext.IsConfirmingRevert, ElementName=Root, Converter={StaticResource BoolToVis}}">
                         <Border
                             MaxWidth="360"
-                            Margin="16"
-                            Padding="20"
+                            Margin="{DynamicResource SpaceAll16}"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Background="{StaticResource SurfaceOverlayBrush}"
                             BorderBrush="{StaticResource BorderProminentBrush}"
-                            BorderThickness="1"
-                            CornerRadius="12">
+                            Style="{StaticResource CardStyle}">
                             <StackPanel>
                                 <TextBlock
-                                    FontSize="16"
-                                    FontWeight="Bold"
-                                    Text="{Binding DataContext.ConfirmRevertTitle, ElementName=Root}"
-                                    TextWrapping="Wrap" />
+                                    Style="{StaticResource TextSubtitle}"
+                                    Text="{Binding DataContext.ConfirmRevertTitle, ElementName=Root}" />
                                 <TextBlock
-                                    Margin="0,8,0,0"
-                                    FontSize="12.5"
+                                    Margin="{DynamicResource SpaceTop8}"
                                     Foreground="{StaticResource TextMutedBrush}"
-                                    Text="{Binding DataContext.ConfirmRevertBody, ElementName=Root}"
-                                    TextWrapping="Wrap" />
+                                    Style="{StaticResource TextBody}"
+                                    Text="{Binding DataContext.ConfirmRevertBody, ElementName=Root}" />
                                 <StackPanel
-                                    Margin="0,18,0,0"
+                                    Margin="{DynamicResource SpaceTop16}"
                                     HorizontalAlignment="Right"
                                     Orientation="Horizontal">
                                     <ui:Button
-                                        Margin="0,0,10,0"
-                                        Padding="14,7"
                                         Command="{Binding DataContext.CancelRevertConfirmCommand, ElementName=Root}"
                                         Content="{x:Static res:Strings.Fixes_Revert_Cancel}" />
                                     <ui:Button
-                                        Padding="14,7"
+                                        Margin="{DynamicResource SpaceLeft8}"
                                         Appearance="Danger"
                                         Command="{Binding DataContext.ConfirmRevertCommand, ElementName=Root}"
                                         Content="{x:Static res:Strings.Fixes_Revert}"

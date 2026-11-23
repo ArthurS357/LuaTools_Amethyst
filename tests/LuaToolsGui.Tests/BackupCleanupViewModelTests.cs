@@ -327,7 +327,7 @@ public class BackupCleanupMarkupTests
             dir = dir.Parent;
         string root = dir?.FullName
             ?? throw new DirectoryNotFoundException("LuaToolsGui.sln not found above the test output.");
-        var doc = System.Xml.Linq.XDocument.Load(Path.Combine(root, "src", "LuaToolsGui", "Views", "SettingsView.xaml"));
+        var doc = System.Xml.Linq.XDocument.Load(Path.Combine(root, "src", "LuaToolsGui", "Views", "SettingsBackupsSection.xaml"));
         System.Xml.Linq.XNamespace wpf = "http://schemas.microsoft.com/winfx/2006/xaml/presentation";
         return doc.Descendants(wpf + "CheckBox")
             .Single(c => (string?)c.Attribute("IsChecked") == "{Binding IsSelected, Mode=TwoWay}");

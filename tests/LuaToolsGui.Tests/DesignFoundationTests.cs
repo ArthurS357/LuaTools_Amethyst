@@ -270,9 +270,9 @@ public class DesignFoundationTests(ThemeHost host)
     /// Literal values still hardcoded in the pages, measured on 2026-11-23 (Lote B, before any page moved).
     /// LOWER these as each lote migrates a page onto Typography.xaml / Spacing.xaml. They never go up.
     /// </summary>
-    private const int FontSizeCeiling = 209;
-    private const int MarginPaddingCeiling = 485;
-    private const int CornerRadiusCeiling = 50;
+    private const int FontSizeCeiling = 128;
+    private const int MarginPaddingCeiling = 341;
+    private const int CornerRadiusCeiling = 35;
 
     private static readonly (string Name, Regex Pattern, int Ceiling)[] Literals =
     [

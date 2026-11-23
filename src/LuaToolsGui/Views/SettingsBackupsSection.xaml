@@ -1,0 +1,133 @@
+<UserControl
+    x:Class="LuaToolsGui.Views.SettingsBackupsSection"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:res="clr-namespace:LuaToolsGui.Resources"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:vm="clr-namespace:LuaToolsGui.ViewModels"
+    d:DataContext="{d:DesignInstance Type=vm:BackupCleanupViewModel}"
+    TextElement.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    mc:Ignorable="d">
+
+    <!-- Maintenance section (split out of SettingsView, Lote H1): backup folders the app left in the Steam root.
+         Own view-model (BackupCleanupViewModel), set as this control's DataContext from SettingsView's code-behind. -->
+    <StackPanel>
+        <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="{x:Static res:Strings.Settings_Maintenance_Title}" />
+        <Border Style="{StaticResource CardStyle}">
+            <StackPanel>
+                <TextBlock Style="{StaticResource TextBodyStrong}" Text="{x:Static res:Strings.Settings_Backups_Title}" />
+                <TextBlock
+                    Margin="{DynamicResource SpaceTop4}"
+                    Style="{StaticResource TextCaption}"
+                    Text="{x:Static res:Strings.Settings_Backups_Subtitle}" />
+                <TextBlock
+                    Margin="{DynamicResource SpaceTop8}"
+                    Foreground="{StaticResource DangerBrush}"
+                    Style="{StaticResource TextCaption}"
+                    Text="{x:Static res:Strings.Settings_Backups_NoSteam}"
+                    Visibility="{Binding HasNoSteam, Converter={StaticResource BoolToVis}}" />
+                <StackPanel Margin="{DynamicResource SpaceTop12}" IsEnabled="{Binding HasSteamConfigured}">
+                    <TextBlock
+                        Style="{StaticResource TextCaption}"
+                        Text="{x:Static res:Strings.Settings_Backups_Empty}"
+                        Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}" />
+                    <Grid Visibility="{Binding HasEntries, Converter={StaticResource BoolToVis}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="28" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="80" />
+                            <ColumnDefinition Width="140" />
+                            <ColumnDefinition Width="90" />
+                            <ColumnDefinition Width="60" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="1" FontSize="{DynamicResource FontSizeCaption}" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Settings_Backups_Column_Name}" />
+                        <TextBlock Grid.Column="2" FontSize="{DynamicResource FontSizeCaption}" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Settings_Backups_Column_Type}" />
+                        <TextBlock Grid.Column="3" FontSize="{DynamicResource FontSizeCaption}" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Settings_Backups_Column_Date}" />
+                        <TextBlock Grid.Column="4" FontSize="{DynamicResource FontSizeCaption}" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Settings_Backups_Column_Size}" />
+                        <TextBlock Grid.Column="5" FontSize="{DynamicResource FontSizeCaption}" Foreground="{StaticResource TextDimBrush}" Text="{x:Static res:Strings.Settings_Backups_Column_Files}" />
+                    </Grid>
+                    <ScrollViewer MaxHeight="240" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding Entries}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="{DynamicResource SpaceTop4}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="28" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="80" />
+                                            <ColumnDefinition Width="140" />
+                                            <ColumnDefinition Width="90" />
+                                            <ColumnDefinition Width="60" />
+                                        </Grid.ColumnDefinitions>
+                                        <!-- WPF-UI's implicit CheckBox style sets MinWidth=120 and Padding 11: in a
+                                             28 px column that pushed the box out and left a sliver of accent fill.
+                                             Same fix as BuildsView's Lock box. -->
+                                        <CheckBox
+                                            MinWidth="0"
+                                            Padding="0"
+                                            VerticalAlignment="Center"
+                                            AutomationProperties.Name="{Binding Name}"
+                                            IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock FontSize="{DynamicResource FontSizeCaption}" Text="{Binding Name}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Entry.FullPath}" />
+                                            <TextBlock
+                                                FontSize="{DynamicResource FontSizeCaption}"
+                                                Foreground="{StaticResource DangerBrush}"
+                                                Text="{x:Static res:Strings.Settings_Backups_UnknownWarning}"
+                                                TextWrapping="Wrap"
+                                                Visibility="{Binding IsUnknown, Converter={StaticResource BoolToVis}}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" Orientation="Horizontal">
+                                            <ui:SymbolIcon FontSize="{DynamicResource FontSizeBody}" Symbol="Document24" Visibility="{Binding IsFile, Converter={StaticResource BoolToVis}}" />
+                                            <ui:SymbolIcon FontSize="{DynamicResource FontSizeBody}" Symbol="Folder24" Visibility="{Binding IsFile, Converter={StaticResource InverseBoolToVis}}" />
+                                            <TextBlock Margin="{DynamicResource SpaceLeft4}" VerticalAlignment="Center" FontSize="{DynamicResource FontSizeCaption}" Text="{Binding TypeLabel}" />
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="3" VerticalAlignment="Center" FontSize="{DynamicResource FontSizeCaption}" Text="{Binding CreatedLabel}" />
+                                        <TextBlock Grid.Column="4" VerticalAlignment="Center" FontSize="{DynamicResource FontSizeCaption}" Text="{Binding SizeLabel}" />
+                                        <TextBlock Grid.Column="5" VerticalAlignment="Center" FontSize="{DynamicResource FontSizeCaption}" Text="{Binding FileCountLabel}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                    <WrapPanel Margin="{DynamicResource SpaceTop12}">
+                        <ui:Button
+                            Command="{Binding RefreshCommand}"
+                            Content="{x:Static res:Strings.Settings_Backups_Refresh}"
+                            Icon="{ui:SymbolIcon ArrowSync24}" />
+                        <ui:Button
+                            Margin="{DynamicResource SpaceLeft8}"
+                            Appearance="Danger"
+                            Command="{Binding DeleteSelectedCommand}"
+                            Content="{x:Static res:Strings.Settings_Backups_DeleteSelected}"
+                            Icon="{ui:SymbolIcon Delete24}" />
+                        <ui:Button
+                            Margin="{DynamicResource SpaceLeft8}"
+                            Appearance="Danger"
+                            Command="{Binding DeleteOlderThan30DaysCommand}"
+                            Content="{x:Static res:Strings.Settings_Backups_DeleteOlder}"
+                            IsEnabled="{Binding HasOld}" />
+                    </WrapPanel>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+        <!-- Rescue for "Invalid content configuration": closes Steam, moves appinfo.vdf aside, restarts it. -->
+        <Border Margin="{DynamicResource SpaceTop12}" Style="{StaticResource CardStyle}">
+            <StackPanel IsEnabled="{Binding HasSteamConfigured}">
+                <ui:Button
+                    HorizontalAlignment="Left"
+                    Appearance="Caution"
+                    Command="{Binding ClearAppInfoCommand}"
+                    Content="{x:Static res:Strings.Settings_Btn_ClearAppInfo}"
+                    Icon="{ui:SymbolIcon Warning24}"
+                    ToolTip="{x:Static res:Strings.Settings_ClearAppInfo_Tooltip}" />
+                <TextBlock
+                    Margin="{DynamicResource SpaceTop8}"
+                    Style="{StaticResource TextCaption}"
+                    Text="{x:Static res:Strings.Settings_ClearAppInfo_Tooltip}" />
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</UserControl>
