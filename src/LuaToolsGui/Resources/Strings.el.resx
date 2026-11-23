@@ -888,4 +888,18 @@ SHA-256 {3}
   <data name="Settings_Dns_Never" xml:space="preserve"><value>Ποτέ - χωρίς εξωτερικό DNS</value></data>
   <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Τα Windows δεν μπόρεσαν να κρυπτογραφήσουν το κλειδί (το DPAPI δεν είναι διαθέσιμο), επομένως διατηρείται μόνο στη μνήμη για αυτήν τη συνεδρία και δεν αποθηκεύεται. Εισαγάγετέ το ξανά μετά την επανεκκίνηση της εφαρμογής.</value></data>
   <data name="Settings_Section_Network" xml:space="preserve"><value>ΔΙΚΤΥΟ</value></data>
+  <data name="Mode_Custom_Title" xml:space="preserve"><value>Προσαρμοσμένη</value></data>
+  <data name="Mode_Custom_Badge" xml:space="preserve"><value>ΔΙΑΧΕΙΡΙΣΗ ΑΠΟ ΧΡΗΣΤΗ</value></data>
+  <data name="Mode_Custom_Description" xml:space="preserve"><value>Διαχειριστείτε μόνοι σας τα DLL του unlocker στον φάκελο του Steam. Το LuaTools Amethyst διαχειρίζεται μόνο τα αρχεία .lua στο config\stplug-in χωρίς να εγκαθιστά, να ελέγχει ή να απαιτεί DLL.</value></data>
+  <data name="Mode_Custom_Status" xml:space="preserve"><value>Διαχείριση από εσάς — τα DLL του Steam δεν τροποποιούνται</value></data>
+  <data name="Mode_Custom_Btn_Use" xml:space="preserve"><value>Χρήση προσαρμοσμένης λειτουργίας</value></data>
+  <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Ενεργή προσαρμοσμένη λειτουργία</value></data>
+  <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>Το LuaTools Amethyst θα διαχειρίζεται πλέον μόνο τα αρχεία .lua στο config\stplug-in χωρίς να τροποποιεί DLL του Steam.</value></data>
+  <data name="Home_CustomActive" xml:space="preserve"><value>Προσαρμοσμένη · διαχείριση από χρήστη</value></data>
+  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>Αφαίρεση του «{0}» (App ID {1});
+
+Αυτό διαγράφει μόνο το ενεργό αρχείο .lua από το Steam\config\stplug-in. Οι αποθηκευμένες εκδόσεις για αυτό το παιχνίδι θα παραμείνουν διαθέσιμες στην καρτέλα Depots. Επανεκκινήστε το Steam στη συνέχεια για να εφαρμοστεί η αλλαγή.</value></data>
+  <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Αφαίρεση {0} αρχείων .lua;
+
+Αυτό διαγράφει μόνο τα ενεργά αρχεία .lua από το Steam\config\stplug-in. {1} από αυτά τα παιχνίδια έχουν αποθηκευμένες εκδόσεις που θα παραμείνουν διαθέσιμες στην καρτέλα Depots. Επανεκκινήστε το Steam στη συνέχεια για να εφαρμοστούν οι αλλαγές.</value></data>
 </root>

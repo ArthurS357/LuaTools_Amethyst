@@ -217,6 +217,7 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
     private readonly SteamlessService _steamless;
     private readonly SteamGameLauncher _launcher;
     private readonly SteamLibraryService _library;
+    private readonly LuaVault _vault;
 
     private List<LuaTileViewModel> _all = [];
     private CancellationTokenSource? _prefetchCts;
@@ -310,7 +311,8 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
 
     public ManageViewModel(SteamService steam, SteamAppListCache appList, SteamAppInfoCache appInfo,
         CoverCache covers, ToastService toast, SettingsService settings,
-        SteamlessService steamless, SteamGameLauncher launcher, SteamLibraryService library)
+        SteamlessService steamless, SteamGameLauncher launcher, SteamLibraryService library,
+        LuaVault vault)
     {
         _steam = steam;
         _appList = appList;
@@ -321,6 +323,7 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
         _steamless = steamless;
         _launcher = launcher;
         _library = library;
+        _vault = vault;
         InitPageSize(settings.ManagePageSize);
     }
 
@@ -590,12 +593,25 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
         }
     }
 
+    /// <summary>Build the confirmation body for deleting one active lua, noting preserved Depots builds when present.</summary>
+    internal static string BuildDeleteConfirmBody(string gameName, long appId, bool hasStoredBuilds) =>
+        hasStoredBuilds
+            ? string.Format(Resources.Strings.Manage_Delete_BodyWithBuilds, gameName, appId)
+            : string.Format(Resources.Strings.Manage_Delete_Body, gameName, appId);
+
+    /// <summary>Build the confirmation body for bulk-deleting active luas, noting preserved Depots builds when present.</summary>
+    internal static string BuildDeleteManyConfirmBody(int totalCount, int withStoredBuildsCount) =>
+        withStoredBuildsCount > 0
+            ? string.Format(Resources.Strings.Manage_DeleteMany_BodyWithBuilds, totalCount, withStoredBuildsCount)
+            : string.Format(Resources.Strings.Manage_DeleteMany_Body, totalCount);
+
     /// <summary>Confirm, then delete the &lt;appid&gt;.lua file and remove the tile from the grid.</summary>
     [RelayCommand]
     private void Delete(LuaTileViewModel tile)
     {
+        bool hasStoredBuilds = _vault.HasStoredBuilds(tile.AppId);
         var result = MessageBox.Show(
-            string.Format(Resources.Strings.Manage_Delete_Body, tile.Name, tile.AppId),
+            BuildDeleteConfirmBody(tile.Name, tile.AppId, hasStoredBuilds),
             Resources.Strings.Manage_Delete_Title,
             MessageBoxButton.OKCancel,
             MessageBoxImage.Warning);
@@ -632,8 +648,9 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
         var targets = _all.Where(t => t.IsSelected).ToList();
         if (targets.Count == 0) return;
 
+        int withStoredBuilds = targets.Count(t => _vault.HasStoredBuilds(t.AppId));
         var result = MessageBox.Show(
-            string.Format(Resources.Strings.Manage_DeleteMany_Body, targets.Count),
+            BuildDeleteManyConfirmBody(targets.Count, withStoredBuilds),
             Resources.Strings.Manage_DeleteMany_Title,
             MessageBoxButton.OKCancel,
             MessageBoxImage.Warning);

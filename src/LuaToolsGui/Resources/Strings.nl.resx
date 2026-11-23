@@ -888,4 +888,18 @@ Inschakelen?</value></data>
   <data name="Settings_Dns_Never" xml:space="preserve"><value>Nooit - nooit externe DNS gebruiken</value></data>
   <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows kon de sleutel niet versleutelen (DPAPI niet beschikbaar), dus deze blijft alleen voor deze sessie in het geheugen en wordt niet opgeslagen. Voer hem opnieuw in na herstart van de app.</value></data>
   <data name="Settings_Section_Network" xml:space="preserve"><value>NETWERK</value></data>
+  <data name="Mode_Custom_Title" xml:space="preserve"><value>Aangepast</value></data>
+  <data name="Mode_Custom_Badge" xml:space="preserve"><value>ZELF BEHEERD</value></data>
+  <data name="Mode_Custom_Description" xml:space="preserve"><value>Beheer je eigen unlocker-DLL's in de Steam-map. LuaTools Amethyst beheert alleen .lua-bestanden in config\stplug-in zonder DLL's te installeren, controleren of vereisen.</value></data>
+  <data name="Mode_Custom_Status" xml:space="preserve"><value>Zelf beheerd — Steam-DLL's worden niet aangeraakt</value></data>
+  <data name="Mode_Custom_Btn_Use" xml:space="preserve"><value>Aangepaste modus gebruiken</value></data>
+  <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Aangepaste modus actief</value></data>
+  <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>LuaTools Amethyst beheert voortaan alleen .lua-bestanden in config\stplug-in zonder Steam-DLL's te wijzigen.</value></data>
+  <data name="Home_CustomActive" xml:space="preserve"><value>Aangepast · zelf beheerd</value></data>
+  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>"{0}" (App-ID {1}) verwijderen?
+
+Hiermee wordt alleen het actieve .lua-bestand uit Steam\config\stplug-in verwijderd. Opgeslagen builds voor dit spel blijven beschikbaar op het tabblad Depots. Start Steam daarna opnieuw op om de wijziging toe te passen.</value></data>
+  <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>{0} .lua-bestanden verwijderen?
+
+Hiermee worden alleen de actieve .lua-bestanden uit Steam\config\stplug-in verwijderd. {1} van deze spellen hebben opgeslagen builds die beschikbaar blijven op het tabblad Depots. Start Steam daarna opnieuw op om de wijzigingen toe te passen.</value></data>
 </root>

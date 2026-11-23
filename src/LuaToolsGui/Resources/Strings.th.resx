@@ -888,4 +888,18 @@ SHA-256 {3}
   <data name="Settings_Dns_Never" xml:space="preserve"><value>ไม่ใช้ - ไม่ใช้ DNS ภายนอก</value></data>
   <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows ไม่สามารถเข้ารหัสคีย์ได้ (DPAPI ไม่พร้อมใช้งาน) จึงเก็บไว้ในหน่วยความจำเฉพาะเซสชันนี้และไม่บันทึกลงดิสก์ กรุณากรอกใหม่หลังรีสตาร์ทแอป</value></data>
   <data name="Settings_Section_Network" xml:space="preserve"><value>เครือข่าย</value></data>
+  <data name="Mode_Custom_Title" xml:space="preserve"><value>กำหนดเอง</value></data>
+  <data name="Mode_Custom_Badge" xml:space="preserve"><value>จัดการโดยผู้ใช้</value></data>
+  <data name="Mode_Custom_Description" xml:space="preserve"><value>จัดการไฟล์ DLL ของตัวปลดล็อกในโฟลเดอร์ Steam ด้วยตัวเอง LuaTools Amethyst จะจัดการเฉพาะไฟล์ .lua ใน config\stplug-in โดยไม่ติดตั้ง ตรวจสอบ หรือบังคับใช้ไฟล์ DLL ใดๆ</value></data>
+  <data name="Mode_Custom_Status" xml:space="preserve"><value>จัดการโดยคุณ — ไม่แตะต้องไฟล์ DLL ของ Steam</value></data>
+  <data name="Mode_Custom_Btn_Use" xml:space="preserve"><value>ใช้โหมดกำหนดเอง</value></data>
+  <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>เปิดใช้โหมดกำหนดเองแล้ว</value></data>
+  <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>จากนี้ไป LuaTools Amethyst จะจัดการเฉพาะไฟล์ .lua ใน config\stplug-in โดยไม่แก้ไขไฟล์ DLL ของ Steam</value></data>
+  <data name="Home_CustomActive" xml:space="preserve"><value>กำหนดเอง · จัดการโดยผู้ใช้</value></data>
+  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>ลบ "{0}" (App ID {1}) หรือไม่?
+
+การดำเนินการนี้จะลบเฉพาะไฟล์ .lua ที่ใช้งานอยู่ใน Steam\config\stplug-in เท่านั้น บิลด์ที่บันทึกไว้ของเกมนี้จะยังคงอยู่ในแท็บ Depots รีสตาร์ท Steam หลังจากนั้นเพื่อให้การเปลี่ยนแปลงมีผล</value></data>
+  <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>ลบไฟล์ .lua จำนวน {0} ไฟล์หรือไม่?
+
+การดำเนินการนี้จะลบเฉพาะไฟล์ .lua ที่ใช้งานอยู่ใน Steam\config\stplug-in เท่านั้น โดย {1} เกมในกลุ่มนี้มีบิลด์ที่บันทึกไว้ซึ่งจะยังคงอยู่ในแท็บ Depots รีสตาร์ท Steam หลังจากนั้นเพื่อให้การเปลี่ยนแปลงมีผล</value></data>
 </root>

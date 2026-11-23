@@ -888,4 +888,18 @@ Włączyć?</value></data>
   <data name="Settings_Dns_Never" xml:space="preserve"><value>Nigdy - nie używaj zewnętrznego DNS</value></data>
   <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>System Windows nie mógł zaszyfrować klucza (DPAPI jest niedostępne), więc pozostaje w pamięci tylko na tę sesję i nie jest zapisywany. Wpisz go ponownie po restarcie aplikacji.</value></data>
   <data name="Settings_Section_Network" xml:space="preserve"><value>SIEĆ</value></data>
+  <data name="Mode_Custom_Title" xml:space="preserve"><value>Własny</value></data>
+  <data name="Mode_Custom_Badge" xml:space="preserve"><value>ZARZĄDZANY PRZEZ CIEBIE</value></data>
+  <data name="Mode_Custom_Description" xml:space="preserve"><value>Zarządzaj własnymi plikami DLL unlockera w folderze Steam. LuaTools Amethyst obsługuje wyłącznie pliki .lua w config\stplug-in bez instalowania, sprawdzania ani wymagania plików DLL.</value></data>
+  <data name="Mode_Custom_Status" xml:space="preserve"><value>Zarządzany przez Ciebie — pliki DLL Steam nie są ruszane</value></data>
+  <data name="Mode_Custom_Btn_Use" xml:space="preserve"><value>Użyj trybu Własnego</value></data>
+  <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Tryb Własny aktywny</value></data>
+  <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>LuaTools Amethyst będzie teraz zarządzać wyłącznie plikami .lua w config\stplug-in bez modyfikowania plików DLL Steam.</value></data>
+  <data name="Home_CustomActive" xml:space="preserve"><value>Własny · zarządzany przez Ciebie</value></data>
+  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>Usunąć „{0}” (App ID {1})?
+
+Spowoduje to usunięcie wyłącznie aktywnego pliku .lua z Steam\config\stplug-in. Zapisane kompilacje tej gry pozostaną dostępne w zakładce Depots. Uruchom ponownie Steam, aby zmiana weszła w życie.</value></data>
+  <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Usunąć {0} plików .lua?
+
+Spowoduje to usunięcie wyłącznie aktywnych plików .lua z Steam\config\stplug-in. {1} z tych gier ma zapisane kompilacje, które pozostaną dostępne w zakładce Depots. Uruchom ponownie Steam, aby zmiany weszły w życie.</value></data>
 </root>

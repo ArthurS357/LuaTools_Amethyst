@@ -888,4 +888,18 @@ Bật nó?</value></data>
   <data name="Settings_Dns_Never" xml:space="preserve"><value>Không bao giờ - không dùng DNS bên ngoài</value></data>
   <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows không thể mã hóa khóa (DPAPI không khả dụng), nên khóa chỉ được giữ trong bộ nhớ cho phiên này và không được lưu. Hãy nhập lại sau khi khởi động lại ứng dụng.</value></data>
   <data name="Settings_Section_Network" xml:space="preserve"><value>MẠNG</value></data>
+  <data name="Mode_Custom_Title" xml:space="preserve"><value>Tùy chỉnh</value></data>
+  <data name="Mode_Custom_Badge" xml:space="preserve"><value>NGƯỜI DÙNG TỰ QUẢN LÝ</value></data>
+  <data name="Mode_Custom_Description" xml:space="preserve"><value>Tự quản lý các tệp DLL unlocker của riêng bạn trong thư mục Steam. LuaTools Amethyst chỉ quản lý các tệp .lua trong config\stplug-in mà không cài đặt, kiểm tra hay yêu cầu bất kỳ DLL nào.</value></data>
+  <data name="Mode_Custom_Status" xml:space="preserve"><value>Do bạn quản lý — không đụng vào DLL của Steam</value></data>
+  <data name="Mode_Custom_Btn_Use" xml:space="preserve"><value>Dùng chế độ Tùy chỉnh</value></data>
+  <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Đã bật chế độ Tùy chỉnh</value></data>
+  <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>LuaTools Amethyst giờ chỉ quản lý các tệp .lua trong config\stplug-in mà không chỉnh sửa DLL của Steam.</value></data>
+  <data name="Home_CustomActive" xml:space="preserve"><value>Tùy chỉnh · người dùng tự quản lý</value></data>
+  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>Xóa "{0}" (App ID {1})?
+
+Thao tác này chỉ xóa tệp .lua đang hoạt động trong Steam\config\stplug-in. Các bản dựng đã lưu của trò chơi này vẫn sẽ có trong thẻ Depots. Hãy khởi động lại Steam sau đó để thay đổi có hiệu lực.</value></data>
+  <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Xóa {0} tệp .lua?
+
+Thao tác này chỉ xóa các tệp .lua đang hoạt động trong Steam\config\stplug-in. {1} trong số các trò chơi này có bản dựng đã lưu vẫn sẽ còn trong thẻ Depots. Hãy khởi động lại Steam sau đó để thay đổi có hiệu lực.</value></data>
 </root>

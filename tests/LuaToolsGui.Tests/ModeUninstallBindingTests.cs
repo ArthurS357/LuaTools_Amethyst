@@ -101,4 +101,34 @@ public class ModeUninstallBindingTests
         vm.HasInstallRecord = true;
         vm.ShowNoRecordHint.Should().BeFalse();
     }
+
+    // ── Custom (user-managed) mode card bindings (#32) ───────────────────────
+
+    [Theory]
+    [InlineData("SelectCustomModeCommand")]
+    [InlineData("IsCustomActive")]
+    [InlineData("CanSelectCustomMode")]
+    [InlineData("CustomStatusText")]
+    public void The_page_exposes_what_the_Custom_card_binds(string member)
+    {
+        ModeViewXaml().Should().Contain(member);
+        HasPublicMember(typeof(ModeViewModel), member).Should().BeTrue();
+    }
+
+    [Fact]
+    public void Custom_status_text_reflects_UserManaged_vs_inactive()
+    {
+        var card = new AmethystToolViewModel(null!, null!);
+        var page = new ModeViewModel(null!, new LuaToolsGui.Services.ToastService(), null!, null!, card);
+
+        page.IsCustomActive.Should().BeFalse();
+        page.CanSelectCustomMode.Should().BeTrue();
+        page.CustomStatusText.Should().Be(Resources.Strings.Mode_NotActive);
+
+        page.CustomStatus = LuaToolsGui.Models.ModeStatus.UserManaged;
+        page.IsCustomActive = true;
+
+        page.CanSelectCustomMode.Should().BeFalse();
+        page.CustomStatusText.Should().Be(Resources.Strings.Mode_Custom_Status);
+    }
 }

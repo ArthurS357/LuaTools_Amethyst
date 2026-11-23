@@ -888,4 +888,18 @@ SHA-256 {3}
   <data name="Settings_Dns_Never" xml:space="preserve"><value>Ніколи - не використовувати зовнішній DNS</value></data>
   <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows не вдалося зашифрувати ключ (DPAPI недоступний), тому він зберігається в пам'яті лише на цей сеанс і не записується. Введіть його знову після перезапуску програми.</value></data>
   <data name="Settings_Section_Network" xml:space="preserve"><value>МЕРЕЖА</value></data>
+  <data name="Mode_Custom_Title" xml:space="preserve"><value>Користувацький</value></data>
+  <data name="Mode_Custom_Badge" xml:space="preserve"><value>КЕРУЄТЬСЯ ВРУЧНУ</value></data>
+  <data name="Mode_Custom_Description" xml:space="preserve"><value>Керуйте власними DLL-файлами анлокера у папці Steam. LuaTools Amethyst керує лише файлами .lua у config\stplug-in без встановлення, перевірки чи вимоги DLL.</value></data>
+  <data name="Mode_Custom_Status" xml:space="preserve"><value>Керується вами — DLL-файли Steam не змінюються</value></data>
+  <data name="Mode_Custom_Btn_Use" xml:space="preserve"><value>Використати користувацький режим</value></data>
+  <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Користувацький режим активний</value></data>
+  <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>Відтепер LuaTools Amethyst керуватиме лише файлами .lua у config\stplug-in без зміни DLL-файлів Steam.</value></data>
+  <data name="Home_CustomActive" xml:space="preserve"><value>Користувацький · керується вручну</value></data>
+  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>Видалити «{0}» (App ID {1})?
+
+Буде видалено лише активний файл .lua зі Steam\config\stplug-in. Збережені збірки цієї гри залишаться доступними на вкладці Depots. Перезапустіть Steam після цього, щоб зміни набули чинності.</value></data>
+  <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Видалити {0} файлів .lua?
+
+Буде видалено лише активні файли .lua зі Steam\config\stplug-in. {1} із цих ігор мають збережені збірки, які залишаться доступними на вкладці Depots. Перезапустіть Steam після цього, щоб зміни набули чинності.</value></data>
 </root>

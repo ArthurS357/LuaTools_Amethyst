@@ -888,4 +888,18 @@ lua ファイル、その横にあるビルドの lua、保存済みのビルド
   <data name="Settings_Dns_Never" xml:space="preserve"><value>使用しない - 外部 DNS を使わない</value></data>
   <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows がキーを暗号化できませんでした（DPAPI 利用不可）。このセッション中のみメモリに保持され保存されません。アプリ再起動後に再入力してください。</value></data>
   <data name="Settings_Section_Network" xml:space="preserve"><value>ネットワーク</value></data>
+  <data name="Mode_Custom_Title" xml:space="preserve"><value>カスタム</value></data>
+  <data name="Mode_Custom_Badge" xml:space="preserve"><value>ユーザー管理</value></data>
+  <data name="Mode_Custom_Description" xml:space="preserve"><value>Steam フォルダ内のアンロッカー DLL をご自身で管理します。LuaTools Amethyst は DLL のインストール・確認・要求を行わず、config\stplug-in 内の .lua ファイルのみを管理します。</value></data>
+  <data name="Mode_Custom_Status" xml:space="preserve"><value>ユーザー管理 — Steam の DLL には触れません</value></data>
+  <data name="Mode_Custom_Btn_Use" xml:space="preserve"><value>カスタムモードを使用</value></data>
+  <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>カスタムモードを有効化しました</value></data>
+  <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>LuaTools Amethyst は今後 Steam の DLL を変更せず、config\stplug-in 内の .lua ファイルのみを管理します。</value></data>
+  <data name="Home_CustomActive" xml:space="preserve"><value>カスタム · ユーザー管理</value></data>
+  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>「{0}」（App ID {1}）を削除しますか？
+
+Steam\config\stplug-in 内の有効な .lua ファイルのみが削除されます。このゲームの保存済みビルドは Depots タブに残ります。変更を反映するには Steam を再起動してください。</value></data>
+  <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>{0} 件の .lua ファイルを削除しますか？
+
+Steam\config\stplug-in 内の有効な .lua ファイルのみが削除されます。このうち {1} 件のゲームには保存済みビルドがあり、Depots タブに残ります。変更を反映するには Steam を再起動してください。</value></data>
 </root>

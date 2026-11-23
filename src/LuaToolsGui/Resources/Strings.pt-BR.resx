@@ -888,4 +888,18 @@ Ativar?</value></data>
   <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Não foi possível criar o backup de segurança. Verifique o espaço livre em disco.</value></data>
   <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>O Steam não fechou.</value></data>
   <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>Não foi possível regravar as opções de inicialização originais.</value></data>
+  <data name="Mode_Custom_Title" xml:space="preserve"><value>Personalizado</value></data>
+  <data name="Mode_Custom_Badge" xml:space="preserve"><value>GERENCIADO POR VOCÊ</value></data>
+  <data name="Mode_Custom_Description" xml:space="preserve"><value>Gerencie suas próprias DLLs de unlocker na pasta da Steam. O LuaTools Amethyst gerencia apenas os arquivos .lua em config\stplug-in sem instalar, verificar ou exigir DLLs.</value></data>
+  <data name="Mode_Custom_Status" xml:space="preserve"><value>Gerenciado por você — as DLLs da Steam não são tocadas</value></data>
+  <data name="Mode_Custom_Btn_Use" xml:space="preserve"><value>Usar modo Personalizado</value></data>
+  <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Modo Personalizado ativo</value></data>
+  <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>O LuaTools Amethyst agora gerenciará apenas os arquivos .lua em config\stplug-in sem modificar DLLs da Steam.</value></data>
+  <data name="Home_CustomActive" xml:space="preserve"><value>Personalizado · gerenciado por você</value></data>
+  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>Remover "{0}" (App ID {1})?
+
+Isso exclui apenas o arquivo .lua ativo em Steam\config\stplug-in. As builds guardadas deste jogo continuarão disponíveis na aba Depots. Reinicie a Steam depois para aplicar a alteração.</value></data>
+  <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Remover {0} arquivos .lua?
+
+Isso exclui apenas os arquivos .lua ativos em Steam\config\stplug-in. {1} destes jogos têm builds guardadas que continuarão disponíveis na aba Depots. Reinicie a Steam depois para aplicar as alterações.</value></data>
 </root>

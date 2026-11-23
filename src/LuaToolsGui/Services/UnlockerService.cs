@@ -105,6 +105,19 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
     /// </summary>
     public void SelectAmethystTool() => settings.SelectedMode = ActiveBackendPolicy.AmethystToolToken;
 
+    /// <summary>
+    /// Hand the slot to Custom (user-managed) mode: persist the choice without touching any files in the
+    /// Steam root. Managed Modes and AmethystTool stop claiming the slot immediately via
+    /// <see cref="ActiveBackendPolicy"/>.
+    /// </summary>
+    public void SelectCustomMode() => settings.SelectedMode = ActiveBackendPolicy.CustomToken;
+
+    /// <summary>Whether Custom (user-managed) mode is currently active.</summary>
+    public bool IsCustomModeActive => ActiveBackend == ActiveBackend.Custom;
+
+    /// <summary>Status of Custom mode: <see cref="ModeStatus.UserManaged"/> when active, else <see cref="ModeStatus.NotInstalled"/>.</summary>
+    public ModeStatus CustomModeStatus => IsCustomModeActive ? ModeStatus.UserManaged : ModeStatus.NotInstalled;
+
     /// <summary>Short display name of the active mode for status UI; null if none selected/detected yet.</summary>
     public string? SelectedModeDisplayName =>
         SelectedMode is { } m ? Def(m).DisplayName : null;
@@ -430,11 +443,10 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
     /// </summary>
     public async Task<UnlockerMode?> DetectActiveModeAsync(CancellationToken ct = default)
     {
-        // AmethystTool already owns the slot, and detection must not take it back. It is a fork, so its
-        // proxy DLLs can hash-match the mode it forked from — adopting that match would put a mode back on
-        // the ACTIVE badge next to an AmethystTool card that is equally certain it is the active one, which
-        // is the exact duplicate this single slot exists to prevent.
-        if (ActiveBackend == ActiveBackend.AmethystTool) return null;
+        // AmethystTool or Custom already owns the slot, and detection must not take it back. AmethystTool
+        // is a fork whose proxy DLLs can hash-match upstream, and Custom means the user manages their own
+        // Steam DLLs explicitly — adopting a hash match would overwrite their choice.
+        if (ActiveBackend is ActiveBackend.AmethystTool or ActiveBackend.Custom) return null;
 
         string? root = steam.EffectivePath;
         if (root is null || !steam.IsValid) return null;

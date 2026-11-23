@@ -369,6 +369,79 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
+                <!-- Custom (user-managed) mode: app manages only stplug-in/*.lua without touching Steam DLLs. -->
+                <Border
+                    Margin="{DynamicResource SpaceTop12}"
+                    KeyboardNavigation.TabNavigation="Local"
+                    Style="{StaticResource CardStyle}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon
+                                    VerticalAlignment="Center"
+                                    Foreground="{StaticResource AccentBrush}"
+                                    Symbol="Options24" />
+                                <TextBlock
+                                    Margin="{DynamicResource SpaceLeft12}"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource TextSubtitle}"
+                                    Text="{x:Static res:Strings.Mode_Custom_Title}" />
+                                <Border
+                                    Margin="{DynamicResource SpaceLeft12}"
+                                    Padding="{DynamicResource SpaceAll4}"
+                                    VerticalAlignment="Center"
+                                    Background="{StaticResource InfoTintBrush}"
+                                    CornerRadius="{DynamicResource RadiusSmall}">
+                                    <TextBlock
+                                        FontSize="{DynamicResource FontSizeCaption}"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource InfoBrush}"
+                                        Text="{x:Static res:Strings.Mode_Custom_Badge}" />
+                                </Border>
+                                <Border
+                                    Margin="{DynamicResource SpaceLeft8}"
+                                    Padding="{DynamicResource SpaceAll4}"
+                                    VerticalAlignment="Center"
+                                    Background="{StaticResource AccentBadgeBrush}"
+                                    CornerRadius="{DynamicResource RadiusSmall}"
+                                    Visibility="{Binding IsCustomActive, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock
+                                        FontSize="{DynamicResource FontSizeCaption}"
+                                        FontWeight="SemiBold"
+                                        Foreground="{StaticResource AccentSoftBrush}"
+                                        Text="{x:Static res:Strings.Mode_Active}" />
+                                </Border>
+                            </StackPanel>
+                            <TextBlock
+                                Margin="{DynamicResource SpaceTop8}"
+                                Foreground="{StaticResource TextDimBrush}"
+                                Style="{StaticResource TextCaption}"
+                                Text="{x:Static res:Strings.Mode_Custom_Description}" />
+                            <TextBlock
+                                Margin="{DynamicResource SpaceTop8}"
+                                Foreground="{StaticResource TextMutedBrush}"
+                                Style="{StaticResource TextBody}"
+                                Text="{Binding CustomStatusText}" />
+                        </StackPanel>
+                        <StackPanel
+                            Grid.Column="1"
+                            Margin="{DynamicResource SpaceLeft16}"
+                            VerticalAlignment="Center">
+                            <ui:Button
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center"
+                                AutomationProperties.Name="{x:Static res:Strings.Mode_Custom_Btn_Use}"
+                                Command="{Binding SelectCustomModeCommand}"
+                                Content="{x:Static res:Strings.Mode_Custom_Btn_Use}"
+                                IsEnabled="{Binding CanSelectCustomMode}" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
             </StackPanel>
         </ScrollViewer>
 

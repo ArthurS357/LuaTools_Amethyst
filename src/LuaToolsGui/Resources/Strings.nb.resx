@@ -888,4 +888,18 @@ Aktivere?</value></data>
   <data name="Settings_Dns_Never" xml:space="preserve"><value>Aldri - bruk aldri ekstern DNS</value></data>
   <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows kunne ikke kryptere nøkkelen (DPAPI er utilgjengelig), så den beholdes bare i minnet for denne økten og lagres ikke. Skriv den inn på nytt etter omstart av appen.</value></data>
   <data name="Settings_Section_Network" xml:space="preserve"><value>NETTVERK</value></data>
+  <data name="Mode_Custom_Title" xml:space="preserve"><value>Tilpasset</value></data>
+  <data name="Mode_Custom_Badge" xml:space="preserve"><value>BRUKERSTYRT</value></data>
+  <data name="Mode_Custom_Description" xml:space="preserve"><value>Administrer dine egne unlocker-DLL-er i Steam-mappen. LuaTools Amethyst håndterer kun .lua-filer i config\stplug-in uten å installere, sjekke eller kreve noen DLL-er.</value></data>
+  <data name="Mode_Custom_Status" xml:space="preserve"><value>Administrert av deg — Steam-DLL-er røres ikke</value></data>
+  <data name="Mode_Custom_Btn_Use" xml:space="preserve"><value>Bruk tilpasset modus</value></data>
+  <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Tilpasset modus aktiv</value></data>
+  <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>LuaTools Amethyst vil nå kun administrere .lua-filer i config\stplug-in uten å endre Steam-DLL-er.</value></data>
+  <data name="Home_CustomActive" xml:space="preserve"><value>Tilpasset · brukerstyrt</value></data>
+  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>Fjerne "{0}" (App ID {1})?
+
+Dette sletter bare den aktive .lua-filen fra Steam\config\stplug-in. Lagrede versjoner for dette spillet forblir tilgjengelige i Depots-fanen. Start Steam på nytt etterpå for at endringen skal tre i kraft.</value></data>
+  <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Fjerne {0} .lua-filer?
+
+Dette sletter bare de aktive .lua-filene fra Steam\config\stplug-in. {1} av disse spillene har lagrede versjoner som forblir tilgjengelige i Depots-fanen. Start Steam på nytt etterpå for at endringene skal tre i kraft.</value></data>
 </root>

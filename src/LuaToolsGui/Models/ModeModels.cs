@@ -26,6 +26,7 @@ public enum ModeStatus
     NotInstalled,
     UpToDate,
     UpdateAvailable,
+    UserManaged,    // Custom mode: the user manages their own Steam DLLs; app only manages stplug-in/*.lua
 }
 
 /// <summary>

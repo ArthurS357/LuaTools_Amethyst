@@ -914,4 +914,18 @@ SHA-256 {3}
   <data name="Settings_Dns_Never" xml:space="preserve"><value>أبداً - عدم استخدام DNS خارجي</value></data>
   <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>تعذر على Windows تشفير المفتاح (DPAPI غير متاح)، لذلك يُحتفظ به في الذاكرة لهذه الجلسة فقط ولا يُحفظ. أدخله مجدداً بعد إعادة تشغيل التطبيق.</value></data>
   <data name="Settings_Section_Network" xml:space="preserve"><value>الشبكة</value></data>
+  <data name="Mode_Custom_Title" xml:space="preserve"><value>مخصص</value></data>
+  <data name="Mode_Custom_Badge" xml:space="preserve"><value>بإدارة المستخدم</value></data>
+  <data name="Mode_Custom_Description" xml:space="preserve"><value>أدر ملفات DLL الخاصة بك لفك القفل في مجلد Steam بنفسك. يدير LuaTools Amethyst ملفات .lua فقط في config\stplug-in دون تثبيت أو فحص أو اشتراط أي ملفات DLL.</value></data>
+  <data name="Mode_Custom_Status" xml:space="preserve"><value>تحت إدارتك — لا يتم المساس بملفات DLL الخاصة بـ Steam</value></data>
+  <data name="Mode_Custom_Btn_Use" xml:space="preserve"><value>استخدام الوضع المخصص</value></data>
+  <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>الوضع المخصص نشط</value></data>
+  <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>سيدير LuaTools Amethyst الآن ملفات .lua فقط في config\stplug-in دون تعديل ملفات DLL الخاصة بـ Steam.</value></data>
+  <data name="Home_CustomActive" xml:space="preserve"><value>مخصص · بإدارة المستخدم</value></data>
+  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>إزالة "{0}" (معرّف التطبيق {1})؟
+
+سيؤدي هذا إلى حذف ملف .lua النشط فقط من Steam\config\stplug-in. ستظل الإصدارات المحفوظة لهذه اللعبة متاحة في علامة التبويب Depots. أعد تشغيل Steam بعد ذلك لتطبيق التغيير.</value></data>
+  <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>إزالة {0} ملفات .lua؟
+
+سيؤدي هذا إلى حذف ملفات .lua النشطة فقط من Steam\config\stplug-in. تحتوي {1} من هذه الألعاب على إصدارات محفوظة ستظل متاحة في علامة التبويب Depots. أعد تشغيل Steam بعد ذلك لتطبيق التغييرات.</value></data>
 </root>

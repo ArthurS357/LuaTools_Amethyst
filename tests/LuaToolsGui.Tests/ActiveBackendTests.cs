@@ -251,4 +251,101 @@ public class ActiveBackendTests
 
         AmethystToolPlan.PayloadFiles.Should().Contain(["dwmapi.dll", "xinput1_4.dll"]);
     }
+
+    // ── Custom (user-managed) mode (#32) ──────────────────────────────────────
+
+    [Theory]
+    [InlineData("Custom")]
+    [InlineData("custom")]
+    [InlineData("CUSTOM")]
+    public void Custom_holding_the_slot_is_resolved_and_leaves_modes_and_AmethystTool_inactive(string persisted)
+    {
+        ActiveBackendPolicy.Resolve(persisted).Should().Be(ActiveBackend.Custom);
+        ActiveBackendPolicy.IsCustom(persisted).Should().BeTrue();
+        ActiveBackendPolicy.IsAmethystTool(persisted).Should().BeFalse();
+        ActiveBackendPolicy.ActiveMode(persisted).Should().BeNull();
+    }
+
+    [Fact]
+    public void Custom_token_is_not_a_mode_name()
+    {
+        Enum.GetNames<UnlockerMode>().Should()
+            .NotContain(n => n.Equals(ActiveBackendPolicy.CustomToken, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void Custom_holding_the_slot_demotes_leftover_Mode_and_AmethystTool_files()
+    {
+        ActiveBackendPolicy.StillOwnsItsFiles(ActiveBackend.Custom, ActiveBackend.Mode).Should().BeFalse();
+        ActiveBackendPolicy.StillOwnsItsFiles(ActiveBackend.Custom, ActiveBackend.AmethystTool).Should().BeFalse();
+        ActiveBackendPolicy.StillOwnsItsFiles(ActiveBackend.Custom, ActiveBackend.Custom).Should().BeTrue();
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void RecoverSelectedMode_preserves_Custom_mode(bool amethystInstalledLocally)
+    {
+        ActiveBackendPolicy.RecoverSelectedMode(ActiveBackendPolicy.CustomToken, amethystInstalledLocally)
+            .Should().Be(ActiveBackendPolicy.CustomToken);
+    }
+
+    [Fact]
+    public async Task SelectCustomMode_persists_UserManaged_status_without_touching_Steam_DLLs()
+    {
+        string tmp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"luatools_custom_{Guid.NewGuid():N}");
+        string steamDir = System.IO.Path.Combine(tmp, "Steam");
+        string dataDir = System.IO.Path.Combine(tmp, "Data");
+        System.IO.Directory.CreateDirectory(steamDir);
+        System.IO.Directory.CreateDirectory(dataDir);
+
+        try
+        {
+            // Seed an existing Steam install with user-placed DLLs and a previously active managed Mode.
+            string steamExe = System.IO.Path.Combine(steamDir, "steam.exe");
+            string dwmapi = System.IO.Path.Combine(steamDir, "dwmapi.dll");
+            string xinput = System.IO.Path.Combine(steamDir, "xinput1_4.dll");
+            System.IO.File.WriteAllText(steamExe, "steam");
+            System.IO.File.WriteAllText(dwmapi, "user-dwmapi-bytes");
+            System.IO.File.WriteAllText(xinput, "user-xinput-bytes");
+
+            var settings = new SettingsService(dataDir) { SteamPathOverride = steamDir };
+            settings.SelectedMode = UnlockerMode.OpenSteamTools.ToString();
+
+            var steam = new SteamService(settings);
+            var cache = new CacheService(dataDir);
+            var manifests = new InstallManifestService(dataDir);
+            var unlocker = new UnlockerService(steam, settings, cache, null!, null!, manifests);
+
+            unlocker.ActiveBackend.Should().Be(ActiveBackend.Mode);
+            unlocker.IsCustomModeActive.Should().BeFalse();
+            unlocker.CustomModeStatus.Should().Be(ModeStatus.NotInstalled);
+
+            // Switch from managed Mode to Custom: persists "Custom", sets UserManaged, leaves DLLs intact.
+            unlocker.SelectCustomMode();
+
+            settings.SelectedMode.Should().Be(ActiveBackendPolicy.CustomToken);
+            unlocker.ActiveBackend.Should().Be(ActiveBackend.Custom);
+            unlocker.SelectedMode.Should().BeNull();
+            unlocker.IsCustomModeActive.Should().BeTrue();
+            unlocker.CustomModeStatus.Should().Be(ModeStatus.UserManaged);
+
+            // Persisted cleanly across SettingsService reloads.
+            var reloaded = new SettingsService(dataDir);
+            reloaded.SelectedMode.Should().Be(ActiveBackendPolicy.CustomToken);
+            ActiveBackendPolicy.Resolve(reloaded.SelectedMode).Should().Be(ActiveBackend.Custom);
+
+            // Auto-detection must abstain when Custom is active (never overwrites user choice).
+            (await unlocker.DetectActiveModeAsync()).Should().BeNull();
+            settings.SelectedMode.Should().Be(ActiveBackendPolicy.CustomToken);
+
+            // Steam DLLs untouched on disk.
+            System.IO.File.ReadAllText(dwmapi).Should().Be("user-dwmapi-bytes");
+            System.IO.File.ReadAllText(xinput).Should().Be("user-xinput-bytes");
+        }
+        finally
+        {
+            try { System.IO.Directory.Delete(tmp, recursive: true); } catch (System.IO.IOException) { }
+        }
+    }
 }

@@ -888,4 +888,18 @@ Otetaanko käyttöön?</value></data>
   <data name="Settings_Dns_Never" xml:space="preserve"><value>Ei koskaan - älä käytä ulkoista DNS:ää</value></data>
   <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows ei voinut salata avainta (DPAPI ei ole käytettävissä), joten se pidetään muistissa vain tämän istunnon ajan eikä sitä tallenneta. Anna se uudelleen sovelluksen uudelleenkäynnistyksen jälkeen.</value></data>
   <data name="Settings_Section_Network" xml:space="preserve"><value>VERKKO</value></data>
+  <data name="Mode_Custom_Title" xml:space="preserve"><value>Mukautettu</value></data>
+  <data name="Mode_Custom_Badge" xml:space="preserve"><value>KÄYTTÄJÄN HALLINNOIMA</value></data>
+  <data name="Mode_Custom_Description" xml:space="preserve"><value>Hallinnoi omia unlocker-DLL-tiedostojasi Steam-kansiossa. LuaTools Amethyst hallinnoi vain .lua-tiedostoja kansiossa config\stplug-in asentamatta, tarkistamatta tai vaatimatta DLL-tiedostoja.</value></data>
+  <data name="Mode_Custom_Status" xml:space="preserve"><value>Sinun hallinnassasi — Steamin DLL-tiedostoihin ei kosketa</value></data>
+  <data name="Mode_Custom_Btn_Use" xml:space="preserve"><value>Käytä mukautettua tilaa</value></data>
+  <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Mukautettu tila käytössä</value></data>
+  <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>LuaTools Amethyst hallinnoi nyt vain .lua-tiedostoja kansiossa config\stplug-in muokkaamatta Steamin DLL-tiedostoja.</value></data>
+  <data name="Home_CustomActive" xml:space="preserve"><value>Mukautettu · käyttäjän hallinnoima</value></data>
+  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>Poistetaanko "{0}" (App ID {1})?
+
+Tämä poistaa vain aktiivisen .lua-tiedoston kansiosta Steam\config\stplug-in. Pelin tallennetut versiot pysyvät käytettävissä Depots-välilehdellä. Käynnistä Steam uudelleen, jotta muutos tulee voimaan.</value></data>
+  <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Poistetaanko {0} .lua-tiedostoa?
+
+Tämä poistaa vain aktiiviset .lua-tiedostot kansiosta Steam\config\stplug-in. {1} näistä peleistä sisältää tallennettuja versioita, jotka pysyvät käytettävissä Depots-välilehdellä. Käynnistä Steam uudelleen, jotta muutokset tulevat voimaan.</value></data>
 </root>

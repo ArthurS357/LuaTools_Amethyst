@@ -888,4 +888,18 @@ Bekapcsolod?</value></data>
   <data name="Settings_Dns_Never" xml:space="preserve"><value>Soha - ne használjon külső DNS-t</value></data>
   <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>A Windows nem tudta titkosítani a kulcsot (a DPAPI nem érhető el), ezért csak ebben a munkamenetben marad a memóriában, és nem lesz mentve. Az alkalmazás újraindítása után add meg újra.</value></data>
   <data name="Settings_Section_Network" xml:space="preserve"><value>HÁLÓZAT</value></data>
+  <data name="Mode_Custom_Title" xml:space="preserve"><value>Egyéni</value></data>
+  <data name="Mode_Custom_Badge" xml:space="preserve"><value>SAJÁT KEZELÉSŰ</value></data>
+  <data name="Mode_Custom_Description" xml:space="preserve"><value>Kezeld saját unlocker DLL-fájljaidat a Steam mappában. A LuaTools Amethyst csak a config\stplug-in mappában lévő .lua fájlokat kezeli, DLL-ek telepítése, ellenőrzése vagy megkövetelése nélkül.</value></data>
+  <data name="Mode_Custom_Status" xml:space="preserve"><value>Általad kezelve — a Steam DLL-fájljai érintetlenek maradnak</value></data>
+  <data name="Mode_Custom_Btn_Use" xml:space="preserve"><value>Egyéni mód használata</value></data>
+  <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Egyéni mód aktív</value></data>
+  <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>A LuaTools Amethyst mostantól csak a config\stplug-in mappában lévő .lua fájlokat kezeli a Steam DLL-ek módosítása nélkül.</value></data>
+  <data name="Home_CustomActive" xml:space="preserve"><value>Egyéni · saját kezelésű</value></data>
+  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>Eltávolítod a(z) „{0}” (App ID {1}) elemet?
+
+Ez csak az aktív .lua fájlt törli a Steam\config\stplug-in mappából. A játék mentett buildjei továbbra is elérhetők maradnak a Depots lapon. A módosítás érvényesítéséhez utána indítsd újra a Steamet.</value></data>
+  <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Eltávolítasz {0} .lua fájlt?
+
+Ez csak az aktív .lua fájlokat törli a Steam\config\stplug-in mappából. Ezen játékok közül {1} rendelkezik mentett buildekkel, amelyek továbbra is elérhetők maradnak a Depots lapon. A módosítások érvényesítéséhez utána indítsd újra a Steamet.</value></data>
 </root>

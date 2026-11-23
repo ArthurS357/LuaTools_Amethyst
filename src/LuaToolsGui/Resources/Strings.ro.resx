@@ -888,4 +888,18 @@ O activezi?</value></data>
   <data name="Settings_Dns_Never" xml:space="preserve"><value>Niciodată - nu folosi DNS extern</value></data>
   <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows nu a putut cripta cheia (DPAPI indisponibil), așa că rămâne în memorie doar pentru această sesiune și nu este salvată. Introdu-o din nou după repornirea aplicației.</value></data>
   <data name="Settings_Section_Network" xml:space="preserve"><value>REȚEA</value></data>
+  <data name="Mode_Custom_Title" xml:space="preserve"><value>Personalizat</value></data>
+  <data name="Mode_Custom_Badge" xml:space="preserve"><value>GESTIONAT DE UTILIZATOR</value></data>
+  <data name="Mode_Custom_Description" xml:space="preserve"><value>Gestionează propriile DLL-uri de unlocker în folderul Steam. LuaTools Amethyst gestionează doar fișierele .lua din config\stplug-in fără a instala, verifica sau solicita DLL-uri.</value></data>
+  <data name="Mode_Custom_Status" xml:space="preserve"><value>Gestionat de tine — DLL-urile Steam nu sunt atinse</value></data>
+  <data name="Mode_Custom_Btn_Use" xml:space="preserve"><value>Folosește modul Personalizat</value></data>
+  <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Modul Personalizat este activ</value></data>
+  <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>LuaTools Amethyst va gestiona acum doar fișierele .lua din config\stplug-in fără a modifica DLL-urile Steam.</value></data>
+  <data name="Home_CustomActive" xml:space="preserve"><value>Personalizat · gestionat de tine</value></data>
+  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>Elimini „{0}” (App ID {1})?
+
+Aceasta șterge doar fișierul .lua activ din Steam\config\stplug-in. Versiunile salvate ale acestui joc vor rămâne disponibile în fila Depots. Repornește Steam după aceea pentru aplicarea modificării.</value></data>
+  <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Elimini {0} fișiere .lua?
+
+Aceasta șterge doar fișierele .lua active din Steam\config\stplug-in. {1} dintre aceste jocuri au versiuni salvate care vor rămâne disponibile în fila Depots. Repornește Steam după aceea pentru aplicarea modificărilor.</value></data>
 </root>

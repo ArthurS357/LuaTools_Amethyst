@@ -908,4 +908,18 @@ SHA-256 {3}
   <data name="Settings_Dns_Never" xml:space="preserve"><value>从不 - 不使用外部 DNS</value></data>
   <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows 无法加密该密钥（DPAPI 不可用），因此仅在本次会话中保留于内存且不会保存。重启应用后请重新输入。</value></data>
   <data name="Settings_Section_Network" xml:space="preserve"><value>网络</value></data>
+  <data name="Mode_Custom_Title" xml:space="preserve"><value>自定义</value></data>
+  <data name="Mode_Custom_Badge" xml:space="preserve"><value>用户自行管理</value></data>
+  <data name="Mode_Custom_Description" xml:space="preserve"><value>在 Steam 目录中自行管理解锁器 DLL。LuaTools Amethyst 仅管理 config\stplug-in 中的 .lua 文件，不安装、不检查也不依赖任何 DLL。</value></data>
+  <data name="Mode_Custom_Status" xml:space="preserve"><value>由您管理 — 不会触碰 Steam DLL 文件</value></data>
+  <data name="Mode_Custom_Btn_Use" xml:space="preserve"><value>使用自定义模式</value></data>
+  <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>已启用自定义模式</value></data>
+  <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>LuaTools Amethyst 现在仅管理 config\stplug-in 中的 .lua 文件，不会修改 Steam DLL。</value></data>
+  <data name="Home_CustomActive" xml:space="preserve"><value>自定义 · 用户自行管理</value></data>
+  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>移除“{0}”（App ID {1}）？
+
+这只会删除 Steam\config\stplug-in 中的当前 .lua 文件。该游戏已保存的版本仍会保留在 Depots 标签页中。之后请重启 Steam 以使更改生效。</value></data>
+  <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>移除 {0} 个 .lua 文件？
+
+这只会删除 Steam\config\stplug-in 中的当前 .lua 文件。其中 {1} 款游戏有已保存的版本，仍会保留在 Depots 标签页中。之后请重启 Steam 以使更改生效。</value></data>
 </root>

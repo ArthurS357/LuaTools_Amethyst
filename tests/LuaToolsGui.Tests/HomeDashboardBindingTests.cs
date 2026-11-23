@@ -191,4 +191,19 @@ public class HomeDashboardBindingTests
         states.Should().OnlyContain(s => !string.IsNullOrWhiteSpace(s));
         Resources.Strings.Home_ModeIs.Should().Contain("{0}", "the mode's display name is substituted in");
     }
+
+    [Fact]
+    public void The_backend_row_has_distinct_wording_including_Custom_mode()
+    {
+        var states = new[]
+        {
+            Resources.Strings.Home_NoModeSelected,
+            Resources.Strings.Home_ModeIs,
+            Resources.Strings.Home_AmethystActive,
+            Resources.Strings.Home_CustomActive,
+        };
+
+        states.Should().OnlyHaveUniqueItems();
+        states.Should().OnlyContain(s => !string.IsNullOrWhiteSpace(s));
+    }
 }

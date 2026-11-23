@@ -76,8 +76,25 @@ public partial class ModeViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(CanUninstallMode))]
     [NotifyPropertyChangedFor(nameof(CanUninstallAmethyst))]
     [NotifyPropertyChangedFor(nameof(CanToggleDenuvoAliases))]
+    [NotifyPropertyChangedFor(nameof(CanSelectCustomMode))]
     private bool _isBusy;
     public bool NotBusy => !IsBusy;
+
+    // ── Custom (user-managed) mode card ──────────────────────────────
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanSelectCustomMode))]
+    [NotifyPropertyChangedFor(nameof(CustomStatusText))]
+    private bool _isCustomActive;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CustomStatusText))]
+    private ModeStatus _customStatus = ModeStatus.NotInstalled;
+
+    public bool CanSelectCustomMode => !IsCustomActive && !IsBusy;
+
+    public string CustomStatusText => CustomStatus == ModeStatus.UserManaged
+        ? Resources.Strings.Mode_Custom_Status
+        : Resources.Strings.Mode_NotActive;
 
     /// <summary>True when the active mode has an install record to remove — see
     /// <see cref="ModeRemovalService.CanUninstall"/> for why the record, and not the files, is the gate.</summary>
@@ -211,9 +228,10 @@ public partial class ModeViewModel : ObservableObject
 
     public async Task LoadAsync(bool forceRefresh = false)
     {
-        // First time with no mode selected: try to auto-detect an existing install by hashing the
-        // on-disk DLLs against published releases, and adopt the match as active.
-        if (!_detectionAttempted && _unlocker.SelectedMode is null)
+        // First time with no backend selected: try to auto-detect an existing install by hashing the
+        // on-disk DLLs against published releases, and adopt the match as active. Skipped when Custom
+        // or AmethystTool is already selected.
+        if (!_detectionAttempted && _unlocker.ActiveBackend == ActiveBackend.None)
         {
             _detectionAttempted = true;
             await _unlocker.DetectActiveModeAsync();
@@ -224,6 +242,8 @@ public partial class ModeViewModel : ObservableObject
 
         var active = _unlocker.SelectedMode;
         ModeHasRecord = _modeRemoval.CanUninstall;
+        CustomStatus = _unlocker.CustomModeStatus;
+        IsCustomActive = _unlocker.IsCustomModeActive;
         foreach (var card in Cards)
         {
             card.HasInstallRecord = ModeHasRecord;
@@ -270,6 +290,7 @@ public partial class ModeViewModel : ObservableObject
                 ModeStatus.NotInstalled => Resources.Strings.Mode_NotInstalled,
                 ModeStatus.UpToDate => Resources.Strings.Mode_UpToDate,
                 ModeStatus.UpdateAvailable => Resources.Strings.Mode_UpdateAvailable,
+                ModeStatus.UserManaged => Resources.Strings.Mode_Custom_Status,
                 _ => Resources.Strings.Mode_StatusUnavailable,
             };
 
@@ -338,6 +359,19 @@ public partial class ModeViewModel : ObservableObject
             case PendingAction.Uninstall when card is not null: await RunUninstall(); break;
             case PendingAction.Install when card is not null: await RunInstall(card.Mode); break;
         }
+    }
+
+    /// <summary>
+    /// Switch to Custom (user-managed) mode immediately: no Steam DLLs are installed, removed, or
+    /// verified, so Steam does not need to be closed.
+    /// </summary>
+    [RelayCommand]
+    private async Task SelectCustomMode()
+    {
+        if (IsBusy || IsCustomActive) return;
+        _unlocker.SelectCustomMode();
+        _toast.Show(Resources.Strings.Mode_Custom_Toast_Title, Resources.Strings.Mode_Custom_Toast_Body);
+        await LoadAsync();
     }
 
     // ── AmethystTool ──────────────────────────────────────────

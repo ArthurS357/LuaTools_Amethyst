@@ -754,13 +754,14 @@ public partial class App : Application
                 settings.SelectedMode = recoveredMode;
             }
 
-            // AmethystTool counts here too: it is a Mode by the test that matters (it holds the same proxy
-            // DLLs), and it is NOT an UnlockerMode, so SelectedMode reads null while it is active. Without
-            // this branch a set-up AmethystTool user would be sent back through onboarding.
+            // AmethystTool and Custom count here too: neither is an UnlockerMode, so SelectedMode reads null
+            // while they are active. Custom mode deliberately manages no Steam DLLs (nor requires the store-page
+            // plugin), so a user who chose Custom must never be sent back through onboarding.
             bool toolsInstalled =
-                (unlocker.SelectedMode is (UnlockerMode.OpenSteamTools or UnlockerMode.OpenSteamToolsNightly)
-                 || unlocker.ActiveBackend == ActiveBackend.AmethystTool)
-                && installer.IsInstalledLocally();
+                unlocker.ActiveBackend == ActiveBackend.Custom
+                || ((unlocker.SelectedMode is (UnlockerMode.OpenSteamTools or UnlockerMode.OpenSteamToolsNightly)
+                     || unlocker.ActiveBackend == ActiveBackend.AmethystTool)
+                    && installer.IsInstalledLocally());
 
             var plan = StartupPlan.Decide(
                 SteamService.IsSteamRunning(), cache.OnboardingComplete, toolsInstalled);

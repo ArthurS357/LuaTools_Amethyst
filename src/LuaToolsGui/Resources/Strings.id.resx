@@ -888,4 +888,18 @@ Aktifkan?</value></data>
   <data name="Settings_Dns_Never" xml:space="preserve"><value>Tidak pernah - jangan gunakan DNS eksternal</value></data>
   <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows tidak dapat mengenkripsi kunci (DPAPI tidak tersedia), sehingga hanya disimpan di memori untuk sesi ini dan tidak ditulis ke disk. Masukkan kembali setelah aplikasi dimulai ulang.</value></data>
   <data name="Settings_Section_Network" xml:space="preserve"><value>JARINGAN</value></data>
+  <data name="Mode_Custom_Title" xml:space="preserve"><value>Kustom</value></data>
+  <data name="Mode_Custom_Badge" xml:space="preserve"><value>DIKELOLA PENGGUNA</value></data>
+  <data name="Mode_Custom_Description" xml:space="preserve"><value>Kelola sendiri DLL unlocker Anda di folder Steam. LuaTools Amethyst hanya mengelola file .lua di config\stplug-in tanpa memasang, memeriksa, atau mewajibkan DLL apa pun.</value></data>
+  <data name="Mode_Custom_Status" xml:space="preserve"><value>Dikelola oleh Anda — DLL Steam tidak disentuh</value></data>
+  <data name="Mode_Custom_Btn_Use" xml:space="preserve"><value>Gunakan Mode Kustom</value></data>
+  <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Mode Kustom aktif</value></data>
+  <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>LuaTools Amethyst kini hanya akan mengelola file .lua di config\stplug-in tanpa mengubah DLL Steam.</value></data>
+  <data name="Home_CustomActive" xml:space="preserve"><value>Kustom · dikelola pengguna</value></data>
+  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>Hapus "{0}" (App ID {1})?
+
+Ini hanya menghapus file .lua aktifnya dari Steam\config\stplug-in. Build tersimpan untuk game ini akan tetap tersedia di tab Depots. Mulai ulang Steam setelahnya agar perubahan diterapkan.</value></data>
+  <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Hapus {0} file .lua?
+
+Ini hanya menghapus file .lua aktif dari Steam\config\stplug-in. {1} dari game tersebut memiliki build tersimpan yang akan tetap tersedia di tab Depots. Mulai ulang Steam setelahnya agar perubahan diterapkan.</value></data>
 </root>

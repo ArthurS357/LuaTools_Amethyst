@@ -888,4 +888,18 @@ Attivarlo?</value></data>
   <data name="Settings_Dns_Never" xml:space="preserve"><value>Mai - non usare mai DNS esterni</value></data>
   <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows non ha potuto crittografare la chiave (DPAPI non disponibile), quindi resta in memoria solo per questa sessione e non viene salvata. Inseriscila di nuovo dopo il riavvio dell'app.</value></data>
   <data name="Settings_Section_Network" xml:space="preserve"><value>RETE</value></data>
+  <data name="Mode_Custom_Title" xml:space="preserve"><value>Personalizzato</value></data>
+  <data name="Mode_Custom_Badge" xml:space="preserve"><value>GESTITO DALL'UTENTE</value></data>
+  <data name="Mode_Custom_Description" xml:space="preserve"><value>Gestisci manualmente le tue DLL di unlocker nella cartella di Steam. LuaTools Amethyst gestisce solo i file .lua in config\stplug-in senza installare, controllare o richiedere DLL.</value></data>
+  <data name="Mode_Custom_Status" xml:space="preserve"><value>Gestito da te — le DLL di Steam non vengono toccate</value></data>
+  <data name="Mode_Custom_Btn_Use" xml:space="preserve"><value>Usa modalità Personalizzata</value></data>
+  <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Modalità Personalizzata attiva</value></data>
+  <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>LuaTools Amethyst ora gestirà solo i file .lua in config\stplug-in senza modificare le DLL di Steam.</value></data>
+  <data name="Home_CustomActive" xml:space="preserve"><value>Personalizzato · gestito da te</value></data>
+  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>Rimuovere "{0}" (App ID {1})?
+
+Questo elimina solo il file .lua attivo da Steam\config\stplug-in. Le build salvate per questo gioco resteranno disponibili nella scheda Depots. Riavvia Steam in seguito per applicare la modifica.</value></data>
+  <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Rimuovere {0} file .lua?
+
+Questo elimina solo i file .lua attivi da Steam\config\stplug-in. {1} di questi giochi hanno build salvate che resteranno disponibili nella scheda Depots. Riavvia Steam in seguito per applicare le modifiche.</value></data>
 </root>

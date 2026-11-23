@@ -9,7 +9,7 @@ namespace LuaToolsGui.Services;
 /// </summary>
 public enum ActiveBackend
 {
-    /// <summary>Nothing selected — no Mode, no AmethystTool.</summary>
+    /// <summary>Nothing selected — no Mode, no AmethystTool, no Custom mode.</summary>
     None,
 
     /// <summary>One of the <see cref="UnlockerMode"/> cards on the Mode page.</summary>
@@ -17,6 +17,9 @@ public enum ActiveBackend
 
     /// <summary>AmethystTool, which is not an <see cref="UnlockerMode"/> but competes for the same files.</summary>
     AmethystTool,
+
+    /// <summary>User-managed unlocker: the app only manages <c>stplug-in/*.lua</c> and never touches Steam DLLs.</summary>
+    Custom,
 }
 
 /// <summary>
@@ -49,21 +52,29 @@ public static class ActiveBackendPolicy
     /// </summary>
     public const string AmethystToolToken = "AmethystTool";
 
+    /// <summary>
+    /// The value <c>SelectedMode</c> carries while the user manages their own unlocker DLLs in Steam.
+    /// Like <see cref="AmethystToolToken"/>, this is a persisted key outside <see cref="UnlockerMode"/>:
+    /// Custom mode has no GitHub release, no managed DLLs, and no install record.
+    /// </summary>
+    public const string CustomToken = "Custom";
+
     /// <summary>Which backend the persisted value names.</summary>
     public static ActiveBackend Resolve(string? selectedMode)
     {
         if (IsAmethystTool(selectedMode)) return ActiveBackend.AmethystTool;
+        if (IsCustom(selectedMode)) return ActiveBackend.Custom;
         return ActiveMode(selectedMode) is not null ? ActiveBackend.Mode : ActiveBackend.None;
     }
 
     /// <summary>
-    /// The active <see cref="UnlockerMode"/>, or null when none is — including when AmethystTool holds
-    /// the slot, and when the value is a Mode this build no longer knows.
+    /// The active <see cref="UnlockerMode"/>, or null when none is — including when AmethystTool or Custom
+    /// holds the slot, and when the value is a Mode this build no longer knows.
     /// </summary>
     public static UnlockerMode? ActiveMode(string? selectedMode)
     {
-        // Checked before the enum parse so the token wins even if a Mode is ever named after it.
-        if (IsAmethystTool(selectedMode)) return null;
+        // Checked before the enum parse so tokens win even if a Mode is ever named after them.
+        if (IsAmethystTool(selectedMode) || IsCustom(selectedMode)) return null;
         if (!Enum.TryParse(selectedMode, out UnlockerMode mode) || !Enum.IsDefined(mode)) return null;
 
         // CloudRedirect was removed: a settings.json that still names it (by name or by its number) means
@@ -74,6 +85,10 @@ public static class ActiveBackendPolicy
     /// <summary>Whether AmethystTool is the selected backend.</summary>
     public static bool IsAmethystTool(string? selectedMode) =>
         string.Equals(selectedMode, AmethystToolToken, StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>Whether user-managed Custom mode is the selected backend.</summary>
+    public static bool IsCustom(string? selectedMode) =>
+        string.Equals(selectedMode, CustomToken, StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
     /// Recover a missing or unrecognized <c>SelectedMode</c> (for example, after upstream LuaTools wiped

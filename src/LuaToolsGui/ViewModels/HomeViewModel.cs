@@ -233,6 +233,13 @@ public partial class HomeViewModel : ObservableObject
     /// </summary>
     private void RefreshBackend()
     {
+        if (_unlocker.ActiveBackend == ActiveBackend.Custom)
+        {
+            ModeStatus = Resources.Strings.Home_CustomActive;
+            HasActiveBackend = true;
+            return;
+        }
+
         // IsActive, not the selection alone: it also confirms the payload is still on disk, so a card
         // deleted outside this app is not reported as running.
         if (_amethyst.IsActive)

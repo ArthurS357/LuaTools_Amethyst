@@ -151,6 +151,15 @@ public class LuaVault
     /// </summary>
     public bool HasVariants(long appId) => Directory.Exists(AppDir(appId));
 
+    /// <summary>
+    /// True when this game has saved builds on disk (vaulted variants or loose
+    /// <c>&lt;appid&gt;_&lt;buildid&gt;.lua</c> files in <c>stplug-in</c>) that will remain
+    /// listed on the Depots tab even if the live <c>&lt;appid&gt;.lua</c> is deleted from Manage.
+    /// </summary>
+    public bool HasStoredBuilds(long appId) =>
+        (HasVariants(appId) && GetVariants(appId).Count > 0)
+        || EnumerateLooseBuildLuas().Any(b => b.AppId == appId);
+
     /// <summary>The variant Steam is currently using, or null if there is none / it was edited externally.</summary>
     public LuaVariant? GetActiveVariant(long appId)
     {

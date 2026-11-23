@@ -888,4 +888,18 @@ Aktivera?</value></data>
   <data name="Settings_Dns_Never" xml:space="preserve"><value>Aldrig - använd aldrig extern DNS</value></data>
   <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows kunde inte kryptera nyckeln (DPAPI är otillgängligt), så den behålls bara i minnet under denna session och sparas inte. Ange den igen efter omstart av appen.</value></data>
   <data name="Settings_Section_Network" xml:space="preserve"><value>NÄTVERK</value></data>
+  <data name="Mode_Custom_Title" xml:space="preserve"><value>Anpassat</value></data>
+  <data name="Mode_Custom_Badge" xml:space="preserve"><value>ANVÄNDARHANTERAT</value></data>
+  <data name="Mode_Custom_Description" xml:space="preserve"><value>Hantera dina egna unlocker-DLL-filer i Steam-mappen. LuaTools Amethyst hanterar endast .lua-filer i config\stplug-in utan att installera, kontrollera eller kräva några DLL-filer.</value></data>
+  <data name="Mode_Custom_Status" xml:space="preserve"><value>Hanteras av dig — Steam-DLL-filer rörs inte</value></data>
+  <data name="Mode_Custom_Btn_Use" xml:space="preserve"><value>Använd anpassat läge</value></data>
+  <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Anpassat läge aktivt</value></data>
+  <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>LuaTools Amethyst hanterar nu endast .lua-filer i config\stplug-in utan att ändra Steam-DLL-filer.</value></data>
+  <data name="Home_CustomActive" xml:space="preserve"><value>Anpassat · användarhanterat</value></data>
+  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>Ta bort "{0}" (App ID {1})?
+
+Detta tar endast bort den aktiva .lua-filen från Steam\config\stplug-in. Sparade versioner för det här spelet finns kvar på fliken Depots. Starta om Steam efteråt för att ändringen ska träda i kraft.</value></data>
+  <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Ta bort {0} .lua-filer?
+
+Detta tar endast bort de aktiva .lua-filerna från Steam\config\stplug-in. {1} av dessa spel har sparade versioner som finns kvar på fliken Depots. Starta om Steam efteråt för att ändringarna ska träda i kraft.</value></data>
 </root>
