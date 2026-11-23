@@ -114,9 +114,32 @@ public class SteamAppInfoCache
     {
         if (_cache.TryGetValue(appid, out var info)) return info; // hit (may be a cached null)
         var fromDisk = ReadInfoFromDetails(appid);
-        _cache[appid] = fromDisk; // memoize hit OR miss
-        return fromDisk;
+        // GetOrAdd, not an indexer set: a concurrent ResolveAsync may have stored the real info while this read
+        // was in flight, and a stale "no blob" null written over it would hide that game until restart.
+        return _cache.GetOrAdd(appid, fromDisk); // memoize hit OR miss
     }
+
+    /// <summary>Same lookup as <see cref="GetCached"/> for callers on the UI thread: a RAM hit returns at once,
+    /// a miss reads the blob on the thread pool (and memoizes it, so <see cref="GetCached"/> is a RAM hit
+    /// afterwards). Two concurrent misses may both read; the first stored value wins, and a value stored by
+    /// <see cref="ResolveAsync"/> is never overwritten by a read. The token is only checked before the read
+    /// starts, and only on a miss: a RAM hit returns at once.</summary>
+    public Task<SteamAppInfo?> GetCachedAsync(long appid, CancellationToken ct = default) =>
+        _cache.TryGetValue(appid, out var info)
+            ? Task.FromResult(info)
+            : Task.Run(() => GetCached(appid), ct);
+
+    /// <summary>Warm the RAM index for a batch of appids in ONE thread-pool hop, so the synchronous
+    /// <see cref="GetCached"/> calls a row builder makes right after never touch the disk on the UI thread.</summary>
+    public Task PreloadAsync(IEnumerable<long> appids, CancellationToken ct = default) =>
+        Task.Run(() =>
+        {
+            foreach (long appid in appids.Distinct())
+            {
+                ct.ThrowIfCancellationRequested();
+                GetCached(appid);
+            }
+        }, ct);
 
     /// <summary>Derive name + header image from the cached /details blob, or null if it's absent, empty
     /// (the delisted "{}" marker), or unparseable.</summary>
@@ -293,16 +316,9 @@ public class SteamAppInfoCache
     /// <summary>True if the full raw appdetails blob is already cached on disk for this appid.</summary>
     public bool HasFullDetails(long appid) => File.Exists(DetailsPath(appid));
 
-    /// <summary>Read the cached full appdetails 'data' JSON for this appid, or null if not cached.</summary>
-    public string? GetFullDetails(long appid)
-    {
-        try { return HasFullDetails(appid) ? File.ReadAllText(DetailsPath(appid)) : null; }
-        catch { return null; }
-    }
-
     /// <summary>
-    /// Parse the cached blob straight from disk, or null if there is none. The readers below used to go through
-    /// <see cref="GetFullDetails"/>, materialising the whole blob as a string first; an appdetails blob carries
+    /// Parse the cached blob straight from disk, or null if there is none. The readers below used to materialise
+    /// the whole blob as a string first; an appdetails blob carries
     /// <c>detailed_description</c> HTML and runs to tens of KB, and the Manage grid and filters parse one per
     /// game in the library. Same sharing as <c>File.ReadAllText</c>, so a concurrent write behaves as before.
     /// Throws on a malformed blob, like <c>JsonDocument.Parse(string)</c> did; every caller already catches.
@@ -590,7 +606,7 @@ public class SteamAppInfoCache
         }
     }
 
-    private static string DetailsPath(long appid) => Path.Combine(DetailsDir, $"{appid}.json");
+    internal static string DetailsPath(long appid) => Path.Combine(DetailsDir, $"{appid}.json");
 
     private async Task SaveFullDetailsAsync(long appid, string rawJson)
     {

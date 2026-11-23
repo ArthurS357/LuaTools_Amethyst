@@ -178,11 +178,48 @@ public class AmethystToolModeBindingTests
     {
         // The page has one docked at the bottom, shared by every Mode. ModeViewModel mirrors the card's
         // progress into it, so a second bar inside the card would be a duplicate that tracks the same work.
-        var cardStart = ModeViewXaml().IndexOf("DataContext=\"{Binding Amethyst}\"", StringComparison.Ordinal);
-        cardStart.Should().BeGreaterThan(-1);
+        AmethystCardMarkup(ModeViewXaml()).Should().NotContain("<ProgressBar");
+    }
 
-        string card = ModeViewXaml()[cardStart..];
-        int cardEnd = card.IndexOf("</Border>", StringComparison.Ordinal);
-        card[..cardEnd].Should().NotContain("<ProgressBar");
+    /// <summary>
+    /// The whole card: from its opening tag to the Cards list that follows it (the same ordering the test
+    /// above relies on). Not "up to the first &lt;/Border&gt;": the card holds nested Borders, the first being
+    /// the "Recommended" badge, and cutting there left ~83% of it unchecked.
+    /// </summary>
+    internal static string AmethystCardMarkup(string xaml)
+    {
+        int start = xaml.IndexOf("DataContext=\"{Binding Amethyst}\"", StringComparison.Ordinal);
+        int cards = xaml.IndexOf("ItemsSource=\"{Binding Cards}\"", StringComparison.Ordinal);
+        start.Should().BeGreaterThan(-1);
+        cards.Should().BeGreaterThan(start, "the Cards list follows the Amethyst card");
+        return xaml[start..xaml.LastIndexOf('<', cards)]; // stop before the list's own opening tag
+    }
+
+    [Fact]
+    public void The_card_slice_reaches_past_the_first_closing_Border()
+    {
+        // The bug this guards: a slice that stops at the badge's </Border> never sees a ProgressBar placed
+        // after it, so the test above would pass with the very thing it forbids.
+        const string xaml = """
+            <Border DataContext="{Binding Amethyst}">
+              <Border><TextBlock Text="Recommended"/></Border>
+              <ProgressBar Value="{Binding Progress}"/>
+            </Border>
+            <ItemsControl ItemsSource="{Binding Cards}"><ProgressBar/></ItemsControl>
+            """;
+
+        string card = AmethystCardMarkup(xaml);
+
+        card.Should().Contain("<ProgressBar", "a bar after the badge is inside the card");
+        card.Should().NotContain("ItemsControl", "the Mode cards below are not part of the Amethyst card");
+    }
+
+    [Fact]
+    public void The_real_card_slice_covers_the_whole_card_not_just_the_badge()
+    {
+        string card = AmethystCardMarkup(ModeViewXaml());
+
+        card.Split("</Border>").Length.Should().BeGreaterThan(2, "more than the badge's Border lives in the card");
+        card.Should().Contain("Command=", "the card's buttons are past the badge");
     }
 }

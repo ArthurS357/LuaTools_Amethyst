@@ -458,6 +458,12 @@ public class CefInjectorService : IHostedService
     /// of which case this is.</summary>
     internal static string BuildInlinePolyfill()
     {
+        // The timeout below resolves {success:true} on purpose: that bare, one-key object is the contract the
+        // upstream frontend (luatools.js, madoiscool/LTSP, fetched unpinned) is written against. Its status
+        // poll tells a bridge timeout from a real answer by SHAPE, `Object.keys(st).length <= 1` ("bridge
+        // timeout: bare {success:true}"), and tolerates 5 in a row before showing "app not responding". A
+        // success:false with an `error` field has two keys, skips that guard and lands on its `st.error`
+        // branch instead. Revisit only with a pinned frontend version.
         return @"
 (function(){
 var real=window.Millennium;

@@ -1071,6 +1071,11 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
         if (info.PublicBuildId is not null)
             LatestBuildLabel = string.Format(Resources.Strings.Builds_LatestBuild, info.PublicBuildId);
 
+        // BuildRows and the filter below call the synchronous GetCached; warm it off the UI thread first.
+        await _appInfo.PreloadAsync(info.Depots.Where(d => d.DlcAppId is not null).Select(d => d.DlcAppId!.Value)
+            .Concat(info.DlcIds));
+        if (token != _depotLoadToken) return;
+
         BuildRows(info, lua);
         IsLoadingDepots = false;
 

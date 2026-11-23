@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.8.3");
+        AppVersion.Current.Should().Be("1.8.4");
     }
 
     [Fact]
@@ -42,6 +42,27 @@ public class ChangelogTests
         current.Summary.Should().NotBeNullOrWhiteSpace();
         current.Highlights.Should().HaveCountGreaterThanOrEqualTo(3);
         current.Highlights.Should().AllSatisfy(h => h.Should().NotBeNullOrWhiteSpace());
+    }
+
+    [Fact]
+    public void The_1_8_3_entry_still_names_what_that_release_was_about()
+    {
+        string text = string.Join(" ", Changelog.Entries.Single(e => e.Version == "1.8.3").Highlights);
+
+        text.Should().ContainEquivalentOf("DPAPI");                          // fail-closed Hubcap key storage
+        text.Should().ContainEquivalentOf("memory for the session only");    // never written to settings.json
+        text.Should().ContainEquivalentOf("%USERPROFILE%");                  // profile masking in logs
+        text.Should().ContainEquivalentOf("DNS fallback");                   // Auto clears the failure flag
+    }
+
+    [Fact]
+    public void The_1_8_4_entry_names_what_that_release_was_about()
+    {
+        string text = string.Join(" ", Changelog.Entries.Single(e => e.Version == "1.8.4").Highlights);
+
+        text.Should().ContainEquivalentOf("background thread");              // GetCachedAsync / PreloadAsync
+        text.Should().ContainEquivalentOf("app-list cache");                 // SteamAppListCache end to end
+        text.Should().ContainEquivalentOf("nothing to migrate");             // no data-folder change
     }
 
     [Fact]

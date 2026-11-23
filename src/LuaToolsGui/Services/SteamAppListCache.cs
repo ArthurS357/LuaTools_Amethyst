@@ -15,13 +15,24 @@ public class SteamAppListCache
     private const string MorrenusUrl = "https://applist.morrenus.xyz/";
     private const string SteamUrl = "https://api.steampowered.com/ISteamApps/GetAppList/v2/";
 
-    private static readonly string CacheFile =
+    private static readonly string DefaultCacheFile =
         Path.Combine(AppDataMigrator.CurrentDirectory, "steam-applist.json");
     private static readonly TimeSpan MaxAge = TimeSpan.FromDays(14);
 
-    private readonly HttpClient _http = new(DnsFallbackHttpHandler.CreateDefault()) { Timeout = TimeSpan.FromSeconds(60) };
+    private readonly string _cacheFile;
+    private readonly HttpClient _http;
     private readonly ConcurrentDictionary<long, string> _names = new();
     private Task? _loadTask;
+
+    public SteamAppListCache() : this(DefaultCacheFile, DnsFallbackHttpHandler.CreateDefault()) { }
+
+    /// <summary>Test seam: a cache file under a temp dir and a stub handler, so the whole recovery chain
+    /// (fresh cache → download → stale cache) runs with no %AppData% and no network.</summary>
+    internal SteamAppListCache(string cacheFile, HttpMessageHandler handler)
+    {
+        _cacheFile = cacheFile;
+        _http = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(60) };
+    }
 
     public string? GetName(long appid) => _names.TryGetValue(appid, out var n) ? n : null;
 
@@ -33,7 +44,7 @@ public class SteamAppListCache
         // Fresh disk cache → use it.
         try
         {
-            if (File.Exists(CacheFile) && DateTime.UtcNow - File.GetLastWriteTimeUtc(CacheFile) < MaxAge)
+            if (File.Exists(_cacheFile) && DateTime.UtcNow - File.GetLastWriteTimeUtc(_cacheFile) < MaxAge)
             {
                 var map = await ReadCacheFileAsync();
                 if (map is { Count: > 0 })
@@ -56,7 +67,7 @@ public class SteamAppListCache
         // Both sources failed — fall back to a stale cache if we have one.
         try
         {
-            if (_names.IsEmpty && File.Exists(CacheFile))
+            if (_names.IsEmpty && File.Exists(_cacheFile))
             {
                 var map = await ReadCacheFileAsync();
                 if (map is not null) foreach (var (k, v) in map) _names[k] = v;
@@ -78,8 +89,14 @@ public class SteamAppListCache
 
             foreach (var app in apps.EnumerateArray())
             {
-                long id = app.GetProperty("appid").GetInt64();
-                string? name = app.GetProperty("name").GetString();
+                // One malformed row is skipped, not fatal: throwing mid-loop used to leave _names half filled,
+                // which also made LoadAsync skip the stale-cache fallback (it only runs when _names is empty).
+                if (app.ValueKind != JsonValueKind.Object ||
+                    !app.TryGetProperty("appid", out var idEl) || idEl.ValueKind != JsonValueKind.Number ||
+                    !idEl.TryGetInt64(out long id) ||
+                    !app.TryGetProperty("name", out var nameEl) || nameEl.ValueKind != JsonValueKind.String)
+                    continue;
+                string? name = nameEl.GetString();
                 if (!string.IsNullOrWhiteSpace(name)) _names[id] = name;
             }
             return !_names.IsEmpty;
@@ -95,7 +112,7 @@ public class SteamAppListCache
     /// the old <c>ReadAllTextAsync</c> first materialised all of it as one UTF-16 string, twice the file's
     /// size in memory, only to hand it to the parser and drop it. Streaming skips that copy entirely.
     /// </summary>
-    private static Task<Dictionary<long, string>?> ReadCacheFileAsync() => ReadListAsync(CacheFile);
+    private Task<Dictionary<long, string>?> ReadCacheFileAsync() => ReadListAsync(_cacheFile);
 
     internal static async Task<Dictionary<long, string>?> ReadListAsync(string path)
     {
@@ -111,7 +128,7 @@ public class SteamAppListCache
     /// </summary>
     private async Task SaveAsync()
     {
-        try { await WriteListAsync(CacheFile, _names); }
+        try { await WriteListAsync(_cacheFile, _names); }
         catch (Exception ex) // best effort, as before: a failed save must not fault the load task
         {
             AppLog.Log($"SteamAppList: cache write failed: {ex.GetType().Name}: {ex.Message}");

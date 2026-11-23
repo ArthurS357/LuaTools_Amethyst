@@ -826,6 +826,10 @@ public partial class DownloadViewModel : ObservableObject
         // Names from caches + one steamcmd call (cached per app) → real names, sizes, OS, language.
         await _appList.EnsureLoadedAsync();
         _depotsById = await BuildDepotLookupAsync(appId);
+        // The row builders below call the synchronous GetCached; warm it off the UI thread first.
+        var depots = _depotsById; // the lambda runs lazily on a pool thread: capture the field once
+        await _appInfo.PreloadAsync(diff.Added.Concat(diff.Removed)
+            .SelectMany(e => new[] { e.Id, depots.GetValueOrDefault(e.Id)?.DlcAppId ?? e.Id }));
         DiffAdded = diff.Added.Select(ToDiffRow).ToList();
         DiffRemoved = diff.Removed.Select(ToDiffRow).ToList();
         ConfirmTitle = string.Format(Resources.Strings.Add_Confirm_Replace, Details?.Name ?? appId.ToString());

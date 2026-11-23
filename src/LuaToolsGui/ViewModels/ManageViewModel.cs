@@ -126,7 +126,7 @@ public partial class LuaTileViewModel : ObservableObject
             // For a still-placeholder name, fetch appdetails once (throttled, saved to /details).
             if (_nameIsPlaceholder)
             {
-                var info = appInfo.GetCached(AppId) ?? await appInfo.ResolveAsync(AppId);
+                var info = await appInfo.GetCachedAsync(AppId) ?? await appInfo.ResolveAsync(AppId);
                 if (!string.IsNullOrWhiteSpace(info?.Name)) SetName(info!.Name);
             }
 
@@ -158,7 +158,7 @@ public partial class LuaTileViewModel : ObservableObject
         if (local is not null) return local;
 
         // Slow path: appdetails header_image (throttled) + optional name backfill.
-        var info = appInfo.GetCached(appId) ?? await appInfo.ResolveAsync(appId);
+        var info = await appInfo.GetCachedAsync(appId) ?? await appInfo.ResolveAsync(appId);
         if (onName is not null && !string.IsNullOrWhiteSpace(info?.Name)) onName(info!.Name);
         if (!string.IsNullOrWhiteSpace(info?.HeaderImage))
             local = await covers.EnsureAsync(appId, info!.HeaderImage!);

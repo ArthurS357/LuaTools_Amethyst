@@ -1,5 +1,37 @@
 # Changelog
 
+## 1.8.4 — 2026-11-23 (build interna, sem tag nem release)
+
+Lote J1: leitura de detalhes fora da thread de UI, teste de ponta a ponta da lista de apps e fechamento de duas pendencias
+tecnicas. So existe na `main` e em pacote local; a proxima versao publica e a 1.9.0.
+
+### Correcoes e testes
+
+- **M2 (`SteamAppInfoCache`):** `GetCachedAsync` e `PreloadAsync` leem o blob de `details\<appid>.json` na thread pool e
+  memoizam no mesmo `ConcurrentDictionary`; `GetCached` segue sincrono para quem ja roda em `Task.Run`. `ManageViewModel`
+  (capa e nome) usa `GetCachedAsync`; `BuildsViewModel`, `DownloadViewModel` e `DropInstallViewModel` aquecem o cache com
+  `PreloadAsync` antes de montar as linhas. `GetFullDetails` (sem nenhum chamador) foi removido.
+- **M3 (`SteamAppListCache`):** construtor `internal (cacheFile, handler)` e testes de ponta a ponta de `LoadAsync` (cache
+  fresco, vencido, corrompido, Morrenus -> Steam, falha dupla com e sem cache velho, carga unica).
+  Achado do revisor: uma linha sem `name`/`appid` valido agora e pulada em vez de abortar a carga com a lista pela metade (o que
+  tambem desligava o fallback do cache velho). `GetCached` memoiza com `GetOrAdd`, para uma leitura atrasada nao sobrescrever o
+  que o `ResolveAsync` acabou de gravar.
+- Teste do card Amethyst (`The_card_draws_no_progress_bar_of_its_own`): cortava no primeiro `</Border>` (o do selo
+  "Recommended", ~17% do card); agora cobre o card inteiro e tem teste de regressao.
+
+### Decisao registrada
+
+- **Polyfill CEF (timeout):** mantido `{success:true}`. O `luatools.js` e do upstream (`madoiscool/LTSP`, sem pin) e o poll de
+  status distingue o timeout da ponte pela forma (`Object.keys(st).length <= 1`), tolerando 5 seguidos; um `success:false`
+  com `error` tem 2 chaves e escapa dessa guarda. Comentario em `CefInjectorService.BuildInlinePolyfill`.
+
+### Residuo
+
+- `GetFilterData`, `GetOverview` e `GetGameDetails` seguem lendo o blob de forma sincrona (fora do escopo do M2).
+- `SteamAppInfoCacheAsyncTests` gravam em `%AppData%\...\details` com appids ficticios (9.999.999.801-808); tornar o diretorio
+  injetavel deixaria a suite hermetica.
+- `DisplayName`/`ToDiffRow`/`BuildRows` continuam usando o `GetCached` sincrono; o `PreloadAsync` antes deles evita o disco na UI.
+
 ## 1.8.3 — 2026-11-23 (build interna, sem tag nem release)
 
 Redesign visual com design system, acessibilidade e fechamento de pendencias. So existe na `main` e em pacote local; a proxima
@@ -565,7 +597,7 @@ Motivo: queda do Supabase em 2026-10-20 (pico de usuarios).
 - Popups do BetterSteamTools Nightly na instalacao (`IPC spec not found`, `signature file not found`): bug do
   upstream (`OpenSteamTool` de julho/2026).
 - CloudRedirect: trocar a fonte para um fork anonimo (decisao pendente).
-- Polyfill: timeout virar falha explicita (depende de ver `success:false` no `luatools.js`).
+- Polyfill: timeout virar falha explicita. **Decidido na 1.8.4: mantido `{success:true}`** (o `luatools.js` e do upstream `madoiscool/LTSP`, sem pin; o poll de status depende da forma `Object.keys(st).length <= 1`; ver `CefInjectorService.BuildInlinePolyfill`).
 - `Verb = "runas"` em `HttpServerService` (decisao pendente).
 - F-04 (auto-update por espelhos), F-09 (Denuvo sem teste ao vivo) e traducoes do F-10.
 - Chaves `Auth_ProviderUnavailable`, `Auth_TryAnyway`, `Auth_UseManualCode`, `Auth_Cancel` sem traducao nos 28

@@ -29,6 +29,14 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.8.4", "2026-11-23",
+            "Internal build: cached game details are read off the UI thread, and the app-list cache recovery is tested end to end.",
+            [
+                "Manage, Builds and the replace-confirmation dialogs now read cached game details on a background thread, so looking up a game name or cover for the first time no longer waits on a disk read in those screens.",
+                "The Steam app-list cache (the names of every game) is covered end to end: an expired or corrupt file falls back to a fresh download, and when both sources are down the old copy is still used.",
+                "No new feature, no new dependency, and nothing to migrate in your LuaToolsAmethyst data folder.",
+            ]),
+
         new("1.8.3", "2026-11-23",
             "Internal build: safer Hubcap key storage, log hardening and small fixes.",
             [
