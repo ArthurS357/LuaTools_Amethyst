@@ -869,4 +869,23 @@ SHA-256 {3}
   <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>無法建立安全備份。請檢查可用磁碟空間。</value></data>
   <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam 未關閉。</value></data>
   <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>無法寫回原始啟動選項。</value></data>
+  <data name="Api_Err_FixHashMismatch" xml:space="preserve"><value>下載的修正檔與公布的檢查碼不符，已將其捨棄。</value></data>
+  <data name="Fixes_OfflineMode" xml:space="preserve"><value>離線模式：正在顯示儲存於 {0} 的目錄。</value></data>
+  <data name="Fixes_Warn_InstalledWithoutFix" xml:space="preserve"><value>您已安裝的遊戲中，有 {0} 款在 LuaTools 目錄中沒有修正檔。</value></data>
+  <data name="Fixes_Warn_LibraryFailed" xml:space="preserve"><value>無法讀取 Steam 遊戲庫；已隱藏「已安裝」徽章。</value></data>
+  <data name="Pager_Next" xml:space="preserve"><value>下一頁</value></data>
+  <data name="Pager_Prev" xml:space="preserve"><value>上一頁</value></data>
+  <data name="Settings_Btn_ClearAppInfo" xml:space="preserve"><value>清除內容快取 (AppInfo)</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Body" xml:space="preserve"><value>將會關閉 Steam，把 appinfo.vdf 移至旁邊的備份資料夾，再重新啟動 Steam 以重建快取。首次啟動時間會較長。透過 LuaTools 修改的啟動選項會在下次開啟 LuaTools 時提示重新套用。要繼續嗎？</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Go" xml:space="preserve"><value>清除快取</value></data>
+  <data name="Settings_ClearAppInfo_Done" xml:space="preserve"><value>內容快取已清除。Steam 將在下次啟動時重新建立。</value></data>
+  <data name="Settings_ClearAppInfo_NoFile" xml:space="preserve"><value>Steam 沒有可清除的內容快取 (appinfo.vdf)。</value></data>
+  <data name="Settings_ClearAppInfo_Tooltip" xml:space="preserve"><value>若已安裝的遊戲出現「無效的內容設定」錯誤，請使用此項。若 Steam 更新變更了 AmethystTool 引擎 (v1.5.1+) 掛鉤的簽章，這也是可靠的備援方式。會關閉 Steam，將 appcache\appinfo.vdf 移至旁邊的備份資料夾，並重新啟動 Steam 以重建檔案。</value></data>
+  <data name="Settings_Dns" xml:space="preserve"><value>DNS 備援 (Cloudflare DoH)</value></data>
+  <data name="Settings_Dns_Always" xml:space="preserve"><value>一律 - 使用 Cloudflare DNS (DoH)</value></data>
+  <data name="Settings_Dns_Auto" xml:space="preserve"><value>自動（預設）- 僅在系統 DNS 失敗時備援</value></data>
+  <data name="Settings_Dns_Hint" xml:space="preserve"><value>僅影響透過 HTTPS 存取的 LuaTools、Hubcap 與 GitHub 主機。啟用時，這些主機名稱會傳送至 Cloudflare (1.1.1.1)。立即生效。</value></data>
+  <data name="Settings_Dns_Never" xml:space="preserve"><value>永不 - 不使用外部 DNS</value></data>
+  <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows 無法加密此金鑰（DPAPI 無法使用），因此僅在本次工作階段保留於記憶體且不會儲存。重新啟動應用程式後請再次輸入。</value></data>
+  <data name="Settings_Section_Network" xml:space="preserve"><value>網路</value></data>
 </root>

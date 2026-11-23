@@ -869,4 +869,23 @@ Aktivera?</value></data>
   <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Det gick inte att skapa en säkerhetskopia. Kontrollera ledigt diskutrymme.</value></data>
   <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam stängdes inte.</value></data>
   <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>De ursprungliga startalternativen kunde inte skrivas tillbaka.</value></data>
+  <data name="Api_Err_FixHashMismatch" xml:space="preserve"><value>Den hämtade fixen stämmer inte med den publicerade kontrollsumman och kasserades.</value></data>
+  <data name="Fixes_OfflineMode" xml:space="preserve"><value>Offlineläge: visar katalogen sparad {0}.</value></data>
+  <data name="Fixes_Warn_InstalledWithoutFix" xml:space="preserve"><value>{0} av dina installerade spel saknar fix i LuaTools-katalogen.</value></data>
+  <data name="Fixes_Warn_LibraryFailed" xml:space="preserve"><value>Kunde inte läsa Steam-biblioteket; installerat-märken är dolda.</value></data>
+  <data name="Pager_Next" xml:space="preserve"><value>Nästa sida</value></data>
+  <data name="Pager_Prev" xml:space="preserve"><value>Föregående sida</value></data>
+  <data name="Settings_Btn_ClearAppInfo" xml:space="preserve"><value>Rensa innehållscache (AppInfo)</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Body" xml:space="preserve"><value>Steam stängs, appinfo.vdf flyttas till en säkerhetskopiemapp bredvid och Steam startas om för att bygga upp den igen. Första starten tar längre tid. Startalternativ som ändrats med LuaTools erbjuds att tillämpas igen nästa gång LuaTools startar. Fortsätt?</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Go" xml:space="preserve"><value>Rensa cache</value></data>
+  <data name="Settings_ClearAppInfo_Done" xml:space="preserve"><value>Innehållscachen har rensats. Steam bygger upp den igen vid nästa start.</value></data>
+  <data name="Settings_ClearAppInfo_NoFile" xml:space="preserve"><value>Steam har ingen innehållscache (appinfo.vdf) att rensa.</value></data>
+  <data name="Settings_ClearAppInfo_Tooltip" xml:space="preserve"><value>Använd detta om ett installerat spel ger felet ”Ogiltig innehållskonfiguration”. Det är även den säkra reserven om en Steam-uppdatering ändrar signaturen som AmethystTool-motorn (v1.5.1+) hakar på. Stänger Steam, flyttar appcache\appinfo.vdf till en säkerhetskopiemapp bredvid och startar om Steam, som återskapar filen.</value></data>
+  <data name="Settings_Dns" xml:space="preserve"><value>DNS-reserv (Cloudflare DoH)</value></data>
+  <data name="Settings_Dns_Always" xml:space="preserve"><value>Alltid - använd Cloudflare DNS (DoH)</value></data>
+  <data name="Settings_Dns_Auto" xml:space="preserve"><value>Auto (standard) - reserv bara om system-DNS misslyckas</value></data>
+  <data name="Settings_Dns_Hint" xml:space="preserve"><value>Påverkar bara värdar för LuaTools, Hubcap och GitHub över HTTPS. När aktiv skickas dessa värdnamn till Cloudflare (1.1.1.1). Gäller direkt.</value></data>
+  <data name="Settings_Dns_Never" xml:space="preserve"><value>Aldrig - använd aldrig extern DNS</value></data>
+  <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows kunde inte kryptera nyckeln (DPAPI är otillgängligt), så den behålls bara i minnet under denna session och sparas inte. Ange den igen efter omstart av appen.</value></data>
+  <data name="Settings_Section_Network" xml:space="preserve"><value>NÄTVERK</value></data>
 </root>

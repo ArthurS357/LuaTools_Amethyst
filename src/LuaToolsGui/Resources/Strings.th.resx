@@ -869,4 +869,23 @@ SHA-256 {3}
   <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>ไม่สามารถสร้างข้อมูลสำรองได้ ตรวจสอบพื้นที่ว่างในดิสก์</value></data>
   <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam ไม่ปิด</value></data>
   <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>ไม่สามารถเขียนตัวเลือกการเปิดเดิมกลับได้</value></data>
+  <data name="Api_Err_FixHashMismatch" xml:space="preserve"><value>ไฟล์แก้ไขที่ดาวน์โหลดไม่ตรงกับค่าตรวจสอบที่เผยแพร่ จึงถูกลบทิ้ง</value></data>
+  <data name="Fixes_OfflineMode" xml:space="preserve"><value>โหมดออฟไลน์: แสดงแค็ตตาล็อกที่บันทึกเมื่อ {0}</value></data>
+  <data name="Fixes_Warn_InstalledWithoutFix" xml:space="preserve"><value>เกมที่ติดตั้งไว้ของคุณ {0} เกมไม่มีไฟล์แก้ไขในแค็ตตาล็อก LuaTools</value></data>
+  <data name="Fixes_Warn_LibraryFailed" xml:space="preserve"><value>ไม่สามารถอ่านคลัง Steam ได้ ป้ายสถานะติดตั้งแล้วจึงถูกซ่อนไว้</value></data>
+  <data name="Pager_Next" xml:space="preserve"><value>หน้าถัดไป</value></data>
+  <data name="Pager_Prev" xml:space="preserve"><value>หน้าก่อนหน้า</value></data>
+  <data name="Settings_Btn_ClearAppInfo" xml:space="preserve"><value>ล้างแคชเนื้อหา (AppInfo)</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Body" xml:space="preserve"><value>ระบบจะปิด Steam ย้าย appinfo.vdf ไปยังโฟลเดอร์สำรองที่อยู่ติดกัน แล้วรีสตาร์ท Steam เพื่อสร้างไฟล์ใหม่ การเปิดครั้งแรกจะใช้เวลานานขึ้น ตัวเลือกการเริ่มเกมที่แก้ไขด้วย LuaTools จะถูกเสนอให้ใช้อีกครั้งเมื่อเปิด LuaTools ครั้งถัดไป ดำเนินการต่อหรือไม่?</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Go" xml:space="preserve"><value>ล้างแคช</value></data>
+  <data name="Settings_ClearAppInfo_Done" xml:space="preserve"><value>ล้างแคชเนื้อหาแล้ว Steam จะสร้างใหม่เมื่อเปิดครั้งถัดไป</value></data>
+  <data name="Settings_ClearAppInfo_NoFile" xml:space="preserve"><value>Steam ไม่มีแคชเนื้อหา (appinfo.vdf) ให้ล้าง</value></data>
+  <data name="Settings_ClearAppInfo_Tooltip" xml:space="preserve"><value>ใช้ตัวเลือกนี้หากเกมที่ติดตั้งแล้วขึ้นข้อผิดพลาด “การกำหนดค่าเนื้อหาไม่ถูกต้อง” และยังเป็นทางเลือกสำรองหลักหากการอัปเดต Steam เปลี่ยนลายเซ็นที่เอนจิน AmethystTool (v1.5.1+) ดักจับ จะปิด Steam ย้าย appcache\appinfo.vdf ไปยังโฟลเดอร์สำรองข้างเคียง แล้วรีสตาร์ท Steam เพื่อสร้างไฟล์ใหม่</value></data>
+  <data name="Settings_Dns" xml:space="preserve"><value>DNS สำรอง (Cloudflare DoH)</value></data>
+  <data name="Settings_Dns_Always" xml:space="preserve"><value>เสมอ - ใช้ Cloudflare DNS (DoH)</value></data>
+  <data name="Settings_Dns_Auto" xml:space="preserve"><value>อัตโนมัติ (ค่าเริ่มต้น) - ใช้สำรองเมื่อ DNS ระบบล้มเหลวเท่านั้น</value></data>
+  <data name="Settings_Dns_Hint" xml:space="preserve"><value>มีผลเฉพาะโฮสต์ของ LuaTools, Hubcap และ GitHub ผ่าน HTTPS เมื่อเปิดใช้งาน ชื่อโฮสต์เหล่านั้นจะถูกส่งไปยัง Cloudflare (1.1.1.1) มีผลทันที</value></data>
+  <data name="Settings_Dns_Never" xml:space="preserve"><value>ไม่ใช้ - ไม่ใช้ DNS ภายนอก</value></data>
+  <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows ไม่สามารถเข้ารหัสคีย์ได้ (DPAPI ไม่พร้อมใช้งาน) จึงเก็บไว้ในหน่วยความจำเฉพาะเซสชันนี้และไม่บันทึกลงดิสก์ กรุณากรอกใหม่หลังรีสตาร์ทแอป</value></data>
+  <data name="Settings_Section_Network" xml:space="preserve"><value>เครือข่าย</value></data>
 </root>

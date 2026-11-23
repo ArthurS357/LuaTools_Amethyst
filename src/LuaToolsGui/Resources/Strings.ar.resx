@@ -895,4 +895,23 @@ SHA-256 {3}
   <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>تعذّر إنشاء نسخة احتياطية. تحقق من المساحة الحرة على القرص.</value></data>
   <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>لم يُغلق Steam.</value></data>
   <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>تعذّرت إعادة كتابة خيارات التشغيل الأصلية.</value></data>
+  <data name="Api_Err_FixHashMismatch" xml:space="preserve"><value>ملف الإصلاح الذي تم تنزيله لا يطابق قيمة التحقق المنشورة، لذلك تم تجاهله.</value></data>
+  <data name="Fixes_OfflineMode" xml:space="preserve"><value>وضع عدم الاتصال: عرض الكتالوج المحفوظ في {0}.</value></data>
+  <data name="Fixes_Warn_InstalledWithoutFix" xml:space="preserve"><value>{0} من ألعابك المثبتة لا يوجد لها إصلاح في كتالوج LuaTools.</value></data>
+  <data name="Fixes_Warn_LibraryFailed" xml:space="preserve"><value>تعذرت قراءة مكتبة Steam؛ تم إخفاء شارات التثبيت.</value></data>
+  <data name="Pager_Next" xml:space="preserve"><value>الصفحة التالية</value></data>
+  <data name="Pager_Prev" xml:space="preserve"><value>الصفحة السابقة</value></data>
+  <data name="Settings_Btn_ClearAppInfo" xml:space="preserve"><value>مسح ذاكرة المحتوى المؤقتة (AppInfo)</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Body" xml:space="preserve"><value>سيتم إغلاق Steam ونقل appinfo.vdf إلى مجلد نسخ احتياطي بجانبه، ثم إعادة تشغيل Steam لإعادة بنائه. يستغرق التشغيل الأول وقتاً أطول. سيُعرض إعادة تطبيق خيارات التشغيل المعدلة عبر LuaTools عند تشغيله في المرة القادمة. هل تريد المتابعة؟</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Go" xml:space="preserve"><value>مسح الذاكرة المؤقتة</value></data>
+  <data name="Settings_ClearAppInfo_Done" xml:space="preserve"><value>تم مسح ذاكرة المحتوى المؤقتة. سيعيد Steam بناءها عند التشغيل التالي.</value></data>
+  <data name="Settings_ClearAppInfo_NoFile" xml:space="preserve"><value>لا يملك Steam ذاكرة محتوى مؤقتة (appinfo.vdf) لمسحها.</value></data>
+  <data name="Settings_ClearAppInfo_Tooltip" xml:space="preserve"><value>استخدم هذا إذا أظهرت لعبة مثبتة خطأ «تكوين محتوى غير صالح». وهو أيضاً الحل الاحتياطي النهائي إذا غيّر تحديث Steam التوقيع الذي يعترضه محرك AmethystTool (v1.5.1+). يغلق Steam وينقل appcache\appinfo.vdf إلى مجلد نسخ احتياطي بجانبه ويعيد تشغيل Steam لإعادة بناء الملف.</value></data>
+  <data name="Settings_Dns" xml:space="preserve"><value>بديل DNS (Cloudflare DoH)</value></data>
+  <data name="Settings_Dns_Always" xml:space="preserve"><value>دائماً - استخدام Cloudflare DNS (DoH)</value></data>
+  <data name="Settings_Dns_Auto" xml:space="preserve"><value>تلقائي (افتراضي) - البديل فقط عند فشل DNS النظام</value></data>
+  <data name="Settings_Dns_Hint" xml:space="preserve"><value>يؤثر فقط على مضيفي LuaTools وHubcap وGitHub عبر HTTPS. عند التفعيل، تُرسل أسماء هذه المضيفات إلى Cloudflare (1.1.1.1). يُطبّق فوراً.</value></data>
+  <data name="Settings_Dns_Never" xml:space="preserve"><value>أبداً - عدم استخدام DNS خارجي</value></data>
+  <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>تعذر على Windows تشفير المفتاح (DPAPI غير متاح)، لذلك يُحتفظ به في الذاكرة لهذه الجلسة فقط ولا يُحفظ. أدخله مجدداً بعد إعادة تشغيل التطبيق.</value></data>
+  <data name="Settings_Section_Network" xml:space="preserve"><value>الشبكة</value></data>
 </root>

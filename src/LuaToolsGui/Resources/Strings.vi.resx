@@ -869,4 +869,23 @@ Bật nó?</value></data>
   <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Không thể tạo bản sao lưu an toàn. Hãy kiểm tra dung lượng đĩa trống.</value></data>
   <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam không đóng.</value></data>
   <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>Không thể ghi lại các tùy chọn khởi chạy gốc.</value></data>
+  <data name="Api_Err_FixHashMismatch" xml:space="preserve"><value>Bản sửa lỗi đã tải xuống không khớp với mã kiểm tra đã công bố nên đã bị loại bỏ.</value></data>
+  <data name="Fixes_OfflineMode" xml:space="preserve"><value>Chế độ ngoại tuyến: đang hiển thị danh mục đã lưu lúc {0}.</value></data>
+  <data name="Fixes_Warn_InstalledWithoutFix" xml:space="preserve"><value>{0} trò chơi đã cài đặt của bạn chưa có bản sửa lỗi trong danh mục LuaTools.</value></data>
+  <data name="Fixes_Warn_LibraryFailed" xml:space="preserve"><value>Không thể đọc thư viện Steam; huy hiệu đã cài đặt đã bị ẩn.</value></data>
+  <data name="Pager_Next" xml:space="preserve"><value>Trang sau</value></data>
+  <data name="Pager_Prev" xml:space="preserve"><value>Trang trước</value></data>
+  <data name="Settings_Btn_ClearAppInfo" xml:space="preserve"><value>Xóa bộ nhớ đệm nội dung (AppInfo)</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Body" xml:space="preserve"><value>Steam sẽ được đóng, tệp appinfo.vdf sẽ được chuyển vào thư mục sao lưu bên cạnh và Steam sẽ khởi động lại để tạo lại tệp. Lần khởi động đầu tiên sẽ lâu hơn. Các tùy chọn khởi chạy đã thay đổi bằng LuaTools sẽ được đề nghị áp dụng lại trong lần mở LuaTools tiếp theo. Tiếp tục?</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Go" xml:space="preserve"><value>Xóa bộ nhớ đệm</value></data>
+  <data name="Settings_ClearAppInfo_Done" xml:space="preserve"><value>Đã xóa bộ nhớ đệm nội dung. Steam sẽ tạo lại vào lần khởi động tiếp theo.</value></data>
+  <data name="Settings_ClearAppInfo_NoFile" xml:space="preserve"><value>Steam không có bộ nhớ đệm nội dung (appinfo.vdf) để xóa.</value></data>
+  <data name="Settings_ClearAppInfo_Tooltip" xml:space="preserve"><value>Dùng tùy chọn này nếu trò chơi đã cài gặp lỗi “Cấu hình nội dung không hợp lệ”. Đây cũng là phương án dự phòng chắc chắn nếu bản cập nhật Steam làm thay đổi chữ ký mà nhân AmethystTool (v1.5.1+) móc vào. Đóng Steam, chuyển appcache\appinfo.vdf vào thư mục sao lưu bên cạnh và khởi động lại Steam để tạo lại tệp.</value></data>
+  <data name="Settings_Dns" xml:space="preserve"><value>DNS dự phòng (Cloudflare DoH)</value></data>
+  <data name="Settings_Dns_Always" xml:space="preserve"><value>Luôn luôn - dùng Cloudflare DNS (DoH)</value></data>
+  <data name="Settings_Dns_Auto" xml:space="preserve"><value>Tự động (mặc định) - chỉ dự phòng khi DNS hệ thống lỗi</value></data>
+  <data name="Settings_Dns_Hint" xml:space="preserve"><value>Chỉ áp dụng cho máy chủ LuaTools, Hubcap và GitHub qua HTTPS. Khi bật, các tên máy chủ đó được gửi tới Cloudflare (1.1.1.1). Áp dụng ngay lập tức.</value></data>
+  <data name="Settings_Dns_Never" xml:space="preserve"><value>Không bao giờ - không dùng DNS bên ngoài</value></data>
+  <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows không thể mã hóa khóa (DPAPI không khả dụng), nên khóa chỉ được giữ trong bộ nhớ cho phiên này và không được lưu. Hãy nhập lại sau khi khởi động lại ứng dụng.</value></data>
+  <data name="Settings_Section_Network" xml:space="preserve"><value>MẠNG</value></data>
 </root>

@@ -869,4 +869,23 @@ lua ファイル、その横にあるビルドの lua、保存済みのビルド
   <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>安全のためのバックアップを作成できませんでした。ディスクの空き容量を確認してください。</value></data>
   <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam が終了しませんでした。</value></data>
   <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>元の起動オプションを書き戻せませんでした。</value></data>
+  <data name="Api_Err_FixHashMismatch" xml:space="preserve"><value>ダウンロードした修正ファイルが公開チェックサムと一致しないため、破棄されました。</value></data>
+  <data name="Fixes_OfflineMode" xml:space="preserve"><value>オフラインモード: {0} に保存されたカタログを表示しています。</value></data>
+  <data name="Fixes_Warn_InstalledWithoutFix" xml:space="preserve"><value>インストール済みゲームのうち {0} 件は LuaTools カタログに修正がありません。</value></data>
+  <data name="Fixes_Warn_LibraryFailed" xml:space="preserve"><value>Steam ライブラリを読み込めませんでした。インストール済みバッジは非表示です。</value></data>
+  <data name="Pager_Next" xml:space="preserve"><value>次のページ</value></data>
+  <data name="Pager_Prev" xml:space="preserve"><value>前のページ</value></data>
+  <data name="Settings_Btn_ClearAppInfo" xml:space="preserve"><value>コンテンツキャッシュを削除 (AppInfo)</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Body" xml:space="preserve"><value>Steam を終了し、appinfo.vdf を隣接するバックアップフォルダに移動してから、再構築のため Steam を再起動します。初回起動は時間がかかります。LuaTools で変更した起動オプションは次回起動時に再適用を提案します。続行しますか？</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Go" xml:space="preserve"><value>キャッシュを削除</value></data>
+  <data name="Settings_ClearAppInfo_Done" xml:space="preserve"><value>コンテンツキャッシュを削除しました。次回起動時に Steam が再構築します。</value></data>
+  <data name="Settings_ClearAppInfo_NoFile" xml:space="preserve"><value>削除する Steam のコンテンツキャッシュ (appinfo.vdf) がありません。</value></data>
+  <data name="Settings_ClearAppInfo_Tooltip" xml:space="preserve"><value>インストール済みゲームで「無効なコンテンツ構成」エラーが出る場合に使用します。Steam の更新で AmethystTool エンジン (v1.5.1+) がフックするシグネチャが変わった場合の確実な回避策でもあります。Steam を終了し、appcache\appinfo.vdf を隣接バックアップフォルダへ移動して Steam を再起動し、ファイルを再構築します。</value></data>
+  <data name="Settings_Dns" xml:space="preserve"><value>DNS フォールバック (Cloudflare DoH)</value></data>
+  <data name="Settings_Dns_Always" xml:space="preserve"><value>常に - Cloudflare DNS (DoH) を使用</value></data>
+  <data name="Settings_Dns_Auto" xml:space="preserve"><value>自動 (既定) - システム DNS 失敗時のみフォールバック</value></data>
+  <data name="Settings_Dns_Hint" xml:space="preserve"><value>HTTPS 経由の LuaTools・Hubcap・GitHub ホストのみに適用されます。有効時、これらのホスト名が Cloudflare (1.1.1.1) に送信されます。即座に反映されます。</value></data>
+  <data name="Settings_Dns_Never" xml:space="preserve"><value>使用しない - 外部 DNS を使わない</value></data>
+  <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows がキーを暗号化できませんでした（DPAPI 利用不可）。このセッション中のみメモリに保持され保存されません。アプリ再起動後に再入力してください。</value></data>
+  <data name="Settings_Section_Network" xml:space="preserve"><value>ネットワーク</value></data>
 </root>

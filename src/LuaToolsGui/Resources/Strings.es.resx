@@ -869,4 +869,23 @@ Puedes rechazarlo y seguir usando el resto de LuaTools; solo el botón «Add via
   <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>No se pudo crear la copia de seguridad. Comprueba el espacio libre en disco.</value></data>
   <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam no se cerró.</value></data>
   <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>No se pudieron volver a escribir las opciones de lanzamiento originales.</value></data>
+  <data name="Api_Err_FixHashMismatch" xml:space="preserve"><value>El parche descargado no coincide con la suma de verificación publicada, por lo que se ha descartado.</value></data>
+  <data name="Fixes_OfflineMode" xml:space="preserve"><value>Modo sin conexión: mostrando el catálogo guardado el {0}.</value></data>
+  <data name="Fixes_Warn_InstalledWithoutFix" xml:space="preserve"><value>{0} de tus juegos instalados no tienen parche en el catálogo de LuaTools.</value></data>
+  <data name="Fixes_Warn_LibraryFailed" xml:space="preserve"><value>No se pudo leer la biblioteca de Steam; las insignias de instalado están ocultas.</value></data>
+  <data name="Pager_Next" xml:space="preserve"><value>Página siguiente</value></data>
+  <data name="Pager_Prev" xml:space="preserve"><value>Página anterior</value></data>
+  <data name="Settings_Btn_ClearAppInfo" xml:space="preserve"><value>Limpiar caché de contenido (AppInfo)</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Body" xml:space="preserve"><value>Se cerrará Steam, se moverá appinfo.vdf a una carpeta de copia de seguridad junto a él y se reiniciará Steam para reconstruirlo. El primer inicio tarda más. Las opciones de lanzamiento cambiadas con LuaTools se ofrecerán para volver a aplicarlas la próxima vez que inicies LuaTools. ¿Continuar?</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Go" xml:space="preserve"><value>Limpiar caché</value></data>
+  <data name="Settings_ClearAppInfo_Done" xml:space="preserve"><value>Caché de contenido limpiada. Steam la reconstruirá la próxima vez que se inicie.</value></data>
+  <data name="Settings_ClearAppInfo_NoFile" xml:space="preserve"><value>Steam no tiene ninguna caché de contenido (appinfo.vdf) que limpiar.</value></data>
+  <data name="Settings_ClearAppInfo_Tooltip" xml:space="preserve"><value>Úsalo si un juego instalado muestra el error «Configuración de contenido no válida». También es el recurso definitivo si una actualización de Steam cambia la firma que intercepta el motor AmethystTool (v1.5.1+). Cierra Steam, mueve appcache\appinfo.vdf a una carpeta de copia de seguridad junto a él y reinicia Steam para reconstruir el archivo.</value></data>
+  <data name="Settings_Dns" xml:space="preserve"><value>DNS alternativo (Cloudflare DoH)</value></data>
+  <data name="Settings_Dns_Always" xml:space="preserve"><value>Siempre - usar DNS de Cloudflare (DoH)</value></data>
+  <data name="Settings_Dns_Auto" xml:space="preserve"><value>Automático (predeterminado) - solo si falla el DNS del sistema</value></data>
+  <data name="Settings_Dns_Hint" xml:space="preserve"><value>Solo afecta a los hosts de LuaTools, Hubcap y GitHub por HTTPS. Cuando está activo, esos nombres de host se envían a Cloudflare (1.1.1.1). Se aplica de inmediato.</value></data>
+  <data name="Settings_Dns_Never" xml:space="preserve"><value>Nunca - no usar DNS externo</value></data>
+  <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows no pudo cifrar la clave (DPAPI no está disponible), así que se mantiene solo en memoria para esta sesión y no se guarda. Introdúcela de nuevo al reiniciar la aplicación.</value></data>
+  <data name="Settings_Section_Network" xml:space="preserve"><value>RED</value></data>
 </root>

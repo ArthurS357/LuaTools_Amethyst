@@ -869,4 +869,23 @@ Inschakelen?</value></data>
   <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Kan geen veiligheidsback-up maken. Controleer de vrije schijfruimte.</value></data>
   <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam is niet afgesloten.</value></data>
   <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>De oorspronkelijke startopties konden niet worden teruggezet.</value></data>
+  <data name="Api_Err_FixHashMismatch" xml:space="preserve"><value>De gedownloade fix komt niet overeen met de gepubliceerde controlesom en is verwijderd.</value></data>
+  <data name="Fixes_OfflineMode" xml:space="preserve"><value>Offlinemodus: toont de catalogus opgeslagen op {0}.</value></data>
+  <data name="Fixes_Warn_InstalledWithoutFix" xml:space="preserve"><value>{0} van je geïnstalleerde games hebben geen fix in de LuaTools-catalogus.</value></data>
+  <data name="Fixes_Warn_LibraryFailed" xml:space="preserve"><value>Kan de Steam-bibliotheek niet lezen; geïnstalleerd-badges zijn verborgen.</value></data>
+  <data name="Pager_Next" xml:space="preserve"><value>Volgende pagina</value></data>
+  <data name="Pager_Prev" xml:space="preserve"><value>Vorige pagina</value></data>
+  <data name="Settings_Btn_ClearAppInfo" xml:space="preserve"><value>Inhoudscache wissen (AppInfo)</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Body" xml:space="preserve"><value>Steam wordt afgesloten, appinfo.vdf wordt verplaatst naar een back-upmap ernaast en Steam wordt herstart om het bestand opnieuw op te bouwen. De eerste start duurt langer. Startopties die met LuaTools zijn gewijzigd worden bij de volgende start van LuaTools opnieuw aangeboden. Doorgaan?</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Go" xml:space="preserve"><value>Cache wissen</value></data>
+  <data name="Settings_ClearAppInfo_Done" xml:space="preserve"><value>Inhoudscache gewist. Steam bouwt deze bij de volgende start opnieuw op.</value></data>
+  <data name="Settings_ClearAppInfo_NoFile" xml:space="preserve"><value>Steam heeft geen inhoudscache (appinfo.vdf) om te wissen.</value></data>
+  <data name="Settings_ClearAppInfo_Tooltip" xml:space="preserve"><value>Gebruik dit als een geïnstalleerde game de fout “Ongeldige inhoudsconfiguratie” geeft. Het is ook de definitieve terugvaloptie als een Steam-update de handtekening wijzigt waarop de AmethystTool-engine (v1.5.1+) inhaakt. Sluit Steam, verplaatst appcache\appinfo.vdf naar een back-upmap ernaast en herstart Steam, dat het bestand opnieuw opbouwt.</value></data>
+  <data name="Settings_Dns" xml:space="preserve"><value>DNS-fallback (Cloudflare DoH)</value></data>
+  <data name="Settings_Dns_Always" xml:space="preserve"><value>Altijd - gebruik Cloudflare DNS (DoH)</value></data>
+  <data name="Settings_Dns_Auto" xml:space="preserve"><value>Automatisch (standaard) - alleen bij falen van systeem-DNS</value></data>
+  <data name="Settings_Dns_Hint" xml:space="preserve"><value>Heeft alleen invloed op hosts van LuaTools, Hubcap en GitHub via HTTPS. Indien actief worden deze hostnamen naar Cloudflare (1.1.1.1) gestuurd. Geldt direct.</value></data>
+  <data name="Settings_Dns_Never" xml:space="preserve"><value>Nooit - nooit externe DNS gebruiken</value></data>
+  <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows kon de sleutel niet versleutelen (DPAPI niet beschikbaar), dus deze blijft alleen voor deze sessie in het geheugen en wordt niet opgeslagen. Voer hem opnieuw in na herstart van de app.</value></data>
+  <data name="Settings_Section_Network" xml:space="preserve"><value>NETWERK</value></data>
 </root>

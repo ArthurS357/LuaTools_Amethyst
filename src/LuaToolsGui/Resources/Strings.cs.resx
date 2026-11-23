@@ -869,4 +869,23 @@ Zapnout?</value></data>
   <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Nepodařilo se vytvořit zálohu. Zkontrolujte volné místo na disku.</value></data>
   <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam se nezavřel.</value></data>
   <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>Původní možnosti spuštění se nepodařilo zapsat zpět.</value></data>
+  <data name="Api_Err_FixHashMismatch" xml:space="preserve"><value>Stažená oprava neodpovídá zveřejněnému kontrolnímu součtu, proto byla zahozena.</value></data>
+  <data name="Fixes_OfflineMode" xml:space="preserve"><value>Offline režim: zobrazuje se katalog uložený {0}.</value></data>
+  <data name="Fixes_Warn_InstalledWithoutFix" xml:space="preserve"><value>{0} z vašich nainstalovaných her nemá v katalogu LuaTools žádnou opravu.</value></data>
+  <data name="Fixes_Warn_LibraryFailed" xml:space="preserve"><value>Nepodařilo se načíst knihovnu Steam; odznaky nainstalovaných her jsou skryty.</value></data>
+  <data name="Pager_Next" xml:space="preserve"><value>Další stránka</value></data>
+  <data name="Pager_Prev" xml:space="preserve"><value>Předchozí stránka</value></data>
+  <data name="Settings_Btn_ClearAppInfo" xml:space="preserve"><value>Vymazat mezipaměť obsahu (AppInfo)</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Body" xml:space="preserve"><value>Steam bude ukončen, soubor appinfo.vdf se přesune do záložní složky vedle něj a Steam se znovu spustí, aby jej obnovil. První spuštění trvá déle. Možnosti spuštění upravené v LuaTools budou nabídnuty k opětovnému použití při příštím spuštění LuaTools. Pokračovat?</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Go" xml:space="preserve"><value>Vymazat mezipaměť</value></data>
+  <data name="Settings_ClearAppInfo_Done" xml:space="preserve"><value>Mezipaměť obsahu byla vymazána. Steam ji obnoví při příštím spuštění.</value></data>
+  <data name="Settings_ClearAppInfo_NoFile" xml:space="preserve"><value>Steam nemá žádnou mezipaměť obsahu (appinfo.vdf) k vymazání.</value></data>
+  <data name="Settings_ClearAppInfo_Tooltip" xml:space="preserve"><value>Použijte, pokud nainstalovaná hra hlásí chybu „Neplatná konfigurace obsahu“. Slouží také jako spolehlivé záložní řešení, pokud aktualizace Steamu změní signaturu, kterou zachytává engine AmethystTool (v1.5.1+). Ukončí Steam, přesune appcache\appinfo.vdf do záložní složky vedle něj a znovu spustí Steam, který soubor obnoví.</value></data>
+  <data name="Settings_Dns" xml:space="preserve"><value>Záložní DNS (Cloudflare DoH)</value></data>
+  <data name="Settings_Dns_Always" xml:space="preserve"><value>Vždy - použít Cloudflare DNS (DoH)</value></data>
+  <data name="Settings_Dns_Auto" xml:space="preserve"><value>Automaticky (výchozí) - záloha jen při selhání systémového DNS</value></data>
+  <data name="Settings_Dns_Hint" xml:space="preserve"><value>Ovlivňuje pouze hostitele LuaTools, Hubcap a GitHub přes HTTPS. Když je aktivní, názvy těchto hostitelů se posílají službě Cloudflare (1.1.1.1). Platí okamžitě.</value></data>
+  <data name="Settings_Dns_Never" xml:space="preserve"><value>Nikdy - nepoužívat externí DNS</value></data>
+  <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows nedokázal klíč zašifrovat (DPAPI není k dispozici), proto zůstává jen v paměti pro tuto relaci a neukládá se. Po restartování aplikace jej zadejte znovu.</value></data>
+  <data name="Settings_Section_Network" xml:space="preserve"><value>SÍŤ</value></data>
 </root>

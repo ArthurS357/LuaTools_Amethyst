@@ -869,4 +869,23 @@ Aktifkan?</value></data>
   <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Tidak dapat membuat cadangan keamanan. Periksa ruang disk yang tersedia.</value></data>
   <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam tidak tertutup.</value></data>
   <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>Opsi peluncuran asli tidak dapat ditulis kembali.</value></data>
+  <data name="Api_Err_FixHashMismatch" xml:space="preserve"><value>Perbaikan yang diunduh tidak cocok dengan checksum yang dipublikasikan, sehingga dibuang.</value></data>
+  <data name="Fixes_OfflineMode" xml:space="preserve"><value>Mode luring: menampilkan katalog yang disimpan pada {0}.</value></data>
+  <data name="Fixes_Warn_InstalledWithoutFix" xml:space="preserve"><value>{0} game terinstal Anda tidak memiliki perbaikan di katalog LuaTools.</value></data>
+  <data name="Fixes_Warn_LibraryFailed" xml:space="preserve"><value>Tidak dapat membaca pustaka Steam; lencana terinstal disembunyikan.</value></data>
+  <data name="Pager_Next" xml:space="preserve"><value>Halaman berikutnya</value></data>
+  <data name="Pager_Prev" xml:space="preserve"><value>Halaman sebelumnya</value></data>
+  <data name="Settings_Btn_ClearAppInfo" xml:space="preserve"><value>Bersihkan cache konten (AppInfo)</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Body" xml:space="preserve"><value>Steam akan ditutup, appinfo.vdf dipindahkan ke folder cadangan di sebelahnya, lalu Steam dimulai ulang untuk membangunnya kembali. Peluncuran pertama memakan waktu lebih lama. Opsi peluncuran yang diubah dengan LuaTools akan ditawarkan untuk diterapkan kembali saat LuaTools dibuka berikutnya. Lanjutkan?</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Go" xml:space="preserve"><value>Bersihkan cache</value></data>
+  <data name="Settings_ClearAppInfo_Done" xml:space="preserve"><value>Cache konten dibersihkan. Steam akan membangunnya kembali saat dijalankan berikutnya.</value></data>
+  <data name="Settings_ClearAppInfo_NoFile" xml:space="preserve"><value>Steam tidak memiliki cache konten (appinfo.vdf) untuk dibersihkan.</value></data>
+  <data name="Settings_ClearAppInfo_Tooltip" xml:space="preserve"><value>Gunakan ini jika game terinstal menampilkan galat “Konfigurasi konten tidak valid”. Ini juga menjadi solusi cadangan pasti jika pembaruan Steam mengubah tanda tangan yang dikaitkan mesin AmethystTool (v1.5.1+). Menutup Steam, memindahkan appcache\appinfo.vdf ke folder cadangan di sebelahnya, lalu memulai ulang Steam untuk membangun ulang berkas.</value></data>
+  <data name="Settings_Dns" xml:space="preserve"><value>Cadangan DNS (Cloudflare DoH)</value></data>
+  <data name="Settings_Dns_Always" xml:space="preserve"><value>Selalu - gunakan Cloudflare DNS (DoH)</value></data>
+  <data name="Settings_Dns_Auto" xml:space="preserve"><value>Otomatis (bawaan) - cadangan hanya jika DNS sistem gagal</value></data>
+  <data name="Settings_Dns_Hint" xml:space="preserve"><value>Hanya memengaruhi host LuaTools, Hubcap, dan GitHub melalui HTTPS. Saat aktif, nama host tersebut dikirim ke Cloudflare (1.1.1.1). Berlaku segera.</value></data>
+  <data name="Settings_Dns_Never" xml:space="preserve"><value>Tidak pernah - jangan gunakan DNS eksternal</value></data>
+  <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows tidak dapat mengenkripsi kunci (DPAPI tidak tersedia), sehingga hanya disimpan di memori untuk sesi ini dan tidak ditulis ke disk. Masukkan kembali setelah aplikasi dimulai ulang.</value></data>
+  <data name="Settings_Section_Network" xml:space="preserve"><value>JARINGAN</value></data>
 </root>

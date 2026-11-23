@@ -869,4 +869,23 @@ Etkinleştirilsin mi?</value></data>
   <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Güvenlik yedeği oluşturulamadı. Boş disk alanını kontrol edin.</value></data>
   <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam kapanmadı.</value></data>
   <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>Özgün başlatma seçenekleri geri yazılamadı.</value></data>
+  <data name="Api_Err_FixHashMismatch" xml:space="preserve"><value>İndirilen düzeltme, yayımlanan sağlama toplamıyla eşleşmediği için silindi.</value></data>
+  <data name="Fixes_OfflineMode" xml:space="preserve"><value>Çevrimdışı mod: {0} tarihinde kaydedilen katalog gösteriliyor.</value></data>
+  <data name="Fixes_Warn_InstalledWithoutFix" xml:space="preserve"><value>Yüklü oyunlarınızdan {0} tanesi için LuaTools kataloğunda düzeltme yok.</value></data>
+  <data name="Fixes_Warn_LibraryFailed" xml:space="preserve"><value>Steam kütüphanesi okunamadı; yüklü rozetleri gizlendi.</value></data>
+  <data name="Pager_Next" xml:space="preserve"><value>Sonraki sayfa</value></data>
+  <data name="Pager_Prev" xml:space="preserve"><value>Önceki sayfa</value></data>
+  <data name="Settings_Btn_ClearAppInfo" xml:space="preserve"><value>İçerik önbelleğini temizle (AppInfo)</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Body" xml:space="preserve"><value>Steam kapatılacak, appinfo.vdf yanındaki bir yedek klasörüne taşınacak ve yeniden oluşturması için Steam yeniden başlatılacak. İlk açılış daha uzun sürer. LuaTools ile değiştirilen başlatma seçenekleri, LuaTools bir sonraki açıldığında yeniden uygulanmak üzere sunulur. Devam edilsin mi?</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Go" xml:space="preserve"><value>Önbelleği temizle</value></data>
+  <data name="Settings_ClearAppInfo_Done" xml:space="preserve"><value>İçerik önbelleği temizlendi. Steam bir sonraki açılışta yeniden oluşturacak.</value></data>
+  <data name="Settings_ClearAppInfo_NoFile" xml:space="preserve"><value>Steam'de temizlenecek içerik önbelleği (appinfo.vdf) yok.</value></data>
+  <data name="Settings_ClearAppInfo_Tooltip" xml:space="preserve"><value>Yüklü bir oyun “Geçersiz içerik yapılandırması” hatası veriyorsa bunu kullanın. Ayrıca bir Steam güncellemesi AmethystTool motorunun (v1.5.1+) bağlandığı imzayı değiştirirse kesin yedek çözümdür. Steam'i kapatır, appcache\appinfo.vdf dosyasını yanındaki yedek klasörüne taşır ve dosyayı yeniden oluşturması için Steam'i yeniden başlatır.</value></data>
+  <data name="Settings_Dns" xml:space="preserve"><value>DNS yedeği (Cloudflare DoH)</value></data>
+  <data name="Settings_Dns_Always" xml:space="preserve"><value>Her zaman - Cloudflare DNS (DoH) kullan</value></data>
+  <data name="Settings_Dns_Auto" xml:space="preserve"><value>Otomatik (varsayılan) - yalnızca sistem DNS'i başarısız olursa</value></data>
+  <data name="Settings_Dns_Hint" xml:space="preserve"><value>Yalnızca HTTPS üzerinden LuaTools, Hubcap ve GitHub sunucularını etkiler. Etkin olduğunda bu sunucu adları Cloudflare'e (1.1.1.1) gönderilir. Hemen uygulanır.</value></data>
+  <data name="Settings_Dns_Never" xml:space="preserve"><value>Asla - harici DNS kullanma</value></data>
+  <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows anahtarı şifreleyemedi (DPAPI kullanılamıyor); bu nedenle yalnızca bu oturum için bellekte tutulur ve kaydedilmez. Uygulamayı yeniden başlattıktan sonra tekrar girin.</value></data>
+  <data name="Settings_Section_Network" xml:space="preserve"><value>AĞ</value></data>
 </root>

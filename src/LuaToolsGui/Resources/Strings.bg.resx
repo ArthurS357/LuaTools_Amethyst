@@ -869,4 +869,23 @@ SHA-256 {3}
   <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Неуспешно създаване на резервно копие. Проверете свободното място на диска.</value></data>
   <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam не се затвори.</value></data>
   <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>Оригиналните опции за стартиране не можаха да бъдат записани обратно.</value></data>
+  <data name="Api_Err_FixHashMismatch" xml:space="preserve"><value>Изтеглената поправка не съвпада с публикуваната контролна сума и беше отхвърлена.</value></data>
+  <data name="Fixes_OfflineMode" xml:space="preserve"><value>Офлайн режим: показва се каталогът, запазен на {0}.</value></data>
+  <data name="Fixes_Warn_InstalledWithoutFix" xml:space="preserve"><value>{0} от инсталираните ви игри нямат поправка в каталога на LuaTools.</value></data>
+  <data name="Fixes_Warn_LibraryFailed" xml:space="preserve"><value>Библиотеката на Steam не можа да бъде прочетена; значките за инсталирано са скрити.</value></data>
+  <data name="Pager_Next" xml:space="preserve"><value>Следваща страница</value></data>
+  <data name="Pager_Prev" xml:space="preserve"><value>Предишна страница</value></data>
+  <data name="Settings_Btn_ClearAppInfo" xml:space="preserve"><value>Изчисти кеша на съдържанието (AppInfo)</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Body" xml:space="preserve"><value>Steam ще бъде затворен, appinfo.vdf ще бъде преместен в резервна папка до него и Steam ще се рестартира, за да го пресъздаде. Първото стартиране отнема повече време. Опциите за стартиране, променени с LuaTools, ще бъдат предложени за повторно прилагане при следващото стартиране на LuaTools. Продължаване?</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Go" xml:space="preserve"><value>Изчисти кеша</value></data>
+  <data name="Settings_ClearAppInfo_Done" xml:space="preserve"><value>Кешът на съдържанието е изчистен. Steam ще го пресъздаде при следващото стартиране.</value></data>
+  <data name="Settings_ClearAppInfo_NoFile" xml:space="preserve"><value>Steam няма кеш на съдържанието (appinfo.vdf) за изчистване.</value></data>
+  <data name="Settings_ClearAppInfo_Tooltip" xml:space="preserve"><value>Използвайте това, ако инсталирана игра дава грешка „Невалидна конфигурация на съдържанието“. Това е и сигурното резервно решение, ако актуализация на Steam промени сигнатурата, която AmethystTool (v1.5.1+) прихваща. Затваря Steam, премества appcache\appinfo.vdf в резервна папка до него и рестартира Steam, който пресъздава файла.</value></data>
+  <data name="Settings_Dns" xml:space="preserve"><value>Резервен DNS (Cloudflare DoH)</value></data>
+  <data name="Settings_Dns_Always" xml:space="preserve"><value>Винаги - използвай Cloudflare DNS (DoH)</value></data>
+  <data name="Settings_Dns_Auto" xml:space="preserve"><value>Автоматично (по подразбиране) - само при отказ на системния DNS</value></data>
+  <data name="Settings_Dns_Hint" xml:space="preserve"><value>Засяга само хостовете на LuaTools, Hubcap и GitHub през HTTPS. Когато е активно, тези имена на хостове се изпращат до Cloudflare (1.1.1.1). Прилага се веднага.</value></data>
+  <data name="Settings_Dns_Never" xml:space="preserve"><value>Никога - без външен DNS</value></data>
+  <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows не можа да шифрова ключа (DPAPI не е наличен), затова се пази само в паметта за тази сесия и не се записва. Въведете го отново след рестартиране на приложението.</value></data>
+  <data name="Settings_Section_Network" xml:space="preserve"><value>МРЕЖА</value></data>
 </root>

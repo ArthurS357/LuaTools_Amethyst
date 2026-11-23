@@ -869,4 +869,23 @@ Otetaanko käyttöön?</value></data>
   <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Varmuuskopiota ei voitu luoda. Tarkista vapaa levytila.</value></data>
   <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam ei sulkeutunut.</value></data>
   <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>Alkuperäisiä käynnistysasetuksia ei voitu kirjoittaa takaisin.</value></data>
+  <data name="Api_Err_FixHashMismatch" xml:space="preserve"><value>Ladattu korjaus ei vastaa julkaistua tarkistussummaa, joten se hylättiin.</value></data>
+  <data name="Fixes_OfflineMode" xml:space="preserve"><value>Offline-tila: näytetään luettelo, joka tallennettiin {0}.</value></data>
+  <data name="Fixes_Warn_InstalledWithoutFix" xml:space="preserve"><value>{0} asennetuista peleistäsi ei löydy korjausta LuaTools-luettelosta.</value></data>
+  <data name="Fixes_Warn_LibraryFailed" xml:space="preserve"><value>Steam-kirjastoa ei voitu lukea; asennettu-merkit on piilotettu.</value></data>
+  <data name="Pager_Next" xml:space="preserve"><value>Seuraava sivu</value></data>
+  <data name="Pager_Prev" xml:space="preserve"><value>Edellinen sivu</value></data>
+  <data name="Settings_Btn_ClearAppInfo" xml:space="preserve"><value>Tyhjennä sisältövälimuisti (AppInfo)</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Body" xml:space="preserve"><value>Steam suljetaan, appinfo.vdf siirretään viereiseen varmuuskopiokansioon ja Steam käynnistetään uudelleen tiedoston uudelleenrakentamiseksi. Ensimmäinen käynnistys kestää kauemmin. LuaToolsilla muutetut käynnistysasetukset tarjotaan uudelleen käyttöön seuraavalla LuaToolsin käynnistyksellä. Jatketaanko?</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Go" xml:space="preserve"><value>Tyhjennä välimuisti</value></data>
+  <data name="Settings_ClearAppInfo_Done" xml:space="preserve"><value>Sisältövälimuisti tyhjennetty. Steam rakentaa sen uudelleen seuraavalla käynnistyksellä.</value></data>
+  <data name="Settings_ClearAppInfo_NoFile" xml:space="preserve"><value>Steamilla ei ole tyhjennettävää sisältövälimuistia (appinfo.vdf).</value></data>
+  <data name="Settings_ClearAppInfo_Tooltip" xml:space="preserve"><value>Käytä tätä, jos asennettu peli antaa virheen ”Virheellinen sisältömääritys”. Se on myös varma varakeino, jos Steam-päivitys muuttaa allekirjoitusta, johon AmethystTool-moottori (v1.5.1+) kytkeytyy. Sulkee Steamin, siirtää appcache\appinfo.vdf-tiedoston viereiseen varmuuskopiokansioon ja käynnistää Steamin uudelleen, jolloin tiedosto luodaan uudelleen.</value></data>
+  <data name="Settings_Dns" xml:space="preserve"><value>Varalla oleva DNS (Cloudflare DoH)</value></data>
+  <data name="Settings_Dns_Always" xml:space="preserve"><value>Aina - käytä Cloudflare DNS:ää (DoH)</value></data>
+  <data name="Settings_Dns_Auto" xml:space="preserve"><value>Automaattinen (oletus) - vain jos järjestelmän DNS epäonnistuu</value></data>
+  <data name="Settings_Dns_Hint" xml:space="preserve"><value>Vaikuttaa vain LuaTools-, Hubcap- ja GitHub-isäntiin HTTPS:n kautta. Kun käytössä, nämä isäntänimet lähetetään Cloudflarelle (1.1.1.1). Tulee voimaan heti.</value></data>
+  <data name="Settings_Dns_Never" xml:space="preserve"><value>Ei koskaan - älä käytä ulkoista DNS:ää</value></data>
+  <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows ei voinut salata avainta (DPAPI ei ole käytettävissä), joten se pidetään muistissa vain tämän istunnon ajan eikä sitä tallenneta. Anna se uudelleen sovelluksen uudelleenkäynnistyksen jälkeen.</value></data>
+  <data name="Settings_Section_Network" xml:space="preserve"><value>VERKKO</value></data>
 </root>

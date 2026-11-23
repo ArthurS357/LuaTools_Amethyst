@@ -869,4 +869,23 @@ O activezi?</value></data>
   <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Nu s-a putut crea copia de siguranță. Verifică spațiul liber pe disc.</value></data>
   <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam nu s-a închis.</value></data>
   <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>Opțiunile de lansare originale nu au putut fi rescrise.</value></data>
+  <data name="Api_Err_FixHashMismatch" xml:space="preserve"><value>Corecția descărcată nu corespunde sumei de control publicate și a fost eliminată.</value></data>
+  <data name="Fixes_OfflineMode" xml:space="preserve"><value>Mod offline: se afișează catalogul salvat la {0}.</value></data>
+  <data name="Fixes_Warn_InstalledWithoutFix" xml:space="preserve"><value>{0} dintre jocurile instalate nu au o corecție în catalogul LuaTools.</value></data>
+  <data name="Fixes_Warn_LibraryFailed" xml:space="preserve"><value>Nu s-a putut citi biblioteca Steam; insignele de instalat sunt ascunse.</value></data>
+  <data name="Pager_Next" xml:space="preserve"><value>Pagina următoare</value></data>
+  <data name="Pager_Prev" xml:space="preserve"><value>Pagina anterioară</value></data>
+  <data name="Settings_Btn_ClearAppInfo" xml:space="preserve"><value>Golește cache-ul de conținut (AppInfo)</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Body" xml:space="preserve"><value>Steam va fi închis, appinfo.vdf va fi mutat într-un folder de backup alături, iar Steam va fi repornit pentru a-l reconstrui. Prima pornire durează mai mult. Opțiunile de lansare modificate cu LuaTools vor fi oferite pentru reaplicare la următoarea pornire a LuaTools. Continui?</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Go" xml:space="preserve"><value>Golește cache-ul</value></data>
+  <data name="Settings_ClearAppInfo_Done" xml:space="preserve"><value>Cache-ul de conținut a fost golit. Steam îl va reconstrui la următoarea pornire.</value></data>
+  <data name="Settings_ClearAppInfo_NoFile" xml:space="preserve"><value>Steam nu are niciun cache de conținut (appinfo.vdf) de golit.</value></data>
+  <data name="Settings_ClearAppInfo_Tooltip" xml:space="preserve"><value>Folosește asta dacă un joc instalat afișează eroarea „Configurație de conținut nevalidă”. Este și soluția sigură de rezervă dacă o actualizare Steam schimbă semnătura interceptată de motorul AmethystTool (v1.5.1+). Închide Steam, mută appcache\appinfo.vdf într-un folder de backup alături și repornește Steam, care reconstruiește fișierul.</value></data>
+  <data name="Settings_Dns" xml:space="preserve"><value>DNS de rezervă (Cloudflare DoH)</value></data>
+  <data name="Settings_Dns_Always" xml:space="preserve"><value>Întotdeauna - folosește Cloudflare DNS (DoH)</value></data>
+  <data name="Settings_Dns_Auto" xml:space="preserve"><value>Automat (implicit) - rezervă doar dacă DNS-ul sistemului eșuează</value></data>
+  <data name="Settings_Dns_Hint" xml:space="preserve"><value>Afectează doar gazdele LuaTools, Hubcap și GitHub prin HTTPS. Când este activ, aceste nume de gazdă sunt trimise la Cloudflare (1.1.1.1). Se aplică imediat.</value></data>
+  <data name="Settings_Dns_Never" xml:space="preserve"><value>Niciodată - nu folosi DNS extern</value></data>
+  <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows nu a putut cripta cheia (DPAPI indisponibil), așa că rămâne în memorie doar pentru această sesiune și nu este salvată. Introdu-o din nou după repornirea aplicației.</value></data>
+  <data name="Settings_Section_Network" xml:space="preserve"><value>REȚEA</value></data>
 </root>

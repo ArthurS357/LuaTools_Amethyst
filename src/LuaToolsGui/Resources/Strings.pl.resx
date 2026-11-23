@@ -869,4 +869,23 @@ Włączyć?</value></data>
   <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Nie udało się utworzyć kopii zapasowej. Sprawdź wolne miejsce na dysku.</value></data>
   <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam się nie zamknął.</value></data>
   <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>Nie udało się zapisać z powrotem oryginalnych opcji uruchamiania.</value></data>
+  <data name="Api_Err_FixHashMismatch" xml:space="preserve"><value>Pobrana poprawka nie zgadza się z opublikowaną sumą kontrolną i została odrzucona.</value></data>
+  <data name="Fixes_OfflineMode" xml:space="preserve"><value>Tryb offline: wyświetlanie katalogu zapisanego {0}.</value></data>
+  <data name="Fixes_Warn_InstalledWithoutFix" xml:space="preserve"><value>{0} z Twoich zainstalowanych gier nie ma poprawki w katalogu LuaTools.</value></data>
+  <data name="Fixes_Warn_LibraryFailed" xml:space="preserve"><value>Nie udało się odczytać biblioteki Steam; odznaki instalacji są ukryte.</value></data>
+  <data name="Pager_Next" xml:space="preserve"><value>Następna strona</value></data>
+  <data name="Pager_Prev" xml:space="preserve"><value>Poprzednia strona</value></data>
+  <data name="Settings_Btn_ClearAppInfo" xml:space="preserve"><value>Wyczyść pamięć podręczną (AppInfo)</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Body" xml:space="preserve"><value>Steam zostanie zamknięty, plik appinfo.vdf przeniesiony do sąsiedniego folderu kopii zapasowej, a Steam uruchomiony ponownie w celu jego odbudowy. Pierwsze uruchomienie trwa dłużej. Opcje uruchamiania zmienione w LuaTools zostaną zaproponowane do ponownego zastosowania przy następnym uruchomieniu LuaTools. Kontynuować?</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Go" xml:space="preserve"><value>Wyczyść pamięć</value></data>
+  <data name="Settings_ClearAppInfo_Done" xml:space="preserve"><value>Pamięć podręczna zawartości wyczyszczona. Steam odbuduje ją przy następnym uruchomieniu.</value></data>
+  <data name="Settings_ClearAppInfo_NoFile" xml:space="preserve"><value>Steam nie ma pamięci podręcznej zawartości (appinfo.vdf) do wyczyszczenia.</value></data>
+  <data name="Settings_ClearAppInfo_Tooltip" xml:space="preserve"><value>Użyj tego, jeśli zainstalowana gra zgłasza błąd „Nieprawidłowa konfiguracja zawartości”. To także pewne rozwiązanie awaryjne, jeśli aktualizacja Steam zmieni sygnaturę przechwytywaną przez silnik AmethystTool (v1.5.1+). Zamyka Steam, przenosi appcache\appinfo.vdf do sąsiedniego folderu kopii zapasowej i uruchamia ponownie Steam, który odbudowuje plik.</value></data>
+  <data name="Settings_Dns" xml:space="preserve"><value>Zapasowy DNS (Cloudflare DoH)</value></data>
+  <data name="Settings_Dns_Always" xml:space="preserve"><value>Zawsze - używaj Cloudflare DNS (DoH)</value></data>
+  <data name="Settings_Dns_Auto" xml:space="preserve"><value>Auto (domyślnie) - tylko gdy zawiedzie DNS systemu</value></data>
+  <data name="Settings_Dns_Hint" xml:space="preserve"><value>Dotyczy tylko hostów LuaTools, Hubcap i GitHub przez HTTPS. Gdy jest aktywne, nazwy tych hostów są wysyłane do Cloudflare (1.1.1.1). Działa natychmiast.</value></data>
+  <data name="Settings_Dns_Never" xml:space="preserve"><value>Nigdy - nie używaj zewnętrznego DNS</value></data>
+  <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>System Windows nie mógł zaszyfrować klucza (DPAPI jest niedostępne), więc pozostaje w pamięci tylko na tę sesję i nie jest zapisywany. Wpisz go ponownie po restarcie aplikacji.</value></data>
+  <data name="Settings_Section_Network" xml:space="preserve"><value>SIEĆ</value></data>
 </root>

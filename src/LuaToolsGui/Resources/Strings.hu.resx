@@ -869,4 +869,23 @@ Bekapcsolod?</value></data>
   <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Nem sikerült biztonsági mentést készíteni. Ellenőrizd a szabad lemezterületet.</value></data>
   <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>A Steam nem záródott be.</value></data>
   <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>Az eredeti indítási beállításokat nem sikerült visszaírni.</value></data>
+  <data name="Api_Err_FixHashMismatch" xml:space="preserve"><value>A letöltött javítás nem egyezik a közzétett ellenőrzőösszeggel, ezért elvetésre került.</value></data>
+  <data name="Fixes_OfflineMode" xml:space="preserve"><value>Offline mód: a(z) {0} időpontban mentett katalógus látható.</value></data>
+  <data name="Fixes_Warn_InstalledWithoutFix" xml:space="preserve"><value>A telepített játékaid közül {0} nem rendelkezik javítással a LuaTools katalógusában.</value></data>
+  <data name="Fixes_Warn_LibraryFailed" xml:space="preserve"><value>A Steam-könyvtár nem olvasható; a telepítve jelvények el vannak rejtve.</value></data>
+  <data name="Pager_Next" xml:space="preserve"><value>Következő oldal</value></data>
+  <data name="Pager_Prev" xml:space="preserve"><value>Előző oldal</value></data>
+  <data name="Settings_Btn_ClearAppInfo" xml:space="preserve"><value>Tartalomgyorsítótár törlése (AppInfo)</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Body" xml:space="preserve"><value>A Steam bezárul, az appinfo.vdf egy mellette lévő biztonsági mentési mappába kerül, majd a Steam újraindul, hogy újraépítse. Az első indítás hosszabb ideig tart. A LuaTools segítségével módosított indítási beállítások a LuaTools következő indításakor újra fel lesznek ajánlva alkalmazásra. Folytatod?</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Go" xml:space="preserve"><value>Gyorsítótár törlése</value></data>
+  <data name="Settings_ClearAppInfo_Done" xml:space="preserve"><value>A tartalomgyorsítótár törölve. A Steam a következő indításkor újraépíti.</value></data>
+  <data name="Settings_ClearAppInfo_NoFile" xml:space="preserve"><value>A Steamnek nincs törölhető tartalomgyorsítótára (appinfo.vdf).</value></data>
+  <data name="Settings_ClearAppInfo_Tooltip" xml:space="preserve"><value>Használd ezt, ha egy telepített játék „Érvénytelen tartalomkonfiguráció” hibát ad. Ez a biztos tartalék megoldás akkor is, ha egy Steam-frissítés megváltoztatja az AmethystTool motor (v1.5.1+) által használt aláírást. Bezárja a Steamet, áthelyezi az appcache\appinfo.vdf fájlt egy mellette lévő mentési mappába, majd újraindítja a Steamet a fájl újraépítéséhez.</value></data>
+  <data name="Settings_Dns" xml:space="preserve"><value>Tartalék DNS (Cloudflare DoH)</value></data>
+  <data name="Settings_Dns_Always" xml:space="preserve"><value>Mindig - Cloudflare DNS (DoH) használata</value></data>
+  <data name="Settings_Dns_Auto" xml:space="preserve"><value>Automatikus (alapértelmezett) - csak ha a rendszer DNS-e sikertelen</value></data>
+  <data name="Settings_Dns_Hint" xml:space="preserve"><value>Csak a LuaTools, Hubcap és GitHub kiszolgálókat érinti HTTPS-en keresztül. Aktív állapotban ezek a gépnevek a Cloudflare-hez (1.1.1.1) kerülnek. Azonnal érvénybe lép.</value></data>
+  <data name="Settings_Dns_Never" xml:space="preserve"><value>Soha - ne használjon külső DNS-t</value></data>
+  <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>A Windows nem tudta titkosítani a kulcsot (a DPAPI nem érhető el), ezért csak ebben a munkamenetben marad a memóriában, és nem lesz mentve. Az alkalmazás újraindítása után add meg újra.</value></data>
+  <data name="Settings_Section_Network" xml:space="preserve"><value>HÁLÓZAT</value></data>
 </root>

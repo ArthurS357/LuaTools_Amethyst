@@ -889,4 +889,23 @@ SHA-256 {3}
   <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>无法创建安全备份。请检查可用磁盘空间。</value></data>
   <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Steam 未关闭。</value></data>
   <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>无法写回原始启动选项。</value></data>
+  <data name="Api_Err_FixHashMismatch" xml:space="preserve"><value>下载的修复补丁与公布的校验和不匹配，已将其丢弃。</value></data>
+  <data name="Fixes_OfflineMode" xml:space="preserve"><value>离线模式：正在显示保存于 {0} 的目录。</value></data>
+  <data name="Fixes_Warn_InstalledWithoutFix" xml:space="preserve"><value>你已安装的游戏中，有 {0} 款在 LuaTools 目录中没有修复补丁。</value></data>
+  <data name="Fixes_Warn_LibraryFailed" xml:space="preserve"><value>无法读取 Steam 库；已隐藏“已安装”徽章。</value></data>
+  <data name="Pager_Next" xml:space="preserve"><value>下一页</value></data>
+  <data name="Pager_Prev" xml:space="preserve"><value>上一页</value></data>
+  <data name="Settings_Btn_ClearAppInfo" xml:space="preserve"><value>清除内容缓存 (AppInfo)</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Body" xml:space="preserve"><value>将关闭 Steam，把 appinfo.vdf 移至旁边的备份文件夹，然后重启 Steam 以重新生成。首次启动会耗时更长。使用 LuaTools 修改过的启动选项将在下次打开 LuaTools 时提示重新应用。是否继续？</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Go" xml:space="preserve"><value>清除缓存</value></data>
+  <data name="Settings_ClearAppInfo_Done" xml:space="preserve"><value>内容缓存已清除。Steam 将在下次启动时重新生成。</value></data>
+  <data name="Settings_ClearAppInfo_NoFile" xml:space="preserve"><value>Steam 没有可清除的内容缓存 (appinfo.vdf)。</value></data>
+  <data name="Settings_ClearAppInfo_Tooltip" xml:space="preserve"><value>如果已安装的游戏提示“无效的内容配置”错误，请使用此项。若 Steam 更新更改了 AmethystTool 引擎 (v1.5.1+) 挂钩的签名，这也是可靠的后备方案。将关闭 Steam，把 appcache\appinfo.vdf 移至旁边的备份文件夹，并重启 Steam 以重建文件。</value></data>
+  <data name="Settings_Dns" xml:space="preserve"><value>DNS 回退 (Cloudflare DoH)</value></data>
+  <data name="Settings_Dns_Always" xml:space="preserve"><value>始终 - 使用 Cloudflare DNS (DoH)</value></data>
+  <data name="Settings_Dns_Auto" xml:space="preserve"><value>自动（默认）- 仅在系统 DNS 失败时回退</value></data>
+  <data name="Settings_Dns_Hint" xml:space="preserve"><value>仅影响通过 HTTPS 访问的 LuaTools、Hubcap 和 GitHub 主机。启用时，这些主机名会发送至 Cloudflare (1.1.1.1)。立即生效。</value></data>
+  <data name="Settings_Dns_Never" xml:space="preserve"><value>从不 - 不使用外部 DNS</value></data>
+  <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Windows 无法加密该密钥（DPAPI 不可用），因此仅在本次会话中保留于内存且不会保存。重启应用后请重新输入。</value></data>
+  <data name="Settings_Section_Network" xml:space="preserve"><value>网络</value></data>
 </root>

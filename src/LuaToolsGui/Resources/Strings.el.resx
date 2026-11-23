@@ -869,4 +869,23 @@ SHA-256 {3}
   <data name="Launch_Restore_BackupFailed" xml:space="preserve"><value>Δεν ήταν δυνατή η δημιουργία αντιγράφου ασφαλείας. Έλεγξε τον ελεύθερο χώρο στον δίσκο.</value></data>
   <data name="Launch_Restore_SteamStillRunning" xml:space="preserve"><value>Το Steam δεν έκλεισε.</value></data>
   <data name="Launch_Restore_Mismatch" xml:space="preserve"><value>Δεν ήταν δυνατή η επανεγγραφή των αρχικών επιλογών εκκίνησης.</value></data>
+  <data name="Api_Err_FixHashMismatch" xml:space="preserve"><value>Η ληφθείσα επιδιόρθωση δεν ταιριάζει με το δημοσιευμένο άθροισμα ελέγχου και απορρίφθηκε.</value></data>
+  <data name="Fixes_OfflineMode" xml:space="preserve"><value>Λειτουργία εκτός σύνδεσης: εμφάνιση του καταλόγου που αποθηκεύτηκε στις {0}.</value></data>
+  <data name="Fixes_Warn_InstalledWithoutFix" xml:space="preserve"><value>{0} από τα εγκατεστημένα παιχνίδια σας δεν έχουν επιδιόρθωση στον κατάλογο του LuaTools.</value></data>
+  <data name="Fixes_Warn_LibraryFailed" xml:space="preserve"><value>Δεν ήταν δυνατή η ανάγνωση της βιβλιοθήκης Steam· τα σήματα εγκατάστασης είναι κρυφά.</value></data>
+  <data name="Pager_Next" xml:space="preserve"><value>Επόμενη σελίδα</value></data>
+  <data name="Pager_Prev" xml:space="preserve"><value>Προηγούμενη σελίδα</value></data>
+  <data name="Settings_Btn_ClearAppInfo" xml:space="preserve"><value>Εκκαθάριση cache περιεχομένου (AppInfo)</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Body" xml:space="preserve"><value>Το Steam θα κλείσει, το appinfo.vdf θα μετακινηθεί σε έναν φάκελο αντιγράφου ασφαλείας δίπλα του και το Steam θα επανεκκινηθεί για να το αναδημιουργήσει. Η πρώτη εκκίνηση διαρκεί περισσότερο. Οι επιλογές εκκίνησης που αλλάχθηκαν με το LuaTools θα προταθούν για επανεφαρμογή την επόμενη φορά που θα ανοίξει το LuaTools. Συνέχεια;</value></data>
+  <data name="Settings_ClearAppInfo_Confirm_Go" xml:space="preserve"><value>Εκκαθάριση cache</value></data>
+  <data name="Settings_ClearAppInfo_Done" xml:space="preserve"><value>Η cache περιεχομένου εκκαθαρίστηκε. Το Steam θα την αναδημιουργήσει στην επόμενη εκκίνηση.</value></data>
+  <data name="Settings_ClearAppInfo_NoFile" xml:space="preserve"><value>Το Steam δεν διαθέτει cache περιεχομένου (appinfo.vdf) για εκκαθάριση.</value></data>
+  <data name="Settings_ClearAppInfo_Tooltip" xml:space="preserve"><value>Χρησιμοποιήστε το αν ένα εγκατεστημένο παιχνίδι εμφανίζει σφάλμα «Μη έγκυρη διαμόρφωση περιεχομένου». Είναι επίσης η οριστική εναλλακτική λύση αν μια ενημέρωση του Steam αλλάξει την υπογραφή που παρεμβάλλει η μηχανή AmethystTool (v1.5.1+). Κλείνει το Steam, μετακινεί το appcache\appinfo.vdf σε φάκελο αντιγράφου ασφαλείας δίπλα του και επανεκκινεί το Steam για αναδημιουργία του αρχείου.</value></data>
+  <data name="Settings_Dns" xml:space="preserve"><value>Εναλλακτικό DNS (Cloudflare DoH)</value></data>
+  <data name="Settings_Dns_Always" xml:space="preserve"><value>Πάντα - χρήση Cloudflare DNS (DoH)</value></data>
+  <data name="Settings_Dns_Auto" xml:space="preserve"><value>Αυτόματο (προεπιλογή) - εναλλακτικό μόνο αν αποτύχει το DNS συστήματος</value></data>
+  <data name="Settings_Dns_Hint" xml:space="preserve"><value>Επηρεάζει μόνο τους κεντρικούς υπολογιστές των LuaTools, Hubcap και GitHub μέσω HTTPS. Όταν είναι ενεργό, αυτά τα ονόματα κεντρικών υπολογιστών αποστέλλονται στο Cloudflare (1.1.1.1). Εφαρμόζεται άμεσα.</value></data>
+  <data name="Settings_Dns_Never" xml:space="preserve"><value>Ποτέ - χωρίς εξωτερικό DNS</value></data>
+  <data name="Settings_HubcapKeySessionOnly" xml:space="preserve"><value>Τα Windows δεν μπόρεσαν να κρυπτογραφήσουν το κλειδί (το DPAPI δεν είναι διαθέσιμο), επομένως διατηρείται μόνο στη μνήμη για αυτήν τη συνεδρία και δεν αποθηκεύεται. Εισαγάγετέ το ξανά μετά την επανεκκίνηση της εφαρμογής.</value></data>
+  <data name="Settings_Section_Network" xml:space="preserve"><value>ΔΙΚΤΥΟ</value></data>
 </root>

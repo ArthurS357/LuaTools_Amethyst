@@ -47,24 +47,10 @@ SAMPLE_SIZE = 10
 # files in one pass, so every language file carries every key. When a new feature lands before its copy
 # is final, add its keys here (with a comment saying why) rather than copying English into 29 files.
 #
-# Fixes_Warn_InstalledWithoutFix / Fixes_Warn_LibraryFailed: Fixes tab banner and library warning; English
-# only until the Fixes tab design settles.
-# Settings_Section_Network / Settings_Dns*: Settings > Network DnsMode picker (1.8.x); English + pt-BR only
-# until the copy settles.
-# Fixes_OfflineMode: Fixes tab banner shown when the catalog comes from the offline copy; English + pt-BR only
-# until the copy settles.
-# Api_Err_FixHashMismatch: shown when an orphan fix (LuaTools-Catalog) fails its SHA-256 check; English + pt-BR
-# only until the copy settles.
-# Settings_Btn_ClearAppInfo / Settings_ClearAppInfo_*: Settings > Maintenance "clear content cache" button
-# (engine v1.5.1 rescue tool); English + pt-BR only until the copy settles.
-PENDING_TRANSLATION: frozenset[str] = frozenset({
-    "Pager_Prev", "Pager_Next", "Settings_HubcapKeySessionOnly", "Fixes_Warn_InstalledWithoutFix", "Fixes_Warn_LibraryFailed",
-    "Settings_Btn_ClearAppInfo", "Settings_ClearAppInfo_Tooltip", "Settings_ClearAppInfo_Confirm_Body",
-    "Settings_ClearAppInfo_Confirm_Go", "Settings_ClearAppInfo_Done", "Settings_ClearAppInfo_NoFile",
-    "Settings_Section_Network", "Settings_Dns", "Settings_Dns_Auto", "Settings_Dns_Always",
-    "Settings_Dns_Never", "Settings_Dns_Hint",
-    "Fixes_OfflineMode", "Api_Err_FixHashMismatch",
-})
+# When a new feature lands before its copy is final, add its keys here (with a comment saying why) rather
+# than copying English into 29 files. All previously pending keys (19 keys across 28 remaining locales)
+# were translated in v1.8.4 (Lote J4), so full parity is enforced again.
+PENDING_TRANSLATION: frozenset[str] = frozenset()
 
 
 def sample(keys: set[str]) -> str:
