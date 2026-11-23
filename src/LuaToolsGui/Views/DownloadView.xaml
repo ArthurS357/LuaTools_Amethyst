@@ -212,6 +212,12 @@
                 </ItemsControl>
             </Border>
 
+            <!-- Search in flight (IsSearching was set by the view model but never shown). -->
+            <ContentControl
+                Content="{x:Static res:Strings.Common_Loading}"
+                Style="{StaticResource LoadingStateStyle}"
+                Visibility="{Binding IsSearching, Converter={StaticResource BoolToVis}}" />
+
             <!-- Featured rows (Steam top-sellers / new-releases). Idle-only: the whole block hides once you
                  search or pick a game. Two stacked labeled rows, each a horizontally-scrolling card strip. -->
             <StackPanel

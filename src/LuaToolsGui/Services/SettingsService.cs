@@ -29,6 +29,10 @@ public class AppSettings
     [JsonConverter(typeof(DnsModeJsonConverter))]
     public DnsMode? DnsMode { get; set; }
 
+    // The user closed the "installed games with no fix" InfoBar on the Fixes tab. Nullable: absent in every
+    // settings.json written before 1.8.3, which reads as "not dismissed" (banner shown), so no migration.
+    public bool? FixesOrphanBannerDismissed { get; set; }
+
     // Manage-page results-per-page. 0 = "All" (single infinite scroll). Nullable so "never set"
     // (→ default 24) is distinguishable from an explicit choice.
     public int? ManagePageSize { get; set; }
@@ -550,6 +554,13 @@ public sealed class SettingsService
         }
     }
 
+    /// <summary>True once the user closed the Fixes tab's "installed games with no fix" InfoBar. Default false.</summary>
+    public bool FixesOrphanBannerDismissed
+    {
+        get => _settings.FixesOrphanBannerDismissed ?? false;
+        set { _settings.FixesOrphanBannerDismissed = value ? true : null; Save(); }
+    }
+
     private void Load()
     {
         // Prefer the primary file; fall back to the last-good .bak. Crucially, NEVER silently reset a
@@ -631,7 +642,8 @@ public sealed class SettingsService
             && _settings.PluginSource is null
             && _settings.GithubDownloadMirrors is null
             && _settings.GithubApiMirrors is null
-            && _settings.DnsMode is null;
+            && _settings.DnsMode is null
+            && _settings.FixesOrphanBannerDismissed is null;
         if (empty)
         {
             foreach (string p in new[] { _filePath, _bakPath, _tmpPath })

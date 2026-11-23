@@ -67,23 +67,20 @@
                     Text="{Binding OfflineBannerText}"
                     TextWrapping="Wrap" />
             </Border>
-            <Border
+            <!-- Installed games with no fix in the catalog (#33). Closable: the close button sets IsOpen false,
+                 which the view model persists (settings.json FixesOrphanBannerDismissed) so it stays closed. -->
+            <ui:InfoBar
                 Margin="0,10,0,0"
-                Padding="10,4"
-                Background="{StaticResource WarningTintBrush}"
-                BorderBrush="{StaticResource WarningStrongBrush}"
-                BorderThickness="1"
-                CornerRadius="8"
-                Visibility="{Binding ShowBanner, Converter={StaticResource BoolToVis}}">
-                <Expander Header="{Binding BannerText}" Foreground="{StaticResource WarningBrush}">
-                    <ScrollViewer MaxHeight="180" VerticalScrollBarVisibility="Auto">
-                        <TextBlock
-                            Foreground="{StaticResource TextMutedBrush}"
-                            Text="{Binding BannerNames}"
-                            TextWrapping="Wrap" />
+                IsClosable="True"
+                IsOpen="{Binding ShowBanner, Mode=TwoWay}"
+                Severity="Warning"
+                Title="{Binding BannerText}">
+                <ui:InfoBar.Message>
+                    <ScrollViewer MaxHeight="120" VerticalScrollBarVisibility="Auto">
+                        <TextBlock Text="{Binding BannerNames}" TextWrapping="Wrap" />
                     </ScrollViewer>
-                </Expander>
-            </Border>
+                </ui:InfoBar.Message>
+            </ui:InfoBar>
             <Border
                 Margin="0,10,0,0"
                 Padding="12,8"

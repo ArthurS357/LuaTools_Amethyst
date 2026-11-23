@@ -239,7 +239,17 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
     /// <summary>Called by the view when the tab is left: loads started or queued before it stop.</summary>
     public void CancelLoad() => Interlocked.Exchange(ref _leaveCts, new CancellationTokenSource()).Cancel();
 
+    /// <summary>The "installed games with no fix" InfoBar is open. Two-way with <c>ui:InfoBar.IsOpen</c>: the
+    /// InfoBar's own close button sets it false, which persists the dismissal; <see cref="LoadAsync"/>
+    /// changes it only under <see cref="_syncingBanner"/>, so a reload never counts as a dismissal.</summary>
     [ObservableProperty] private bool _showBanner;
+
+    private bool _syncingBanner;
+
+    partial void OnShowBannerChanged(bool value)
+    {
+        if (!value && !_syncingBanner) settings.FixesOrphanBannerDismissed = true;
+    }
     [ObservableProperty] private string _bannerText = "";
     [ObservableProperty] private string _bannerNames = "";
     [ObservableProperty] private bool _showLibraryWarning;
@@ -337,7 +347,9 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
         OfflineBannerText = !_catalogFailed && _catalogCachedAt is { } saved
             ? string.Format(Resources.Strings.Fixes_OfflineMode, saved.ToString("g"))
             : null;
-        ShowBanner = state.ShowBanner;
+        _syncingBanner = true;
+        try { ShowBanner = state.ShowBanner && !settings.FixesOrphanBannerDismissed; }
+        finally { _syncingBanner = false; }
         ShowLibraryWarning = state.ShowLibraryWarning;
         BannerText = string.Format(Resources.Strings.Fixes_Warn_InstalledWithoutFix, without.Count);
         BannerNames = string.Join(Environment.NewLine, without.Select(g =>

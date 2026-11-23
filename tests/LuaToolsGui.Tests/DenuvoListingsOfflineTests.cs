@@ -211,6 +211,59 @@ public class DenuvoListingsOfflineTests : IDisposable
         vm.ShowOfflineBanner.Should().BeFalse();
     }
 
+    // ── The "installed games with no fix" InfoBar (#33): closable, and the close sticks ──────────
+
+    [Fact]
+    public async Task Closing_the_orphan_banner_persists_and_a_reload_does_not_reopen_or_dismiss_it()
+    {
+        var vm = Page(new Stub());
+        vm.ShowBanner = true; // what LoadAsync does when installed games have no fix
+
+        await vm.LoadAsync(); // nothing installed here: the load closes it, which is not a dismissal
+        new SettingsService(_dir).FixesOrphanBannerDismissed.Should().BeFalse("a reload is not the user closing it");
+
+        vm.ShowBanner = true;
+        vm.ShowBanner = false; // the InfoBar's close button, through the two-way IsOpen binding
+
+        new SettingsService(_dir).FixesOrphanBannerDismissed.Should().BeTrue("the dismissal survives a restart");
+    }
+
+    [Fact]
+    public async Task A_dismissed_orphan_banner_stays_closed_after_load_and_an_undismissed_one_opens()
+    {
+        // Game 777 is installed but not in the catalog (appids 1 and 2): the orphan the banner is about.
+        string apps = Path.Combine(_dir, "steam", "steamapps");
+        Directory.CreateDirectory(apps);
+        File.WriteAllText(Path.Combine(apps, "libraryfolders.vdf"), "x");
+        File.WriteAllText(Path.Combine(apps, "appmanifest_777.acf"),
+            "\"AppState\"\n{\n\t\"appid\"\t\"777\"\n\t\"name\"\t\"Orphan\"\n\t\"StateFlags\"\t\"4\"\n}");
+
+        var open = Page(new Stub());
+        await open.LoadAsync();
+        open.ShowBanner.Should().BeTrue("an installed game with no fix, not yet dismissed");
+
+        new SettingsService(_dir).FixesOrphanBannerDismissed = true;
+        var closed = Page(new Stub());
+        await closed.LoadAsync();
+        closed.ShowBanner.Should().BeFalse("the dismissal outlives the load");
+    }
+
+    [Fact]
+    public void The_dismiss_flag_defaults_to_open_for_a_settings_file_written_before_it_existed()
+    {
+        File.WriteAllText(Path.Combine(_dir, "settings.json"), """{"AutoUpdateApps":true}""");
+
+        var settings = new SettingsService(_dir);
+
+        settings.FixesOrphanBannerDismissed.Should().BeFalse();
+        settings.FixesOrphanBannerDismissed = true;
+        File.ReadAllText(Path.Combine(_dir, "settings.json")).Should().Contain("FixesOrphanBannerDismissed");
+        settings.FixesOrphanBannerDismissed = false;
+        File.ReadAllText(Path.Combine(_dir, "settings.json")).Should().Contain("\"FixesOrphanBannerDismissed\": null",
+            "false is stored as unset, the same state as a file written before the flag existed");
+        new SettingsService(_dir).FixesOrphanBannerDismissed.Should().BeFalse();
+    }
+
     [Fact]
     public async Task No_banner_when_there_is_no_copy_either()
     {

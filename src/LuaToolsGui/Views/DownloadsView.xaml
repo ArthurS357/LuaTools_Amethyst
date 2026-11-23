@@ -336,29 +336,10 @@
                     TextWrapping="Wrap" />
 
                 <!--  Empty state: nothing queued AND nothing in history.  -->
-                <Border
-                    Margin="0,18,0,0"
-                    Padding="24"
-                    Background="{DynamicResource SurfaceCardBrush}"
-                    BorderBrush="{DynamicResource BorderStrongBrush}"
-                    BorderThickness="1"
-                    CornerRadius="10"
-                    Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}">
-                    <StackPanel HorizontalAlignment="Center">
-                        <ui:SymbolIcon
-                            HorizontalAlignment="Center"
-                            FontSize="28"
-                            Foreground="{DynamicResource TextDimBrush}"
-                            Symbol="ArrowDownload24" />
-                        <TextBlock
-                            Margin="0,10,0,0"
-                            HorizontalAlignment="Center"
-                            Foreground="{DynamicResource TextSecondaryBrush}"
-                            Text="{x:Static res:Strings.Downloads_Empty}"
-                            TextAlignment="Center"
-                            TextWrapping="Wrap" />
-                    </StackPanel>
-                </Border>
+                <HeaderedContentControl
+                    Header="{x:Static res:Strings.Downloads_Empty}"
+                    Style="{StaticResource EmptyStateStyle}"
+                    Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}" />
 
                 <!--  Queue  -->
                 <TextBlock
