@@ -943,6 +943,120 @@ public sealed class DownloadQueueTests : IDisposable
         File.Exists(Path.Combine(gameInstallDir, "denuvo_patch.dll")).Should().BeTrue();
     }
 
+    [Fact]
+    public async Task Reloading_or_clearing_fix_list_unbinds_discarded_FixSlotDownloadVms_from_PropertyChanged()
+    {
+        Directory.CreateDirectory(_dir);
+        var queue = new DownloadQueue(NewCache(), _host.Dispatcher);
+        var auth = CreateSignedInAuth(Path.Combine(_dir, "auth_unbind.dat"));
+
+        var (vm, _, _, _, _) = CreateFixesVm(
+            queue, auth,
+            (_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)),
+            (_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)));
+
+        var discardedFix = MakeFixVm("fix-unbind");
+        vm.ReplaceFixes([discardedFix]);
+        var game = new FixGameCardVm(new DenuvoGameListing { AppId = "12345", Name = "Test Denuvo Game", FixCount = 1 });
+
+        var item = await vm.EnqueueFixDownloadAsync(discardedFix, "fix", game);
+        item.Should().NotBeNull();
+        discardedFix.FixSlot.AttachedItem.Should().BeSameAs(item);
+
+        int staleNotifications = 0;
+        discardedFix.FixSlot.PropertyChanged += (_, _) => Interlocked.Increment(ref staleNotifications);
+
+        // Reloading / replacing the fix list unbinds the old FixSlotDownloadVm instances before replacing them.
+        var freshFix = MakeFixVm("fix-unbind");
+        vm.ReplaceFixes([freshFix]);
+        vm.SyncFixesWithQueue();
+
+        discardedFix.FixSlot.AttachedItem.Should().BeNull("discarded FixSlotDownloadVm must detach from DownloadItem");
+        freshFix.FixSlot.AttachedItem.Should().BeSameAs(item);
+
+        int countAfterUnbind = Volatile.Read(ref staleNotifications);
+
+        // Trigger PropertyChanged on the active DownloadItem (by cancelling it) — the discarded VM must receive 0 events.
+        queue.Cancel(item!);
+        await item!.Completion.WaitAsync(Timeout);
+        await WaitForAsync(() => !freshFix.IsDownloading);
+
+        Volatile.Read(ref staleNotifications).Should().Be(countAfterUnbind,
+            "a discarded FixSlotDownloadVm must have zero remaining subscriptions on DownloadItem.PropertyChanged");
+
+        // Closing the detail flyout also unbinds the remaining items.
+        vm.CloseDetailCommand.Execute(null);
+        freshFix.FixSlot.AttachedItem.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task Concurrent_manifest_and_fix_installs_for_same_game_serialize_and_coalesce_steam_restarts()
+    {
+        Directory.CreateDirectory(_dir);
+        var queue = await StartedAsync();
+        var auth = CreateSignedInAuth(Path.Combine(_dir, "auth_serial.dat"));
+
+        byte[] manifest1Zip = CreateZipBytes("12345.lua", "addappid(12345)\n");
+        byte[] manifest2Zip = CreateZipBytes("12345.lua", "addappid(12345)\n-- v2\n");
+
+        Task<HttpResponseMessage> ApiRespond(HttpRequestMessage req, CancellationToken _) =>
+            Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent("{\"url\":\"https://r2.example.com/signed/m.zip\",\"filename\":\"12345.zip\"}"),
+            });
+
+        int r2Call = 0;
+        Task<HttpResponseMessage> R2Respond(HttpRequestMessage req, CancellationToken _)
+        {
+            byte[] bytes = Interlocked.Increment(ref r2Call) == 1 ? manifest1Zip : manifest2Zip;
+            var content = new ByteArrayContent(bytes);
+            content.Headers.ContentLength = bytes.Length;
+            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = content });
+        }
+
+        int activeInstalls = 0;
+        int maxConcurrentInstalls = 0;
+        int restartCalls = 0;
+        var firstEnteredRestart = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var releaseFirstRestart = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        var (vm, _, _, _, _) = CreateFixesVm(queue, auth, ApiRespond, R2Respond);
+        vm.RestartSteamOverride = () =>
+        {
+            int cur = Interlocked.Increment(ref activeInstalls);
+            int prevMax;
+            while (cur > (prevMax = Volatile.Read(ref maxConcurrentInstalls)))
+                Interlocked.CompareExchange(ref maxConcurrentInstalls, cur, prevMax);
+
+            int count = Interlocked.Increment(ref restartCalls);
+            if (count == 1)
+            {
+                firstEnteredRestart.TrySetResult();
+                releaseFirstRestart.Task.Wait(Timeout);
+            }
+
+            Interlocked.Decrement(ref activeInstalls);
+            return true;
+        };
+
+        var fixA = MakeFixVm("fix-serial-a");
+        var fixB = MakeFixVm("fix-serial-b");
+        vm.ReplaceFixes([fixA, fixB]);
+        var game = new FixGameCardVm(new DenuvoGameListing { AppId = "12345", Name = "Test Denuvo Game", FixCount = 2 });
+
+        var itemA = await vm.EnqueueFixDownloadAsync(fixA, "manifest", game);
+        var itemB = await vm.EnqueueFixDownloadAsync(fixB, "manifest", game);
+        releaseFirstRestart.TrySetResult();
+
+        var resA = await itemA!.Completion.WaitAsync(Timeout);
+        var resB = await itemB!.Completion.WaitAsync(Timeout);
+
+        resA!.Ok.Should().BeTrue();
+        resB!.Ok.Should().BeTrue();
+        maxConcurrentInstalls.Should().Be(1, "installations are serialized by _installGate");
+        restartCalls.Should().BeInRange(1, 2);
+    }
+
     private sealed class GatedChunkStream(
         byte[] data,
         int firstChunkSize,

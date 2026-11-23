@@ -250,7 +250,11 @@ public partial class ModeViewModel : ObservableObject
             if (card.Mode == active)
             {
                 card.StatusText = Resources.Strings.Mode_Checking;
-                Apply(card, await _unlocker.GetStateAsync(card.Mode, forceRefresh));
+                var state = await _unlocker.GetStateAsync(card.Mode, forceRefresh);
+                if (_unlocker.SelectedMode == card.Mode)
+                    Apply(card, state);
+                else
+                    Apply(card, new ModeState(card.Mode, ModeStatus.NotInstalled, IsActive: false, null));
             }
             else
             {
@@ -259,8 +263,14 @@ public partial class ModeViewModel : ObservableObject
             }
         }
 
+        // Re-sync after any async mode check in case Custom was selected while GetStateAsync was in flight.
+        CustomStatus = _unlocker.CustomModeStatus;
+        IsCustomActive = _unlocker.IsCustomModeActive;
+
         // AmethystTool sits with the Mode cards and refreshes with them.
         await Amethyst.LoadAsync(forceRefresh);
+        CustomStatus = _unlocker.CustomModeStatus;
+        IsCustomActive = _unlocker.IsCustomModeActive;
         OnPropertyChanged(nameof(CanUninstallAmethyst));
     }
 
@@ -369,6 +379,7 @@ public partial class ModeViewModel : ObservableObject
     private async Task SelectCustomMode()
     {
         if (IsBusy || IsCustomActive) return;
+        _detectionAttempted = true;
         _unlocker.SelectCustomMode();
         _toast.Show(Resources.Strings.Mode_Custom_Toast_Title, Resources.Strings.Mode_Custom_Toast_Body);
         await LoadAsync();

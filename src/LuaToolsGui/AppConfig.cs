@@ -127,8 +127,8 @@ public static class AppConfig
     // `digest` field) for that release asset URL.
     //
     // This pin freezes the exact release tag, asset name, and SHA-256 so neither a mirror nor an upstream
-    // re-pack can substitute different bytes. An independent second-channel byte audit remains tracked in
-    // the release checklist before treating the archive as multi-channel verified.
+    // re-pack can substitute different bytes; it is a single-channel pin recorded from api.github.com rather
+    // than a multi-channel audited build.
     //
     // The re-pack workflow republishes on every upstream release, so this WILL go stale. That is the
     // intended failure mode: a new re-pack simply isn't accepted until a maintainer bumps all three

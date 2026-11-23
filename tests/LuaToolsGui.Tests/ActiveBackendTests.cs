@@ -348,4 +348,88 @@ public class ActiveBackendTests
             try { System.IO.Directory.Delete(tmp, recursive: true); } catch (System.IO.IOException) { }
         }
     }
+
+    [Fact]
+    public async Task Selecting_Custom_while_DetectActiveModeAsync_is_in_flight_is_never_overwritten()
+    {
+        string tmp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"luatools_custom_race_{Guid.NewGuid():N}");
+        string steamDir = System.IO.Path.Combine(tmp, "Steam");
+        string dataDir = System.IO.Path.Combine(tmp, "Data");
+        System.IO.Directory.CreateDirectory(steamDir);
+        System.IO.Directory.CreateDirectory(dataDir);
+
+        try
+        {
+            string steamExe = System.IO.Path.Combine(steamDir, "steam.exe");
+            string dwmapi = System.IO.Path.Combine(steamDir, "dwmapi.dll");
+            string xinput = System.IO.Path.Combine(steamDir, "xinput1_4.dll");
+            System.IO.File.WriteAllText(steamExe, "steam");
+            System.IO.File.WriteAllText(dwmapi, "matching-dwmapi");
+            System.IO.File.WriteAllText(xinput, "matching-xinput");
+
+            string dwmSha = AssetIntegrity.Sha256OfFile(dwmapi);
+            string xinSha = AssetIntegrity.Sha256OfFile(xinput);
+
+            var fetchEntered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var releaseFetch = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+
+            string releasesJson = $$"""
+                [
+                  {
+                    "tag_name": "ost-1.0.0",
+                    "assets": [
+                      { "name": "dwmapi.dll", "browser_download_url": "https://example.com/dwmapi.dll", "digest": "sha256:{{dwmSha}}" },
+                      { "name": "xinput1_4.dll", "browser_download_url": "https://example.com/xinput1_4.dll", "digest": "sha256:{{xinSha}}" }
+                    ]
+                  }
+                ]
+                """;
+
+            var settings = new SettingsService(dataDir) { SteamPathOverride = steamDir };
+            var steam = new SteamService(settings);
+            var cache = new CacheService(dataDir);
+            var manifests = new InstallManifestService(dataDir);
+            var gh = new GithubProxy(new GatedReleaseHandler(fetchEntered, releaseFetch.Task, releasesJson));
+            var unlocker = new UnlockerService(steam, settings, cache, gh, null!, manifests);
+
+            // Start DetectActiveModeAsync while ActiveBackend is None:
+            var detectTask = unlocker.DetectActiveModeAsync();
+            await fetchEntered.Task.WaitAsync(TimeSpan.FromSeconds(10));
+
+            // User selects Custom while detection HTTP fetch is in flight:
+            unlocker.SelectCustomMode();
+            unlocker.ActiveBackend.Should().Be(ActiveBackend.Custom);
+
+            // Let the in-flight HTTP response return a matching OpenSteamTools release:
+            releaseFetch.TrySetResult();
+            var detected = await detectTask;
+
+            // Detection must abstain after seeing ActiveBackend != None post-await.
+            detected.Should().BeNull();
+            settings.SelectedMode.Should().Be(ActiveBackendPolicy.CustomToken);
+            unlocker.ActiveBackend.Should().Be(ActiveBackend.Custom);
+            unlocker.IsCustomModeActive.Should().BeTrue();
+        }
+        finally
+        {
+            try { System.IO.Directory.Delete(tmp, recursive: true); } catch (System.IO.IOException) { }
+        }
+    }
+
+    private sealed class GatedReleaseHandler(
+        TaskCompletionSource entered,
+        Task gate,
+        string json) : System.Net.Http.HttpMessageHandler
+    {
+        protected override async Task<System.Net.Http.HttpResponseMessage> SendAsync(
+            System.Net.Http.HttpRequestMessage request, CancellationToken ct)
+        {
+            entered.TrySetResult();
+            await gate.WaitAsync(ct);
+            return new System.Net.Http.HttpResponseMessage(System.Net.HttpStatusCode.OK)
+            {
+                Content = new System.Net.Http.StringContent(json),
+            };
+        }
+    }
 }

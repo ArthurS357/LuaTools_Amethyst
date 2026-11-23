@@ -336,4 +336,32 @@ public sealed class PluginArchiveScreeningTests : IDisposable
         PluginInstallerService.NeutralizeBackendAutoLaunch(_dest).Should().BeFalse();
         File.ReadAllText(mainLuaPath).Should().Be(afterFirst);
     }
+
+    [Fact]
+    public void NeutralizeBackendAutoLaunchSource_does_not_corrupt_multiline_exec_calls_while_still_neutralizing_auto_launch()
+    {
+        const string multilineLua = """
+            local function ensure_backend_running()
+                local exe_path = "C:\\LuaTools\\current\\LuaTools.exe"
+                m_utils.exec(
+                    'start "" "' .. exe_path .. '" --minimized'
+                )
+            end
+
+            local function on_load()
+                ensure_backend_running()
+                millennium.ready()
+            end
+            """;
+
+        string patched = PluginInstallerService.NeutralizeBackendAutoLaunchSource(multilineLua);
+
+        // 1. ensure_backend_running() is short-circuited and its call in on_load() is commented out.
+        patched.Should().Contain("if true then return end -- neutralized by LuaTools Amethyst (Steam opens clean)");
+        patched.Should().Contain("-- ensure_backend_running() -- neutralized by LuaTools Amethyst (Steam opens clean)");
+
+        // 2. The multi-line m_utils.exec( ... ) is NOT half-commented (which would leave dangling argument/closing lines).
+        patched.Should().NotContain("-- m_utils.exec(");
+        patched.Should().Contain("    m_utils.exec(\n        'start \"\" \"' .. exe_path .. '\" --minimized'\n    )");
+    }
 }

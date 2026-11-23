@@ -266,6 +266,44 @@ public class DenuvoFixRevertTests : IDisposable
         DenuvoFixService.IsApplied(_game, FixId).Should().BeTrue(); // record kept, so it stays retryable
     }
 
+    [Fact]
+    public async Task Two_concurrent_applies_to_the_same_game_folder_are_serialized_without_overlap()
+    {
+        Existing("shared.dll", "original");
+        string zip1 = Archive(("shared.dll", "patched-1"), ("only1.dll", "one"));
+        string zip2 = Archive(("shared.dll", "patched-2"), ("only2.dll", "two"));
+
+        using var firstHoldCts = new CancellationTokenSource();
+        var gateField = typeof(DenuvoFixService).GetMethod("GateFor", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!;
+        var gate = (SemaphoreSlim)gateField.Invoke(null, [_game])!;
+
+        // Hold the per-folder gate to prove ApplyAsync waits on it and respects CancellationToken / serialization.
+        await gate.WaitAsync();
+        bool secondCompletedWhileGateHeld = false;
+
+        var apply1Task = Task.Run(async () =>
+        {
+            var r = await _fixes.ApplyAsync(zip1, AppId, "fix-concurrent-1", _game);
+            secondCompletedWhileGateHeld = gate.CurrentCount > 0;
+            return r;
+        });
+
+        await Task.Delay(40);
+        apply1Task.IsCompleted.Should().BeFalse("ApplyAsync must wait on the per-installDir SemaphoreSlim gate");
+
+        var apply2Task = Task.Run(() => _fixes.ApplyAsync(zip2, AppId, "fix-concurrent-2", _game));
+        gate.Release();
+
+        var results = await Task.WhenAll(apply1Task, apply2Task);
+        results[0].Ok.Should().BeTrue();
+        results[1].Ok.Should().BeTrue();
+        secondCompletedWhileGateHeld.Should().BeFalse();
+        DenuvoFixService.IsApplied(_game, "fix-concurrent-1").Should().BeTrue();
+        DenuvoFixService.IsApplied(_game, "fix-concurrent-2").Should().BeTrue();
+        File.Exists(GamePath("only1.dll")).Should().BeTrue();
+        File.Exists(GamePath("only2.dll")).Should().BeTrue();
+    }
+
     // ── Record plumbing ───────────────────────────────────────────────────────
 
     /// <summary>The sanitised folder/file key the service derives from <see cref="FixId"/>.</summary>

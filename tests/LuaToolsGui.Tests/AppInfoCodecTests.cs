@@ -342,9 +342,10 @@ public class AppInfoCodecTests : IDisposable
     }
 
     [Fact]
-    public void BinaryVdfRead_PreservesNonStrictDepthAndIndexedKeyExceptionBehavior()
+    public void BinaryVdfRead_EnforcesMaxDepthInLenientAndStrictModes_WhilePreservingIndexedKeyExceptionBehavior()
     {
-        // 1. Non-strict BinaryVdf.Read does NOT enforce MaxDepth (64), whereas ReadStrict does.
+        // 1. Both non-strict BinaryVdf.Read and BinaryVdf.ReadStrict enforce MaxDepth (64) so a corrupt
+        // appinfo.vdf cannot trigger an uncatchable StackOverflowException.
         using var deepStream = new MemoryStream();
         int nesting = BinaryVdf.MaxDepth + 4;
         for (int i = 0; i < nesting; i++)
@@ -357,14 +358,13 @@ public class AppInfoCodecTests : IDisposable
             deepStream.WriteByte((byte)VdfType.End);
 
         deepStream.Position = 0;
-        var parsedNonStrict = BinaryVdf.Read(deepStream, [], indexedKeys: false);
-        Assert.Single(parsedNonStrict.Items);
+        Assert.Throws<InvalidDataException>(() => BinaryVdf.Read(deepStream, [], indexedKeys: false));
 
         deepStream.Position = 0;
         Assert.Throws<InvalidDataException>(() => BinaryVdf.ReadStrict(deepStream));
 
-        // 2. Non-strict BinaryVdf.Read with indexedKeys throws the original indexer exception
-        // (ArgumentOutOfRangeException) when a key index exceeds the string table, not InvalidDataException.
+        // 2. Non-strict BinaryVdf.Read with indexedKeys still throws the original indexer exception
+        // (ArgumentOutOfRangeException) when a key index exceeds the string table.
         using var badIndexStream = new MemoryStream();
         badIndexStream.WriteByte((byte)VdfType.Int32);
         BinaryVdf.WriteUInt32(badIndexStream, 99u); // out-of-range index

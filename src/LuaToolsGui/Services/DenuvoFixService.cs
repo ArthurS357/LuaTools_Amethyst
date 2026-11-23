@@ -1,6 +1,8 @@
+using System.Collections.Concurrent;
 using System.IO;
 using System.IO.Compression;
 using System.Text.Json;
+using System.Threading;
 using LuaToolsGui.Models;
 
 namespace LuaToolsGui.Services;
@@ -79,6 +81,19 @@ public class DenuvoFixService
     private static readonly JsonSerializerOptions ReadOpts = new() { PropertyNameCaseInsensitive = true };
     private static readonly JsonSerializerOptions WriteOpts = new() { WriteIndented = true };
 
+    /// <summary>Per-game-folder gate so two concurrent fix applies (or an apply and a revert) never race
+    /// over the same install directory or <c>.luatools-fix/*.json</c> records.</summary>
+    private static readonly ConcurrentDictionary<string, SemaphoreSlim> InstallDirGates =
+        new(StringComparer.OrdinalIgnoreCase);
+
+    private static SemaphoreSlim GateFor(string installDir)
+    {
+        string key;
+        try { key = Path.GetFullPath(installDir).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar); }
+        catch { key = installDir; }
+        return InstallDirGates.GetOrAdd(key, static _ => new SemaphoreSlim(1, 1));
+    }
+
     // ── Apply ────────────────────────────────────────────────────────
 
     /// <summary>
@@ -105,6 +120,35 @@ public class DenuvoFixService
     /// and ends as a fact, and a crash in between still leaves something the user can revert.
     /// </remarks>
     public FixApplyResult Apply(string zipPath, long appId, string fixId, string installDir, CancellationToken ct = default)
+    {
+        var gate = GateFor(installDir);
+        gate.Wait(ct);
+        try
+        {
+            return ApplyCore(zipPath, appId, fixId, installDir, ct);
+        }
+        finally
+        {
+            gate.Release();
+        }
+    }
+
+    public async Task<FixApplyResult> ApplyAsync(
+        string zipPath, long appId, string fixId, string installDir, CancellationToken ct = default)
+    {
+        var gate = GateFor(installDir);
+        await gate.WaitAsync(ct);
+        try
+        {
+            return ApplyCore(zipPath, appId, fixId, installDir, ct);
+        }
+        finally
+        {
+            gate.Release();
+        }
+    }
+
+    private FixApplyResult ApplyCore(string zipPath, long appId, string fixId, string installDir, CancellationToken ct)
     {
         try
         {
@@ -252,6 +296,20 @@ public class DenuvoFixService
     /// apply/revert contract be tested against a temp directory.
     /// </remarks>
     public FixRevertResult Revert(string fixId, string installDir)
+    {
+        var gate = GateFor(installDir);
+        gate.Wait();
+        try
+        {
+            return RevertCore(fixId, installDir);
+        }
+        finally
+        {
+            gate.Release();
+        }
+    }
+
+    private FixRevertResult RevertCore(string fixId, string installDir)
     {
         try
         {

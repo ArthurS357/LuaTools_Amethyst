@@ -94,6 +94,9 @@ public partial class FixSlotDownloadVm(string fixId, string slot) : ObservableOb
         RefreshFromItem();
     }
 
+    /// <summary>Detach from the current <see cref="DownloadItem"/> so discarded slot VMs leave zero event handlers behind.</summary>
+    public void Unbind() => Bind(null);
+
     private void OnItemPropertyChanged(object? sender, PropertyChangedEventArgs e) =>
         RefreshFromItem();
 
@@ -161,6 +164,14 @@ public partial class FixItemVm : ObservableObject
 
     public FixSlotDownloadVm GetSlot(string slot) =>
         string.Equals(slot, "manifest", StringComparison.OrdinalIgnoreCase) ? ManifestSlot : FixSlot;
+
+    /// <summary>Detach both slots from any bound <see cref="DownloadItem"/> before this VM is discarded.</summary>
+    public void Unbind()
+    {
+        SlotStateChanged = null;
+        ManifestSlot.Unbind();
+        FixSlot.Unbind();
+    }
 
     /// <summary>
     /// Whether the game is installed on disk. Only the FIX slot cares: it extracts a zip into the game
@@ -356,6 +367,9 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
 
     // Per-game tag filter (only meaningful when this game's fixes span multiple tags).
     private List<FixItemVm> _allFixes = [];
+    private readonly HashSet<FixItemVm> _trackedFixes = [];
+    private readonly SemaphoreSlim _installGate = new(1, 1);
+    private int _pendingManifestInstalls;
     public ObservableCollection<TagPillVm> FixTags { get; } = [];
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasFixTags))]
@@ -566,13 +580,37 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
         await OpenGame(game);
     }
 
+    /// <summary>Unbind every existing <see cref="FixItemVm"/> and replace the backing list so discarded items
+    /// never retain <see cref="DownloadItem.PropertyChanged"/> subscriptions.</summary>
+    internal void ReplaceFixes(IReadOnlyList<FixItemVm> next)
+    {
+        foreach (var tracked in _trackedFixes.ToArray())
+        {
+            if (!next.Contains(tracked))
+            {
+                tracked.Unbind();
+                _trackedFixes.Remove(tracked);
+            }
+        }
+        foreach (var existing in _allFixes)
+            if (!next.Contains(existing))
+                existing.Unbind();
+        foreach (var shown in Fixes)
+            if (!next.Contains(shown))
+                shown.Unbind();
+
+        Fixes.Clear();
+        _allFixes = [.. next];
+        foreach (var f in _allFixes)
+            _trackedFixes.Add(f);
+    }
+
     [RelayCommand]
     private async Task OpenGame(FixGameCardVm game)
     {
         SelectedGame = game;
         _ = game.EnsureCoverAsync(covers); // ensure the flyout header image is cached too
-        Fixes.Clear();
-        _allFixes = [];
+        ReplaceFixes([]);
         FixTags.Clear();
         SelectedFixTagId = null;
         IsLoadingFixes = true;
@@ -581,7 +619,7 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
             var data = await api.GetDenuvoFixesAsync(game.AppId);
             if (data is not null)
             {
-                _allFixes = data.Fixes.Select(f => new FixItemVm(f)).ToList();
+                ReplaceFixes(data.Fixes.Select(f => new FixItemVm(f)).ToList());
 
                 // Is the game on disk? GetInstallDir walks libraryfolders.vdf + appmanifest_*.acf, so it
                 // is file I/O — off the UI thread. Resolved once here rather than per fix row.
@@ -631,7 +669,12 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
     }
 
     [RelayCommand]
-    private void CloseDetail() => SelectedGame = null;
+    private void CloseDetail()
+    {
+        SelectedGame = null;
+        ReplaceFixes([]);
+        UpdatePageDownloadState();
+    }
 
     // ── Downloads (via DownloadQueue) ────────────────────────────────
 
@@ -710,17 +753,55 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
             DownloadAsync: (_, progress, ct) =>
                 api.DownloadDenuvoAsync(fix.Id, normalizedSlot, fallback, progress, ct, appid: appIdRaw),
             InstallAsync: (file, item, ct) =>
-                Task.FromResult(RecordInstallOutcome(
-                    item.Id,
-                    isManifest
-                        ? InstallManifestCore(file, appId, gameName)
-                        : ApplyFixCore(file, appId, fix.Id, gameName, ct))),
+                RunSerializedInstallAsync(file, item, isManifest, appId, fix.Id, gameName, ct),
             OnFinished: (item, result) => OnFixJobFinished(fix, normalizedSlot, item, result));
 
         var queued = _queue.Enqueue(job);
         fix.GetSlot(normalizedSlot).Bind(queued);
         UpdatePageDownloadState();
         return queued;
+    }
+
+    private async Task<JobResult> RunSerializedInstallAsync(
+        DownloadedFile file,
+        DownloadItem item,
+        bool isManifest,
+        long appId,
+        string fixId,
+        string gameName,
+        CancellationToken ct)
+    {
+        if (isManifest)
+            Interlocked.Increment(ref _pendingManifestInstalls);
+
+        bool acquired = false;
+        try
+        {
+            await _installGate.WaitAsync(ct);
+            acquired = true;
+
+            FixInstallOutcome outcome;
+            if (isManifest)
+            {
+                // If another manifest install is already queued at the gate behind this one, let the last one
+                // in the burst perform the Steam restart so two concurrent manifest jobs never restart Steam twice.
+                bool shouldRestartSteam = Volatile.Read(ref _pendingManifestInstalls) <= 1;
+                outcome = InstallManifestCore(file, appId, gameName, shouldRestartSteam);
+            }
+            else
+            {
+                outcome = await ApplyFixCoreAsync(file, appId, fixId, gameName, ct);
+            }
+
+            return RecordInstallOutcome(item.Id, outcome);
+        }
+        finally
+        {
+            if (isManifest)
+                Interlocked.Decrement(ref _pendingManifestInstalls);
+            if (acquired)
+                _installGate.Release();
+        }
     }
 
     private JobResult RecordInstallOutcome(string itemId, FixInstallOutcome outcome)
@@ -749,7 +830,11 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
                 error: true);
         }
 
-        fix.GetSlot(slot).RefreshFromItem();
+        if (_allFixes.Contains(fix))
+            fix.GetSlot(slot).RefreshFromItem();
+        else
+            fix.Unbind();
+
         SyncFixesWithQueue();
     }
 
@@ -763,8 +848,18 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
     /// </summary>
     public void SyncFixesWithQueue()
     {
+        foreach (var tracked in _trackedFixes.ToArray())
+        {
+            if (!_allFixes.Contains(tracked))
+            {
+                tracked.Unbind();
+                _trackedFixes.Remove(tracked);
+            }
+        }
+
         foreach (var fix in _allFixes)
         {
+            _trackedFixes.Add(fix);
             SyncSlotWithQueue(fix.ManifestSlot);
             SyncSlotWithQueue(fix.FixSlot);
         }
@@ -812,7 +907,8 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
     }
 
     /// <summary>Manifest slot: install into Steam force-LOCKED (Denuvo fixes must stay version-pinned).</summary>
-    private FixInstallOutcome InstallManifestCore(DownloadedFile file, long appId, string gameName)
+    private FixInstallOutcome InstallManifestCore(
+        DownloadedFile file, long appId, string gameName, bool shouldRestartSteam = true)
     {
         bool isZip = file.FileName.EndsWith(".zip", StringComparison.OrdinalIgnoreCase);
 
@@ -844,7 +940,7 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
                 IsError: true);
         }
 
-        bool restarted = RestartSteamOverride?.Invoke() ?? steam.RestartSteam();
+        bool restarted = shouldRestartSteam && (RestartSteamOverride?.Invoke() ?? steam.RestartSteam());
         string okBody = restarted
             ? string.Format(Resources.Strings.Fixes_Toast_FixInstalled_Restarting, gameName)
             : string.Format(Resources.Strings.Fixes_Toast_FixInstalled_Restart, gameName);
@@ -857,7 +953,7 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
     }
 
     /// <summary>Fix slot: only applicable if the game is installed — extract the zip into its folder.</summary>
-    private FixInstallOutcome ApplyFixCore(
+    private async Task<FixInstallOutcome> ApplyFixCoreAsync(
         DownloadedFile file, long appId, string fixId, string gameName, CancellationToken ct)
     {
         string? installDir = appId > 0 ? library.GetInstallDir(appId) : null;
@@ -884,7 +980,7 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
 
         try
         {
-            var result = fixes.Apply(file.FilePath, appId, fixId, installDir, ct);
+            var result = await fixes.ApplyAsync(file.FilePath, appId, fixId, installDir, ct);
 
             switch (result.Outcome)
             {

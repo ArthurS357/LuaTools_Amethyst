@@ -234,7 +234,9 @@ public class LaunchModStore
         try
         {
             if (!File.Exists(_path)) return;
-            _mods = ParseAndValidate(File.ReadAllText(_path));
+            _mods = ParseAndValidate(File.ReadAllText(_path), out int skippedCount);
+            if (skippedCount > 0)
+                PreservePreEditBackup(_path, allowTimestampedFallback: true);
         }
         catch (Exception ex)
         {
@@ -244,6 +246,38 @@ public class LaunchModStore
             QuarantineCorruptFile(_path);
             _mods = [];
         }
+    }
+
+    /// <summary>
+    /// Preserve a backup copy of <paramref name="path"/> without overwriting an existing <c>.bak</c>.
+    /// When <paramref name="allowTimestampedFallback"/> is true (used when <see cref="Load"/> skips an
+    /// invalid entry) and <c>.bak</c> is already taken, writes a timestamped <c>.bak.&lt;yyyyMMddHHmmss&gt;</c>
+    /// copy so the pre-skip file is never lost before a later <see cref="Persist"/> writes the reduced set.
+    /// </summary>
+    private static void PreservePreEditBackup(string path, bool allowTimestampedFallback)
+    {
+        try
+        {
+            if (!File.Exists(path)) return;
+            string bakPath = path + ".bak";
+            if (!File.Exists(bakPath))
+            {
+                File.Copy(path, bakPath, overwrite: false);
+                return;
+            }
+
+            if (!allowTimestampedFallback) return;
+
+            string stamp = DateTime.UtcNow.ToString("yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture);
+            string baseDest = $"{bakPath}.{stamp}";
+            string dest = baseDest;
+            int suffix = 1;
+            while (File.Exists(dest))
+                dest = $"{baseDest}.{suffix++}";
+
+            File.Copy(path, dest, overwrite: false);
+        }
+        catch { /* best effort */ }
     }
 
     private static void QuarantineCorruptFile(string path)
@@ -265,8 +299,9 @@ public class LaunchModStore
     /// <summary>Parse either the v2 envelope (<c>{"Version":2,"Mods":[...]}</c>) or a legacy v1 array
     /// (<c>[...]</c>). Whole-file/envelope corruption throws so the file is quarantined; an individual
     /// invalid entry inside the array is logged and skipped so remaining valid entries survive.</summary>
-    private static Dictionary<int, LaunchMod> ParseAndValidate(string json)
+    private static Dictionary<int, LaunchMod> ParseAndValidate(string json, out int skippedCount)
     {
+        skippedCount = 0;
         using var doc = JsonDocument.Parse(json);
         JsonElement entriesArray;
         if (doc.RootElement.ValueKind == JsonValueKind.Array)
@@ -304,27 +339,32 @@ public class LaunchModStore
             }
             catch (JsonException ex)
             {
+                skippedCount++;
                 AppLog.Log($"LaunchModStore: skipping malformed entry at index {currentIndex}: {ex.Message}");
                 continue;
             }
 
             if (mod is null || mod.AppId <= 0 || mod.Original is null || mod.Desired is null)
             {
+                skippedCount++;
                 AppLog.Log($"LaunchModStore: skipping invalid LaunchMod entry at index {currentIndex} (appId={mod?.AppId ?? 0}).");
                 continue;
             }
             if (mod.Original.Any(static o => o is null) || mod.Desired.Any(static o => o is null))
             {
+                skippedCount++;
                 AppLog.Log($"LaunchModStore: skipping entry with null LaunchOption for app {mod.AppId}.");
                 continue;
             }
             if (mod.OriginalLaunchVdf is not null && !TryDecodeRawLaunch(mod.OriginalLaunchVdf, out _))
             {
+                skippedCount++;
                 AppLog.Log($"LaunchModStore: skipping entry with corrupt OriginalLaunchVdf for app {mod.AppId}.");
                 continue;
             }
             if (!map.TryAdd(mod.AppId, mod))
             {
+                skippedCount++;
                 AppLog.Log($"LaunchModStore: skipping duplicate LaunchMod entry for app {mod.AppId}.");
                 continue;
             }
@@ -336,8 +376,8 @@ public class LaunchModStore
     private string SerializeStore() => JsonSerializer.Serialize(
         new StoreEnvelope { Version = CurrentFormatVersion, Mods = _mods.Values.ToList() }, JsonOpts);
 
-    /// <summary>Atomic write via <see cref="AtomicFile"/> with a .bak, same as SettingsService — a torn file
-    /// here loses every recorded edit AND the snapshots needed to undo them.</summary>
+    /// <summary>Atomic write via <see cref="AtomicFile"/> with a non-overwriting <c>.bak</c> of the initial
+    /// on-disk state, so consecutive saves do not clobber the first migration/recovery snapshot.</summary>
     private void Persist()
     {
         try
@@ -349,8 +389,7 @@ public class LaunchModStore
                 return;
             }
 
-            try { if (File.Exists(_path)) File.Copy(_path, _path + ".bak", overwrite: true); }
-            catch { /* best effort */ }
+            PreservePreEditBackup(_path, allowTimestampedFallback: false);
             AtomicFile.WriteAllText(_path, SerializeStore());
         }
         catch (Exception ex)

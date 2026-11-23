@@ -1079,8 +1079,9 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
                     continue;
                 }
 
-                if ((insideEnsureBackend && ContainsExecCall(trimmed))
-                    || (ContainsExecCall(trimmed) && MentionsLuaToolsLaunch(trimmed)))
+                if (((insideEnsureBackend && ContainsExecCall(trimmed))
+                     || (ContainsExecCall(trimmed) && MentionsLuaToolsLaunch(trimmed)))
+                    && IsSelfContainedLuaCallLine(trimmed))
                 {
                     output.Add($"{indent}-- {trimmed.TrimEnd()} {NeutralizedAutoLaunchMarker}");
                     continue;
@@ -1117,6 +1118,55 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
         trimmed.Contains("LuaTools.exe", StringComparison.OrdinalIgnoreCase)
         || trimmed.Contains("exe_path", StringComparison.Ordinal)
         || trimmed.Contains("--minimized", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// True when a Lua call line opens and closes all of its parentheses on the same line (outside string
+    /// literals and before any trailing <c>--</c> comment). Prevents commenting out only the first line of
+    /// a multi-line call, which would leave dangling argument/closing lines and break Lua syntax.
+    /// </summary>
+    private static bool IsSelfContainedLuaCallLine(string trimmed)
+    {
+        int depth = 0;
+        bool sawOpenParen = false;
+        char quote = '\0';
+
+        for (int i = 0; i < trimmed.Length; i++)
+        {
+            char c = trimmed[i];
+            if (quote != '\0')
+            {
+                if (c == '\\' && i + 1 < trimmed.Length)
+                {
+                    i++;
+                    continue;
+                }
+                if (c == quote) quote = '\0';
+                continue;
+            }
+
+            if (c is '\'' or '"')
+            {
+                quote = c;
+                continue;
+            }
+
+            if (c == '-' && i + 1 < trimmed.Length && trimmed[i + 1] == '-')
+                break;
+
+            if (c == '(')
+            {
+                sawOpenParen = true;
+                depth++;
+            }
+            else if (c == ')')
+            {
+                depth--;
+                if (depth < 0) return false;
+            }
+        }
+
+        return quote == '\0' && sawOpenParen && depth == 0;
+    }
 
     /// <summary>
     /// The plugin flow's archive gate: the same analyser the Fixes page runs, before anything is written.

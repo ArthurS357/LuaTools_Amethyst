@@ -126,7 +126,7 @@ public static class BinaryVdf
 
     private static VdfTable ReadCore(Stream s, IReadOnlyList<string> strings, bool indexedKeys, int depth, bool strict)
     {
-        if (strict && depth > MaxDepth)
+        if (depth > MaxDepth)
             throw new InvalidDataException($"Binary VDF nesting depth exceeds limit ({MaxDepth}).");
 
         var table = new VdfTable();

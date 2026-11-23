@@ -443,10 +443,10 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
     /// </summary>
     public async Task<UnlockerMode?> DetectActiveModeAsync(CancellationToken ct = default)
     {
-        // AmethystTool or Custom already owns the slot, and detection must not take it back. AmethystTool
-        // is a fork whose proxy DLLs can hash-match upstream, and Custom means the user manages their own
-        // Steam DLLs explicitly — adopting a hash match would overwrite their choice.
-        if (ActiveBackend is ActiveBackend.AmethystTool or ActiveBackend.Custom) return null;
+        // AmethystTool, Custom, or an already-chosen Mode owns the slot, and detection must not take it back.
+        // AmethystTool is a fork whose proxy DLLs can hash-match upstream, and Custom means the user manages
+        // their own Steam DLLs explicitly — adopting a hash match would overwrite their choice.
+        if (ActiveBackend != ActiveBackend.None) return null;
 
         string? root = steam.EffectivePath;
         if (root is null || !steam.IsValid) return null;
@@ -499,7 +499,7 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
         }
 
         // Single fetch — the same mendy-tools repo serves both the "ost-" mirror and the "st" releases.
-        if (detected is null)
+        if (detected is null && ActiveBackend == ActiveBackend.None)
         {
             var stRepoReleases = await FetchAllReleasesAsync(AppConfig.SteamToolsOwner, AppConfig.SteamToolsRepo, null, ct);
             if (stRepoReleases is not null)
@@ -510,6 +510,10 @@ public class UnlockerService(SteamService steam, SettingsService settings, Cache
                     detected = UnlockerMode.SteamTools;
             }
         }
+
+        // Re-check after the async fetches: if the user selected Custom, AmethystTool, or a Mode while
+        // detection was in flight, never overwrite their choice.
+        if (ActiveBackend != ActiveBackend.None) return null;
 
         if (detected is { } m) settings.SelectedMode = m.ToString();
         return detected;

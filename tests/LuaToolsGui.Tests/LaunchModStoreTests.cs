@@ -370,4 +370,54 @@ public class LaunchModStoreTests : IDisposable
         string huge = new('A', ((LaunchModStore.MaxRawLaunchBytes + 2) / 3) * 4 + 4);
         Assert.False(LaunchModStore.TryDecodeRawLaunch(huge, out _));
     }
+
+    [Fact]
+    public void SkippingInvalidEntry_CreatesPreEditBackup_AndSecondPersistPreservesOriginalBackup()
+    {
+        const string initialWithInvalidEntry = """
+            {
+              "Version": 2,
+              "Mods": [
+                {
+                  "AppId": 603750,
+                  "ChangeNumber": 10,
+                  "Original": [{ "Index": "0", "SourceIndex": "0", "Executable": "ValidOrig.exe", "Type": "default", "OsList": "windows" }],
+                  "Desired":  [{ "Index": "0", "SourceIndex": "0", "Executable": "ValidMod.exe", "Type": "default", "OsList": "windows" }]
+                },
+                {
+                  "AppId": 0,
+                  "ChangeNumber": 99,
+                  "Original": [],
+                  "Desired": []
+                }
+              ]
+            }
+            """;
+        File.WriteAllText(_path, initialWithInvalidEntry);
+
+        var store = new LaunchModStore(_path);
+
+        // 1. Load immediately created launchmods.json.bak containing the raw original (including the skipped entry).
+        string bakPath = _path + ".bak";
+        Assert.True(File.Exists(bakPath));
+        Assert.Contains("\"ChangeNumber\": 99", File.ReadAllText(bakPath));
+
+        // 2. Consecutive Persist() calls (two saves in a row) must NOT overwrite the initial .bak snapshot.
+        store.Save(603750, 10, Options("ValidOrig.exe"), Options("Edit1.exe"));
+        store.Save(603750, 10, Options("ValidOrig.exe"), Options("Edit2.exe"));
+
+        Assert.Contains("\"ChangeNumber\": 99", File.ReadAllText(bakPath));
+        Assert.DoesNotContain("Edit1.exe", File.ReadAllText(bakPath));
+
+        // 3. If another session loads a file with an invalid entry while .bak already exists, a timestamped .bak.* is created without clobbering .bak.
+        File.WriteAllText(_path, initialWithInvalidEntry.Replace("99", "777", StringComparison.Ordinal));
+        _ = new LaunchModStore(_path);
+
+        Assert.Contains("\"ChangeNumber\": 99", File.ReadAllText(bakPath));
+        var timestampedBaks = Directory.GetFiles(_tmp, "launchmods.json.bak.*")
+            .Where(static p => !p.EndsWith(".bak", StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+        Assert.Single(timestampedBaks);
+        Assert.Contains("\"ChangeNumber\": 777", File.ReadAllText(timestampedBaks[0]));
+    }
 }
