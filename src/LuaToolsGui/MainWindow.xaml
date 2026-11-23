@@ -155,22 +155,22 @@
                                 Height="16"
                                 IsIndeterminate="True" />
                             <TextBlock
-                                Margin="8,0,0,0"
+                                Margin="{DynamicResource SpaceLeft8}"
                                 VerticalAlignment="Center"
-                                FontSize="11.5"
+                                FontSize="{DynamicResource FontSizeCaption}"
                                 Foreground="{StaticResource TextMutedBrush}"
                                 Text="{x:Static res:Strings.Nav_WaitingForBrowser}" />
                         </StackPanel>
                         <TextBlock
-                            Margin="2,8,0,0"
-                            FontSize="11.5"
+                            Margin="{DynamicResource SpaceTop8}"
+                            FontSize="{DynamicResource FontSizeCaption}"
                             Foreground="{StaticResource DangerBrush}"
                             Text="{Binding SignInError}"
                             TextWrapping="Wrap"
                             Visibility="{Binding SignInError, Converter={StaticResource NullToCollapsed}}" />
                         <!-- Any failed browser sign-in (mostly the 5 min timeout): one click to the /login code box. -->
                         <ui:Button
-                            Margin="0,6,0,0"
+                            Margin="{DynamicResource SpaceTop8}"
                             HorizontalAlignment="Stretch"
                             Appearance="Secondary"
                             Command="{Binding UseManualCodeCommand}"
@@ -182,7 +182,7 @@
                     <!-- Bottom line: "Signed in as …" when logged in, else the version tag. -->
                     <TextBlock
                         Margin="12,0,10,8"
-                        FontSize="11"
+                        FontSize="{DynamicResource FontSizeCaption}"
                         Foreground="{StaticResource TextDimBrush}"
                         Text="{Binding FooterStatus}"
                         TextTrimming="CharacterEllipsis"

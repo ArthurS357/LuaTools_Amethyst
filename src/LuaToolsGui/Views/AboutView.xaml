@@ -11,26 +11,19 @@
     TextElement.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     mc:Ignorable="d">
 
-    <!-- Layout, spacing and tokens deliberately mirror PluginView so this page reads as part of the same
-         app rather than a bolted-on panel. Every colour comes from Themes/Colors.xaml — no literals. -->
+    <!-- Page header + cards come from Themes/Controls.xaml (PageHeaderStyle, CardStyle), type sizes from
+         Typography.xaml and spacing from Spacing.xaml, so this page reads as part of the same app as Home.
+         Every colour comes from Themes/Colors.xaml — no literals.
+         This is also the support page: the version, the update feed the updater will really use and where
+         the settings live stay on the first screen, in the first two cards. -->
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel MaxWidth="760" Margin="8,16,16,24">
 
-                <!-- Header -->
-                <TextBlock
-                    FontSize="22"
-                    FontWeight="Bold"
-                    Text="{x:Static res:Strings.About_Title}" />
+                <HeaderedContentControl Header="{x:Static res:Strings.About_Title}" Style="{StaticResource PageHeaderStyle}" />
 
-                <!-- What this is -->
-                <Border
-                    Margin="0,18,0,0"
-                    Padding="18"
-                    Background="{StaticResource SurfaceCardBrush}"
-                    BorderBrush="{StaticResource BorderStrongBrush}"
-                    BorderThickness="1"
-                    CornerRadius="10">
+                <!-- What this is, and WHICH build (the line a support request starts from) -->
+                <Border Style="{StaticResource CardStyle}">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <ui:SymbolIcon
@@ -38,29 +31,27 @@
                                 Foreground="{StaticResource AccentBrush}"
                                 Symbol="Info24" />
                             <TextBlock
-                                Margin="10,0,0,0"
+                                Margin="{DynamicResource SpaceLeft12}"
                                 VerticalAlignment="Center"
-                                FontSize="15"
-                                FontWeight="SemiBold"
+                                Style="{StaticResource TextSubtitle}"
                                 Text="{x:Static res:Strings.About_What_Header}" />
                         </StackPanel>
                         <TextBlock
-                            Margin="0,10,0,0"
-                            FontSize="13"
+                            Margin="{DynamicResource SpaceTop12}"
                             Foreground="{StaticResource TextSecondaryBrush}"
-                            Text="{x:Static res:Strings.About_What_Body}"
-                            TextWrapping="Wrap" />
+                            Style="{StaticResource TextBody}"
+                            Text="{x:Static res:Strings.About_What_Body}" />
 
                         <!-- Version -->
                         <TextBlock
-                            Margin="0,16,0,0"
-                            FontSize="11.5"
+                            Margin="{DynamicResource SpaceTop16}"
+                            FontSize="{DynamicResource FontSizeCaption}"
                             FontWeight="SemiBold"
                             Foreground="{StaticResource TextDimBrush}"
                             Text="{x:Static res:Strings.About_Version_Header}" />
                         <TextBlock
-                            Margin="0,2,0,0"
-                            FontSize="15"
+                            Margin="{DynamicResource SpaceTop4}"
+                            FontSize="{DynamicResource FontSizeTitle}"
                             FontWeight="SemiBold"
                             Foreground="{StaticResource AccentBrush}">
                             <Run Text="{Binding ProductName, Mode=OneWay}" />
@@ -70,13 +61,7 @@
                 </Border>
 
                 <!-- Updates -->
-                <Border
-                    Margin="0,12,0,0"
-                    Padding="18"
-                    Background="{StaticResource SurfaceCardBrush}"
-                    BorderBrush="{StaticResource BorderStrongBrush}"
-                    BorderThickness="1"
-                    CornerRadius="10">
+                <Border Margin="{DynamicResource SpaceTop16}" Style="{StaticResource CardStyle}">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <ui:SymbolIcon
@@ -84,43 +69,41 @@
                                 Foreground="{StaticResource AccentBrush}"
                                 Symbol="ArrowSync24" />
                             <TextBlock
-                                Margin="10,0,0,0"
+                                Margin="{DynamicResource SpaceLeft12}"
                                 VerticalAlignment="Center"
-                                FontSize="15"
-                                FontWeight="SemiBold"
+                                Style="{StaticResource TextSubtitle}"
                                 Text="{x:Static res:Strings.About_Updates_Header}" />
                         </StackPanel>
 
                         <TextBlock
-                            Margin="0,10,0,0"
-                            FontSize="13"
+                            Margin="{DynamicResource SpaceTop12}"
                             Foreground="{StaticResource TextSecondaryBrush}"
-                            Text="{Binding UpdateStateText}"
-                            TextWrapping="Wrap" />
+                            Style="{StaticResource TextBody}"
+                            Text="{Binding UpdateStateText}" />
 
                         <!-- Resolved feed: what the updater will ACTUALLY use, not what settings.json says -->
                         <TextBlock
-                            Margin="0,14,0,0"
-                            FontSize="11.5"
+                            Margin="{DynamicResource SpaceTop16}"
+                            FontSize="{DynamicResource FontSizeCaption}"
                             FontWeight="SemiBold"
                             Foreground="{StaticResource TextDimBrush}"
                             Text="{x:Static res:Strings.About_Updates_Sources}" />
                         <Border
-                            Margin="0,4,0,0"
-                            Padding="10,7"
+                            Margin="{DynamicResource SpaceTop4}"
+                            Padding="{DynamicResource SpaceAll8}"
                             Background="{StaticResource SurfaceGhostBrush}"
                             BorderBrush="{StaticResource BorderSubtleBrush}"
                             BorderThickness="1"
-                            CornerRadius="6">
+                            CornerRadius="{DynamicResource RadiusMedium}">
                             <TextBlock
                                 FontFamily="Consolas"
-                                FontSize="12"
+                                FontSize="{DynamicResource FontSizeBody}"
                                 Foreground="{StaticResource TextSecondaryBrush}"
                                 Text="{Binding UpdateSource}"
                                 TextWrapping="Wrap" />
                         </Border>
 
-                        <StackPanel Margin="0,14,0,0" Orientation="Horizontal">
+                        <StackPanel Margin="{DynamicResource SpaceTop16}" Orientation="Horizontal">
                             <ui:Button
                                 Appearance="Primary"
                                 Command="{Binding CheckForUpdatesCommand}"
@@ -128,30 +111,23 @@
                                 Icon="{ui:SymbolIcon ArrowSync24}"
                                 IsEnabled="{Binding IsIdle}" />
                             <ui:Button
-                                Margin="8,0,0,0"
+                                Margin="{DynamicResource SpaceLeft8}"
                                 Command="{Binding OpenRepositoryCommand}"
                                 Content="{x:Static res:Strings.About_OpenRepo}"
                                 Icon="{ui:SymbolIcon Open24}" />
                         </StackPanel>
 
                         <TextBlock
-                            Margin="0,10,0,0"
-                            FontSize="12.5"
+                            Margin="{DynamicResource SpaceTop12}"
                             Foreground="{StaticResource TextMutedBrush}"
+                            Style="{StaticResource TextBody}"
                             Text="{Binding CheckResult}"
-                            TextWrapping="Wrap"
                             Visibility="{Binding CheckResult, Converter={StaticResource NullToCollapsed}}" />
                     </StackPanel>
                 </Border>
 
                 <!-- Configuring updates by hand -->
-                <Border
-                    Margin="0,12,0,0"
-                    Padding="18"
-                    Background="{StaticResource SurfaceCardBrush}"
-                    BorderBrush="{StaticResource BorderStrongBrush}"
-                    BorderThickness="1"
-                    CornerRadius="10">
+                <Border Margin="{DynamicResource SpaceTop16}" Style="{StaticResource CardStyle}">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <ui:SymbolIcon
@@ -159,37 +135,35 @@
                                 Foreground="{StaticResource TextMutedBrush}"
                                 Symbol="Settings24" />
                             <TextBlock
-                                Margin="10,0,0,0"
+                                Margin="{DynamicResource SpaceLeft12}"
                                 VerticalAlignment="Center"
-                                FontSize="15"
-                                FontWeight="SemiBold"
+                                Style="{StaticResource TextSubtitle}"
                                 Text="{x:Static res:Strings.About_Config_Header}" />
                         </StackPanel>
 
                         <TextBlock
-                            Margin="0,10,0,0"
-                            FontSize="13"
+                            Margin="{DynamicResource SpaceTop12}"
                             Foreground="{StaticResource TextSecondaryBrush}"
-                            Text="{x:Static res:Strings.About_Config_Body}"
-                            TextWrapping="Wrap" />
+                            Style="{StaticResource TextBody}"
+                            Text="{x:Static res:Strings.About_Config_Body}" />
 
                         <Border
-                            Margin="0,10,0,0"
-                            Padding="10,7"
+                            Margin="{DynamicResource SpaceTop12}"
+                            Padding="{DynamicResource SpaceAll8}"
                             Background="{StaticResource SurfaceGhostBrush}"
                             BorderBrush="{StaticResource BorderSubtleBrush}"
                             BorderThickness="1"
-                            CornerRadius="6">
+                            CornerRadius="{DynamicResource RadiusMedium}">
                             <TextBlock
                                 FontFamily="Consolas"
-                                FontSize="12"
+                                FontSize="{DynamicResource FontSizeBody}"
                                 Foreground="{StaticResource TextSecondaryBrush}"
                                 Text="{Binding SettingsFolder}"
                                 TextWrapping="Wrap" />
                         </Border>
 
                         <ui:Button
-                            Margin="0,12,0,0"
+                            Margin="{DynamicResource SpaceTop12}"
                             HorizontalAlignment="Left"
                             Command="{Binding OpenSettingsFolderCommand}"
                             Content="{x:Static res:Strings.About_OpenSettings}"
@@ -200,13 +174,7 @@
                 <!-- Changelog. Collapsed by default so it can't push "what this build is" below the fold.
                      Entries come from Resources/Changelog.cs — compiled in, so this renders identically
                      offline and cannot fail to load. -->
-                <Border
-                    Margin="0,18,0,0"
-                    Padding="18"
-                    Background="{StaticResource SurfaceCardBrush}"
-                    BorderBrush="{StaticResource BorderStrongBrush}"
-                    BorderThickness="1"
-                    CornerRadius="10">
+                <Border Margin="{DynamicResource SpaceTop16}" Style="{StaticResource CardStyle}">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <ui:SymbolIcon
@@ -214,22 +182,21 @@
                                 Foreground="{StaticResource AccentBrush}"
                                 Symbol="History24" />
                             <TextBlock
-                                Margin="10,0,0,0"
+                                Margin="{DynamicResource SpaceLeft12}"
                                 VerticalAlignment="Center"
-                                FontSize="15"
-                                FontWeight="SemiBold"
+                                Style="{StaticResource TextSubtitle}"
                                 Text="{x:Static res:Strings.About_Changelog_Title}" />
                         </StackPanel>
 
                         <ui:Button
-                            Margin="0,12,0,0"
+                            Margin="{DynamicResource SpaceTop12}"
                             HorizontalAlignment="Left"
                             Command="{Binding ToggleChangelogCommand}"
                             Content="{Binding ChangelogToggleText}"
                             Icon="{ui:SymbolIcon ChevronDown24}" />
 
                         <ItemsControl
-                            Margin="0,14,0,0"
+                            Margin="{DynamicResource SpaceTop16}"
                             ItemsSource="{Binding Changelog}"
                             Visibility="{Binding IsChangelogOpen, Converter={StaticResource BoolToVis}}">
                             <ItemsControl.ItemTemplate>
@@ -237,46 +204,44 @@
                                     <StackPanel Margin="0,0,0,16">
                                         <StackPanel Orientation="Horizontal">
                                             <Border
-                                                Padding="8,2"
+                                                Padding="8,4"
                                                 Background="{StaticResource AccentBadgeBrush}"
                                                 BorderBrush="{StaticResource AccentOutlineBrush}"
                                                 BorderThickness="1"
-                                                CornerRadius="4">
+                                                CornerRadius="{DynamicResource RadiusSmall}">
                                                 <TextBlock
-                                                    FontSize="12"
+                                                    FontSize="{DynamicResource FontSizeCaption}"
                                                     FontWeight="SemiBold"
                                                     Foreground="{StaticResource AccentBrush}"
                                                     Text="{Binding Version}" />
                                             </Border>
                                             <TextBlock
-                                                Margin="10,0,0,0"
+                                                Margin="{DynamicResource SpaceLeft12}"
                                                 VerticalAlignment="Center"
-                                                FontSize="12"
+                                                FontSize="{DynamicResource FontSizeCaption}"
                                                 Foreground="{StaticResource TextDimBrush}"
                                                 Text="{Binding Released}" />
                                         </StackPanel>
 
                                         <TextBlock
-                                            Margin="0,8,0,0"
-                                            FontSize="13"
+                                            Margin="{DynamicResource SpaceTop8}"
                                             Foreground="{StaticResource TextSecondaryBrush}"
-                                            Text="{Binding Summary}"
-                                            TextWrapping="Wrap" />
+                                            Style="{StaticResource TextBody}"
+                                            Text="{Binding Summary}" />
 
-                                        <ItemsControl Margin="0,6,0,0" ItemsSource="{Binding Highlights}">
+                                        <ItemsControl Margin="{DynamicResource SpaceTop8}" ItemsSource="{Binding Highlights}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
-                                                    <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
+                                                    <StackPanel Margin="{DynamicResource SpaceTop4}" Orientation="Horizontal">
                                                         <TextBlock
                                                             Margin="0,0,8,0"
                                                             Foreground="{StaticResource AccentSoftBrush}"
                                                             Text="•" />
                                                         <TextBlock
                                                             MaxWidth="620"
-                                                            FontSize="12"
                                                             Foreground="{StaticResource TextMutedBrush}"
-                                                            Text="{Binding}"
-                                                            TextWrapping="Wrap" />
+                                                            Style="{StaticResource TextBody}"
+                                                            Text="{Binding}" />
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>

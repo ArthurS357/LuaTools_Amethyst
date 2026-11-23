@@ -155,9 +155,16 @@ public class HomeDashboardBindingTests
     {
         string xaml = HomeViewXaml();
 
-        Regex.Matches(xaml, @"IsKeyboardFocused"" Value=""True""").Count
-            .Should().BeGreaterThanOrEqualTo(2,
-                "CardTileButton and StatusRowButton each replace the template, so each needs its own focus trigger");
+        // 1.8.3 (Lote E): WPF-UI's focus ring replaces the IsKeyboardFocused triggers. The triggers thickened the
+        // border and moved the tile by 2 px, and fired after a mouse click too; the ring is drawn outside the
+        // element and only for keyboard focus. Each custom template still has to ask for it.
+        foreach (string style in new[] { "CardTileButton", "StatusRowButton" })
+        {
+            var m = Regex.Match(xaml, $@"<Style x:Key=""{style}""[\s\S]*?</Style>");
+            m.Success.Should().BeTrue();
+            m.Value.Should().Contain("Property=\"FocusVisualStyle\" Value=\"{StaticResource DefaultControlFocusVisualStyle}\"",
+                $"{style} replaces the template, so nothing else would show where the keyboard is");
+        }
     }
 
     /// <summary>
