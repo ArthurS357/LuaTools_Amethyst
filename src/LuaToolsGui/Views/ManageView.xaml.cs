@@ -67,9 +67,6 @@ public partial class ManageView : UserControl
             tile.IsSelected = !tile.IsSelected;
     }
 
-    private void Scrim_Click(object sender, System.Windows.Input.MouseButtonEventArgs e) =>
-        _viewModel.CloseDetailCommand.Execute(null);
-
     private static T? FindAncestor<T>(DependencyObject current) where T : DependencyObject
     {
         while (current is not null)

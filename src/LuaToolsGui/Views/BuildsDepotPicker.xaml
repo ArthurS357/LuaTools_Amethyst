@@ -1,0 +1,184 @@
+<UserControl
+    x:Class="LuaToolsGui.Views.BuildsDepotPicker"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:res="clr-namespace:LuaToolsGui.Resources"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:vm="clr-namespace:LuaToolsGui.ViewModels"
+    d:DataContext="{d:DesignInstance Type=vm:BuildsViewModel}"
+    TextElement.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    mc:Ignorable="d">
+
+
+    <!-- The depot-download picker overlay (split out of BuildsDetailPane in Lote G). -->
+    <UserControl.Resources>
+        <!-- One row in the depot-download picker: a tickbox, the depot's name and its id · size · os ·
+             lang, and — when it can't be fetched — the reason, in place of the size line. Rows that can't
+             be picked stay VISIBLE rather than being filtered out: "this depot has no key in this build"
+             is the answer to the question the user is actually asking. -->
+        <DataTemplate x:Key="DepotPickTemplate">
+            <CheckBox
+                Margin="0,0,0,2"
+                Padding="8,0,0,0"
+                AutomationProperties.Name="{Binding Title}"
+                IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                IsEnabled="{Binding CanPick}">
+                <StackPanel>
+                    <TextBlock
+                        FontSize="{DynamicResource FontSizeBody}"
+                        Text="{Binding Title}"
+                        TextTrimming="CharacterEllipsis" />
+                    <TextBlock
+                        FontSize="{DynamicResource FontSizeCaption}"
+                        Foreground="{StaticResource TextDimBrush}"
+                        Text="{Binding Meta}" />
+                    <TextBlock
+                        FontSize="{DynamicResource FontSizeCaption}"
+                        Foreground="{StaticResource WarningBrush}"
+                        Text="{Binding BlockedReason}"
+                        TextWrapping="Wrap"
+                        Visibility="{Binding BlockedReason, Converter={StaticResource NullToCollapsed}}" />
+                </StackPanel>
+            </CheckBox>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Border
+        Background="{StaticResource SurfaceOverlayBrush}">
+        <Border
+            Margin="0,8"
+            Padding="{DynamicResource SpaceAll16}"
+            Background="{StaticResource SurfaceRaisedBrush}"
+            BorderBrush="{StaticResource BorderDefaultBrush}"
+            BorderThickness="1"
+            CornerRadius="{DynamicResource RadiusLarge}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <StackPanel>
+                    <TextBlock
+                        FontSize="{DynamicResource FontSizeSubtitle}"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource TextPrimaryBrush}"
+                        Text="{x:Static res:Strings.Builds_Depot_PickTitle}" />
+                    <TextBlock
+                        Margin="{DynamicResource SpaceTop4}"
+                        FontSize="{DynamicResource FontSizeCaption}"
+                        Foreground="{StaticResource TextMutedBrush}"
+                        Text="{x:Static res:Strings.Builds_Depot_PickHint}"
+                        TextWrapping="Wrap" />
+
+                    <!--  Feature switched off because this build carries no verified pin.  -->
+                    <TextBlock
+                        Margin="{DynamicResource SpaceTop8}"
+                        FontSize="{DynamicResource FontSizeCaption}"
+                        Foreground="{StaticResource WarningBrush}"
+                        Text="{x:Static res:Strings.Builds_Depot_Unavailable}"
+                        TextWrapping="Wrap">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsDepotDownloadAvailable}" Value="False">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+
+                    <StackPanel Margin="{DynamicResource SpaceTop8}" Orientation="Horizontal">
+                        <ui:Button
+                            Command="{Binding SelectAllDepotsCommand}"
+                            Content="{x:Static res:Strings.Builds_Depot_SelectAll}" />
+                        <ui:Button
+                            Margin="{DynamicResource SpaceLeft8}"
+                            Command="{Binding SelectNoDepotsCommand}"
+                            Content="{x:Static res:Strings.Builds_Depot_SelectNone}" />
+                    </StackPanel>
+                </StackPanel>
+
+                <!--  Empty state: says WHY there is nothing to pick, not just that there isn't.  -->
+                <TextBlock
+                    Grid.Row="1"
+                    Margin="{DynamicResource SpaceTop12}"
+                    VerticalAlignment="Top"
+                    FontSize="{DynamicResource FontSizeCaption}"
+                    Foreground="{StaticResource TextDimBrush}"
+                    Text="{x:Static res:Strings.Builds_Depot_NoCandidates}"
+                    TextWrapping="Wrap"
+                    Visibility="{Binding HasDepotPicks, Converter={StaticResource InverseBoolToVis}}" />
+
+                <ScrollViewer
+                    Grid.Row="1"
+                    Margin="{DynamicResource SpaceTop12}"
+                    VerticalScrollBarVisibility="Auto"
+                    Visibility="{Binding HasDepotPicks, Converter={StaticResource BoolToVis}}">
+                    <ItemsControl
+                        Margin="0,0,12,0"
+                        ItemTemplate="{StaticResource DepotPickTemplate}"
+                        ItemsSource="{Binding DepotPicks}" />
+                </ScrollViewer>
+
+                <StackPanel Grid.Row="2" Margin="{DynamicResource SpaceTop12}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="{DynamicResource FontSizeCaption}"
+                            Foreground="{StaticResource TextMutedBrush}"
+                            Text="{Binding DepotOutDir}"
+                            TextTrimming="CharacterEllipsis"
+                            ToolTip="{Binding DepotOutDir}" />
+                        <ui:Button
+                            Grid.Column="1"
+                            Margin="{DynamicResource SpaceLeft8}"
+                            Command="{Binding ChangeDepotFolderCommand}"
+                            Content="{x:Static res:Strings.Builds_Depot_Change}"
+                            Icon="{ui:SymbolIcon Folder24}" />
+                    </Grid>
+
+                    <TextBlock
+                        Margin="{DynamicResource SpaceTop8}"
+                        FontSize="{DynamicResource FontSizeCaption}"
+                        Foreground="{StaticResource TextSecondaryBrush}"
+                        Text="{Binding SpaceLabel}" />
+
+                    <!--  Advisory: the job re-checks before allocating and again between
+                          depots, because the volume is shared with the whole machine.  -->
+                    <TextBlock
+                        Margin="{DynamicResource SpaceTop4}"
+                        FontSize="{DynamicResource FontSizeCaption}"
+                        Foreground="{StaticResource DangerBrush}"
+                        Text="{x:Static res:Strings.Builds_Depot_NotEnoughSpace}"
+                        TextWrapping="Wrap"
+                        Visibility="{Binding HasEnoughSpace, Converter={StaticResource InverseBoolToVis}}" />
+
+                    <StackPanel
+                        Margin="{DynamicResource SpaceTop12}"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                        <ui:Button
+                            Command="{Binding CancelDepotDownloadCommand}"
+                            Content="{x:Static res:Strings.Builds_Depot_Cancel}" />
+                        <ui:Button
+                            Margin="{DynamicResource SpaceLeft8}"
+                            Appearance="Primary"
+                            Command="{Binding ConfirmDepotDownloadCommand}"
+                            Content="{Binding DepotConfirmLabel}"
+                            Icon="{ui:SymbolIcon ArrowDownload24}" />
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Border>
+</UserControl>

@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:res="clr-namespace:LuaToolsGui.Resources"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:views="clr-namespace:LuaToolsGui.Views"
     xmlns:vm="clr-namespace:LuaToolsGui.ViewModels"
     xmlns:vwp="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel"
     d:DataContext="{d:DesignInstance Type=vm:ManageViewModel}"
@@ -33,18 +34,11 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <StackPanel>
-                <TextBlock FontSize="22" FontWeight="Bold" Text="{x:Static res:Strings.Manage_Title}" />
-            </StackPanel>
-            <StackPanel
-                Grid.Column="1"
-                VerticalAlignment="Top"
-                Orientation="Horizontal">
+        <HeaderedContentControl
+            Grid.Row="0"
+            Header="{x:Static res:Strings.Manage_Title}"
+            Style="{StaticResource PageHeaderStyle}">
+            <StackPanel Orientation="Horizontal">
                 <ui:Button
                     Margin="0,0,8,0"
                     Command="{Binding ShowLaunchOverridesCommand}"
@@ -54,10 +48,10 @@
                     Content="{x:Static res:Strings.Manage_Refresh}"
                     Icon="{ui:SymbolIcon ArrowSync24}" />
             </StackPanel>
-        </Grid>
+        </HeaderedContentControl>
 
         <!-- Search + Filters toggle -->
-        <Grid Grid.Row="1" Margin="0,14,0,0">
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -68,7 +62,7 @@
                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
             <ui:Button
                 Grid.Column="1"
-                Margin="8,0,0,0"
+                Margin="{DynamicResource SpaceLeft8}"
                 Command="{Binding ToggleFilterPanelCommand}"
                 Content="{x:Static res:Strings.Manage_Filters}"
                 Icon="{ui:SymbolIcon Filter24}" />
@@ -77,12 +71,8 @@
         <!-- Collapsible filter panel -->
         <Border
             Grid.Row="2"
-            Margin="0,10,0,0"
-            Padding="14"
-            Background="{StaticResource SurfaceCardBrush}"
-            BorderBrush="{StaticResource BorderStrongBrush}"
-            BorderThickness="1"
-            CornerRadius="8"
+            Margin="{DynamicResource SpaceTop8}"
+            Style="{StaticResource CardStyle}"
             Visibility="{Binding IsFilterPanelOpen, Converter={StaticResource BoolToVis}}">
             <StackPanel>
                 <!-- Dropdown row (left) + Clear button (right) -->
@@ -94,27 +84,27 @@
 
                     <WrapPanel Orientation="Horizontal">
                         <StackPanel Margin="0,0,16,8">
-                            <TextBlock FontSize="11" Foreground="{StaticResource TextMutedBrush}" Text="{x:Static res:Strings.Manage_Filter_Type}" />
+                            <TextBlock FontSize="{DynamicResource FontSizeCaption}" Foreground="{StaticResource TextMutedBrush}" Text="{x:Static res:Strings.Manage_Filter_Type}" />
                             <ComboBox MinWidth="120" ItemTemplate="{StaticResource FilterOptionTemplate}" ItemsSource="{Binding TypeOptions}" SelectedItem="{Binding SelectedType}" />
                         </StackPanel>
                         <StackPanel Margin="0,0,16,8">
-                            <TextBlock FontSize="11" Foreground="{StaticResource TextMutedBrush}" Text="{x:Static res:Strings.Manage_Filter_Genre}" />
+                            <TextBlock FontSize="{DynamicResource FontSizeCaption}" Foreground="{StaticResource TextMutedBrush}" Text="{x:Static res:Strings.Manage_Filter_Genre}" />
                             <ComboBox MinWidth="140" ItemTemplate="{StaticResource FilterOptionTemplate}" ItemsSource="{Binding GenreOptions}" SelectedItem="{Binding SelectedGenre}" />
                         </StackPanel>
                         <StackPanel Margin="0,0,16,8">
-                            <TextBlock FontSize="11" Foreground="{StaticResource TextMutedBrush}" Text="{x:Static res:Strings.Manage_Filter_Year}" />
+                            <TextBlock FontSize="{DynamicResource FontSizeCaption}" Foreground="{StaticResource TextMutedBrush}" Text="{x:Static res:Strings.Manage_Filter_Year}" />
                             <ComboBox MinWidth="90" ItemTemplate="{StaticResource FilterOptionTemplate}" ItemsSource="{Binding YearOptions}" SelectedItem="{Binding SelectedYear}" />
                         </StackPanel>
                         <StackPanel Margin="0,0,16,8">
-                            <TextBlock FontSize="11" Foreground="{StaticResource TextMutedBrush}" Text="{x:Static res:Strings.Manage_Filter_Price}" />
+                            <TextBlock FontSize="{DynamicResource FontSizeCaption}" Foreground="{StaticResource TextMutedBrush}" Text="{x:Static res:Strings.Manage_Filter_Price}" />
                             <ComboBox MinWidth="90" ItemTemplate="{StaticResource FilterOptionTemplate}" ItemsSource="{Binding PriceOptions}" SelectedItem="{Binding SelectedPrice}" />
                         </StackPanel>
                         <StackPanel Margin="0,0,16,8">
-                            <TextBlock FontSize="11" Foreground="{StaticResource TextMutedBrush}" Text="{x:Static res:Strings.Manage_Filter_Content}" />
+                            <TextBlock FontSize="{DynamicResource FontSizeCaption}" Foreground="{StaticResource TextMutedBrush}" Text="{x:Static res:Strings.Manage_Filter_Content}" />
                             <ComboBox MinWidth="120" ItemTemplate="{StaticResource FilterOptionTemplate}" ItemsSource="{Binding ContentOptions}" SelectedItem="{Binding SelectedContent}" />
                         </StackPanel>
                         <StackPanel Margin="0,0,16,8">
-                            <TextBlock FontSize="11" Foreground="{StaticResource TextMutedBrush}" Text="{x:Static res:Strings.Manage_Filter_SortBy}" />
+                            <TextBlock FontSize="{DynamicResource FontSizeCaption}" Foreground="{StaticResource TextMutedBrush}" Text="{x:Static res:Strings.Manage_Filter_SortBy}" />
                             <ComboBox MinWidth="150" ItemTemplate="{StaticResource FilterOptionTemplate}" ItemsSource="{Binding SortOptions}" SelectedItem="{Binding SelectedSort}" />
                         </StackPanel>
                     </WrapPanel>
@@ -122,11 +112,11 @@
                     <!-- Clear filters: right-aligned, vertically centered in the row. -->
                     <ui:Button
                         Grid.Column="1"
-                        Margin="12,0,0,0"
+                        Margin="{DynamicResource SpaceLeft12}"
                         VerticalAlignment="Center"
                         Command="{Binding ClearFiltersCommand}"
                         Content="{x:Static res:Strings.Manage_ClearFilters}"
-                        FontSize="11.5"
+                        FontSize="{DynamicResource FontSizeCaption}"
                         Icon="{ui:SymbolIcon Dismiss24}"
                         Visibility="{Binding HasActiveFilters, Converter={StaticResource BoolToVis}}" />
                 </Grid>
@@ -142,9 +132,9 @@
                         VerticalAlignment="Center"
                         IsIndeterminate="True" />
                     <TextBlock
-                        Margin="8,0,0,0"
+                        Margin="{DynamicResource SpaceLeft8}"
                         VerticalAlignment="Center"
-                        FontSize="11.5"
+                        FontSize="{DynamicResource FontSizeCaption}"
                         Foreground="{StaticResource TextMutedBrush}"
                         Text="{Binding FilterPendingText}" />
                 </StackPanel>
@@ -155,7 +145,7 @@
         <vwp:VirtualizingItemsControl
             x:Name="TileScroller"
             Grid.Row="3"
-            Margin="0,14,0,0"
+            Margin="{DynamicResource SpaceTop12}"
             ItemsSource="{Binding Items}"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -182,7 +172,7 @@
                         BorderBrush="{StaticResource BorderDefaultBrush}"
                         BorderThickness="1"
                         Cursor="Hand"
-                        CornerRadius="10"
+                        CornerRadius="{DynamicResource RadiusLarge}"
                         DataContextChanged="Tile_DataContextChanged"
                         Loaded="Tile_Loaded"
                         MouseLeftButtonUp="Tile_Click">
@@ -275,18 +265,18 @@
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Bottom"
                                         Background="{StaticResource SuccessScrimBrush}"
-                                        CornerRadius="4"
+                                        CornerRadius="{DynamicResource RadiusSmall}"
                                         Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
                                         <StackPanel Orientation="Horizontal">
                                             <ui:SymbolIcon
                                                 VerticalAlignment="Center"
-                                                FontSize="11"
+                                                FontSize="{DynamicResource FontSizeCaption}"
                                                 Foreground="White"
                                                 Symbol="CheckmarkCircle24" />
                                             <TextBlock
-                                                Margin="4,0,0,0"
+                                                Margin="{DynamicResource SpaceLeft4}"
                                                 VerticalAlignment="Center"
-                                                FontSize="10.5"
+                                                FontSize="{DynamicResource FontSizeCaption}"
                                                 FontWeight="SemiBold"
                                                 Foreground="White"
                                                 Text="{x:Static res:Strings.Manage_Badge_Installed}" />
@@ -299,11 +289,11 @@
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Bottom"
                                         Background="{StaticResource ScrimPanelBrush}"
-                                        CornerRadius="4"
+                                        CornerRadius="{DynamicResource RadiusSmall}"
                                         ToolTip="{Binding SaveLocationsTooltip}"
                                         Visibility="{Binding HasSaveLocations, Converter={StaticResource BoolToVis}}">
                                         <ui:SymbolIcon
-                                            FontSize="12"
+                                            FontSize="{DynamicResource FontSizeCaption}"
                                             Foreground="White"
                                             Symbol="Save24" />
                                     </Border>
@@ -360,19 +350,19 @@
                             <StackPanel Margin="12,10,12,12">
                                 <TextBlock
                                     Height="36"
-                                    FontSize="13.5"
+                                    FontSize="{DynamicResource FontSizeBody}"
                                     FontWeight="SemiBold"
                                     Text="{Binding Name}"
                                     TextTrimming="CharacterEllipsis"
                                     TextWrapping="Wrap" />
                                 <TextBlock
-                                    Margin="0,4,0,0"
-                                    FontSize="11.5"
+                                    Margin="{DynamicResource SpaceTop4}"
+                                    FontSize="{DynamicResource FontSizeCaption}"
                                     Foreground="{StaticResource TextDimBrush}"
                                     Text="{Binding AppId, StringFormat={x:Static res:Strings.Common_AppId}}" />
                                 <TextBlock
-                                    Margin="0,2,0,0"
-                                    FontSize="11"
+                                    Margin="{DynamicResource SpaceTop4}"
+                                    FontSize="{DynamicResource FontSizeCaption}"
                                     Foreground="{StaticResource TextDisabledBrush}"
                                     Text="{Binding AddedReleaseLabel}"
                                     TextTrimming="CharacterEllipsis" />
@@ -396,9 +386,9 @@
                 Height="20"
                 IsIndeterminate="True" />
             <TextBlock
-                Margin="10,0,0,0"
+                Margin="{DynamicResource SpaceLeft12}"
                 VerticalAlignment="Center"
-                FontSize="13"
+                FontSize="{DynamicResource FontSizeBody}"
                 Foreground="{StaticResource TextMutedBrush}"
                 Text="{x:Static res:Strings.Manage_LoadingGames}" />
         </StackPanel>
@@ -416,9 +406,9 @@
                 Foreground="{StaticResource TextDisabledBrush}"
                 Symbol="Games24" />
             <TextBlock
-                Margin="0,10,0,0"
+                Margin="{DynamicResource SpaceTop8}"
                 HorizontalAlignment="Center"
-                FontSize="13"
+                FontSize="{DynamicResource FontSizeBody}"
                 Foreground="{StaticResource TextMutedBrush}"
                 Text="{Binding EmptyMessage}"
                 TextAlignment="Center"
@@ -435,7 +425,7 @@
             Background="{StaticResource SurfaceOverlayBrush}"
             BorderBrush="{StaticResource BorderProminentBrush}"
             BorderThickness="1"
-            CornerRadius="12"
+            CornerRadius="{DynamicResource RadiusLarge}"
             Visibility="{Binding IsSelecting, Converter={StaticResource BoolToVis}}">
             <Border.Effect>
                 <DropShadowEffect
@@ -448,7 +438,7 @@
                 <TextBlock
                     Margin="8,0,12,0"
                     VerticalAlignment="Center"
-                    FontSize="13"
+                    FontSize="{DynamicResource FontSizeBody}"
                     FontWeight="SemiBold"
                     Foreground="{StaticResource TextPrimaryBrush}"
                     Text="{Binding SelectionLabel}" />
@@ -490,7 +480,7 @@
                     Command="{Binding PrevPageCommand}"
                     AutomationProperties.Name="{x:Static res:Strings.Pager_Prev}"
                     Content="‹"
-                    FontSize="14"
+                    FontSize="{DynamicResource FontSizeBody}"
                     IsEnabled="{Binding CanGoPrev}"
                     ToolTip="{x:Static res:Strings.Pager_Prev}" />
                 <ItemsControl Grid.Column="1" HorizontalAlignment="Center" ItemsSource="{Binding PageNumbers}">
@@ -526,7 +516,7 @@
                                     Command="{Binding DataContext.GoToPageCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                     CommandParameter="{Binding}"
                                     Content="{Binding}"
-                                    FontSize="13">
+                                    FontSize="{DynamicResource FontSizeBody}">
                                     <ui:Button.Style>
                                         <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
                                             <Style.Triggers>
@@ -559,7 +549,7 @@
                     Command="{Binding NextPageCommand}"
                     AutomationProperties.Name="{x:Static res:Strings.Pager_Next}"
                     Content="›"
-                    FontSize="14"
+                    FontSize="{DynamicResource FontSizeBody}"
                     IsEnabled="{Binding CanGoNext}"
                     ToolTip="{x:Static res:Strings.Pager_Next}" />
             </Grid>
@@ -572,7 +562,7 @@
                 <TextBlock
                     Margin="0,0,8,0"
                     VerticalAlignment="Center"
-                    FontSize="11.5"
+                    FontSize="{DynamicResource FontSizeCaption}"
                     Foreground="{StaticResource TextMutedBrush}"
                     Text="{x:Static res:Strings.Manage_ResultsPerPage}" />
                 <ComboBox
@@ -583,317 +573,11 @@
             </StackPanel>
         </Grid>
 
-        <!-- Detail flyout: dim scrim + slide-in panel from the right -->
-        <Grid
+        <!-- Detail flyout: dim scrim + slide-in panel from the right (ManageDetailFlyout) -->
+        <views:ManageDetailFlyout
             Grid.Row="0"
             Grid.RowSpan="5"
             Margin="-8,-16,-16,-8"
-            Background="{StaticResource ScrimSoftBrush}"
-            Visibility="{Binding IsDetailOpen, Converter={StaticResource BoolToVis}}">
-            <!-- Click the scrim to dismiss -->
-            <Border Background="Transparent" MouseLeftButtonUp="Scrim_Click" />
-            <Border
-                Width="380"
-                HorizontalAlignment="Right"
-                Background="{StaticResource SurfaceOverlayBrush}"
-                BorderBrush="{StaticResource SurfaceActiveBrush}"
-                BorderThickness="1,0,0,0">
-                <Grid Margin="20" DataContext="{Binding SelectedTile}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <!-- Close -->
-                    <ui:Button
-                        Grid.Row="0"
-                        HorizontalAlignment="Right"
-                        Appearance="Transparent"
-                        Command="{Binding DataContext.CloseDetailCommand, ElementName=Root}"
-                        Icon="{ui:SymbolIcon Dismiss24}" />
-
-                    <!-- Cover + title -->
-                    <StackPanel Grid.Row="1" Margin="0,4,0,0">
-                        <Border
-                            Height="170"
-                            Background="{StaticResource SurfaceCardHoverBrush}"
-                            ClipToBounds="True"
-                            CornerRadius="10">
-                            <Image Source="{Binding Cover}" Stretch="UniformToFill" />
-                        </Border>
-                        <TextBlock
-                            Margin="0,12,0,0"
-                            FontSize="18"
-                            FontWeight="Bold"
-                            Text="{Binding Name}"
-                            TextWrapping="Wrap" />
-                        <StackPanel
-                            Margin="0,4,0,0"
-                            Orientation="Horizontal"
-                            Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
-                            <ui:SymbolIcon
-                                VerticalAlignment="Center"
-                                FontSize="12"
-                                Foreground="{StaticResource SuccessTextBrush}"
-                                Symbol="CheckmarkCircle24" />
-                            <TextBlock
-                                Margin="4,0,0,0"
-                                VerticalAlignment="Center"
-                                FontSize="12"
-                                FontWeight="SemiBold"
-                                Foreground="{StaticResource SuccessTextBrush}"
-                                Text="{x:Static res:Strings.Manage_Badge_Installed}" />
-                        </StackPanel>
-                        <Button
-                            Margin="0,4,0,0"
-                            HorizontalAlignment="Left"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            Command="{Binding DataContext.CopyAppIdCommand, ElementName=Root}"
-                            CommandParameter="{Binding}"
-                            Cursor="Hand"
-                            ToolTip="{x:Static res:Strings.Manage_CopyAppIdTip}">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <ContentPresenter />
-                                </ControlTemplate>
-                            </Button.Template>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock
-                                    FontSize="12"
-                                    Foreground="{StaticResource TextMutedBrush}"
-                                    Text="{Binding AppId, StringFormat={x:Static res:Strings.Common_AppId}}" />
-                                <ui:SymbolIcon
-                                    Margin="6,0,0,0"
-                                    VerticalAlignment="Center"
-                                    FontSize="12"
-                                    Foreground="{StaticResource TextDimBrush}"
-                                    Symbol="Copy24" />
-                            </StackPanel>
-                        </Button>
-                        <TextBlock
-                            Margin="0,2,0,0"
-                            FontSize="12"
-                            Foreground="{StaticResource TextDimBrush}"
-                            Text="{Binding AddedReleaseLabel}" />
-                    </StackPanel>
-
-                    <!-- Game info, straight from the cached appdetails blob (no network). The depot/DLC
-                         breakdown that used to sit here lives on the Builds page now. Scrolls on its own
-                         so a long blurb can't push the Actions block off the panel. -->
-                    <ScrollViewer
-                        Grid.Row="2"
-                        Margin="0,14,0,0"
-                        VerticalScrollBarVisibility="Auto">
-                        <StackPanel
-                            Margin="0,0,6,0"
-                            DataContext="{Binding DataContext.Overview, ElementName=Root}">
-                            <!-- Hidden until there's room for a few readable lines. This block sits in
-                                 the flyout's star row, so at the default window height it gets ~40px and
-                                 renders one clipped line of blurb, which just looks broken.
-
-                                 The height comes from the parent ScrollViewer, not from this panel:
-                                 gating an element on its OWN ActualHeight is circular (see the
-                                 converter). The ScrollViewer is stretched by the star row, so its height
-                                 doesn't move when this child collapses. -->
-                            <StackPanel.Visibility>
-                                <MultiBinding Converter="{StaticResource MinHeightToVis}" ConverterParameter="100">
-                                    <Binding Path="HasAnything" />
-                                    <Binding Path="ActualHeight" RelativeSource="{RelativeSource AncestorType=ScrollViewer}" />
-                                </MultiBinding>
-                            </StackPanel.Visibility>
-                            <TextBlock
-                                FontSize="13"
-                                FontWeight="SemiBold"
-                                Foreground="{StaticResource TextSecondaryBrush}"
-                                Text="{x:Static res:Strings.Manage_AboutHeader}" />
-                            <TextBlock
-                                Margin="0,6,0,0"
-                                FontSize="12"
-                                Foreground="{StaticResource TextMutedBrush}"
-                                LineHeight="17"
-                                Text="{Binding ShortDescription}"
-                                TextWrapping="Wrap"
-                                Visibility="{Binding HasDescription, Converter={StaticResource BoolToVis}}" />
-
-                            <!-- Developer / publisher. The publisher line only renders when it's a
-                                 different studio (identical for ~40% of apps). -->
-                            <Grid Margin="0,12,0,0" Visibility="{Binding HasDeveloper, Converter={StaticResource BoolToVis}}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="72" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock
-                                    FontSize="11.5"
-                                    Foreground="{StaticResource TextDimBrush}"
-                                    Text="{x:Static res:Strings.Manage_Info_Developer}" />
-                                <TextBlock
-                                    Grid.Column="1"
-                                    FontSize="11.5"
-                                    Foreground="{StaticResource TextSecondaryBrush}"
-                                    Text="{Binding DeveloperLabel}"
-                                    TextWrapping="Wrap" />
-                            </Grid>
-                            <Grid Margin="0,4,0,0" Visibility="{Binding HasDistinctPublisher, Converter={StaticResource BoolToVis}}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="72" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock
-                                    FontSize="11.5"
-                                    Foreground="{StaticResource TextDimBrush}"
-                                    Text="{x:Static res:Strings.Manage_Info_Publisher}" />
-                                <TextBlock
-                                    Grid.Column="1"
-                                    FontSize="11.5"
-                                    Foreground="{StaticResource TextSecondaryBrush}"
-                                    Text="{Binding PublisherLabel}"
-                                    TextWrapping="Wrap" />
-                            </Grid>
-
-                            <!-- Genre pills -->
-                            <ItemsControl
-                                Margin="0,12,0,0"
-                                ItemsSource="{Binding Genres}"
-                                Visibility="{Binding HasGenres, Converter={StaticResource BoolToVis}}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel Orientation="Horizontal" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border
-                                            Margin="0,0,6,6"
-                                            Padding="7,2"
-                                            Background="{StaticResource SurfaceInsetBrush}"
-                                            CornerRadius="4">
-                                            <TextBlock
-                                                FontSize="10.5"
-                                                FontWeight="SemiBold"
-                                                Foreground="{StaticResource AccentSoftBrush}"
-                                                Text="{Binding}" />
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
-                    </ScrollViewer>
-
-                    <!-- Actions -->
-                    <StackPanel Grid.Row="3" Margin="0,16,0,0">
-                        <TextBlock
-                            Margin="0,0,0,8"
-                            FontSize="13"
-                            FontWeight="SemiBold"
-                            Foreground="{StaticResource TextSecondaryBrush}"
-                            Text="{x:Static res:Strings.Manage_ActionsHeader}" />
-
-                        <!-- Steamless progress (only while running) -->
-                        <ProgressBar
-                            Height="3"
-                            Margin="0,0,0,8"
-                            IsIndeterminate="{Binding DataContext.IsProgressIndeterminate, ElementName=Root}"
-                            Maximum="100"
-                            Value="{Binding DataContext.Progress, ElementName=Root}"
-                            Visibility="{Binding DataContext.IsBusy, ElementName=Root, Converter={StaticResource BoolToVis}}" />
-
-                        <!-- Play/Install: the label follows the game's install state (SteamLaunchPolicy
-                             decides which verb), so the button says what it is about to do. -->
-                        <ui:Button
-                            HorizontalAlignment="Stretch"
-                            Appearance="Primary"
-                            Command="{Binding DataContext.PlayCommand, ElementName=Root}"
-                            CommandParameter="{Binding}"
-                            Content="{Binding PlayLabel}"
-                            Icon="{ui:SymbolIcon Play24}" />
-                        <ui:Button
-                            Margin="0,8,0,0"
-                            HorizontalAlignment="Stretch"
-                            Command="{Binding DataContext.ManageBuildCommand, ElementName=Root}"
-                            CommandParameter="{Binding}"
-                            Content="{x:Static res:Strings.Manage_Action_ManageBuild}"
-                            Icon="{ui:SymbolIcon BranchFork24}" />
-                        <ui:Button
-                            Margin="0,8,0,0"
-                            HorizontalAlignment="Stretch"
-                            Command="{Binding DataContext.UpdateCommand, ElementName=Root}"
-                            CommandParameter="{Binding}"
-                            Content="{x:Static res:Strings.Manage_Action_Update}"
-                            Icon="{ui:SymbolIcon ArrowDownload24}"
-                            IsEnabled="{Binding DataContext.NotBusy, ElementName=Root}" />
-                        <ui:Button
-                            Margin="0,8,0,0"
-                            HorizontalAlignment="Stretch"
-                            Command="{Binding DataContext.EditLaunchOptionsCommand, ElementName=Root}"
-                            CommandParameter="{Binding}"
-                            Content="{x:Static res:Strings.Manage_Action_LaunchOptions}"
-                            Icon="{ui:SymbolIcon Play24}" />
-                        <ui:Button
-                            Margin="0,8,0,0"
-                            HorizontalAlignment="Stretch"
-                            Command="{Binding DataContext.SaveBackupCommand, ElementName=Root}"
-                            CommandParameter="{Binding}"
-                            Content="{x:Static res:Strings.Manage_Action_SaveBackup}"
-                            Icon="{ui:SymbolIcon FolderZip24}" />
-                        <ui:Button
-                            Margin="0,8,0,0"
-                            HorizontalAlignment="Stretch"
-                            Command="{Binding DataContext.ImportSaveCommand, ElementName=Root}"
-                            CommandParameter="{Binding}"
-                            Content="{x:Static res:Strings.Manage_Action_ImportSave}"
-                            Icon="{ui:SymbolIcon ArrowImport24}" />
-                        <ui:Button
-                            Margin="0,8,0,0"
-                            HorizontalAlignment="Stretch"
-                            Command="{Binding DataContext.RemoveDrmCommand, ElementName=Root}"
-                            CommandParameter="{Binding}"
-                            Content="{x:Static res:Strings.Manage_Action_RemoveDrm}"
-                            Icon="{ui:SymbolIcon WrenchScrewdriver24}"
-                            IsEnabled="{Binding DataContext.NotBusy, ElementName=Root}" />
-                        <UniformGrid Margin="0,8,0,0" Columns="2" Rows="2">
-                            <ui:Button
-                                Margin="0,0,4,4"
-                                HorizontalAlignment="Stretch"
-                                Command="{Binding DataContext.OpenStorePageCommand, ElementName=Root}"
-                                CommandParameter="{Binding}"
-                                Content="{x:Static res:Strings.Manage_Action_OpenStore}"
-                                Icon="{ui:SymbolIcon Globe24}" />
-                            <ui:Button
-                                Margin="4,0,0,4"
-                                HorizontalAlignment="Stretch"
-                                Command="{Binding DataContext.OpenInSteamCommand, ElementName=Root}"
-                                CommandParameter="{Binding}"
-                                Content="{x:Static res:Strings.Manage_Action_OpenInSteam}"
-                                Icon="{ui:SymbolIcon Open24}" />
-                            <ui:Button
-                                Margin="0,4,4,0"
-                                HorizontalAlignment="Stretch"
-                                Command="{Binding DataContext.RevealFileCommand, ElementName=Root}"
-                                CommandParameter="{Binding}"
-                                Content="{x:Static res:Strings.Manage_Action_Reveal}"
-                                Icon="{ui:SymbolIcon FolderOpen24}" />
-                            <ui:Button
-                                Margin="4,4,0,0"
-                                HorizontalAlignment="Stretch"
-                                Command="{Binding DataContext.CopyAppIdCommand, ElementName=Root}"
-                                CommandParameter="{Binding}"
-                                Content="{x:Static res:Strings.Manage_Action_CopyAppId}"
-                                Icon="{ui:SymbolIcon Copy24}" />
-                        </UniformGrid>
-                        <ui:Button
-                            Margin="0,8,0,0"
-                            HorizontalAlignment="Stretch"
-                            Command="{Binding DataContext.DeleteCommand, ElementName=Root}"
-                            CommandParameter="{Binding}"
-                            Appearance="Danger"
-                            Content="{x:Static res:Strings.Manage_DeleteThisLua}"
-                            Icon="{ui:SymbolIcon Delete24}" />
-                    </StackPanel>
-                </Grid>
-            </Border>
-        </Grid>
+            Visibility="{Binding IsDetailOpen, Converter={StaticResource BoolToVis}}" />
     </Grid>
 </UserControl>

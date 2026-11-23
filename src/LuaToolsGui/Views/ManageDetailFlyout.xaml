@@ -1,0 +1,324 @@
+<UserControl
+    x:Class="LuaToolsGui.Views.ManageDetailFlyout"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:res="clr-namespace:LuaToolsGui.Resources"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:vm="clr-namespace:LuaToolsGui.ViewModels"
+    d:DataContext="{d:DesignInstance Type=vm:ManageViewModel}"
+    TextElement.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    mc:Ignorable="d">
+
+
+    <!-- Detail flyout (split out of ManageView in Lote G): dim scrim + slide-in panel from the right. DataContext is
+         inherited from ManageView; "Root" is the name the bindings below use to reach the page view model. -->
+
+    <Grid x:Name="Root" Background="{StaticResource ScrimSoftBrush}">
+        <!-- Click the scrim to dismiss -->
+        <Border Background="Transparent" MouseLeftButtonUp="Scrim_Click" />
+        <Border
+            Width="380"
+            HorizontalAlignment="Right"
+            Background="{StaticResource SurfaceOverlayBrush}"
+            BorderBrush="{StaticResource SurfaceActiveBrush}"
+            BorderThickness="1,0,0,0">
+            <Grid Margin="{DynamicResource SpaceAll24}" DataContext="{Binding SelectedTile}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- Close -->
+                <ui:Button
+                    Grid.Row="0"
+                    HorizontalAlignment="Right"
+                    Appearance="Transparent"
+                    Command="{Binding DataContext.CloseDetailCommand, ElementName=Root}"
+                    Icon="{ui:SymbolIcon Dismiss24}" />
+
+                <!-- Cover + title -->
+                <StackPanel Grid.Row="1" Margin="{DynamicResource SpaceTop4}">
+                    <Border
+                        Height="170"
+                        Background="{StaticResource SurfaceCardHoverBrush}"
+                        ClipToBounds="True"
+                        CornerRadius="{DynamicResource RadiusLarge}">
+                        <Image Source="{Binding Cover}" Stretch="UniformToFill" />
+                    </Border>
+                    <TextBlock
+                        Margin="{DynamicResource SpaceTop12}"
+                        FontSize="{DynamicResource FontSizeSubtitle}"
+                        FontWeight="Bold"
+                        Text="{Binding Name}"
+                        TextWrapping="Wrap" />
+                    <StackPanel
+                        Margin="{DynamicResource SpaceTop4}"
+                        Orientation="Horizontal"
+                        Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
+                        <ui:SymbolIcon
+                            VerticalAlignment="Center"
+                            FontSize="{DynamicResource FontSizeCaption}"
+                            Foreground="{StaticResource SuccessTextBrush}"
+                            Symbol="CheckmarkCircle24" />
+                        <TextBlock
+                            Margin="{DynamicResource SpaceLeft4}"
+                            VerticalAlignment="Center"
+                            FontSize="{DynamicResource FontSizeCaption}"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource SuccessTextBrush}"
+                            Text="{x:Static res:Strings.Manage_Badge_Installed}" />
+                    </StackPanel>
+                    <Button
+                        Margin="{DynamicResource SpaceTop4}"
+                        HorizontalAlignment="Left"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Command="{Binding DataContext.CopyAppIdCommand, ElementName=Root}"
+                        CommandParameter="{Binding}"
+                        Cursor="Hand"
+                        ToolTip="{x:Static res:Strings.Manage_CopyAppIdTip}">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <ContentPresenter />
+                            </ControlTemplate>
+                        </Button.Template>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                FontSize="{DynamicResource FontSizeCaption}"
+                                Foreground="{StaticResource TextMutedBrush}"
+                                Text="{Binding AppId, StringFormat={x:Static res:Strings.Common_AppId}}" />
+                            <ui:SymbolIcon
+                                Margin="{DynamicResource SpaceLeft8}"
+                                VerticalAlignment="Center"
+                                FontSize="{DynamicResource FontSizeCaption}"
+                                Foreground="{StaticResource TextDimBrush}"
+                                Symbol="Copy24" />
+                        </StackPanel>
+                    </Button>
+                    <TextBlock
+                        Margin="{DynamicResource SpaceTop4}"
+                        FontSize="{DynamicResource FontSizeCaption}"
+                        Foreground="{StaticResource TextDimBrush}"
+                        Text="{Binding AddedReleaseLabel}" />
+                </StackPanel>
+
+                <!-- Game info, straight from the cached appdetails blob (no network). The depot/DLC
+                     breakdown that used to sit here lives on the Builds page now. Scrolls on its own
+                     so a long blurb can't push the Actions block off the panel. -->
+                <ScrollViewer
+                    Grid.Row="2"
+                    Margin="{DynamicResource SpaceTop12}"
+                    VerticalScrollBarVisibility="Auto">
+                    <StackPanel
+                        Margin="0,0,6,0"
+                        DataContext="{Binding DataContext.Overview, ElementName=Root}">
+                        <!-- Hidden until there's room for a few readable lines. This block sits in
+                             the flyout's star row, so at the default window height it gets ~40px and
+                             renders one clipped line of blurb, which just looks broken.
+
+                             The height comes from the parent ScrollViewer, not from this panel:
+                             gating an element on its OWN ActualHeight is circular (see the
+                             converter). The ScrollViewer is stretched by the star row, so its height
+                             doesn't move when this child collapses. -->
+                        <StackPanel.Visibility>
+                            <MultiBinding Converter="{StaticResource MinHeightToVis}" ConverterParameter="100">
+                                <Binding Path="HasAnything" />
+                                <Binding Path="ActualHeight" RelativeSource="{RelativeSource AncestorType=ScrollViewer}" />
+                            </MultiBinding>
+                        </StackPanel.Visibility>
+                        <TextBlock
+                            FontSize="{DynamicResource FontSizeBody}"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource TextSecondaryBrush}"
+                            Text="{x:Static res:Strings.Manage_AboutHeader}" />
+                        <TextBlock
+                            Margin="{DynamicResource SpaceTop8}"
+                            FontSize="{DynamicResource FontSizeCaption}"
+                            Foreground="{StaticResource TextMutedBrush}"
+                            LineHeight="17"
+                            Text="{Binding ShortDescription}"
+                            TextWrapping="Wrap"
+                            Visibility="{Binding HasDescription, Converter={StaticResource BoolToVis}}" />
+
+                        <!-- Developer / publisher. The publisher line only renders when it's a
+                             different studio (identical for ~40% of apps). -->
+                        <Grid Margin="{DynamicResource SpaceTop12}" Visibility="{Binding HasDeveloper, Converter={StaticResource BoolToVis}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="72" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                FontSize="{DynamicResource FontSizeCaption}"
+                                Foreground="{StaticResource TextDimBrush}"
+                                Text="{x:Static res:Strings.Manage_Info_Developer}" />
+                            <TextBlock
+                                Grid.Column="1"
+                                FontSize="{DynamicResource FontSizeCaption}"
+                                Foreground="{StaticResource TextSecondaryBrush}"
+                                Text="{Binding DeveloperLabel}"
+                                TextWrapping="Wrap" />
+                        </Grid>
+                        <Grid Margin="{DynamicResource SpaceTop4}" Visibility="{Binding HasDistinctPublisher, Converter={StaticResource BoolToVis}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="72" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                FontSize="{DynamicResource FontSizeCaption}"
+                                Foreground="{StaticResource TextDimBrush}"
+                                Text="{x:Static res:Strings.Manage_Info_Publisher}" />
+                            <TextBlock
+                                Grid.Column="1"
+                                FontSize="{DynamicResource FontSizeCaption}"
+                                Foreground="{StaticResource TextSecondaryBrush}"
+                                Text="{Binding PublisherLabel}"
+                                TextWrapping="Wrap" />
+                        </Grid>
+
+                        <!-- Genre pills -->
+                        <ItemsControl
+                            Margin="{DynamicResource SpaceTop12}"
+                            ItemsSource="{Binding Genres}"
+                            Visibility="{Binding HasGenres, Converter={StaticResource BoolToVis}}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border
+                                        Margin="0,0,6,6"
+                                        Padding="7,2"
+                                        Background="{StaticResource SurfaceInsetBrush}"
+                                        CornerRadius="{DynamicResource RadiusSmall}">
+                                        <TextBlock
+                                            FontSize="{DynamicResource FontSizeCaption}"
+                                            FontWeight="SemiBold"
+                                            Foreground="{StaticResource AccentSoftBrush}"
+                                            Text="{Binding}" />
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- Actions -->
+                <StackPanel Grid.Row="3" Margin="{DynamicResource SpaceTop16}">
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="{DynamicResource FontSizeBody}"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource TextSecondaryBrush}"
+                        Text="{x:Static res:Strings.Manage_ActionsHeader}" />
+
+                    <!-- Steamless progress (only while running) -->
+                    <ProgressBar
+                        Height="3"
+                        Margin="0,0,0,8"
+                        IsIndeterminate="{Binding DataContext.IsProgressIndeterminate, ElementName=Root}"
+                        Maximum="100"
+                        Value="{Binding DataContext.Progress, ElementName=Root}"
+                        Visibility="{Binding DataContext.IsBusy, ElementName=Root, Converter={StaticResource BoolToVis}}" />
+
+                    <!-- Play/Install: the label follows the game's install state (SteamLaunchPolicy
+                         decides which verb), so the button says what it is about to do. -->
+                    <ui:Button
+                        HorizontalAlignment="Stretch"
+                        Appearance="Primary"
+                        Command="{Binding DataContext.PlayCommand, ElementName=Root}"
+                        CommandParameter="{Binding}"
+                        Content="{Binding PlayLabel}"
+                        Icon="{ui:SymbolIcon Play24}" />
+                    <ui:Button
+                        Margin="{DynamicResource SpaceTop8}"
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding DataContext.ManageBuildCommand, ElementName=Root}"
+                        CommandParameter="{Binding}"
+                        Content="{x:Static res:Strings.Manage_Action_ManageBuild}"
+                        Icon="{ui:SymbolIcon BranchFork24}" />
+                    <ui:Button
+                        Margin="{DynamicResource SpaceTop8}"
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding DataContext.UpdateCommand, ElementName=Root}"
+                        CommandParameter="{Binding}"
+                        Content="{x:Static res:Strings.Manage_Action_Update}"
+                        Icon="{ui:SymbolIcon ArrowDownload24}"
+                        IsEnabled="{Binding DataContext.NotBusy, ElementName=Root}" />
+                    <ui:Button
+                        Margin="{DynamicResource SpaceTop8}"
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding DataContext.EditLaunchOptionsCommand, ElementName=Root}"
+                        CommandParameter="{Binding}"
+                        Content="{x:Static res:Strings.Manage_Action_LaunchOptions}"
+                        Icon="{ui:SymbolIcon Play24}" />
+                    <ui:Button
+                        Margin="{DynamicResource SpaceTop8}"
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding DataContext.SaveBackupCommand, ElementName=Root}"
+                        CommandParameter="{Binding}"
+                        Content="{x:Static res:Strings.Manage_Action_SaveBackup}"
+                        Icon="{ui:SymbolIcon FolderZip24}" />
+                    <ui:Button
+                        Margin="{DynamicResource SpaceTop8}"
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding DataContext.ImportSaveCommand, ElementName=Root}"
+                        CommandParameter="{Binding}"
+                        Content="{x:Static res:Strings.Manage_Action_ImportSave}"
+                        Icon="{ui:SymbolIcon ArrowImport24}" />
+                    <ui:Button
+                        Margin="{DynamicResource SpaceTop8}"
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding DataContext.RemoveDrmCommand, ElementName=Root}"
+                        CommandParameter="{Binding}"
+                        Content="{x:Static res:Strings.Manage_Action_RemoveDrm}"
+                        Icon="{ui:SymbolIcon WrenchScrewdriver24}"
+                        IsEnabled="{Binding DataContext.NotBusy, ElementName=Root}" />
+                    <UniformGrid Margin="{DynamicResource SpaceTop8}" Columns="2" Rows="2">
+                        <ui:Button
+                            Margin="0,0,4,4"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding DataContext.OpenStorePageCommand, ElementName=Root}"
+                            CommandParameter="{Binding}"
+                            Content="{x:Static res:Strings.Manage_Action_OpenStore}"
+                            Icon="{ui:SymbolIcon Globe24}" />
+                        <ui:Button
+                            Margin="4,0,0,4"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding DataContext.OpenInSteamCommand, ElementName=Root}"
+                            CommandParameter="{Binding}"
+                            Content="{x:Static res:Strings.Manage_Action_OpenInSteam}"
+                            Icon="{ui:SymbolIcon Open24}" />
+                        <ui:Button
+                            Margin="0,4,4,0"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding DataContext.RevealFileCommand, ElementName=Root}"
+                            CommandParameter="{Binding}"
+                            Content="{x:Static res:Strings.Manage_Action_Reveal}"
+                            Icon="{ui:SymbolIcon FolderOpen24}" />
+                        <ui:Button
+                            Margin="4,4,0,0"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding DataContext.CopyAppIdCommand, ElementName=Root}"
+                            CommandParameter="{Binding}"
+                            Content="{x:Static res:Strings.Manage_Action_CopyAppId}"
+                            Icon="{ui:SymbolIcon Copy24}" />
+                    </UniformGrid>
+                    <ui:Button
+                        Margin="{DynamicResource SpaceTop8}"
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding DataContext.DeleteCommand, ElementName=Root}"
+                        CommandParameter="{Binding}"
+                        Appearance="Danger"
+                        Content="{x:Static res:Strings.Manage_DeleteThisLua}"
+                        Icon="{ui:SymbolIcon Delete24}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

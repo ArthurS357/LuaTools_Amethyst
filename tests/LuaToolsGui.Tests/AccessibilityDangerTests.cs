@@ -36,7 +36,7 @@ public class AccessibilityDangerTests
     {
         var glyphs = AllButtons().Where(b => GlyphContent.IsMatch(b.Tag)).ToList();
 
-        glyphs.Should().HaveCountGreaterThanOrEqualTo(8, "the pager arrows, reorder arrows and the dismiss cross exist today");
+        glyphs.Should().HaveCountGreaterThanOrEqualTo(7, "the Fixes and Manage pager arrows, the reorder arrows and the dismiss cross exist today");
         glyphs.Where(b => !b.Tag.Contains("AutomationProperties.Name=") || !b.Tag.Contains("ToolTip="))
             .Select(b => b.File).Should().BeEmpty();
     }

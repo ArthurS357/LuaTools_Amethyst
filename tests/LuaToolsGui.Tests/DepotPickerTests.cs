@@ -202,8 +202,9 @@ public class DepotPickerTests
         return dir?.FullName ?? throw new DirectoryNotFoundException("LuaToolsGui.sln not found above the test output.");
     }
 
-    private static string BuildsViewXaml() =>
-        File.ReadAllText(Path.Combine(RepoRoot(), "src", "LuaToolsGui", "Views", "BuildsView.xaml"));
+    // The page's markup is BuildsView plus the controls split out of it in 1.8.3 (BuildsDetailPane, BuildsDepotPicker).
+    private static string BuildsViewXaml() => string.Concat(
+        Directory.GetFiles(Path.Combine(RepoRoot(), "src", "LuaToolsGui", "Views"), "Builds*.xaml").Order().Select(File.ReadAllText));
 
     private static bool HasPublicMember(Type type, string name) =>
         type.GetProperty(name, BindingFlags.Public | BindingFlags.Instance) is not null;
