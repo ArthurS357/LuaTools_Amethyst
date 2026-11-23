@@ -488,9 +488,11 @@
                     Margin="2,0"
                     Padding="8,4"
                     Command="{Binding PrevPageCommand}"
+                    AutomationProperties.Name="{x:Static res:Strings.Pager_Prev}"
                     Content="‹"
                     FontSize="14"
-                    IsEnabled="{Binding CanGoPrev}" />
+                    IsEnabled="{Binding CanGoPrev}"
+                    ToolTip="{x:Static res:Strings.Pager_Prev}" />
                 <ItemsControl Grid.Column="1" HorizontalAlignment="Center" ItemsSource="{Binding PageNumbers}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -555,9 +557,11 @@
                     Margin="2,0"
                     Padding="8,4"
                     Command="{Binding NextPageCommand}"
+                    AutomationProperties.Name="{x:Static res:Strings.Pager_Next}"
                     Content="›"
                     FontSize="14"
-                    IsEnabled="{Binding CanGoNext}" />
+                    IsEnabled="{Binding CanGoNext}"
+                    ToolTip="{x:Static res:Strings.Pager_Next}" />
             </Grid>
 
             <!-- Right: results-per-page (overlaid at the right edge, doesn't shift the centered pager) -->
@@ -884,8 +888,8 @@
                             HorizontalAlignment="Stretch"
                             Command="{Binding DataContext.DeleteCommand, ElementName=Root}"
                             CommandParameter="{Binding}"
+                            Appearance="Danger"
                             Content="{x:Static res:Strings.Manage_DeleteThisLua}"
-                            Foreground="{StaticResource DangerBrush}"
                             Icon="{ui:SymbolIcon Delete24}" />
                     </StackPanel>
                 </Grid>

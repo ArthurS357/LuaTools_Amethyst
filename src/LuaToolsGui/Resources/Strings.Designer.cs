@@ -68,6 +68,8 @@ public static class Strings
     public static string Settings_HubcapKeyBad => Get(nameof(Settings_HubcapKeyBad));
     public static string Settings_HubcapKeyError => Get(nameof(Settings_HubcapKeyError));
     public static string Settings_HubcapKeyRejected => Get(nameof(Settings_HubcapKeyRejected));
+    public static string Pager_Prev => Get(nameof(Pager_Prev));
+    public static string Pager_Next => Get(nameof(Pager_Next));
     public static string Settings_HubcapKeySessionOnly => Get(nameof(Settings_HubcapKeySessionOnly));
     public static string Settings_HubcapKeyOffline => Get(nameof(Settings_HubcapKeyOffline));
     public static string Settings_HubcapKeyRateLimited => Get(nameof(Settings_HubcapKeyRateLimited));

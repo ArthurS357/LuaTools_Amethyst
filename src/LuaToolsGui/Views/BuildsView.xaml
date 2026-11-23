@@ -70,6 +70,12 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="Bd" Property="Background" Value="{StaticResource SurfaceTintBrush}" />
                             </Trigger>
+                            <!-- Keyboard focus ring (Lote C): the row was Tab-reachable but showed nothing. -->
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource SurfaceTintBrush}" />
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                                <Setter TargetName="Bd" Property="BorderThickness" Value="2" />
+                            </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -448,9 +454,11 @@
                             <ui:Button
                                 Padding="8,2"
                                 Command="{Binding PrevPageCommand}"
+                                AutomationProperties.Name="{x:Static res:Strings.Pager_Prev}"
                                 Content="‹"
                                 FontSize="14"
-                                IsEnabled="{Binding CanGoPrev}" />
+                                IsEnabled="{Binding CanGoPrev}"
+                                ToolTip="{x:Static res:Strings.Pager_Prev}" />
                             <TextBlock
                                 MinWidth="90"
                                 Margin="6,0"
@@ -462,9 +470,11 @@
                             <ui:Button
                                 Padding="8,2"
                                 Command="{Binding NextPageCommand}"
+                                AutomationProperties.Name="{x:Static res:Strings.Pager_Next}"
                                 Content="›"
                                 FontSize="14"
-                                IsEnabled="{Binding CanGoNext}" />
+                                IsEnabled="{Binding CanGoNext}"
+                                ToolTip="{x:Static res:Strings.Pager_Next}" />
                         </StackPanel>
                         <StackPanel
                             Margin="0,6,0,0"
@@ -618,8 +628,8 @@
                                     Margin="4,0,0,0"
                                     HorizontalAlignment="Stretch"
                                     Command="{Binding DeleteVariantCommand}"
+                                    Appearance="Danger"
                                     Content="{x:Static res:Strings.Builds_Action_Delete}"
-                                    Foreground="{StaticResource DangerBrush}"
                                     Icon="{ui:SymbolIcon Delete24}"
                                     IsEnabled="{Binding CanDelete}"
                                     ToolTipService.ShowOnDisabled="True">

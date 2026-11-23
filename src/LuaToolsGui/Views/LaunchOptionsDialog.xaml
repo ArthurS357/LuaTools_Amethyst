@@ -151,21 +151,26 @@
                             <ui:Button
                                 Margin="3,0"
                                 HorizontalAlignment="Stretch"
+                                Appearance="Danger"
                                 Command="{Binding DeleteEntryCommand}"
                                 Content="{x:Static res:Strings.Launch_Delete}"
                                 IsEnabled="{Binding HasSelection}" />
                             <ui:Button
                                 Margin="3,0"
                                 HorizontalAlignment="Stretch"
+                                AutomationProperties.Name="{x:Static res:Strings.Downloads_Action_MoveUp}"
                                 Command="{Binding MoveUpCommand}"
                                 Content="↑"
-                                IsEnabled="{Binding HasSelection}" />
+                                IsEnabled="{Binding HasSelection}"
+                                ToolTip="{x:Static res:Strings.Downloads_Action_MoveUp}" />
                             <ui:Button
                                 Margin="3,0,0,0"
                                 HorizontalAlignment="Stretch"
+                                AutomationProperties.Name="{x:Static res:Strings.Downloads_Action_MoveDown}"
                                 Command="{Binding MoveDownCommand}"
                                 Content="↓"
-                                IsEnabled="{Binding HasSelection}" />
+                                IsEnabled="{Binding HasSelection}"
+                                ToolTip="{x:Static res:Strings.Downloads_Action_MoveDown}" />
                         </UniformGrid>
                     </Grid>
                 </Border>

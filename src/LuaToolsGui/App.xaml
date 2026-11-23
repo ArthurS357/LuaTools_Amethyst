@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:local="clr-namespace:LuaToolsGui"
+    xmlns:res="clr-namespace:LuaToolsGui.Resources;assembly=LuaTools"
     ShutdownMode="OnExplicitShutdown">
     <Application.Resources>
         <ResourceDictionary>
@@ -71,14 +72,14 @@
 
             <!-- Pager over any PagedListViewModel:
                  <ContentControl Content="{Binding}" ContentTemplate="{StaticResource PagerTemplate}" />.
-                 The arrows get their ToolTip (and so their accessible name) from the Lote C i18n keys;
-                 until then no view consumes this template. -->
+                 The arrows get their ToolTip (and so their accessible name) from Pager_Prev / Pager_Next. -->
             <DataTemplate x:Key="PagerTemplate">
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                     <ui:Button
                         Command="{Binding PrevPageCommand}"
                         IsEnabled="{Binding CanGoPrev}"
-                        Style="{StaticResource IconButtonStyle}">
+                        Style="{StaticResource IconButtonStyle}"
+                        ToolTip="{x:Static res:Strings.Pager_Prev}">
                         <ui:Button.Icon>
                             <ui:SymbolIcon Symbol="ChevronLeft24" />
                         </ui:Button.Icon>
@@ -94,7 +95,8 @@
                     <ui:Button
                         Command="{Binding NextPageCommand}"
                         IsEnabled="{Binding CanGoNext}"
-                        Style="{StaticResource IconButtonStyle}">
+                        Style="{StaticResource IconButtonStyle}"
+                        ToolTip="{x:Static res:Strings.Pager_Next}">
                         <ui:Button.Icon>
                             <ui:SymbolIcon Symbol="ChevronRight24" />
                         </ui:Button.Icon>

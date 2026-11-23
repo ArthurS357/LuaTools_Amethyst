@@ -180,8 +180,10 @@
                                     Grid.Column="1"
                                     Margin="8,0,0,0"
                                     Appearance="Secondary"
+                                    AutomationProperties.Name="{x:Static res:Strings.Settings_BotLink_Dismiss}"
                                     Command="{Binding DismissLoginRequiredCommand}"
-                                    Content="✕" />
+                                    Content="✕"
+                                    ToolTip="{x:Static res:Strings.Settings_BotLink_Dismiss}" />
                             </Grid>
                         </Border>
 
@@ -297,6 +299,7 @@
                                 Icon="{ui:SymbolIcon ArrowSync24}" />
                             <ui:Button
                                 Grid.Column="1"
+                                Appearance="Danger"
                                 Command="{Binding ClearHubcapKeyCommand}"
                                 Content="{x:Static res:Strings.Settings_HubcapClear}"
                                 Icon="{ui:SymbolIcon Dismiss24}" />
@@ -865,11 +868,13 @@
                                     Icon="{ui:SymbolIcon ArrowSync24}" />
                                 <ui:Button
                                     Margin="8,0,0,0"
+                                    Appearance="Danger"
                                     Command="{Binding DeleteSelectedCommand}"
                                     Content="{x:Static res:Strings.Settings_Backups_DeleteSelected}"
                                     Icon="{ui:SymbolIcon Delete24}" />
                                 <ui:Button
                                     Margin="8,0,0,0"
+                                    Appearance="Danger"
                                     Command="{Binding DeleteOlderThan30DaysCommand}"
                                     Content="{x:Static res:Strings.Settings_Backups_DeleteOlder}"
                                     IsEnabled="{Binding HasOld}" />

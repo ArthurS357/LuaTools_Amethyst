@@ -153,10 +153,10 @@
                                     IsEnabled="{Binding DataContext.NotBusy, ElementName=Root}" />
                                 <ui:Button
                                     Margin="6,0,0,0"
+                                    Appearance="Danger"
                                     Command="{Binding DataContext.DeleteCommand, ElementName=Root}"
                                     CommandParameter="{Binding}"
                                     Content="{x:Static res:Strings.Saves_Delete}"
-                                    Foreground="{StaticResource DangerBrush}"
                                     IsEnabled="{Binding DataContext.NotBusy, ElementName=Root}" />
                             </StackPanel>
                         </Grid>

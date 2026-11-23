@@ -378,7 +378,7 @@
                         Text="{x:Static res:Strings.Downloads_Section_History}" />
                     <ui:Button
                         HorizontalAlignment="Right"
-                        Appearance="Secondary"
+                        Appearance="Danger"
                         AutomationProperties.Name="{x:Static res:Strings.Downloads_Action_ClearHistory}"
                         Command="{Binding ClearHistoryCommand}"
                         Content="{x:Static res:Strings.Downloads_Action_ClearHistory}" />

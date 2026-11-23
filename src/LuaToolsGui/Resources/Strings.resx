@@ -814,6 +814,8 @@ Enable it?</value></data>
   <data name="Downloads_Action_Review" xml:space="preserve"><value>Review</value></data>
   <data name="Downloads_Action_Pause" xml:space="preserve"><value>Pause</value></data>
   <data name="Downloads_Action_Resume" xml:space="preserve"><value>Resume</value></data>
+  <data name="Pager_Prev" xml:space="preserve"><value>Previous page</value></data>
+  <data name="Pager_Next" xml:space="preserve"><value>Next page</value></data>
   <data name="Downloads_Action_MoveUp" xml:space="preserve"><value>Move up</value></data>
   <data name="Downloads_Action_MoveDown" xml:space="preserve"><value>Move down</value></data>
   <data name="Downloads_Action_Cancel" xml:space="preserve"><value>Cancel</value></data>

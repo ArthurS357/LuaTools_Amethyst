@@ -111,6 +111,7 @@
                     Visibility="{Binding RestoreAllCommand.IsRunning, Converter={StaticResource BoolToVis}}" />
                 <ui:Button
                     Margin="0,0,8,0"
+                    Appearance="Danger"
                     Command="{Binding RestoreAllCommand}"
                     Content="{x:Static res:Strings.Launch_RestoreAll}"
                     Visibility="{Binding HasRows, Converter={StaticResource BoolToVis}}" />
