@@ -171,7 +171,15 @@ public sealed class DpapiFallbackTests : IDisposable
             log: log.Add);
 }
 
+/// <summary>Tests that mutate the process-wide <see cref="DnsFallbackSession.Shared"/> run alone, never in parallel.</summary>
+[CollectionDefinition(Name, DisableParallelization = true)]
+public sealed class SharedDnsSessionCollection
+{
+    public const string Name = "SharedDnsSession";
+}
+
 /// <summary>Log lines mask the user profile (1.8.3, #2) and Auto clears the DNS failure flag (#24).</summary>
+[Collection(SharedDnsSessionCollection.Name)]
 public sealed class Release183HardeningTests
 {
     [Fact]
