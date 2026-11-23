@@ -194,4 +194,133 @@ public class UninstallCleanupTests : IDisposable
         Assert.Equal(0, second.LoaderFilesRemoved);
         Assert.Empty(second.Failures);
     }
+
+    // ── Side-by-side & invalid path protections (Lote K1) ───────────────────
+
+    [Fact]
+    public void TryRemoveUserData_RefusesProtectedSideBySideDirectories()
+    {
+        string sideBySideLegacy = Path.Combine(_tmp, "SideBySide_LuaToolsGui");
+        Directory.CreateDirectory(sideBySideLegacy);
+        string authFile = Path.Combine(sideBySideLegacy, "auth.dat");
+        File.WriteAllText(authFile, "upstream-token");
+
+        var failures = new List<string>();
+        bool removed = UninstallCleanup.TryRemoveUserData(
+            sideBySideLegacy,
+            failures,
+            protectedSideBySideDirs: [sideBySideLegacy]);
+
+        Assert.False(removed);
+        Assert.Single(failures);
+        Assert.True(Directory.Exists(sideBySideLegacy));
+        Assert.True(File.Exists(authFile));
+
+        // Also refuses the real AppDataMigrator.LegacyDirectory (%AppData%\LuaToolsGui) by default.
+        Assert.False(UninstallCleanup.IsSafeUserDataDir(AppDataMigrator.LegacyDirectory));
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    [InlineData("relative\\path")]
+    [InlineData(@"C:\")]
+    [InlineData(@"C:\Users\..\Windows")]
+    public void PathGuards_RejectInvalidRootOrTraversalPaths(string? invalidPath)
+    {
+        Assert.False(UninstallCleanup.IsSafeUserDataDir(invalidPath));
+        Assert.False(UninstallCleanup.IsSafeSteamDir(invalidPath));
+    }
+
+    [Fact]
+    public void PathGuards_RejectSystemRootsAndSteamDirectoryAsUserData()
+    {
+        string appDataRoot = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        string localAppDataRoot = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        string tempRoot = Path.GetTempPath();
+
+        Assert.False(UninstallCleanup.IsSafeUserDataDir(appDataRoot));
+        Assert.False(UninstallCleanup.IsSafeUserDataDir(localAppDataRoot));
+        Assert.False(UninstallCleanup.IsSafeUserDataDir(tempRoot));
+        Assert.False(UninstallCleanup.IsSafeSteamDir(appDataRoot));
+        Assert.False(UninstallCleanup.IsSafeSteamDir(tempRoot));
+
+        // A folder containing steam.exe must never be accepted as appDataDir.
+        File.WriteAllText(Path.Combine(_steam, "steam.exe"), "stub");
+        Assert.False(UninstallCleanup.IsSafeUserDataDir(_steam));
+        Assert.False(UninstallCleanup.TryRemoveUserData(_steam));
+        Assert.True(File.Exists(Path.Combine(_steam, "steam.exe")));
+
+        // steamDir equal to appDataDir is rejected.
+        Assert.False(UninstallCleanup.IsSafeSteamDir(_appData, _appData));
+    }
+
+    [Fact]
+    public void IsProtocolOwnedByInstall_DistinguishesCurrentFromSideBySideInstall()
+    {
+        const string amethystCurrent = @"C:\Users\Alice\AppData\Local\LuaToolsAmethyst\current\LuaTools.exe";
+        const string amethystVersioned = @"C:\Users\Alice\AppData\Local\LuaToolsAmethyst\app-1.8.4\LuaTools.exe";
+        const string amethystUpdate = @"C:\Users\Alice\AppData\Local\LuaToolsAmethyst\Update.exe";
+        const string upstreamLegacy = @"C:\Users\Alice\AppData\Local\LuaTools\current\LuaTools.exe";
+        const string otherPortable = @"D:\Tools\OtherLuaTools\LuaTools.exe";
+
+        string amethystCmd = $"\"{amethystCurrent}\" \"%1\"";
+        string upstreamCmd = $"\"{upstreamLegacy}\" \"%1\"";
+        string portableCmd = $"\"{otherPortable}\" \"%1\"";
+
+        // Owned by this install (same exe or same Velopack LuaToolsAmethyst root).
+        Assert.True(UninstallCleanup.IsProtocolOwnedByInstall(amethystCmd, amethystCurrent));
+        Assert.True(UninstallCleanup.IsProtocolOwnedByInstall(amethystCmd, amethystVersioned));
+        Assert.True(UninstallCleanup.IsProtocolOwnedByInstall(amethystCmd, amethystUpdate));
+
+        // Owned by a side-by-side upstream or portable install -> must NOT unregister.
+        Assert.False(UninstallCleanup.IsProtocolOwnedByInstall(upstreamCmd, amethystCurrent));
+        Assert.False(UninstallCleanup.IsProtocolOwnedByInstall(portableCmd, amethystCurrent));
+        Assert.False(UninstallCleanup.IsProtocolOwnedByInstall(amethystCmd, null));
+    }
+
+    [Fact]
+    public void TryUnregisterProtocol_PreservesKeyWhenOwnedBySideBySideInstall_AndRemovesWhenOwned()
+    {
+        string testSubKey = $@"Software\LuaToolsAmethyst_Test_{Guid.NewGuid():N}";
+        const string amethystExe = @"C:\Users\Alice\AppData\Local\LuaToolsAmethyst\current\LuaTools.exe";
+        const string upstreamExe = @"C:\Users\Alice\AppData\Local\LuaTools\current\LuaTools.exe";
+
+        try
+        {
+            using (var cmdKey = Microsoft.Win32.Registry.CurrentUser.CreateSubKey($@"{testSubKey}\luatools\shell\open\command"))
+            {
+                cmdKey.SetValue(null, $"\"{upstreamExe}\" \"%1\"");
+            }
+
+            // 1. Owned by upstream side-by-side install -> preserved.
+            var failures = new List<string>();
+            bool removedSideBySide = UninstallCleanup.TryUnregisterProtocol(failures, amethystExe, testSubKey);
+            Assert.False(removedSideBySide);
+            Assert.Empty(failures);
+            using (var check = Microsoft.Win32.Registry.CurrentUser.OpenSubKey($@"{testSubKey}\luatools"))
+            {
+                Assert.NotNull(check);
+            }
+
+            // 2. Owned by current LuaToolsAmethyst install -> removed.
+            using (var cmdKey = Microsoft.Win32.Registry.CurrentUser.CreateSubKey($@"{testSubKey}\luatools\shell\open\command"))
+            {
+                cmdKey.SetValue(null, $"\"{amethystExe}\" \"%1\"");
+            }
+
+            bool removedOwned = UninstallCleanup.TryUnregisterProtocol(failures, amethystExe, testSubKey);
+            Assert.True(removedOwned);
+            Assert.Empty(failures);
+            using (var checkAfter = Microsoft.Win32.Registry.CurrentUser.OpenSubKey($@"{testSubKey}\luatools"))
+            {
+                Assert.Null(checkAfter);
+            }
+        }
+        finally
+        {
+            Microsoft.Win32.Registry.CurrentUser.DeleteSubKeyTree(testSubKey, throwOnMissingSubKey: false);
+        }
+    }
 }

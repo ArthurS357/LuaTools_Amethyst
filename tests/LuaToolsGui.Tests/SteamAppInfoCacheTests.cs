@@ -206,4 +206,78 @@ public sealed class SteamAppInfoCacheNegativeMemoTests : IDisposable
 
         Assert.Equal(1, stub.Calls);
     }
+
+    [Fact]
+    public async Task InFlightGetFilterDataMiss_DoesNotPoisonFilterCacheAfterConcurrentSaveFullDetails()
+    {
+        const long testAppId = 424242;
+        var stub = new StubHandler();
+        var appInfo = new SteamAppInfoCache(new CacheService(_dir), stub, Path.Combine(_dir, "details"));
+
+        // While GetFilterData is in-flight after observing no file on disk (doc == null),
+        // SaveFullDetailsAsync writes valid details and bumps _detailsGeneration.
+        appInfo.OnDetailsOpenedForTest = () =>
+        {
+            appInfo.OnDetailsOpenedForTest = null;
+            appInfo.SaveFullDetailsForTestAsync(testAppId, """
+                {"type":"game","name":"Test Game","is_free":true,"platforms":{"windows":true}}
+                """).GetAwaiter().GetResult();
+        };
+
+        var inFlightResult = appInfo.GetFilterData(testAppId);
+        Assert.Null(inFlightResult); // The in-flight call itself saw no file when it opened details.
+
+        // Subsequent call must NOT be stuck on a cached negative null; it must parse the saved details.
+        var freshResult = appInfo.GetFilterData(testAppId);
+        Assert.NotNull(freshResult);
+        Assert.Equal("game", freshResult!.Type);
+        Assert.True(freshResult.IsFree);
+        Assert.True(freshResult.Windows);
+    }
+
+    [Fact]
+    public async Task InFlightGetFilterDataAndGetOverview_DoNotCacheStaleDataAfterConcurrentSaveFullDetails()
+    {
+        const long testAppId = 424243;
+        var stub = new StubHandler();
+        var appInfo = new SteamAppInfoCache(new CacheService(_dir), stub, Path.Combine(_dir, "details"));
+
+        await appInfo.SaveFullDetailsForTestAsync(testAppId, """
+            {"type":"game","short_description":"Old blurb","developers":["Old Studio"]}
+            """);
+
+        // 1. In-flight GetFilterData reads "game", but before it finishes storing into _filterCache,
+        // SaveFullDetailsAsync writes "dlc" and increments generation.
+        appInfo.OnDetailsOpenedForTest = () =>
+        {
+            appInfo.OnDetailsOpenedForTest = null;
+            appInfo.SaveFullDetailsForTestAsync(testAppId, """
+                {"type":"dlc","short_description":"New blurb","developers":["New Studio"]}
+                """).GetAwaiter().GetResult();
+        };
+
+        var staleInFlightFilter = appInfo.GetFilterData(testAppId);
+        Assert.Equal("game", staleInFlightFilter?.Type);
+
+        // _filterCache must NOT retain the stale "game" entry.
+        var currentFilter = appInfo.GetFilterData(testAppId);
+        Assert.Equal("dlc", currentFilter?.Type);
+
+        // 2. Same race on GetOverview: in-flight read sees "New blurb", concurrent save writes "Final blurb".
+        appInfo.OnDetailsOpenedForTest = () =>
+        {
+            appInfo.OnDetailsOpenedForTest = null;
+            appInfo.SaveFullDetailsForTestAsync(testAppId, """
+                {"type":"dlc","short_description":"Final blurb","developers":["Final Studio"]}
+                """).GetAwaiter().GetResult();
+        };
+
+        var staleInFlightOverview = appInfo.GetOverview(testAppId);
+        Assert.Equal("New blurb", staleInFlightOverview?.ShortDescription);
+
+        // _overviewCache must NOT retain "New blurb".
+        var currentOverview = appInfo.GetOverview(testAppId);
+        Assert.Equal("Final blurb", currentOverview?.ShortDescription);
+        Assert.Equal(["Final Studio"], currentOverview?.Developers);
+    }
 }

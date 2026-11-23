@@ -126,7 +126,7 @@ public static class BinaryVdf
 
     private static VdfTable ReadCore(Stream s, IReadOnlyList<string> strings, bool indexedKeys, int depth, bool strict)
     {
-        if (depth > MaxDepth)
+        if (strict && depth > MaxDepth)
             throw new InvalidDataException($"Binary VDF nesting depth exceeds limit ({MaxDepth}).");
 
         var table = new VdfTable();
@@ -142,7 +142,7 @@ public static class BinaryVdf
 
             var type = (VdfType)marker;
             string name = indexedKeys
-                ? ReadIndexedKey(s, strings)
+                ? (strict ? ReadIndexedKeyStrict(s, strings) : strings[(int)ReadUInt32(s)])
                 : (strict ? ReadCStringStrict(s) : ReadCString(s));
 
             object value = type switch
@@ -159,7 +159,7 @@ public static class BinaryVdf
         }
     }
 
-    private static string ReadIndexedKey(Stream s, IReadOnlyList<string> strings)
+    private static string ReadIndexedKeyStrict(Stream s, IReadOnlyList<string> strings)
     {
         uint idx = ReadUInt32(s);
         if (idx >= (uint)strings.Count)

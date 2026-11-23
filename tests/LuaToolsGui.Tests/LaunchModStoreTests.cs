@@ -153,14 +153,24 @@ public class LaunchModStoreTests : IDisposable
     }
 
     [Fact]
-    public void CorruptFile_IsPreservedNotSilentlyReset()
+    public void CorruptFile_IsPreservedWithTimestampWithoutOverwritingPreviousCorruptBackups()
     {
-        File.WriteAllText(_path, "{ this is not json");
+        File.WriteAllText(_path, "{ this is not json 1");
+        var store1 = new LaunchModStore(_path);
+        Assert.True(store1.IsEmpty);
+        Assert.False(File.Exists(_path));
 
-        var store = new LaunchModStore(_path);
+        File.WriteAllText(_path, "{ this is not json 2");
+        var store2 = new LaunchModStore(_path);
+        Assert.True(store2.IsEmpty);
+        Assert.False(File.Exists(_path));
 
-        Assert.True(store.IsEmpty);
-        Assert.True(File.Exists(_path + ".corrupt"));   // moved aside for recovery, not overwritten
+        var corruptFiles = Directory.GetFiles(_tmp, "launchmods.json.corrupt.*")
+            .OrderBy(static p => p, StringComparer.Ordinal)
+            .ToArray();
+        Assert.Equal(2, corruptFiles.Length);
+        Assert.Contains("{ this is not json 1", File.ReadAllText(corruptFiles[0]));
+        Assert.Contains("{ this is not json 2", File.ReadAllText(corruptFiles[1]));
     }
 
     // ── MEDIUM-4: v2 format, legacy v1 migration, raw VDF fidelity, fail-closed ──
@@ -240,27 +250,89 @@ public class LaunchModStoreTests : IDisposable
     }
 
     [Theory]
-    [InlineData("""{"Version":99,"Mods":[]}""")]                                      // unknown future version
-    [InlineData("""{"Version":0,"Mods":[]}""")]                                       // invalid version 0
-    [InlineData("""{"Version":2}""")]                                                 // missing Mods
-    [InlineData("""{"Version":2,"Mods":"not-an-array"}""")]                           // wrong Mods type
-    [InlineData("123")]                                                               // non-object/non-array root
-    [InlineData("""{"Version":2,"Mods":[{"AppId":0,"Original":[],"Desired":[]}]}""")] // non-positive AppId
-    [InlineData("""{"Version":2,"Mods":[{"AppId":1,"Original":[],"Desired":[]},{"AppId":1,"Original":[],"Desired":[]}]}""")] // duplicate AppId
-    [InlineData("""{"Version":2,"Mods":[{"AppId":1,"Original":null,"Desired":[]}]}""")]
-    [InlineData("""{"Version":2,"Mods":[{"AppId":1,"Original":[],"Desired":[],"OriginalLaunchVdf":""}]}""")]         // empty base64
-    [InlineData("""{"Version":2,"Mods":[{"AppId":1,"Original":[],"Desired":[],"OriginalLaunchVdf":"!!!not-b64"}]}""")]
-    [InlineData("""{"Version":2,"Mods":[{"AppId":1,"Original":[],"Desired":[],"OriginalLaunchVdf":"AA=="}]}""")]     // truncated VDF table
-    [InlineData("""{"Version":2,"Mods":[{"AppId":1,"Original":[],"Desired":[],"OriginalLaunchVdf":"CAg="}]}""")]     // trailing garbage after End
-    [InlineData("""{"Version":2,"Mods":[{"AppId":1,"Original":[],"Desired":[],"OriginalLaunchVdf":"VQAA"}]}""")]     // unsupported VDF type 0x55
-    public void MaliciousOrCorruptPayload_FailsClosedAndQuarantinesFile(string json)
+    [InlineData("""{"Version":99,"Mods":[]}""")]            // unknown future version
+    [InlineData("""{"Version":0,"Mods":[]}""")]             // invalid version 0
+    [InlineData("""{"Version":2}""")]                       // missing Mods
+    [InlineData("""{"Version":2,"Mods":"not-an-array"}""")] // wrong Mods type
+    [InlineData("123")]                                     // non-object/non-array root
+    public void MaliciousOrCorruptEnvelope_FailsClosedAndQuarantinesFileWithTimestamp(string json)
     {
         File.WriteAllText(_path, json);
 
         var store = new LaunchModStore(_path);
 
         Assert.True(store.IsEmpty);
-        Assert.True(File.Exists(_path + ".corrupt"));
+        Assert.Single(Directory.GetFiles(_tmp, "launchmods.json.corrupt.*"));
+    }
+
+    [Theory]
+    [InlineData("""{"Version":2,"Mods":[{"AppId":0,"Original":[],"Desired":[]}]}""")] // non-positive AppId
+    [InlineData("""{"Version":2,"Mods":[{"AppId":1,"Original":null,"Desired":[]}]}""")]
+    [InlineData("""{"Version":2,"Mods":[{"AppId":1,"Original":[],"Desired":[],"OriginalLaunchVdf":""}]}""")]         // empty base64
+    [InlineData("""{"Version":2,"Mods":[{"AppId":1,"Original":[],"Desired":[],"OriginalLaunchVdf":"!!!not-b64"}]}""")]
+    [InlineData("""{"Version":2,"Mods":[{"AppId":1,"Original":[],"Desired":[],"OriginalLaunchVdf":"AA=="}]}""")]     // truncated VDF table
+    [InlineData("""{"Version":2,"Mods":[{"AppId":1,"Original":[],"Desired":[],"OriginalLaunchVdf":"CAg="}]}""")]     // trailing garbage after End
+    [InlineData("""{"Version":2,"Mods":[{"AppId":1,"Original":[],"Desired":[],"OriginalLaunchVdf":"VQAA"}]}""")]     // unsupported VDF type 0x55
+    public void InvalidIndividualEntry_IsSkippedWithoutQuarantiningValidEnvelope(string json)
+    {
+        File.WriteAllText(_path, json);
+
+        var store = new LaunchModStore(_path);
+
+        Assert.True(store.IsEmpty);
+        Assert.Empty(Directory.GetFiles(_tmp, "launchmods.json.corrupt.*"));
+    }
+
+    [Fact]
+    public void SingleInvalidEntry_IsSkippedWhileValidEntriesArePreserved()
+    {
+        const string mixedJson = """
+            {
+              "Version": 2,
+              "Mods": [
+                {
+                  "AppId": 603750,
+                  "ChangeNumber": 10,
+                  "Original": [{ "Index": "0", "SourceIndex": "0", "Executable": "Valid1.exe", "Type": "default", "OsList": "windows" }],
+                  "Desired":  [{ "Index": "0", "SourceIndex": "0", "Executable": "Mod1.exe", "Type": "default", "OsList": "windows" }]
+                },
+                {
+                  "AppId": 0,
+                  "ChangeNumber": 99,
+                  "Original": [],
+                  "Desired": []
+                },
+                {
+                  "AppId": 999,
+                  "ChangeNumber": 11,
+                  "Original": [{ "Index": "0", "SourceIndex": "0", "Executable": "BadVdf.exe" }],
+                  "Desired":  [{ "Index": "0", "SourceIndex": "0", "Executable": "BadVdfMod.exe" }],
+                  "OriginalLaunchVdf": "!!!not-base64"
+                },
+                {
+                  "AppId": 603750,
+                  "ChangeNumber": 12,
+                  "Original": [{ "Index": "0", "SourceIndex": "0", "Executable": "DuplicateIgnored.exe" }],
+                  "Desired":  [{ "Index": "0", "SourceIndex": "0", "Executable": "DuplicateIgnored.exe" }]
+                },
+                {
+                  "AppId": 730,
+                  "ChangeNumber": 20,
+                  "Original": [{ "Index": "0", "SourceIndex": "0", "Executable": "cs2.exe", "Type": "default", "OsList": "windows" }],
+                  "Desired":  [{ "Index": "0", "SourceIndex": "0", "Executable": "cs2_mod.exe", "Type": "default", "OsList": "windows" }]
+                }
+              ]
+            }
+            """;
+        File.WriteAllText(_path, mixedJson);
+
+        var store = new LaunchModStore(_path);
+
+        Assert.False(store.IsEmpty);
+        Assert.Equal("Mod1.exe", store.Get(603750)?.Desired[0].Executable);
+        Assert.Equal("cs2_mod.exe", store.Get(730)?.Desired[0].Executable);
+        Assert.Null(store.Get(999));
+        Assert.Empty(Directory.GetFiles(_tmp, "launchmods.json.corrupt.*"));
     }
 
     [Fact]
@@ -281,11 +353,15 @@ public class LaunchModStoreTests : IDisposable
         Assert.False(LaunchModStore.TryDecodeRawLaunch(hostileBase64, out _));
 
         File.WriteAllText(_path, $$"""
-            {"Version":2,"Mods":[{"AppId":10,"Original":[],"Desired":[],"OriginalLaunchVdf":"{{hostileBase64}}"}]}
+            {"Version":2,"Mods":[
+              {"AppId":10,"Original":[],"Desired":[],"OriginalLaunchVdf":"{{hostileBase64}}"},
+              {"AppId":20,"Original":[{"Index":"0","SourceIndex":"0","Executable":"Ok.exe"}],"Desired":[{"Index":"0","SourceIndex":"0","Executable":"OkMod.exe"}]}
+            ]}
             """);
         var store = new LaunchModStore(_path);
-        Assert.True(store.IsEmpty);
-        Assert.True(File.Exists(_path + ".corrupt"));
+        Assert.Null(store.Get(10));
+        Assert.NotNull(store.Get(20));
+        Assert.Empty(Directory.GetFiles(_tmp, "launchmods.json.corrupt.*"));
     }
 
     [Fact]

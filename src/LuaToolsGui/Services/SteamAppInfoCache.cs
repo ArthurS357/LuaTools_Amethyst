@@ -346,10 +346,17 @@ public class SteamAppInfoCache
 
         try
         {
+            long gen = Volatile.Read(ref _detailsGeneration);
             using var doc = OpenDetails(appid);
+            OnDetailsOpenedForTest?.Invoke();
             if (doc is null)
             {
-                _filterCache.TryAdd(appid, null);
+                if (Volatile.Read(ref _detailsGeneration) == gen)
+                {
+                    _filterCache.TryAdd(appid, null);
+                    if (Volatile.Read(ref _detailsGeneration) != gen)
+                        _filterCache.TryRemove(appid, out _);
+                }
                 return null;
             }
             var d = doc.RootElement;
@@ -418,7 +425,12 @@ public class SteamAppInfoCache
                 isAdult = ids.EnumerateArray().Any(e => e.TryGetInt32(out int id) && (id is 3 or 4));
 
             var result = new AppFilterData(type, genres, win, mac, lin, year, releaseDate, releaseDateText, isFree, meta, reviews, isAdult);
-            _filterCache[appid] = result;
+            if (Volatile.Read(ref _detailsGeneration) == gen)
+            {
+                _filterCache[appid] = result;
+                if (Volatile.Read(ref _detailsGeneration) != gen)
+                    _filterCache.TryRemove(appid, out _);
+            }
             return result;
         }
         catch
@@ -429,6 +441,10 @@ public class SteamAppInfoCache
 
     private readonly ConcurrentDictionary<long, AppFilterData?> _filterCache = new();
     private readonly ConcurrentDictionary<long, AppOverview> _overviewCache = new();
+    private long _detailsGeneration;
+
+    internal long DetailsGeneration => Volatile.Read(ref _detailsGeneration);
+    internal Action? OnDetailsOpenedForTest { get; set; }
 
     /// <summary>Same lookup as <see cref="GetOverview"/> for UI callers: a RAM hit returns at once,
     /// a miss reads and parses the blob on the thread pool.</summary>
@@ -448,7 +464,9 @@ public class SteamAppInfoCache
 
         try
         {
+            long gen = Volatile.Read(ref _detailsGeneration);
             using var doc = OpenDetails(appid);
+            OnDetailsOpenedForTest?.Invoke();
             if (doc is null || IsDelistedMarker(doc.RootElement)) return null;
             var d = doc.RootElement;
 
@@ -463,7 +481,12 @@ public class SteamAppInfoCache
                 ReadStringArray(d, "publishers"),
                 ReadDescriptions(d, "genres"));
 
-            _overviewCache[appid] = overview;
+            if (Volatile.Read(ref _detailsGeneration) == gen)
+            {
+                _overviewCache[appid] = overview;
+                if (Volatile.Read(ref _detailsGeneration) != gen)
+                    _overviewCache.TryRemove(appid, out _);
+            }
             return overview;
         }
         catch
@@ -622,6 +645,8 @@ public class SteamAppInfoCache
 
     internal string DetailsPath(long appid) => Path.Combine(_detailsDir, $"{appid}.json");
 
+    internal Task SaveFullDetailsForTestAsync(long appid, string rawJson) => SaveFullDetailsAsync(appid, rawJson);
+
     private async Task SaveFullDetailsAsync(long appid, string rawJson)
     {
         try
@@ -629,6 +654,7 @@ public class SteamAppInfoCache
             Directory.CreateDirectory(_detailsDir);
             // Atomic: HasFullDetails is just File.Exists, so a truncated blob would read as cached forever.
             await Task.Run(() => AtomicFile.WriteAllText(DetailsPath(appid), rawJson));
+            Interlocked.Increment(ref _detailsGeneration);
             _filterCache.TryRemove(appid, out _);
             _overviewCache.TryRemove(appid, out _);
         }

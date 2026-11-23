@@ -82,9 +82,9 @@ public sealed record PluginStatus(
 /// CDP itself (the debug bridge <see cref="CefInjectorService"/> connects through) is NOT opened by the
 /// DLL anymore — install/uninstall also manages a `.cef-enable-remote-debugging` NTFS junction next to
 /// Steam's exe, which makes Steam self-enable CDP on its own (fixed port 8080, confirmed not
-/// configurable; verified on both Windows 10 and 11). That leaves the DLL with one remaining job —
-/// "launch LuaTools.exe when Steam opens" — with no CDP hook, no load-timing race, and no dual-slot
-/// redundancy needed anymore.
+/// configurable; verified on both Windows 10 and 11). Furthermore, any auto-launch of <c>LuaTools.exe</c>
+/// inside <c>plugin\backend\main.lua</c> (<c>ensure_backend_running()</c>) is neutralized on install and
+/// status self-heal so that opening Steam first always opens Steam clean without pulling LuaTools along.
 /// </summary>
 public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjectorService injector,
     CacheService cache, SettingsService settings, DownloadNotice notice,
@@ -394,6 +394,7 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
     public virtual async Task<PluginStatus> GetStatusAsync(bool force = false, CancellationToken ct = default)
     {
         bool frontend = File.Exists(LuatoolsJsPath);
+        if (frontend) NeutralizeBackendAutoLaunch(FrontendDir);
         // "installed" if AT LEAST ONE slot's proxy is present — a partial/mid-migration state still counts
         // as installed and eligible for auto-update, rather than showing "not installed". An OLD loader
         // (psapi/dbghelp) also still counts — otherwise a user who hasn't migrated shows "not installed"
@@ -688,6 +689,7 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
             Directory.CreateDirectory(FrontendDir);
             ZipFile.ExtractToDirectory(zipPath, FrontendDir);
             NormalizeFrontendLayout();
+            NeutralizeBackendAutoLaunch(FrontendDir);
             if (!File.Exists(LuatoolsJsPath))
                 return (false, Resources.Strings.Plugin_Err_NoLuatoolsJs);
 
@@ -1004,6 +1006,117 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
             return;
         }
     }
+
+    private const string NeutralizedAutoLaunchMarker = "-- neutralized by LuaTools Amethyst (Steam opens clean)";
+
+    /// <summary>
+    /// Neutralizes the upstream <c>ensure_backend_running()</c> auto-launch inside
+    /// <c>&lt;pluginDir&gt;\backend\main.lua</c> so opening Steam first never spawns
+    /// <c>LuaTools.exe --minimized</c>, while preserving <c>copy_webkit_files()</c>,
+    /// <c>inject_webkit_files()</c>, <c>millennium.ready()</c>, and all RPC handlers.
+    /// </summary>
+    internal static bool NeutralizeBackendAutoLaunch(string pluginDir)
+    {
+        if (string.IsNullOrWhiteSpace(pluginDir)) return false;
+        string mainLuaPath = Path.Combine(pluginDir, "backend", "main.lua");
+        if (!File.Exists(mainLuaPath)) return false;
+
+        try
+        {
+            string original = File.ReadAllText(mainLuaPath);
+            string patched = NeutralizeBackendAutoLaunchSource(original);
+            if (string.Equals(original, patched, StringComparison.Ordinal)) return false;
+            AtomicFile.WriteAllText(mainLuaPath, patched);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            AppLog.Log($"PluginInstaller: failed to neutralize backend/main.lua auto-launch: {ex.GetType().Name}: {ex.Message}");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Pure source transformation that neutralizes <c>ensure_backend_running()</c> and any direct
+    /// <c>LuaTools.exe</c> process execution inside <c>backend/main.lua</c>. Idempotent.
+    /// </summary>
+    internal static string NeutralizeBackendAutoLaunchSource(string luaSource)
+    {
+        if (string.IsNullOrEmpty(luaSource)) return luaSource;
+
+        string newline = luaSource.Contains("\r\n", StringComparison.Ordinal) ? "\r\n" : "\n";
+        string[] lines = luaSource.Split(["\r\n", "\n"], StringSplitOptions.None);
+        var output = new List<string>(lines.Length + 2);
+        bool insideEnsureBackend = false;
+
+        for (int i = 0; i < lines.Length; i++)
+        {
+            string line = lines[i];
+            string trimmed = line.TrimStart();
+            string indent = line[..(line.Length - trimmed.Length)];
+
+            if (IsEnsureBackendHeader(trimmed))
+            {
+                insideEnsureBackend = true;
+                output.Add(line);
+                bool alreadyShortCircuited = i + 1 < lines.Length
+                    && lines[i + 1].Contains(NeutralizedAutoLaunchMarker, StringComparison.Ordinal);
+                if (!alreadyShortCircuited)
+                    output.Add($"{indent}    if true then return end {NeutralizedAutoLaunchMarker}");
+                continue;
+            }
+
+            if (insideEnsureBackend && (trimmed.Equals("end", StringComparison.Ordinal) || trimmed.StartsWith("end ", StringComparison.Ordinal) || trimmed.StartsWith("end--", StringComparison.Ordinal)))
+            {
+                insideEnsureBackend = false;
+            }
+
+            if (!trimmed.StartsWith("--", StringComparison.Ordinal))
+            {
+                if (IsEnsureBackendCall(trimmed))
+                {
+                    output.Add($"{indent}-- {trimmed.TrimEnd()} {NeutralizedAutoLaunchMarker}");
+                    continue;
+                }
+
+                if ((insideEnsureBackend && ContainsExecCall(trimmed))
+                    || (ContainsExecCall(trimmed) && MentionsLuaToolsLaunch(trimmed)))
+                {
+                    output.Add($"{indent}-- {trimmed.TrimEnd()} {NeutralizedAutoLaunchMarker}");
+                    continue;
+                }
+            }
+
+            output.Add(line);
+        }
+
+        return string.Join(newline, output);
+    }
+
+    private static bool IsEnsureBackendHeader(string trimmed) =>
+        (trimmed.StartsWith("local function ensure_backend_running", StringComparison.Ordinal)
+         || trimmed.StartsWith("function ensure_backend_running", StringComparison.Ordinal))
+        && trimmed.Contains('(', StringComparison.Ordinal);
+
+    private static bool IsEnsureBackendCall(string trimmed)
+    {
+        if (!trimmed.StartsWith("ensure_backend_running", StringComparison.Ordinal)) return false;
+        string rest = trimmed["ensure_backend_running".Length..].TrimStart();
+        return rest.StartsWith("()", StringComparison.Ordinal) || rest.StartsWith("( )", StringComparison.Ordinal);
+    }
+
+    private static bool ContainsExecCall(string trimmed) =>
+        trimmed.Contains(".exec(", StringComparison.Ordinal)
+        || trimmed.Contains(".exec (", StringComparison.Ordinal)
+        || trimmed.Contains("os.execute(", StringComparison.Ordinal)
+        || trimmed.Contains("os.execute (", StringComparison.Ordinal)
+        || trimmed.Contains("io.popen(", StringComparison.Ordinal)
+        || trimmed.Contains("io.popen (", StringComparison.Ordinal);
+
+    private static bool MentionsLuaToolsLaunch(string trimmed) =>
+        trimmed.Contains("LuaTools.exe", StringComparison.OrdinalIgnoreCase)
+        || trimmed.Contains("exe_path", StringComparison.Ordinal)
+        || trimmed.Contains("--minimized", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
     /// The plugin flow's archive gate: the same analyser the Fixes page runs, before anything is written.

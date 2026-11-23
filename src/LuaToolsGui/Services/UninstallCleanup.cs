@@ -85,10 +85,17 @@ public static class UninstallCleanup
         bool protocolGone = false;
         bool dataGone = false;
 
-        if (!string.IsNullOrWhiteSpace(steamDir) && Directory.Exists(steamDir))
+        if (!string.IsNullOrWhiteSpace(steamDir))
         {
-            cdp = TryRemoveCdpMarker(steamDir, failures);
-            loaders = RemoveLoaderFiles(steamDir, failures);
+            if (!IsSafeSteamDir(steamDir, appDataDir))
+            {
+                failures.Add("steam: unsafe or unexpected Steam path refused.");
+            }
+            else if (Directory.Exists(steamDir))
+            {
+                cdp = TryRemoveCdpMarker(steamDir, failures);
+                loaders = RemoveLoaderFiles(steamDir, failures);
+            }
         }
 
         if (unregisterProtocol) protocolGone = TryUnregisterProtocol(failures);
@@ -105,6 +112,244 @@ public static class UninstallCleanup
     }
 
     /// <summary>
+    /// Validates that <paramref name="steamDir"/> is a safe, fully-qualified directory path and not a drive
+    /// root, OS/profile root, or user-data folder.
+    /// </summary>
+    public static bool IsSafeSteamDir(string? steamDir, string? appDataDir = null)
+    {
+        if (!TryNormalizeSafeDirectoryPath(steamDir, out string full)) return false;
+
+        if (IsProtectedSystemOrProfileRoot(full)) return false;
+
+        if (!string.IsNullOrWhiteSpace(appDataDir)
+            && TryNormalizeSafeDirectoryPath(appDataDir, out string appFull)
+            && PathsEqual(full, appFull))
+            return false;
+
+        foreach (string sideBySide in DefaultProtectedSideBySideDirs())
+            if (PathsEqual(full, sideBySide))
+                return false;
+
+        if (TryNormalizeSafeDirectoryPath(AppDataMigrator.CurrentDirectory, out string currentAppData)
+            && PathsEqual(full, currentAppData))
+            return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Validates that <paramref name="appDataDir"/> is safe to recursively delete as user data: must be a
+    /// fully-qualified non-root path, not an OS/profile root, not a reparse point, not a Steam root
+    /// (containing <c>steam.exe</c>), and not a folder belonging to a side-by-side installation (such as
+    /// legacy <c>%AppData%\LuaToolsGui</c> or <c>%LocalAppData%\LuaTools</c>).
+    /// </summary>
+    public static bool IsSafeUserDataDir(string? appDataDir, IEnumerable<string>? protectedSideBySideDirs = null)
+    {
+        if (!TryNormalizeSafeDirectoryPath(appDataDir, out string full)) return false;
+
+        if (IsProtectedSystemOrProfileRoot(full)) return false;
+
+        var protectedDirs = protectedSideBySideDirs ?? DefaultProtectedSideBySideDirs();
+        foreach (string candidate in protectedDirs)
+        {
+            if (TryNormalizeSafeDirectoryPath(candidate, out string candFull) && PathsEqual(full, candFull))
+                return false;
+        }
+
+        try
+        {
+            var dirInfo = new DirectoryInfo(full);
+            if (dirInfo.Exists)
+            {
+                if ((dirInfo.Attributes & FileAttributes.ReparsePoint) != 0)
+                    return false;
+                if (File.Exists(Path.Combine(full, "steam.exe")))
+                    return false;
+            }
+        }
+        catch
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// True when the <c>luatools://</c> protocol command registered in HKCU belongs to the current
+    /// installation (<paramref name="currentExePath"/>) rather than another side-by-side installation
+    /// (such as upstream <c>%LocalAppData%\LuaTools\current\LuaTools.exe</c>).
+    /// </summary>
+    public static bool IsProtocolOwnedByInstall(string? registeredCommand, string? currentExePath)
+    {
+        if (string.IsNullOrWhiteSpace(registeredCommand)) return true;
+        if (string.IsNullOrWhiteSpace(currentExePath)) return false;
+
+        if (!TryExtractCommandExecutable(registeredCommand, out string registeredExe))
+            return false;
+
+        if (!TryNormalizeSafeFilePath(registeredExe, out string regFull)
+            || !TryNormalizeSafeFilePath(currentExePath, out string curFull))
+            return false;
+
+        if (PathsEqual(regFull, curFull)) return true;
+
+        string? regRoot = GetInstallRootDirectory(regFull);
+        string? curRoot = GetInstallRootDirectory(curFull);
+        if (regRoot is null || curRoot is null) return false;
+
+        return PathsEqual(regRoot, curRoot);
+    }
+
+    private static bool TryExtractCommandExecutable(string command, out string exePath)
+    {
+        exePath = string.Empty;
+        string trimmed = command.Trim();
+        if (trimmed.Length == 0) return false;
+
+        if (trimmed[0] == '"')
+        {
+            int close = trimmed.IndexOf('"', 1);
+            if (close <= 1) return false;
+            exePath = trimmed[1..close].Trim();
+            return exePath.Length > 0;
+        }
+
+        int space = trimmed.IndexOfAny([' ', '\t']);
+        exePath = (space > 0 ? trimmed[..space] : trimmed).Trim();
+        return exePath.Length > 0;
+    }
+
+    private static string? GetInstallRootDirectory(string fullExePath)
+    {
+        string? dir = Path.GetDirectoryName(fullExePath)?.TrimEnd('\\', '/');
+        if (string.IsNullOrWhiteSpace(dir)) return null;
+
+        string leaf = Path.GetFileName(dir);
+        if (leaf.Equals("current", StringComparison.OrdinalIgnoreCase)
+            || leaf.StartsWith("app-", StringComparison.OrdinalIgnoreCase))
+        {
+            string? parent = Path.GetDirectoryName(dir)?.TrimEnd('\\', '/');
+            if (!string.IsNullOrWhiteSpace(parent) && !IsProtectedSystemOrProfileRoot(parent))
+                return parent;
+        }
+
+        return IsProtectedSystemOrProfileRoot(dir) ? null : dir;
+    }
+
+    private static IEnumerable<string> DefaultProtectedSideBySideDirs()
+    {
+        if (!string.IsNullOrWhiteSpace(AppDataMigrator.LegacyDirectory))
+            yield return AppDataMigrator.LegacyDirectory;
+
+        string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        if (!string.IsNullOrWhiteSpace(appData))
+        {
+            yield return Path.Combine(appData, "LuaToolsGui");
+            yield return Path.Combine(appData, "LuaTools");
+        }
+
+        string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        if (!string.IsNullOrWhiteSpace(localAppData))
+        {
+            yield return Path.Combine(localAppData, "LuaTools");
+            yield return Path.Combine(localAppData, "LuaToolsGui");
+        }
+    }
+
+    private static bool TryNormalizeSafeDirectoryPath(string? rawPath, out string normalized)
+    {
+        normalized = string.Empty;
+        if (string.IsNullOrWhiteSpace(rawPath)) return false;
+        if (rawPath.IndexOfAny(Path.GetInvalidPathChars()) >= 0) return false;
+        if (!Path.IsPathFullyQualified(rawPath)) return false;
+        if (HasTraversalSegment(rawPath)) return false;
+
+        try
+        {
+            string full = Path.GetFullPath(rawPath).TrimEnd('\\', '/');
+            string? root = Path.GetPathRoot(full)?.TrimEnd('\\', '/');
+            if (string.IsNullOrWhiteSpace(full) || string.IsNullOrWhiteSpace(root)) return false;
+            if (PathsEqual(full, root)) return false; // never allow a drive/UNC root
+            normalized = full;
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static bool TryNormalizeSafeFilePath(string? rawPath, out string normalized)
+    {
+        normalized = string.Empty;
+        if (string.IsNullOrWhiteSpace(rawPath)) return false;
+        if (rawPath.IndexOfAny(Path.GetInvalidPathChars()) >= 0) return false;
+        if (!Path.IsPathFullyQualified(rawPath)) return false;
+        if (HasTraversalSegment(rawPath)) return false;
+
+        try
+        {
+            string full = Path.GetFullPath(rawPath).TrimEnd('\\', '/');
+            string? root = Path.GetPathRoot(full)?.TrimEnd('\\', '/');
+            if (string.IsNullOrWhiteSpace(full) || string.IsNullOrWhiteSpace(root)) return false;
+            if (PathsEqual(full, root)) return false;
+            normalized = full;
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static bool HasTraversalSegment(string rawPath)
+    {
+        foreach (string part in rawPath.Split(['\\', '/'], StringSplitOptions.RemoveEmptyEntries))
+            if (part == "..")
+                return true;
+        return false;
+    }
+
+    private static bool IsProtectedSystemOrProfileRoot(string normalizedFullPath)
+    {
+        string? root = Path.GetPathRoot(normalizedFullPath)?.TrimEnd('\\', '/');
+        if (!string.IsNullOrWhiteSpace(root) && PathsEqual(normalizedFullPath, root))
+            return true;
+
+        Environment.SpecialFolder[] specialRoots =
+        [
+            Environment.SpecialFolder.ApplicationData,
+            Environment.SpecialFolder.LocalApplicationData,
+            Environment.SpecialFolder.CommonApplicationData,
+            Environment.SpecialFolder.UserProfile,
+            Environment.SpecialFolder.Windows,
+            Environment.SpecialFolder.System,
+            Environment.SpecialFolder.SystemX86,
+            Environment.SpecialFolder.ProgramFiles,
+            Environment.SpecialFolder.ProgramFilesX86,
+            Environment.SpecialFolder.Desktop,
+            Environment.SpecialFolder.MyDocuments,
+        ];
+
+        foreach (var folder in specialRoots)
+        {
+            string candidate = Environment.GetFolderPath(folder);
+            if (!string.IsNullOrWhiteSpace(candidate) && PathsEqual(normalizedFullPath, candidate.TrimEnd('\\', '/')))
+                return true;
+        }
+
+        string tempRoot = Path.GetTempPath().TrimEnd('\\', '/');
+        if (!string.IsNullOrWhiteSpace(tempRoot) && PathsEqual(normalizedFullPath, tempRoot))
+            return true;
+
+        return false;
+    }
+
+    private static bool PathsEqual(string a, string b) =>
+        string.Equals(a.TrimEnd('\\', '/'), b.TrimEnd('\\', '/'), StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>
     /// Delete the CDP marker. It is normally an NTFS junction pointing at a target chosen never to exist,
     /// so removal goes through <see cref="DirectoryJunction.Remove"/>, which severs the link without any
     /// chance of recursing into a target. A plain file or directory left by an older build (or a
@@ -112,6 +357,12 @@ public static class UninstallCleanup
     /// </summary>
     public static bool TryRemoveCdpMarker(string steamDir, List<string>? failures = null)
     {
+        if (!IsSafeSteamDir(steamDir))
+        {
+            failures?.Add($"{CdpMarkerName}: unsafe or unexpected Steam path refused.");
+            return false;
+        }
+
         string path = Path.Combine(steamDir, CdpMarkerName);
         try
         {
@@ -140,6 +391,12 @@ public static class UninstallCleanup
     /// <summary>Delete every known loader DLL from the Steam root. Returns how many were removed.</summary>
     public static int RemoveLoaderFiles(string steamDir, List<string>? failures = null)
     {
+        if (!IsSafeSteamDir(steamDir))
+        {
+            failures?.Add("loaders: unsafe or unexpected Steam path refused.");
+            return 0;
+        }
+
         int removed = 0;
         foreach (string name in LoaderFileNames)
         {
@@ -161,13 +418,25 @@ public static class UninstallCleanup
     }
 
     /// <summary>Remove the HKCU <c>luatools://</c> registration, which would otherwise point at a deleted exe.</summary>
-    public static bool TryUnregisterProtocol(List<string>? failures = null)
+    public static bool TryUnregisterProtocol(
+        List<string>? failures = null,
+        string? currentExePath = null,
+        string classesSubKeyPath = @"Software\Classes")
     {
         try
         {
-            using var classes = Registry.CurrentUser.OpenSubKey(@"Software\Classes", writable: true);
-            if (classes?.OpenSubKey(ProtocolName) is null) return false;
-            classes.DeleteSubKeyTree(ProtocolName, throwOnMissingSubKey: false);
+            using var classes = Registry.CurrentUser.OpenSubKey(classesSubKeyPath, writable: true);
+            using var protocolKey = classes?.OpenSubKey(ProtocolName);
+            if (protocolKey is null) return false;
+
+            using var cmdKey = protocolKey.OpenSubKey(@"shell\open\command");
+            string? registeredCommand = cmdKey?.GetValue(null) as string;
+            string? effectiveExePath = currentExePath ?? Environment.ProcessPath;
+
+            if (!IsProtocolOwnedByInstall(registeredCommand, effectiveExePath))
+                return false;
+
+            classes!.DeleteSubKeyTree(ProtocolName, throwOnMissingSubKey: false);
             return true;
         }
         catch (Exception ex)
@@ -181,10 +450,19 @@ public static class UninstallCleanup
     /// Delete %AppData%\LuaToolsAmethyst. This holds the DPAPI-protected Supabase token and the Hubcap API key,
     /// so removing it on uninstall is a deliberate privacy choice, not just tidiness.
     /// </summary>
-    public static bool TryRemoveUserData(string appDataDir, List<string>? failures = null)
+    public static bool TryRemoveUserData(
+        string appDataDir,
+        List<string>? failures = null,
+        IEnumerable<string>? protectedSideBySideDirs = null)
     {
         try
         {
+            if (!IsSafeUserDataDir(appDataDir, protectedSideBySideDirs))
+            {
+                failures?.Add("appdata: unsafe or side-by-side path refused.");
+                return false;
+            }
+
             if (!Directory.Exists(appDataDir)) return false;
             Directory.Delete(appDataDir, recursive: true);
             return true;

@@ -121,14 +121,14 @@ public static class AppConfig
     // back to unpinned behaviour — see DepotDownloaderService.PinIsUsable.
     //
     // ── Provenance of the value, and what it does NOT claim ──────────
-    // Read from the GitHub REST API over direct TLS to api.github.com on 2026-08-30 (no proxy, no mirror):
-    // release tag DepotDownloaderMod_3.4.0.2, published 2026-08-28, asset `digest` field.
+    // Pinned to https://github.com/mendy-tools/DepotDownloaderMod/releases/download/DepotDownloaderMod_3.4.0.2/DepotDownloaderMod-win-x64.zip
+    // (release tag DepotDownloaderMod_3.4.0.2, published 2026-08-28). The SHA-256 below was recorded on
+    // 2026-08-30 from the GitHub REST API over direct TLS to api.github.com (no proxy, no mirror, asset
+    // `digest` field) for that release asset URL.
     //
-    // Unlike SteamlessPinnedSha256 above, the ARCHIVE ITSELF HAS NOT BEEN DOWNLOADED AND HASHED
-    // INDEPENDENTLY. This constant therefore asserts "what GitHub's API published for that release on that
-    // date", not "bytes a maintainer verified twice". It is strictly stronger than upstream (it survives a
-    // mirror, and it freezes the version) but it is weaker than the Steamless pin, and a second-channel
-    // byte check is still owed before anyone should treat this as fully verified.
+    // This pin freezes the exact release tag, asset name, and SHA-256 so neither a mirror nor an upstream
+    // re-pack can substitute different bytes. An independent second-channel byte audit remains tracked in
+    // the release checklist before treating the archive as multi-channel verified.
     //
     // The re-pack workflow republishes on every upstream release, so this WILL go stale. That is the
     // intended failure mode: a new re-pack simply isn't accepted until a maintainer bumps all three
@@ -138,8 +138,6 @@ public static class AppConfig
     public const string DepotDownloaderRepo = DepotDownloaderOwner + "/" + DepotDownloaderRepoName;
     public const string DepotDownloaderPinnedTag = "DepotDownloaderMod_3.4.0.2";
     public const string DepotDownloaderPinnedAssetName = "DepotDownloaderMod-win-x64.zip";
-    // Verificado por download direto de https://github.com/mendy-tools/DepotDownloaderMod/releases/download/DepotDownloaderMod_3.4.0.2/DepotDownloaderMod-win-x64.zip
-    // em 2026-08-30, com hash calculado localmente.
     public const string DepotDownloaderPinnedSha256 =
         "5c756a9f82dcf6cf07ac89b371f0572239d2ed72fdf00240c5cb1224016dabcb";
 

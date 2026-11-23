@@ -240,21 +240,38 @@ public class LaunchModStore
         {
             AppLog.Log($"LaunchModStore: existing file unreadable (kept for manual recovery): {ex.GetType().Name}: {ex.Message}");
             // Present but unreadable → keep the file for manual recovery rather than starting empty and
-            // overwriting it on the next save.
-            try { File.Move(_path, _path + ".corrupt", overwrite: true); } catch { /* best effort */ }
+            // overwriting it on the next save. Timestamped so previous .corrupt backups are not overwritten.
+            QuarantineCorruptFile(_path);
             _mods = [];
         }
     }
 
+    private static void QuarantineCorruptFile(string path)
+    {
+        try
+        {
+            string stamp = DateTime.UtcNow.ToString("yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture);
+            string baseDest = $"{path}.corrupt.{stamp}";
+            string dest = baseDest;
+            int suffix = 1;
+            while (File.Exists(dest))
+                dest = $"{baseDest}.{suffix++}";
+
+            File.Move(path, dest, overwrite: false);
+        }
+        catch { /* best effort */ }
+    }
+
     /// <summary>Parse either the v2 envelope (<c>{"Version":2,"Mods":[...]}</c>) or a legacy v1 array
-    /// (<c>[...]</c>) and validate every entry fail-closed.</summary>
+    /// (<c>[...]</c>). Whole-file/envelope corruption throws so the file is quarantined; an individual
+    /// invalid entry inside the array is logged and skipped so remaining valid entries survive.</summary>
     private static Dictionary<int, LaunchMod> ParseAndValidate(string json)
     {
         using var doc = JsonDocument.Parse(json);
-        List<LaunchMod>? loaded;
+        JsonElement entriesArray;
         if (doc.RootElement.ValueKind == JsonValueKind.Array)
         {
-            loaded = doc.RootElement.Deserialize<List<LaunchMod>>(JsonOpts);
+            entriesArray = doc.RootElement;
         }
         else if (doc.RootElement.ValueKind == JsonValueKind.Object)
         {
@@ -268,26 +285,49 @@ public class LaunchModStore
                 || modsEl.ValueKind != JsonValueKind.Array)
                 throw new InvalidDataException("Missing or invalid Mods array in launchmods.json.");
 
-            loaded = modsEl.Deserialize<List<LaunchMod>>(JsonOpts);
+            entriesArray = modsEl;
         }
         else
         {
             throw new InvalidDataException("Unexpected JSON root in launchmods.json.");
         }
 
-        if (loaded is null) throw new InvalidDataException("Empty launchmods.json payload.");
-
-        var map = new Dictionary<int, LaunchMod>(loaded.Count);
-        foreach (var mod in loaded)
+        var map = new Dictionary<int, LaunchMod>();
+        int index = 0;
+        foreach (var entryEl in entriesArray.EnumerateArray())
         {
+            int currentIndex = index++;
+            LaunchMod? mod;
+            try
+            {
+                mod = entryEl.Deserialize<LaunchMod>(JsonOpts);
+            }
+            catch (JsonException ex)
+            {
+                AppLog.Log($"LaunchModStore: skipping malformed entry at index {currentIndex}: {ex.Message}");
+                continue;
+            }
+
             if (mod is null || mod.AppId <= 0 || mod.Original is null || mod.Desired is null)
-                throw new InvalidDataException("Invalid LaunchMod entry.");
+            {
+                AppLog.Log($"LaunchModStore: skipping invalid LaunchMod entry at index {currentIndex} (appId={mod?.AppId ?? 0}).");
+                continue;
+            }
             if (mod.Original.Any(static o => o is null) || mod.Desired.Any(static o => o is null))
-                throw new InvalidDataException("Null LaunchOption entry.");
+            {
+                AppLog.Log($"LaunchModStore: skipping entry with null LaunchOption for app {mod.AppId}.");
+                continue;
+            }
             if (mod.OriginalLaunchVdf is not null && !TryDecodeRawLaunch(mod.OriginalLaunchVdf, out _))
-                throw new InvalidDataException($"Corrupt OriginalLaunchVdf for app {mod.AppId}.");
+            {
+                AppLog.Log($"LaunchModStore: skipping entry with corrupt OriginalLaunchVdf for app {mod.AppId}.");
+                continue;
+            }
             if (!map.TryAdd(mod.AppId, mod))
-                throw new InvalidDataException($"Duplicate LaunchMod entry for app {mod.AppId}.");
+            {
+                AppLog.Log($"LaunchModStore: skipping duplicate LaunchMod entry for app {mod.AppId}.");
+                continue;
+            }
         }
 
         return map;
@@ -296,8 +336,8 @@ public class LaunchModStore
     private string SerializeStore() => JsonSerializer.Serialize(
         new StoreEnvelope { Version = CurrentFormatVersion, Mods = _mods.Values.ToList() }, JsonOpts);
 
-    /// <summary>Atomic write (tmp → move) with a .bak, same as SettingsService — a torn file here loses
-    /// every recorded edit AND the snapshots needed to undo them.</summary>
+    /// <summary>Atomic write via <see cref="AtomicFile"/> with a .bak, same as SettingsService — a torn file
+    /// here loses every recorded edit AND the snapshots needed to undo them.</summary>
     private void Persist()
     {
         try
@@ -309,11 +349,9 @@ public class LaunchModStore
                 return;
             }
 
-            string tmp = _path + ".tmp";
-            File.WriteAllText(tmp, SerializeStore());
             try { if (File.Exists(_path)) File.Copy(_path, _path + ".bak", overwrite: true); }
             catch { /* best effort */ }
-            File.Move(tmp, _path, overwrite: true);
+            AtomicFile.WriteAllText(_path, SerializeStore());
         }
         catch (Exception ex)
         {

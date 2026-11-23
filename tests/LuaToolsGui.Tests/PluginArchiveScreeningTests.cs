@@ -248,4 +248,92 @@ public sealed class PluginArchiveScreeningTests : IDisposable
     public void Screening_reports_rather_than_throws_for_a_missing_file() =>
         PluginInstallerService.ScreenPluginArchive(Path.Combine(_tmp, "absent.zip"), _dest)
             .Should().NotBeNull("a missing staged file is a refusal, not an unhandled exception");
+
+    // ══ "Steam opens clean" — backend/main.lua auto-launch neutralization ═════
+
+    private const string SampleUpstreamBackendMainLua = """
+        local logger = require("logger")
+        local millennium = require("millennium")
+        local http = require("http")
+        local fs = require("fs")
+        local m_utils = require("utils")
+
+        local BACKEND_BASE = "http://127.0.0.1:38492"
+
+        local function ensure_backend_running()
+            local response = http.get(BACKEND_BASE .. "/has/0", { timeout = 2 })
+            if response then return end -- already up
+
+            local local_appdata = m_utils.getenv("LOCALAPPDATA")
+            if not local_appdata or local_appdata == "" then
+                logger.warn("LOCALAPPDATA not available, cannot launch LuaTools backend")
+                return
+            end
+
+            local exe_path = local_appdata .. "\\LuaTools\\current\\LuaTools.exe"
+            if not fs.exists(exe_path) then
+                logger.warn("LuaTools.exe not found at " .. exe_path .. " (not installed?)")
+                return
+            end
+
+            m_utils.exec('start "" "' .. exe_path .. '" --minimized')
+            logger.log("Launched LuaTools backend: " .. exe_path)
+        end
+
+        function HasLuaToolsForApp(appid)
+            return backend_request("/has/" .. tostring(appid), "GET")
+        end
+
+        function StartLuaToolsAdd(appid)
+            return backend_request("/add/" .. tostring(appid), "POST")
+        end
+
+        local function on_load()
+            logger.log("LuaTools injector stub loading")
+            ensure_backend_running()
+            copy_webkit_files()
+            inject_webkit_files()
+            millennium.ready()
+        end
+
+        return { on_load = on_load }
+        """;
+
+    [Fact]
+    public void NeutralizeBackendAutoLaunchSource_disables_auto_launch_while_preserving_webkit_and_rpc()
+    {
+        string patched = PluginInstallerService.NeutralizeBackendAutoLaunchSource(SampleUpstreamBackendMainLua);
+
+        // 1. ensure_backend_running() is short-circuited and its call in on_load() is commented out.
+        patched.Should().Contain("if true then return end -- neutralized by LuaTools Amethyst (Steam opens clean)");
+        patched.Should().Contain("-- ensure_backend_running() -- neutralized by LuaTools Amethyst (Steam opens clean)");
+        patched.Should().Contain("-- m_utils.exec('start \"\" \"' .. exe_path .. '\" --minimized') -- neutralized by LuaTools Amethyst (Steam opens clean)");
+
+        // 2. Webkit injection and RPC handlers remain active (not commented out).
+        patched.Should().Contain("\n    copy_webkit_files()");
+        patched.Should().Contain("\n    inject_webkit_files()");
+        patched.Should().Contain("\n    millennium.ready()");
+        patched.Should().Contain("function HasLuaToolsForApp(appid)");
+        patched.Should().Contain("function StartLuaToolsAdd(appid)");
+
+        // 3. Idempotent on repeated runs.
+        PluginInstallerService.NeutralizeBackendAutoLaunchSource(patched).Should().Be(patched);
+    }
+
+    [Fact]
+    public void NeutralizeBackendAutoLaunch_patches_file_on_disk_atomically_and_is_idempotent()
+    {
+        string backendDir = Path.Combine(_dest, "backend");
+        Directory.CreateDirectory(backendDir);
+        string mainLuaPath = Path.Combine(backendDir, "main.lua");
+        File.WriteAllText(mainLuaPath, SampleUpstreamBackendMainLua);
+
+        PluginInstallerService.NeutralizeBackendAutoLaunch(_dest).Should().BeTrue();
+        string afterFirst = File.ReadAllText(mainLuaPath);
+        afterFirst.Should().Contain("-- ensure_backend_running() -- neutralized by LuaTools Amethyst");
+
+        // Second pass is a no-op and returns false.
+        PluginInstallerService.NeutralizeBackendAutoLaunch(_dest).Should().BeFalse();
+        File.ReadAllText(mainLuaPath).Should().Be(afterFirst);
+    }
 }
