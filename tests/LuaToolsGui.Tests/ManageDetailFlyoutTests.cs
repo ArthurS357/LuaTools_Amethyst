@@ -25,6 +25,17 @@ public class ManageDetailFlyoutTests(ThemeHost host)
         return Path.Combine(dir!.FullName, "src", "LuaToolsGui", "Views");
     }
 
+    private static T? FindFirst<T>(DependencyObject root) where T : DependencyObject
+    {
+        for (int i = 0; i < System.Windows.Media.VisualTreeHelper.GetChildrenCount(root); i++)
+        {
+            var child = System.Windows.Media.VisualTreeHelper.GetChild(root, i);
+            if (child is T match) return match;
+            if (FindFirst<T>(child) is { } nested) return nested;
+        }
+        return null;
+    }
+
     private static XDocument LoadView(string fileName) =>
         XDocument.Parse(File.ReadAllText(Path.Combine(ViewsDir(), fileName)));
 
@@ -88,10 +99,19 @@ public class ManageDetailFlyoutTests(ThemeHost host)
     {
         host.On(_ =>
         {
+            // Shorter than the About + Actions content, so the body has to scroll instead of growing past the window.
+            const double height = 200;
             var flyout = new LuaToolsGui.Views.ManageDetailFlyout();
-            flyout.Measure(new Size(900, 500));
-            flyout.Arrange(new Rect(0, 0, 900, 500));
-            flyout.ActualHeight.Should().Be(500);
+            flyout.Measure(new Size(900, height));
+            flyout.Arrange(new Rect(0, 0, 900, height));
+            flyout.UpdateLayout();
+
+            var scroller = FindFirst<System.Windows.Controls.ScrollViewer>(flyout);
+            scroller.Should().NotBeNull();
+            scroller!.ActualHeight.Should().BeGreaterThan(0).And.BeLessThan(height,
+                "the close row is pinned above it, so the scroller gets what is left, not its content's height");
+            scroller.ExtentHeight.Should().BeGreaterThan(scroller.ViewportHeight,
+                "content taller than the viewport must be reachable by scrolling, not clipped");
         });
     }
 }

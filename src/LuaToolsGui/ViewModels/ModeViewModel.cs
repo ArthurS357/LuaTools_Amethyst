@@ -379,7 +379,6 @@ public partial class ModeViewModel : ObservableObject
     private async Task SelectCustomMode()
     {
         if (IsBusy || IsCustomActive) return;
-        _detectionAttempted = true;
         _unlocker.SelectCustomMode();
         _toast.Show(Resources.Strings.Mode_Custom_Toast_Title, Resources.Strings.Mode_Custom_Toast_Body);
         await LoadAsync();

@@ -54,7 +54,10 @@ public class SteamAppListCache
                 }
             }
         }
-        catch { /* fall through to download */ }
+        catch (Exception ex)
+        {
+            AppLog.Log($"SteamAppList: fresh cache unreadable, downloading: {ex.GetType().Name}: {ex.Message}");
+        }
 
         // Download fresh: Morrenus first (reliable, includes delisted), then Steam as a fallback.
         if (await TryDownloadAsync(MorrenusUrl, flatArray: true) ||

@@ -78,6 +78,9 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
 
     private static Manifest? ReadManifest() => ReadManifest(ManifestPath);
 
+    /// <summary>Release tag of the engine this app installed, from the on-disk record; null if none.</summary>
+    public string? InstalledTag => ReadManifest()?.Tag;
+
     private static Manifest? ReadManifest(string path)
     {
         try
@@ -254,7 +257,7 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
             if (!File.Exists(configPath))
                 return (false, string.Format(Resources.Strings.Amethyst_Denuvo_NoConfig, AmethystToolConfig.FileName));
 
-            var (text, bom) = Decode(await File.ReadAllBytesAsync(configPath, ct));
+            var (text, bom) = Decode(await File.ReadAllBytesAsync(configPath, ct), strict: true);
             string updated = AmethystToolConfig.SetDenuvoAliases(text, enabled);
             if (updated == text) return (true, null); // already in that state: no write, no mtime bump
 
@@ -267,6 +270,13 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
             return (true, null);
         }
         catch (OperationCanceledException) { throw; }
+        catch (System.Text.DecoderFallbackException)
+        {
+            // Rewriting would replace every non-UTF-8 byte with U+FFFD: refuse instead of corrupting the file.
+            string message = $"{AmethystToolConfig.FileName} is not valid UTF-8; edit it by hand.";
+            AppLog.Log($"amethysttool: could not set {AmethystToolConfig.Key}: {message}");
+            return (false, message);
+        }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or FormatException)
         {
             AppLog.Log($"amethysttool: could not set {AmethystToolConfig.Key}: {ex.Message}");
@@ -277,11 +287,12 @@ public class AmethystToolService(SteamService steam, GithubProxy gh, DownloadNot
     private static readonly byte[] Utf8Bom = [0xEF, 0xBB, 0xBF];
 
     /// <summary>UTF-8 text, plus whether the file opened with a BOM — kept on write, so the edit changes the
-    /// one key and not the encoding of the whole file.</summary>
-    private static (string Text, bool Bom) Decode(byte[] bytes)
+    /// one key and not the encoding of the whole file. <paramref name="strict"/> (before a rewrite) throws
+    /// <see cref="System.Text.DecoderFallbackException"/> on a non-UTF-8 byte instead of decoding it to U+FFFD.</summary>
+    private static (string Text, bool Bom) Decode(byte[] bytes, bool strict = false)
     {
         bool bom = bytes.AsSpan().StartsWith(Utf8Bom);
-        return (new System.Text.UTF8Encoding(false).GetString(bom ? bytes[3..] : bytes), bom);
+        return (new System.Text.UTF8Encoding(false, throwOnInvalidBytes: strict).GetString(bom ? bytes[3..] : bytes), bom);
     }
 
     public async Task<GithubRelease?> FetchLatestAsync(bool force, CancellationToken ct = default)

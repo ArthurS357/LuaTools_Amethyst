@@ -944,6 +944,41 @@ public sealed class DownloadQueueTests : IDisposable
     }
 
     [Fact]
+    public async Task A_fix_list_that_arrives_after_its_flyout_was_closed_is_dropped()
+    {
+        Directory.CreateDirectory(_dir);
+        var slowA = new TaskCompletionSource<HttpResponseMessage>(TaskCreationOptions.RunContinuationsAsynchronously);
+        static HttpResponseMessage Listing(string appId, string fixId) => new(HttpStatusCode.OK)
+        {
+            Content = new StringContent($$"""{"appid":"{{appId}}","fixes":[{"id":"{{fixId}}","title":"{{fixId}}"}]}"""),
+        };
+        Task<HttpResponseMessage> Api(HttpRequestMessage req, CancellationToken _) =>
+            req.RequestUri!.Query.Contains("appid=111", StringComparison.Ordinal)
+                ? slowA.Task
+                : Task.FromResult(Listing("222", "b-fix"));
+
+        var (vm, _, _, _, _) = CreateFixesVm(
+            new DownloadQueue(NewCache(), _host.Dispatcher), CreateSignedInAuth(Path.Combine(_dir, "auth_race.dat")),
+            Api, (_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)));
+        var gameA = new FixGameCardVm(new DenuvoGameListing { AppId = "111", Name = "A", FixCount = 1 });
+        var gameB = new FixGameCardVm(new DenuvoGameListing { AppId = "222", Name = "B", FixCount = 1 });
+
+        Task openA = vm.OpenGameCommand.ExecuteAsync(gameA);
+        vm.CloseDetailCommand.Execute(null);
+        slowA.SetResult(Listing("111", "a-fix"));
+        await openA;
+
+        vm.SelectedGame.Should().BeNull();
+        vm.Fixes.Should().BeEmpty("game A's answer arrived after its flyout was closed");
+        vm.IsLoadingFixes.Should().BeFalse();
+
+        await vm.OpenGameCommand.ExecuteAsync(gameB);
+
+        vm.SelectedGame.Should().BeSameAs(gameB);
+        vm.Fixes.Select(f => f.Id).Should().Equal("b-fix");
+    }
+
+    [Fact]
     public async Task Reloading_or_clearing_fix_list_unbinds_discarded_FixSlotDownloadVms_from_PropertyChanged()
     {
         Directory.CreateDirectory(_dir);

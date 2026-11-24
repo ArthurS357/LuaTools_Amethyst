@@ -612,8 +612,9 @@ public class LuaToolsApiClient(
     }
 
     /// <summary>
-    /// Stream a response body into the staging folder. <paramref name="folder"/> and
-    /// <paramref name="stallTimeout"/> exist for tests; production passes neither.
+    /// Stream a response body into the staging folder. <paramref name="folder"/> is a per-download folder
+    /// (<see cref="DownloadVerifiedAsync"/>; tests too), null for the shared staging root; <paramref name="stallTimeout"/>
+    /// exists for tests only.
     /// </summary>
     internal static async Task<DownloadedFile> SaveResponseAsync(
         HttpResponseMessage res, string fallbackName,
@@ -622,6 +623,9 @@ public class LuaToolsApiClient(
     {
         string fileName = StagedFileName(res.Content.Headers.ContentDisposition?.FileName, fallbackName);
 
+        // A per-download folder this call creates (DownloadVerifiedAsync passes a fresh GUID one) goes again if the
+        // body fails, or every failed download leaves an empty folder in %TEMP%. The shared root is never removed.
+        bool ownsFolder = folder is not null && !Directory.Exists(folder);
         folder ??= InterimDownloadsFolder;
         Directory.CreateDirectory(folder);
         // ponytail: two downloads with the same name share this path (the name is build identity, so it
@@ -658,6 +662,8 @@ public class LuaToolsApiClient(
             // The caller never gets a DownloadedFile for a body that failed or was cancelled, so nothing
             // downstream knows this path to clean it up. The streams are already closed by now.
             try { File.Delete(filePath); } catch { /* best effort */ }
+            if (ownsFolder)
+                try { Directory.Delete(folder); } catch { /* best effort; non-recursive, so only when empty */ }
 
             if (ex is OperationCanceledException && !ct.IsCancellationRequested)
                 throw new ApiException(string.Format(Resources.Strings.Api_Err_DownloadStalled, stall.TotalSeconds.ToString("0")));

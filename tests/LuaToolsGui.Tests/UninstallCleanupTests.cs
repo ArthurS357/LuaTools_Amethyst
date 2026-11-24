@@ -142,6 +142,41 @@ public class UninstallCleanupTests : IDisposable
         Assert.False(Directory.Exists(_appData));
     }
 
+    [Fact]
+    public void A_user_data_folder_that_is_a_junction_loses_only_the_link_and_reports_the_target_left_behind()
+    {
+        string target = Path.Combine(_tmp, "MovedData");
+        Directory.CreateDirectory(target);
+        File.WriteAllText(Path.Combine(target, "auth.dat"), "elsewhere");
+        string link = Path.Combine(_tmp, "LuaToolsAmethystLinked");
+        Assert.True(DirectoryJunction.Create(link, target));
+        Assert.False(UninstallCleanup.IsSafeUserDataDir(link));   // the public check still refuses a link
+
+        var failures = new List<string>();
+
+        // Not counted as removed: the sign-in data is still at the target, and the report says so.
+        Assert.False(UninstallCleanup.TryRemoveUserData(link, failures));
+
+        Assert.False(Directory.Exists(link));
+        Assert.True(File.Exists(Path.Combine(target, "auth.dat")));
+        Assert.Contains(failures, f => f.Contains("only the link was removed", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void A_junction_inside_the_user_data_folder_is_detached_without_deleting_its_target()
+    {
+        string outside = Path.Combine(_tmp, "Outside");
+        Directory.CreateDirectory(outside);
+        File.WriteAllText(Path.Combine(outside, "keep.txt"), "not ours");
+        File.WriteAllText(Path.Combine(_appData, "auth.dat"), "dpapi-blob");
+        Assert.True(DirectoryJunction.Create(Path.Combine(_appData, "covers"), outside));
+
+        Assert.True(UninstallCleanup.TryRemoveUserData(_appData));
+
+        Assert.False(Directory.Exists(_appData));
+        Assert.True(File.Exists(Path.Combine(outside, "keep.txt")));
+    }
+
     // ── Whole-pass behaviour ────────────────────────────────────────────────
 
     [Fact]
@@ -278,6 +313,17 @@ public class UninstallCleanupTests : IDisposable
         Assert.False(UninstallCleanup.IsProtocolOwnedByInstall(upstreamCmd, amethystCurrent));
         Assert.False(UninstallCleanup.IsProtocolOwnedByInstall(portableCmd, amethystCurrent));
         Assert.False(UninstallCleanup.IsProtocolOwnedByInstall(amethystCmd, null));
+    }
+
+    [Fact]
+    public void An_unquoted_command_with_spaces_is_read_up_to_the_exe_not_the_first_space()
+    {
+        const string ours = @"C:\Users\Ana Maria\AppData\Local\LuaToolsAmethyst\current\LuaTools.exe";
+
+        Assert.True(UninstallCleanup.IsProtocolOwnedByInstall($"{ours} %1", ours));
+        Assert.True(UninstallCleanup.IsProtocolOwnedByInstall(ours, ours));
+        Assert.False(UninstallCleanup.IsProtocolOwnedByInstall(@"C:\Program Files\Other Tool\other.exe %1", ours));
+        Assert.False(UninstallCleanup.IsProtocolOwnedByInstall(@"C:\Users\Ana Maria\AppData\Local\LuaTools\current\LuaTools.exe %1", ours));
     }
 
     [Fact]

@@ -186,6 +186,27 @@ public sealed class HygieneHardeningTests : IDisposable
     }
 
     [Fact]
+    public async Task A_failed_download_removes_the_per_download_folder_it_created_but_never_a_folder_it_was_given()
+    {
+        string fresh = Path.Combine(_root, Guid.NewGuid().ToString("N"));
+        using (var res = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(new FailingStream()) })
+        {
+            var act = () => LuaToolsApiClient.SaveResponseAsync(res, "fix.zip", null, CancellationToken.None, fresh);
+            await act.Should().ThrowAsync<IOException>();
+        }
+        Directory.Exists(fresh).Should().BeFalse("an empty GUID folder per failed orphan download used to pile up in %TEMP%");
+
+        string existing = Path.Combine(_root, "shared");
+        Directory.CreateDirectory(existing);
+        using (var res = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(new FailingStream()) })
+        {
+            var act = () => LuaToolsApiClient.SaveResponseAsync(res, "fix.zip", null, CancellationToken.None, existing);
+            await act.Should().ThrowAsync<IOException>();
+        }
+        Directory.Exists(existing).Should().BeTrue("a folder that was already there is not this download's to remove");
+    }
+
+    [Fact]
     public async Task A_hubcap_download_with_a_reserved_server_name_is_staged_under_the_fallback()
     {
         string fallback = $"hubcap-fallback-{Guid.NewGuid():N}.zip";

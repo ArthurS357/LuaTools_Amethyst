@@ -367,7 +367,8 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
 
     // Per-game tag filter (only meaningful when this game's fixes span multiple tags).
     private List<FixItemVm> _allFixes = [];
-    private readonly HashSet<FixItemVm> _trackedFixes = [];
+    /// <summary>Bumped by every open/close of the detail flyout: a fix list that arrives for an older one is dropped.</summary>
+    private int _openGeneration;
     private readonly SemaphoreSlim _installGate = new(1, 1);
     private int _pendingManifestInstalls;
     private int _restartOwed;
@@ -585,30 +586,19 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
     /// never retain <see cref="DownloadItem.PropertyChanged"/> subscriptions.</summary>
     internal void ReplaceFixes(IReadOnlyList<FixItemVm> next)
     {
-        foreach (var tracked in _trackedFixes.ToArray())
-        {
-            if (!next.Contains(tracked))
-            {
-                tracked.Unbind();
-                _trackedFixes.Remove(tracked);
-            }
-        }
+        // Fixes is always a filtered subset of _allFixes, so this one pass unbinds everything discarded.
         foreach (var existing in _allFixes)
             if (!next.Contains(existing))
                 existing.Unbind();
-        foreach (var shown in Fixes)
-            if (!next.Contains(shown))
-                shown.Unbind();
 
         Fixes.Clear();
         _allFixes = [.. next];
-        foreach (var f in _allFixes)
-            _trackedFixes.Add(f);
     }
 
     [RelayCommand]
     private async Task OpenGame(FixGameCardVm game)
     {
+        int generation = ++_openGeneration;
         SelectedGame = game;
         _ = game.EnsureCoverAsync(covers); // ensure the flyout header image is cached too
         ReplaceFixes([]);
@@ -618,6 +608,7 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
         try
         {
             var data = await api.GetDenuvoFixesAsync(game.AppId);
+            if (generation != _openGeneration) return;   // another game was opened (or the flyout closed) meanwhile
             if (data is not null)
             {
                 ReplaceFixes(data.Fixes.Select(f => new FixItemVm(f)).ToList());
@@ -627,6 +618,7 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
                 string? installDir = long.TryParse(game.AppId, out long gameAppId)
                     ? await Task.Run(() => library.GetInstallDir(gameAppId))
                     : null;
+                if (generation != _openGeneration) return;
                 foreach (var f in _allFixes)
                 {
                     f.GameInstalled = installDir is not null;
@@ -650,7 +642,10 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
             }
         }
         catch (Exception ex) { AppLog.Log($"Fixes: fix list load failed: {ex.GetType().Name}: {ex.Message}"); /* leave empty — flyout shows "no fixes" */ }
-        finally { IsLoadingFixes = false; }
+        finally
+        {
+            if (generation == _openGeneration) IsLoadingFixes = false;
+        }
     }
 
     [RelayCommand]
@@ -672,6 +667,8 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
     [RelayCommand]
     private void CloseDetail()
     {
+        _openGeneration++;
+        IsLoadingFixes = false;   // the load it interrupts no longer owns this flag
         SelectedGame = null;
         ReplaceFixes([]);
         UpdatePageDownloadState();
@@ -868,18 +865,8 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
     /// </summary>
     public void SyncFixesWithQueue()
     {
-        foreach (var tracked in _trackedFixes.ToArray())
-        {
-            if (!_allFixes.Contains(tracked))
-            {
-                tracked.Unbind();
-                _trackedFixes.Remove(tracked);
-            }
-        }
-
         foreach (var fix in _allFixes)
         {
-            _trackedFixes.Add(fix);
             SyncSlotWithQueue(fix.ManifestSlot);
             SyncSlotWithQueue(fix.FixSlot);
         }

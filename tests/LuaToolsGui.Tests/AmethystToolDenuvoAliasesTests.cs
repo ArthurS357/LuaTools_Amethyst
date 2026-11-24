@@ -214,6 +214,20 @@ public class AmethystToolDenuvoAliasesTests : IDisposable
     }
 
     [Fact]
+    public async Task A_file_that_is_not_utf8_is_refused_and_left_byte_for_byte()
+    {
+        string path = Path.Combine(_dir, AmethystToolConfig.FileName);
+        byte[] latin1 = [.. System.Text.Encoding.ASCII.GetBytes("# caf"), 0xE9, (byte)'\n', .. System.Text.Encoding.ASCII.GetBytes("[manifest]\nfailover = true\n")];
+        await File.WriteAllBytesAsync(path, latin1);
+
+        var (ok, error) = await AmethystToolService.SetDenuvoAliasesAsync(path, enabled: true);
+
+        ok.Should().BeFalse();
+        error.Should().Contain("UTF-8");
+        (await File.ReadAllBytesAsync(path)).Should().Equal(latin1, "a rewrite would have turned 0xE9 into U+FFFD");
+    }
+
+    [Fact]
     public async Task The_write_is_atomic_and_leaves_no_temp_file_behind()
     {
         string path = Config(Typical);

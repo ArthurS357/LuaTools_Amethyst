@@ -143,7 +143,12 @@ public static class UninstallCleanup
     /// (containing <c>steam.exe</c>), and not a folder belonging to a side-by-side installation (such as
     /// legacy <c>%AppData%\LuaToolsGui</c> or <c>%LocalAppData%\LuaTools</c>).
     /// </summary>
-    public static bool IsSafeUserDataDir(string? appDataDir, IEnumerable<string>? protectedSideBySideDirs = null)
+    public static bool IsSafeUserDataDir(string? appDataDir, IEnumerable<string>? protectedSideBySideDirs = null) =>
+        IsSafeUserDataDir(appDataDir, protectedSideBySideDirs, allowLink: false);
+
+    /// <param name="allowLink">Accept a reparse point at <paramref name="appDataDir"/> itself: for a caller that
+    /// only ever severs the link, never recurses through it.</param>
+    private static bool IsSafeUserDataDir(string? appDataDir, IEnumerable<string>? protectedSideBySideDirs, bool allowLink)
     {
         if (!TryNormalizeSafeDirectoryPath(appDataDir, out string full)) return false;
 
@@ -161,7 +166,7 @@ public static class UninstallCleanup
             var dirInfo = new DirectoryInfo(full);
             if (dirInfo.Exists)
             {
-                if ((dirInfo.Attributes & FileAttributes.ReparsePoint) != 0)
+                if (!allowLink && (dirInfo.Attributes & FileAttributes.ReparsePoint) != 0)
                     return false;
                 if (File.Exists(Path.Combine(full, "steam.exe")))
                     return false;
@@ -213,6 +218,15 @@ public static class UninstallCleanup
             if (close <= 1) return false;
             exePath = trimmed[1..close].Trim();
             return exePath.Length > 0;
+        }
+
+        // Unquoted (hand-written or by an older tool): a path with spaces must not be cut at the first space,
+        // or this install's own registration reads as a third party's and survives the uninstall.
+        int exe = trimmed.IndexOf(".exe", StringComparison.OrdinalIgnoreCase);
+        if (exe > 0 && (exe + 4 == trimmed.Length || char.IsWhiteSpace(trimmed[exe + 4])))
+        {
+            exePath = trimmed[..(exe + 4)];
+            return true;
         }
 
         int space = trimmed.IndexOfAny([' ', '\t']);
@@ -457,14 +471,29 @@ public static class UninstallCleanup
     {
         try
         {
-            if (!IsSafeUserDataDir(appDataDir, protectedSideBySideDirs))
+            if (!IsSafeUserDataDir(appDataDir, protectedSideBySideDirs, allowLink: true))
             {
                 failures?.Add("appdata: unsafe or side-by-side path refused.");
                 return false;
             }
 
             if (!Directory.Exists(appDataDir)) return false;
-            Directory.Delete(appDataDir, recursive: true);
+
+            var dir = new DirectoryInfo(appDataDir);
+            if (dir.Attributes.HasFlag(FileAttributes.ReparsePoint))
+            {
+                // The user moved the data folder and left a junction/symlink here: sever the link only. Following
+                // it would delete whatever it points at, which nothing here validated. The sign-in data stays at
+                // the target, so this is reported and NOT counted as user data removed.
+                bool severed = DirectoryJunction.Remove(appDataDir);
+                failures?.Add(severed
+                    ? "appdata: was a link; only the link was removed, the folder it pointed to (with sign-in data) was left in place."
+                    : "appdata: was a link and the link could not be removed.");
+                return false;
+            }
+
+            // Never walks into a nested link either (a junction inside is detached, its target untouched).
+            Backups.BackupService.DeleteTree(dir);
             return true;
         }
         catch (Exception ex)

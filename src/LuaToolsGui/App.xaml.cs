@@ -743,6 +743,10 @@ public partial class App : Application
             var amethyst = _host.Services.GetRequiredService<AmethystToolService>();
             var installer = _host.Services.GetRequiredService<PluginInstallerService>();
 
+            // The engine is not pinned (decided 2026-11-08): naming the build on disk is what makes a report answerable.
+            if (amethyst.IsInstalledLocally())
+                AppLog.Log($"amethysttool: installed engine {amethyst.InstalledTag ?? "unknown (not installed by this app)"}");
+
             // Config Guard: if SelectedMode is null or unrecognized (e.g. cleared or overwritten by
             // upstream LuaTools), recover safely so onboarding never breaks and an existing AmethystTool
             // install keeps its default backend.
