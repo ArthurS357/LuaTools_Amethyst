@@ -29,6 +29,14 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.8.5", "2026-11-24",
+            "Internal build: safer launch-option records and uninstall, and a quieter log.",
+            [
+                "If the launch-options record cannot be read for a moment (locked by an antivirus or a sync tool), it is left in place and saving is refused until it reads again, instead of being set aside as corrupt and replaced by an empty one. At most five timestamped backups of it are kept.",
+                "Uninstalling removes only the link when the data folder is a junction, never the folder it points to, and recognises this app's own protocol registration even without quotes.",
+                "The plugin log reports a skipped multi-line command once instead of on every status check.",
+            ]),
+
         new("1.8.4", "2026-11-23",
             "Internal build: cached game details are read off the UI thread, and the app-list cache recovery is tested end to end.",
             [

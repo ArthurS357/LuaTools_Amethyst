@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.8.4");
+        AppVersion.Current.Should().Be("1.8.5");
     }
 
     [Fact]
@@ -53,6 +53,16 @@ public class ChangelogTests
         text.Should().ContainEquivalentOf("memory for the session only");    // never written to settings.json
         text.Should().ContainEquivalentOf("%USERPROFILE%");                  // profile masking in logs
         text.Should().ContainEquivalentOf("DNS fallback");                   // Auto clears the failure flag
+    }
+
+    [Fact]
+    public void The_1_8_5_entry_names_what_that_release_was_about()
+    {
+        string text = string.Join(" ", Changelog.Entries.Single(e => e.Version == "1.8.5").Highlights);
+
+        text.Should().ContainEquivalentOf("refused");                        // LaunchModStore fails closed on I/O
+        text.Should().ContainEquivalentOf("junction");                       // uninstall severs the link only
+        text.Should().ContainEquivalentOf("five timestamped backups");       // .bak.<ts> cap
     }
 
     [Fact]

@@ -1,5 +1,38 @@
 # Changelog
 
+## 1.8.5 — 2026-11-24 (build interna, sem tag nem release)
+
+Lotes K6 e K7: divida LOW da triagem da 1.8.4. So existe na `main` e em pacote local; a proxima versao publica e a 1.9.0.
+
+### K6
+
+- **Log do `exec` multilinha (`PluginInstallerService`):** a linha pulada e registrada uma vez por instancia
+  (`ConcurrentDictionary` no singleton, sem estado estatico), e so fora de `ensure_backend_running()`, onde o
+  `if true then return end` ja a torna inofensiva. Antes, cada status/poke do Steam gravava a mesma linha.
+- **`LaunchModStore`, I/O x corrupcao:** `IOException`/`UnauthorizedAccessException` na leitura deixam o arquivo onde esta
+  (sem `.corrupt.<ts>`); `Save` lanca `IOException` (falha fechada) e `TrySnapshot` devolve `false` ate a releitura dar certo.
+  JSON invalido segue indo para quarentena. A tela de opcoes de inicializacao mostra o erro num toast.
+- **`.bak.<ts>` com teto:** no maximo 5 geracoes, ordenadas pelo carimbo UTC do nome (nao pelo `LastWriteTime`, que o
+  `File.Copy` herda); a poda e best-effort com log.
+
+### K7
+
+- **`UninstallCleanup`:** pasta de dados que e juncao perde so o link (`DirectoryJunction.Remove`); a remocao normal usa
+  `BackupService.DeleteTree`, que nunca entra em link. Comando de protocolo sem aspas e lido ate o `.exe`.
+- **Pasta GUID orfa em `%TEMP%`:** `SaveResponseAsync` apaga a pasta por download que criou quando o corpo falha.
+- **`launchmods.json.pre-restore`:** o snapshot anterior vira geracao `.pre-restore.<ts>` (teto 5).
+- **Aba Correcao:** resposta atrasada de um jogo cujo painel ja fechou e descartada (contador de geracao); `_trackedFixes`
+  (copia de `_allFixes`) removido.
+- **Editor TOML:** `amethysttool.toml` com byte nao UTF-8 e recusado em vez de regravado com U+FFFD.
+- **Diagnostico:** versao da engine instalada no log de startup; `catch {}` do cache da lista de apps agora loga.
+- **Testes:** o teste de altura curta do `ManageDetailFlyout` passou a provar a rolagem; `_detectionAttempted` deixou de ser
+  marcado no Modo Custom.
+
+### Cortado (registrado no vault)
+
+TOCTOU do `DeleteTree` (exige P/Invoke por handle), `TimeProvider` no `SaveResponseAsync`, array aninhado no editor TOML,
+aliases do Modo Denuvo, teste do A-02, membros `...ForTest`, B2-B5 e `AnalysisLevel`.
+
 ## 1.8.4 — 2026-11-23 (build interna, sem tag nem release)
 
 Lote J1: leitura de detalhes fora da thread de UI, teste de ponta a ponta da lista de apps e fechamento de duas pendencias

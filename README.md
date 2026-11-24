@@ -13,7 +13,7 @@ enable/disable), manages unlocker modes, launches games through Steam, and injec
 into Steam's store pages. It ships translated in 29 languages and installs via Velopack; updating itself
 is opt-in (see [Updating](#updating)).
 
-Latest public release: **[v1.8.2](https://github.com/ArthurS357/LuaTools_Amethyst/releases/tag/v1.8.2)** · The `main` branch is **1.8.4**, an internal build that has no release or tag; the next public release is 1.9.0 · Repository: <https://github.com/ArthurS357/LuaTools_Amethyst>
+Latest public release: **[v1.8.2](https://github.com/ArthurS357/LuaTools_Amethyst/releases/tag/v1.8.2)** · The `main` branch is **1.8.5**, an internal build that has no release or tag; the next public release is 1.9.0 · Repository: <https://github.com/ArthurS357/LuaTools_Amethyst>
 
 ### Checking which build you are running
 
@@ -737,7 +737,7 @@ vpk pack --packId LuaToolsAmethyst --packVersion <x.y.z> `
 
 > **The `packId` never changes**: it keys every existing install and renaming it orphans them. The pack version is
 > the app version. Packages are published manually, not by a workflow; `Releases/` is git-ignored. A build on `main`
-> with no tag (1.8.4 today) is only ever packed locally.
+> with no tag (1.8.5 today) is only ever packed locally.
 
 ### Code signing (optional)
 
