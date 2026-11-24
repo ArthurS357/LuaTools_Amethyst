@@ -122,12 +122,24 @@ public partial class LaunchOptionsViewModel : ObservableObject
     public bool HasSelection => Selected is not null;
 
     /// <summary>True once this game has a stored edit — enables Restore.</summary>
-    [ObservableProperty] private bool _isModded;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanRestore))]
+    private bool _isModded;
 
     /// <summary>True when the entry list no longer matches <see cref="_baseline"/>.</summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CanSave))]
     private bool _isDirty;
+
+    /// <summary>True while appinfo.vdf is being written or restored off the UI thread. Shared by Save and
+    /// Restore so neither can start while the other (or a second click of itself) is still running.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanSave))]
+    [NotifyPropertyChangedFor(nameof(CanRestore))]
+    [NotifyCanExecuteChangedFor(nameof(CancelCommand))]
+    private bool _isApplying;
+
+    public bool CanRestore => IsModded && !IsApplying;
 
     /// <summary>Set by the view so the dialog can close itself.</summary>
     public Action<bool>? CloseWith { get; set; }
@@ -285,13 +297,13 @@ public partial class LaunchOptionsViewModel : ObservableObject
 
     /// <summary>Save is only offered when there's an actual change to write — applying closes Steam, so
     /// a no-op save is worse than useless.</summary>
-    public bool CanSave => _state is not null && Error is null && IsDirty;
+    public bool CanSave => _state is not null && Error is null && IsDirty && !IsApplying;
 
     /// <summary>Stage the edit, then offer to write it into appinfo (which closes Steam).</summary>
     [RelayCommand]
-    private void Save()
+    private async Task SaveAsync()
     {
-        if (_state is null) return;
+        if (_state is null || IsApplying) return;
 
         var desired = Entries.Select(e => e.ToOption()).ToList();
         LaunchOption.Renumber(desired);   // list order becomes 0,1,2… so Up/Down actually applies
@@ -314,7 +326,7 @@ public partial class LaunchOptionsViewModel : ObservableObject
         IsModded = true;
 
         if (_confirm(Resources.Strings.Launch_ApplyNow_Body, Resources.Strings.Launch_ApplyNow_Title))
-            ApplyToSteam(new Dictionary<int, IReadOnlyList<LaunchOption>> { [(int)AppId] = desired });
+            await ApplyToSteamAsync(new Dictionary<int, IReadOnlyList<LaunchOption>> { [(int)AppId] = desired });
         else
             _toast.Show(Resources.Strings.Launch_Title, Resources.Strings.Launch_Staged);
 
@@ -323,8 +335,9 @@ public partial class LaunchOptionsViewModel : ObservableObject
 
     /// <summary>Put back the snapshot taken before this game was first edited.</summary>
     [RelayCommand]
-    private void Restore()
+    private async Task RestoreAsync()
     {
+        if (IsApplying) return;
         if (_launch.StageRestore((int)AppId) is null)
         {
             _toast.Show(Resources.Strings.Launch_Title, Resources.Strings.Launch_NothingToRestore, error: true);
@@ -335,7 +348,14 @@ public partial class LaunchOptionsViewModel : ObservableObject
 
         // The record is only forgotten when the game was really restored; on failure it stays, along
         // with the snapshot needed to try again.
-        var result = _launch.Restore([(int)AppId]);
+        // Off the UI thread: closing Steam (up to its grace period) and rewriting the ~373 MB cache froze
+        // the dialog. The continuation comes back on the dispatcher for the toasts and IsModded.
+        int appId = (int)AppId;
+        IsApplying = true;
+        RestoreResult result;
+        try { result = await Task.Run(() => _launch.Restore([appId])); }
+        finally { IsApplying = false; }
+
         if (!result.Ok)
         {
             string reason = result.Error ?? result.Failed[0].Reason;
@@ -352,8 +372,12 @@ public partial class LaunchOptionsViewModel : ObservableObject
         CloseWith?.Invoke(true);
     }
 
-    [RelayCommand]
+    /// <summary>Not while writing: the dialog would vanish mid-write with Steam still closed. The window's
+    /// own close (X) is held by the same flag in the view.</summary>
+    [RelayCommand(CanExecute = nameof(CanCancel))]
     private void Cancel() => CloseWith?.Invoke(false);
+
+    private bool CanCancel() => !IsApplying;
 
     /// <summary>Open the game's folder (steamapps\common\&lt;installdir&gt;) in Explorer.</summary>
     [RelayCommand]
@@ -367,9 +391,13 @@ public partial class LaunchOptionsViewModel : ObservableObject
     /// Write into appinfo.vdf. Steam is closed first — it owns the file and regenerates it from its own
     /// in-memory state, so writing underneath a running client achieves nothing.
     /// </summary>
-    private void ApplyToSteam(IReadOnlyDictionary<int, IReadOnlyList<LaunchOption>> edits)
+    private async Task ApplyToSteamAsync(IReadOnlyDictionary<int, IReadOnlyList<LaunchOption>> edits)
     {
-        var result = _launch.Apply(edits, restartSteam: true);
+        IsApplying = true;
+        ApplyResult result;
+        try { result = await Task.Run(() => _launch.Apply(edits, restartSteam: true)); }
+        finally { IsApplying = false; }
+
         if (result.Ok)
             _toast.Show(Resources.Strings.Launch_Title,
                 result.SteamWasRunning

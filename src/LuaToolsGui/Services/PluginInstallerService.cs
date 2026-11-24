@@ -1,5 +1,4 @@
 using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
@@ -669,6 +668,21 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
             if (ScreenPluginArchive(zipPath, FrontendDir) is { } rejection)
                 return (false, rejection);
 
+            // Decided BEFORE the download notice and before the frontend is replaced: a deferred unattended
+            // update must neither pop a 6-second install toast while the user is in a game nor touch disk.
+            // Testing switch: when `.luatools-dll-update-disabled` is present, never touch any on-disk
+            // DLL (so hand-placed test builds aren't clobbered) — and thus never stop/restart Steam for it.
+            bool legacyPresent = LegacyDllPaths.Any(File.Exists);
+            bool anySlotNeedsUpdate = Slots.Any(slot =>
+                SlotPath(slot) is not { } cur || !File.Exists(cur)
+                || AssetIntegrity.Sha256OfFile(cur) != slotShas[slot]);
+            bool dllNeedsUpdate = !DllUpdateDisabled && (anySlotNeedsUpdate || legacyPresent);
+            if (ShouldDeferDllSwap(dllNeedsUpdate, IsUnattendedInstall, SteamService.IsGameRunning))
+            {
+                AppLog.Log("Plugin auto-update deferred: the loader DLL swap needs Steam stopped and a game is running.");
+                return (false, "Deferred until no game is running.");
+            }
+
             // Disclose what is about to be installed — the frontend zip plus one loader DLL per slot, the
             // latter going into the Steam root. Cancelling here has cost nothing: not a byte has been
             // written outside the temp folder yet. The notice names the source that actually served these
@@ -705,16 +719,10 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
             //    together (never partially out of date relative to each other). The DLLs are locked while
             //    Steam runs, so either condition means stopping+restarting Steam; a frontend-only update
             //    (the common case) skips all of that and applies with zero Steam disruption.
-            // Testing switch: when `.luatools-dll-update-disabled` is present, never touch any on-disk DLL
-            // (so hand-placed test builds aren't clobbered) — and thus never stop/restart Steam for it either.
-            bool legacyPresent = LegacyDllPaths.Any(File.Exists);
-            bool anySlotNeedsUpdate = Slots.Any(slot =>
-                SlotPath(slot) is not { } cur || !File.Exists(cur)
-                || AssetIntegrity.Sha256OfFile(cur) != slotShas[slot]);
-            bool dllNeedsUpdate = !DllUpdateDisabled && (anySlotNeedsUpdate || legacyPresent);
+            //    (dllNeedsUpdate is computed above, before anything was written.)
             if (dllNeedsUpdate)
             {
-                bool wasRunning = Process.GetProcessesByName("steam").Length > 0;
+                bool wasRunning = SteamService.IsSteamRunning(); // disposes the Process snapshot
                 steam.StopSteam();
                 await Task.Delay(1200, ct); // let file handles on the loader DLLs release after the kill
 
@@ -792,6 +800,21 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
     }
 
 
+    /// <summary>
+    /// Marks the install running under <see cref="AutoUpdateAsync"/>. That path runs on every Steam open —
+    /// typically the moment a desktop shortcut starts Steam to launch a game — and a loader-DLL swap means
+    /// <c>StopSteam</c>, whose forced fallback kills the game with it. An AsyncLocal rather than a
+    /// parameter because <see cref="InstallAsync"/> is the virtual seam the auto-update tests spy on.
+    /// </summary>
+    private static readonly AsyncLocal<bool> Unattended = new();
+
+    internal static bool IsUnattendedInstall => Unattended.Value;
+
+    /// <summary>An unattended DLL swap waits for the next Steam open while a game runs; anything the user
+    /// started, or a frontend-only update (no Steam stop), goes ahead.</summary>
+    internal static bool ShouldDeferDllSwap(bool dllNeedsUpdate, bool unattended, Func<bool> isGameRunning) =>
+        dllNeedsUpdate && unattended && isGameRunning();
+
     /// <summary>Silent auto-update: if an update is available for an already-installed plugin, apply it
     /// (frontend silently; DLL change stops/swaps/restarts Steam). Returns true if an update was applied.
     /// Fire-and-forget safe — swallows offline/errors. Called from the app's Steam-open update flow.
@@ -811,6 +834,9 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
             var st = await GetStatusAsync(force: true, ct);
             if (!st.UpdateAvailable) return false; // not installed, offline, or already current
             beforeInstall?.Invoke(st);
+            // Scoped to this call's async flow: restored when AutoUpdateAsync returns, invisible to an
+            // install the user starts meanwhile.
+            Unattended.Value = true;
             var (ok, _) = await InstallAsync(progress: null, ct);
             return ok;
         }

@@ -259,14 +259,21 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <!-- Writing appinfo.vdf (Steam closing + ~373 MB rewrite) runs off the UI thread now -->
+                    <ui:ProgressRing
+                        Width="20"
+                        Height="20"
+                        IsIndeterminate="True"
+                        Visibility="{Binding IsApplying, Converter={StaticResource BoolToVis}}" />
                     <ui:Button
+                        Margin="{DynamicResource SpaceLeft12}"
                         Command="{Binding ShowInFolderCommand}"
                         Content="{x:Static res:Strings.Downloads_Action_ShowInFolder}" />
                     <ui:Button
                         Margin="{DynamicResource SpaceLeft8}"
                         Command="{Binding RestoreCommand}"
                         Content="{x:Static res:Strings.Launch_Restore}"
-                        IsEnabled="{Binding IsModded}"
+                        IsEnabled="{Binding CanRestore}"
                         ToolTip="{x:Static res:Strings.Launch_Restore_Tip}" />
                     <ui:Button
                         Margin="{DynamicResource SpaceLeft8}"

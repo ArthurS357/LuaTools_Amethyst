@@ -24,6 +24,10 @@ public partial class LaunchOptionsDialog : Wpf.Ui.Controls.FluentWindow
             Close();
         };
 
+        // No closing (X, Alt+F4) while appinfo.vdf is being written: the write runs off the UI thread, and a
+        // dialog that vanished mid-write would read as "nothing happened" with Steam still down.
+        Closing += (_, e) => { if (_viewModel.IsApplying) e.Cancel = true; };
+
         Loaded += async (_, _) => await _viewModel.LoadAsync(appId, gameName);
     }
 }

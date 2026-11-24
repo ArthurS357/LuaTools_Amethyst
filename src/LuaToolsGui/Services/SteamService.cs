@@ -244,6 +244,46 @@ public class SteamService(SettingsService settings)
         return StartSteam();
     }
 
+    /// <summary>
+    /// <see cref="RestartSteam"/> for restarts nobody asked for (the post-install one on the Fixes page).
+    /// Skipped while a game is running: Steam refuses <c>-shutdown</c> then, and the forced fallback is
+    /// <c>Kill(entireProcessTree)</c> — which takes the game, a child of steam.exe, down with it, unsaved
+    /// progress included. False means "not restarted", so the caller shows its "restart Steam" hint.
+    /// </summary>
+    public bool RestartSteamUnlessGameRunning()
+    {
+        if (IsGameRunning())
+        {
+            AppLog.Log("Steam restart skipped: a game is running");
+            return false;
+        }
+        return RestartSteam();
+    }
+
+    /// <summary>
+    /// Steam's own "a game is up" flag, trusted only while steam.exe is alive: Steam clears
+    /// <c>RunningAppID</c> on a clean exit, but a hard crash leaves the last id behind, and that stale value
+    /// must not block restarts forever. The process probe is lazy — it only runs when the flag is set.
+    /// </summary>
+    internal static bool IsGameRunning(int? runningAppId, Func<bool> isSteamAlive) =>
+        runningAppId > 0 && isSteamAlive();
+
+    /// <summary>True while Steam reports a running game and steam.exe is alive.</summary>
+    public static bool IsGameRunning() => IsGameRunning(ReadRunningAppId(), IsSteamRunning);
+
+    private static int? ReadRunningAppId()
+    {
+        try
+        {
+            using var key = Registry.CurrentUser.OpenSubKey(@"Software\Valve\Steam");
+            return key?.GetValue("RunningAppID") as int?;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or System.Security.SecurityException)
+        {
+            return null;
+        }
+    }
+
     private static string? DetectFromRegistry()
     {
         foreach (var (hive, view, subKey, value) in RegistryLocations)

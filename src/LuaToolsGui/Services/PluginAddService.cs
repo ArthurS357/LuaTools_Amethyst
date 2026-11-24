@@ -53,9 +53,37 @@ public class PluginAddService(
         /// so an abandoned add stops holding a Hubcap request open. Not part of the JSON the plugin polls —
         /// HandleAddStatus projects AddState field by field rather than serializing it.</summary>
         public readonly CancellationTokenSource Cts = new();
+
+        /// <summary>Age for <see cref="EvictFinished"/>: the oldest settled adds go first.</summary>
+        public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
     }
 
+    /// <summary>Cap on retained per-app add states — same bound and rule as
+    /// <c>HttpServerService.MaxTrackedDownloads</c>: states were kept for the whole session.</summary>
+    internal const int MaxTrackedStates = 256;
+
     private readonly ConcurrentDictionary<long, AddState> _states = new();
+
+    /// <summary>
+    /// Drop the oldest SETTLED states once past <paramref name="cap"/>. An add still checking or downloading
+    /// is never dropped — the plugin is polling it.
+    /// <para>
+    /// The evicted <see cref="AddState.Cts"/> is deliberately not disposed. A late <see cref="Pick"/> that
+    /// read the state just before eviction still reaches <c>Cts.Token</c>, which throws once disposed; and a
+    /// CTS with no <c>CancelAfter</c> or linked parent holds no timer or handle, so dropping the reference is
+    /// all the cleanup it needs.
+    /// </para>
+    /// </summary>
+    internal static void EvictFinished(ConcurrentDictionary<long, AddState> states, int cap)
+    {
+        if (states.Count <= cap) return;
+        foreach (var kv in states
+                     .Where(static kv => !kv.Value.Checking && !kv.Value.Busy)
+                     .OrderBy(static kv => kv.Value.CreatedAt)
+                     .Take(states.Count - cap)
+                     .ToList())
+            states.TryRemove(kv); // exact pair: a re-Start that replaced it in the meantime survives
+    }
 
     public AddState? GetState(long appId) => _states.TryGetValue(appId, out var s) ? s : null;
 
@@ -79,6 +107,7 @@ public class PluginAddService(
             try { previous.Cts.Cancel(); } catch (ObjectDisposedException) { /* already finished */ }
         }
         _states[appId] = state;
+        EvictFinished(_states, MaxTrackedStates);
         AppLog.Log($"PluginAdd.Start appid={appId} fastFetch={state.FastFetch} guest={auth.IsGuest}");
         _ = Task.Run(() => CheckAsync(appId, state));
     }

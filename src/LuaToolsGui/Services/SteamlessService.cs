@@ -135,11 +135,13 @@ public class SteamlessService(GithubProxy gh, SteamLibraryService library, Steam
         foreach (string exe in exes)
         {
             ct.ThrowIfCancellationRequested();
+            string unpacked = exe + ".unpacked.exe";
             try
             {
+                // A leftover from a killed run must not pass for this run's output below.
+                File.Delete(unpacked);
                 await RunCliAsync(cli, exe, ct);
 
-                string unpacked = exe + ".unpacked.exe";
                 if (File.Exists(unpacked))
                 {
                     // Back the original up (only once — never clobber a known-good .bak), then swap in.
@@ -154,11 +156,17 @@ public class SteamlessService(GithubProxy gh, SteamLibraryService library, Steam
                     unchanged++; // no SteamStub DRM, or Steamless declined — leave it as-is
                 }
             }
-            catch (OperationCanceledException) { throw; }
-            catch
+            catch (OperationCanceledException)
             {
+                try { File.Delete(unpacked); } catch { /* stray partial */ }
+                throw;
+            }
+            catch (Exception ex)
+            {
+                if (ex is TimeoutException)
+                    AppLog.Log($"Steamless: {ex.Message} ({LogSanitizer.SanitizePath(exe)}); left unchanged.");
                 unchanged++;
-                try { File.Delete(exe + ".unpacked.exe"); } catch { /* stray partial */ }
+                try { File.Delete(unpacked); } catch { /* stray partial */ }
             }
         }
         return new SteamlessResult(patched, unchanged, exes.Count, null);
@@ -229,6 +237,39 @@ public class SteamlessService(GithubProxy gh, SteamLibraryService library, Steam
         };
         psi.ArgumentList.Add(exePath); // one argument, quoted by the runtime — not a hand-built command line
         using var proc = Process.Start(psi) ?? throw new InvalidOperationException("Failed to start Steamless.");
-        await proc.WaitForExitAsync(ct);
+        await WaitOrKillAsync(proc, CliTimeout, ct);
+    }
+
+    /// <summary>One exe takes Steamless seconds; past this it is wedged, not working.</summary>
+    private static readonly TimeSpan CliTimeout = TimeSpan.FromMinutes(5);
+
+    /// <summary>
+    /// Wait for the child, killing its tree on cancellation or after <paramref name="timeout"/>.
+    /// <c>WaitForExitAsync</c> alone only stops WAITING when cancelled: the child kept running and kept the
+    /// game's exe open, and with no timeout a hung Steamless pinned the Manage page busy for good. A timeout
+    /// surfaces as <see cref="TimeoutException"/> — that exe counts as unchanged and the run moves on — while
+    /// the caller's own cancel still throws <see cref="OperationCanceledException"/> and stops the run.
+    /// </summary>
+    internal static async Task WaitOrKillAsync(Process proc, TimeSpan timeout, CancellationToken ct)
+    {
+        using var limit = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        limit.CancelAfter(timeout);
+        try
+        {
+            await proc.WaitForExitAsync(limit.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            try
+            {
+                proc.Kill(entireProcessTree: true);
+                // Kill only starts the termination: wait for the handles to close, or the caller's cleanup
+                // of the half-written .unpacked.exe hits a sharing violation.
+                proc.WaitForExit(TimeSpan.FromSeconds(5));
+            }
+            catch (Exception ex) when (ex is InvalidOperationException or System.ComponentModel.Win32Exception or AggregateException) { /* already gone */ }
+            ct.ThrowIfCancellationRequested();
+            throw new TimeoutException($"Steamless did not finish within {timeout.TotalMinutes:0} minutes.");
+        }
     }
 }

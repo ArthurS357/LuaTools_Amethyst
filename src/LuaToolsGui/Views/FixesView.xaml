@@ -435,7 +435,7 @@
                     <!-- Game header -->
                     <StackPanel Grid.Row="1" Margin="{DynamicResource SpaceTop4}">
                         <Border Height="150" Background="{StaticResource SurfaceCardHoverBrush}" ClipToBounds="True" CornerRadius="{DynamicResource RadiusMedium}">
-                            <Image Source="{Binding Cover, Converter={StaticResource ImagePathToSource}}" Stretch="UniformToFill" />
+                            <Image Source="{Binding Cover, Converter={StaticResource ImagePathToSource}, ConverterParameter=460}" Stretch="UniformToFill" />
                         </Border>
                         <TextBlock Margin="{DynamicResource SpaceTop12}" Style="{StaticResource TextSubtitle}" Text="{Binding Name}" />
                         <TextBlock Style="{StaticResource TextCaption}" Text="{Binding AppId, StringFormat='App ID: {0}'}" />

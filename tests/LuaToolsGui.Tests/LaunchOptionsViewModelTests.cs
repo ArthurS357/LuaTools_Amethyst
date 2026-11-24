@@ -91,6 +91,81 @@ public class LaunchOptionsViewModelTests : IDisposable
         Assert.False(_vm.CanSave);
     }
 
+    /// <summary>Fake Steam state: up until <see cref="BuildVm"/>'s stop hook runs.</summary>
+    private volatile bool _steamUp = true;
+
+    /// <summary>A VM whose Steam reads as running, so Apply/Restore go through <paramref name="stopSteam"/>.</summary>
+    private LaunchOptionsViewModel BuildVm(Action stopSteam, Func<string, string, bool> confirm)
+    {
+        var service = new LaunchOptionsService(() => Path.Combine(_tmp, "appinfo.vdf"), () => _steamUp,
+                                               () => { stopSteam(); _steamUp = false; },
+                                               () => { }, new LaunchModStore(Path.Combine(_tmp, "launchmods.json")),
+                                               Path.Combine(_tmp, "backup"));
+        return new LaunchOptionsViewModel(service, new ToastService(), confirm: confirm);
+    }
+
+    // "Off the calling thread" is proven by the command RETURNING while the Steam shutdown inside the write
+    // is still blocked on the gate: run inline, ExecuteAsync could not come back until the gate opened.
+
+    [Fact]
+    public async Task Save_DoesNotBlockTheCaller_AndLocksSaveAndRestoreUntilDone()
+    {
+        using var gate = new ManualResetEventSlim();
+        int confirms = 0;
+        var vm = BuildVm(() => gate.Wait(TimeSpan.FromSeconds(20)), (_, _) => { confirms++; return true; });
+        await vm.LoadAsync(AppId, "Raft");
+        vm.Entries[0].Arguments = "-novid";
+
+        var save = vm.SaveCommand.ExecuteAsync(null);
+
+        try
+        {
+            // Still writing: no second save, no Restore (it never reaches its confirmation), no Cancel.
+            Assert.False(save.IsCompleted);
+            Assert.True(vm.IsApplying);
+            Assert.False(vm.CanSave);
+            Assert.False(vm.CanRestore);
+            Assert.False(vm.SaveCommand.CanExecute(null));
+            Assert.False(vm.CancelCommand.CanExecute(null));
+            await vm.SaveCommand.ExecuteAsync(null);
+            await vm.RestoreCommand.ExecuteAsync(null);
+            Assert.Equal(1, confirms);
+        }
+        finally { gate.Set(); }
+
+        await save.WaitAsync(TimeSpan.FromSeconds(20));
+        Assert.True(vm.CancelCommand.CanExecute(null));
+
+        Assert.False(vm.IsApplying);
+        Assert.True(vm.IsModded);
+    }
+
+    [Fact]
+    public async Task Restore_DoesNotBlockTheCaller_AndClearsTheEdit()
+    {
+        using var gate = new ManualResetEventSlim(initialState: true);
+        var vm = BuildVm(() => gate.Wait(TimeSpan.FromSeconds(20)), (_, _) => true);
+        await vm.LoadAsync(AppId, "Raft");
+        vm.Entries[0].Arguments = "-novid";
+        await vm.SaveCommand.ExecuteAsync(null);
+        gate.Reset();
+        _steamUp = true;
+
+        var restore = vm.RestoreCommand.ExecuteAsync(null);
+
+        try
+        {
+            Assert.False(restore.IsCompleted);
+            Assert.True(vm.IsApplying);
+        }
+        finally { gate.Set(); }
+
+        await restore.WaitAsync(TimeSpan.FromSeconds(20));
+
+        Assert.False(vm.IsApplying);
+        Assert.False(vm.IsModded);
+    }
+
     /// <summary>Minimal but structurally real v29 appinfo containing one app.</summary>
     private static void WriteAppInfo(string path, (string Index, string Exe)[] launches)
     {

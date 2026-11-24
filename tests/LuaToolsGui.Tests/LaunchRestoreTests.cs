@@ -646,7 +646,7 @@ public class LaunchRestoreTests : IDisposable
         bool closed = false;
         vm.CloseWith = _ => closed = true;
 
-        vm.RestoreCommand.Execute(null);
+        await vm.RestoreCommand.ExecuteAsync(null);
 
         Assert.NotNull(_store.Get(GameA));
         Assert.True(vm.IsModded);
@@ -662,7 +662,7 @@ public class LaunchRestoreTests : IDisposable
         bool closed = false;
         vm.CloseWith = _ => closed = true;
 
-        vm.RestoreCommand.Execute(null);
+        await vm.RestoreCommand.ExecuteAsync(null);
 
         Assert.Null(_store.Get(GameA));
         Assert.Equal("A.exe", LiveExe(GameA));

@@ -118,11 +118,36 @@ public class CefInjectorService : IHostedService
     private const int TickMs = 150;
     private const int InjectEveryTicks = 7; // 7 * 150ms ≈ 1s
 
+    /// <summary>Discovery failures tolerated before remembered store tabs are treated as gone (2 × 1 s stays well
+    /// inside the polyfill's ~5 s timeout for a transient hiccup, then lets a closed Steam back off to 5 s).</summary>
+    internal const int StaleTabGraceFailures = 2;
+
+    internal static bool ShouldDropRememberedTabs(int consecutiveFailures) =>
+        consecutiveFailures > StaleTabGraceFailures;
+
+    /// <summary>
+    /// How long the loop sleeps before its next pass. Only a live store tab earns the fast 150 ms drain
+    /// tick; with none, the loop waits straight for the next ~1 s discovery instead of waking 7 times for
+    /// nothing. A failed pass (Steam closed, CDP port down) backs off 1 s → 3 s → 5 s: with Steam closed the
+    /// old flat 1 s retry threw a connection-refused HttpRequestException ~3,600 times an hour. While a store
+    /// tab is still known the retry stays at 1 s: its pending calls must be drained before the polyfill's
+    /// ~5 s timeout answers them with a fake success.
+    /// </summary>
+    internal static int NextDelayMs(int consecutiveFailures, bool hasStoreTabs) => (consecutiveFailures, hasStoreTabs) switch
+    {
+        (0, true) => TickMs,
+        (0, false) => TickMs * InjectEveryTicks,
+        (1, _) or (_, true) => 1000,
+        (2, false) => 3000,
+        _ => 5000,
+    };
+
     private async Task InjectionLoop(CancellationToken ct)
     {
         // The store tabs to drain each fast tick (id + ws url), refreshed on the ~1s injection cadence.
         List<(string Id, string Ws)> storeTabs = new();
         int tick = 0;
+        int failures = 0;
 
         while (!ct.IsCancellationRequested)
         {
@@ -136,6 +161,7 @@ public class CefInjectorService : IHostedService
                     // passes everything else through to Millennium's real window.Millennium if one exists, so
                     // the two no longer need to be mutually exclusive.
                     var tabsJson = await _http.GetStringAsync(CefDebugUrl, ct);
+                    failures = 0;
                     if (!string.IsNullOrWhiteSpace(tabsJson))
                     {
                         var tabs = JsonSerializer.Deserialize<List<CefTabInfo>>(tabsJson, JsonOpts) ?? new();
@@ -184,14 +210,24 @@ public class CefInjectorService : IHostedService
                 foreach (var (id, ws) in storeTabs)
                     await ProcessSingleTab(id, ws, ct);
 
-                tick++;
-                await Task.Delay(TickMs, ct);
+                // No tab to drain: rewind so the next pass is a discovery pass, after the longer sleep.
+                tick = storeTabs.Count == 0 ? 0 : tick + 1;
+                await Task.Delay(NextDelayMs(0, storeTabs.Count > 0), ct);
             }
             catch (OperationCanceledException) { break; }
             catch (Exception ex)
             {
+                failures++;
+                if (ShouldDropRememberedTabs(failures))
+                {
+                    storeTabs.Clear();
+                    foreach (var stale in _sockets.Keys.ToList())
+                        EvictSocket(stale);
+                }
                 _log.LogDebug("CEF cycle: {Message}", ex.Message);
-                try { await Task.Delay(1000, ct); } catch { break; }
+                // The failure may have been the discovery fetch itself: force a fresh one next pass.
+                tick = 0;
+                try { await Task.Delay(NextDelayMs(failures, storeTabs.Count > 0), ct); } catch { break; }
             }
         }
     }

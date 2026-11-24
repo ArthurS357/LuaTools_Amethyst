@@ -819,7 +819,8 @@ public partial class FixesViewModel : PagedListViewModel<FixGameCardVm>
         }
     }
 
-    private bool TryRestartSteam() => RestartSteamOverride?.Invoke() ?? steam.RestartSteam();
+    // Unprompted restart: never force-kill a Steam that is hosting a running game.
+    private bool TryRestartSteam() => RestartSteamOverride?.Invoke() ?? steam.RestartSteamUnlessGameRunning();
 
     private JobResult RecordInstallOutcome(string itemId, FixInstallOutcome outcome)
     {
