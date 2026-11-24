@@ -300,4 +300,17 @@ public class AmethystEngine151Tests : IDisposable
         AmethystToolService.InstallTools(staged, toolsDir).Should().BeEmpty();
         Directory.Exists(toolsDir).Should().BeFalse();
     }
+
+    [Fact]
+    public void Engine_v1_5_4_asset_url_and_uppercase_digest_format_are_accepted_by_the_existing_gates()
+    {
+        const string url =
+            "https://github.com/ArthurS357/BetterSteamTools-Amethyst/releases/download/v1.5.4/AmethystTool-v1.5.4.zip";
+        const string handoffSha = "03F14B5F819463C436E0BEC012595827FF044ABF2005EF74B42E566221D968B8";
+
+        GithubProxy.IsAssetUrlForRepo(url, AppConfig.AmethystToolOwner, AppConfig.AmethystToolRepo)
+            .Should().BeTrue();
+        AssetIntegrity.ParseDigest("sha256:" + handoffSha)
+            .Should().Be(handoffSha.ToLowerInvariant());
+    }
 }

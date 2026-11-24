@@ -82,6 +82,11 @@ public class HttpServerService : IHostedService
     /// BaseUrl is separate and stays 6767).</summary>
     internal int Port { get; init; } = 6767;
 
+    /// <summary>Directory searched for an override icon before falling back to the embedded resource.</summary>
+    internal string BaseDirectory { get; init; } = AppContext.BaseDirectory;
+
+    private string? _cachedIconJson;
+
     public HttpServerService(LuaInstaller installer, SteamService steam, CacheService cache,
         IServiceProvider services, ILogger<HttpServerService> logger)
     {
@@ -725,27 +730,84 @@ public class HttpServerService : IHostedService
 
     private (int, string) HandleIcon()
     {
+        if (Volatile.Read(ref _cachedIconJson) is { } cached)
+            return (200, cached);
+
         try
         {
-            var iconPath = Path.Combine(AppContext.BaseDirectory, "luatools-icon.png");
-            if (!File.Exists(iconPath))
-            {
-                var alt = Path.Combine(AppContext.BaseDirectory, "icon.ico");
-                if (File.Exists(alt))
-                    iconPath = alt;
-                else
-                    return (200, Json(new { success = false, dataUrl = "" }));
-            }
-            var bytes = File.ReadAllBytes(iconPath);
+            if (!TryReadIconBytes(BaseDirectory, out var bytes, out var mime))
+                return (200, Json(new { success = false, dataUrl = "" }));
+
             var b64 = Convert.ToBase64String(bytes);
-            var mime = iconPath.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ? "image/png" : "image/x-icon";
-            return (200, Json(new { success = true, dataUrl = $"data:{mime};base64,{b64}" }));
+            var json = Json(new { success = true, dataUrl = $"data:{mime};base64,{b64}" });
+            Interlocked.CompareExchange(ref _cachedIconJson, json, null);
+            return (200, Volatile.Read(ref _cachedIconJson)!);
         }
         catch (Exception ex)
         {
             AppLog.Log($"HTTP: could not build the image data URL: {ex.GetType().Name}: {ex.Message}");
             return (200, Json(new { success = false, dataUrl = "" }));
         }
+    }
+
+    private static bool TryReadIconBytes(string baseDir, out byte[] bytes, out string mime)
+    {
+        var pngPath = Path.Combine(baseDir, "luatools-icon.png");
+        if (File.Exists(pngPath))
+        {
+            bytes = File.ReadAllBytes(pngPath);
+            mime = "image/png";
+            return true;
+        }
+
+        var icoPath = Path.Combine(baseDir, "icon.ico");
+        if (File.Exists(icoPath))
+        {
+            bytes = File.ReadAllBytes(icoPath);
+            mime = "image/x-icon";
+            return true;
+        }
+
+        if (ReadEmbeddedIcon() is { Length: > 0 } embedded)
+        {
+            bytes = embedded;
+            mime = "image/x-icon";
+            return true;
+        }
+
+        bytes = [];
+        mime = "";
+        return false;
+    }
+
+    /// <summary>Reads <c>icon.ico</c> from the assembly's compiled WPF resource container (<c>LuaTools.g.resources</c>),
+    /// avoiding a duplicate loose copy in the publish folder and working without <c>Application.Current</c>.</summary>
+    internal static byte[]? ReadEmbeddedIcon()
+    {
+        var asm = typeof(HttpServerService).Assembly;
+        var resName = asm.GetManifestResourceNames()
+            .FirstOrDefault(static n => n.EndsWith(".g.resources", StringComparison.OrdinalIgnoreCase));
+        if (resName is null) return null;
+
+        using var container = asm.GetManifestResourceStream(resName);
+        if (container is null) return null;
+
+        using var reader = new System.Resources.ResourceReader(container);
+        foreach (System.Collections.DictionaryEntry entry in reader)
+        {
+            if (entry.Key is string key
+                && key.Equals("icon.ico", StringComparison.OrdinalIgnoreCase)
+                && entry.Value is Stream stream)
+            {
+                using (stream)
+                {
+                    using var ms = new MemoryStream();
+                    stream.CopyTo(ms);
+                    return ms.ToArray();
+                }
+            }
+        }
+        return null;
     }
 
     // ── Download worker ───────────────────────────────────────────────

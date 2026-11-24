@@ -265,6 +265,10 @@ public class LuaToolsApiClient(
     /// tests point it at a temp folder.</summary>
     internal string? CacheDirectory { get; init; }
 
+    /// <summary>Where staged downloads land before install. Null = <see cref="InterimDownloadsFolder"/>;
+    /// tests point it at their own temp folder so parallel runs never share staging state.</summary>
+    internal string? StagingDirectory { get; init; }
+
     /// <summary>How long the catalog repository gets before lua.tools is tried: the shared client's own
     /// timeout is 5 minutes, which would turn an unreachable GitHub into a five-minute blank tab.</summary>
     internal TimeSpan CatalogTimeout { get; init; } = TimeSpan.FromSeconds(15);
@@ -433,7 +437,7 @@ public class LuaToolsApiClient(
     {
         // A folder of its own (the file keeps its real name: that name is build identity), so the staging
         // path is not predictable and two downloads cannot share one.
-        string folder = Path.Combine(InterimDownloadsFolder, Guid.NewGuid().ToString("N"));
+        string folder = Path.Combine(StagingDirectory ?? InterimDownloadsFolder, Guid.NewGuid().ToString("N"));
         var file = await DownloadFromUrlAsync(link.Url, fallbackName, progress, ct, folder);
 
         // Pin first, hash through the pin, and hand the pin to the caller: nothing can replace the file
@@ -510,7 +514,7 @@ public class LuaToolsApiClient(
         string url, string fallbackName, IProgress<Downloads.DownloadProgress>? progress, CancellationToken ct)
     {
         using var res = await SendAsync(HttpMethod.Get, url, ct, HttpCompletionOption.ResponseHeadersRead);
-        return await SaveResponseAsync(res, fallbackName, progress, ct);
+        return await SaveResponseAsync(res, fallbackName, progress, ct, StagingDirectory);
     }
 
     /// <summary>

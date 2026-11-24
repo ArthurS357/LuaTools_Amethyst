@@ -44,7 +44,11 @@ public sealed class HttpServerRoutesTests : IDisposable
         var vault = new LuaVault(() => steam.StPlugInDir, Path.Combine(_dir, "vault"));
         var installer = new LuaInstaller(steam, settings, cache, vault);
         var server = new HttpServerService(installer, steam, cache,
-            new ServiceCollection().BuildServiceProvider(), NullLogger<HttpServerService>.Instance);
+            new ServiceCollection().BuildServiceProvider(), NullLogger<HttpServerService>.Instance)
+        {
+            BaseDirectory = Path.Combine(_dir, "app-bin"),
+        };
+        Directory.CreateDirectory(server.BaseDirectory);
 
         int port = FreePort();
         _baseUrl = $"http://127.0.0.1:{port}";
@@ -283,6 +287,95 @@ public sealed class HttpServerRoutesTests : IDisposable
 
         string body = await res.Content.ReadAsStringAsync();
         body.Should().Contain("Internal error").And.NotContain("LuaToolsApiClient");
+    }
+
+    // ── /icon: embedded resource fallback + memory cache ─────────────────────
+
+    [Fact]
+    public async Task Icon_route_serves_the_embedded_icon_when_no_loose_file_exists_next_to_the_exe()
+    {
+        using var forbidden = await Send(HttpMethod.Get, "/icon");
+        forbidden.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+
+        using var wrongVerb = await Send(HttpMethod.Post, "/icon", token: true);
+        wrongVerb.StatusCode.Should().Be(HttpStatusCode.NotFound);
+
+        // BaseDirectory is empty (matching win-x64 publish, which ships no loose icon file).
+        using var res = await Send(HttpMethod.Get, "/icon", token: true);
+        res.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        using var doc = System.Text.Json.JsonDocument.Parse(await res.Content.ReadAsStringAsync());
+        doc.RootElement.GetProperty("success").GetBoolean().Should().BeTrue();
+        string dataUrl = doc.RootElement.GetProperty("dataUrl").GetString()!;
+        const string prefix = "data:image/x-icon;base64,";
+        dataUrl.Should().StartWith(prefix);
+
+        byte[] served = Convert.FromBase64String(dataUrl[prefix.Length..]);
+        byte[]? embedded = HttpServerService.ReadEmbeddedIcon();
+        embedded.Should().NotBeNull();
+        served.Should().Equal(embedded!);
+        served[..4].Should().Equal([0x00, 0x00, 0x01, 0x00], "valid ICO header");
+    }
+
+    [Fact]
+    public async Task Icon_route_caches_the_first_payload_in_memory_without_re_reading_disk()
+    {
+        string iconDir = Path.Combine(_dir, "custom-icon");
+        Directory.CreateDirectory(iconDir);
+        string pngPath = Path.Combine(iconDir, "luatools-icon.png");
+        byte[] customBytes = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
+        File.WriteAllBytes(pngPath, customBytes);
+
+        var settings = new SettingsService(_dir) { SteamPathOverride = Path.Combine(_dir, "steam") };
+        var cache = new CacheService(Path.Combine(_dir, "cache"));
+        var steam = new SteamService(settings);
+        var vault = new LuaVault(() => steam.StPlugInDir, Path.Combine(_dir, "vault"));
+        var installer = new LuaInstaller(steam, settings, cache, vault);
+        var customServer = new HttpServerService(installer, steam, cache,
+            new ServiceCollection().BuildServiceProvider(), NullLogger<HttpServerService>.Instance)
+        {
+            BaseDirectory = iconDir,
+        };
+
+        int port = FreePort();
+        using var customListener = new HttpListener();
+        string url = $"http://127.0.0.1:{port}";
+        customListener.Prefixes.Add(url + "/");
+        customListener.Start();
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                while (customListener.IsListening)
+                    _ = customServer.HandleRequest(await customListener.GetContextAsync());
+            }
+            catch (Exception) { /* stopped */ }
+        });
+
+        try
+        {
+            async Task<string> GetIconBodyAsync()
+            {
+                using var req = new HttpRequestMessage(HttpMethod.Get, url + "/icon");
+                req.Headers.TryAddWithoutValidation(TokenHeader, HttpServerService.SessionToken);
+                using var r = await _http.SendAsync(req);
+                r.StatusCode.Should().Be(HttpStatusCode.OK);
+                return await r.Content.ReadAsStringAsync();
+            }
+
+            string first = await GetIconBodyAsync();
+            string expected = $"data:image/png;base64,{Convert.ToBase64String(customBytes)}";
+            first.Should().Contain(expected);
+
+            // Delete the file on disk: a non-cached second read would fall through to the embedded .ico.
+            File.Delete(pngPath);
+            string second = await GetIconBodyAsync();
+            second.Should().Be(first, "subsequent GET /icon calls must reuse the cached JSON payload");
+        }
+        finally
+        {
+            try { customListener.Stop(); } catch (ObjectDisposedException) { }
+        }
     }
 
     // ── Routing in isolation ──────────────────────────────────────────────────

@@ -29,13 +29,16 @@ public class CatalogFallbackTests : IDisposable
 
     private readonly string _dir =
         Path.Combine(Path.GetTempPath(), "luatools-tests", Guid.NewGuid().ToString("N"));
-    private readonly List<string> _staged = [];
+    private readonly string _downloads;
 
-    public CatalogFallbackTests() => Directory.CreateDirectory(_dir);
+    public CatalogFallbackTests()
+    {
+        Directory.CreateDirectory(_dir);
+        _downloads = Path.Combine(_dir, "downloads");
+    }
 
     public void Dispose()
     {
-        foreach (string path in _staged) try { File.Delete(path); } catch (IOException) { }
         try { Directory.Delete(_dir, true); } catch (IOException) { }
         GC.SuppressFinalize(this);
     }
@@ -87,6 +90,7 @@ public class CatalogFallbackTests : IDisposable
         var api = new LuaToolsApiClient(null!, null!, null!, null!, null!)
         {
             CacheDirectory = Path.Combine(_dir, "cache"),
+            StagingDirectory = _downloads,
             CatalogTimeout = catalogTimeout ?? TimeSpan.FromSeconds(15),
         };
         SetField(api, "_http", new HttpClient(router) { BaseAddress = new Uri("https://lua.tools") });
@@ -274,16 +278,15 @@ public class CatalogFallbackTests : IDisposable
         var api = await ListedAsync(fixHost: req => { asked = req.RequestUri; return Bytes(FixBytes); });
 
         using var file = await api.DownloadDenuvoAsync("orphan-1", "fix", "fix.zip", null, appid: "300");
-        _staged.Add(file.FilePath);
 
         asked.Should().Be(new Uri(FixUrl));
         (await File.ReadAllBytesAsync(file.FilePath)).Should().Equal(FixBytes);
     }
 
-    private static string DownloadsRoot => Path.Combine(Path.GetTempPath(), "LuaToolsGui", "downloads");
+    private string DownloadsRoot => _downloads;
 
-    /// <summary>Every staged file/folder under the interim downloads root, to compare before and after.</summary>
-    private static HashSet<string> StagedEntries() =>
+    /// <summary>Every staged file/folder under this test's isolated downloads root.</summary>
+    private HashSet<string> StagedEntries() =>
         Directory.Exists(DownloadsRoot)
             ? Directory.EnumerateFileSystemEntries(DownloadsRoot, "*", SearchOption.AllDirectories).ToHashSet()
             : [];
@@ -291,13 +294,12 @@ public class CatalogFallbackTests : IDisposable
     [Fact]
     public async Task An_orphan_fix_whose_sha_does_not_match_is_discarded_and_refused()
     {
-        var before = StagedEntries();
         var api = await ListedAsync(sha: new string('0', 64), fixHost: _ => Bytes(FixBytes));
 
         var download = () => api.DownloadDenuvoAsync("orphan-1", "fix", "fix.zip", null, appid: "300");
 
         await download.Should().ThrowAsync<ApiException>().WithMessage(Resources.Strings.Api_Err_FixHashMismatch);
-        StagedEntries().Except(before).Should().BeEmpty(
+        StagedEntries().Should().BeEmpty(
             "the bytes were not the ones the catalog named: neither the file nor its per-download folder may stay");
     }
 
@@ -310,8 +312,6 @@ public class CatalogFallbackTests : IDisposable
 
         using var first = await api.DownloadDenuvoAsync("orphan-1", "fix", "fix.zip", null, appid: "300");
         using var second = await api.DownloadDenuvoAsync("orphan-1", "fix", "fix.zip", null, appid: "300");
-        _staged.Add(first.FilePath);
-        _staged.Add(second.FilePath);
 
         Path.GetFileName(first.FilePath).Should().Be("fix.zip", "the name is build identity and is kept");
         Path.GetDirectoryName(first.FilePath).Should().NotBe(Path.GetDirectoryName(second.FilePath),
@@ -325,7 +325,6 @@ public class CatalogFallbackTests : IDisposable
     {
         var api = await ListedAsync(fixHost: _ => Bytes(FixBytes));
         using var file = await api.DownloadDenuvoAsync("orphan-1", "fix", "fix.zip", null, appid: "300");
-        _staged.Add(file.FilePath);
 
         // Readers (the screening, ZipFile.OpenRead in the apply step) are unaffected...
         (await File.ReadAllBytesAsync(file.FilePath)).Should().Equal(FixBytes);

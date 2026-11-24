@@ -2,7 +2,7 @@
 
 ## 1.8.5 — 2026-11-24 (build interna, sem tag nem release)
 
-Lotes K6 e K7: divida LOW da triagem da 1.8.4. So existe na `main` e em pacote local; a proxima versao publica e a 1.9.0.
+Lotes K6 e K7: divida LOW da triagem da 1.8.4; Lotes L1 e L2: estabilidade, infraestrutura Windows e icone da ponte. So existe na `main` e em pacote local; a proxima versao publica e a 1.9.0.
 
 ### K6
 
@@ -27,6 +27,39 @@ Lotes K6 e K7: divida LOW da triagem da 1.8.4. So existe na `main` e em pacote l
 - **Diagnostico:** versao da engine instalada no log de startup; `catch {}` do cache da lista de apps agora loga.
 - **Testes:** o teste de altura curta do `ManageDetailFlyout` passou a provar a rolagem; `_detectionAttempted` deixou de ser
   marcado no Modo Custom.
+
+### L1
+
+- **Reinicio automatico do Steam com jogo aberto:** o reinicio apos instalar manifest na aba Correcao e pulado quando
+  `HKCU\Software\Valve\Steam\RunningAppID` > 0 e o `steam.exe` esta vivo (valor obsoleto de crash nao bloqueia). O
+  fallback do `-shutdown` e `Kill(entireProcessTree)`, que derrubava o jogo. O toast pede o reinicio manual.
+- **Auto-update do plugin com jogo aberto:** a troca da DLL do loader (que para o Steam) e adiada para o proximo
+  Steam-open quando ha jogo rodando; decidido antes de qualquer escrita, so no fluxo automatico (`AutoUpdateAsync`).
+- **Opcoes de inicializacao sem travar a janela:** salvar e restaurar o `appinfo.vdf` rodam fora da UI thread, com
+  `IsApplying` bloqueando duplo clique, Salvar/Restaurar simultaneos, Cancelar e o fechamento da janela; anel de
+  progresso enquanto grava.
+- **Injetor CEF ocioso:** sem aba da loja o laco dorme ate a proxima descoberta (~1 s) em vez de acordar a cada 150 ms;
+  falhas seguidas (Steam fechado) recuam 1 s → 3 s → 5 s (com aba conhecida, no maximo 1 s).
+- **Steamless:** o processo filho morre (arvore inteira, com espera pelo fim) no cancelamento e apos 5 min; o timeout
+  conta o exe como inalterado, vai para o log e segue. `.unpacked.exe` de execucao morta e apagado antes de rodar.
+- **Estados de add da loja:** no maximo 256, podando os mais antigos ja encerrados (mesma regra de `_downloads`).
+- **Miudos:** `Process[]` vazado em `PluginInstallerService` agora e descartado; capa do painel da aba Correcao
+  decodificada a no maximo 460 px.
+
+### L2
+
+- **Icone da loja (`GET /icon`):** `HttpServerService.HandleIcon` le `icon.ico` direto do container de recursos compilado
+  (`LuaTools.g.resources`) quando nao ha arquivo solto na pasta de saida (caso real do publish `win-x64`) e faz cache em
+  memoria thread-safe do JSON Base64 na primeira leitura.
+- **Ajustes da revisao do L1:** `CefInjectorService` descarta abas lembradas da loja e fecha sockets apos 2 falhas
+  seguidas no CDP, permitindo que o backoff de 3 s → 5 s entre em vigor quando o Steam fecha com a loja aberta;
+  `PluginInstallerService` avalia `ShouldDeferDllSwap` antes do `DownloadNotice`, evitando o toast de 6 s em auto-update
+  adiado com jogo em execucao.
+- **Suite sem corrida (`CatalogFallbackTests`):** `LuaToolsApiClient.StagingDirectory` isola o staging por teste em vez
+  de dividir `%TEMP%\LuaToolsGui\downloads` com outras classes paralelas do xUnit.
+- **Handoff AmethystTool v1.5.4 conferido:** URL/asset (`AmethystTool-*.zip` em `releases/latest` com digest SHA-256
+  fail-closed), botao Limpar Cache de Conteudo (AppInfo), chaves `[manifest] failover` / `[shadow] record` e preservacao
+  de `tools\version_pin.exe` e `tools\pattern_migrate.exe` ja atendidos sem mudanca no instalador.
 
 ### Cortado (registrado no vault)
 
