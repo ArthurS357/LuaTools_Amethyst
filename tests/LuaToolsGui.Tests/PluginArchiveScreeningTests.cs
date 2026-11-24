@@ -368,4 +368,41 @@ public sealed class PluginArchiveScreeningTests : IDisposable
         normalized.Should().NotContain("-- m_utils.exec(");
         normalized.Should().Contain("    m_utils.exec(\n        'start \"\" \"' .. exe_path .. '\" --minimized'\n    )");
     }
+
+    [Fact]
+    public void Multiline_exec_is_reported_only_outside_ensure_backend_running()
+    {
+        const string lua = """
+            local function ensure_backend_running()
+                m_utils.exec('start "" "' .. exe_path ..
+                    '" --minimized')
+            end
+
+            local function relaunch()
+                m_utils.exec('start "" "' .. exe_path ..
+                    '" --minimized')
+            end
+            """;
+        var skipped = new List<int>();
+
+        PluginInstallerService.NeutralizeBackendAutoLaunchSource(lua, skipped);
+
+        // Line 2 sits behind the injected "if true then return end" and is inert; line 7 is the one to report.
+        skipped.Should().Equal(7);
+    }
+
+    [Fact]
+    public void Skipped_exec_lines_are_logged_once_per_instance_even_under_concurrent_polls()
+    {
+        var logged = new System.Collections.Concurrent.ConcurrentDictionary<int, byte>();
+
+        PluginInstallerService.NewSkipsToLog(logged, [7]).Should().Equal(7);
+        PluginInstallerService.NewSkipsToLog(logged, [7]).Should().BeEmpty("the status poll re-runs the neutralizer");
+        PluginInstallerService.NewSkipsToLog(logged, [7, 9]).Should().Equal(9);
+
+        var concurrent = new System.Collections.Concurrent.ConcurrentDictionary<int, byte>();
+        int reported = 0;
+        Parallel.For(0, 64, _ => Interlocked.Add(ref reported, PluginInstallerService.NewSkipsToLog(concurrent, [3]).Count));
+        reported.Should().Be(1);
+    }
 }

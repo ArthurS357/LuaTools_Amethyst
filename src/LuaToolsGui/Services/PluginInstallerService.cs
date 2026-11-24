@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -394,7 +395,7 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
     public virtual async Task<PluginStatus> GetStatusAsync(bool force = false, CancellationToken ct = default)
     {
         bool frontend = File.Exists(LuatoolsJsPath);
-        if (frontend) NeutralizeBackendAutoLaunch(FrontendDir);
+        if (frontend) NeutralizeAndLogOnce(FrontendDir);
         // "installed" if AT LEAST ONE slot's proxy is present — a partial/mid-migration state still counts
         // as installed and eligible for auto-update, rather than showing "not installed". An OLD loader
         // (psapi/dbghelp) also still counts — otherwise a user who hasn't migrated shows "not installed"
@@ -689,7 +690,7 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
             Directory.CreateDirectory(FrontendDir);
             ZipFile.ExtractToDirectory(zipPath, FrontendDir);
             NormalizeFrontendLayout();
-            NeutralizeBackendAutoLaunch(FrontendDir);
+            NeutralizeAndLogOnce(FrontendDir);
             if (!File.Exists(LuatoolsJsPath))
                 return (false, Resources.Strings.Plugin_Err_NoLuatoolsJs);
 
@@ -1009,13 +1010,30 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
 
     private const string NeutralizedAutoLaunchMarker = "-- neutralized by LuaTools Amethyst (Steam opens clean)";
 
+    /// <summary>Lines of <c>backend/main.lua</c> already reported as a skipped multi-line exec. Per instance (the
+    /// service is a DI singleton): <see cref="GetStatusAsync"/> re-runs the neutralizer on every status poll and
+    /// Steam poke, and logged each pass before.</summary>
+    private readonly ConcurrentDictionary<int, byte> _loggedExecSkips = new();
+
+    private void NeutralizeAndLogOnce(string pluginDir)
+    {
+        var skipped = new List<int>();
+        NeutralizeBackendAutoLaunch(pluginDir, skipped);
+        foreach (int line in NewSkipsToLog(_loggedExecSkips, skipped))
+            AppLog.Log($"PluginInstaller: skipped multiline exec call in backend/main.lua line {line} (left intact to avoid syntax corruption)");
+    }
+
+    /// <summary>The lines in <paramref name="skipped"/> not yet in <paramref name="logged"/>, which records them.</summary>
+    internal static List<int> NewSkipsToLog(ConcurrentDictionary<int, byte> logged, IEnumerable<int> skipped) =>
+        [.. skipped.Where(line => logged.TryAdd(line, 0))];
+
     /// <summary>
     /// Neutralizes the upstream <c>ensure_backend_running()</c> auto-launch inside
     /// <c>&lt;pluginDir&gt;\backend\main.lua</c> so opening Steam first never spawns
     /// <c>LuaTools.exe --minimized</c>, while preserving <c>copy_webkit_files()</c>,
     /// <c>inject_webkit_files()</c>, <c>millennium.ready()</c>, and all RPC handlers.
     /// </summary>
-    internal static bool NeutralizeBackendAutoLaunch(string pluginDir)
+    internal static bool NeutralizeBackendAutoLaunch(string pluginDir, ICollection<int>? skippedExecLines = null)
     {
         if (string.IsNullOrWhiteSpace(pluginDir)) return false;
         string mainLuaPath = Path.Combine(pluginDir, "backend", "main.lua");
@@ -1024,7 +1042,7 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
         try
         {
             string original = File.ReadAllText(mainLuaPath);
-            string patched = NeutralizeBackendAutoLaunchSource(original);
+            string patched = NeutralizeBackendAutoLaunchSource(original, skippedExecLines);
             if (string.Equals(original, patched, StringComparison.Ordinal)) return false;
             AtomicFile.WriteAllText(mainLuaPath, patched);
             return true;
@@ -1038,9 +1056,11 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
 
     /// <summary>
     /// Pure source transformation that neutralizes <c>ensure_backend_running()</c> and any direct
-    /// <c>LuaTools.exe</c> process execution inside <c>backend/main.lua</c>. Idempotent.
+    /// <c>LuaTools.exe</c> process execution inside <c>backend/main.lua</c>. Idempotent. A multi-line exec
+    /// call outside <c>ensure_backend_running()</c> is left intact and its 1-based line number added to
+    /// <paramref name="skippedExecLines"/>.
     /// </summary>
-    internal static string NeutralizeBackendAutoLaunchSource(string luaSource)
+    internal static string NeutralizeBackendAutoLaunchSource(string luaSource, ICollection<int>? skippedExecLines = null)
     {
         if (string.IsNullOrEmpty(luaSource)) return luaSource;
 
@@ -1089,7 +1109,8 @@ public class PluginInstallerService(SteamService steam, GithubProxy gh, CefInjec
                         continue;
                     }
 
-                    AppLog.Log($"PluginInstaller: skipped multiline exec call in backend/main.lua line {i + 1} (left intact to avoid syntax corruption)");
+                    // Inside ensure_backend_running() the short-circuit above already makes it inert: not reported.
+                    if (!insideEnsureBackend) skippedExecLines?.Add(i + 1);
                 }
             }
 

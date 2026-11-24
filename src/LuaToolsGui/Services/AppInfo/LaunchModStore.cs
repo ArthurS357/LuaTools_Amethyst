@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -64,6 +65,9 @@ public class LaunchModStore
     private readonly object _gate = new();
     private Dictionary<int, LaunchMod> _mods = [];
 
+    /// <summary>The file exists but the last read failed on I/O (see <see cref="Load"/>).</summary>
+    private bool _loadFailed;
+
     private readonly string _path;
 
     public LaunchModStore() : this(FilePath) { }
@@ -75,13 +79,19 @@ public class LaunchModStore
         Load();
     }
 
-    public bool IsEmpty { get { lock (_gate) return _mods.Count == 0; } }
+    // Readers retry a load that failed on I/O too: a file locked for a moment at startup must not hide every
+    // record (drift notice, overrides list, "modded" badge) for the whole session.
+    public bool IsEmpty { get { lock (_gate) { TryRecoverLoad(); return _mods.Count == 0; } } }
 
-    public IReadOnlyList<LaunchMod> All { get { lock (_gate) return _mods.Values.ToList(); } }
+    public IReadOnlyList<LaunchMod> All { get { lock (_gate) { TryRecoverLoad(); return _mods.Values.ToList(); } } }
 
     public LaunchMod? Get(int appId)
     {
-        lock (_gate) return _mods.GetValueOrDefault(appId);
+        lock (_gate)
+        {
+            TryRecoverLoad();
+            return _mods.GetValueOrDefault(appId);
+        }
     }
 
     /// <summary>Record an edit. The snapshot is only captured the FIRST time a game is modified —
@@ -91,6 +101,10 @@ public class LaunchModStore
     {
         lock (_gate)
         {
+            // Fail closed: saving from an empty store that only LOOKS empty would replace every record on disk.
+            if (!TryRecoverLoad())
+                throw new IOException($"{Path.GetFileName(_path)} exists but could not be read; it was left untouched and nothing was saved.");
+
             if (!_mods.TryGetValue(appId, out var mod))
             {
                 mod = new LaunchMod
@@ -114,7 +128,7 @@ public class LaunchModStore
     {
         lock (_gate)
         {
-            if (_mods.Remove(appId)) Persist();
+            if (TryRecoverLoad() && _mods.Remove(appId)) Persist();
         }
     }
 
@@ -123,6 +137,7 @@ public class LaunchModStore
     {
         lock (_gate)
         {
+            if (!TryRecoverLoad()) return;
             bool any = false;
             foreach (int appId in appIds) any |= _mods.Remove(appId);
             if (any) Persist();
@@ -139,10 +154,25 @@ public class LaunchModStore
     {
         lock (_gate)
         {
+            if (!TryRecoverLoad())
+            {
+                AppLog.Log("LaunchModStore: pre-restore snapshot refused, the record file could not be read");
+                return false;
+            }
+
             try
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(_path)!);
-                AtomicFile.WriteAllText(_path + ".pre-restore", SerializeStore());
+                string snapshotPath = _path + ".pre-restore";
+                string content = SerializeStore();
+                // Keep the previous restore's snapshot as a generation instead of overwriting it.
+                if (File.Exists(snapshotPath) && File.ReadAllText(snapshotPath) != content)
+                {
+                    string generation = UniqueStampedPath(snapshotPath);
+                    File.Copy(snapshotPath, generation, overwrite: false);
+                    PruneTimestamped(snapshotPath, MaxTimestampedBackups, generation);
+                }
+                AtomicFile.WriteAllText(snapshotPath, content);
                 return true;
             }
             catch (Exception ex)
@@ -164,7 +194,7 @@ public class LaunchModStore
     {
         lock (_gate)
         {
-            if (!_mods.TryGetValue(appId, out var mod) || mod.ChangeNumber == currentChangeNumber)
+            if (!TryRecoverLoad() || !_mods.TryGetValue(appId, out var mod) || mod.ChangeNumber == currentChangeNumber)
                 return false;
 
             mod.ChangeNumber = currentChangeNumber;
@@ -185,7 +215,7 @@ public class LaunchModStore
         if (currentLaunchTable is null) return;
         lock (_gate)
         {
-            if (!_mods.TryGetValue(appId, out var mod) || mod.OriginalLaunchVdf is not null)
+            if (!TryRecoverLoad() || !_mods.TryGetValue(appId, out var mod) || mod.OriginalLaunchVdf is not null)
                 return;
 
             mod.OriginalLaunchVdf = EncodeRawLaunch(currentLaunchTable);
@@ -231,21 +261,51 @@ public class LaunchModStore
 
     private void Load()
     {
+        _loadFailed = false;
+        if (!File.Exists(_path)) return;
+
+        string json;
         try
         {
-            if (!File.Exists(_path)) return;
-            _mods = ParseAndValidate(File.ReadAllText(_path), out int skippedCount);
+            json = File.ReadAllText(_path);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            // Present but not readable right now (locked by an antivirus or a sync client, permissions). That
+            // is NOT corruption: quarantining it would move a valid record aside and let the next save start
+            // from empty. The file stays where it is and writes are refused until it reads (TryRecoverLoad).
+            AppLog.Log($"LaunchModStore: existing file could not be read, left in place: {ex.GetType().Name}: {ex.Message}");
+            _mods = [];
+            _loadFailed = true;
+            return;
+        }
+
+        try
+        {
+            _mods = ParseAndValidate(json, out int skippedCount);
             if (skippedCount > 0)
                 PreservePreEditBackup(_path, allowTimestampedFallback: true);
         }
         catch (Exception ex)
         {
             AppLog.Log($"LaunchModStore: existing file unreadable (kept for manual recovery): {ex.GetType().Name}: {ex.Message}");
-            // Present but unreadable → keep the file for manual recovery rather than starting empty and
+            // Read but not parseable → keep the file for manual recovery rather than starting empty and
             // overwriting it on the next save. Timestamped so previous .corrupt backups are not overwritten.
-            QuarantineCorruptFile(_path);
             _mods = [];
+            // If the move failed the unparseable file is still in place: treat it like a read failure, so no
+            // write replaces it and the next access retries the parse and the move.
+            _loadFailed = !QuarantineCorruptFile(_path);
         }
+    }
+
+    /// <summary>
+    /// Retry a load that failed on I/O. False while the file still cannot be read: the in-memory store is
+    /// then empty, not the file's contents, so nothing may be written or snapshotted from it.
+    /// </summary>
+    private bool TryRecoverLoad()
+    {
+        if (_loadFailed) Load();
+        return !_loadFailed;
     }
 
     /// <summary>
@@ -270,47 +330,101 @@ public class LaunchModStore
 
             if (MatchesLatestBackup(path, bakPath)) return;
 
-            string stamp = DateTime.UtcNow.ToString("yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture);
-            string baseDest = $"{bakPath}.{stamp}";
-            string dest = baseDest;
-            int suffix = 1;
-            while (File.Exists(dest))
-                dest = $"{baseDest}.{suffix++}";
-
-            File.Copy(path, dest, overwrite: false);
+            string generation = UniqueStampedPath(bakPath);
+            File.Copy(path, generation, overwrite: false);
+            PruneTimestamped(bakPath, MaxTimestampedBackups, generation);
         }
         catch { /* best effort */ }
     }
 
     private static bool MatchesLatestBackup(string path, string bakPath)
     {
-        string? dir = Path.GetDirectoryName(bakPath);
-        if (string.IsNullOrEmpty(dir) || !Directory.Exists(dir)) return false;
-
-        string latestBackup = Directory.GetFiles(dir, Path.GetFileName(bakPath) + ".*")
-            .OrderByDescending(File.GetLastWriteTimeUtc)
-            .ThenByDescending(static p => p, StringComparer.Ordinal)
-            .FirstOrDefault() ?? bakPath;
+        string latestBackup = TimestampedSiblings(bakPath).FirstOrDefault() ?? bakPath;
 
         if (!File.Exists(latestBackup)) return false;
         if (new FileInfo(path).Length != new FileInfo(latestBackup).Length) return false;
         return File.ReadAllBytes(path).AsSpan().SequenceEqual(File.ReadAllBytes(latestBackup));
     }
 
-    private static void QuarantineCorruptFile(string path)
+    /// <summary>Move an unparseable file aside; false when it could not be moved and is still in place.</summary>
+    private static bool QuarantineCorruptFile(string path)
     {
         try
         {
-            string stamp = DateTime.UtcNow.ToString("yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture);
-            string baseDest = $"{path}.corrupt.{stamp}";
-            string dest = baseDest;
-            int suffix = 1;
-            while (File.Exists(dest))
-                dest = $"{baseDest}.{suffix++}";
-
-            File.Move(path, dest, overwrite: false);
+            File.Move(path, UniqueStampedPath(path + ".corrupt"), overwrite: false);
+            return true;
         }
-        catch { /* best effort */ }
+        catch (Exception ex)
+        {
+            AppLog.Log($"LaunchModStore: could not quarantine the unreadable file, left in place: {ex.GetType().Name}: {ex.Message}");
+            return false;
+        }
+    }
+
+    // ── timestamped generations (.bak.<ts>, .pre-restore.<ts>) ───────
+
+    /// <summary>How many <c>&lt;file&gt;.&lt;yyyyMMddHHmmss&gt;</c> generations are kept per base file.</summary>
+    internal const int MaxTimestampedBackups = 5;
+
+    private const string StampFormat = "yyyyMMddHHmmss";
+
+    /// <summary><c>&lt;basePath&gt;.&lt;UTC stamp&gt;</c>, with a <c>.&lt;n&gt;</c> suffix if that name is taken.</summary>
+    private static string UniqueStampedPath(string basePath)
+    {
+        string baseDest = $"{basePath}.{DateTime.UtcNow.ToString(StampFormat, CultureInfo.InvariantCulture)}";
+        string dest = baseDest;
+        int suffix = 1;
+        while (File.Exists(dest))
+            dest = $"{baseDest}.{suffix++}";
+        return dest;
+    }
+
+    /// <summary>
+    /// The <c>&lt;basePath&gt;.&lt;stamp&gt;[.&lt;n&gt;]</c> siblings, newest first by the UTC stamp IN THE NAME.
+    /// Not by <c>LastWriteTime</c>: <see cref="File.Copy(string, string, bool)"/> keeps the source's, so it
+    /// says when the content was written, not when the generation was taken. Other names are ignored.
+    /// </summary>
+    internal static List<string> TimestampedSiblings(string basePath)
+    {
+        string? dir = Path.GetDirectoryName(basePath);
+        if (string.IsNullOrEmpty(dir) || !Directory.Exists(dir)) return [];
+
+        string prefix = Path.GetFileName(basePath) + ".";
+        var found = new List<(string Path, DateTime Stamp, int Suffix)>();
+        foreach (string file in Directory.EnumerateFiles(dir, prefix + "*"))
+        {
+            // Win32 wildcards let "name.*" match "name" itself (an empty extension), so re-check the prefix.
+            string fileName = Path.GetFileName(file);
+            if (fileName.Length <= prefix.Length || !fileName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) continue;
+            string[] parts = fileName[prefix.Length..].Split('.');
+            if (parts.Length > 2
+                || !DateTime.TryParseExact(parts[0], StampFormat, CultureInfo.InvariantCulture,
+                    DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out DateTime stamp))
+                continue;
+            int suffix = 0;
+            if (parts.Length == 2 && !int.TryParse(parts[1], NumberStyles.None, CultureInfo.InvariantCulture, out suffix))
+                continue;
+            found.Add((file, stamp, suffix));
+        }
+        return [.. found.OrderByDescending(static f => f.Stamp).ThenByDescending(static f => f.Suffix).Select(static f => f.Path)];
+    }
+
+    /// <summary>Delete all but the <paramref name="keep"/> newest generations of <paramref name="basePath"/>.
+    /// <paramref name="justCreated"/> is always kept and counts toward <paramref name="keep"/>: after a clock
+    /// rollback older generations can carry later stamps, and the copy just taken must not be the one pruned.
+    /// Best effort: a file that cannot be deleted is logged and left, never failing the save that pruned.</summary>
+    internal static void PruneTimestamped(string basePath, int keep, string? justCreated = null)
+    {
+        var others = TimestampedSiblings(basePath)
+            .Where(p => !string.Equals(p, justCreated, StringComparison.OrdinalIgnoreCase));
+        foreach (string old in others.Skip(justCreated is null ? keep : keep - 1))
+        {
+            try { File.Delete(old); }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                AppLog.Log($"LaunchModStore: could not prune {Path.GetFileName(old)}: {ex.GetType().Name}: {ex.Message}");
+            }
+        }
     }
 
     /// <summary>Parse either the v2 envelope (<c>{"Version":2,"Mods":[...]}</c>) or a legacy v1 array

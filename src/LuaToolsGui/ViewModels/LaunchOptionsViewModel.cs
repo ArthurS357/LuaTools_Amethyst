@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.IO;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -300,7 +301,16 @@ public partial class LaunchOptionsViewModel : ObservableObject
             return;
         }
 
-        _launch.Stage((int)AppId, _state.ChangeNumber, _state.Current, desired, _state.RawLaunch);
+        try
+        {
+            _launch.Stage((int)AppId, _state.ChangeNumber, _state.Current, desired, _state.RawLaunch);
+        }
+        catch (IOException ex)
+        {
+            // The record file exists but could not be read: the store refuses to save over it (fail closed).
+            _toast.Show(Resources.Strings.Launch_Title, string.Format(Resources.Strings.Launch_ApplyFailed, ex.Message), error: true);
+            return;
+        }
         IsModded = true;
 
         if (_confirm(Resources.Strings.Launch_ApplyNow_Body, Resources.Strings.Launch_ApplyNow_Title))

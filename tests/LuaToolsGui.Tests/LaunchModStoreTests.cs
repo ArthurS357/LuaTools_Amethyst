@@ -27,6 +27,26 @@ public class LaunchModStoreTests : IDisposable
         GC.SuppressFinalize(this);
     }
 
+    private const string WithInvalidEntry = """
+        {
+          "Version": 2,
+          "Mods": [
+            {
+              "AppId": 603750,
+              "ChangeNumber": 10,
+              "Original": [{ "Index": "0", "SourceIndex": "0", "Executable": "ValidOrig.exe", "Type": "default", "OsList": "windows" }],
+              "Desired":  [{ "Index": "0", "SourceIndex": "0", "Executable": "ValidMod.exe", "Type": "default", "OsList": "windows" }]
+            },
+            {
+              "AppId": 0,
+              "ChangeNumber": 42,
+              "Original": [],
+              "Desired": []
+            }
+          ]
+        }
+        """;
+
     private static List<LaunchOption> Options(params string[] executables) =>
         executables.Select((exe, i) => new LaunchOption
         {
@@ -424,26 +444,7 @@ public class LaunchModStoreTests : IDisposable
     [Fact]
     public void ConsecutiveLoadsOfIdenticalInvalidFile_DoNotProliferateBackups()
     {
-        const string withInvalidEntry = """
-            {
-              "Version": 2,
-              "Mods": [
-                {
-                  "AppId": 603750,
-                  "ChangeNumber": 10,
-                  "Original": [{ "Index": "0", "SourceIndex": "0", "Executable": "ValidOrig.exe", "Type": "default", "OsList": "windows" }],
-                  "Desired":  [{ "Index": "0", "SourceIndex": "0", "Executable": "ValidMod.exe", "Type": "default", "OsList": "windows" }]
-                },
-                {
-                  "AppId": 0,
-                  "ChangeNumber": 42,
-                  "Original": [],
-                  "Desired": []
-                }
-              ]
-            }
-            """;
-        File.WriteAllText(_path, withInvalidEntry);
+        File.WriteAllText(_path, WithInvalidEntry);
 
         // Two consecutive loads without Persist(): only the initial .bak should be created, no .bak.<ts>.
         _ = new LaunchModStore(_path);
@@ -454,11 +455,160 @@ public class LaunchModStoreTests : IDisposable
         Assert.Equal(_path + ".bak", allBackups[0]);
 
         // After the invalid file changes, one timestamped backup is created, and reopening it again does not duplicate it.
-        File.WriteAllText(_path, withInvalidEntry.Replace("42", "84", StringComparison.Ordinal));
+        File.WriteAllText(_path, WithInvalidEntry.Replace("42", "84", StringComparison.Ordinal));
         _ = new LaunchModStore(_path);
         _ = new LaunchModStore(_path);
 
         var backupsAfterChange = Directory.GetFiles(_tmp, "launchmods.json.bak*");
         Assert.Equal(2, backupsAfterChange.Length);
+    }
+
+    // ── K6: unreadable file, generations ────────────────────────────
+
+    [Fact]
+    public void A_file_locked_at_load_is_left_in_place_and_writes_fail_closed_until_it_reads()
+    {
+        new LaunchModStore(_path).Save(1, 1, Options("a.exe"), Options("b.exe"));
+        string before = File.ReadAllText(_path);
+
+        LaunchModStore store;
+        using (new FileStream(_path, FileMode.Open, FileAccess.Read, FileShare.None))
+        {
+            store = new LaunchModStore(_path);
+
+            Assert.Empty(Directory.GetFiles(_tmp, "launchmods.json.corrupt*"));   // locked is not corrupt
+            Assert.True(store.IsEmpty);
+            Assert.Throws<IOException>(() => store.Save(2, 1, Options("c.exe"), Options("d.exe")));
+            Assert.False(store.TrySnapshot());   // a snapshot of the empty in-memory store would be a lie
+            store.Remove(1);                     // no-op, never a write
+        }
+
+        Assert.Equal(before, File.ReadAllText(_path));
+
+        // Readable again: the next write reloads first, so the existing record survives next to the new one.
+        store.Save(2, 1, Options("c.exe"), Options("d.exe"));
+        var reopened = new LaunchModStore(_path);
+        Assert.NotNull(reopened.Get(1));
+        Assert.NotNull(reopened.Get(2));
+    }
+
+    [Fact]
+    public void A_corrupt_file_is_still_quarantined()
+    {
+        File.WriteAllText(_path, "{ not json");
+
+        var store = new LaunchModStore(_path);
+
+        Assert.True(store.IsEmpty);
+        Assert.Single(Directory.GetFiles(_tmp, "launchmods.json.corrupt.*"));
+        store.Save(1, 1, Options("a.exe"), Options("b.exe"));   // a parse failure does not block writes
+    }
+
+    [Fact]
+    public void Pruning_keeps_the_newest_generations_by_the_UTC_stamp_in_the_name_not_by_write_time()
+    {
+        string bak = _path + ".bak";
+        for (int day = 1; day <= 7; day++)
+        {
+            string file = $"{bak}.202601{day:00}000000";
+            File.WriteAllText(file, day.ToString());
+            // Inverted on purpose: File.Copy keeps the source's mtime, so the oldest name may carry the newest time.
+            File.SetLastWriteTimeUtc(file, new DateTime(2030, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddDays(-day));
+        }
+        File.WriteAllText($"{bak}.20260107000000.1", "same second, later copy");
+        File.WriteAllText($"{bak}.notastamp", "not a generation");
+
+        LaunchModStore.PruneTimestamped(bak, LaunchModStore.MaxTimestampedBackups);
+
+        Assert.Equal(
+            ["20260107000000.1", "20260107000000", "20260106000000", "20260105000000", "20260104000000"],
+            LaunchModStore.TimestampedSiblings(bak).Select(f => Path.GetFileName(f)["launchmods.json.bak.".Length..]));
+        Assert.True(File.Exists($"{bak}.notastamp"));   // unknown names are never deleted
+    }
+
+    [Fact]
+    public void Alternating_invalid_files_never_keep_more_than_the_cap_of_timestamped_backups()
+    {
+        for (int i = 0; i < LaunchModStore.MaxTimestampedBackups + 3; i++)
+        {
+            File.WriteAllText(_path, WithInvalidEntry.Replace("42", (100 + i).ToString(), StringComparison.Ordinal));
+            _ = new LaunchModStore(_path);
+        }
+
+        Assert.Equal(LaunchModStore.MaxTimestampedBackups, LaunchModStore.TimestampedSiblings(_path + ".bak").Count);
+        Assert.True(File.Exists(_path + ".bak"));   // the first, untimestamped backup is never pruned
+    }
+
+    [Fact]
+    public void Each_restore_snapshot_keeps_the_previous_one_as_a_generation()
+    {
+        var store = new LaunchModStore(_path);
+        string snapshot = _path + ".pre-restore";
+
+        store.Save(1, 1, Options("a.exe"), Options("b.exe"));
+        Assert.True(store.TrySnapshot());
+        string first = File.ReadAllText(snapshot);
+
+        store.Save(2, 1, Options("c.exe"), Options("d.exe"));
+        Assert.True(store.TrySnapshot());
+        Assert.True(store.TrySnapshot());   // unchanged content: no extra generation
+
+        var generations = LaunchModStore.TimestampedSiblings(snapshot);
+        Assert.Single(generations);
+        Assert.Equal(first, File.ReadAllText(generations[0]));
+        Assert.NotEqual(first, File.ReadAllText(snapshot));
+    }
+
+    [Fact]
+    public void After_a_clock_rollback_the_generation_just_taken_is_never_the_one_pruned()
+    {
+        File.WriteAllText(_path, WithInvalidEntry);
+        _ = new LaunchModStore(_path);   // first skip: the plain .bak
+        string bak = _path + ".bak";
+        for (int i = 0; i < LaunchModStore.MaxTimestampedBackups; i++)
+            File.WriteAllText($"{bak}.2099010{i + 1}000000", "from a clock that ran ahead");
+
+        File.WriteAllText(_path, WithInvalidEntry.Replace("42", "4242", StringComparison.Ordinal));
+        _ = new LaunchModStore(_path);   // second skip: a new generation stamped "now", older than all of them
+
+        var generations = LaunchModStore.TimestampedSiblings(bak);
+        Assert.Equal(LaunchModStore.MaxTimestampedBackups, generations.Count);
+        Assert.Contains(generations, g => File.ReadAllText(g).Contains("4242", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Readers_pick_the_records_up_once_a_file_locked_at_startup_reads_again()
+    {
+        new LaunchModStore(_path).Save(1, 1, Options("a.exe"), Options("b.exe"));
+
+        LaunchModStore store;
+        using (new FileStream(_path, FileMode.Open, FileAccess.Read, FileShare.None))
+            store = new LaunchModStore(_path);
+
+        // No write in between: drift checks and the overrides list read through Get/All/IsEmpty.
+        Assert.False(store.IsEmpty);
+        Assert.NotNull(store.Get(1));
+        Assert.Single(store.All);
+    }
+
+    [Fact]
+    public void An_unparseable_file_that_cannot_be_moved_aside_is_never_overwritten()
+    {
+        File.WriteAllText(_path, "{ not json");
+
+        LaunchModStore store;
+        // Readable, but not deletable or movable while this handle is open.
+        using (new FileStream(_path, FileMode.Open, FileAccess.Read, FileShare.Read))
+        {
+            store = new LaunchModStore(_path);
+            Assert.Empty(Directory.GetFiles(_tmp, "launchmods.json.corrupt*"));
+            Assert.Throws<IOException>(() => store.Save(1, 1, Options("a.exe"), Options("b.exe")));
+        }
+        Assert.Equal("{ not json", File.ReadAllText(_path));
+
+        // Once the move works the file is quarantined and saving resumes.
+        store.Save(1, 1, Options("a.exe"), Options("b.exe"));
+        Assert.Single(Directory.GetFiles(_tmp, "launchmods.json.corrupt.*"));
+        Assert.NotNull(new LaunchModStore(_path).Get(1));
     }
 }
