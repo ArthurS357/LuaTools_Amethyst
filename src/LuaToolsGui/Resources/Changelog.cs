@@ -29,6 +29,14 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.8.6", "2026-11-26",
+            "Internal build: opt-in local manifest backup, verified fallback restore, and local discovery routes.",
+            [
+                "Settings > Manifest backup (off by default) keeps one flat zip and metadata.json per game in a folder you choose, including cloud-synced folders, without re-hashing unchanged zips or modifying Steam.",
+                "When a download source fails (never on cancel or pause), a verified backup copy is staged in %TEMP% and checked fail-closed by SHA-256, entry allow-list and symlink refusal before install; metadata.json keeps plain SHA-256 without HMAC (M5) for cross-PC portability.",
+                "Adds a root index.json catalog with manifest completeness flags (hasManifests/manifestCount) and authenticated loopback endpoints (/backup/index, /backup/status, /backup/install) for the Add via Backup flow.",
+            ]),
+
         new("1.8.5", "2026-11-24",
             "Internal build: safer launch-option records and uninstall, and a quieter log.",
             [

@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.8.5");
+        AppVersion.Current.Should().Be("1.8.6");
     }
 
     [Fact]
@@ -53,6 +53,17 @@ public class ChangelogTests
         text.Should().ContainEquivalentOf("memory for the session only");    // never written to settings.json
         text.Should().ContainEquivalentOf("%USERPROFILE%");                  // profile masking in logs
         text.Should().ContainEquivalentOf("DNS fallback");                   // Auto clears the failure flag
+    }
+
+    [Fact]
+    public void The_1_8_6_entry_names_what_that_release_was_about()
+    {
+        string text = string.Join(" ", Changelog.Entries.Single(e => e.Version == "1.8.6").Highlights);
+
+        text.Should().ContainEquivalentOf("Manifest backup");                // opt-in local vault
+        text.Should().ContainEquivalentOf("fail-closed");                    // SHA-256 + allow-list restore gate
+        text.Should().ContainEquivalentOf("index.json");                     // root completeness catalog
+        text.Should().ContainEquivalentOf("/backup/install");                // L4 local bridge routes
     }
 
     [Fact]
