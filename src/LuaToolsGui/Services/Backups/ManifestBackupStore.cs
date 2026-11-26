@@ -43,6 +43,7 @@ public static class ManifestBackupStore
     public const string MetadataFileName = "metadata.json";
     public const string IndexFileName = "index.json";
 
+    private static readonly DateTime DosEpochCutoffUtc = new(1980, 1, 2, 0, 0, 0, DateTimeKind.Utc);
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web) { WriteIndented = true };
 
     /// <summary>Back up every installed game. One game failing never stops the others.</summary>
@@ -128,21 +129,51 @@ public static class ManifestBackupStore
                 ManifestBackupPolicy.SelectCarried(depots, pins, selected, ListManifests(zipPath)).Count > 0)
                 return new(appId, null, 0, "unusable metadata.json and the stored zip holds the only copy of a manifest; " +
                     "kept (delete the game's backup folder to rebuild it)");
-            var carried = ManifestBackupPolicy.SelectCarried(depots, pins, selected, stored?.Manifests ?? []);
+            DateTime nowUtc = DateTime.UtcNow;
+            IReadOnlyList<BackedUpManifest> storedManifests = stored?.Manifests ?? [];
+            bool? zipVerified = null;
+            if (stored is not null && NeedsLegacyTimestampLookup(depots, lua.ActivePins, selected, storedManifests))
+                (storedManifests, zipVerified) = InspectLegacyZip(zipPath, appId, stored, nowUtc);
+
+            var reconciled = ManifestBackupPolicy.Reconcile(
+                depots, pins, lua.ActivePins, selected, storedManifests, allowAntiDowngrade: true);
+
             // Skip-check inspects metadata + file length only (zero zip reads) so cloud-streaming folders
             // like Google Drive / OneDrive are not forced to hydrate every archive on every scan.
-            // Full SHA-256 verification remains mandatory and fail-closed on restore.
-            bool zipIntact = stored is not null && HasExpectedZip(zipPath, stored);
-            var snapshot = selected.Concat(carried.Select(static m => new DepotManifest(m.DepotId, m.ManifestId, "", default)));
+            // Full SHA-256 verification remains mandatory and fail-closed on restore and before anti-downgrade
+            // suppresses any local depotcache manifest.
+            bool zipIntact;
+            if (reconciled.PreventedDowngrade)
+            {
+                zipVerified ??= stored is not null && IsVerifiedStoredZip(zipPath, appId, stored);
+                if (zipVerified == true)
+                {
+                    zipIntact = stored is not null && HasExpectedZip(zipPath, stored);
+                }
+                else
+                {
+                    reconciled = ManifestBackupPolicy.Reconcile(
+                        depots, pins, lua.ActivePins, selected, storedManifests, allowAntiDowngrade: false);
+                    zipIntact = false;
+                }
+            }
+            else
+            {
+                zipIntact = stored is not null && zipVerified != false && HasExpectedZip(zipPath, stored);
+            }
+
+            var effectiveSelected = reconciled.Selected;
+            var carried = reconciled.Carried;
+            var snapshot = effectiveSelected.Concat(carried.Select(static m => new DepotManifest(m.DepotId, m.ManifestId, "", default)));
             var change = ManifestBackupPolicy.Decide(stored, zipIntact, luaSha, snapshot);
             if (change == ManifestBackupChange.Unchanged)
-                return new(appId, change, selected.Count + carried.Count, null);
+                return new(appId, change, effectiveSelected.Count + carried.Count, null);
 
             Directory.CreateDirectory(appDir);
             // Read into memory BEFORE the zip they live in is rewritten.
-            var kept = ReadCarried(zipPath, carried);
-            var recorded = new List<BackedUpManifest>(selected.Count + kept.Count);
-            AtomicFile.Write(zipPath, p => WriteZip(p, appId, luaBytes, selected, kept, recorded));
+            var kept = ReadCarried(zipPath, carried, nowUtc);
+            var recorded = new List<BackedUpManifest>(effectiveSelected.Count + kept.Count);
+            AtomicFile.Write(zipPath, p => WriteZip(p, appId, luaBytes, effectiveSelected, kept, recorded, nowUtc));
             long zipSize = new FileInfo(zipPath).Length;
             string zipSha = FileHash.Sha256(zipPath) ?? throw new IOException("the written zip could not be read back");
 
@@ -179,7 +210,7 @@ public static class ManifestBackupStore
     /// <summary>The carried manifests, taken from the stored zip and checked against their recorded SHA-256.
     /// All or nothing: a zip that is absent, unreadable or disagrees with metadata.json (a half-synced cloud
     /// folder) throws, which fails this game's pass and leaves what is stored alone.</summary>
-    private static List<CarriedManifest> ReadCarried(string zipPath, IReadOnlyList<BackedUpManifest> carried)
+    private static List<CarriedManifest> ReadCarried(string zipPath, IReadOnlyList<BackedUpManifest> carried, DateTime nowUtc)
     {
         var kept = new List<CarriedManifest>(carried.Count);
         if (carried.Count == 0) return kept;
@@ -198,14 +229,91 @@ public static class ManifestBackupStore
             byte[] bytes = ms.ToArray();
             if (!string.Equals(Convert.ToHexStringLower(SHA256.HashData(bytes)), m.Sha256, StringComparison.OrdinalIgnoreCase))
                 throw new InvalidDataException(Refused);
-            kept.Add(new CarriedManifest(m, bytes, entry.LastWriteTime));
+            var carriedMeta = m.LastWriteUtc is null && entry.LastWriteTime.UtcDateTime > DosEpochCutoffUtc
+                ? m with { LastWriteUtc = ClampUtc(entry.LastWriteTime.UtcDateTime, nowUtc) }
+                : m;
+            kept.Add(new CarriedManifest(carriedMeta, bytes, entry.LastWriteTime));
         }
         return kept;
     }
 
+    private static DateTime ClampUtc(DateTime value, DateTime nowUtc)
+    {
+        DateTime utc = value.Kind == DateTimeKind.Local ? value.ToUniversalTime() : DateTime.SpecifyKind(value, DateTimeKind.Utc);
+        return utc > nowUtc ? nowUtc : utc;
+    }
+
+    private static bool NeedsLegacyTimestampLookup(
+        IReadOnlyCollection<long> depots,
+        IReadOnlyDictionary<long, string> activePins,
+        IReadOnlyList<DepotManifest> selected,
+        IReadOnlyList<BackedUpManifest> stored)
+    {
+        if (stored.Count == 0 || selected.Count == 0) return false;
+
+        foreach (long depot in depots)
+        {
+            if (activePins.ContainsKey(depot)) continue;
+            var localIds = selected.Where(s => s.DepotId == depot).Select(static s => s.ManifestId).ToHashSet(StringComparer.Ordinal);
+            if (localIds.Count == 0) continue;
+
+            if (stored.Any(m => m.DepotId == depot && m.LastWriteUtc is null && !localIds.Contains(m.ManifestId)))
+                return true;
+        }
+        return false;
+    }
+
+    private static (IReadOnlyList<BackedUpManifest> Manifests, bool Verified) InspectLegacyZip(
+        string zipPath, long appId, ManifestBackupMetadata stored, DateTime nowUtc)
+    {
+        if (string.IsNullOrWhiteSpace(stored.ZipSha256) || IsLink(zipPath) || !File.Exists(zipPath))
+            return (stored.Manifests, false);
+
+        // Let IOException / UnauthorizedAccessException propagate when an existing zip is locked by
+        // cloud sync or AV so BackupGame fails safely instead of overwriting the stored backup.
+        using var fs = new FileStream(zipPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+        if (!VerifyArchive(fs, appId, stored))
+            return (stored.Manifests, false);
+
+        try
+        {
+            using var zip = new ZipArchive(fs, ZipArchiveMode.Read, leaveOpen: true);
+            var enriched = new List<BackedUpManifest>(stored.Manifests.Count);
+            foreach (var m in stored.Manifests)
+            {
+                if (m.LastWriteUtc is null &&
+                    zip.GetEntry(ManifestEntryName(m)) is { } entry &&
+                    entry.LastWriteTime.UtcDateTime is { } utc &&
+                    utc > DosEpochCutoffUtc)
+                {
+                    enriched.Add(m with { LastWriteUtc = ClampUtc(utc, nowUtc) });
+                }
+                else
+                {
+                    enriched.Add(m);
+                }
+            }
+            return (enriched, true);
+        }
+        catch (InvalidDataException)
+        {
+            return (stored.Manifests, false);
+        }
+    }
+
+    private static bool IsVerifiedStoredZip(string zipPath, long appId, ManifestBackupMetadata stored)
+    {
+        if (string.IsNullOrWhiteSpace(stored.ZipSha256) || IsLink(zipPath) || !File.Exists(zipPath))
+            return false;
+
+        // Propagate IOException / UnauthorizedAccessException on an existing locked zip (fail-closed).
+        using var fs = new FileStream(zipPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+        return VerifyArchive(fs, appId, stored);
+    }
+
     private static void WriteZip(
         string path, long appId, byte[] luaBytes, IReadOnlyList<DepotManifest> manifests,
-        IReadOnlyList<CarriedManifest> carried, List<BackedUpManifest> recorded)
+        IReadOnlyList<CarriedManifest> carried, List<BackedUpManifest> recorded, DateTime nowUtc)
     {
         recorded.Clear(); // AtomicFile may call this twice (temp file, then in place)
         using var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
@@ -215,8 +323,10 @@ public static class ManifestBackupStore
         foreach (var m in manifests)
         {
             byte[] bytes = ReadShared(m.Path);
-            AddEntry(zip, Path.GetFileName(m.Path), bytes, ToDosTimestamp(m.LastWriteUtc));
-            recorded.Add(new BackedUpManifest(m.DepotId, m.ManifestId, Convert.ToHexStringLower(SHA256.HashData(bytes))));
+            DateTime clampedUtc = ClampUtc(m.LastWriteUtc, nowUtc);
+            AddEntry(zip, Path.GetFileName(m.Path), bytes, ToDosTimestamp(clampedUtc));
+            recorded.Add(new BackedUpManifest(
+                m.DepotId, m.ManifestId, Convert.ToHexStringLower(SHA256.HashData(bytes)), clampedUtc));
         }
         foreach (var c in carried)
         {

@@ -19,7 +19,13 @@ public enum ManifestBackupMode
 public readonly record struct DepotManifest(long DepotId, string ManifestId, string Path, DateTime LastWriteUtc);
 
 /// <summary>A manifest recorded in a backup's metadata.json.</summary>
-public sealed record BackedUpManifest(long DepotId, string ManifestId, string Sha256);
+public sealed record BackedUpManifest(long DepotId, string ManifestId, string Sha256, DateTime? LastWriteUtc = null);
+
+/// <summary>Result of reconciling local depotcache candidates against a stored backup.</summary>
+public sealed record ManifestReconcileResult(
+    IReadOnlyList<DepotManifest> Selected,
+    IReadOnlyList<BackedUpManifest> Carried,
+    bool PreventedDowngrade);
 
 /// <summary>On-disk shape of <c>&lt;dest&gt;\&lt;appid&gt;\metadata.json</c>. <see cref="ZipSha256"/> is what a
 /// restore checks the zip against before anything is extracted into Steam.</summary>
@@ -127,7 +133,7 @@ public static class ManifestBackupPolicy
         {
             var newest = group
                 .OrderByDescending(static m => m.LastWriteUtc)
-                .ThenByDescending(static m => ulong.TryParse(m.ManifestId, out ulong id) ? id : 0)
+                .ThenByDescending(static m => ulong.TryParse(m.ManifestId, NumberStyles.None, CultureInfo.InvariantCulture, out ulong id) ? id : 0)
                 .First();
             picked.Add(newest);
 
@@ -139,22 +145,125 @@ public static class ManifestBackupPolicy
         return [.. picked.OrderBy(static m => m.DepotId).ThenBy(static m => m.ManifestId, StringComparer.Ordinal)];
     }
 
+    private static readonly Dictionary<long, string> EmptyPins = [];
+
+    /// <summary>DOS ZIP entry headers have 2-second timestamp granularity, so differences up to 2 s
+    /// between a restored file and its backup copy are rounding, not a newer build.</summary>
+    public static readonly TimeSpan TimestampTolerance = TimeSpan.FromSeconds(2);
+
+    private static DateTime ToUtc(DateTime value) =>
+        value.Kind == DateTimeKind.Local
+            ? value.ToUniversalTime()
+            : DateTime.SpecifyKind(value, DateTimeKind.Utc);
+
+    /// <summary>True when <paramref name="storedUtc"/> leads <paramref name="localUtc"/> by more than
+    /// <see cref="TimestampTolerance"/> (DOS ZIP 2-second timestamp granularity).</summary>
+    public static bool IsStoredNewer(DateTime? storedUtc, DateTime localUtc)
+    {
+        if (storedUtc is not { } s) return false;
+        return ToUtc(s) - ToUtc(localUtc) > TimestampTolerance;
+    }
+
     /// <summary>
     /// Stored manifests the new snapshot must keep because depotcache can no longer supply them: the lua still
     /// declares the depot, and depotcache has nothing for it, or lacks exactly the pinned file. Without this a
     /// pass on a PC that shares the folder, or after Steam cleared depotcache, would replace the only copy with
     /// a poorer one.
     /// </summary>
-    // ponytail: a depot depotcache only holds an OLDER unpinned file for still follows depotcache.
     public static IReadOnlyList<BackedUpManifest> SelectCarried(
         IReadOnlyCollection<long> depotIds,
         IReadOnlyDictionary<long, string> pins,
         IReadOnlyList<DepotManifest> selected,
         IEnumerable<BackedUpManifest> stored) =>
-        [.. stored.Where(m => depotIds.Contains(m.DepotId)
-            && !selected.Any(s => s.DepotId == m.DepotId && s.ManifestId == m.ManifestId)
-            && (!selected.Any(s => s.DepotId == m.DepotId)
-                || (pins.TryGetValue(m.DepotId, out string? pin) && pin == m.ManifestId)))];
+        Reconcile(depotIds, pins, EmptyPins, selected, stored, allowAntiDowngrade: false).Carried;
+
+    /// <summary>
+    /// Reconcile local <c>depotcache</c> candidates (<paramref name="selected"/>) against <paramref name="stored"/>
+    /// manifests: preserves missing or pinned stored manifests and, when <paramref name="allowAntiDowngrade"/>
+    /// is enabled, prevents an unpinned depot from regressing to an older local manifest when a verified stored
+    /// manifest is strictly newer (beyond <see cref="TimestampTolerance"/>). Explicit active <c>setManifestid</c>
+    /// pins in <paramref name="activePins"/> always win over anti-downgrade so an intentional build freeze holds.
+    /// </summary>
+    public static ManifestReconcileResult Reconcile(
+        IReadOnlyCollection<long> depotIds,
+        IReadOnlyDictionary<long, string> pins,
+        IReadOnlyDictionary<long, string> activePins,
+        IReadOnlyList<DepotManifest> selected,
+        IEnumerable<BackedUpManifest> stored,
+        bool allowAntiDowngrade = true)
+    {
+        var declared = depotIds as HashSet<long> ?? [.. depotIds];
+        var storedList = stored as IReadOnlyList<BackedUpManifest> ?? [.. stored];
+        var carried = new List<BackedUpManifest>();
+        var carriedKeys = new HashSet<(long DepotId, string ManifestId)>();
+
+        foreach (var m in storedList)
+        {
+            if (!declared.Contains(m.DepotId)) continue;
+            if (selected.Any(s => s.DepotId == m.DepotId && s.ManifestId == m.ManifestId)) continue;
+            bool depotMissing = !selected.Any(s => s.DepotId == m.DepotId);
+            bool matchesPin = pins.TryGetValue(m.DepotId, out string? pin) && pin == m.ManifestId;
+            if ((depotMissing || matchesPin) && carriedKeys.Add((m.DepotId, m.ManifestId)))
+                carried.Add(m);
+        }
+
+        bool preventedDowngrade = false;
+        HashSet<(long DepotId, string ManifestId)>? suppressedLocal = null;
+
+        if (allowAntiDowngrade)
+        {
+            foreach (var group in storedList.Where(m => declared.Contains(m.DepotId)).GroupBy(static m => m.DepotId))
+            {
+                long depot = group.Key;
+                if (activePins.ContainsKey(depot)) continue;
+
+                var localForDepot = selected.Where(s => s.DepotId == depot).ToList();
+                if (localForDepot.Count == 0) continue;
+
+                var newestLocal = localForDepot
+                    .OrderByDescending(static m => ToUtc(m.LastWriteUtc))
+                    .ThenByDescending(static m => ulong.TryParse(m.ManifestId, NumberStyles.None, CultureInfo.InvariantCulture, out ulong id) ? id : 0)
+                    .First();
+
+                var newestStored = group
+                    .Where(static m => m.LastWriteUtc.HasValue)
+                    .OrderByDescending(static m => ToUtc(m.LastWriteUtc.GetValueOrDefault()))
+                    .ThenByDescending(static m => ulong.TryParse(m.ManifestId, NumberStyles.None, CultureInfo.InvariantCulture, out ulong id) ? id : 0)
+                    .FirstOrDefault();
+
+                if (newestStored is null
+                    || localForDepot.Any(s => s.ManifestId == newestStored.ManifestId)
+                    || !IsStoredNewer(newestStored.LastWriteUtc, newestLocal.LastWriteUtc))
+                {
+                    continue;
+                }
+
+                preventedDowngrade = true;
+                if (carriedKeys.Add((newestStored.DepotId, newestStored.ManifestId)))
+                    carried.Add(newestStored);
+
+                string? pinnedId = pins.GetValueOrDefault(depot);
+                foreach (var local in localForDepot)
+                {
+                    if (pinnedId is not null && string.Equals(local.ManifestId, pinnedId, StringComparison.Ordinal))
+                        continue;
+
+                    suppressedLocal ??= [];
+                    suppressedLocal.Add((local.DepotId, local.ManifestId));
+                }
+            }
+        }
+
+        IReadOnlyList<DepotManifest> keptSelected = suppressedLocal is null
+            ? selected
+            : [.. selected.Where(s => !suppressedLocal.Contains((s.DepotId, s.ManifestId)))];
+
+        IReadOnlyList<BackedUpManifest> orderedCarried = [.. carried
+            .OrderBy(static m => m.DepotId)
+            .ThenBy(static m => m.ManifestId, StringComparer.Ordinal)];
+
+        return new ManifestReconcileResult(keptSelected, orderedCarried, preventedDowngrade);
+    }
 
     /// <summary>Compare the current snapshot with what is stored. Content-addressed manifest names mean
     /// (depot, manifest id) pairs are enough to detect a manifest change; the lua is compared by hash.

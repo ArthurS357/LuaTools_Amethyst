@@ -1168,4 +1168,280 @@ public sealed class ManifestBackupTests : IDisposable
 
         ManifestBackupStore.ReadIndex(_dest)!.Games.Select(g => g.AppId).Should().BeEquivalentTo([.. ids, AppId]);
     }
+
+    // ── Anti-downgrade protection ───────────────────────────────────
+
+    [Fact]
+    public void AntiDowngrade_unpinned_depot_with_older_local_manifest_preserves_newer_stored_manifest()
+    {
+        WriteLua("addappid(386940)\naddappid(386941,1,\"k\")");
+        string newer = WriteManifest(386941, "222", T0.AddDays(5));
+        BackupAll().Games.Single().Change.Should().Be(ManifestBackupChange.New);
+
+        // Steam / another PC only has an older unpinned manifest in depotcache.
+        File.Delete(newer);
+        WriteManifest(386941, "111", T0);
+
+        DateTime zipBefore = File.GetLastWriteTimeUtc(ZipPath).AddMinutes(-10);
+        File.SetLastWriteTimeUtc(ZipPath, zipBefore);
+
+        var firstPass = BackupAll().Games.Single();
+        firstPass.Change.Should().Be(ManifestBackupChange.Unchanged);
+        File.GetLastWriteTimeUtc(ZipPath).Should().Be(zipBefore);
+        ZipManifestNames().Should().Equal("386941_222.manifest");
+
+        // Even when the lua changes (forcing a zip rewrite), the newer stored manifest is carried and 111 is never written.
+        WriteLua("addappid(386940)\naddappid(386941,1,\"k\")\n-- updated lua comment");
+        var secondPass = BackupAll().Games.Single();
+        secondPass.Change.Should().Be(ManifestBackupChange.Updated);
+        secondPass.ManifestCount.Should().Be(1);
+        ZipManifestNames().Should().Equal("386941_222.manifest");
+        ManifestBackupStore.ReadMetadata(AppDir, AppId)!.Manifests.Single().LastWriteUtc
+            .Should().Be(T0.AddDays(5));
+        using var restored = ManifestBackupStore.StageVerifiedRestore(AppId, _dest, Staging)?.Pin;
+        restored.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void AntiDowngrade_commented_pin_autoupdate_preserves_newer_stored_manifest_alongside_pin()
+    {
+        WriteLua("addappid(386940)\naddappid(386941,1,\"k\")\n--setManifestid(386941,\"111\")");
+        string pinned = WriteManifest(386941, "111", T0);
+        string newer = WriteManifest(386941, "222", T0.AddDays(5));
+        BackupAll();
+        ZipManifestNames().Should().Equal("386941_111.manifest", "386941_222.manifest");
+
+        // Second pass where depotcache only holds an older unpinned file (050).
+        File.Delete(pinned);
+        File.Delete(newer);
+        WriteManifest(386941, "050", T0.AddDays(-2));
+        WriteLua("addappid(386940)\naddappid(386941,1,\"k\")\n--setManifestid(386941,\"111\")\n-- extra");
+
+        BackupAll().Games.Single().Change.Should().Be(ManifestBackupChange.Updated);
+        ZipManifestNames().Should().Equal("386941_111.manifest", "386941_222.manifest");
+    }
+
+    [Fact]
+    public void AntiDowngrade_unpinned_depot_with_newer_local_manifest_updates_backup()
+    {
+        WriteLua("addappid(386940)\naddappid(386941,1,\"k\")");
+        string older = WriteManifest(386941, "111", T0);
+        BackupAll();
+
+        File.Delete(older);
+        DateTime newerTime = T0.AddDays(3);
+        WriteManifest(386941, "222", newerTime);
+
+        var outcome = BackupAll().Games.Single();
+        outcome.Change.Should().Be(ManifestBackupChange.Updated);
+        outcome.ManifestCount.Should().Be(1);
+        ZipManifestNames().Should().Equal("386941_222.manifest");
+        ManifestBackupStore.ReadMetadata(AppDir, AppId)!.Manifests.Single().LastWriteUtc.Should().Be(newerTime);
+    }
+
+    [Theory]
+    [InlineData(0.0, false)]
+    [InlineData(1.999, false)]
+    [InlineData(2.0, false)]
+    [InlineData(2.001, true)]
+    [InlineData(3.0, true)]
+    public void IsStoredNewer_respects_dos_two_second_granularity(double leadSeconds, bool expected)
+    {
+        DateTime local = T0;
+        DateTime stored = T0.AddSeconds(leadSeconds);
+
+        ManifestBackupPolicy.IsStoredNewer(stored, local).Should().Be(expected);
+    }
+
+    [Fact]
+    public void AntiDowngrade_within_two_second_dos_tolerance_does_not_block_or_falsely_downgrade()
+    {
+        DateTime storedTime = T0.AddSeconds(1.999);
+        var stored = new[] { new BackedUpManifest(386941, "222", "abc", storedTime) };
+        var localWithinTolerance = new[] { M(386941, "333", T0) };
+
+        var result = ManifestBackupPolicy.Reconcile(
+            [386941],
+            new Dictionary<long, string>(),
+            new Dictionary<long, string>(),
+            localWithinTolerance,
+            stored,
+            allowAntiDowngrade: true);
+
+        result.PreventedDowngrade.Should().BeFalse();
+        result.Selected.Select(m => m.ManifestId).Should().Equal("333");
+        result.Carried.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void AntiDowngrade_active_setManifestid_pin_is_respected_even_when_pinned_manifest_is_older()
+    {
+        WriteLua("addappid(386940)\naddappid(386941,1,\"k\")");
+        string newer = WriteManifest(386941, "222", T0.AddDays(5));
+        BackupAll();
+
+        // User explicitly freezes the build to older manifest 111 via active setManifestid.
+        File.Delete(newer);
+        WriteManifest(386941, "111", T0);
+        WriteLua("addappid(386940)\naddappid(386941,1,\"k\")\nsetManifestid(386941,\"111\")");
+
+        var outcome = BackupAll().Games.Single();
+        outcome.Change.Should().Be(ManifestBackupChange.Updated);
+        ZipManifestNames().Should().Equal("386941_111.manifest");
+    }
+
+    [Fact]
+    public void AntiDowngrade_corrupt_stored_zip_does_not_block_local_manifest()
+    {
+        WriteLua("addappid(386940)\naddappid(386941,1,\"k\")");
+        string newer = WriteManifest(386941, "222", T0.AddDays(5));
+        BackupAll();
+
+        // Corrupt the stored zip without changing length so SHA-256 fails fail-closed.
+        byte[] tampered = File.ReadAllBytes(ZipPath);
+        tampered[^1] ^= 0xFF;
+        File.WriteAllBytes(ZipPath, tampered);
+
+        File.Delete(newer);
+        WriteManifest(386941, "111", T0);
+
+        var outcome = BackupAll().Games.Single();
+        outcome.Change.Should().Be(ManifestBackupChange.Updated);
+        ZipManifestNames().Should().Equal("386941_111.manifest");
+        using var restored = ManifestBackupStore.StageVerifiedRestore(AppId, _dest, Staging)?.Pin;
+        restored.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void AntiDowngrade_legacy_metadata_without_timestamp_protects_against_older_local_manifest()
+    {
+        WriteLua("addappid(386940)\naddappid(386941,1,\"k\")");
+        string newer = WriteManifest(386941, "222", T0.AddDays(5));
+        BackupAll();
+
+        // Rewrite metadata.json in legacy format (omitting lastWriteUtc on manifest entries).
+        var full = ManifestBackupStore.ReadMetadata(AppDir, AppId)!;
+        string legacyJson = JsonSerializer.Serialize(new
+        {
+            schema = 1,
+            appId = full.AppId,
+            name = full.Name,
+            updatedAtUtc = full.UpdatedAtUtc,
+            luaSha256 = full.LuaSha256,
+            zipSha256 = full.ZipSha256,
+            manifests = full.Manifests.Select(m => new { depotId = m.DepotId, manifestId = m.ManifestId, sha256 = m.Sha256 }),
+            zipSizeBytes = full.ZipSizeBytes,
+            manifestCount = full.ManifestCount,
+            hasManifests = full.HasManifests,
+        });
+        File.WriteAllText(Path.Combine(AppDir, ManifestBackupStore.MetadataFileName), legacyJson);
+
+        File.Delete(newer);
+        WriteManifest(386941, "111", T0);
+
+        var outcome = BackupAll().Games.Single();
+        outcome.Change.Should().Be(ManifestBackupChange.Unchanged);
+        ZipManifestNames().Should().Equal("386941_222.manifest");
+    }
+
+    [Fact]
+    public void AntiDowngrade_true_L3_metadata_upgrades_once_to_L4_without_losing_newer_manifest()
+    {
+        WriteLua("addappid(386940)\naddappid(386941,1,\"k\")");
+        string newer = WriteManifest(386941, "222", T0.AddDays(5));
+        BackupAll();
+
+        // True legacy L3 metadata: omits lastWriteUtc, zipSizeBytes, manifestCount and hasManifests.
+        var full = ManifestBackupStore.ReadMetadata(AppDir, AppId)!;
+        string legacyL3Json = JsonSerializer.Serialize(new
+        {
+            schema = 1,
+            appId = full.AppId,
+            name = full.Name,
+            updatedAtUtc = full.UpdatedAtUtc,
+            luaSha256 = full.LuaSha256,
+            zipSha256 = full.ZipSha256,
+            manifests = full.Manifests.Select(m => new { depotId = m.DepotId, manifestId = m.ManifestId, sha256 = m.Sha256 }),
+        });
+        File.WriteAllText(Path.Combine(AppDir, ManifestBackupStore.MetadataFileName), legacyL3Json);
+
+        File.Delete(newer);
+        WriteManifest(386941, "111", T0);
+
+        // First pass preserves 222 and upgrades metadata.json to L4 once.
+        var first = BackupAll().Games.Single();
+        first.Change.Should().Be(ManifestBackupChange.Updated);
+        ZipManifestNames().Should().Equal("386941_222.manifest");
+        var upgraded = ManifestBackupStore.ReadMetadata(AppDir, AppId)!;
+        upgraded.ZipSizeBytes.Should().BeGreaterThan(0);
+        upgraded.Manifests.Single().LastWriteUtc.Should().NotBeNull();
+
+        // Subsequent pass skips with Unchanged and does not re-open the zip.
+        var second = BackupAll().Games.Single();
+        second.Change.Should().Be(ManifestBackupChange.Unchanged);
+        ZipManifestNames().Should().Equal("386941_222.manifest");
+    }
+
+    [Fact]
+    public void AntiDowngrade_locked_stored_zip_fails_pass_safely_without_downgrade_overwrite()
+    {
+        WriteLua("addappid(386940)\naddappid(386941,1,\"k\")");
+        string newer = WriteManifest(386941, "222", T0.AddDays(5));
+        BackupAll();
+        byte[] before = File.ReadAllBytes(ZipPath);
+
+        File.Delete(newer);
+        WriteManifest(386941, "111", T0);
+
+        using (new FileStream(ZipPath, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+        {
+            var outcome = BackupAll().Games.Single();
+            outcome.Failed.Should().BeTrue();
+        }
+
+        File.ReadAllBytes(ZipPath).Should().Equal(before);
+        ManifestBackupStore.ReadMetadata(AppDir, AppId)!.Manifests.Single().ManifestId.Should().Be("222");
+    }
+
+    [Fact]
+    public void AntiDowngrade_mixed_depots_updates_newer_depot_and_preserves_older_depot()
+    {
+        WriteLua("addappid(386940)\naddappid(386941,1,\"k\")\naddappid(386942,1,\"k\")");
+        string d1Initial = WriteManifest(386941, "200", T0.AddDays(5));
+        string d2Initial = WriteManifest(386942, "300", T0);
+        BackupAll();
+
+        // Depot 386941 regresses locally (older); depot 386942 advances locally (newer).
+        File.Delete(d1Initial);
+        File.Delete(d2Initial);
+        WriteManifest(386941, "100", T0);
+        WriteManifest(386942, "400", T0.AddDays(5));
+
+        var outcome = BackupAll().Games.Single();
+        outcome.Change.Should().Be(ManifestBackupChange.Updated);
+        outcome.ManifestCount.Should().Be(2);
+        ZipManifestNames().Should().Equal("386941_200.manifest", "386942_400.manifest");
+    }
+
+    [Fact]
+    public void AntiDowngrade_future_local_timestamp_is_clamped_to_now_so_updates_are_not_frozen()
+    {
+        WriteLua("addappid(386940)\naddappid(386941,1,\"k\")");
+        WriteManifest(386941, "111", new DateTime(2099, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+        BackupAll();
+
+        var storedTime = ManifestBackupStore.ReadMetadata(AppDir, AppId)!.Manifests.Single().LastWriteUtc;
+        storedTime.Should().NotBeNull();
+        storedTime!.Value.Should().BeOnOrBefore(DateTime.UtcNow.AddSeconds(2));
+    }
+
+    [Fact]
+    public void IsStoredNewer_normalizes_local_datetime_kind_before_comparing()
+    {
+        DateTime utcLocalRef = T0;
+        DateTime storedAsLocalKind = DateTime.SpecifyKind(T0.AddHours(1), DateTimeKind.Utc).ToLocalTime();
+
+        ManifestBackupPolicy.IsStoredNewer(storedAsLocalKind, utcLocalRef).Should().BeTrue();
+        ManifestBackupPolicy.IsStoredNewer(DateTime.SpecifyKind(T0, DateTimeKind.Utc).ToLocalTime(), utcLocalRef).Should().BeFalse();
+    }
 }
