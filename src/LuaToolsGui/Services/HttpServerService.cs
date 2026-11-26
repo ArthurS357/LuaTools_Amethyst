@@ -1,9 +1,11 @@
 using System.Collections.Concurrent;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Windows;
+using LuaToolsGui.Services.Backups;
 using LuaToolsGui.Services.Downloads;
 using LuaToolsGui.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
@@ -297,6 +299,9 @@ public class HttpServerService : IHostedService
                 "/loaded-apps" when req.HttpMethod == "POST" => HandleDismissLoadedApps(),
                 "/api-list" when req.HttpMethod == "GET" => HandleApiList(),
                 "/icon" when req.HttpMethod == "GET" => HandleIcon(),
+                "/backup/index" when req.HttpMethod == "GET" => HandleBackupIndex(),
+                "/backup/status" when req.HttpMethod == "GET" => HandleBackupStatus(req),
+                "/backup/install" when req.HttpMethod == "POST" => await HandleBackupInstall(req),
                 // CefInjectorService's methodMap routes the plugin's "Logger" here. Without this route the
                 // bridge call 404s and the frontend's diagnostics are silently dropped.
                 "/log" when req.HttpMethod == "POST" => await HandleLog(req),
@@ -675,6 +680,145 @@ public class HttpServerService : IHostedService
     {
         _cache.ClearLoadedAppIds();
         return (200, Json(new { success = true }));
+    }
+
+    // ── Local manifest backup discovery + explicit restore (L4) ──────
+
+    internal static bool TryParseStrictAppId(string? raw, out long appId)
+    {
+        appId = 0;
+        if (string.IsNullOrEmpty(raw)) return false;
+        foreach (char c in raw)
+            if (c is < '0' or > '9') return false;
+        return long.TryParse(raw, NumberStyles.None, CultureInfo.InvariantCulture, out appId)
+            && appId is > 0 and <= uint.MaxValue;
+    }
+
+    private (int, string) HandleBackupIndex()
+    {
+        try
+        {
+            var backups = _services.GetRequiredService<ManifestBackupService>();
+            var (enabled, index) = backups.GetIndex();
+            var games = (index?.Games ?? []).Select(static g => new
+            {
+                appId = g.AppId,
+                name = g.Name,
+                updatedAtUtc = g.UpdatedAtUtc,
+                manifestCount = g.ManifestCount,
+                hasManifests = g.HasManifests,
+                zipFile = g.ZipFile,
+                zipSha256 = g.ZipSha256,
+            }).ToList();
+            return (200, Json(new
+            {
+                success = true,
+                enabled,
+                updatedAtUtc = index?.UpdatedAtUtc,
+                games,
+            }));
+        }
+        catch (Exception ex)
+        {
+            return (500, JsonErr(Scrub("backup/index", ex)));
+        }
+    }
+
+    private (int, string) HandleBackupStatus(HttpListenerRequest req)
+    {
+        string[]? values = req.QueryString.GetValues("appid");
+        if (values is not [var raw] || !TryParseStrictAppId(raw, out long appId))
+            return (400, JsonErr("Invalid appid"));
+
+        try
+        {
+            var st = _services.GetRequiredService<ManifestBackupService>().GetAppStatus(appId);
+            return (200, Json(new
+            {
+                success = true,
+                appId,
+                enabled = st.Enabled,
+                available = st.Available,
+                hasManifests = st.HasManifests,
+                manifestCount = st.ManifestCount,
+                updatedAtUtc = st.UpdatedAtUtc,
+            }));
+        }
+        catch (Exception ex)
+        {
+            return (500, JsonErr(Scrub("backup/status", ex)));
+        }
+    }
+
+    private async Task<(int, string)> HandleBackupInstall(HttpListenerRequest req)
+    {
+        long appId;
+        try
+        {
+            const int MaxBodyChars = 8192;
+            using var reader = new StreamReader(req.InputStream, req.ContentEncoding);
+            char[] buf = new char[MaxBodyChars + 1];
+            int read = await reader.ReadBlockAsync(buf, 0, buf.Length);
+            if (read > MaxBodyChars) return (400, JsonErr("Invalid appid"));
+            string body = new(buf, 0, read);
+
+            using var doc = JsonDocument.Parse(body);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object) return (400, JsonErr("Invalid appid"));
+
+            JsonElement? appIdEl = null;
+            foreach (var prop in doc.RootElement.EnumerateObject())
+            {
+                if (!prop.Name.Equals("appid", StringComparison.OrdinalIgnoreCase)) continue;
+                if (appIdEl is not null) return (400, JsonErr("Invalid appid")); // ambiguous duplicate key
+                appIdEl = prop.Value;
+            }
+            if (appIdEl is not { } el || !TryExtractAppId(el, out appId))
+                return (400, JsonErr("Invalid appid"));
+        }
+        catch (JsonException)
+        {
+            return (400, JsonErr("Invalid appid"));
+        }
+
+        try
+        {
+            var ct = _appCts?.Token ?? CancellationToken.None;
+            var res = await _services.GetRequiredService<ManifestBackupService>().RestoreAsync(appId, ct);
+            if (res.Ok)
+            {
+                return (200, Json(new
+                {
+                    success = true,
+                    appId,
+                    luaInstalled = res.LuaInstalled,
+                    manifestCount = res.ManifestCount,
+                }));
+            }
+
+            return res.Failure switch
+            {
+                ManifestBackupRestoreFailure.Disabled => (409, JsonErr(res.Error ?? "Manifest backup is not enabled")),
+                ManifestBackupRestoreFailure.NotFound => (404, JsonErr(res.Error ?? "No backup found for this app")),
+                ManifestBackupRestoreFailure.VerificationFailed or ManifestBackupRestoreFailure.InstallRefused =>
+                    (422, JsonErr(res.Error ?? "Backup verification failed")),
+                _ => (500, JsonErr("Internal error")),
+            };
+        }
+        catch (Exception ex)
+        {
+            return (500, JsonErr(Scrub("backup/install", ex)));
+        }
+    }
+
+    private static bool TryExtractAppId(JsonElement el, out long appId)
+    {
+        appId = 0;
+        return el.ValueKind switch
+        {
+            JsonValueKind.Number => el.TryGetInt64(out appId) && appId is > 0 and <= uint.MaxValue,
+            JsonValueKind.String => TryParseStrictAppId(el.GetString(), out appId),
+            _ => false,
+        };
     }
 
     /// <summary>Diagnostics sink for the store-page frontend (its "Logger" bridge method). Writes into the

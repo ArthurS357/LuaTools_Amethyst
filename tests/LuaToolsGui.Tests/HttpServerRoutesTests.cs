@@ -1,9 +1,13 @@
 using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
+using System.Text;
+using System.Text.Json;
 using AwesomeAssertions;
 using LuaToolsGui.Services;
+using LuaToolsGui.Services.Backups;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
@@ -390,5 +394,260 @@ public sealed class HttpServerRoutesTests : IDisposable
         HttpServerService.MatchGet("POST", "/has/730", "/has/{appid}", out _).Should().BeFalse();
         HttpServerService.MatchPost("POST", "/remove/abc", "/remove/{appid}", out _)
             .Should().BeFalse("a non-numeric appid is a 404, not a 500");
+    }
+}
+
+/// <summary>
+/// Lote L4 backend: authenticated discovery (<c>GET /backup/index</c>, <c>GET /backup/status</c>) and
+/// fail-closed explicit restore (<c>POST /backup/install</c>) through the real loopback listener.
+/// </summary>
+public sealed class HttpBackupRoutesTests : IDisposable
+{
+    private const long CompleteAppId = 386940;
+    private const long LuaOnlyAppId = 480;
+    private const string TokenHeader = HttpServerService.TokenHeader;
+
+    private readonly string _dir =
+        Path.Combine(Path.GetTempPath(), "luatools-tests", Guid.NewGuid().ToString("N"));
+
+    private readonly string _steamRoot;
+    private readonly string _dest;
+    private readonly SettingsService _settings;
+    private readonly HttpListener _listener = new();
+    private readonly HttpClient _http = new();
+    private readonly string _baseUrl;
+
+    public HttpBackupRoutesTests()
+    {
+        _steamRoot = Path.Combine(_dir, "steam");
+        _dest = Path.Combine(_dir, "backup");
+        Directory.CreateDirectory(Path.Combine(_steamRoot, "config", "stplug-in"));
+        Directory.CreateDirectory(Path.Combine(_steamRoot, "depotcache"));
+
+        _settings = new SettingsService(Path.Combine(_dir, "settings")) { SteamPathOverride = _steamRoot };
+        var cache = new CacheService(Path.Combine(_dir, "cache"));
+        var steam = new SteamService(_settings);
+        var vault = new LuaVault(() => steam.StPlugInDir, Path.Combine(_dir, "vault"));
+        var installer = new LuaInstaller(steam, _settings, cache, vault);
+        var appList = new SteamAppListCache(Path.Combine(_dir, "applist.json"), new HttpClientHandler());
+        var backups = new ManifestBackupService(_settings, steam, installer, appList, new ToastService());
+
+        var services = new ServiceCollection()
+            .AddSingleton(backups)
+            .BuildServiceProvider();
+
+        var server = new HttpServerService(installer, steam, cache, services, NullLogger<HttpServerService>.Instance)
+        {
+            BaseDirectory = Path.Combine(_dir, "app-bin"),
+        };
+        Directory.CreateDirectory(server.BaseDirectory);
+
+        var probe = new TcpListener(IPAddress.Loopback, 0);
+        probe.Start();
+        int port = ((IPEndPoint)probe.LocalEndpoint).Port;
+        probe.Stop();
+
+        _baseUrl = $"http://127.0.0.1:{port}";
+        _listener.Prefixes.Add(_baseUrl + "/");
+        _listener.Start();
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                while (_listener.IsListening)
+                    _ = server.HandleRequest(await _listener.GetContextAsync());
+            }
+            catch (Exception) { /* listener stopped */ }
+        });
+    }
+
+    public void Dispose()
+    {
+        try { _listener.Stop(); } catch (ObjectDisposedException) { }
+        _http.Dispose();
+        try { Directory.Delete(_dir, recursive: true); } catch (IOException) { /* best effort */ }
+    }
+
+    private async Task<HttpResponseMessage> Send(
+        HttpMethod method, string path, bool token = false, string? body = null, string? host = null)
+    {
+        using var req = new HttpRequestMessage(method, _baseUrl + path);
+        if (token) req.Headers.TryAddWithoutValidation(TokenHeader, HttpServerService.SessionToken);
+        if (host is not null) req.Headers.Host = host;
+        if (method == HttpMethod.Post) req.Content = new StringContent(body ?? "{}", Encoding.UTF8, "application/json");
+        return await _http.SendAsync(req);
+    }
+
+    private void SeedBackups()
+    {
+        string sourceSteam = Path.Combine(_dir, "source-steam");
+        string plug = Path.Combine(sourceSteam, "config", "stplug-in");
+        string depot = Path.Combine(sourceSteam, "depotcache");
+        Directory.CreateDirectory(plug);
+        Directory.CreateDirectory(depot);
+
+        File.WriteAllText(Path.Combine(plug, $"{CompleteAppId}.lua"),
+            $"addappid({CompleteAppId})\naddappid(386941, 1, \"abcd\")\nsetManifestid(386941, \"111\")\n");
+        File.WriteAllText(Path.Combine(depot, "386941_111.manifest"), "MANIFEST_BYTES");
+        File.WriteAllText(Path.Combine(plug, $"{LuaOnlyAppId}.lua"), $"addappid({LuaOnlyAppId})\n");
+
+        ManifestBackupStore.BackupAll(plug, depot, _dest, id => id == CompleteAppId ? "Complete Game" : "Lua Only",
+            null, CancellationToken.None);
+    }
+
+    [Theory]
+    [InlineData("GET", "/backup/index")]
+    [InlineData("GET", "/backup/status?appid=386940")]
+    [InlineData("POST", "/backup/install")]
+    [InlineData("GET", "/backup/install")]
+    public async Task Backup_routes_forbid_requests_without_token(string method, string path)
+    {
+        using var res = await Send(new HttpMethod(method), path);
+
+        res.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+        res.Headers.Contains("Access-Control-Allow-Origin").Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task Backup_routes_forbid_rebound_host_even_with_valid_token()
+    {
+        using var res = await Send(HttpMethod.Get, "/backup/index", token: true, host: "evil.example");
+        res.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
+
+    [Theory]
+    [InlineData("POST", "/backup/index")]
+    [InlineData("POST", "/backup/status?appid=386940")]
+    [InlineData("GET", "/backup/install")]
+    public async Task Backup_routes_enforce_exact_http_verb(string method, string path)
+    {
+        using var res = await Send(new HttpMethod(method), path, token: true);
+        res.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Theory]
+    [InlineData("/backup/status")]
+    [InlineData("/backup/status?appid=")]
+    [InlineData("/backup/status?appid=0")]
+    [InlineData("/backup/status?appid=-1")]
+    [InlineData("/backup/status?appid=4294967296")]
+    [InlineData("/backup/status?appid=../386940")]
+    [InlineData("/backup/status?appid=386940/x")]
+    [InlineData("/backup/status?appid=abc")]
+    [InlineData("/backup/status?appid=386940&appid=480")]
+    public async Task Backup_status_rejects_invalid_or_traversal_appid(string path)
+    {
+        using var res = await Send(HttpMethod.Get, path, token: true);
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Theory]
+    [InlineData("{}")]
+    [InlineData("""{"appid":0}""")]
+    [InlineData("""{"appid":-5}""")]
+    [InlineData("""{"appid":4294967296}""")]
+    [InlineData("""{"appid":"../386940"}""")]
+    [InlineData("""{"appid":"abc"}""")]
+    [InlineData("""{"appid":386940,"appId":480}""")]
+    [InlineData("{not json")]
+    public async Task Backup_install_rejects_invalid_appid_payload(string body)
+    {
+        using var res = await Send(HttpMethod.Post, "/backup/install", token: true, body: body);
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task Backup_routes_report_disabled_when_feature_is_off()
+    {
+        using var indexRes = await Send(HttpMethod.Get, "/backup/index", token: true);
+        indexRes.StatusCode.Should().Be(HttpStatusCode.OK);
+        using (var doc = JsonDocument.Parse(await indexRes.Content.ReadAsStringAsync()))
+        {
+            doc.RootElement.GetProperty("success").GetBoolean().Should().BeTrue();
+            doc.RootElement.GetProperty("enabled").GetBoolean().Should().BeFalse();
+            doc.RootElement.GetProperty("games").GetArrayLength().Should().Be(0);
+        }
+
+        using var statusRes = await Send(HttpMethod.Get, $"/backup/status?appid={CompleteAppId}", token: true);
+        statusRes.StatusCode.Should().Be(HttpStatusCode.OK);
+        using (var doc = JsonDocument.Parse(await statusRes.Content.ReadAsStringAsync()))
+        {
+            doc.RootElement.GetProperty("enabled").GetBoolean().Should().BeFalse();
+            doc.RootElement.GetProperty("available").GetBoolean().Should().BeFalse();
+        }
+
+        using var installRes = await Send(HttpMethod.Post, "/backup/install", token: true, body: $"{{\"appid\":{CompleteAppId}}}");
+        installRes.StatusCode.Should().Be(HttpStatusCode.Conflict);
+    }
+
+    [Fact]
+    public async Task Backup_index_status_and_install_work_end_to_end_and_reject_tampered_zips()
+    {
+        SeedBackups();
+        _settings.ManifestBackupMode = ManifestBackupMode.LocalFolder;
+        _settings.ManifestBackupFolder = _dest;
+
+        // 1. Index reports both complete (hasManifests: true) and lua-only (hasManifests: false), no local path leaked.
+        using (var res = await Send(HttpMethod.Get, "/backup/index", token: true))
+        {
+            res.StatusCode.Should().Be(HttpStatusCode.OK);
+            string raw = await res.Content.ReadAsStringAsync();
+            raw.Should().NotContain(_dest);
+            using var doc = JsonDocument.Parse(raw);
+            doc.RootElement.GetProperty("enabled").GetBoolean().Should().BeTrue();
+            var games = doc.RootElement.GetProperty("games").EnumerateArray().ToList();
+            games.Should().HaveCount(2);
+
+            var luaOnly = games.Single(g => g.GetProperty("appId").GetInt64() == LuaOnlyAppId);
+            luaOnly.GetProperty("hasManifests").GetBoolean().Should().BeFalse();
+            luaOnly.GetProperty("manifestCount").GetInt32().Should().Be(0);
+
+            var complete = games.Single(g => g.GetProperty("appId").GetInt64() == CompleteAppId);
+            complete.GetProperty("hasManifests").GetBoolean().Should().BeTrue();
+            complete.GetProperty("manifestCount").GetInt32().Should().Be(1);
+        }
+
+        // 2. Status differentiates complete, lua-only, and absent games.
+        using (var res = await Send(HttpMethod.Get, $"/backup/status?appid={CompleteAppId}", token: true))
+        {
+            res.StatusCode.Should().Be(HttpStatusCode.OK);
+            using var doc = JsonDocument.Parse(await res.Content.ReadAsStringAsync());
+            doc.RootElement.GetProperty("available").GetBoolean().Should().BeTrue();
+            doc.RootElement.GetProperty("hasManifests").GetBoolean().Should().BeTrue();
+            doc.RootElement.GetProperty("manifestCount").GetInt32().Should().Be(1);
+        }
+        using (var res = await Send(HttpMethod.Get, "/backup/status?appid=999999", token: true))
+        {
+            res.StatusCode.Should().Be(HttpStatusCode.OK);
+            using var doc = JsonDocument.Parse(await res.Content.ReadAsStringAsync());
+            doc.RootElement.GetProperty("enabled").GetBoolean().Should().BeTrue();
+            doc.RootElement.GetProperty("available").GetBoolean().Should().BeFalse();
+        }
+
+        // 3. Valid POST /backup/install restores lua + manifest into Steam.
+        using (var res = await Send(HttpMethod.Post, "/backup/install", token: true, body: $"{{\"appid\":{CompleteAppId}}}"))
+        {
+            res.StatusCode.Should().Be(HttpStatusCode.OK);
+            using var doc = JsonDocument.Parse(await res.Content.ReadAsStringAsync());
+            doc.RootElement.GetProperty("success").GetBoolean().Should().BeTrue();
+            doc.RootElement.GetProperty("luaInstalled").GetBoolean().Should().BeTrue();
+            doc.RootElement.GetProperty("manifestCount").GetInt32().Should().Be(1);
+        }
+        File.Exists(Path.Combine(_steamRoot, "config", "stplug-in", $"{CompleteAppId}.lua")).Should().BeTrue();
+        File.Exists(Path.Combine(_steamRoot, "depotcache", "386941_111.manifest")).Should().BeTrue();
+
+        // 4. Missing appid returns 404.
+        using (var res = await Send(HttpMethod.Post, "/backup/install", token: true, body: "{\"appid\":999999}"))
+            res.StatusCode.Should().Be(HttpStatusCode.NotFound);
+
+        // 5. Tampered zip is refused fail-closed (422) and writes nothing to Steam.
+        string luaOnlyZip = Path.Combine(_dest, LuaOnlyAppId.ToString(), $"{LuaOnlyAppId}.zip");
+        File.AppendAllText(luaOnlyZip, "tamper");
+        using (var res = await Send(HttpMethod.Post, "/backup/install", token: true, body: $"{{\"appid\":{LuaOnlyAppId}}}"))
+        {
+            res.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
+            (await res.Content.ReadAsStringAsync()).Should().NotContain(_dest);
+        }
+        File.Exists(Path.Combine(_steamRoot, "config", "stplug-in", $"{LuaOnlyAppId}.lua")).Should().BeFalse();
     }
 }
