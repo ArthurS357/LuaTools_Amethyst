@@ -902,4 +902,19 @@ Ini hanya menghapus file .lua aktifnya dari Steam\config\stplug-in. Build tersim
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Hapus {0} file .lua?
 
 Ini hanya menghapus file .lua aktif dari Steam\config\stplug-in. {1} dari game tersebut memiliki build tersimpan yang akan tetap tersedia di tab Depots. Mulai ulang Steam setelahnya agar perubahan diterapkan.</value></data>
+  <data name="Settings_ManifestBackup_Title" xml:space="preserve"><value>Cadangan manifest</value></data>
+  <data name="Settings_ManifestBackup_Hint" xml:space="preserve"><value>Menyimpan salinan file .lua dan .manifest setiap game di folder pilihan Anda (folder yang disinkronkan ke cloud juga bisa): satu zip per game, siap dijatuhkan ke aplikasi atau dibagikan. Jika sumber unduhan gagal, cadangan yang sudah diverifikasi dipasang sebagai gantinya. Tidak ada yang dikirim ke mana pun.</value></data>
+  <data name="Settings_ManifestBackup_Mode_Off" xml:space="preserve"><value>Mati</value></data>
+  <data name="Settings_ManifestBackup_Mode_Folder" xml:space="preserve"><value>Folder lokal / tersinkron cloud</value></data>
+  <data name="Settings_ManifestBackup_Folder" xml:space="preserve"><value>Folder cadangan</value></data>
+  <data name="Settings_ManifestBackup_Browse" xml:space="preserve"><value>Telusuri…</value></data>
+  <data name="Settings_ManifestBackup_ChooseFolder" xml:space="preserve"><value>Pilih folder cadangan manifest</value></data>
+  <data name="Settings_ManifestBackup_FolderRefused" xml:space="preserve"><value>Folder itu tidak dapat digunakan. Pilih folder yang bukan root drive, bukan folder Windows atau Program Files, dan tidak berada di dalam Steam.</value></data>
+  <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Cadangkan game yang ada</value></data>
+  <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Mencadangkan {0} dari {1}…</value></data>
+  <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Selesai: {0} baru, {1} diperbarui, {2} tidak berubah, {3} gagal. {4} tanpa manifest lokal.</value></data>
+  <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Cadangan manifest gagal</value></data>
+  <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} sudah terpasang, tetapi pencadangannya gagal: {1}</value></data>
+  <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Dipasang dari cadangan</value></data>
+  <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>Sumber gagal, jadi {0} dipasang dari cadangan manifest Anda.</value></data>
 </root>

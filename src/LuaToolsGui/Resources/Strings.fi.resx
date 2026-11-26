@@ -902,4 +902,19 @@ Tämä poistaa vain aktiivisen .lua-tiedoston kansiosta Steam\config\stplug-in. 
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Poistetaanko {0} .lua-tiedostoa?
 
 Tämä poistaa vain aktiiviset .lua-tiedostot kansiosta Steam\config\stplug-in. {1} näistä peleistä sisältää tallennettuja versioita, jotka pysyvät käytettävissä Depots-välilehdellä. Käynnistä Steam uudelleen, jotta muutokset tulevat voimaan.</value></data>
+  <data name="Settings_ManifestBackup_Title" xml:space="preserve"><value>Manifestien varmuuskopio</value></data>
+  <data name="Settings_ManifestBackup_Hint" xml:space="preserve"><value>Säilyttää kopion jokaisen pelin .lua- ja .manifest-tiedostoista valitsemassasi kansiossa (pilveen synkronoitu kansio käy): yksi zip per peli, valmiina pudotettavaksi sovellukseen tai jaettavaksi. Jos latauslähde epäonnistuu, sen sijaan asennetaan tarkistettu varmuuskopio. Mitään ei lähetetä minnekään.</value></data>
+  <data name="Settings_ManifestBackup_Mode_Off" xml:space="preserve"><value>Pois</value></data>
+  <data name="Settings_ManifestBackup_Mode_Folder" xml:space="preserve"><value>Paikallinen / pilveen synkronoitu kansio</value></data>
+  <data name="Settings_ManifestBackup_Folder" xml:space="preserve"><value>Varmuuskopiokansio</value></data>
+  <data name="Settings_ManifestBackup_Browse" xml:space="preserve"><value>Selaa…</value></data>
+  <data name="Settings_ManifestBackup_ChooseFolder" xml:space="preserve"><value>Valitse manifestien varmuuskopiokansio</value></data>
+  <data name="Settings_ManifestBackup_FolderRefused" xml:space="preserve"><value>Tätä kansiota ei voi käyttää. Valitse kansio, joka ei ole aseman juuri, Windows- tai Program Files -kansio eikä sijaitse Steamin sisällä.</value></data>
+  <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Varmuuskopioi nykyiset pelit</value></data>
+  <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Varmuuskopioidaan {0}/{1}…</value></data>
+  <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Valmis: {0} uutta, {1} päivitetty, {2} ennallaan, {3} epäonnistui. {4} ilman paikallista manifestia.</value></data>
+  <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Manifestien varmuuskopiointi epäonnistui</value></data>
+  <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} asennettiin, mutta sen varmuuskopiointi epäonnistui: {1}</value></data>
+  <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Asennettu varmuuskopiosta</value></data>
+  <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>Lähde epäonnistui, joten {0} asennettiin manifestien varmuuskopiosta.</value></data>
 </root>

@@ -1,0 +1,85 @@
+<UserControl
+    x:Class="LuaToolsGui.Views.SettingsManifestBackupSection"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:res="clr-namespace:LuaToolsGui.Resources"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:vm="clr-namespace:LuaToolsGui.ViewModels"
+    d:DataContext="{d:DesignInstance Type=vm:ManifestBackupViewModel}"
+    TextElement.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    mc:Ignorable="d">
+
+    <!-- Manifest backup (off by default). Own view-model (ManifestBackupViewModel), set as this control's
+         DataContext from SettingsView's code-behind, like SettingsBackupsSection. -->
+    <StackPanel>
+        <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="{x:Static res:Strings.Settings_ManifestBackup_Title}" />
+        <Border Style="{StaticResource CardStyle}">
+            <StackPanel>
+                <TextBlock Style="{StaticResource TextCaption}" Text="{x:Static res:Strings.Settings_ManifestBackup_Hint}" />
+                <ComboBox
+                    MinWidth="220"
+                    Margin="{DynamicResource SpaceTop8}"
+                    HorizontalAlignment="Left"
+                    AutomationProperties.Name="{x:Static res:Strings.Settings_ManifestBackup_Title}"
+                    DisplayMemberPath="Display"
+                    IsEnabled="{Binding IsNotRunning}"
+                    ItemsSource="{Binding ModeOptions}"
+                    SelectedItem="{Binding SelectedMode}" />
+
+                <StackPanel Visibility="{Binding IsOn, Converter={StaticResource BoolToVis}}">
+                    <TextBlock
+                        Margin="{DynamicResource SpaceTop16}"
+                        Style="{StaticResource TextBodyStrong}"
+                        Text="{x:Static res:Strings.Settings_ManifestBackup_Folder}" />
+                    <Grid Margin="{DynamicResource SpaceTop8}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ui:TextBox
+                            AutomationProperties.Name="{x:Static res:Strings.Settings_ManifestBackup_Folder}"
+                            IsReadOnly="True"
+                            Text="{Binding Folder, Mode=OneWay}" />
+                        <ui:Button
+                            Grid.Column="1"
+                            Margin="{DynamicResource SpaceLeft8}"
+                            Command="{Binding BrowseCommand}"
+                            Content="{x:Static res:Strings.Settings_ManifestBackup_Browse}"
+                            Icon="{ui:SymbolIcon FolderOpen24}" />
+                    </Grid>
+                    <TextBlock
+                        Margin="{DynamicResource SpaceTop8}"
+                        AutomationProperties.LiveSetting="Assertive"
+                        Foreground="{StaticResource DangerBrush}"
+                        Style="{StaticResource TextCaption}"
+                        Text="{Binding FolderError}"
+                        TextWrapping="Wrap"
+                        Visibility="{Binding FolderError, Converter={StaticResource NullToCollapsed}}" />
+                    <!-- Disabled until a valid folder is set (CanExecute), and while a run is in progress. -->
+                    <StackPanel Margin="{DynamicResource SpaceTop12}" Orientation="Horizontal">
+                        <ui:Button
+                            Command="{Binding BackupAllCommand}"
+                            Content="{x:Static res:Strings.Settings_ManifestBackup_RunAll}"
+                            Icon="{ui:SymbolIcon Archive24}" />
+                        <ui:ProgressRing
+                            Width="16"
+                            Height="16"
+                            Margin="{DynamicResource SpaceLeft8}"
+                            VerticalAlignment="Center"
+                            IsIndeterminate="True"
+                            Visibility="{Binding IsRunning, Converter={StaticResource BoolToVis}}" />
+                    </StackPanel>
+                    <TextBlock
+                        Margin="{DynamicResource SpaceTop8}"
+                        AutomationProperties.LiveSetting="Polite"
+                        Style="{StaticResource TextCaption}"
+                        Text="{Binding Status}"
+                        TextWrapping="Wrap"
+                        Visibility="{Binding Status, Converter={StaticResource NullToCollapsed}}" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</UserControl>

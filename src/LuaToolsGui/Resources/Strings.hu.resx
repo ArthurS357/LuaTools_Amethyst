@@ -902,4 +902,19 @@ Ez csak az aktív .lua fájlt törli a Steam\config\stplug-in mappából. A ját
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Eltávolítasz {0} .lua fájlt?
 
 Ez csak az aktív .lua fájlokat törli a Steam\config\stplug-in mappából. Ezen játékok közül {1} rendelkezik mentett buildekkel, amelyek továbbra is elérhetők maradnak a Depots lapon. A módosítások érvényesítéséhez utána indítsd újra a Steamet.</value></data>
+  <data name="Settings_ManifestBackup_Title" xml:space="preserve"><value>Manifestbiztonsági mentés</value></data>
+  <data name="Settings_ManifestBackup_Hint" xml:space="preserve"><value>Minden játék .lua és .manifest fájljairól másolatot tart egy választott mappában (felhővel szinkronizált mappa is jó): játékonként egy zip, amely az alkalmazásra húzható vagy megosztható. Ha egy letöltési forrás hibázik, helyette egy ellenőrzött mentés települ. Semmi nem kerül elküldésre.</value></data>
+  <data name="Settings_ManifestBackup_Mode_Off" xml:space="preserve"><value>Ki</value></data>
+  <data name="Settings_ManifestBackup_Mode_Folder" xml:space="preserve"><value>Helyi / felhővel szinkronizált mappa</value></data>
+  <data name="Settings_ManifestBackup_Folder" xml:space="preserve"><value>Mentési mappa</value></data>
+  <data name="Settings_ManifestBackup_Browse" xml:space="preserve"><value>Tallózás…</value></data>
+  <data name="Settings_ManifestBackup_ChooseFolder" xml:space="preserve"><value>Válassza ki a manifestmentés mappáját</value></data>
+  <data name="Settings_ManifestBackup_FolderRefused" xml:space="preserve"><value>Ez a mappa nem használható. Olyat válasszon, amely nem meghajtógyökér, nem Windows- vagy Program Files-mappa, és nincs a Steamen belül.</value></data>
+  <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Meglévő játékok mentése</value></data>
+  <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Mentés: {0} / {1}…</value></data>
+  <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Kész: {0} új, {1} frissítve, {2} változatlan, {3} sikertelen. {4} helyi manifest nélkül.</value></data>
+  <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>A manifestmentés sikertelen</value></data>
+  <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>A(z) {0} telepítve lett, de a mentése sikertelen: {1}</value></data>
+  <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Telepítve a mentésből</value></data>
+  <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>A forrás hibázott, ezért a(z) {0} a manifestmentésből lett telepítve.</value></data>
 </root>

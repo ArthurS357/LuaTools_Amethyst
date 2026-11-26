@@ -937,4 +937,19 @@ This deletes only its active .lua file from Steam\config\stplug-in. Saved builds
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Remove {0} lua files?
 
 This deletes only the active .lua files from Steam\config\stplug-in. {1} of these games have saved builds that will remain available on the Depots tab. Restart Steam afterwards for the changes to take effect.</value></data>
+  <data name="Settings_ManifestBackup_Title" xml:space="preserve"><value>Manifest backup</value></data>
+  <data name="Settings_ManifestBackup_Hint" xml:space="preserve"><value>Keeps a copy of each game's .lua and .manifest files in a folder you choose (a cloud-synced folder works): one zip per game, ready to drop onto the app or share. If a download source fails, a verified backup is installed instead. Nothing is sent anywhere.</value></data>
+  <data name="Settings_ManifestBackup_Mode_Off" xml:space="preserve"><value>Off</value></data>
+  <data name="Settings_ManifestBackup_Mode_Folder" xml:space="preserve"><value>Local / cloud-synced folder</value></data>
+  <data name="Settings_ManifestBackup_Folder" xml:space="preserve"><value>Backup folder</value></data>
+  <data name="Settings_ManifestBackup_Browse" xml:space="preserve"><value>Browse…</value></data>
+  <data name="Settings_ManifestBackup_ChooseFolder" xml:space="preserve"><value>Choose the manifest backup folder</value></data>
+  <data name="Settings_ManifestBackup_FolderRefused" xml:space="preserve"><value>That folder can't be used. Pick one that isn't a drive root, a Windows or Program Files folder, or inside Steam.</value></data>
+  <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Back up existing games</value></data>
+  <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Backing up {0} of {1}…</value></data>
+  <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Done: {0} new, {1} updated, {2} unchanged, {3} failed. {4} without a local manifest.</value></data>
+  <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Manifest backup failed</value></data>
+  <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} was installed, but its backup failed: {1}</value></data>
+  <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Installed from backup</value></data>
+  <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>The source failed, so {0} was installed from your manifest backup.</value></data>
 </root>

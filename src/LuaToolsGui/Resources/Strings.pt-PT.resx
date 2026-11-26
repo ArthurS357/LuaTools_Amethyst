@@ -902,4 +902,19 @@ Isto elimina apenas o ficheiro .lua ativo em Steam\config\stplug-in. As compila�
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Remover {0} ficheiros .lua?
 
 Isto elimina apenas os ficheiros .lua ativos em Steam\config\stplug-in. {1} destes jogos têm compilações guardadas que permanecerão disponíveis no separador Depots. Reinicie o Steam depois para as alterações produzirem efeito.</value></data>
+  <data name="Settings_ManifestBackup_Title" xml:space="preserve"><value>Cópia de segurança de manifests</value></data>
+  <data name="Settings_ManifestBackup_Hint" xml:space="preserve"><value>Guarda uma cópia do .lua e dos ficheiros .manifest de cada jogo numa pasta à sua escolha (pode ser uma pasta sincronizada com a nuvem): um zip por jogo, pronto a largar na aplicação ou partilhar. Se uma fonte de transferência falhar, é instalada uma cópia verificada. Nada é enviado para lado nenhum.</value></data>
+  <data name="Settings_ManifestBackup_Mode_Off" xml:space="preserve"><value>Desativado</value></data>
+  <data name="Settings_ManifestBackup_Mode_Folder" xml:space="preserve"><value>Pasta local / sincronizada com a nuvem</value></data>
+  <data name="Settings_ManifestBackup_Folder" xml:space="preserve"><value>Pasta da cópia de segurança</value></data>
+  <data name="Settings_ManifestBackup_Browse" xml:space="preserve"><value>Procurar…</value></data>
+  <data name="Settings_ManifestBackup_ChooseFolder" xml:space="preserve"><value>Escolha a pasta da cópia de segurança de manifests</value></data>
+  <data name="Settings_ManifestBackup_FolderRefused" xml:space="preserve"><value>Essa pasta não pode ser usada. Escolha uma que não seja a raiz de uma unidade, uma pasta do Windows ou dos Programas, nem esteja dentro do Steam.</value></data>
+  <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Copiar os jogos existentes</value></data>
+  <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>A copiar {0} de {1}…</value></data>
+  <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Concluído: {0} novos, {1} atualizados, {2} inalterados, {3} com falha. {4} sem manifest local.</value></data>
+  <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>A cópia de segurança de manifests falhou</value></data>
+  <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} foi instalado, mas a cópia de segurança falhou: {1}</value></data>
+  <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Instalado a partir da cópia de segurança</value></data>
+  <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>A fonte falhou, por isso {0} foi instalado a partir da sua cópia de segurança de manifests.</value></data>
 </root>

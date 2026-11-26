@@ -902,4 +902,19 @@ Questo elimina solo il file .lua attivo da Steam\config\stplug-in. Le build salv
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Rimuovere {0} file .lua?
 
 Questo elimina solo i file .lua attivi da Steam\config\stplug-in. {1} di questi giochi hanno build salvate che resteranno disponibili nella scheda Depots. Riavvia Steam in seguito per applicare le modifiche.</value></data>
+  <data name="Settings_ManifestBackup_Title" xml:space="preserve"><value>Backup dei manifest</value></data>
+  <data name="Settings_ManifestBackup_Hint" xml:space="preserve"><value>Conserva una copia del .lua e dei file .manifest di ogni gioco in una cartella a scelta (va bene una cartella sincronizzata con il cloud): uno zip per gioco, pronto da trascinare nell'app o da condividere. Se una fonte di download non funziona, viene installato al suo posto un backup verificato. Non viene inviato nulla.</value></data>
+  <data name="Settings_ManifestBackup_Mode_Off" xml:space="preserve"><value>Disattivato</value></data>
+  <data name="Settings_ManifestBackup_Mode_Folder" xml:space="preserve"><value>Cartella locale / sincronizzata con il cloud</value></data>
+  <data name="Settings_ManifestBackup_Folder" xml:space="preserve"><value>Cartella di backup</value></data>
+  <data name="Settings_ManifestBackup_Browse" xml:space="preserve"><value>Sfoglia…</value></data>
+  <data name="Settings_ManifestBackup_ChooseFolder" xml:space="preserve"><value>Scegli la cartella di backup dei manifest</value></data>
+  <data name="Settings_ManifestBackup_FolderRefused" xml:space="preserve"><value>Questa cartella non può essere usata. Scegline una che non sia la radice di un'unità, una cartella di Windows o dei Programmi, né si trovi dentro Steam.</value></data>
+  <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Esegui il backup dei giochi esistenti</value></data>
+  <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Backup di {0} di {1}…</value></data>
+  <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Fatto: {0} nuovi, {1} aggiornati, {2} invariati, {3} non riusciti. {4} senza manifest locale.</value></data>
+  <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Backup dei manifest non riuscito</value></data>
+  <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} è stato installato, ma il backup non è riuscito: {1}</value></data>
+  <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Installato dal backup</value></data>
+  <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>La fonte non ha funzionato, quindi {0} è stato installato dal tuo backup dei manifest.</value></data>
 </root>

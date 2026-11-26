@@ -902,4 +902,19 @@ Es wird nur die aktive .lua-Datei aus Steam\config\stplug-in gelöscht. Gespeich
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>{0} .lua-Dateien entfernen?
 
 Es werden nur die aktiven .lua-Dateien aus Steam\config\stplug-in gelöscht. {1} dieser Spiele haben gespeicherte Builds, die im Tab „Depots“ verfügbar bleiben. Starte Steam danach neu, damit die Änderungen wirksam werden.</value></data>
+  <data name="Settings_ManifestBackup_Title" xml:space="preserve"><value>Manifest-Sicherung</value></data>
+  <data name="Settings_ManifestBackup_Hint" xml:space="preserve"><value>Bewahrt eine Kopie der .lua- und .manifest-Dateien jedes Spiels in einem frei wählbaren Ordner auf (ein mit der Cloud synchronisierter Ordner funktioniert): ein Zip pro Spiel, bereit zum Ablegen in der App oder zum Weitergeben. Fällt eine Download-Quelle aus, wird stattdessen eine geprüfte Sicherung installiert. Es wird nichts versendet.</value></data>
+  <data name="Settings_ManifestBackup_Mode_Off" xml:space="preserve"><value>Aus</value></data>
+  <data name="Settings_ManifestBackup_Mode_Folder" xml:space="preserve"><value>Lokaler / mit der Cloud synchronisierter Ordner</value></data>
+  <data name="Settings_ManifestBackup_Folder" xml:space="preserve"><value>Sicherungsordner</value></data>
+  <data name="Settings_ManifestBackup_Browse" xml:space="preserve"><value>Durchsuchen…</value></data>
+  <data name="Settings_ManifestBackup_ChooseFolder" xml:space="preserve"><value>Ordner für die Manifest-Sicherung auswählen</value></data>
+  <data name="Settings_ManifestBackup_FolderRefused" xml:space="preserve"><value>Dieser Ordner kann nicht verwendet werden. Bitte einen Ordner wählen, der kein Laufwerksstamm, kein Windows- oder Programme-Ordner ist und nicht in Steam liegt.</value></data>
+  <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Vorhandene Spiele sichern</value></data>
+  <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Sichere {0} von {1}…</value></data>
+  <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Fertig: {0} neu, {1} aktualisiert, {2} unverändert, {3} fehlgeschlagen. {4} ohne lokales Manifest.</value></data>
+  <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Manifest-Sicherung fehlgeschlagen</value></data>
+  <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} wurde installiert, aber die Sicherung ist fehlgeschlagen: {1}</value></data>
+  <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Aus der Sicherung installiert</value></data>
+  <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>Die Quelle ist ausgefallen, daher wurde {0} aus der Manifest-Sicherung installiert.</value></data>
 </root>

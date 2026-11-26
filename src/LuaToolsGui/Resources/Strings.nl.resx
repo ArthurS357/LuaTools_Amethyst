@@ -902,4 +902,19 @@ Hiermee wordt alleen het actieve .lua-bestand uit Steam\config\stplug-in verwijd
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>{0} .lua-bestanden verwijderen?
 
 Hiermee worden alleen de actieve .lua-bestanden uit Steam\config\stplug-in verwijderd. {1} van deze spellen hebben opgeslagen builds die beschikbaar blijven op het tabblad Depots. Start Steam daarna opnieuw op om de wijzigingen toe te passen.</value></data>
+  <data name="Settings_ManifestBackup_Title" xml:space="preserve"><value>Manifest-back-up</value></data>
+  <data name="Settings_ManifestBackup_Hint" xml:space="preserve"><value>Bewaart een kopie van het .lua-bestand en de .manifest-bestanden van elke game in een map naar keuze (een met de cloud gesynchroniseerde map werkt): één zip per game, klaar om op de app te slepen of te delen. Als een downloadbron faalt, wordt in plaats daarvan een geverifieerde back-up geïnstalleerd. Er wordt niets verstuurd.</value></data>
+  <data name="Settings_ManifestBackup_Mode_Off" xml:space="preserve"><value>Uit</value></data>
+  <data name="Settings_ManifestBackup_Mode_Folder" xml:space="preserve"><value>Lokale / met de cloud gesynchroniseerde map</value></data>
+  <data name="Settings_ManifestBackup_Folder" xml:space="preserve"><value>Back-upmap</value></data>
+  <data name="Settings_ManifestBackup_Browse" xml:space="preserve"><value>Bladeren…</value></data>
+  <data name="Settings_ManifestBackup_ChooseFolder" xml:space="preserve"><value>Kies de map voor de manifest-back-up</value></data>
+  <data name="Settings_ManifestBackup_FolderRefused" xml:space="preserve"><value>Die map kan niet worden gebruikt. Kies er een die geen stationsroot, geen Windows- of Program Files-map is en niet in Steam staat.</value></data>
+  <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Bestaande games back-uppen</value></data>
+  <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Back-up van {0} van {1}…</value></data>
+  <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Klaar: {0} nieuw, {1} bijgewerkt, {2} ongewijzigd, {3} mislukt. {4} zonder lokaal manifest.</value></data>
+  <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Manifest-back-up mislukt</value></data>
+  <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} is geïnstalleerd, maar de back-up is mislukt: {1}</value></data>
+  <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Geïnstalleerd vanuit back-up</value></data>
+  <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>De bron faalde, dus {0} is geïnstalleerd vanuit je manifest-back-up.</value></data>
 </root>

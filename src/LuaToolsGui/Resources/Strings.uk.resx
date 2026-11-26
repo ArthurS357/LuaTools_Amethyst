@@ -902,4 +902,19 @@ SHA-256 {3}
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Видалити {0} файлів .lua?
 
 Буде видалено лише активні файли .lua зі Steam\config\stplug-in. {1} із цих ігор мають збережені збірки, які залишаться доступними на вкладці Depots. Перезапустіть Steam після цього, щоб зміни набули чинності.</value></data>
+  <data name="Settings_ManifestBackup_Title" xml:space="preserve"><value>Резервна копія маніфестів</value></data>
+  <data name="Settings_ManifestBackup_Hint" xml:space="preserve"><value>Зберігає копію .lua і файлів .manifest кожної гри у вибраній теці (підійде тека, синхронізована з хмарою): один zip на гру, готовий до перетягування в застосунок або передавання. Якщо джерело завантаження не спрацює, натомість буде встановлено перевірену копію. Нічого нікуди не надсилається.</value></data>
+  <data name="Settings_ManifestBackup_Mode_Off" xml:space="preserve"><value>Вимкнено</value></data>
+  <data name="Settings_ManifestBackup_Mode_Folder" xml:space="preserve"><value>Локальна / синхронізована з хмарою тека</value></data>
+  <data name="Settings_ManifestBackup_Folder" xml:space="preserve"><value>Тека резервних копій</value></data>
+  <data name="Settings_ManifestBackup_Browse" xml:space="preserve"><value>Огляд…</value></data>
+  <data name="Settings_ManifestBackup_ChooseFolder" xml:space="preserve"><value>Виберіть теку резервних копій маніфестів</value></data>
+  <data name="Settings_ManifestBackup_FolderRefused" xml:space="preserve"><value>Цю теку не можна використати. Виберіть теку, яка не є коренем диска, текою Windows чи Program Files і не міститься в Steam.</value></data>
+  <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Створити копії наявних ігор</value></data>
+  <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Копіювання {0} з {1}…</value></data>
+  <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Готово: нових — {0}, оновлено — {1}, без змін — {2}, з помилкою — {3}. Без локального маніфесту — {4}.</value></data>
+  <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Не вдалося створити резервну копію маніфестів</value></data>
+  <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} встановлено, але створити резервну копію не вдалося: {1}</value></data>
+  <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Встановлено з резервної копії</value></data>
+  <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>Джерело не спрацювало, тому {0} встановлено з вашої резервної копії маніфестів.</value></data>
 </root>

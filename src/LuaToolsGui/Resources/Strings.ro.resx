@@ -902,4 +902,19 @@ Aceasta șterge doar fișierul .lua activ din Steam\config\stplug-in. Versiunile
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Elimini {0} fișiere .lua?
 
 Aceasta șterge doar fișierele .lua active din Steam\config\stplug-in. {1} dintre aceste jocuri au versiuni salvate care vor rămâne disponibile în fila Depots. Repornește Steam după aceea pentru aplicarea modificărilor.</value></data>
+  <data name="Settings_ManifestBackup_Title" xml:space="preserve"><value>Copie de rezervă a manifestelor</value></data>
+  <data name="Settings_ManifestBackup_Hint" xml:space="preserve"><value>Păstrează o copie a fișierului .lua și a fișierelor .manifest ale fiecărui joc într-un dosar ales de tine (merge și un dosar sincronizat cu cloudul): un zip per joc, gata de tras în aplicație sau de partajat. Dacă o sursă de descărcare eșuează, se instalează în schimb o copie verificată. Nu se trimite nimic nicăieri.</value></data>
+  <data name="Settings_ManifestBackup_Mode_Off" xml:space="preserve"><value>Dezactivat</value></data>
+  <data name="Settings_ManifestBackup_Mode_Folder" xml:space="preserve"><value>Dosar local / sincronizat cu cloudul</value></data>
+  <data name="Settings_ManifestBackup_Folder" xml:space="preserve"><value>Dosar de rezervă</value></data>
+  <data name="Settings_ManifestBackup_Browse" xml:space="preserve"><value>Răsfoiește…</value></data>
+  <data name="Settings_ManifestBackup_ChooseFolder" xml:space="preserve"><value>Alege dosarul pentru copia de rezervă a manifestelor</value></data>
+  <data name="Settings_ManifestBackup_FolderRefused" xml:space="preserve"><value>Acest dosar nu poate fi folosit. Alege unul care nu este rădăcina unei unități, un dosar Windows sau Program Files și nu se află în Steam.</value></data>
+  <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Fă copii ale jocurilor existente</value></data>
+  <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Se copiază {0} din {1}…</value></data>
+  <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Gata: {0} noi, {1} actualizate, {2} neschimbate, {3} eșuate. {4} fără manifest local.</value></data>
+  <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Copia de rezervă a manifestelor a eșuat</value></data>
+  <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} a fost instalat, dar copia sa de rezervă a eșuat: {1}</value></data>
+  <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Instalat din copia de rezervă</value></data>
+  <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>Sursa a eșuat, așa că {0} a fost instalat din copia ta de rezervă a manifestelor.</value></data>
 </root>

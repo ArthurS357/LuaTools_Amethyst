@@ -8,11 +8,12 @@ public partial class SettingsView : UserControl
 {
     private readonly SettingsViewModel _vm;
 
-    public SettingsView(SettingsViewModel viewModel, BackupCleanupViewModel backups)
+    public SettingsView(SettingsViewModel viewModel, BackupCleanupViewModel backups, ManifestBackupViewModel manifestBackup)
     {
         InitializeComponent();
         DataContext = viewModel;
         BackupsSection.DataContext = backups;
+        ManifestBackupSection.DataContext = manifestBackup;
         _vm = viewModel;
         Loaded += (_, _) =>
         {

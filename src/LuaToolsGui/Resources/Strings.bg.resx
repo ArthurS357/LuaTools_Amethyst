@@ -902,4 +902,19 @@ SHA-256 {3}
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Премахване на {0} .lua файла?
 
 Това изтрива само активните .lua файлове от Steam\config\stplug-in. {1} от тези игри имат запазени версии, които ще останат налични в раздела Depots. Рестартирайте Steam след това, за да влязат промените в сила.</value></data>
+  <data name="Settings_ManifestBackup_Title" xml:space="preserve"><value>Резервно копие на манифестите</value></data>
+  <data name="Settings_ManifestBackup_Hint" xml:space="preserve"><value>Пази копие на .lua и .manifest файловете на всяка игра в избрана от вас папка (става и папка, синхронизирана с облака): по един zip на игра, готов за пускане в приложението или споделяне. Ако източник за изтегляне се провали, вместо него се инсталира проверено копие. Нищо не се изпраща никъде.</value></data>
+  <data name="Settings_ManifestBackup_Mode_Off" xml:space="preserve"><value>Изключено</value></data>
+  <data name="Settings_ManifestBackup_Mode_Folder" xml:space="preserve"><value>Локална / синхронизирана с облака папка</value></data>
+  <data name="Settings_ManifestBackup_Folder" xml:space="preserve"><value>Папка за резервни копия</value></data>
+  <data name="Settings_ManifestBackup_Browse" xml:space="preserve"><value>Преглед…</value></data>
+  <data name="Settings_ManifestBackup_ChooseFolder" xml:space="preserve"><value>Изберете папката за резервни копия на манифестите</value></data>
+  <data name="Settings_ManifestBackup_FolderRefused" xml:space="preserve"><value>Тази папка не може да се използва. Изберете папка, която не е корен на диск, папка на Windows или Program Files и не е в Steam.</value></data>
+  <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Копиране на съществуващите игри</value></data>
+  <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Копиране на {0} от {1}…</value></data>
+  <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Готово: нови {0}, обновени {1}, непроменени {2}, неуспешни {3}. Без локален манифест: {4}.</value></data>
+  <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Резервното копие на манифестите е неуспешно</value></data>
+  <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} е инсталирана, но резервното ѝ копие е неуспешно: {1}</value></data>
+  <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Инсталирано от резервно копие</value></data>
+  <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>Източникът се провали, затова {0} е инсталирана от резервното ви копие на манифестите.</value></data>
 </root>

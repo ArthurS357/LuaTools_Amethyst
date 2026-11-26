@@ -40,6 +40,13 @@ public class AppSettings
     // Folder the save-backup zips are written to. Null = %AppData%\LuaToolsAmethyst\SaveBackups.
     public string? SaveBackupFolder { get; set; }
 
+    // Manifest backup (Settings → Manifest backup). Mode is stored as its NAME and parsed leniently: an
+    // unknown value must read as "Disabled", never fail the whole settings.json load. Null = Disabled, which
+    // is also what every settings.json written before this feature means. Folder is used only when the mode
+    // is on and it passes ManifestBackupPolicy.IsAcceptableDestination (re-checked on every use).
+    public string? ManifestBackupMode { get; set; }
+    public string? ManifestBackupFolder { get; set; }
+
     // Save folders the user registered by hand, per appid. Together with the known Windows roots these are
     // the only places a save restore may write to.
     public Dictionary<long, List<string>>? CustomSaveFolders { get; set; }
@@ -263,6 +270,30 @@ public sealed class SettingsService
     /// <summary>The folder backups actually go to: the custom one when set and still fully qualified, else the default.</summary>
     public string EffectiveSaveBackupFolder =>
         _settings.SaveBackupFolder is { } f && Path.IsPathFullyQualified(f) ? f : DefaultSaveBackupFolder;
+
+    /// <summary>Manifest backup mode (default <see cref="Backups.ManifestBackupMode.Disabled"/>).</summary>
+    public Backups.ManifestBackupMode ManifestBackupMode
+    {
+        get => Enum.TryParse(_settings.ManifestBackupMode, ignoreCase: true, out Backups.ManifestBackupMode m)
+               && Enum.IsDefined(m) ? m : Backups.ManifestBackupMode.Disabled;
+        set
+        {
+            _settings.ManifestBackupMode = value == Backups.ManifestBackupMode.Disabled ? null : value.ToString();
+            Save();
+        }
+    }
+
+    /// <summary>Folder manifest backups go to, or null. Only a fully-qualified path is kept (same rule as
+    /// <see cref="SaveBackupFolder"/>); the full destination policy is applied at the point of use.</summary>
+    public string? ManifestBackupFolder
+    {
+        get => _settings.ManifestBackupFolder is { } f && Path.IsPathFullyQualified(f) ? f : null;
+        set
+        {
+            _settings.ManifestBackupFolder = !string.IsNullOrWhiteSpace(value) && Path.IsPathFullyQualified(value) ? value : null;
+            Save();
+        }
+    }
 
     /// <summary>The folders registered for <paramref name="appId"/>. Re-validated by every consumer: settings.json
     /// is writable by any process of the user.</summary>
@@ -624,6 +655,8 @@ public sealed class SettingsService
             && _settings.AutoUpdateApps is null
             && _settings.ManagePageSize is null
             && _settings.SaveBackupFolder is null
+            && _settings.ManifestBackupMode is null
+            && _settings.ManifestBackupFolder is null
             && _settings.CustomSaveFolders is null
             && _settings.FixesPageSize is null
             && _settings.BuildsPageSize is null

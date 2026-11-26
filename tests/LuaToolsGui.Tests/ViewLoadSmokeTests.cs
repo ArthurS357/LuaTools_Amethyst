@@ -20,6 +20,7 @@ public class ViewLoadSmokeTests(ThemeHost host)
     [Theory]
     [InlineData("SettingsView")]
     [InlineData("SettingsBackupsSection")]
+    [InlineData("SettingsManifestBackupSection")]
     [InlineData("FixesView")]
     [InlineData("ModeView")]
     [InlineData("PluginView")]

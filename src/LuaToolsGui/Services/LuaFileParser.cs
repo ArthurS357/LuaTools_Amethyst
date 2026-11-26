@@ -70,12 +70,14 @@ public static partial class LuaFileParser
     // multiple addappid lines into a single match.
     // addappid(123)                    -> id only
     // addappid(123, 1, "key")  -- Name -> id + key + optional trailing comment
-    [GeneratedRegex(@"addappid\s*\(\s*(\d+)\s*(?:,\s*\d+\s*(?:,\s*""([^""]*)"")?)?\s*\)[ \t]*(?:--[ \t]*(.*?)[ \t]*)?$",
+    // Single- or double-quoted key: both are valid Lua string literals; the closing quote must match the
+    // opening one (\k<q>). Named groups number after unnamed ones, so 2 = key and 3 = comment still hold.
+    [GeneratedRegex(@"addappid\s*\(\s*(\d+)\s*(?:,\s*\d+\s*(?:,\s*(?<q>[""'])([^""']*)\k<q>)?)?\s*\)[ \t]*(?:--[ \t]*(.*?)[ \t]*)?$",
         RegexOptions.IgnoreCase)]
     private static partial Regex AddAppIdRegex();
 
-    // setManifestid(depotid, "manifestid", ...)
-    [GeneratedRegex(@"setManifestid\s*\(\s*(\d+)\s*,\s*""(\d+)""", RegexOptions.IgnoreCase)]
+    // setManifestid(depotid, "manifestid", ...) — single quotes are valid Lua too, so accept both.
+    [GeneratedRegex(@"setManifestid\s*\(\s*(\d+)\s*,\s*(?<q>[""'])(\d+)\k<q>", RegexOptions.IgnoreCase)]
     private static partial Regex SetManifestRegex();
 
     // Strips a trailing "(123456) ..." / "デポ" tail that Hubcap appends to depot comments.
@@ -100,98 +102,102 @@ public static partial class LuaFileParser
     {
         try
         {
-            string text = File.ReadAllText(filePath);
-
-            // An id can appear twice: addappid(id) then addappid(id, 1, "key"). Merge so a key from
-            // ANY occurrence counts (keeping first-seen order), otherwise the keyless line wins and
-            // we'd wrongly report the depot/DLC as "not in lua".
-            var order = new List<long>();
-            var hasKeyById = new Dictionary<long, bool>();
-            var keyById = new Dictionary<long, string>();            // the key itself, when a line carried one
-            var disabledKeyById = new Dictionary<long, string>();
-            var commentById = new Dictionary<long, string>();
-            var manifests = new Dictionary<long, string>();          // active pins
-            var commentedManifests = new Dictionary<long, string>(); // pins disabled by Auto Update
-            var disabledOrder = new List<long>();                    // addappid lines commented out
-            var disabledHasKey = new Dictionary<long, bool>();
-            // Match one line at a time: a single-line regex can't span lines, so each addappid stays
-            // distinct (a multiline regex with \s* was collapsing the whole file into one match).
-            foreach (string rawLine in text.Split('\n'))
-            {
-                // Trim both ends — a trailing '\r' (from CRLF files) would break the $-anchored regex.
-                string line = rawLine.Trim();
-                bool commented = line.StartsWith("--");
-
-                // Manifest pins are collected from BOTH commented and uncommented lines, into separate
-                // buckets. Scanning the whole file text at once (as this used to) can't tell them apart,
-                // so a lua whose pins were commented out by "Auto Update Apps" still looked pinned.
-                var pin = SetManifestRegex().Match(line);
-                if (pin.Success && long.TryParse(pin.Groups[1].Value, out long depot))
-                    (commented ? commentedManifests : manifests)[depot] = pin.Groups[2].Value;
-
-                // A commented-out addappid is a DISABLED declaration, not an active one — matched against
-                // the line with its "--" stripped so it can still be recognised and reported separately.
-                var m = AddAppIdRegex().Match(commented ? line.TrimStart('-', ' ') : line);
-                if (!m.Success || !long.TryParse(m.Groups[1].Value, out long id)) continue;
-
-                bool hasKey = m.Groups[2].Success && !string.IsNullOrEmpty(m.Groups[2].Value);
-                string? key = hasKey ? m.Groups[2].Value : null;
-
-                // Keep the best (longest) trailing comment seen for this id — it's the human name
-                // ('addappid(2784471, …) -- Depot 2784471'). Captured for commented-out lines too, and
-                // BEFORE the disabled branch below returns: switching a depot off must not also strip its
-                // name off the row, leaving a bare "Depot".
-                string? comment = CleanComment(m.Groups[3].Success ? m.Groups[3].Value : null);
-                if (comment is not null &&
-                    (!commentById.TryGetValue(id, out var prev) || comment.Length > prev.Length))
-                    commentById[id] = comment;
-
-                // First key seen for an id wins, matching how hasKey merges: a later keyless line must not
-                // erase a key an earlier line carried.
-                if (key is not null)
-                {
-                    var into = commented ? disabledKeyById : keyById;
-                    if (!into.ContainsKey(id)) into[id] = key;
-                }
-
-                if (commented)
-                {
-                    if (disabledHasKey.TryGetValue(id, out bool had)) disabledHasKey[id] = had || hasKey;
-                    else { disabledHasKey[id] = hasKey; disabledOrder.Add(id); }
-                    continue;
-                }
-                if (hasKeyById.TryGetValue(id, out bool existing))
-                    hasKeyById[id] = existing || hasKey;
-                else { hasKeyById[id] = hasKey; order.Add(id); }
-            }
-
-            var entries = order
-                .Select(id => new LuaEntry(id, hasKeyById[id],
-                    manifests.TryGetValue(id, out var mid) ? mid : null,
-                    commentedManifests.TryGetValue(id, out var cmid) ? cmid : null,
-                    commentById.TryGetValue(id, out var c) ? c : null)
-                { Key = keyById.TryGetValue(id, out var k) ? k : null })
-                .ToList();
-
-            // Ids that are ONLY commented out. An id with both an active and a commented line is active
-            // (the merge above already counted it), so it must not also be reported as disabled.
-            var disabled = disabledOrder
-                .Where(id => !hasKeyById.ContainsKey(id))
-                .Select(id => new LuaEntry(id, disabledHasKey[id],
-                    manifests.TryGetValue(id, out var dmid) ? dmid : null,
-                    commentedManifests.TryGetValue(id, out var dcmid) ? dcmid : null,
-                    commentById.TryGetValue(id, out var dc) ? dc : null)
-                { Key = disabledKeyById.TryGetValue(id, out var dk) ? dk : null })
-                .ToList();
-
-            // The base app is the first addappid id (matches how the files are generated).
-            long baseId = entries.Count > 0 ? entries[0].Id : appIdFromName;
-            return new LuaContents(baseId, entries, manifests, commentedManifests, disabled);
+            return ParseText(File.ReadAllText(filePath), appIdFromName);
         }
         catch
         {
             return null; // unreadable / malformed — caller shows "couldn't read"
         }
+    }
+
+    /// <summary><see cref="Parse"/> over text already in memory. Malformed lines are skipped, never thrown on.</summary>
+    public static LuaContents ParseText(string text, long appIdFromName)
+    {
+        // An id can appear twice: addappid(id) then addappid(id, 1, "key"). Merge so a key from
+        // ANY occurrence counts (keeping first-seen order), otherwise the keyless line wins and
+        // we'd wrongly report the depot/DLC as "not in lua".
+        var order = new List<long>();
+        var hasKeyById = new Dictionary<long, bool>();
+        var keyById = new Dictionary<long, string>();            // the key itself, when a line carried one
+        var disabledKeyById = new Dictionary<long, string>();
+        var commentById = new Dictionary<long, string>();
+        var manifests = new Dictionary<long, string>();          // active pins
+        var commentedManifests = new Dictionary<long, string>(); // pins disabled by Auto Update
+        var disabledOrder = new List<long>();                    // addappid lines commented out
+        var disabledHasKey = new Dictionary<long, bool>();
+        // Match one line at a time: a single-line regex can't span lines, so each addappid stays
+        // distinct (a multiline regex with \s* was collapsing the whole file into one match).
+        foreach (string rawLine in text.Split('\n'))
+        {
+            // Trim both ends — a trailing '\r' (from CRLF files) would break the $-anchored regex.
+            string line = rawLine.Trim();
+            bool commented = line.StartsWith("--");
+
+            // Manifest pins are collected from BOTH commented and uncommented lines, into separate
+            // buckets. Scanning the whole file text at once (as this used to) can't tell them apart,
+            // so a lua whose pins were commented out by "Auto Update Apps" still looked pinned.
+            var pin = SetManifestRegex().Match(line);
+            if (pin.Success && long.TryParse(pin.Groups[1].Value, out long depot))
+                (commented ? commentedManifests : manifests)[depot] = pin.Groups[2].Value;
+
+            // A commented-out addappid is a DISABLED declaration, not an active one — matched against
+            // the line with its "--" stripped so it can still be recognised and reported separately.
+            var m = AddAppIdRegex().Match(commented ? line.TrimStart('-', ' ') : line);
+            if (!m.Success || !long.TryParse(m.Groups[1].Value, out long id)) continue;
+
+            bool hasKey = m.Groups[2].Success && !string.IsNullOrEmpty(m.Groups[2].Value);
+            string? key = hasKey ? m.Groups[2].Value : null;
+
+            // Keep the best (longest) trailing comment seen for this id — it's the human name
+            // ('addappid(2784471, …) -- Depot 2784471'). Captured for commented-out lines too, and
+            // BEFORE the disabled branch below returns: switching a depot off must not also strip its
+            // name off the row, leaving a bare "Depot".
+            string? comment = CleanComment(m.Groups[3].Success ? m.Groups[3].Value : null);
+            if (comment is not null &&
+                (!commentById.TryGetValue(id, out var prev) || comment.Length > prev.Length))
+                commentById[id] = comment;
+
+            // First key seen for an id wins, matching how hasKey merges: a later keyless line must not
+            // erase a key an earlier line carried.
+            if (key is not null)
+            {
+                var into = commented ? disabledKeyById : keyById;
+                if (!into.ContainsKey(id)) into[id] = key;
+            }
+
+            if (commented)
+            {
+                if (disabledHasKey.TryGetValue(id, out bool had)) disabledHasKey[id] = had || hasKey;
+                else { disabledHasKey[id] = hasKey; disabledOrder.Add(id); }
+                continue;
+            }
+            if (hasKeyById.TryGetValue(id, out bool existing))
+                hasKeyById[id] = existing || hasKey;
+            else { hasKeyById[id] = hasKey; order.Add(id); }
+        }
+
+        var entries = order
+            .Select(id => new LuaEntry(id, hasKeyById[id],
+                manifests.TryGetValue(id, out var mid) ? mid : null,
+                commentedManifests.TryGetValue(id, out var cmid) ? cmid : null,
+                commentById.TryGetValue(id, out var c) ? c : null)
+            { Key = keyById.TryGetValue(id, out var k) ? k : null })
+            .ToList();
+
+        // Ids that are ONLY commented out. An id with both an active and a commented line is active
+        // (the merge above already counted it), so it must not also be reported as disabled.
+        var disabled = disabledOrder
+            .Where(id => !hasKeyById.ContainsKey(id))
+            .Select(id => new LuaEntry(id, disabledHasKey[id],
+                manifests.TryGetValue(id, out var dmid) ? dmid : null,
+                commentedManifests.TryGetValue(id, out var dcmid) ? dcmid : null,
+                commentById.TryGetValue(id, out var dc) ? dc : null)
+            { Key = disabledKeyById.TryGetValue(id, out var dk) ? dk : null })
+            .ToList();
+
+        // The base app is the first addappid id (matches how the files are generated).
+        long baseId = entries.Count > 0 ? entries[0].Id : appIdFromName;
+        return new LuaContents(baseId, entries, manifests, commentedManifests, disabled);
     }
 
     /// <summary>Diff old vs new lua by entry id: what the new lua adds and what it removes.</summary>

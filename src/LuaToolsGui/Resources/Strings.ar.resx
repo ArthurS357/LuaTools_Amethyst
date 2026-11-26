@@ -928,4 +928,19 @@ SHA-256 {3}
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>إزالة {0} ملفات .lua؟
 
 سيؤدي هذا إلى حذف ملفات .lua النشطة فقط من Steam\config\stplug-in. تحتوي {1} من هذه الألعاب على إصدارات محفوظة ستظل متاحة في علامة التبويب Depots. أعد تشغيل Steam بعد ذلك لتطبيق التغييرات.</value></data>
+  <data name="Settings_ManifestBackup_Title" xml:space="preserve"><value>نسخ احتياطي لملفات manifest</value></data>
+  <data name="Settings_ManifestBackup_Hint" xml:space="preserve"><value>يحتفظ بنسخة من ملف .lua وملفات .manifest لكل لعبة في مجلد تختاره (يصلح مجلد متزامن مع السحابة): ملف zip لكل لعبة، جاهز للإفلات على التطبيق أو للمشاركة. إذا فشل مصدر تنزيل، تُثبَّت نسخة احتياطية تم التحقق منها بدلًا منه. لا يُرسَل أي شيء إلى أي مكان.</value></data>
+  <data name="Settings_ManifestBackup_Mode_Off" xml:space="preserve"><value>متوقف</value></data>
+  <data name="Settings_ManifestBackup_Mode_Folder" xml:space="preserve"><value>مجلد محلي / متزامن مع السحابة</value></data>
+  <data name="Settings_ManifestBackup_Folder" xml:space="preserve"><value>مجلد النسخ الاحتياطي</value></data>
+  <data name="Settings_ManifestBackup_Browse" xml:space="preserve"><value>استعراض…</value></data>
+  <data name="Settings_ManifestBackup_ChooseFolder" xml:space="preserve"><value>اختر مجلد النسخ الاحتياطي لملفات manifest</value></data>
+  <data name="Settings_ManifestBackup_FolderRefused" xml:space="preserve"><value>لا يمكن استخدام هذا المجلد. اختر مجلدًا ليس جذر محرك أقراص ولا مجلد Windows أو Program Files ولا يقع داخل Steam.</value></data>
+  <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>نسخ الألعاب الموجودة احتياطيًا</value></data>
+  <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>جارٍ نسخ {0} من {1}…</value></data>
+  <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>تم: {0} جديدة، {1} محدّثة، {2} دون تغيير، {3} فشلت. {4} بلا ملف manifest محلي.</value></data>
+  <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>فشل النسخ الاحتياطي لملفات manifest</value></data>
+  <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>تم تثبيت {0}، لكن نسخها الاحتياطي فشل: {1}</value></data>
+  <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>تم التثبيت من النسخة الاحتياطية</value></data>
+  <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>فشل المصدر، لذا تم تثبيت {0} من نسختك الاحتياطية لملفات manifest.</value></data>
 </root>

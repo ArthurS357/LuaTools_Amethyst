@@ -902,4 +902,19 @@ Spowoduje to usunięcie wyłącznie aktywnego pliku .lua z Steam\config\stplug-i
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Usunąć {0} plików .lua?
 
 Spowoduje to usunięcie wyłącznie aktywnych plików .lua z Steam\config\stplug-in. {1} z tych gier ma zapisane kompilacje, które pozostaną dostępne w zakładce Depots. Uruchom ponownie Steam, aby zmiany weszły w życie.</value></data>
+  <data name="Settings_ManifestBackup_Title" xml:space="preserve"><value>Kopia manifestów</value></data>
+  <data name="Settings_ManifestBackup_Hint" xml:space="preserve"><value>Przechowuje kopię pliku .lua i plików .manifest każdej gry w wybranym folderze (może to być folder synchronizowany z chmurą): jeden zip na grę, gotowy do upuszczenia na aplikację lub udostępnienia. Jeśli źródło pobierania zawiedzie, zamiast niego instalowana jest zweryfikowana kopia. Nic nie jest nigdzie wysyłane.</value></data>
+  <data name="Settings_ManifestBackup_Mode_Off" xml:space="preserve"><value>Wyłączona</value></data>
+  <data name="Settings_ManifestBackup_Mode_Folder" xml:space="preserve"><value>Folder lokalny / synchronizowany z chmurą</value></data>
+  <data name="Settings_ManifestBackup_Folder" xml:space="preserve"><value>Folder kopii</value></data>
+  <data name="Settings_ManifestBackup_Browse" xml:space="preserve"><value>Przeglądaj…</value></data>
+  <data name="Settings_ManifestBackup_ChooseFolder" xml:space="preserve"><value>Wybierz folder kopii manifestów</value></data>
+  <data name="Settings_ManifestBackup_FolderRefused" xml:space="preserve"><value>Nie można użyć tego folderu. Wybierz taki, który nie jest katalogiem głównym dysku, folderem Windows ani Program Files i nie leży w folderze Steam.</value></data>
+  <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Utwórz kopię istniejących gier</value></data>
+  <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Kopiowanie {0} z {1}…</value></data>
+  <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Gotowe: nowe {0}, zaktualizowane {1}, bez zmian {2}, nieudane {3}. Bez lokalnego manifestu: {4}.</value></data>
+  <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Kopia manifestów nie powiodła się</value></data>
+  <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>Gra {0} została zainstalowana, ale jej kopia nie powiodła się: {1}</value></data>
+  <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Zainstalowano z kopii</value></data>
+  <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>Źródło zawiodło, więc gra {0} została zainstalowana z Twojej kopii manifestów.</value></data>
 </root>

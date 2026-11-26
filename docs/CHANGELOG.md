@@ -2,7 +2,7 @@
 
 ## 1.8.5 — 2026-11-24 (build interna, sem tag nem release)
 
-Lotes K6 e K7: divida LOW da triagem da 1.8.4; Lotes L1 e L2: estabilidade, infraestrutura Windows e icone da ponte. So existe na `main` e em pacote local; a proxima versao publica e a 1.9.0.
+Lotes K6 e K7: divida LOW da triagem da 1.8.4; Lotes L1 e L2: estabilidade, infraestrutura Windows e icone da ponte; Lote L3: backup local de manifests; Lote L4 (backend): catalogo index.json e rotas locais para "Adicionar via Backup". So existe na `main` e em pacote local; a proxima versao publica e a 1.9.0.
 
 ### K6
 
@@ -60,6 +60,40 @@ Lotes K6 e K7: divida LOW da triagem da 1.8.4; Lotes L1 e L2: estabilidade, infr
 - **Handoff AmethystTool v1.5.4 conferido:** URL/asset (`AmethystTool-*.zip` em `releases/latest` com digest SHA-256
   fail-closed), botao Limpar Cache de Conteudo (AppInfo), chaves `[manifest] failover` / `[shadow] record` e preservacao
   de `tools\version_pin.exe` e `tools\pattern_migrate.exe` ja atendidos sem mudanca no instalador.
+
+### L3 — Backup de manifests (cofre local)
+
+- **Configuracoes > Backup de manifests**, **desativado por padrao** (`settings.json` antigo le como desativado; valor
+  desconhecido tambem). Modo "Pasta local / nuvem sincronizada" com seletor de pasta: recusa raiz de disco, Windows,
+  Program Files e qualquer pasta dentro do Steam; junction/symlink recusados, placeholder do OneDrive/Drive aceito.
+- **Formato:** `<destino>\<appid>\<appid>.zip` plano (`<appid>.lua` + `<depot>_<manifest>.manifest`), o mesmo que a area
+  de soltar e o `InstallZip` aceitam, mais `metadata.json` (`luaSha256`, `zipSha256`, manifests com SHA-256). Escrita
+  atomica (`.tmp` → move), `metadata.json` por ultimo.
+- **Selecao:** manifest mais recente por depot no `depotcache` (por data de gravacao; id de manifest nao e monotonico) e
+  o manifest de `setManifestid` (ativo ou comentado pelo Auto Update) quando diferente. Steam so e lida.
+- **Sem reenvio desnecessario:** lua igual (hash) e mesmo conjunto (depot, manifest) = nada regravado.
+- **Automatico:** apos qualquer instalacao (API, area de soltar, plugin, Correcao) o jogo e copiado em segundo plano,
+  depois que a instalacao termina; falha vira log + toast de aviso e nunca desfaz a instalacao.
+- **Botao "Fazer backup dos jogos existentes"** com progresso e resumo (novos, atualizados, inalterados, falhas, sem
+  manifest local).
+- **Fallback:** quando uma fonte de download falha (nao cancelamento), uma copia verificada do backup e instalada:
+  SHA-256 do zip igual ao `metadata.json`, so entradas `<appid>.lua` e manifests na raiz, nenhuma entrada symlink; a
+  copia verificada em `%TEMP%` e a que vai para o instalador.
+- **Parser de lua:** `LuaFileParser.ParseText` (puro) e aspas simples em `addappid`/`setManifestid`.
+- **Hardening e decisao M5:**
+  - **M5 aceito (sem HMAC no `metadata.json`):** decidido manter apenas `zipSha256` em `metadata.json` para preservar portabilidade entre PCs via Google Drive/OneDrive e compartilhamento de `<appid>.zip`. O SHA-256 prova integridade, **nao autoria**: quem grava na pasta (inclusive qualquer conta com quem a pasta de nuvem esteja compartilhada) pode trocar `.zip` e `metadata.json` juntos. O que limita um zip assim: whitelist de entradas, zero symlinks e a triagem de lua do instalador; a copia travada em `%TEMP%` garante que o verificado e o instalado sao os mesmos bytes.
+  - **Manifest guardado nao some junto com o `depotcache`:** se ele nao tem mais o manifest de um depot ainda declarado no lua (ou o do pin), a copia guardada no zip e reaproveitada apos conferir o SHA-256. Sao falha do jogo, com o zip intocado: zip ausente, ilegivel ou divergente do `metadata.json`; `metadata.json` inutilizavel quando o zip tem a unica copia (apagar a pasta do jogo reconstroi); e lua que nao declara nada.
+  - **Limites:** depot para o qual o `depotcache` so tem um arquivo mais antigo e sem pin passa a seguir o `depotcache`; depot retirado do lua sai do backup.
+  - Cancelamento que chega enquanto a copia do fallback e preparada descarta a copia e nao instala.
+  - **`index.json` e derivado:** falha ao grava-lo (arquivo aberto por leitor ou cliente de nuvem) vira log, nao derruba o backup; o catalogo velho e removido quando possivel.
+  - Entrada de `.manifest` sem data no zip (epoca DOS 1980) e instalada com a data atual.
+  - Skip-check do lote valida `luaSha256`, conjunto de manifests e tamanho esperado do `.zip` (`zipSizeBytes`) sem re-hashear nem hidratar arquivos em nuvem streaming; `WaitForInstallsToSettle(ct)` e `ManifestBackupService` cancelam no shutdown; `InstallZip` preserva `LastWriteTimeUtc` original dos `.manifest`; bloqueio de junction/symlink no seletor e em `ActiveFolder`; UI com `IsRunning`/`ProgressRing` e guarda contra callback atrasado de `Progress<T>`.
+- 15 chaves novas nos 30 `.resx`; 38 testes novos (`ManifestBackupTests` + `ViewSplitTests`).
+
+### L4 (backend) — Descoberta e restauracao explicita ("Adicionar via Backup")
+
+- **Catalogo `index.json` na raiz:** atualizado atomicamente ao fim de `BackupAll` e `BackupOne` com `appId`, `name`, `updatedAtUtc`, `manifestCount`, `hasManifests` (`manifestCount > 0`), `zipFile` e `zipSha256`, mantendo retrocompatibilidade na leitura de `metadata.json` do L3.
+- **Rotas locais autenticadas (`HttpServerService`):** `GET /backup/index`, `GET /backup/status?appid=<id>` e `POST /backup/install`, todas atras de `Authorize` (`127.0.0.1`/loopback + `X-LuaTools-Token`, sem CORS), validacao estrita de `appid` inteiro positivo e restauracao fail-closed via `ManifestBackupService.RestoreAsync`.
 
 ### Cortado (registrado no vault)
 

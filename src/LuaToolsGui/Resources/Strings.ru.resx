@@ -902,4 +902,19 @@ SHA-256 {3}
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Удалить {0} файлов .lua?
 
 Будут удалены только активные файлы .lua из Steam\config\stplug-in. У {1} из этих игр есть сохранённые сборки, которые останутся доступны на вкладке Depots. Перезапустите Steam, чтобы изменения вступили в силу.</value></data>
+  <data name="Settings_ManifestBackup_Title" xml:space="preserve"><value>Резервная копия манифестов</value></data>
+  <data name="Settings_ManifestBackup_Hint" xml:space="preserve"><value>Хранит копию .lua и файлов .manifest каждой игры в выбранной папке (подойдёт папка, синхронизируемая с облаком): один zip на игру, готовый к перетаскиванию в приложение или передаче. Если источник загрузки не сработает, вместо него будет установлена проверенная копия. Ничего никуда не отправляется.</value></data>
+  <data name="Settings_ManifestBackup_Mode_Off" xml:space="preserve"><value>Выключено</value></data>
+  <data name="Settings_ManifestBackup_Mode_Folder" xml:space="preserve"><value>Локальная / синхронизируемая с облаком папка</value></data>
+  <data name="Settings_ManifestBackup_Folder" xml:space="preserve"><value>Папка резервных копий</value></data>
+  <data name="Settings_ManifestBackup_Browse" xml:space="preserve"><value>Обзор…</value></data>
+  <data name="Settings_ManifestBackup_ChooseFolder" xml:space="preserve"><value>Выберите папку резервных копий манифестов</value></data>
+  <data name="Settings_ManifestBackup_FolderRefused" xml:space="preserve"><value>Эту папку нельзя использовать. Выберите папку, которая не является корнем диска, папкой Windows или Program Files и не находится внутри Steam.</value></data>
+  <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Создать копии существующих игр</value></data>
+  <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Копирование {0} из {1}…</value></data>
+  <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Готово: новых — {0}, обновлено — {1}, без изменений — {2}, с ошибкой — {3}. Без локального манифеста — {4}.</value></data>
+  <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Не удалось создать резервную копию манифестов</value></data>
+  <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} установлена, но создать её резервную копию не удалось: {1}</value></data>
+  <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Установлено из резервной копии</value></data>
+  <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>Источник не сработал, поэтому {0} установлена из вашей резервной копии манифестов.</value></data>
 </root>

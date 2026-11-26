@@ -28,7 +28,8 @@ public sealed class ManifestJobFactory(
     CacheService cache,
     CoverCache covers,
     DepotDownloaderService depots,
-    ToastService toasts)
+    ToastService toasts,
+    Backups.ManifestBackupService backups)
 {
     private static readonly string SadieDisplay = SourceMeta.Get("Sadie (Morrenus)").DisplayName!;
 
@@ -76,7 +77,7 @@ public sealed class ManifestJobFactory(
             title,
             display,
             covers.GetLocalPath(appId),
-            (item, progress, ct) => FetchManifestAsync(appId, sourceName, needsKey, gameName, progress, ct),
+            (item, progress, ct) => FetchOrRestoreAsync(appId, sourceName, needsKey, gameName, title, progress, ct),
             (file, item, ct) => Task.FromResult(InstallManifest(file, appId, title, display)),
             confirm,
             onFinished,
@@ -119,6 +120,58 @@ public sealed class ManifestJobFactory(
             OnReveal: onReveal);
     }
 
+    /// <summary>
+    /// Fetch from the source; if that fails (not a cancel or pause), fall back to the user's manifest backup.
+    /// </summary>
+    /// <remarks>
+    /// The fallback only exists when the backup is switched on AND holds a copy whose SHA-256 matches its
+    /// metadata.json and whose entries pass the restore gate (<see cref="Backups.ManifestBackupStore.VerifyArchive"/>);
+    /// otherwise the original failure is rethrown untouched. The staged copy then goes through the same
+    /// <see cref="InstallManifest"/> → <see cref="LuaInstaller.InstallZip"/> path as any download.
+    /// </remarks>
+    private Task<DownloadedFile> FetchOrRestoreAsync(
+        long appId, string sourceName, bool needsKey, string? gameName, string title,
+        IProgress<DownloadProgress> progress, CancellationToken ct) =>
+        FetchOrRestoreCoreAsync(
+            token => FetchManifestAsync(appId, sourceName, needsKey, gameName, progress, token),
+            () => backups.TryStageRestore(appId),
+            ex =>
+            {
+                AppLog.Log($"manifest-install appid={appId}: source '{sourceName}' failed ({ex.GetType().Name}); " +
+                           "installing the verified local manifest backup instead");
+                toasts.Show(Resources.Strings.ManifestBackup_Toast_Restored_Title,
+                    string.Format(CultureInfo.CurrentCulture, Resources.Strings.ManifestBackup_Toast_Restored, title),
+                    duration: TimeSpan.FromSeconds(8));
+            },
+            ct);
+
+    internal static async Task<DownloadedFile> FetchOrRestoreCoreAsync(
+        Func<CancellationToken, Task<DownloadedFile>> fetch,
+        Func<DownloadedFile?> tryRestore,
+        Action<Exception> onRestored,
+        CancellationToken ct)
+    {
+        try
+        {
+            return await fetch(ct);
+        }
+        // Keyed on the token, not the exception type: a pause or cancel always cancels ct, while a source that
+        // hangs until HttpClient times out surfaces as TaskCanceledException with ct untouched — a real failure.
+        // Also never fall back on an explicit cancellation surfaced via DownloadAbortedException.
+        catch (Exception ex) when (!ct.IsCancellationRequested && ex is not DownloadAbortedException { IsCancellation: true })
+        {
+            if (tryRestore() is not { } staged) throw;
+            // Staging copies and hashes a zip that may be hydrating from the cloud: a cancel can land meanwhile.
+            if (ct.IsCancellationRequested)
+            {
+                staged.Discard();
+                ct.ThrowIfCancellationRequested();
+            }
+            onRestored(ex);
+            return staged; // carries the pin taken before the hash check; released after the install reads it
+        }
+    }
+
     private async Task<DownloadedFile> FetchManifestAsync(
         long appId, string sourceName, bool needsKey, string? gameName,
         IProgress<DownloadProgress> progress, CancellationToken ct)
@@ -156,6 +209,7 @@ public sealed class ManifestJobFactory(
             ? installer.InstallZip(file.FilePath, appId)
             : installer.InstallLua(file.FilePath, appId);
 
+        file.Dispose(); // release a pin (restored backup) first: a pinned file cannot be deleted
         DeleteStaged(file.FilePath); // consumed — the temp staging copy is no longer needed
 
         if (result.Error is not null) return new JobResult(false, result.Error);

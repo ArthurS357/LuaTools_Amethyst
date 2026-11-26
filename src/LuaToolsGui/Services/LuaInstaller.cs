@@ -40,6 +40,18 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
     /// background thread, so handlers must marshal to the UI thread.</summary>
     public event Action<long>? Installed;
 
+    /// <summary>
+    /// Block until no install is in flight. <see cref="Installed"/> fires mid-<see cref="InstallZip"/> (right
+    /// after the lua, before the remaining manifests are extracted), so a subscriber that reads the result —
+    /// the manifest backup — calls this from its own thread first to see the finished install.
+    /// </summary>
+    public void WaitForInstallsToSettle(CancellationToken ct = default)
+    {
+        while (!_installLock.TryEnter(50))
+            ct.ThrowIfCancellationRequested();
+        _installLock.Exit();
+    }
+
     // "386940_18234567.lua" → "18234567". A plain "386940.lua" has no build id → null.
     [GeneratedRegex(@"^\s*\d+_(\d+)\s*$")]
     private static partial Regex BuildIdRegex();
@@ -182,6 +194,30 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
         {
             return InstallResult.Fail(ex.Message);
         }
+    }
+
+    /// <summary>
+    /// Preserve the original manifest write timestamp carried by a zip entry (within DOS 2-second granularity)
+    /// so restoring an older backup zip does not make an outdated manifest look newer than a later Steam patch.
+    /// An uninitialized DOS epoch entry is stamped now (extraction already copied 1980 onto the file, which
+    /// would rank it oldest), and future timestamps are clamped to now. Best-effort.
+    /// </summary>
+    internal static void PreserveManifestLastWriteTime(string path, DateTimeOffset entryLastWrite)
+    {
+        try
+        {
+            DateTime utc = entryLastWrite.UtcDateTime;
+            if (utc <= new DateTime(1980, 1, 2, 0, 0, 0, DateTimeKind.Utc))
+            {
+                StampNow(path);
+                return;
+            }
+
+            DateTime nowUtc = DateTime.UtcNow;
+            if (utc > nowUtc) utc = nowUtc;
+            File.SetLastWriteTimeUtc(path, utc);
+        }
+        catch (Exception ex) { AppLog.Log($"install: could not restore manifest timestamp: {ex.GetType().Name}: {ex.Message}"); }
     }
 
     /// <summary>
@@ -433,7 +469,7 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
                     else
                     {
                         AtomicFile.Write(dest, p => entry.ExtractToFile(p, overwrite: true));
-                        StampNow(dest);
+                        PreserveManifestLastWriteTime(dest, entry.LastWriteTime);
                         manifestCount++;
                     }
                 }

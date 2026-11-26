@@ -900,4 +900,19 @@ public static class Strings
     public static string Home_CustomActive => Get(nameof(Home_CustomActive));
     public static string Manage_Delete_BodyWithBuilds => Get(nameof(Manage_Delete_BodyWithBuilds));
     public static string Manage_DeleteMany_BodyWithBuilds => Get(nameof(Manage_DeleteMany_BodyWithBuilds));
+    public static string Settings_ManifestBackup_Title => Get(nameof(Settings_ManifestBackup_Title));
+    public static string Settings_ManifestBackup_Hint => Get(nameof(Settings_ManifestBackup_Hint));
+    public static string Settings_ManifestBackup_Mode_Off => Get(nameof(Settings_ManifestBackup_Mode_Off));
+    public static string Settings_ManifestBackup_Mode_Folder => Get(nameof(Settings_ManifestBackup_Mode_Folder));
+    public static string Settings_ManifestBackup_Folder => Get(nameof(Settings_ManifestBackup_Folder));
+    public static string Settings_ManifestBackup_Browse => Get(nameof(Settings_ManifestBackup_Browse));
+    public static string Settings_ManifestBackup_ChooseFolder => Get(nameof(Settings_ManifestBackup_ChooseFolder));
+    public static string Settings_ManifestBackup_FolderRefused => Get(nameof(Settings_ManifestBackup_FolderRefused));
+    public static string Settings_ManifestBackup_RunAll => Get(nameof(Settings_ManifestBackup_RunAll));
+    public static string Settings_ManifestBackup_Running => Get(nameof(Settings_ManifestBackup_Running));
+    public static string Settings_ManifestBackup_Result => Get(nameof(Settings_ManifestBackup_Result));
+    public static string ManifestBackup_Toast_Failed_Title => Get(nameof(ManifestBackup_Toast_Failed_Title));
+    public static string ManifestBackup_Toast_Failed => Get(nameof(ManifestBackup_Toast_Failed));
+    public static string ManifestBackup_Toast_Restored_Title => Get(nameof(ManifestBackup_Toast_Restored_Title));
+    public static string ManifestBackup_Toast_Restored => Get(nameof(ManifestBackup_Toast_Restored));
 }

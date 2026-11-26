@@ -902,4 +902,19 @@ SHA-256 {3}
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>ลบไฟล์ .lua จำนวน {0} ไฟล์หรือไม่?
 
 การดำเนินการนี้จะลบเฉพาะไฟล์ .lua ที่ใช้งานอยู่ใน Steam\config\stplug-in เท่านั้น โดย {1} เกมในกลุ่มนี้มีบิลด์ที่บันทึกไว้ซึ่งจะยังคงอยู่ในแท็บ Depots รีสตาร์ท Steam หลังจากนั้นเพื่อให้การเปลี่ยนแปลงมีผล</value></data>
+  <data name="Settings_ManifestBackup_Title" xml:space="preserve"><value>สำรองข้อมูล manifest</value></data>
+  <data name="Settings_ManifestBackup_Hint" xml:space="preserve"><value>เก็บสำเนาไฟล์ .lua และไฟล์ .manifest ของแต่ละเกมไว้ในโฟลเดอร์ที่คุณเลือก (ใช้โฟลเดอร์ที่ซิงค์กับคลาวด์ได้) เกมละหนึ่งไฟล์ zip พร้อมลากวางลงในแอปหรือแชร์ หากแหล่งดาวน์โหลดล้มเหลว จะติดตั้งข้อมูลสำรองที่ตรวจสอบแล้วแทน ไม่มีการส่งข้อมูลไปที่ใด</value></data>
+  <data name="Settings_ManifestBackup_Mode_Off" xml:space="preserve"><value>ปิด</value></data>
+  <data name="Settings_ManifestBackup_Mode_Folder" xml:space="preserve"><value>โฟลเดอร์ในเครื่อง / ซิงค์กับคลาวด์</value></data>
+  <data name="Settings_ManifestBackup_Folder" xml:space="preserve"><value>โฟลเดอร์สำรองข้อมูล</value></data>
+  <data name="Settings_ManifestBackup_Browse" xml:space="preserve"><value>เรียกดู…</value></data>
+  <data name="Settings_ManifestBackup_ChooseFolder" xml:space="preserve"><value>เลือกโฟลเดอร์สำรองข้อมูล manifest</value></data>
+  <data name="Settings_ManifestBackup_FolderRefused" xml:space="preserve"><value>ใช้โฟลเดอร์นี้ไม่ได้ เลือกโฟลเดอร์ที่ไม่ใช่รากของไดรฟ์ ไม่ใช่โฟลเดอร์ Windows หรือ Program Files และไม่อยู่ใน Steam</value></data>
+  <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>สำรองข้อมูลเกมที่มีอยู่</value></data>
+  <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>กำลังสำรอง {0} จาก {1}…</value></data>
+  <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>เสร็จสิ้น: ใหม่ {0} อัปเดต {1} ไม่เปลี่ยนแปลง {2} ล้มเหลว {3} ไม่มี manifest ในเครื่อง {4}</value></data>
+  <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>สำรองข้อมูล manifest ล้มเหลว</value></data>
+  <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>ติดตั้ง {0} แล้ว แต่การสำรองข้อมูลล้มเหลว: {1}</value></data>
+  <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>ติดตั้งจากข้อมูลสำรอง</value></data>
+  <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>แหล่งที่มาล้มเหลว จึงติดตั้ง {0} จากข้อมูลสำรอง manifest ของคุณ</value></data>
 </root>

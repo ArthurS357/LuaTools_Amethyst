@@ -922,4 +922,19 @@ SHA-256 {3}
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>移除 {0} 个 .lua 文件？
 
 这只会删除 Steam\config\stplug-in 中的当前 .lua 文件。其中 {1} 款游戏有已保存的版本，仍会保留在 Depots 标签页中。之后请重启 Steam 以使更改生效。</value></data>
+  <data name="Settings_ManifestBackup_Title" xml:space="preserve"><value>清单备份</value></data>
+  <data name="Settings_ManifestBackup_Hint" xml:space="preserve"><value>在你选择的文件夹（可以是云同步文件夹）中保存每个游戏的 .lua 和 .manifest 文件副本：每个游戏一个 zip，可直接拖入应用或分享。如果下载源失败，将改为安装经过校验的备份。不会向任何地方发送数据。</value></data>
+  <data name="Settings_ManifestBackup_Mode_Off" xml:space="preserve"><value>关闭</value></data>
+  <data name="Settings_ManifestBackup_Mode_Folder" xml:space="preserve"><value>本地 / 云同步文件夹</value></data>
+  <data name="Settings_ManifestBackup_Folder" xml:space="preserve"><value>备份文件夹</value></data>
+  <data name="Settings_ManifestBackup_Browse" xml:space="preserve"><value>浏览…</value></data>
+  <data name="Settings_ManifestBackup_ChooseFolder" xml:space="preserve"><value>选择清单备份文件夹</value></data>
+  <data name="Settings_ManifestBackup_FolderRefused" xml:space="preserve"><value>无法使用该文件夹。请选择不是驱动器根目录、不是 Windows 或 Program Files 文件夹、且不在 Steam 内的文件夹。</value></data>
+  <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>备份现有游戏</value></data>
+  <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>正在备份 {0}/{1}…</value></data>
+  <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>完成：新增 {0}，更新 {1}，未变 {2}，失败 {3}。{4} 个没有本地清单。</value></data>
+  <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>清单备份失败</value></data>
+  <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} 已安装，但备份失败：{1}</value></data>
+  <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>已从备份安装</value></data>
+  <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>下载源失败，已从你的清单备份安装 {0}。</value></data>
 </root>

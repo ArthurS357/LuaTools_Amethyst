@@ -902,4 +902,19 @@ Esto elimina solo su archivo .lua activo de Steam\config\stplug-in. Las compilac
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>¿Eliminar {0} archivos .lua?
 
 Esto elimina solo los archivos .lua activos de Steam\config\stplug-in. {1} de estos juegos tienen compilaciones guardadas que seguirán disponibles en la pestaña Depots. Reinicia Steam después para que los cambios surtan efecto.</value></data>
+  <data name="Settings_ManifestBackup_Title" xml:space="preserve"><value>Copia de seguridad de manifiestos</value></data>
+  <data name="Settings_ManifestBackup_Hint" xml:space="preserve"><value>Guarda una copia del .lua y de los archivos .manifest de cada juego en la carpeta que elijas (sirve una carpeta sincronizada con la nube): un zip por juego, listo para soltar en la app o compartir. Si una fuente de descarga falla, se instala en su lugar una copia verificada. No se envía nada a ningún sitio.</value></data>
+  <data name="Settings_ManifestBackup_Mode_Off" xml:space="preserve"><value>Desactivado</value></data>
+  <data name="Settings_ManifestBackup_Mode_Folder" xml:space="preserve"><value>Carpeta local / sincronizada con la nube</value></data>
+  <data name="Settings_ManifestBackup_Folder" xml:space="preserve"><value>Carpeta de copia de seguridad</value></data>
+  <data name="Settings_ManifestBackup_Browse" xml:space="preserve"><value>Examinar…</value></data>
+  <data name="Settings_ManifestBackup_ChooseFolder" xml:space="preserve"><value>Elige la carpeta de copia de seguridad de manifiestos</value></data>
+  <data name="Settings_ManifestBackup_FolderRefused" xml:space="preserve"><value>No se puede usar esa carpeta. Elige una que no sea la raíz de una unidad, una carpeta de Windows o de Archivos de programa, ni esté dentro de Steam.</value></data>
+  <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Copiar los juegos existentes</value></data>
+  <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Copiando {0} de {1}…</value></data>
+  <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Listo: {0} nuevos, {1} actualizados, {2} sin cambios, {3} con error. {4} sin manifiesto local.</value></data>
+  <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Falló la copia de seguridad de manifiestos</value></data>
+  <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} se instaló, pero su copia de seguridad falló: {1}</value></data>
+  <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Instalado desde la copia de seguridad</value></data>
+  <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>La fuente falló, así que {0} se instaló desde tu copia de seguridad de manifiestos.</value></data>
 </root>

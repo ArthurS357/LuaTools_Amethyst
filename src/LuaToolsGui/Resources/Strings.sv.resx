@@ -902,4 +902,19 @@ Detta tar endast bort den aktiva .lua-filen från Steam\config\stplug-in. Sparad
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Ta bort {0} .lua-filer?
 
 Detta tar endast bort de aktiva .lua-filerna från Steam\config\stplug-in. {1} av dessa spel har sparade versioner som finns kvar på fliken Depots. Starta om Steam efteråt för att ändringarna ska träda i kraft.</value></data>
+  <data name="Settings_ManifestBackup_Title" xml:space="preserve"><value>Manifest-säkerhetskopia</value></data>
+  <data name="Settings_ManifestBackup_Hint" xml:space="preserve"><value>Sparar en kopia av varje spels .lua- och .manifest-filer i en valfri mapp (en molnsynkad mapp fungerar): en zip per spel, redo att släppas på appen eller delas. Om en nedladdningskälla misslyckas installeras en verifierad säkerhetskopia i stället. Inget skickas någonstans.</value></data>
+  <data name="Settings_ManifestBackup_Mode_Off" xml:space="preserve"><value>Av</value></data>
+  <data name="Settings_ManifestBackup_Mode_Folder" xml:space="preserve"><value>Lokal / molnsynkad mapp</value></data>
+  <data name="Settings_ManifestBackup_Folder" xml:space="preserve"><value>Säkerhetskopieringsmapp</value></data>
+  <data name="Settings_ManifestBackup_Browse" xml:space="preserve"><value>Bläddra…</value></data>
+  <data name="Settings_ManifestBackup_ChooseFolder" xml:space="preserve"><value>Välj mapp för manifest-säkerhetskopior</value></data>
+  <data name="Settings_ManifestBackup_FolderRefused" xml:space="preserve"><value>Den mappen kan inte användas. Välj en som inte är en enhetsrot, en Windows- eller Program Files-mapp eller ligger i Steam.</value></data>
+  <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Säkerhetskopiera befintliga spel</value></data>
+  <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Säkerhetskopierar {0} av {1}…</value></data>
+  <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Klart: {0} nya, {1} uppdaterade, {2} oförändrade, {3} misslyckade. {4} utan lokalt manifest.</value></data>
+  <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Manifest-säkerhetskopian misslyckades</value></data>
+  <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} installerades, men säkerhetskopian misslyckades: {1}</value></data>
+  <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Installerat från säkerhetskopia</value></data>
+  <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>Källan misslyckades, så {0} installerades från din manifest-säkerhetskopia.</value></data>
 </root>

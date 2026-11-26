@@ -902,4 +902,19 @@ Steam\config\stplug-in 内の有効な .lua ファイルのみが削除されま
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>{0} 件の .lua ファイルを削除しますか？
 
 Steam\config\stplug-in 内の有効な .lua ファイルのみが削除されます。このうち {1} 件のゲームには保存済みビルドがあり、Depots タブに残ります。変更を反映するには Steam を再起動してください。</value></data>
+  <data name="Settings_ManifestBackup_Title" xml:space="preserve"><value>マニフェストのバックアップ</value></data>
+  <data name="Settings_ManifestBackup_Hint" xml:space="preserve"><value>各ゲームの .lua と .manifest ファイルのコピーを選択したフォルダーに保存します（クラウド同期フォルダーも使えます）。ゲームごとに 1 つの zip で、アプリへのドロップや共有にそのまま使えます。ダウンロード元が失敗した場合は、検証済みのバックアップが代わりにインストールされます。どこにも送信されません。</value></data>
+  <data name="Settings_ManifestBackup_Mode_Off" xml:space="preserve"><value>オフ</value></data>
+  <data name="Settings_ManifestBackup_Mode_Folder" xml:space="preserve"><value>ローカル / クラウド同期フォルダー</value></data>
+  <data name="Settings_ManifestBackup_Folder" xml:space="preserve"><value>バックアップ フォルダー</value></data>
+  <data name="Settings_ManifestBackup_Browse" xml:space="preserve"><value>参照…</value></data>
+  <data name="Settings_ManifestBackup_ChooseFolder" xml:space="preserve"><value>マニフェストのバックアップ フォルダーを選択</value></data>
+  <data name="Settings_ManifestBackup_FolderRefused" xml:space="preserve"><value>このフォルダーは使用できません。ドライブのルート、Windows や Program Files のフォルダー、Steam 内以外のフォルダーを選んでください。</value></data>
+  <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>既存のゲームをバックアップ</value></data>
+  <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>バックアップ中 {0} / {1}…</value></data>
+  <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>完了: 新規 {0}、更新 {1}、変更なし {2}、失敗 {3}。ローカルのマニフェストなし {4}。</value></data>
+  <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>マニフェストのバックアップに失敗しました</value></data>
+  <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} はインストールされましたが、バックアップに失敗しました: {1}</value></data>
+  <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>バックアップからインストールしました</value></data>
+  <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>ダウンロード元が失敗したため、{0} をマニフェストのバックアップからインストールしました。</value></data>
 </root>

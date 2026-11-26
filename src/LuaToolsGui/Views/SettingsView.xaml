@@ -632,6 +632,9 @@
                 </StackPanel>
             </Border>
 
+            <!-- Manifest backup (SettingsManifestBackupSection): own view-model, DataContext set from code-behind. -->
+            <local:SettingsManifestBackupSection x:Name="ManifestBackupSection" />
+
             <!-- Startup -->
             <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="{x:Static res:Strings.Settings_Section_Startup}" />
             <Border Padding="0" Style="{StaticResource CardStyle}">

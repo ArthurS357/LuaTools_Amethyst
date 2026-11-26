@@ -902,4 +902,19 @@ Dette sletter kun den aktive .lua-fil fra Steam\config\stplug-in. Gemte builds t
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Fjern {0} .lua-filer?
 
 Dette sletter kun de aktive .lua-filer fra Steam\config\stplug-in. {1} af disse spil har gemte builds, som forbliver tilgængelige på fanen Depots. Genstart Steam bagefter for at ændringerne træder i kraft.</value></data>
+  <data name="Settings_ManifestBackup_Title" xml:space="preserve"><value>Manifest-sikkerhedskopi</value></data>
+  <data name="Settings_ManifestBackup_Hint" xml:space="preserve"><value>Gemmer en kopi af hvert spils .lua- og .manifest-filer i en mappe efter eget valg (en skysynkroniseret mappe fungerer): én zip pr. spil, klar til at slippe på appen eller dele. Hvis en downloadkilde fejler, installeres en verificeret sikkerhedskopi i stedet. Intet sendes nogen steder hen.</value></data>
+  <data name="Settings_ManifestBackup_Mode_Off" xml:space="preserve"><value>Fra</value></data>
+  <data name="Settings_ManifestBackup_Mode_Folder" xml:space="preserve"><value>Lokal / skysynkroniseret mappe</value></data>
+  <data name="Settings_ManifestBackup_Folder" xml:space="preserve"><value>Sikkerhedskopimappe</value></data>
+  <data name="Settings_ManifestBackup_Browse" xml:space="preserve"><value>Gennemse…</value></data>
+  <data name="Settings_ManifestBackup_ChooseFolder" xml:space="preserve"><value>Vælg mappen til manifest-sikkerhedskopier</value></data>
+  <data name="Settings_ManifestBackup_FolderRefused" xml:space="preserve"><value>Den mappe kan ikke bruges. Vælg en, der ikke er roden af et drev, en Windows- eller Program Files-mappe eller ligger i Steam.</value></data>
+  <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Sikkerhedskopiér eksisterende spil</value></data>
+  <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Sikkerhedskopierer {0} af {1}…</value></data>
+  <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Færdig: {0} nye, {1} opdateret, {2} uændret, {3} mislykket. {4} uden lokalt manifest.</value></data>
+  <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Manifest-sikkerhedskopien mislykkedes</value></data>
+  <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} blev installeret, men sikkerhedskopien mislykkedes: {1}</value></data>
+  <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Installeret fra sikkerhedskopi</value></data>
+  <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>Kilden fejlede, så {0} blev installeret fra din manifest-sikkerhedskopi.</value></data>
 </root>

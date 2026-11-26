@@ -902,4 +902,19 @@ Tím se smaže pouze aktivní soubor .lua ze Steam\config\stplug-in. Uložené s
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Odebrat {0} souborů .lua?
 
 Tím se smažou pouze aktivní soubory .lua ze Steam\config\stplug-in. {1} z těchto her má uložená sestavení, která zůstanou dostupná na kartě Depots. Poté restartujte Steam, aby se změny projevily.</value></data>
+  <data name="Settings_ManifestBackup_Title" xml:space="preserve"><value>Záloha manifestů</value></data>
+  <data name="Settings_ManifestBackup_Hint" xml:space="preserve"><value>Uchovává kopii souboru .lua a souborů .manifest každé hry ve zvolené složce (vhodná je i složka synchronizovaná s cloudem): jeden zip na hru, připravený k přetažení do aplikace nebo ke sdílení. Pokud zdroj stahování selže, nainstaluje se místo něj ověřená záloha. Nic se nikam neodesílá.</value></data>
+  <data name="Settings_ManifestBackup_Mode_Off" xml:space="preserve"><value>Vypnuto</value></data>
+  <data name="Settings_ManifestBackup_Mode_Folder" xml:space="preserve"><value>Místní složka / složka synchronizovaná s cloudem</value></data>
+  <data name="Settings_ManifestBackup_Folder" xml:space="preserve"><value>Složka zálohy</value></data>
+  <data name="Settings_ManifestBackup_Browse" xml:space="preserve"><value>Procházet…</value></data>
+  <data name="Settings_ManifestBackup_ChooseFolder" xml:space="preserve"><value>Vyberte složku pro zálohu manifestů</value></data>
+  <data name="Settings_ManifestBackup_FolderRefused" xml:space="preserve"><value>Tuto složku nelze použít. Vyberte složku, která není kořenem disku, složkou Windows ani Program Files a není uvnitř Steamu.</value></data>
+  <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Zálohovat stávající hry</value></data>
+  <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Zálohování {0} z {1}…</value></data>
+  <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Hotovo: nové {0}, aktualizované {1}, beze změny {2}, neúspěšné {3}. Bez místního manifestu: {4}.</value></data>
+  <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Záloha manifestů selhala</value></data>
+  <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} byla nainstalována, ale její záloha selhala: {1}</value></data>
+  <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Nainstalováno ze zálohy</value></data>
+  <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>Zdroj selhal, proto byla {0} nainstalována z vaší zálohy manifestů.</value></data>
 </root>

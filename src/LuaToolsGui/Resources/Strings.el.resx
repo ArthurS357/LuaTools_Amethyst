@@ -902,4 +902,19 @@ SHA-256 {3}
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Αφαίρεση {0} αρχείων .lua;
 
 Αυτό διαγράφει μόνο τα ενεργά αρχεία .lua από το Steam\config\stplug-in. {1} από αυτά τα παιχνίδια έχουν αποθηκευμένες εκδόσεις που θα παραμείνουν διαθέσιμες στην καρτέλα Depots. Επανεκκινήστε το Steam στη συνέχεια για να εφαρμοστούν οι αλλαγές.</value></data>
+  <data name="Settings_ManifestBackup_Title" xml:space="preserve"><value>Αντίγραφο ασφαλείας manifest</value></data>
+  <data name="Settings_ManifestBackup_Hint" xml:space="preserve"><value>Κρατά ένα αντίγραφο του .lua και των αρχείων .manifest κάθε παιχνιδιού σε φάκελο της επιλογής σας (κάνει και φάκελος συγχρονισμένος με το cloud): ένα zip ανά παιχνίδι, έτοιμο για απόθεση στην εφαρμογή ή κοινή χρήση. Αν μια πηγή λήψης αποτύχει, εγκαθίσταται στη θέση της ένα επαληθευμένο αντίγραφο. Τίποτα δεν αποστέλλεται πουθενά.</value></data>
+  <data name="Settings_ManifestBackup_Mode_Off" xml:space="preserve"><value>Ανενεργό</value></data>
+  <data name="Settings_ManifestBackup_Mode_Folder" xml:space="preserve"><value>Τοπικός / συγχρονισμένος με το cloud φάκελος</value></data>
+  <data name="Settings_ManifestBackup_Folder" xml:space="preserve"><value>Φάκελος αντιγράφων</value></data>
+  <data name="Settings_ManifestBackup_Browse" xml:space="preserve"><value>Αναζήτηση…</value></data>
+  <data name="Settings_ManifestBackup_ChooseFolder" xml:space="preserve"><value>Επιλέξτε τον φάκελο αντιγράφων ασφαλείας manifest</value></data>
+  <data name="Settings_ManifestBackup_FolderRefused" xml:space="preserve"><value>Αυτός ο φάκελος δεν μπορεί να χρησιμοποιηθεί. Επιλέξτε έναν που δεν είναι ρίζα μονάδας δίσκου, φάκελος των Windows ή του Program Files και δεν βρίσκεται μέσα στο Steam.</value></data>
+  <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Αντίγραφα των υπαρχόντων παιχνιδιών</value></data>
+  <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Αντιγραφή {0} από {1}…</value></data>
+  <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Ολοκληρώθηκε: {0} νέα, {1} ενημερωμένα, {2} αμετάβλητα, {3} απέτυχαν. {4} χωρίς τοπικό manifest.</value></data>
+  <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Το αντίγραφο ασφαλείας manifest απέτυχε</value></data>
+  <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>Το {0} εγκαταστάθηκε, αλλά το αντίγραφό του απέτυχε: {1}</value></data>
+  <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Εγκαταστάθηκε από αντίγραφο</value></data>
+  <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>Η πηγή απέτυχε, οπότε το {0} εγκαταστάθηκε από το αντίγραφο ασφαλείας manifest.</value></data>
 </root>

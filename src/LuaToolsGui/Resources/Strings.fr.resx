@@ -902,4 +902,19 @@ Cela supprime uniquement son fichier .lua actif de Steam\config\stplug-in. Les b
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Supprimer {0} fichiers .lua ?
 
 Cela supprime uniquement les fichiers .lua actifs de Steam\config\stplug-in. {1} de ces jeux disposent de builds enregistrées qui resteront disponibles dans l'onglet Depots. Redémarrez Steam ensuite pour appliquer les changements.</value></data>
+  <data name="Settings_ManifestBackup_Title" xml:space="preserve"><value>Sauvegarde des manifestes</value></data>
+  <data name="Settings_ManifestBackup_Hint" xml:space="preserve"><value>Conserve une copie du .lua et des fichiers .manifest de chaque jeu dans le dossier de votre choix (un dossier synchronisé avec le cloud convient) : un zip par jeu, prêt à déposer dans l'application ou à partager. Si une source de téléchargement échoue, une sauvegarde vérifiée est installée à la place. Rien n'est envoyé nulle part.</value></data>
+  <data name="Settings_ManifestBackup_Mode_Off" xml:space="preserve"><value>Désactivée</value></data>
+  <data name="Settings_ManifestBackup_Mode_Folder" xml:space="preserve"><value>Dossier local / synchronisé avec le cloud</value></data>
+  <data name="Settings_ManifestBackup_Folder" xml:space="preserve"><value>Dossier de sauvegarde</value></data>
+  <data name="Settings_ManifestBackup_Browse" xml:space="preserve"><value>Parcourir…</value></data>
+  <data name="Settings_ManifestBackup_ChooseFolder" xml:space="preserve"><value>Choisissez le dossier de sauvegarde des manifestes</value></data>
+  <data name="Settings_ManifestBackup_FolderRefused" xml:space="preserve"><value>Ce dossier ne peut pas être utilisé. Choisissez-en un qui ne soit ni la racine d'un lecteur, ni un dossier Windows ou Program Files, ni situé dans Steam.</value></data>
+  <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Sauvegarder les jeux existants</value></data>
+  <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Sauvegarde de {0} sur {1}…</value></data>
+  <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Terminé : {0} nouveaux, {1} mis à jour, {2} inchangés, {3} en échec. {4} sans manifeste local.</value></data>
+  <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Échec de la sauvegarde des manifestes</value></data>
+  <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} a été installé, mais sa sauvegarde a échoué : {1}</value></data>
+  <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Installé depuis la sauvegarde</value></data>
+  <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>La source a échoué : {0} a été installé depuis votre sauvegarde de manifestes.</value></data>
 </root>

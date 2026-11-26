@@ -120,6 +120,7 @@ public partial class App : Application
                 services.AddSingleton<Services.AppInfo.LaunchModStore>();
                 services.AddSingleton<Services.AppInfo.LaunchOptionsService>();
                 services.AddSingleton<LuaInstaller>();
+                services.AddSingleton<Services.Backups.ManifestBackupService>();
                 services.AddSingleton<SteamLibraryService>();
                 services.AddSingleton<DepotCacheMigrationService>();
                 services.AddSingleton<DenuvoFixService>();
@@ -164,6 +165,7 @@ public partial class App : Application
                 services.AddSingleton<SettingsViewModel>();
                 services.AddSingleton<Services.Backups.BackupService>();
                 services.AddSingleton<BackupCleanupViewModel>();
+                services.AddSingleton<ManifestBackupViewModel>();
                 services.AddSingleton<ManageViewModel>();
                 services.AddSingleton<BuildsViewModel>();
                 services.AddTransient<LaunchOptionsViewModel>(); // one per dialog
@@ -1187,6 +1189,11 @@ public partial class App : Application
         // live. LuaInstaller.Installed can fire on a background thread (plugin install), so marshal to UI.
         var luaInstaller = _host.Services.GetRequiredService<LuaInstaller>();
         var appInfo = _host.Services.GetRequiredService<SteamAppInfoCache>();
+
+        // Manifest backup (off by default): after any install, back that game up on a pool thread. It waits for
+        // the install to finish and never touches the installed game, so a failed backup cannot undo it.
+        luaInstaller.Installed += _host.Services.GetRequiredService<Services.Backups.ManifestBackupService>().OnInstalled;
+
         luaInstaller.Installed += appId => Dispatcher.InvokeAsync(async () =>
         {
             _ = manage.LoadAsync();            // re-scan so Manage updates too if it's the visible page
