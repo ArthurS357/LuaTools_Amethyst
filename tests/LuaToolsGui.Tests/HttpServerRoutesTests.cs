@@ -417,6 +417,15 @@ public sealed class HttpBackupRoutesTests : IDisposable
     private readonly HttpClient _http = new();
     private readonly string _baseUrl;
 
+    internal string BaseUrl => _baseUrl;
+
+    internal void SeedAndEnableBackups()
+    {
+        SeedBackups();
+        _settings.ManifestBackupMode = ManifestBackupMode.LocalFolder;
+        _settings.ManifestBackupFolder = _dest;
+    }
+
     public HttpBackupRoutesTests()
     {
         _steamRoot = Path.Combine(_dir, "steam");

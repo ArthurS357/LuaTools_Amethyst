@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.IO;
 using System.Net.Http;
 using System.Net.WebSockets;
@@ -40,6 +41,10 @@ public class CefInjectorService : IHostedService
     private readonly Dictionary<string, ClientWebSocket> _sockets = new();
     private int _cdpId;
 
+    // Per tab id, the calls between pickup and delivery. Same single-task rule as _sockets. Kept across
+    // socket evictions: forgetting an in-flight call would run it a second time.
+    private readonly Dictionary<string, TabBridge> _bridges = new();
+
     // CDP is opened by the `.cef-enable-remote-debugging` junction PluginInstallerService manages, not by
     // the loader DLL anymore — and Steam's own internal logic hardcodes this port. Confirmed this can't be
     // changed (file content has no effect on it), so unlike the old hook-based design (which deliberately
@@ -49,7 +54,9 @@ public class CefInjectorService : IHostedService
     // test can't tell "someone else has it" from "Steam has it and it's working correctly"); there is no
     // fallback port to switch to.
     private const string CefDebugUrl = "http://127.0.0.1:8080/json";
-    private const string BaseUrl = "http://127.0.0.1:6767";
+    /// <summary>HttpServerService's loopback address. Settable only so the suite can pair the bridge with a
+    /// real server on a free port.</summary>
+    internal string BaseUrl { get; init; } = "http://127.0.0.1:6767";
 
     private static readonly JsonSerializerOptions JsonOpts = new() { PropertyNameCaseInsensitive = true };
 
@@ -200,6 +207,8 @@ public class CefInjectorService : IHostedService
                         }
 
                         storeTabs = live;
+                        foreach (var gone in _bridges.Keys.Where(k => !tabs.Any(t => t.Id == k)).ToList())
+                            _bridges.Remove(gone);
                         // Drop persistent sockets for tabs that have gone away.
                         foreach (var stale in _sockets.Keys.Where(k => !seen.Contains(k)).ToList())
                             EvictSocket(stale);
@@ -243,53 +252,68 @@ public class CefInjectorService : IHostedService
         && uri.Scheme == Uri.UriSchemeHttps
         && uri.Host.Equals("store.steampowered.com", StringComparison.OrdinalIgnoreCase);
 
-    private Task ProcessSingleTab(string tabId, string wsUrl, CancellationToken ct) =>
-        DrainPendingAsync(e => EvaluateReturnAsync(tabId, wsUrl, e, ct), CallBackendMethod);
+    private Task ProcessSingleTab(string tabId, string wsUrl, CancellationToken ct)
+    {
+        if (!_bridges.TryGetValue(tabId, out var bridge)) _bridges[tabId] = bridge = new();
+        return DrainPendingAsync(e => EvaluateReturnAsync(tabId, wsUrl, e, ct),
+            (m, a) => CallBackendMethod(m, a, ct), bridge);
+    }
 
-    /// <summary>One drain pass over a tab's <c>_pending</c>. Static, with the page and the backend passed in,
-    /// so the suite can run it against the real polyfill without a CDP socket.</summary>
-    internal static async Task DrainPendingAsync(Func<string, Task<string>> evaluate, Func<string, string, Task<string>> callBackend)
+    /// <summary>One drain pass over a tab's <c>_pending</c>: start the backend call for each new request, then
+    /// hand the page whatever has finished. It never waits for the backend — a slow call (a restore) would
+    /// outlive every other call's polyfill timeout — and every <paramref name="evaluate"/> stays on the
+    /// caller, so CDP frames are never sent concurrently. Static, with the page and the backend passed in, so
+    /// the suite can run it against the real polyfill without a CDP socket.</summary>
+    internal static async Task DrainPendingAsync(Func<string, Task<string>> evaluate, Func<string, string, Task<string>> callBackend, TabBridge bridge)
     {
         try
         {
             var pendingJson = await evaluate(
-                "JSON.stringify(Object.keys(window.Millennium._pending||{}).map(function(k){var r=window.Millennium._pending[k];return{id:k,m:r.method,a:JSON.stringify(r.args)}}))");
+                "JSON.stringify(Object.keys(window.Millennium._pending||{}).map(function(k){var r=window.Millennium._pending[k];return{id:k,m:r.method,a:JSON.stringify(r.args),t:r.ts||0}}))");
 
-            if (string.IsNullOrWhiteSpace(pendingJson) || pendingJson == "[]" || pendingJson == "null")
-                return;
+            if (!string.IsNullOrWhiteSpace(pendingJson))
+                foreach (var req in JsonSerializer.Deserialize<List<PendingRequest>>(pendingJson, JsonOpts) ?? [])
+                    if (bridge.InFlight.Add((req.id ?? "", req.t)))
+                        _ = RunCallAsync(req, callBackend, bridge.Done); // never faults
 
-            var pending = JsonSerializer.Deserialize<List<PendingRequest>>(pendingJson, JsonOpts);
-            if (pending is null or { Count: 0 }) return;
+            var done = bridge.Done.ToArray();
+            if (done.Length == 0) return;
 
-            var responses = new List<object>();
-            foreach (var req in pending)
+            // Paired by id, not by position, and by ts: a reloaded page counts ids from 1 again, and an answer
+            // to the previous page must not land on the new call. An answer nobody is waiting for (timed out,
+            // page gone) is dropped. Returns (and clears) the polyfill's timeout record.
+            var respArray = JsonSerializer.Serialize(done);
+            var timedOut = await evaluate(
+                "(function(r){var M=window.Millennium;for(var i=0;i<r.length;i++){var id=r[i].id,p=M._pending[id];if(p&&(p.ts||0)===r[i].t){M._readyResponses[id]=r[i];delete M._pending[id];}}return JSON.stringify((M._timedOut||[]).splice(0));})(" + respArray + ");");
+
+            // Throws when the page did not run the script (socket error, context gone): the answers then stay
+            // queued for the next tick, and stay in flight so the backend is not called again.
+            var expired = JsonSerializer.Deserialize<List<PendingRequest>>(timedOut, JsonOpts) ?? [];
+            foreach (var r in done)
             {
-                try
-                {
-                    var result = await callBackend(req.m ?? "", req.a ?? "{}");
-                    responses.Add(new { id = req.id, v = JsonSerializer.Deserialize<object>(result) ?? result });
-                }
-                catch (Exception ex)
-                {
-                    responses.Add(new { id = req.id, e = ex.Message });
-                }
+                bridge.Done.TryDequeue(out _); // only this method dequeues, so these are the ones just sent
+                bridge.InFlight.Remove((r.id, r.t));
             }
 
-            // Paired by id, not by position: a request the polyfill timed out while this batch was being
-            // served is gone from _pending, and positional pairing shifted every later answer onto the wrong
-            // id. An id no longer pending is dropped. Returns (and clears) the polyfill's timeout record.
-            var respArray = JsonSerializer.Serialize(responses);
-            var timedOut = await evaluate(
-                "(function(r){var M=window.Millennium;for(var i=0;i<r.length;i++){var id=r[i].id;if(id in M._pending){M._readyResponses[id]=r[i];delete M._pending[id];}}return JSON.stringify((M._timedOut||[]).splice(0));})(" + respArray + ");");
-
             // The page was told {success:true} for these; whatever the backend did never reached luatools.js.
-            foreach (var t in JsonSerializer.Deserialize<List<PendingRequest>>(timedOut, JsonOpts) ?? [])
-                AppLog.Log($"CEF bridge timeout: {Esc(t.id)} ({Esc(t.m)}) resolved as success by the page polyfill after ~5 s");
+            foreach (var t in expired)
+                AppLog.Log($"CEF bridge timeout: {Esc(t.id)} ({Esc(t.m)}) resolved as success by the page polyfill timeout");
         }
-        catch (Exception ex) { AppLog.Log($"CEF bridge: could not read the timed-out request list: {ex.GetType().Name}: {ex.Message}"); }
+        catch (Exception ex) { AppLog.Log($"CEF bridge: drain pass failed: {ex.GetType().Name}: {ex.Message}"); }
     }
 
-    internal async Task<string> CallBackendMethod(string method, string argsRaw)
+    private static async Task RunCallAsync(PendingRequest req, Func<string, string, Task<string>> callBackend, ConcurrentQueue<BridgeResponse> done)
+    {
+        var id = req.id ?? "";
+        try
+        {
+            var result = await callBackend(req.m ?? "", req.a ?? "{}");
+            done.Enqueue(new(id, req.t, v: JsonSerializer.Deserialize<object>(result) ?? result));
+        }
+        catch (Exception ex) { done.Enqueue(new(id, req.t, e: ex.Message)); }
+    }
+
+    internal async Task<string> CallBackendMethod(string method, string argsRaw, CancellationToken ct = default)
     {
         var methodMap = new Dictionary<string, (string HttpMethod, string Path)>
         {
@@ -318,6 +342,10 @@ public class CefInjectorService : IHostedService
             ["DismissLoadedApps"] = ("POST", "/loaded-apps"),
             ["GetApiList"] = ("GET", "/api-list"),
             ["GetIconDataUrl"] = ("GET", "/icon"),
+            // Local manifest backup: discovery + explicit restore.
+            ["GetBackupIndex"] = ("GET", "/backup/index"),
+            ["GetBackupStatus"] = ("GET", "/backup/status?appid={appid}"),
+            ["InstallFromBackup"] = ("POST", "/backup/install"),
             // NOTE: "GetGamesDatabase" used to be mapped to "/games-database", a route HttpServerService
             // has never served. A mapped-but-unrouted name is worse than an unmapped one: it returns a 404
             // error body the frontend then has to parse, instead of the documented silent no-op. Removed
@@ -358,8 +386,8 @@ public class CefInjectorService : IHostedService
         if (mapping.HttpMethod != "GET")
             request.Content = new StringContent(argsRaw ?? "{}", Encoding.UTF8, "application/json");
 
-        using var resp = await _http.SendAsync(request);
-        return await resp.Content.ReadAsStringAsync();
+        using var resp = await _http.SendAsync(request, ct);
+        return await resp.Content.ReadAsStringAsync(ct);
     }
 
     /// <summary>Names and ids come from the page: one log line each, like HttpServerService.HandleLog.</summary>
@@ -508,7 +536,7 @@ function ltCall(p,m,a){
   var i='_ltr_'+(++reqId);
   pending[i]={method:m,args:a,ts:Date.now()};
   return new Promise(function(rv,rj){
-    var mx=100;
+    var mx=m==='InstallFromBackup'?600:100; // 50 ms polls: 30 s for the restore, 5 s for the rest
     function ck(){
       var r=ready[i];
       if(r!==undefined){delete ready[i];if(r.e){rj(new Error(r.e))}else{rv(r.v)}return}
@@ -549,4 +577,16 @@ internal class PendingRequest
     public string? id { get; set; }
     public string? m { get; set; }
     public string? a { get; set; }
+    public double t { get; set; } // the polyfill's ts for the call
+}
+
+/// <summary>What the page's <c>_readyResponses</c> receives; <c>t</c> picks the call it answers.</summary>
+internal sealed record BridgeResponse(string id, double t, object? v = null, string? e = null);
+
+/// <summary>One tab's calls between pickup and delivery. <see cref="InFlight"/> belongs to the drain;
+/// backend tasks only enqueue into <see cref="Done"/>.</summary>
+internal sealed class TabBridge
+{
+    public HashSet<(string Id, double Ts)> InFlight { get; } = new();
+    public ConcurrentQueue<BridgeResponse> Done { get; } = new();
 }
