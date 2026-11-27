@@ -913,6 +913,11 @@ Tämä poistaa vain aktiiviset .lua-tiedostot kansiosta Steam\config\stplug-in. 
   <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Varmuuskopioi nykyiset pelit</value></data>
   <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Varmuuskopioidaan {0}/{1}…</value></data>
   <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Valmis: {0} uutta, {1} päivitetty, {2} ennallaan, {3} epäonnistui. {4} ilman paikallista manifestia.</value></data>
+  <data name="Settings_ManifestBackup_Verify" xml:space="preserve"><value>Tarkista eheys</value></data>
+  <data name="Settings_ManifestBackup_VerifyHint" xml:space="preserve"><value>Lukee jokaisen varmuuskopio-zipin ja tarkistaa sen kuten palautus tekisi. Ei muuta mitään, mutta lataa vain pilvessä olevat tiedostot.</value></data>
+  <data name="Settings_ManifestBackup_Verifying" xml:space="preserve"><value>Tarkistetaan {0}/{1}…</value></data>
+  <data name="Settings_ManifestBackup_VerifyResult" xml:space="preserve"><value>Tarkistettu: {0} ehjää, {1} vain lua, {2} vioittunutta, {3} lukukelvotonta.</value></data>
+  <data name="Settings_ManifestBackup_VerifyAttention" xml:space="preserve"><value>Vaatii huomiota: {0}.</value></data>
   <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Manifestien varmuuskopiointi epäonnistui</value></data>
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} asennettiin, mutta sen varmuuskopiointi epäonnistui: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Asennettu varmuuskopiosta</value></data>

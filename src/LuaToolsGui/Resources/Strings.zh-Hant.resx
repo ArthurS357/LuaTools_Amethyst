@@ -913,6 +913,11 @@ SHA-256 {3}
   <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>備份現有遊戲</value></data>
   <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>正在備份 {0}/{1}…</value></data>
   <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>完成：新增 {0}，更新 {1}，未變更 {2}，失敗 {3}。{4} 個沒有本機資訊清單。</value></data>
+  <data name="Settings_ManifestBackup_Verify" xml:space="preserve"><value>驗證完整性</value></data>
+  <data name="Settings_ManifestBackup_VerifyHint" xml:space="preserve"><value>讀取備份中的每個 zip，並以還原時的方式檢查。不會做任何變更，但會下載僅存在於雲端的檔案。</value></data>
+  <data name="Settings_ManifestBackup_Verifying" xml:space="preserve"><value>正在驗證 {0}/{1}…</value></data>
+  <data name="Settings_ManifestBackup_VerifyResult" xml:space="preserve"><value>已檢查：完好 {0}，僅 lua {1}，損毀 {2}，無法讀取 {3}。</value></data>
+  <data name="Settings_ManifestBackup_VerifyAttention" xml:space="preserve"><value>需要處理：{0}。</value></data>
   <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>資訊清單備份失敗</value></data>
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} 已安裝，但備份失敗：{1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>已從備份安裝</value></data>

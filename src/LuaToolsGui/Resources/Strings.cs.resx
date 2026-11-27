@@ -913,6 +913,11 @@ Tím se smažou pouze aktivní soubory .lua ze Steam\config\stplug-in. {1} z tě
   <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Zálohovat stávající hry</value></data>
   <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Zálohování {0} z {1}…</value></data>
   <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Hotovo: nové {0}, aktualizované {1}, beze změny {2}, neúspěšné {3}. Bez místního manifestu: {4}.</value></data>
+  <data name="Settings_ManifestBackup_Verify" xml:space="preserve"><value>Ověřit integritu</value></data>
+  <data name="Settings_ManifestBackup_VerifyHint" xml:space="preserve"><value>Přečte každý zip zálohy a zkontroluje ho stejně jako obnovení. Nic nemění, ale stáhne soubory uložené jen v cloudu.</value></data>
+  <data name="Settings_ManifestBackup_Verifying" xml:space="preserve"><value>Ověřování {0} z {1}…</value></data>
+  <data name="Settings_ManifestBackup_VerifyResult" xml:space="preserve"><value>Ověřeno: v pořádku {0}, jen lua {1}, poškozené {2}, nečitelné {3}.</value></data>
+  <data name="Settings_ManifestBackup_VerifyAttention" xml:space="preserve"><value>Vyžaduje pozornost: {0}.</value></data>
   <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Záloha manifestů selhala</value></data>
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} byla nainstalována, ale její záloha selhala: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Nainstalováno ze zálohy</value></data>

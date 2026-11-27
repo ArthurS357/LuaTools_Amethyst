@@ -913,6 +913,11 @@ Es werden nur die aktiven .lua-Dateien aus Steam\config\stplug-in gelöscht. {1}
   <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Vorhandene Spiele sichern</value></data>
   <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Sichere {0} von {1}…</value></data>
   <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Fertig: {0} neu, {1} aktualisiert, {2} unverändert, {3} fehlgeschlagen. {4} ohne lokales Manifest.</value></data>
+  <data name="Settings_ManifestBackup_Verify" xml:space="preserve"><value>Integrität prüfen</value></data>
+  <data name="Settings_ManifestBackup_VerifyHint" xml:space="preserve"><value>Liest jedes Sicherungs-Zip und prüft es wie eine Wiederherstellung. Ändert nichts, lädt aber nur in der Cloud liegende Dateien herunter.</value></data>
+  <data name="Settings_ManifestBackup_Verifying" xml:space="preserve"><value>Prüfe {0} von {1}…</value></data>
+  <data name="Settings_ManifestBackup_VerifyResult" xml:space="preserve"><value>Geprüft: {0} intakt, {1} nur Lua, {2} beschädigt, {3} nicht lesbar.</value></data>
+  <data name="Settings_ManifestBackup_VerifyAttention" xml:space="preserve"><value>Bitte prüfen: {0}.</value></data>
   <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Manifest-Sicherung fehlgeschlagen</value></data>
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} wurde installiert, aber die Sicherung ist fehlgeschlagen: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Aus der Sicherung installiert</value></data>

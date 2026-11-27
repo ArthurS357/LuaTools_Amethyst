@@ -25,6 +25,7 @@ public sealed partial class ManifestBackupViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsOn))]
     [NotifyCanExecuteChangedFor(nameof(BackupAllCommand))]
+    [NotifyCanExecuteChangedFor(nameof(VerifyCommand))]
     private ManifestBackupModeOption _selectedMode;
 
     /// <summary>Drives the folder row and the batch button: shown only while the feature is on.</summary>
@@ -32,6 +33,7 @@ public sealed partial class ManifestBackupViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(BackupAllCommand))]
+    [NotifyCanExecuteChangedFor(nameof(VerifyCommand))]
     private string _folder;
 
     /// <summary>Why the picked folder was refused, or null.</summary>
@@ -43,6 +45,8 @@ public sealed partial class ManifestBackupViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsNotRunning))]
     [NotifyCanExecuteChangedFor(nameof(BrowseCommand))]
+    [NotifyCanExecuteChangedFor(nameof(BackupAllCommand))]
+    [NotifyCanExecuteChangedFor(nameof(VerifyCommand))]
     private bool _isRunning;
 
     public bool IsNotRunning => !IsRunning;
@@ -89,24 +93,40 @@ public sealed partial class ManifestBackupViewModel : ObservableObject
         return true;
     }
 
-    private bool CanBackupAll() => IsOn && _backups.ActiveFolder is not null;
+    // Path-only (IsConfigured, no disk access): CanExecute runs on the UI thread, and an offline drive must not
+    // stall it. The run itself re-checks the folder on disk. Batch and verify exclude each other via IsRunning.
+    private bool CanRun() => IsOn && !IsRunning && _backups.IsConfigured;
 
-    [RelayCommand(CanExecute = nameof(CanBackupAll))]
-    private async Task BackupAllAsync(CancellationToken ct)
+    [RelayCommand(CanExecute = nameof(CanRun))]
+    private Task BackupAllAsync(CancellationToken ct) => RunAsync("batch", async progress =>
+    {
+        var summary = await _backups.BackupAllAsync(progress, ct);
+        return summary is null ? Resources.Strings.Err_SteamNotFound : Describe(summary);
+    }, Resources.Strings.Settings_ManifestBackup_Running);
+
+    /// <summary>Settings → "Verify integrity": the read-only vault check, in the background, cancellable.</summary>
+    [RelayCommand(CanExecute = nameof(CanRun))]
+    private Task VerifyAsync(CancellationToken ct) => RunAsync("verify", async progress =>
+    {
+        var report = await _backups.VerifyVaultAsync(progress, ct);
+        return report is null ? Resources.Strings.Settings_ManifestBackup_FolderRefused : Describe(report);
+    }, Resources.Strings.Settings_ManifestBackup_Verifying);
+
+    /// <summary>Shared run shell: IsRunning, progress text that a late callback cannot overwrite, and the outcome.</summary>
+    private async Task RunAsync(string what, Func<IProgress<(int Done, int Total)>, Task<string>> run, string progressFormat)
     {
         IsRunning = true;
         bool active = true;
         var progress = new Progress<(int Done, int Total)>(p =>
         {
             if (!active) return;
-            Status = string.Format(
-                CultureInfo.CurrentCulture, Resources.Strings.Settings_ManifestBackup_Running, p.Done, p.Total);
+            Status = string.Format(CultureInfo.CurrentCulture, progressFormat, p.Done, p.Total);
         });
         try
         {
-            var summary = await _backups.BackupAllAsync(progress, ct);
+            string result = await run(progress);
             active = false;
-            Status = summary is null ? Resources.Strings.Err_SteamNotFound : Describe(summary);
+            Status = result;
         }
         catch (OperationCanceledException)
         {
@@ -116,7 +136,7 @@ public sealed partial class ManifestBackupViewModel : ObservableObject
         catch (Exception ex) when (ex is ArgumentException or System.IO.IOException or UnauthorizedAccessException)
         {
             active = false;
-            AppLog.Log($"Settings: manifest backup batch failed: {ex.GetType().Name}: {ex.Message}");
+            AppLog.Log($"Settings: manifest backup {what} failed: {ex.GetType().Name}: {ex.Message}");
             Status = ex.Message;
         }
         finally
@@ -124,6 +144,17 @@ public sealed partial class ManifestBackupViewModel : ObservableObject
             active = false;
             IsRunning = false;
         }
+    }
+
+    internal static string Describe(ManifestVaultReport r)
+    {
+        string text = string.Format(
+            CultureInfo.CurrentCulture, Resources.Strings.Settings_ManifestBackup_VerifyResult,
+            r.Count(ManifestVaultHealth.Healthy), r.Count(ManifestVaultHealth.LuaOnly),
+            r.Count(ManifestVaultHealth.Corrupt), r.Count(ManifestVaultHealth.Unreadable));
+        return r.NeedsAttention.Count == 0 ? text : text + " " + string.Format(
+            CultureInfo.CurrentCulture, Resources.Strings.Settings_ManifestBackup_VerifyAttention,
+            string.Join(", ", r.NeedsAttention.Select(static id => id.ToString(CultureInfo.InvariantCulture))));
     }
 
     internal static string Describe(ManifestBackupSummary s) => string.Format(

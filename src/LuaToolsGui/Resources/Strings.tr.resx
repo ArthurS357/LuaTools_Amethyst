@@ -913,6 +913,11 @@ Bu işlem yalnızca Steam\config\stplug-in içindeki etkin .lua dosyalarını si
   <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Mevcut oyunları yedekle</value></data>
   <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Yedekleniyor: {0} / {1}…</value></data>
   <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Bitti: {0} yeni, {1} güncellendi, {2} değişmedi, {3} başarısız. {4} oyunda yerel manifest yok.</value></data>
+  <data name="Settings_ManifestBackup_Verify" xml:space="preserve"><value>Bütünlüğü doğrula</value></data>
+  <data name="Settings_ManifestBackup_VerifyHint" xml:space="preserve"><value>Yedekteki her zip'i okur ve bir geri yüklemenin yapacağı gibi denetler. Hiçbir şeyi değiştirmez, ancak yalnızca bulutta olan dosyaları indirir.</value></data>
+  <data name="Settings_ManifestBackup_Verifying" xml:space="preserve"><value>Doğrulanıyor: {0} / {1}…</value></data>
+  <data name="Settings_ManifestBackup_VerifyResult" xml:space="preserve"><value>Denetlendi: {0} sağlam, {1} yalnızca lua, {2} bozuk, {3} okunamıyor.</value></data>
+  <data name="Settings_ManifestBackup_VerifyAttention" xml:space="preserve"><value>İlgilenilmesi gerekenler: {0}.</value></data>
   <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Manifest yedeği başarısız</value></data>
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} kuruldu ancak yedeği başarısız oldu: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Yedekten kuruldu</value></data>

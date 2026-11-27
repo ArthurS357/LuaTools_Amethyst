@@ -35,6 +35,7 @@ public static class Changelog
                 "Settings > Manifest backup (off by default) keeps one flat zip and metadata.json per game in a folder you choose, including cloud-synced folders, without re-hashing unchanged zips or modifying Steam.",
                 "When a download source fails (never on cancel or pause), a verified backup copy is staged in %TEMP% and checked fail-closed by SHA-256, entry allow-list and symlink refusal before install; metadata.json keeps plain SHA-256 without HMAC (M5) for cross-PC portability.",
                 "Adds a root index.json catalog with manifest completeness flags (hasManifests/manifestCount) and authenticated loopback endpoints (/backup/index, /backup/status, /backup/install) for the Add via Backup flow.",
+                "Only whole manifests and luas the installer would accept enter or leave the backup, a held zip is never rewritten in place, and Settings > Manifest backup > Verify integrity checks every backup read-only.",
             ]),
 
         new("1.8.5", "2026-11-24",

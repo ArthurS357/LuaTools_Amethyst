@@ -913,6 +913,11 @@ SHA-256 {3}
   <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Копиране на съществуващите игри</value></data>
   <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Копиране на {0} от {1}…</value></data>
   <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Готово: нови {0}, обновени {1}, непроменени {2}, неуспешни {3}. Без локален манифест: {4}.</value></data>
+  <data name="Settings_ManifestBackup_Verify" xml:space="preserve"><value>Проверка на целостта</value></data>
+  <data name="Settings_ManifestBackup_VerifyHint" xml:space="preserve"><value>Прочита всеки zip от копието и го проверява както би направило възстановяване. Не променя нищо, но изтегля файловете, които са само в облака.</value></data>
+  <data name="Settings_ManifestBackup_Verifying" xml:space="preserve"><value>Проверка {0} от {1}…</value></data>
+  <data name="Settings_ManifestBackup_VerifyResult" xml:space="preserve"><value>Проверени: здрави {0}, само lua {1}, повредени {2}, нечетими {3}.</value></data>
+  <data name="Settings_ManifestBackup_VerifyAttention" xml:space="preserve"><value>Изискват внимание: {0}.</value></data>
   <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Резервното копие на манифестите е неуспешно</value></data>
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} е инсталирана, но резервното ѝ копие е неуспешно: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Инсталирано от резервно копие</value></data>

@@ -913,6 +913,11 @@ Aceasta șterge doar fișierele .lua active din Steam\config\stplug-in. {1} dint
   <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Fă copii ale jocurilor existente</value></data>
   <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Se copiază {0} din {1}…</value></data>
   <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Gata: {0} noi, {1} actualizate, {2} neschimbate, {3} eșuate. {4} fără manifest local.</value></data>
+  <data name="Settings_ManifestBackup_Verify" xml:space="preserve"><value>Verifică integritatea</value></data>
+  <data name="Settings_ManifestBackup_VerifyHint" xml:space="preserve"><value>Citește fiecare zip al copiei și îl verifică așa cum ar face o restaurare. Nu modifică nimic, dar descarcă fișierele aflate doar în cloud.</value></data>
+  <data name="Settings_ManifestBackup_Verifying" xml:space="preserve"><value>Se verifică {0} din {1}…</value></data>
+  <data name="Settings_ManifestBackup_VerifyResult" xml:space="preserve"><value>Verificate: {0} intacte, {1} doar lua, {2} corupte, {3} ilizibile.</value></data>
+  <data name="Settings_ManifestBackup_VerifyAttention" xml:space="preserve"><value>Necesită atenție: {0}.</value></data>
   <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Copia de rezervă a manifestelor a eșuat</value></data>
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} a fost instalat, dar copia sa de rezervă a eșuat: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Instalat din copia de rezervă</value></data>

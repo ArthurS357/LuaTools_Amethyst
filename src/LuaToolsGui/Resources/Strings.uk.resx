@@ -913,6 +913,11 @@ SHA-256 {3}
   <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Створити копії наявних ігор</value></data>
   <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Копіювання {0} з {1}…</value></data>
   <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Готово: нових — {0}, оновлено — {1}, без змін — {2}, з помилкою — {3}. Без локального маніфесту — {4}.</value></data>
+  <data name="Settings_ManifestBackup_Verify" xml:space="preserve"><value>Перевірити цілісність</value></data>
+  <data name="Settings_ManifestBackup_VerifyHint" xml:space="preserve"><value>Читає кожен zip копії й перевіряє його так само, як відновлення. Нічого не змінює, але завантажує файли, що є лише в хмарі.</value></data>
+  <data name="Settings_ManifestBackup_Verifying" xml:space="preserve"><value>Перевірка {0} з {1}…</value></data>
+  <data name="Settings_ManifestBackup_VerifyResult" xml:space="preserve"><value>Перевірено: цілих — {0}, лише lua — {1}, пошкоджених — {2}, нечитабельних — {3}.</value></data>
+  <data name="Settings_ManifestBackup_VerifyAttention" xml:space="preserve"><value>Потребують уваги: {0}.</value></data>
   <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Не вдалося створити резервну копію маніфестів</value></data>
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} встановлено, але створити резервну копію не вдалося: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Встановлено з резервної копії</value></data>

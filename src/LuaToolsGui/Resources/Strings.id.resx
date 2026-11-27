@@ -913,6 +913,11 @@ Ini hanya menghapus file .lua aktif dari Steam\config\stplug-in. {1} dari game t
   <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Cadangkan game yang ada</value></data>
   <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Mencadangkan {0} dari {1}…</value></data>
   <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Selesai: {0} baru, {1} diperbarui, {2} tidak berubah, {3} gagal. {4} tanpa manifest lokal.</value></data>
+  <data name="Settings_ManifestBackup_Verify" xml:space="preserve"><value>Periksa integritas</value></data>
+  <data name="Settings_ManifestBackup_VerifyHint" xml:space="preserve"><value>Membaca setiap zip cadangan dan memeriksanya seperti saat pemulihan. Tidak mengubah apa pun, tetapi mengunduh file yang hanya ada di cloud.</value></data>
+  <data name="Settings_ManifestBackup_Verifying" xml:space="preserve"><value>Memeriksa {0} dari {1}…</value></data>
+  <data name="Settings_ManifestBackup_VerifyResult" xml:space="preserve"><value>Diperiksa: {0} utuh, {1} hanya lua, {2} rusak, {3} tidak terbaca.</value></data>
+  <data name="Settings_ManifestBackup_VerifyAttention" xml:space="preserve"><value>Perlu perhatian: {0}.</value></data>
   <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Cadangan manifest gagal</value></data>
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} sudah terpasang, tetapi pencadangannya gagal: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Dipasang dari cadangan</value></data>

@@ -911,6 +911,11 @@ public static class Strings
     public static string Settings_ManifestBackup_RunAll => Get(nameof(Settings_ManifestBackup_RunAll));
     public static string Settings_ManifestBackup_Running => Get(nameof(Settings_ManifestBackup_Running));
     public static string Settings_ManifestBackup_Result => Get(nameof(Settings_ManifestBackup_Result));
+    public static string Settings_ManifestBackup_Verify => Get(nameof(Settings_ManifestBackup_Verify));
+    public static string Settings_ManifestBackup_VerifyHint => Get(nameof(Settings_ManifestBackup_VerifyHint));
+    public static string Settings_ManifestBackup_Verifying => Get(nameof(Settings_ManifestBackup_Verifying));
+    public static string Settings_ManifestBackup_VerifyResult => Get(nameof(Settings_ManifestBackup_VerifyResult));
+    public static string Settings_ManifestBackup_VerifyAttention => Get(nameof(Settings_ManifestBackup_VerifyAttention));
     public static string ManifestBackup_Toast_Failed_Title => Get(nameof(ManifestBackup_Toast_Failed_Title));
     public static string ManifestBackup_Toast_Failed => Get(nameof(ManifestBackup_Toast_Failed));
     public static string ManifestBackup_Toast_Restored_Title => Get(nameof(ManifestBackup_Toast_Restored_Title));

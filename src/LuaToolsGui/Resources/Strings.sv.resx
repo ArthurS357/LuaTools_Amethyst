@@ -913,6 +913,11 @@ Detta tar endast bort de aktiva .lua-filerna från Steam\config\stplug-in. {1} a
   <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Säkerhetskopiera befintliga spel</value></data>
   <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Säkerhetskopierar {0} av {1}…</value></data>
   <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Klart: {0} nya, {1} uppdaterade, {2} oförändrade, {3} misslyckade. {4} utan lokalt manifest.</value></data>
+  <data name="Settings_ManifestBackup_Verify" xml:space="preserve"><value>Kontrollera integritet</value></data>
+  <data name="Settings_ManifestBackup_VerifyHint" xml:space="preserve"><value>Läser varje säkerhetskopierad zip och kontrollerar den som en återställning skulle. Ändrar inget, men hämtar filer som bara finns i molnet.</value></data>
+  <data name="Settings_ManifestBackup_Verifying" xml:space="preserve"><value>Kontrollerar {0} av {1}…</value></data>
+  <data name="Settings_ManifestBackup_VerifyResult" xml:space="preserve"><value>Kontrollerat: {0} hela, {1} bara lua, {2} skadade, {3} oläsbara.</value></data>
+  <data name="Settings_ManifestBackup_VerifyAttention" xml:space="preserve"><value>Behöver åtgärdas: {0}.</value></data>
   <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Manifest-säkerhetskopian misslyckades</value></data>
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} installerades, men säkerhetskopian misslyckades: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Installerat från säkerhetskopia</value></data>

@@ -57,12 +57,20 @@
                         Text="{Binding FolderError}"
                         TextWrapping="Wrap"
                         Visibility="{Binding FolderError, Converter={StaticResource NullToCollapsed}}" />
-                    <!-- Disabled until a valid folder is set (CanExecute), and while a run is in progress. -->
+                    <!-- Disabled until a valid folder is set (CanExecute), and while either run is in progress. -->
                     <StackPanel Margin="{DynamicResource SpaceTop12}" Orientation="Horizontal">
                         <ui:Button
                             Command="{Binding BackupAllCommand}"
                             Content="{x:Static res:Strings.Settings_ManifestBackup_RunAll}"
                             Icon="{ui:SymbolIcon Archive24}" />
+                        <!-- Read-only check of every zip in the vault (hydrates cloud placeholders, so only on demand). -->
+                        <ui:Button
+                            Margin="{DynamicResource SpaceLeft8}"
+                            AutomationProperties.HelpText="{x:Static res:Strings.Settings_ManifestBackup_VerifyHint}"
+                            Command="{Binding VerifyCommand}"
+                            Content="{x:Static res:Strings.Settings_ManifestBackup_Verify}"
+                            Icon="{ui:SymbolIcon CheckmarkCircle24}"
+                            ToolTip="{x:Static res:Strings.Settings_ManifestBackup_VerifyHint}" />
                         <ui:ProgressRing
                             Width="16"
                             Height="16"

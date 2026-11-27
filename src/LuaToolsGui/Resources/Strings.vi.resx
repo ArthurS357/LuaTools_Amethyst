@@ -913,6 +913,11 @@ Thao tác này chỉ xóa các tệp .lua đang hoạt động trong Steam\confi
   <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Sao lưu các game hiện có</value></data>
   <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Đang sao lưu {0}/{1}…</value></data>
   <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Xong: {0} mới, {1} đã cập nhật, {2} không đổi, {3} lỗi. {4} không có manifest cục bộ.</value></data>
+  <data name="Settings_ManifestBackup_Verify" xml:space="preserve"><value>Kiểm tra toàn vẹn</value></data>
+  <data name="Settings_ManifestBackup_VerifyHint" xml:space="preserve"><value>Đọc từng tệp zip sao lưu và kiểm tra như khi khôi phục. Không thay đổi gì, nhưng sẽ tải về các tệp chỉ có trên đám mây.</value></data>
+  <data name="Settings_ManifestBackup_Verifying" xml:space="preserve"><value>Đang kiểm tra {0}/{1}…</value></data>
+  <data name="Settings_ManifestBackup_VerifyResult" xml:space="preserve"><value>Đã kiểm tra: {0} nguyên vẹn, {1} chỉ có lua, {2} hỏng, {3} không đọc được.</value></data>
+  <data name="Settings_ManifestBackup_VerifyAttention" xml:space="preserve"><value>Cần xem lại: {0}.</value></data>
   <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Sao lưu manifest thất bại</value></data>
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} đã được cài đặt nhưng sao lưu thất bại: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Đã cài từ bản sao lưu</value></data>

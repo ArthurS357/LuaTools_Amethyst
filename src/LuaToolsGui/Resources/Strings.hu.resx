@@ -913,6 +913,11 @@ Ez csak az aktív .lua fájlokat törli a Steam\config\stplug-in mappából. Eze
   <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Meglévő játékok mentése</value></data>
   <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Mentés: {0} / {1}…</value></data>
   <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Kész: {0} új, {1} frissítve, {2} változatlan, {3} sikertelen. {4} helyi manifest nélkül.</value></data>
+  <data name="Settings_ManifestBackup_Verify" xml:space="preserve"><value>Épség ellenőrzése</value></data>
+  <data name="Settings_ManifestBackup_VerifyHint" xml:space="preserve"><value>Beolvassa a mentés minden zipjét, és úgy ellenőrzi, ahogy a visszaállítás tenné. Semmit sem módosít, de letölti a csak felhőben lévő fájlokat.</value></data>
+  <data name="Settings_ManifestBackup_Verifying" xml:space="preserve"><value>Ellenőrzés: {0} / {1}…</value></data>
+  <data name="Settings_ManifestBackup_VerifyResult" xml:space="preserve"><value>Ellenőrizve: {0} ép, {1} csak lua, {2} sérült, {3} olvashatatlan.</value></data>
+  <data name="Settings_ManifestBackup_VerifyAttention" xml:space="preserve"><value>Figyelmet igényel: {0}.</value></data>
   <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>A manifestmentés sikertelen</value></data>
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>A(z) {0} telepítve lett, de a mentése sikertelen: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Telepítve a mentésből</value></data>

@@ -497,7 +497,7 @@ public sealed class HttpBackupRoutesTests : IDisposable
 
         File.WriteAllText(Path.Combine(plug, $"{CompleteAppId}.lua"),
             $"addappid({CompleteAppId})\naddappid(386941, 1, \"abcd\")\nsetManifestid(386941, \"111\")\n");
-        File.WriteAllText(Path.Combine(depot, "386941_111.manifest"), "MANIFEST_BYTES");
+        File.WriteAllBytes(Path.Combine(depot, "386941_111.manifest"), TestManifests.Build(386941, 111));
         File.WriteAllText(Path.Combine(plug, $"{LuaOnlyAppId}.lua"), $"addappid({LuaOnlyAppId})\n");
 
         ManifestBackupStore.BackupAll(plug, depot, _dest, id => id == CompleteAppId ? "Complete Game" : "Lua Only",

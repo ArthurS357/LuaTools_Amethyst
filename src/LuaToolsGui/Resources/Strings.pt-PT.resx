@@ -913,6 +913,11 @@ Isto elimina apenas os ficheiros .lua ativos em Steam\config\stplug-in. {1} dest
   <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Copiar os jogos existentes</value></data>
   <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>A copiar {0} de {1}…</value></data>
   <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Concluído: {0} novos, {1} atualizados, {2} inalterados, {3} com falha. {4} sem manifest local.</value></data>
+  <data name="Settings_ManifestBackup_Verify" xml:space="preserve"><value>Verificar integridade</value></data>
+  <data name="Settings_ManifestBackup_VerifyHint" xml:space="preserve"><value>Lê cada zip da cópia e verifica-o como um restauro faria. Não altera nada, mas transfere ficheiros que estão só na nuvem.</value></data>
+  <data name="Settings_ManifestBackup_Verifying" xml:space="preserve"><value>A verificar {0} de {1}…</value></data>
+  <data name="Settings_ManifestBackup_VerifyResult" xml:space="preserve"><value>Verificado: {0} íntegros, {1} só .lua, {2} corrompidos, {3} ilegíveis.</value></data>
+  <data name="Settings_ManifestBackup_VerifyAttention" xml:space="preserve"><value>Precisam de atenção: {0}.</value></data>
   <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>A cópia de segurança de manifests falhou</value></data>
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} foi instalado, mas a cópia de segurança falhou: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Instalado a partir da cópia de segurança</value></data>

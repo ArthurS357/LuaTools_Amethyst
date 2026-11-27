@@ -21,7 +21,10 @@ internal static class AtomicFile
 {
     /// <param name="path">The destination.</param>
     /// <param name="fill">Writes the full content to the path it is given.</param>
-    public static void Write(string path, Action<string> fill)
+    /// <param name="inPlaceFallback">False where the destination is the only copy of something (the manifest
+    /// backup vault): a refused rename then throws and the old file stays whole, instead of being truncated
+    /// and rewritten while a cloud client or antivirus holds it.</param>
+    public static void Write(string path, Action<string> fill, bool inPlaceFallback = true)
     {
         string tmp = $"{path}.{Guid.NewGuid():N}.tmp";
         try
@@ -32,7 +35,7 @@ internal static class AtomicFile
                 File.Move(tmp, path, overwrite: true);
                 return;
             }
-            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            catch (Exception ex) when (inPlaceFallback && ex is IOException or UnauthorizedAccessException)
             {
                 // Destination held open: fall through to the in-place write.
             }
@@ -46,8 +49,8 @@ internal static class AtomicFile
         }
     }
 
-    public static void WriteAllText(string path, string contents) =>
-        Write(path, p => File.WriteAllText(p, contents));
+    public static void WriteAllText(string path, string contents, bool inPlaceFallback = true) =>
+        Write(path, p => File.WriteAllText(p, contents), inPlaceFallback);
 
     public static void WriteAllBytes(string path, byte[] bytes) =>
         Write(path, p => File.WriteAllBytes(p, bytes));

@@ -913,6 +913,11 @@ Spowoduje to usunięcie wyłącznie aktywnych plików .lua z Steam\config\stplug
   <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Utwórz kopię istniejących gier</value></data>
   <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Kopiowanie {0} z {1}…</value></data>
   <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Gotowe: nowe {0}, zaktualizowane {1}, bez zmian {2}, nieudane {3}. Bez lokalnego manifestu: {4}.</value></data>
+  <data name="Settings_ManifestBackup_Verify" xml:space="preserve"><value>Sprawdź integralność</value></data>
+  <data name="Settings_ManifestBackup_VerifyHint" xml:space="preserve"><value>Odczytuje każdy zip kopii i sprawdza go tak jak przywracanie. Niczego nie zmienia, ale pobiera pliki dostępne tylko w chmurze.</value></data>
+  <data name="Settings_ManifestBackup_Verifying" xml:space="preserve"><value>Sprawdzanie {0} z {1}…</value></data>
+  <data name="Settings_ManifestBackup_VerifyResult" xml:space="preserve"><value>Sprawdzono: poprawne {0}, tylko lua {1}, uszkodzone {2}, nieczytelne {3}.</value></data>
+  <data name="Settings_ManifestBackup_VerifyAttention" xml:space="preserve"><value>Wymagają uwagi: {0}.</value></data>
   <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Kopia manifestów nie powiodła się</value></data>
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>Gra {0} została zainstalowana, ale jej kopia nie powiodła się: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Zainstalowano z kopii</value></data>

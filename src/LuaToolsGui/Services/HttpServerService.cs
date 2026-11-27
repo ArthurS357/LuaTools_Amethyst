@@ -782,6 +782,11 @@ public class HttpServerService : IHostedService
 
         try
         {
+            // A queued download for this game is about to write the same lua: let it finish instead of racing it.
+            // (GetService: the queue is absent in hosts that only serve the backup routes.)
+            if (_services.GetService<DownloadQueue>()?.FindActive(ManifestJobFactory.ManifestKey(appId)) is not null)
+                return (409, JsonErr("Download already in progress for this app"));
+
             var ct = _appCts?.Token ?? CancellationToken.None;
             var res = await _services.GetRequiredService<ManifestBackupService>().RestoreAsync(appId, ct);
             if (res.Ok)
@@ -799,6 +804,7 @@ public class HttpServerService : IHostedService
             {
                 ManifestBackupRestoreFailure.Disabled => (409, JsonErr(res.Error ?? "Manifest backup is not enabled")),
                 ManifestBackupRestoreFailure.NotFound => (404, JsonErr(res.Error ?? "No backup found for this app")),
+                ManifestBackupRestoreFailure.SteamNotFound => (409, JsonErr(res.Error ?? "Steam is not located")),
                 ManifestBackupRestoreFailure.VerificationFailed or ManifestBackupRestoreFailure.InstallRefused =>
                     (422, JsonErr(res.Error ?? "Backup verification failed")),
                 _ => (500, JsonErr("Internal error")),

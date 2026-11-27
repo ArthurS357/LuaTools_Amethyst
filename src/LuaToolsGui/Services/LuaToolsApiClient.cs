@@ -20,8 +20,9 @@ public class ApiException(string message, HttpStatusCode? status = null) : Excep
 /// the checked file cannot be swapped before it is screened and applied. The holder must call
 /// <see cref="Dispose"/> (or <see cref="Discard"/>) — a held pin blocks deleting the file.
 /// </summary>
+// FromBackup: staged from the user's verified manifest backup, not fetched from a source (status wording only).
 public sealed record DownloadedFile(
-    string FilePath, string FileName, IDisposable? Pin = null, string? OwnedDirectory = null) : IDisposable
+    string FilePath, string FileName, IDisposable? Pin = null, string? OwnedDirectory = null, bool FromBackup = false) : IDisposable
 {
     public void Dispose() => Pin?.Dispose();
 

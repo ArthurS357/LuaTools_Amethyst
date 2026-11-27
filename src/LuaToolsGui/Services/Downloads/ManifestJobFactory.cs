@@ -217,7 +217,10 @@ public sealed class ManifestJobFactory(
             return new JobResult(false, string.Format(CultureInfo.CurrentCulture,
                 Resources.Strings.Add_Status_InstallFailed, result.Failed.Count));
 
-        if (LacksManifests(result.ManifestCount, source)) WarnNoManifests(appId, title, source!);
+        // The source failed and the backup was installed instead: say so ("via Manifest backup"), and do not
+        // blame the source for a lua-only backup having no manifests.
+        if (file.FromBackup && source is not null) source = Resources.Strings.Settings_ManifestBackup_Title;
+        else if (LacksManifests(result.ManifestCount, source)) WarnNoManifests(appId, title, source!);
 
         string message = result.ManifestCount > 0
             ? string.Format(CultureInfo.CurrentCulture,

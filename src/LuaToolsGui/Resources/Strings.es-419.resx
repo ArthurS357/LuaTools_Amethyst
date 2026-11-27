@@ -913,6 +913,11 @@ Esto elimina solo los archivos .lua activos de Steam\config\stplug-in. {1} de es
   <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Respaldar los juegos existentes</value></data>
   <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Respaldando {0} de {1}…</value></data>
   <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Listo: {0} nuevos, {1} actualizados, {2} sin cambios, {3} con error. {4} sin manifiesto local.</value></data>
+  <data name="Settings_ManifestBackup_Verify" xml:space="preserve"><value>Verificar integridad</value></data>
+  <data name="Settings_ManifestBackup_VerifyHint" xml:space="preserve"><value>Lee cada zip del respaldo y lo comprueba como lo haría una restauración. No cambia nada, pero descarga los archivos que solo están en la nube.</value></data>
+  <data name="Settings_ManifestBackup_Verifying" xml:space="preserve"><value>Verificando {0} de {1}…</value></data>
+  <data name="Settings_ManifestBackup_VerifyResult" xml:space="preserve"><value>Comprobado: {0} correctos, {1} solo lua, {2} dañados, {3} ilegibles.</value></data>
+  <data name="Settings_ManifestBackup_VerifyAttention" xml:space="preserve"><value>Requieren atención: {0}.</value></data>
   <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Falló el respaldo de manifiestos</value></data>
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} se instaló, pero su respaldo falló: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Instalado desde el respaldo</value></data>

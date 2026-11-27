@@ -913,6 +913,11 @@ SHA-256 {3}
   <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>สำรองข้อมูลเกมที่มีอยู่</value></data>
   <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>กำลังสำรอง {0} จาก {1}…</value></data>
   <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>เสร็จสิ้น: ใหม่ {0} อัปเดต {1} ไม่เปลี่ยนแปลง {2} ล้มเหลว {3} ไม่มี manifest ในเครื่อง {4}</value></data>
+  <data name="Settings_ManifestBackup_Verify" xml:space="preserve"><value>ตรวจสอบความสมบูรณ์</value></data>
+  <data name="Settings_ManifestBackup_VerifyHint" xml:space="preserve"><value>อ่าน zip ของข้อมูลสำรองทุกไฟล์และตรวจสอบแบบเดียวกับการกู้คืน ไม่เปลี่ยนแปลงสิ่งใด แต่จะดาวน์โหลดไฟล์ที่อยู่บนคลาวด์เท่านั้น</value></data>
+  <data name="Settings_ManifestBackup_Verifying" xml:space="preserve"><value>กำลังตรวจสอบ {0} จาก {1}…</value></data>
+  <data name="Settings_ManifestBackup_VerifyResult" xml:space="preserve"><value>ตรวจแล้ว: สมบูรณ์ {0} มีแค่ lua {1} เสียหาย {2} อ่านไม่ได้ {3}</value></data>
+  <data name="Settings_ManifestBackup_VerifyAttention" xml:space="preserve"><value>ต้องตรวจสอบ: {0}</value></data>
   <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>สำรองข้อมูล manifest ล้มเหลว</value></data>
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>ติดตั้ง {0} แล้ว แต่การสำรองข้อมูลล้มเหลว: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>ติดตั้งจากข้อมูลสำรอง</value></data>

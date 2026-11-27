@@ -913,6 +913,11 @@ SHA-256 {3}
   <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Αντίγραφα των υπαρχόντων παιχνιδιών</value></data>
   <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Αντιγραφή {0} από {1}…</value></data>
   <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Ολοκληρώθηκε: {0} νέα, {1} ενημερωμένα, {2} αμετάβλητα, {3} απέτυχαν. {4} χωρίς τοπικό manifest.</value></data>
+  <data name="Settings_ManifestBackup_Verify" xml:space="preserve"><value>Έλεγχος ακεραιότητας</value></data>
+  <data name="Settings_ManifestBackup_VerifyHint" xml:space="preserve"><value>Διαβάζει κάθε zip του αντιγράφου και το ελέγχει όπως θα έκανε μια επαναφορά. Δεν αλλάζει τίποτα, αλλά κατεβάζει αρχεία που υπάρχουν μόνο στο cloud.</value></data>
+  <data name="Settings_ManifestBackup_Verifying" xml:space="preserve"><value>Έλεγχος {0} από {1}…</value></data>
+  <data name="Settings_ManifestBackup_VerifyResult" xml:space="preserve"><value>Ελέγχθηκαν: {0} ακέραια, {1} μόνο lua, {2} κατεστραμμένα, {3} μη αναγνώσιμα.</value></data>
+  <data name="Settings_ManifestBackup_VerifyAttention" xml:space="preserve"><value>Χρειάζονται προσοχή: {0}.</value></data>
   <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Το αντίγραφο ασφαλείας manifest απέτυχε</value></data>
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>Το {0} εγκαταστάθηκε, αλλά το αντίγραφό του απέτυχε: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Εγκαταστάθηκε από αντίγραφο</value></data>

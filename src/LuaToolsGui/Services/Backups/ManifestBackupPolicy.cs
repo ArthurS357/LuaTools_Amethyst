@@ -305,6 +305,19 @@ public static class ManifestBackupPolicy
         }
     }
 
+    /// <summary>Largest lua the vault accepts. Real ones are kilobytes; the cap only bounds memory.</summary>
+    public const int MaxLuaBytes = 16 * 1024 * 1024;
+
+    /// <summary>
+    /// Why a lua must not enter the vault (nor leave it on restore), or null. It is the installer's own screen,
+    /// so the vault never holds a lua the restore would then refuse, and a poisoned lua never replaces a good one.
+    /// </summary>
+    /// <remarks>Deliberately NOT "valid UTF-8" nor "declares its own appid": SteamTools luas carry GBK and
+    /// Shift-JIS comments, and a DLC lua need not name its own id, so either rule would refuse real files.
+    /// An empty or declaration-less lua is handled by the store (it never replaces a stored backup).</remarks>
+    public static string? LuaProblem(string luaText) =>
+        LuaManifestValidator.Screen(luaText) is { Rejected: true, Reason: var reason } ? $"the lua {reason}" : null;
+
     /// <summary>Whether a zip entry name may appear in a backup of <paramref name="appId"/>: exactly
     /// <c>&lt;appid&gt;.lua</c> or a well-formed manifest name, at the archive root. Anything else (a folder,
     /// "..", a drive letter, another app's lua) makes the whole archive untrusted.</summary>

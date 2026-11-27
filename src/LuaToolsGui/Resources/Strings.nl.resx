@@ -913,6 +913,11 @@ Hiermee worden alleen de actieve .lua-bestanden uit Steam\config\stplug-in verwi
   <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Bestaande games back-uppen</value></data>
   <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Back-up van {0} van {1}…</value></data>
   <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Klaar: {0} nieuw, {1} bijgewerkt, {2} ongewijzigd, {3} mislukt. {4} zonder lokaal manifest.</value></data>
+  <data name="Settings_ManifestBackup_Verify" xml:space="preserve"><value>Integriteit controleren</value></data>
+  <data name="Settings_ManifestBackup_VerifyHint" xml:space="preserve"><value>Leest elke back-upzip en controleert die zoals een herstel zou doen. Wijzigt niets, maar downloadt bestanden die alleen in de cloud staan.</value></data>
+  <data name="Settings_ManifestBackup_Verifying" xml:space="preserve"><value>Controleren {0} van {1}…</value></data>
+  <data name="Settings_ManifestBackup_VerifyResult" xml:space="preserve"><value>Gecontroleerd: {0} in orde, {1} alleen lua, {2} beschadigd, {3} onleesbaar.</value></data>
+  <data name="Settings_ManifestBackup_VerifyAttention" xml:space="preserve"><value>Aandacht nodig: {0}.</value></data>
   <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Manifest-back-up mislukt</value></data>
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} is geïnstalleerd, maar de back-up is mislukt: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Geïnstalleerd vanuit back-up</value></data>

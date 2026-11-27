@@ -948,6 +948,11 @@ This deletes only the active .lua files from Steam\config\stplug-in. {1} of thes
   <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Back up existing games</value></data>
   <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Backing up {0} of {1}…</value></data>
   <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Done: {0} new, {1} updated, {2} unchanged, {3} failed. {4} without a local manifest.</value></data>
+  <data name="Settings_ManifestBackup_Verify" xml:space="preserve"><value>Verify integrity</value></data>
+  <data name="Settings_ManifestBackup_VerifyHint" xml:space="preserve"><value>Reads every backup zip and checks it the way a restore would. Changes nothing, but downloads cloud-only files.</value></data>
+  <data name="Settings_ManifestBackup_Verifying" xml:space="preserve"><value>Verifying {0} of {1}…</value></data>
+  <data name="Settings_ManifestBackup_VerifyResult" xml:space="preserve"><value>Checked: {0} healthy, {1} lua only, {2} corrupt, {3} unreadable.</value></data>
+  <data name="Settings_ManifestBackup_VerifyAttention" xml:space="preserve"><value>Needs attention: {0}.</value></data>
   <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Manifest backup failed</value></data>
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} was installed, but its backup failed: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Installed from backup</value></data>

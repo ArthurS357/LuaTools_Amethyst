@@ -16,7 +16,7 @@ namespace LuaToolsGui.Tests;
 /// The manifest backup: the pure decisions (<see cref="ManifestBackupPolicy"/>, the lua parser), the store
 /// against throwaway Steam/backup folders, the restore gate, and the off-by-default setting.
 /// </summary>
-public sealed class ManifestBackupTests : IDisposable
+public sealed partial class ManifestBackupTests : IDisposable
 {
     private const long AppId = 386940;
     private static readonly DateTime T0 = new(2026, 11, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -45,13 +45,18 @@ public sealed class ManifestBackupTests : IDisposable
 
     private void WriteLua(string text) => File.WriteAllText(Path.Combine(StPlugIn, $"{AppId}.lua"), text);
 
+    /// <summary>A structurally real manifest (the backup refuses anything else); <paramref name="content"/> only
+    /// varies its size.</summary>
     private string WriteManifest(long depot, string id, DateTime writtenUtc, string content = "manifest")
     {
         string path = Path.Combine(DepotCache, $"{depot}_{id}.manifest");
-        File.WriteAllText(path, content + id);
+        File.WriteAllBytes(path, RealManifest(depot, id, content));
         File.SetLastWriteTimeUtc(path, writtenUtc);
         return path;
     }
+
+    private static byte[] RealManifest(long depot, string id, string content = "manifest") =>
+        TestManifests.Build(depot, ulong.Parse(id, System.Globalization.CultureInfo.InvariantCulture), firstFilename: content + id);
 
     private ManifestBackupSummary BackupAll(string? dest = null) =>
         ManifestBackupStore.BackupAll(StPlugIn, DepotCache, dest ?? _dest, _ => "Test Game", null, CancellationToken.None);
@@ -336,11 +341,30 @@ public sealed class ManifestBackupTests : IDisposable
         Verify(zip).Should().BeFalse();
     }
 
+    /// <summary>The attacker controls metadata.json too: it is built to agree with whatever the zip holds, so only
+    /// the entry and content rules can refuse it.</summary>
     private static bool Verify(string zip)
     {
-        var meta = new ManifestBackupMetadata(1, AppId, null, T0, "x", FileHash.Sha256(zip)!, []);
-        using var s = File.OpenRead(zip);
-        return ManifestBackupStore.VerifyArchive(s, AppId, meta);
+        string luaSha = "x";
+        var manifests = new List<BackedUpManifest>();
+        using (var a = ZipFile.OpenRead(zip))
+            foreach (var e in a.Entries)
+            {
+                using var ms = new MemoryStream();
+                using (var s = e.Open()) s.CopyTo(ms);
+                string sha = Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(ms.ToArray()));
+                if (e.FullName == $"{AppId}.lua") luaSha = sha;
+                else if (ManifestBackupPolicy.TryParseManifestName(e.FullName, out long d, out string id)) manifests.Add(new(d, id, sha));
+            }
+        var meta = new ManifestBackupMetadata(1, AppId, null, T0, luaSha, FileHash.Sha256(zip)!, manifests);
+        using var fs = File.OpenRead(zip);
+        return ManifestBackupStore.VerifyArchive(fs, AppId, meta);
+    }
+
+    private static void AddBytes(ZipArchive a, string name, byte[] bytes)
+    {
+        using var s = a.CreateEntry(name).Open();
+        s.Write(bytes);
     }
 
     [Fact]
@@ -356,11 +380,14 @@ public sealed class ManifestBackupTests : IDisposable
     public void A_symlink_entry_fails_verification_and_a_clean_one_passes()
     {
         string clean = Path.Combine(_dir, "clean.zip"), link = Path.Combine(_dir, "link.zip");
-        using (var a = ZipFile.Open(clean, ZipArchiveMode.Create)) { a.CreateEntry($"{AppId}.lua"); a.CreateEntry("386941_1.manifest"); }
+        using (var a = ZipFile.Open(clean, ZipArchiveMode.Create)) { a.CreateEntry($"{AppId}.lua"); AddBytes(a, "386941_1.manifest", RealManifest(386941, "1")); }
         using (var a = ZipFile.Open(link, ZipArchiveMode.Create))
         {
             a.CreateEntry($"{AppId}.lua");
-            a.CreateEntry("386941_1.manifest").ExternalAttributes = unchecked((int)(0xA1FFu << 16)); // S_IFLNK | 0777
+            var e = a.CreateEntry("386941_1.manifest");
+            e.ExternalAttributes = unchecked((int)(0xA1FFu << 16)); // S_IFLNK | 0777
+            using var s = e.Open();
+            s.Write(RealManifest(386941, "1"));
         }
 
         Verify(clean).Should().BeTrue();
@@ -571,7 +598,7 @@ public sealed class ManifestBackupTests : IDisposable
         {
             using (var w = new StreamWriter(a.CreateEntry($"{AppId}.lua").Open()))
                 w.Write("addappid(386940)\naddappid(386941,1,\"k\")\nsetManifestid(386941,\"777\")");
-            using (var w = new StreamWriter(a.CreateEntry("386941_777.manifest").Open())) w.Write("m");
+            using (var s = a.CreateEntry("386941_777.manifest").Open()) s.Write(RealManifest(386941, "777"));
         }
         installer.InstallZip(zip, AppId).AnyFailed.Should().BeFalse();
 

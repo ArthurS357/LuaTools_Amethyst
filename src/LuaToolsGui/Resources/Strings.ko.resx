@@ -913,6 +913,11 @@ Steam\config\stplug-in의 활성 .lua 파일만 삭제됩니다. 이 중 {1}개 
   <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>기존 게임 백업</value></data>
   <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>백업 중 {0}/{1}…</value></data>
   <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>완료: 새로 {0}, 업데이트 {1}, 변경 없음 {2}, 실패 {3}. 로컬 매니페스트 없음 {4}.</value></data>
+  <data name="Settings_ManifestBackup_Verify" xml:space="preserve"><value>무결성 확인</value></data>
+  <data name="Settings_ManifestBackup_VerifyHint" xml:space="preserve"><value>백업의 각 zip을 읽어 복원할 때와 같은 방식으로 확인합니다. 아무것도 변경하지 않지만 클라우드에만 있는 파일은 다운로드합니다.</value></data>
+  <data name="Settings_ManifestBackup_Verifying" xml:space="preserve"><value>확인 중 {0}/{1}…</value></data>
+  <data name="Settings_ManifestBackup_VerifyResult" xml:space="preserve"><value>확인 완료: 정상 {0}, lua만 {1}, 손상 {2}, 읽을 수 없음 {3}.</value></data>
+  <data name="Settings_ManifestBackup_VerifyAttention" xml:space="preserve"><value>확인 필요: {0}.</value></data>
   <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>매니페스트 백업 실패</value></data>
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0}은(는) 설치되었지만 백업에 실패했습니다: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>백업에서 설치됨</value></data>

@@ -58,15 +58,25 @@ public static class ManifestBackupStore
         var outcomes = new List<ManifestBackupOutcome>(games.Count);
 
         progress?.Report((0, games.Count));
-        for (int i = 0; i < games.Count; i++)
+        try
         {
-            ct.ThrowIfCancellationRequested();
-            var (appId, luaPath) = games[i];
-            outcomes.Add(BackupGame(appId, luaPath, index, destRoot, nameOf(appId)));
-            progress?.Report((i + 1, games.Count));
+            for (int i = 0; i < games.Count; i++)
+            {
+                ct.ThrowIfCancellationRequested();
+                var (appId, luaPath) = games[i];
+                outcomes.Add(BackupGame(appId, luaPath, index, destRoot, nameOf(appId)));
+                progress?.Report((i + 1, games.Count));
+            }
         }
-        SweepStaleTemps(destRoot);
-        RefreshIndex(destRoot, () => SyncIndex(destRoot));
+        finally
+        {
+            // Also on cancel: the games written so far must show up in the catalog (metadata reads only).
+            RefreshIndex(destRoot, () =>
+            {
+                SweepStaleTemps(destRoot);
+                SyncIndex(destRoot);
+            });
+        }
         return new ManifestBackupSummary(outcomes);
     }
 
@@ -104,14 +114,20 @@ public static class ManifestBackupStore
 
             // The lua is read ONCE: these bytes are parsed, hashed and stored, so a write by Steam or another
             // tool mid-pass cannot leave a zip whose lua disagrees with the recorded hash.
-            byte[] luaBytes = ReadShared(luaPath);
-            var lua = LuaFileParser.ParseText(DecodeText(luaBytes), appId);
+            byte[] luaBytes = ReadShared(luaPath, ManifestBackupPolicy.MaxLuaBytes);
+            string luaText = DecodeText(luaBytes);
+            if (ManifestBackupPolicy.LuaProblem(luaText) is { } luaProblem)
+                return new(appId, null, 0, $"{luaProblem}; not backed up");
+            var lua = LuaFileParser.ParseText(luaText, appId);
 
             // Commented-out pins ("Auto Update Apps") still name the build the lua came with: keep them too.
             var pins = new Dictionary<long, string>(lua.CommentedPins);
             foreach (var (depot, id) in lua.ActivePins) pins[depot] = id;
             var depots = lua.Entries.Select(static e => e.Id).Concat(pins.Keys).Distinct().ToList();
-            var selected = ManifestBackupPolicy.SelectManifests(depots, pins, depots.SelectMany(d => index[d]));
+            // An empty, truncated or misnamed depotcache file is treated as absent, so a stored copy of the same
+            // manifest is carried instead of being replaced by the damaged one.
+            var usable = depots.SelectMany(d => index[d]).Where(m => IsUsableLocal(appId, m)).ToList();
+            var selected = ManifestBackupPolicy.SelectManifests(depots, pins, usable);
 
             string appDir = Path.Combine(destRoot, appId.ToString(CultureInfo.InvariantCulture));
             if (IsLink(appDir)) return new(appId, null, 0, "the backup folder is a link; refused");
@@ -132,8 +148,9 @@ public static class ManifestBackupStore
             DateTime nowUtc = DateTime.UtcNow;
             IReadOnlyList<BackedUpManifest> storedManifests = stored?.Manifests ?? [];
             bool? zipVerified = null;
+            var damaged = new HashSet<string>(StringComparer.Ordinal); // stored entries that are not whole manifests
             if (stored is not null && NeedsLegacyTimestampLookup(depots, lua.ActivePins, selected, storedManifests))
-                (storedManifests, zipVerified) = InspectLegacyZip(zipPath, appId, stored, nowUtc);
+                (storedManifests, zipVerified) = InspectLegacyZip(zipPath, appId, stored, nowUtc, damaged);
 
             var reconciled = ManifestBackupPolicy.Reconcile(
                 depots, pins, lua.ActivePins, selected, storedManifests, allowAntiDowngrade: true);
@@ -145,10 +162,18 @@ public static class ManifestBackupStore
             bool zipIntact;
             if (reconciled.PreventedDowngrade)
             {
-                zipVerified ??= stored is not null && IsVerifiedStoredZip(zipPath, appId, stored);
+                zipVerified ??= stored is not null && IsVerifiedStoredZip(zipPath, appId, stored, damaged);
                 if (zipVerified == true)
                 {
-                    zipIntact = stored is not null && HasExpectedZip(zipPath, stored);
+                    // Judge only by stored copies that are whole: a damaged legacy entry in one depot must neither
+                    // win nor cost another depot its newer manifest. A damaged entry also forces the cleaning rewrite.
+                    if (damaged.Count > 0)
+                    {
+                        storedManifests = [.. storedManifests.Where(m => !damaged.Contains(ManifestEntryName(m)))];
+                        reconciled = ManifestBackupPolicy.Reconcile(
+                            depots, pins, lua.ActivePins, selected, storedManifests, allowAntiDowngrade: true);
+                    }
+                    zipIntact = stored is not null && damaged.Count == 0 && HasExpectedZip(zipPath, stored);
                 }
                 else
                 {
@@ -173,22 +198,57 @@ public static class ManifestBackupStore
             // Read into memory BEFORE the zip they live in is rewritten.
             var kept = ReadCarried(zipPath, carried, nowUtc);
             var recorded = new List<BackedUpManifest>(effectiveSelected.Count + kept.Count);
-            AtomicFile.Write(zipPath, p => WriteZip(p, appId, luaBytes, effectiveSelected, kept, recorded, nowUtc));
-            long zipSize = new FileInfo(zipPath).Length;
-            string zipSha = FileHash.Sha256(zipPath) ?? throw new IOException("the written zip could not be read back");
+            // No in-place fallback: a held zip (cloud client, antivirus) fails this pass and stays whole. Hash and size
+            // come from the temp file BEFORE the rename, so nothing can fail between the zip landing and its commit
+            // marker except the marker itself (no read-back of a file a cloud client may already be streaming).
+            string zipSha = "";
+            long zipSize = 0;
+            AtomicFile.Write(zipPath, p =>
+            {
+                WriteZip(p, appId, luaBytes, effectiveSelected, kept, recorded, nowUtc);
+                zipSha = FileHash.Sha256(p) ?? throw new IOException("the written zip could not be read back");
+                zipSize = new FileInfo(p).Length;
+            }, inPlaceFallback: false);
 
             // metadata.json goes LAST: it is the commit marker. A crash before it leaves the old metadata, whose
             // zip hash no longer matches, so a restore refuses the half-written state instead of trusting it.
             var meta = new ManifestBackupMetadata(ManifestBackupMetadata.CurrentSchema, appId, name,
                 DateTime.UtcNow, luaSha, zipSha, recorded,
                 ZipSizeBytes: zipSize, ManifestCount: recorded.Count, HasManifests: recorded.Count > 0);
-            AtomicFile.WriteAllText(Path.Combine(appDir, MetadataFileName), JsonSerializer.Serialize(meta, Json));
+            WriteCommitMarker(Path.Combine(appDir, MetadataFileName), JsonSerializer.Serialize(meta, Json));
             return new(appId, change, recorded.Count, null);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidDataException)
         {
             return new(appId, null, 0, ex.Message);
         }
+    }
+
+    /// <summary>The zip has already landed, so a sync client holding metadata.json for a moment would leave the game
+    /// unrestorable until the next pass: retry the strict rename briefly before giving up.</summary>
+    /// <remarks>ponytail: fixed 3 × 200 ms; make it configurable only if real sync clients are seen holding longer.</remarks>
+    private static void WriteCommitMarker(string path, string json)
+    {
+        for (int attempt = 1; ; attempt++)
+        {
+            try
+            {
+                AtomicFile.WriteAllText(path, json, inPlaceFallback: false);
+                return;
+            }
+            catch (Exception ex) when (attempt < 3 && ex is IOException or UnauthorizedAccessException)
+            {
+                Thread.Sleep(200);
+            }
+        }
+    }
+
+    private static bool IsUsableLocal(long appId, DepotManifest m)
+    {
+        if (ManifestFile.IsIntact(m.Path, m.DepotId, m.ManifestId)) return true;
+        AppLog.Log($"manifest backup: {appId}: depotcache {Path.GetFileName(m.Path)} is empty, truncated or not " +
+                   "the manifest its name claims; skipped");
+        return false;
     }
 
     private sealed record CarriedManifest(BackedUpManifest Manifest, byte[] Bytes, DateTimeOffset LastWrite);
@@ -209,7 +269,8 @@ public static class ManifestBackupStore
 
     /// <summary>The carried manifests, taken from the stored zip and checked against their recorded SHA-256.
     /// All or nothing: a zip that is absent, unreadable or disagrees with metadata.json (a half-synced cloud
-    /// folder) throws, which fails this game's pass and leaves what is stored alone.</summary>
+    /// folder) throws, which fails this game's pass and leaves what is stored alone. The one exception, a
+    /// hash-matching legacy copy that is not a whole manifest, is dropped (see below).</summary>
     private static List<CarriedManifest> ReadCarried(string zipPath, IReadOnlyList<BackedUpManifest> carried, DateTime nowUtc)
     {
         var kept = new List<CarriedManifest>(carried.Count);
@@ -224,11 +285,18 @@ public static class ManifestBackupStore
             if (!LuaInstaller.ManifestNameRegex().IsMatch(name) || zip.GetEntry(name) is not { } entry)
                 throw new InvalidDataException(Refused);
 
-            using var ms = new MemoryStream();
-            using (var s = entry.Open()) s.CopyTo(ms);
-            byte[] bytes = ms.ToArray();
+            byte[] bytes = ReadEntry(entry, ManifestFile.MaxManifestBytes) ?? throw new InvalidDataException(Refused);
+            // A hash mismatch is a torn or tampered zip: fail, keep it as it is. A matching hash on bytes that are
+            // not a whole manifest is a legacy copy of a damaged file (stored before the shape check existed): it
+            // could never be restored, and keeping it would block every later pass and the restore of the rest, so
+            // it is dropped and the rewrite makes the game restorable again.
             if (!string.Equals(Convert.ToHexStringLower(SHA256.HashData(bytes)), m.Sha256, StringComparison.OrdinalIgnoreCase))
                 throw new InvalidDataException(Refused);
+            if (!ManifestFile.IsIntact(bytes, m.DepotId, m.ManifestId))
+            {
+                AppLog.Log($"manifest backup: stored {name} is not a whole manifest (legacy damaged copy); dropped");
+                continue;
+            }
             var carriedMeta = m.LastWriteUtc is null && entry.LastWriteTime.UtcDateTime > DosEpochCutoffUtc
                 ? m with { LastWriteUtc = ClampUtc(entry.LastWriteTime.UtcDateTime, nowUtc) }
                 : m;
@@ -264,7 +332,7 @@ public static class ManifestBackupStore
     }
 
     private static (IReadOnlyList<BackedUpManifest> Manifests, bool Verified) InspectLegacyZip(
-        string zipPath, long appId, ManifestBackupMetadata stored, DateTime nowUtc)
+        string zipPath, long appId, ManifestBackupMetadata stored, DateTime nowUtc, HashSet<string> damaged)
     {
         if (string.IsNullOrWhiteSpace(stored.ZipSha256) || IsLink(zipPath) || !File.Exists(zipPath))
             return (stored.Manifests, false);
@@ -272,7 +340,7 @@ public static class ManifestBackupStore
         // Let IOException / UnauthorizedAccessException propagate when an existing zip is locked by
         // cloud sync or AV so BackupGame fails safely instead of overwriting the stored backup.
         using var fs = new FileStream(zipPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-        if (!VerifyArchive(fs, appId, stored))
+        if (!IsTrustedForAntiDowngrade(fs, appId, stored, damaged))
             return (stored.Manifests, false);
 
         try
@@ -301,15 +369,31 @@ public static class ManifestBackupStore
         }
     }
 
-    private static bool IsVerifiedStoredZip(string zipPath, long appId, ManifestBackupMetadata stored)
+    private static bool IsVerifiedStoredZip(string zipPath, long appId, ManifestBackupMetadata stored, HashSet<string> damaged)
     {
         if (string.IsNullOrWhiteSpace(stored.ZipSha256) || IsLink(zipPath) || !File.Exists(zipPath))
             return false;
 
         // Propagate IOException / UnauthorizedAccessException on an existing locked zip (fail-closed).
         using var fs = new FileStream(zipPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-        return VerifyArchive(fs, appId, stored);
+        return IsTrustedForAntiDowngrade(fs, appId, stored, damaged);
     }
+
+    /// <summary>
+    /// Whether the stored zip may stand in for a local manifest (anti-downgrade): its bytes and every stored
+    /// manifest are what metadata.json recorded. NOT the full restore gate: a stored lua that today's screen refuses
+    /// is about to be replaced by this pass anyway, and a stored manifest that is not whole is collected in
+    /// <paramref name="damaged"/> (the caller judges without it) instead of distrusting every other depot.
+    /// A read that fails part-way throws, failing the pass with the stored zip kept, instead of reading as "untrusted"
+    /// and letting the older local manifest replace the newer stored one.
+    /// </summary>
+    private static bool IsTrustedForAntiDowngrade(Stream zip, long appId, ManifestBackupMetadata stored, HashSet<string> damaged) =>
+        ArchiveProblem(zip, appId, stored, screenLua: false, damaged) switch
+        {
+            null => true,
+            ZipUnreadable => throw new IOException("the stored zip could not be read to the end; kept as is"),
+            _ => false,
+        };
 
     private static void WriteZip(
         string path, long appId, byte[] luaBytes, IReadOnlyList<DepotManifest> manifests,
@@ -322,11 +406,16 @@ public static class ManifestBackupStore
         AddEntry(zip, $"{appId.ToString(CultureInfo.InvariantCulture)}.lua", luaBytes);
         foreach (var m in manifests)
         {
-            byte[] bytes = ReadShared(m.Path);
+            byte[] bytes = ReadShared(m.Path, ManifestFile.MaxManifestBytes);
+            // Checked again on the bytes actually stored: the file may have changed since it was selected.
+            if (!ManifestFile.IsIntact(bytes, m.DepotId, m.ManifestId))
+                throw new InvalidDataException("a depotcache manifest changed while it was being backed up; stored backup kept");
             DateTime clampedUtc = ClampUtc(m.LastWriteUtc, nowUtc);
-            AddEntry(zip, Path.GetFileName(m.Path), bytes, ToDosTimestamp(clampedUtc));
-            recorded.Add(new BackedUpManifest(
-                m.DepotId, m.ManifestId, Convert.ToHexStringLower(SHA256.HashData(bytes)), clampedUtc));
+            var entry = new BackedUpManifest(
+                m.DepotId, m.ManifestId, Convert.ToHexStringLower(SHA256.HashData(bytes)), clampedUtc);
+            // The canonical name, the one metadata.json and the restore gate look up ("0123_4.manifest" → "123_4").
+            AddEntry(zip, ManifestEntryName(entry), bytes, ToDosTimestamp(clampedUtc));
+            recorded.Add(entry);
         }
         foreach (var c in carried)
         {
@@ -383,7 +472,8 @@ public static class ManifestBackupStore
 
             foreach (var g in index.Games)
             {
-                if (g.AppId is <= 0 or > uint.MaxValue
+                // "games":[null] (a hand edit, a sync-conflict merge) reads as unusable and is rebuilt, never an NRE.
+                if (g is null || g.AppId is <= 0 or > uint.MaxValue
                     || string.IsNullOrWhiteSpace(g.ZipSha256)
                     || string.IsNullOrWhiteSpace(g.ZipFile))
                     return null;
@@ -402,8 +492,7 @@ public static class ManifestBackupStore
             foreach (var dir in new DirectoryInfo(destRoot).EnumerateDirectories())
             {
                 if (IsLink(dir.FullName)) continue;
-                if (!long.TryParse(dir.Name, NumberStyles.None, CultureInfo.InvariantCulture, out long appId)) continue;
-                if (appId is <= 0 or > uint.MaxValue) continue;
+                if (TryParseAppDir(dir.Name) is not { } appId) continue;
                 if (ReadMetadata(dir.FullName, appId) is not { } meta || string.IsNullOrWhiteSpace(meta.ZipSha256)) continue;
                 string zipPath = ZipPath(dir.FullName, appId);
                 if (!File.Exists(zipPath) || IsLink(zipPath)) continue;
@@ -532,12 +621,24 @@ public static class ManifestBackupStore
     /// <summary>
     /// The restore gate: the zip must hash to the recorded SHA-256, hold exactly one <c>&lt;appid&gt;.lua</c>,
     /// and nothing but root-level lua/manifest entries — no folders, no "..", no drive letters, no symlink
-    /// entries. Any doubt refuses the whole archive. (The installer re-checks entry names on extraction too.)
-    /// Leaves <paramref name="zip"/> open and rewound.
+    /// entries. Every entry must also agree with metadata.json (same manifest set, same per-file SHA-256) and be
+    /// sound: the lua passes the installer's screen, each manifest is whole and the one its name claims (a
+    /// damaged manifest restored into depotcache would stick there). Any doubt refuses the whole archive.
+    /// (The installer re-checks entry names on extraction too.) Leaves <paramref name="zip"/> open and rewound.
     /// </summary>
-    public static bool VerifyArchive(Stream zip, long appId, ManifestBackupMetadata meta)
+    public static bool VerifyArchive(Stream zip, long appId, ManifestBackupMetadata meta) =>
+        ArchiveProblem(zip, appId, meta) is null;
+
+    /// <summary>The <see cref="ArchiveProblem"/> for a read that failed (I/O), as opposed to bytes that are wrong.</summary>
+    internal const string ZipUnreadable = "the zip could not be read to the end";
+
+    /// <summary><see cref="VerifyArchive"/> with the reason it refused, or null when the archive passes.</summary>
+    /// <param name="damaged">When given, a manifest whose hash matches but that is not whole is added here instead of
+    /// refusing the archive (anti-downgrade only; the restore gate always refuses it).</param>
+    internal static string? ArchiveProblem(
+        Stream zip, long appId, ManifestBackupMetadata meta, bool screenLua = true, HashSet<string>? damaged = null)
     {
-        if (string.IsNullOrWhiteSpace(meta.ZipSha256) || meta.AppId != appId) return false;
+        if (string.IsNullOrWhiteSpace(meta.ZipSha256) || meta.AppId != appId) return "metadata.json does not describe this game";
 
         try
         {
@@ -549,7 +650,12 @@ public static class ManifestBackupStore
             // screening. The pinned copy keeps the checked bytes and the installed bytes the same.
             zip.Position = 0;
             string sha = Convert.ToHexStringLower(SHA256.HashData(zip));
-            if (!string.Equals(sha, meta.ZipSha256, StringComparison.OrdinalIgnoreCase)) return false;
+            if (!string.Equals(sha, meta.ZipSha256, StringComparison.OrdinalIgnoreCase))
+                return "the zip does not match the SHA-256 in metadata.json";
+
+            var expected = new Dictionary<string, BackedUpManifest>(StringComparer.Ordinal);
+            foreach (var m in meta.Manifests)
+                if (!expected.TryAdd(ManifestEntryName(m), m)) return "metadata.json lists a manifest twice";
 
             zip.Position = 0;
             using var archive = new ZipArchive(zip, ZipArchiveMode.Read, leaveOpen: true);
@@ -557,15 +663,44 @@ public static class ManifestBackupStore
             foreach (var e in archive.Entries)
             {
                 const int UnixTypeMask = 0xF000, UnixSymlink = 0xA000;
-                if (((e.ExternalAttributes >> 16) & UnixTypeMask) == UnixSymlink) return false;
-                if (!ManifestBackupPolicy.IsAllowedEntry(e.FullName, appId)) return false;
+                if (((e.ExternalAttributes >> 16) & UnixTypeMask) == UnixSymlink) return "the zip holds a symlink entry";
+                if (!ManifestBackupPolicy.IsAllowedEntry(e.FullName, appId)) return "the zip holds an entry a backup never has";
+                if (EntryProblem(e, meta, expected, screenLua) is { } problem)
+                {
+                    if (damaged is null || problem != NotWhole(e.FullName)) return problem;
+                    damaged.Add(e.FullName);
+                }
                 if (e.FullName.EndsWith(".lua", StringComparison.OrdinalIgnoreCase)) luas++;
             }
-            return luas == 1;
+            if (luas != 1) return "the zip does not hold exactly one lua";
+            return expected.Count == 0 ? null : "metadata.json records a manifest the zip does not hold";
         }
-        catch (Exception ex) when (ex is InvalidDataException or IOException) { return false; }
+        catch (InvalidDataException) { return "the zip is damaged"; }
+        catch (IOException) { return ZipUnreadable; }
         finally { if (zip.CanSeek) zip.Position = 0; }
     }
+
+    /// <summary>One allowed entry checked against metadata.json and for soundness. Removes a matched manifest
+    /// from <paramref name="expected"/>, so a duplicate or unrecorded one is refused.</summary>
+    private static string? EntryProblem(
+        ZipArchiveEntry e, ManifestBackupMetadata meta, Dictionary<string, BackedUpManifest> expected, bool screenLua)
+    {
+        if (e.FullName.EndsWith(".lua", StringComparison.OrdinalIgnoreCase))
+        {
+            if (ReadEntry(e, ManifestBackupPolicy.MaxLuaBytes) is not { } lua) return "the lua is larger than a backup accepts";
+            if (!string.Equals(Convert.ToHexStringLower(SHA256.HashData(lua)), meta.LuaSha256, StringComparison.OrdinalIgnoreCase))
+                return "the lua does not match the SHA-256 in metadata.json";
+            return screenLua ? ManifestBackupPolicy.LuaProblem(DecodeText(lua)) : null;
+        }
+
+        if (!expected.Remove(e.FullName, out var recorded)) return $"{e.FullName} is not recorded in metadata.json";
+        if (ReadEntry(e, ManifestFile.MaxManifestBytes) is not { } bytes) return $"{e.FullName} is larger than a backup accepts";
+        if (!string.Equals(Convert.ToHexStringLower(SHA256.HashData(bytes)), recorded.Sha256, StringComparison.OrdinalIgnoreCase))
+            return $"{e.FullName} does not match its SHA-256 in metadata.json";
+        return ManifestFile.IsIntact(bytes, recorded.DepotId, recorded.ManifestId) ? null : NotWhole(e.FullName);
+    }
+
+    private static string NotWhole(string entry) => $"{entry} is empty, truncated or not the manifest its name claims";
 
     /// <summary>Drop <c>AtomicFile</c> temps (<c>*.&lt;guid&gt;.tmp</c>) a killed pass left in the synced folder.
     /// An hour old at least, so a pass still writing is never touched.</summary>
@@ -581,7 +716,13 @@ public static class ManifestBackupStore
 
     // ── Helpers ─────────────────────────────────────────────────────
 
-    private static string ZipPath(string appDir, long appId) =>
+    /// <summary>The appid a vault sub-folder is for, or null. Canonical digits only: "0570" is not 570's folder
+    /// (every path here is built from the canonical form), so it must not be listed as if it were.</summary>
+    internal static long? TryParseAppDir(string name) =>
+        long.TryParse(name, NumberStyles.None, CultureInfo.InvariantCulture, out long id) && id is > 0 and <= uint.MaxValue
+        && name == id.ToString(CultureInfo.InvariantCulture) ? id : null;
+
+    internal static string ZipPath(string appDir, long appId) =>
         Path.Combine(appDir, $"{appId.ToString(CultureInfo.InvariantCulture)}.zip");
 
     /// <summary>The stored metadata, or null when missing, unreadable, from another schema or another app.</summary>
@@ -592,8 +733,13 @@ public static class ManifestBackupStore
             string path = Path.Combine(appDir, MetadataFileName);
             if (!File.Exists(path) || IsLink(path)) return null;
             var meta = JsonSerializer.Deserialize<ManifestBackupMetadata>(File.ReadAllText(path), Json);
+            // Every manifest entry must be whole ("manifests":[null] or a nulled field would NRE later, in the middle
+            // of a batch): anything else reads as unusable metadata, which the callers already treat fail-closed.
             return meta is { Schema: ManifestBackupMetadata.CurrentSchema, Manifests: not null, LuaSha256: not null }
-                   && meta.AppId == appId ? meta : null;
+                   && meta.AppId == appId
+                   && meta.Manifests.All(static m => m is { Sha256.Length: > 0 }
+                                                     && ManifestBackupPolicy.TryParseManifestName(ManifestEntryName(m), out _, out _))
+                ? meta : null;
         }
         catch (Exception ex) when (ex is JsonException or IOException or UnauthorizedAccessException) { return null; }
     }
@@ -603,6 +749,10 @@ public static class ManifestBackupStore
         if (!ManifestBackupPolicy.IsAcceptableDestination(destRoot, Path.GetDirectoryName(depotCacheDir)) ||
             IsLink(destRoot))
             throw new ArgumentException("The manifest backup folder is not an acceptable destination.", nameof(destRoot));
+        // An unmounted drive (Google Drive not running, USB disk unplugged) fails the pass once, up front, instead
+        // of every game failing with a path error.
+        if (Path.GetPathRoot(destRoot) is { Length: > 0 } root && !Directory.Exists(root))
+            throw new IOException("The manifest backup folder's drive is not available (offline or not mounted).");
     }
 
     /// <summary>True for a symlink or junction. Deliberately NOT every reparse point: OneDrive / Google Drive
@@ -617,13 +767,21 @@ public static class ManifestBackupStore
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { return true; }
     }
 
-    /// <summary>Read a Steam file without ever taking a write handle or blocking Steam's own.</summary>
-    private static byte[] ReadShared(string path)
+    /// <summary>Read a Steam file without ever taking a write handle or blocking Steam's own. Over
+    /// <paramref name="max"/> bytes it is refused (memory bound), which fails the game's pass, not the batch.</summary>
+    private static byte[] ReadShared(string path, int max)
     {
         using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
-        using var ms = new MemoryStream();
-        fs.CopyTo(ms);
-        return ms.ToArray();
+        return ManifestFile.ReadBounded(fs, max)
+               ?? throw new InvalidDataException($"{Path.GetFileName(path)} is larger than the backup accepts");
+    }
+
+    /// <summary>A zip entry's bytes, or null past <paramref name="max"/> (decompressed, whatever its header says).</summary>
+    private static byte[]? ReadEntry(ZipArchiveEntry entry, int max)
+    {
+        if (entry.Length > max) return null;
+        using var s = entry.Open();
+        return ManifestFile.ReadBounded(s, max);
     }
 
     private static string DecodeText(byte[] bytes)

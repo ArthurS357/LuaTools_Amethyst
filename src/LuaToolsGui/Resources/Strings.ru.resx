@@ -913,6 +913,11 @@ SHA-256 {3}
   <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>Создать копии существующих игр</value></data>
   <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>Копирование {0} из {1}…</value></data>
   <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>Готово: новых — {0}, обновлено — {1}, без изменений — {2}, с ошибкой — {3}. Без локального манифеста — {4}.</value></data>
+  <data name="Settings_ManifestBackup_Verify" xml:space="preserve"><value>Проверить целостность</value></data>
+  <data name="Settings_ManifestBackup_VerifyHint" xml:space="preserve"><value>Читает каждый zip копии и проверяет его так же, как восстановление. Ничего не меняет, но скачивает файлы, которые есть только в облаке.</value></data>
+  <data name="Settings_ManifestBackup_Verifying" xml:space="preserve"><value>Проверка {0} из {1}…</value></data>
+  <data name="Settings_ManifestBackup_VerifyResult" xml:space="preserve"><value>Проверено: целых — {0}, только lua — {1}, повреждённых — {2}, нечитаемых — {3}.</value></data>
+  <data name="Settings_ManifestBackup_VerifyAttention" xml:space="preserve"><value>Требуют внимания: {0}.</value></data>
   <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>Не удалось создать резервную копию манифестов</value></data>
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} установлена, но создать её резервную копию не удалось: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Установлено из резервной копии</value></data>

@@ -939,6 +939,11 @@ SHA-256 {3}
   <data name="Settings_ManifestBackup_RunAll" xml:space="preserve"><value>نسخ الألعاب الموجودة احتياطيًا</value></data>
   <data name="Settings_ManifestBackup_Running" xml:space="preserve"><value>جارٍ نسخ {0} من {1}…</value></data>
   <data name="Settings_ManifestBackup_Result" xml:space="preserve"><value>تم: {0} جديدة، {1} محدّثة، {2} دون تغيير، {3} فشلت. {4} بلا ملف manifest محلي.</value></data>
+  <data name="Settings_ManifestBackup_Verify" xml:space="preserve"><value>التحقق من السلامة</value></data>
+  <data name="Settings_ManifestBackup_VerifyHint" xml:space="preserve"><value>يقرأ كل ملف zip في النسخة الاحتياطية ويفحصه كما تفعل الاستعادة. لا يغيّر شيئًا، لكنه ينزّل الملفات الموجودة على السحابة فقط.</value></data>
+  <data name="Settings_ManifestBackup_Verifying" xml:space="preserve"><value>جارٍ التحقق {0} من {1}…</value></data>
+  <data name="Settings_ManifestBackup_VerifyResult" xml:space="preserve"><value>تم الفحص: {0} سليمة، {1} lua فقط، {2} تالفة، {3} غير قابلة للقراءة.</value></data>
+  <data name="Settings_ManifestBackup_VerifyAttention" xml:space="preserve"><value>تحتاج إلى انتباه: {0}.</value></data>
   <data name="ManifestBackup_Toast_Failed_Title" xml:space="preserve"><value>فشل النسخ الاحتياطي لملفات manifest</value></data>
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>تم تثبيت {0}، لكن نسخها الاحتياطي فشل: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>تم التثبيت من النسخة الاحتياطية</value></data>

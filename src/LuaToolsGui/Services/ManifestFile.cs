@@ -1,4 +1,5 @@
 using System.Buffers.Binary;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Security.Cryptography;
@@ -142,6 +143,108 @@ internal static class ManifestFile
         && ulong.TryParse(manifestId, out ulong gid)
         && info.GidManifest == gid;
 
+    /// <summary>Largest manifest the backup accepts. Real ones run to tens of MB (the biggest of 184 surveyed
+    /// was 23 MB); the cap only exists so a hostile file or zip entry cannot exhaust memory.</summary>
+    public const int MaxManifestBytes = 256 * 1024 * 1024;
+
+    /// <summary>
+    /// Fail-closed check that a manifest is WHOLE and is the one its name claims: payload section first,
+    /// every section length inside the file, the end-of-manifest marker reached, and the metadata's depot
+    /// id and gid equal to the name's. Empty, truncated, zero-filled and misnamed files all fail.
+    /// </summary>
+    /// <remarks>Stricter than <see cref="Matches"/>, which stops at the metadata: a file cut inside the
+    /// signature section still "matches". Surveyed against 184 real depotcache manifests (all laid out
+    /// payload, metadata, signature, end marker) with no false rejection. A zipped manifest is unwrapped,
+    /// bounded by <see cref="MaxManifestBytes"/>.</remarks>
+    public static bool IsIntact(Stream s, long depotId, string manifestId)
+    {
+        if (!ulong.TryParse(manifestId, NumberStyles.None, CultureInfo.InvariantCulture, out ulong gid)) return false;
+        try
+        {
+            if (s.Length is < 8 or > MaxManifestBytes) return false;
+            s.Position = 0;
+            Span<byte> head = stackalloc byte[8];
+            if (s.ReadAtLeast(head, 8, throwOnEndOfStream: false) != 8) return false;
+            s.Position = 0;
+            if (head[0] == 'P' && head[1] == 'K')
+            {
+                using var zip = new ZipArchive(s, ZipArchiveMode.Read, leaveOpen: true);
+                if (zip.Entries.FirstOrDefault() is not { Length: <= MaxManifestBytes } entry) return false;
+                using var es = entry.Open();
+                if (ReadBounded(es, MaxManifestBytes) is not { } inner) return false;
+                using var unwrapped = new MemoryStream(inner, writable: false);
+                return WalkIntact(unwrapped, depotId, gid);
+            }
+            return WalkIntact(s, depotId, gid);
+        }
+        catch (Exception ex) when (ex is IOException or InvalidDataException or NotSupportedException)
+        {
+            return false; // cannot prove it is whole, so it isn't
+        }
+    }
+
+    /// <summary><see cref="IsIntact(Stream, long, string)"/> over bytes already in memory.</summary>
+    public static bool IsIntact(byte[] data, long depotId, string manifestId)
+    {
+        using var ms = new MemoryStream(data, writable: false);
+        return IsIntact(ms, depotId, manifestId);
+    }
+
+    /// <summary><see cref="IsIntact(Stream, long, string)"/> over a file, opened with full sharing (Steam's own
+    /// handles are never blocked). Seeks over the payload, so only section headers and metadata are read.</summary>
+    public static bool IsIntact(string path, long depotId, string manifestId)
+    {
+        try
+        {
+            using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+            return IsIntact(fs, depotId, manifestId);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { return false; }
+    }
+
+    /// <summary>The rest of <paramref name="s"/>, or null once it passes <paramref name="max"/> bytes. Reads the
+    /// actual stream rather than trusting a declared length (a zip entry's header can lie).</summary>
+    internal static byte[]? ReadBounded(Stream s, int max)
+    {
+        using var ms = new MemoryStream();
+        byte[] buf = new byte[81920];
+        int n;
+        while ((n = s.Read(buf, 0, buf.Length)) > 0)
+        {
+            if (ms.Length + n > max) return null;
+            ms.Write(buf, 0, n);
+        }
+        return ms.ToArray();
+    }
+
+    private static bool WalkIntact(Stream s, long depotId, ulong gid)
+    {
+        s.Position = 0;
+        Span<byte> head = stackalloc byte[4];
+        ManifestInfo? info = null;
+        bool first = true;
+        while (true)
+        {
+            if (s.ReadAtLeast(head, 4, throwOnEndOfStream: false) != 4) return false; // no end marker
+            uint magic = BinaryPrimitives.ReadUInt32LittleEndian(head);
+            if (magic == EofMagic) return info is { } i && i.DepotId == depotId && i.GidManifest == gid;
+            if (first && magic != PayloadMagic) return false;
+            first = false;
+
+            if (s.ReadAtLeast(head, 4, throwOnEndOfStream: false) != 4) return false;
+            uint len = BinaryPrimitives.ReadUInt32LittleEndian(head);
+            if (len > s.Length - s.Position) return false; // truncated
+
+            if (magic == MetadataMagic)
+            {
+                byte[] meta = new byte[len];
+                s.ReadExactly(meta);
+                if ((info = ParseMetadata(meta)) is null) return false;
+            }
+            else s.Position += len;
+        }
+    }
+
     /// <summary>Prove a depot key is the right one, when the manifest allows it.</summary>
     /// <returns>
     /// True if a filename decrypted cleanly. <b>Also true when the manifest's filenames are not
@@ -264,9 +367,8 @@ internal static class ManifestFile
 
             if (field == 1 && wire == 2) // repeated FileMapping
             {
-                if (!ReadVarint(payload, ref o, out ulong len) || len > int.MaxValue) return null;
+                if (!ReadVarint(payload, ref o, out ulong len) || len > (ulong)(payload.Length - o)) return null;
                 int end = o + (int)len;
-                if (end > payload.Length) return null;
 
                 int inner = o;
                 while (inner < end)
@@ -274,8 +376,7 @@ internal static class ManifestFile
                     if (!ReadTag(payload, ref inner, out int f2, out int w2)) return null;
                     if (f2 == 1 && w2 == 2) // filename
                     {
-                        if (!ReadVarint(payload, ref inner, out ulong n) || n > int.MaxValue) return null;
-                        if (inner + (int)n > payload.Length) return null;
+                        if (!ReadVarint(payload, ref inner, out ulong n) || n > (ulong)(payload.Length - inner)) return null;
                         return Encoding.UTF8.GetString(payload, inner, (int)n);
                     }
                     if (!SkipField(payload, ref inner, w2)) return null;
@@ -346,12 +447,13 @@ internal static class ManifestFile
         switch (wire)
         {
             case 0: return ReadVarint(d, ref o, out _);
-            case 1: o += 8; return o <= d.Length;
-            case 5: o += 4; return o <= d.Length;
+            // Bound BEFORE adding: a hostile length near int.MaxValue would wrap o negative and pass a "<=" check.
+            case 1: if (d.Length - o < 8) return false; o += 8; return true;
+            case 5: if (d.Length - o < 4) return false; o += 4; return true;
             case 2:
-                if (!ReadVarint(d, ref o, out ulong len) || len > int.MaxValue) return false;
+                if (!ReadVarint(d, ref o, out ulong len) || len > (ulong)(d.Length - o)) return false;
                 o += (int)len;
-                return o <= d.Length;
+                return true;
             default: return false; // groups: not used by this format
         }
     }
