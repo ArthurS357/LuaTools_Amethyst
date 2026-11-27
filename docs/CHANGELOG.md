@@ -1,8 +1,23 @@
 # Changelog
 
+## 1.8.7 — 2026-11-26 (build interna, sem tag nem release)
+
+Lote L5: validador estrutural de manifests (`ManifestFile.IsIntact`), auditoria somente leitura do cofre ("Verificar integridade" / `VerifyVaultAsync`), escrita estritamente atomica no `AtomicFile` e fechamento dos 8 achados LOW da revisao. So existe na `main` e em pacote local; a proxima versao publica e a 1.9.0.
+
+### L5 — Validador extra e hardening do cofre
+
+- **Manifest so entra inteiro:** `ManifestFile.IsIntact` (fail-closed) exige secao payload primeiro, todo comprimento dentro do arquivo, marcador de fim alcancado e depot/gid da metadata iguais ao nome (layout conferido em 184 manifests reais, zero falso positivo). Arquivo do `depotcache` vazio, truncado ou com nome trocado e tratado como ausente, entao a copia guardada e carregada em vez de ser substituida; os bytes sao conferidos de novo no momento da escrita.
+- **Lua so entra se o instalador aceitaria:** mesma triagem do `LuaManifestValidator`; lua recusado nunca substitui o guardado. Sem regra de UTF-8 nem de "declarar o proprio appid" (comentarios GBK/Shift-JIS e luas de DLC sao legitimos). Tetos de 16 MiB (lua) e 256 MiB (manifest) contra zip bomb.
+- **Restauracao fail-closed mais forte:** alem de SHA-256 do zip e whitelist, cada entrada confere com o `metadata.json` (SHA-256 por arquivo, mesmo conjunto) e passa pela validacao estrutural.
+- **Escrita estritamente atomica no cofre:** `zip` e `metadata.json` nunca caem para escrita in-place quando o rename e recusado (Drive/antivirus segurando o arquivo): o passe falha e o arquivo fica inteiro.
+- **"Verificar integridade"** em Configuracoes: auditoria somente leitura do cofre inteiro (saudaveis, so `.lua`, corrompidos, ilegiveis; deriva do `index.json`; `.tmp` orfaos) em segundo plano, cancelavel; so roda quando pedida (hidrata os zips da nuvem), o skip-check do backup continua sem ler zip.
+- **Resiliencia:** `games:[null]`/`manifests:[null]` viram metadata/catalogo inutilizavel em vez de NRE; lote cancelado ainda atualiza o `index.json`; unidade desmontada falha uma vez no inicio; nenhum `ObjectDisposedException` apos o shutdown; `CanExecute` e o gancho pos-instalacao sem I/O de disco; `/backup/install` junta restauracoes simultaneas do mesmo jogo, responde 409 com download do mesmo jogo na fila ou Steam nao localizada; o fallback aparece como "via Backup de manifests".
+- **Revisao `csharp-reviewer`:** overflow no parser protobuf (comprimento hostil) agora limitado antes de somar; anti-downgrade nao cai mais por lua reprovado hoje nem por leitura interrompida (falha o passe); copia legada com hash certo mas manifest quebrado e descartada (o jogo volta a restaurar); hash do zip calculado no temporario antes do rename e `metadata.json` com 3 tentativas; verificacao com unidade offline falha em vez de "tudo limpo"; trava do passe por jogo na verificacao; pasta `0570` ignorada; nome de entrada canonico; entrada legada quebrada num depot nao derruba o anti-downgrade de outro.
+- 5 chaves novas nos 30 `.resx` (839 por idioma); 32 testes novos (`ManifestBackupHardeningTests`).
+
 ## 1.8.6 — 2026-11-26 (build interna, sem tag nem release)
 
-Lote L3: backup local de manifests (com hardening e decisao M5 documentada); Lote L4 (backend): catalogo index.json na raiz e rotas locais autenticadas para "Adicionar via Backup". So existe na `main` e em pacote local; a proxima versao publica e a 1.9.0.
+Lote L3: backup local de manifests (com hardening, protecao anti-downgrade e decisao M5 documentada); Lote L4 (backend + bridge CDP): catalogo index.json na raiz, rotas locais autenticadas para "Adicionar via Backup" e mapeamento nao-bloqueante na ponte CEF. So existe na `main` e em pacote local; a proxima versao publica e a 1.9.0.
 
 ### L3 — Backup de manifests (cofre local)
 
@@ -26,28 +41,18 @@ Lote L3: backup local de manifests (com hardening e decisao M5 documentada); Lot
 - **Hardening e decisao M5:**
   - **M5 aceito (sem HMAC no `metadata.json`):** decidido manter apenas `zipSha256` em `metadata.json` para preservar portabilidade entre PCs via Google Drive/OneDrive e compartilhamento de `<appid>.zip`. O SHA-256 prova integridade, **nao autoria**: quem grava na pasta (inclusive qualquer conta com quem a pasta de nuvem esteja compartilhada) pode trocar `.zip` e `metadata.json` juntos. O que limita um zip assim: whitelist de entradas, zero symlinks e a triagem de lua do instalador; a copia travada em `%TEMP%` garante que o verificado e o instalado sao os mesmos bytes.
   - **Manifest guardado nao some junto com o `depotcache`:** se ele nao tem mais o manifest de um depot ainda declarado no lua (ou o do pin), a copia guardada no zip e reaproveitada apos conferir o SHA-256. Sao falha do jogo, com o zip intocado: zip ausente, ilegivel ou divergente do `metadata.json`; `metadata.json` inutilizavel quando o zip tem a unica copia (apagar a pasta do jogo reconstroi); e lua que nao declara nada.
-  - **Limites:** depot para o qual o `depotcache` so tem um arquivo mais antigo e sem pin passa a seguir o `depotcache`; depot retirado do lua sai do backup.
+  - **Anti-downgrade e limites:** sem pin ativo (`setManifestid`), um depot nao regride para um manifest local mais antigo quando a copia no backup verificado e estritamente mais nova (tolerancia de 2 s da epoca DOS ZIP); pin ativo sempre vence, e depot retirado do lua sai do backup.
   - Cancelamento que chega enquanto a copia do fallback e preparada descarta a copia e nao instala.
   - **`index.json` e derivado:** falha ao grava-lo (arquivo aberto por leitor ou cliente de nuvem) vira log, nao derruba o backup; o catalogo velho e removido quando possivel.
   - Entrada de `.manifest` sem data no zip (epoca DOS 1980) e instalada com a data atual.
   - Skip-check do lote valida `luaSha256`, conjunto de manifests e tamanho esperado do `.zip` (`zipSizeBytes`) sem re-hashear nem hidratar arquivos em nuvem streaming; `WaitForInstallsToSettle(ct)` e `ManifestBackupService` cancelam no shutdown; `InstallZip` preserva `LastWriteTimeUtc` original dos `.manifest`; bloqueio de junction/symlink no seletor e em `ActiveFolder`; UI com `IsRunning`/`ProgressRing` e guarda contra callback atrasado de `Progress<T>`.
 - 15 chaves novas nos 30 `.resx`; 59 testes novos no conjunto L3+L4 (`ManifestBackupTests` + `HttpBackupRoutesTests` + `ViewSplitTests` + `ViewLoadSmokeTests`).
 
-### L5 — Validador extra e hardening do cofre
-
-- **Manifest so entra inteiro:** `ManifestFile.IsIntact` (fail-closed) exige secao payload primeiro, todo comprimento dentro do arquivo, marcador de fim alcancado e depot/gid da metadata iguais ao nome (layout conferido em 184 manifests reais, zero falso positivo). Arquivo do `depotcache` vazio, truncado ou com nome trocado e tratado como ausente, entao a copia guardada e carregada em vez de ser substituida; os bytes sao conferidos de novo no momento da escrita.
-- **Lua so entra se o instalador aceitaria:** mesma triagem do `LuaManifestValidator`; lua recusado nunca substitui o guardado. Sem regra de UTF-8 nem de "declarar o proprio appid" (comentarios GBK/Shift-JIS e luas de DLC sao legitimos). Tetos de 16 MiB (lua) e 256 MiB (manifest) contra zip bomb.
-- **Restauracao fail-closed mais forte:** alem de SHA-256 do zip e whitelist, cada entrada confere com o `metadata.json` (SHA-256 por arquivo, mesmo conjunto) e passa pela validacao estrutural.
-- **Escrita estritamente atomica no cofre:** `zip` e `metadata.json` nunca caem para escrita in-place quando o rename e recusado (Drive/antivirus segurando o arquivo): o passe falha e o arquivo fica inteiro.
-- **"Verificar integridade"** em Configuracoes: auditoria somente leitura do cofre inteiro (saudaveis, so `.lua`, corrompidos, ilegiveis; deriva do `index.json`; `.tmp` orfaos) em segundo plano, cancelavel; so roda quando pedida (hidrata os zips da nuvem), o skip-check do backup continua sem ler zip.
-- **Resiliencia:** `games:[null]`/`manifests:[null]` viram metadata/catalogo inutilizavel em vez de NRE; lote cancelado ainda atualiza o `index.json`; unidade desmontada falha uma vez no inicio; nenhum `ObjectDisposedException` apos o shutdown; `CanExecute` e o gancho pos-instalacao sem I/O de disco; `/backup/install` junta restauracoes simultaneas do mesmo jogo, responde 409 com download do mesmo jogo na fila ou Steam nao localizada; o fallback aparece como "via Backup de manifests".
-- **Revisao `csharp-reviewer`:** overflow no parser protobuf (comprimento hostil) agora limitado antes de somar; anti-downgrade nao cai mais por lua reprovado hoje nem por leitura interrompida (falha o passe); copia legada com hash certo mas manifest quebrado e descartada (o jogo volta a restaurar); hash do zip calculado no temporario antes do rename e `metadata.json` com 3 tentativas; verificacao com unidade offline falha em vez de "tudo limpo"; trava do passe por jogo na verificacao; pasta `0570` ignorada; nome de entrada canonico; entrada legada quebrada num depot nao derruba o anti-downgrade de outro.
-- 5 chaves novas nos 30 `.resx` (839 por idioma); 32 testes novos (`ManifestBackupHardeningTests`).
-
-### L4 (backend) — Descoberta e restauracao explicita ("Adicionar via Backup")
+### L4 (backend e bridge CDP) — Descoberta e restauracao explicita ("Adicionar via Backup")
 
 - **Catalogo `index.json` na raiz:** atualizado atomicamente ao fim de `BackupAll` e `BackupOne` com `appId`, `name`, `updatedAtUtc`, `manifestCount`, `hasManifests` (`manifestCount > 0`), `zipFile` e `zipSha256`, mantendo retrocompatibilidade na leitura de `metadata.json` do L3.
 - **Rotas locais autenticadas (`HttpServerService`):** `GET /backup/index`, `GET /backup/status?appid=<id>` e `POST /backup/install`, todas atras de `Authorize` (`127.0.0.1`/loopback + `X-LuaTools-Token`, sem CORS), validacao estrita de `appid` inteiro positivo e restauracao fail-closed via `ManifestBackupService.RestoreAsync`.
+- **Ponte CDP (`CefInjectorService`):** expoe `GetBackupIndex`, `GetBackupStatus` e `InstallFromBackup` (timeout de 30 s no polyfill para `InstallFromBackup`, 5 s nos demais) e desacopla o dreno HTTP do loop de injecao para que uma restauracao lenta nao derrube chamadas concorrentes.
 
 ## 1.8.5 — 2026-11-24 (build interna, sem tag nem release)
 

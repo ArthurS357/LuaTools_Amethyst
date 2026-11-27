@@ -29,13 +29,20 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.8.7", "2026-11-26",
+            "Internal build: structural manifest validation, read-only vault integrity check, and strict atomic writes.",
+            [
+                "Only whole manifests (ManifestFile.IsIntact) and luas the installer would accept enter or leave the backup; restore also verifies per-entry SHA-256 and caps lua/manifest sizes against zip bombs.",
+                "Backup zips and metadata.json never fall back to in-place writes when held by a cloud client or antivirus (AtomicFile), anti-downgrade isolates damaged legacy entries per depot, and offline drives, null JSON entries, shutdown and concurrent restores fail cleanly.",
+                "Settings > Manifest backup > Verify integrity runs a read-only, cancellable background check across every backup, index.json drift and orphan .tmp files (5 new keys translated across all 30 resource files).",
+            ]),
+
         new("1.8.6", "2026-11-26",
             "Internal build: opt-in local manifest backup, verified fallback restore, and local discovery routes.",
             [
                 "Settings > Manifest backup (off by default) keeps one flat zip and metadata.json per game in a folder you choose, including cloud-synced folders, without re-hashing unchanged zips or modifying Steam.",
                 "When a download source fails (never on cancel or pause), a verified backup copy is staged in %TEMP% and checked fail-closed by SHA-256, entry allow-list and symlink refusal before install; metadata.json keeps plain SHA-256 without HMAC (M5) for cross-PC portability.",
                 "Adds a root index.json catalog with manifest completeness flags (hasManifests/manifestCount) and authenticated loopback endpoints (/backup/index, /backup/status, /backup/install) for the Add via Backup flow.",
-                "Only whole manifests and luas the installer would accept enter or leave the backup, a held zip is never rewritten in place, and Settings > Manifest backup > Verify integrity checks every backup read-only.",
             ]),
 
         new("1.8.5", "2026-11-24",
