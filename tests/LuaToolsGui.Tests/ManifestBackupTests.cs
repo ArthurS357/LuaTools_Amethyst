@@ -1471,4 +1471,203 @@ public sealed partial class ManifestBackupTests : IDisposable
         ManifestBackupPolicy.IsStoredNewer(storedAsLocalKind, utcLocalRef).Should().BeTrue();
         ManifestBackupPolicy.IsStoredNewer(DateTime.SpecifyKind(T0, DateTimeKind.Utc).ToLocalTime(), utcLocalRef).Should().BeFalse();
     }
+
+    // ── 1.8.9: cancel, busy probe, creation_time anti-downgrade ─────────────────
+
+    private ManifestBackupViewModel ConfiguredViewModel(out ManifestBackupService service, int games)
+    {
+        var (settings, svc) = CreateService();
+        settings.ManifestBackupMode = ManifestBackupMode.LocalFolder;
+        settings.ManifestBackupFolder = _dest;
+        for (int i = 1; i <= games; i++)
+            File.WriteAllText(Path.Combine(StPlugIn, $"{10000 + i}.lua"), $"addappid({10000 + i})");
+        service = svc;
+        return new ManifestBackupViewModel(settings, svc);
+    }
+
+    private int CommittedGames() =>
+        Directory.Exists(_dest)
+            ? Directory.EnumerateFiles(_dest, ManifestBackupStore.MetadataFileName, SearchOption.AllDirectories).Count()
+            : 0;
+
+    [Fact]
+    public async Task Cancelling_the_batch_stops_cleanly_keeps_index_in_sync_and_frees_the_buttons()
+    {
+        var vm = ConfiguredViewModel(out _, games: 150);
+
+        var run = vm.BackupAllCommand.ExecuteAsync(null);
+        vm.IsRunning.Should().BeTrue();
+        vm.CancelRunCommand.CanExecute(null).Should().BeTrue();
+        vm.CancelRunCommand.Execute(null);
+        await run;
+
+        vm.Status.Should().Be(Resources.Strings.Settings_ManifestBackup_Cancelled);
+        vm.IsRunning.Should().BeFalse();
+        vm.CancelRunCommand.CanExecute(null).Should().BeFalse();
+        vm.BackupAllCommand.CanExecute(null).Should().BeTrue();
+
+        int committed = CommittedGames();
+        committed.Should().BeLessThan(150, "the pass stopped early");
+        (ManifestBackupStore.ReadIndex(_dest)?.Games.Count ?? 0).Should().Be(committed, "finally re-syncs index.json");
+        Directory.EnumerateFiles(_dir, "*.tmp", SearchOption.AllDirectories).Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Cancelling_verify_reports_cancelled_not_an_error_and_changes_nothing()
+    {
+        var vm = ConfiguredViewModel(out _, games: 150);
+        await vm.BackupAllCommand.ExecuteAsync(null);
+        var before = Directory.EnumerateFiles(_dest, "*", SearchOption.AllDirectories)
+            .ToDictionary(p => p, p => (new FileInfo(p).Length, File.GetLastWriteTimeUtc(p)));
+
+        var run = vm.VerifyCommand.ExecuteAsync(null);
+        vm.CancelRunCommand.Execute(null);
+        await run;
+
+        vm.Status.Should().Be(Resources.Strings.Settings_ManifestBackup_Cancelled);
+        vm.IsRunning.Should().BeFalse();
+        vm.VerifyCommand.CanExecute(null).Should().BeTrue();
+        Directory.EnumerateFiles(_dest, "*", SearchOption.AllDirectories)
+            .ToDictionary(p => p, p => (new FileInfo(p).Length, File.GetLastWriteTimeUtc(p)))
+            .Should().BeEquivalentTo(before, "verify is read-only, cancelled or not");
+    }
+
+    [Fact]
+    public async Task The_service_reports_a_game_busy_from_install_until_its_backup_lands()
+    {
+        var vm = ConfiguredViewModel(out var service, games: 0);
+        WriteLua("addappid(386940)");
+
+        service.IsBusyWith(AppId).Should().BeFalse();
+        service.OnInstalled(AppId);
+        service.IsBusyWith(AppId).Should().BeTrue("marked before the background hop");
+        service.IsBusyWith(620).Should().BeFalse();
+
+        var deadline = DateTime.UtcNow.AddSeconds(15);
+        while (service.IsBusyWith(AppId) && DateTime.UtcNow < deadline) await Task.Delay(25);
+        service.IsBusyWith(AppId).Should().BeFalse();
+        vm.IsRunning.Should().BeFalse();
+    }
+
+    private static readonly DateTime C0 = new(2025, 6, 1, 0, 0, 0, DateTimeKind.Utc); // Steam creation_time base
+
+    [Fact]
+    public void Anti_downgrade_trusts_creation_time_over_a_clock_that_ran_ahead()
+    {
+        // PC A's clock was a year ahead when it backed up build 111; PC B now has the real newer build 222.
+        var stored = new BackedUpManifest(1, "111", "sha", LastWriteUtc: T0.AddYears(1), CreationTimeUtc: C0);
+        var local = new DepotManifest(1, "222", @"C:\x\1_222.manifest", T0, CreationTimeUtc: C0.AddDays(3));
+        var empty = new Dictionary<long, string>();
+
+        var result = ManifestBackupPolicy.Reconcile([1], empty, empty, [local], [stored]);
+
+        result.PreventedDowngrade.Should().BeFalse();
+        result.Selected.Should().ContainSingle(m => m.ManifestId == "222");
+        ManifestBackupPolicy.IsStoredNewer(stored, local).Should().BeFalse();
+    }
+
+    [Fact]
+    public void Anti_downgrade_still_holds_when_creation_time_says_the_backup_is_newer()
+    {
+        var stored = new BackedUpManifest(1, "111", "sha", LastWriteUtc: T0, CreationTimeUtc: C0.AddDays(5));
+        var local = new DepotManifest(1, "222", @"C:\x\1_222.manifest", T0.AddDays(9), CreationTimeUtc: C0);
+        var empty = new Dictionary<long, string>();
+
+        var result = ManifestBackupPolicy.Reconcile([1], empty, empty, [local], [stored]);
+
+        result.PreventedDowngrade.Should().BeTrue("Steam built 111 later, whatever the write times say");
+        result.Carried.Should().ContainSingle(m => m.ManifestId == "111");
+    }
+
+    [Fact]
+    public void Legacy_entries_without_creation_time_fall_back_to_write_times()
+    {
+        var empty = new Dictionary<long, string>();
+        var local = new DepotManifest(1, "222", @"C:\x\1_222.manifest", T0, CreationTimeUtc: C0.AddDays(3));
+        var legacyNewer = new BackedUpManifest(1, "111", "sha", LastWriteUtc: T0.AddDays(1));
+        var legacyOlder = new BackedUpManifest(1, "111", "sha", LastWriteUtc: T0.AddDays(-1));
+
+        ManifestBackupPolicy.Reconcile([1], empty, empty, [local], [legacyNewer]).PreventedDowngrade.Should().BeTrue();
+        ManifestBackupPolicy.Reconcile([1], empty, empty, [local], [legacyOlder]).PreventedDowngrade.Should().BeFalse();
+        ManifestBackupPolicy.IsStoredNewer(legacyNewer, local with { CreationTimeUtc = null }).Should().BeTrue();
+    }
+
+    [Fact]
+    public void The_newest_local_manifest_is_chosen_by_creation_time_when_present()
+    {
+        var olderBuildTouchedLater = new DepotManifest(1, "999", @"C:\x\1_999.manifest", T0.AddDays(5), C0);
+        var newerBuild = new DepotManifest(1, "111", @"C:\x\1_111.manifest", T0, C0.AddDays(1));
+
+        ManifestBackupPolicy.SelectManifests([1], new Dictionary<long, string>(), [olderBuildTouchedLater, newerBuild])
+            .Should().ContainSingle().Which.ManifestId.Should().Be("111");
+    }
+
+    [Fact]
+    public void A_group_missing_any_creation_time_is_ranked_by_write_time_only()
+    {
+        // 999 lacks creation_time and was written later; ranking it by write time against 111's (earlier)
+        // creation time would be comparing two clocks. With a mixed group, write time decides for both.
+        var noCreation = new DepotManifest(1, "999", @"C:\x\1_999.manifest", T0.AddDays(2));
+        var withCreation = new DepotManifest(1, "111", @"C:\x\1_111.manifest", T0.AddDays(1), T0.AddYears(1)); // a creation time far past 999's write time
+        var empty = new Dictionary<long, string>();
+
+        ManifestBackupPolicy.SelectManifests([1], empty, [withCreation, noCreation])
+            .Should().ContainSingle().Which.ManifestId.Should().Be("999");
+
+        // Stored side, same rule: a legacy entry without creation_time makes the group compare write times.
+        var legacy = new BackedUpManifest(1, "555", "sha", LastWriteUtc: T0.AddDays(10));
+        var modern = new BackedUpManifest(1, "444", "sha", LastWriteUtc: T0, CreationTimeUtc: C0.AddYears(5));
+        var local = new DepotManifest(1, "222", @"C:\x\1_222.manifest", T0.AddDays(5));
+        var result = ManifestBackupPolicy.Reconcile([1], empty, empty, [local], [legacy, modern]);
+        result.PreventedDowngrade.Should().BeTrue();
+        result.Carried.Should().ContainSingle(m => m.ManifestId == "555");
+    }
+
+    [Fact]
+    public void A_carried_legacy_entry_gains_its_creation_time_on_the_next_rewrite()
+    {
+        WriteLua("addappid(386940)\naddappid(386941, 1, \"k\")\naddappid(386942, 1, \"k\")");
+        ulong created = (ulong)(C0 - DateTime.UnixEpoch).TotalSeconds;
+        File.WriteAllBytes(Path.Combine(DepotCache, "386941_501.manifest"),
+            TestManifests.Build(386941, 501, firstFilename: "a", creationTime: created));
+        string carriedPath = Path.Combine(DepotCache, "386942_601.manifest");
+        File.WriteAllBytes(carriedPath, TestManifests.Build(386942, 601, firstFilename: "b", creationTime: created + 60));
+        BackupAll();
+
+        // Make it a pre-1.8.9 vault, then lose 386942 locally and move 386941 on: the rewrite carries 601.
+        string metaPath = Path.Combine(AppDir, ManifestBackupStore.MetadataFileName);
+        File.WriteAllText(metaPath, File.ReadAllText(metaPath)
+            .Replace("\"creationTimeUtc\"", "\"unusedLegacyField\"", StringComparison.Ordinal));
+        File.Delete(carriedPath);
+        File.Delete(Path.Combine(DepotCache, "386941_501.manifest"));
+        File.WriteAllBytes(Path.Combine(DepotCache, "386941_502.manifest"),
+            TestManifests.Build(386941, 502, firstFilename: "c", creationTime: created + 120));
+
+        BackupAll().Games.Single().Change.Should().Be(ManifestBackupChange.Updated);
+
+        var carried = ManifestBackupStore.ReadMetadata(AppDir, AppId)!.Manifests.Single(m => m.ManifestId == "601");
+        carried.CreationTimeUtc.Should().Be(C0.AddSeconds(60));
+    }
+
+    [Fact]
+    public void The_batch_records_each_manifests_creation_time_and_legacy_metadata_still_reads()
+    {
+        WriteLua("addappid(386940)\naddappid(386941, 1, \"k\")");
+        string path = Path.Combine(DepotCache, "386941_555.manifest");
+        ulong created = (ulong)(C0 - DateTime.UnixEpoch).TotalSeconds;
+        File.WriteAllBytes(path, TestManifests.Build(386941, 555, firstFilename: "f555", creationTime: created));
+
+        BackupAll();
+
+        var meta = ManifestBackupStore.ReadMetadata(AppDir, AppId);
+        meta!.Manifests.Should().ContainSingle().Which.CreationTimeUtc.Should().Be(C0);
+        File.ReadAllText(Path.Combine(AppDir, ManifestBackupStore.MetadataFileName)).Should().Contain("\"creationTimeUtc\"");
+        meta.Schema.Should().Be(ManifestBackupMetadata.CurrentSchema);
+
+        // A pre-1.8.9 metadata.json has no such field: it still parses, with null.
+        string legacy = File.ReadAllText(Path.Combine(AppDir, ManifestBackupStore.MetadataFileName))
+            .Replace("\"creationTimeUtc\"", "\"unusedLegacyField\"", StringComparison.Ordinal);
+        File.WriteAllText(Path.Combine(AppDir, ManifestBackupStore.MetadataFileName), legacy);
+        ManifestBackupStore.ReadMetadata(AppDir, AppId)!.Manifests.Single().CreationTimeUtc.Should().BeNull();
+    }
 }

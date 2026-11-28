@@ -91,7 +91,6 @@
   <data name="Settings_BotLink_Body" xml:space="preserve"><value>Ești autentificat cu un cont Discord temporar. Autentifică-te pe lua.tools, apoi rulează din nou /login și introdu codul pentru a-ți asocia contul complet.</value></data>
   <data name="Settings_BotLink_Dismiss" xml:space="preserve"><value>Închide</value></data>
   <data name="Settings_LoginRequired" xml:space="preserve"><value>Autentificarea este necesară pentru această acțiune.</value></data>
-  <data name="Settings_ManageKeyHintPrefix" xml:space="preserve"><value>Gestionează-ți cheia API Hubcap și profilul pe</value></data>
   <data name="Settings_Section_Hubcap" xml:space="preserve"><value>HUBCAP</value></data>
   <data name="Settings_HubcapKey" xml:space="preserve"><value>Cheie API Hubcap</value></data>
   <data name="Settings_HubcapKey_Hint" xml:space="preserve"><value>Lipește cheia ta API Hubcap personală pentru a debloca manifestele Hubcap. Aplicația se conectează la Hubcap direct cu cheia ta.</value></data>
@@ -103,7 +102,6 @@
   <data name="Settings_HubcapKeyOkExpiry" xml:space="preserve"><value>{0}/{1} astăzi · expiră la {2}</value></data>
   <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>Aceasta nu pare o cheie validă.</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>Cheia nu a putut fi verificată — poate fi invalidă, expirată sau Hubcap este indisponibil.</value></data>
-  <data name="Settings_HubcapActive" xml:space="preserve"><value>Activ</value></data>
   <data name="Settings_HubcapRefresh" xml:space="preserve"><value>Reîmprospătare</value></data>
   <data name="Settings_Language" xml:space="preserve"><value>Limbă</value></data>
   <data name="Settings_Language_Hint" xml:space="preserve"><value>Alege limba de afișare a aplicației. Se aplică după repornire.</value></data>
@@ -125,7 +123,6 @@
   <data name="Lang_Changed_Restart" xml:space="preserve"><value>Repornește acum</value></data>
   <data name="Home_Welcome" xml:space="preserve"><value>Bun venit la LuaTools Amethyst</value></data>
   <data name="Home_LuasOnBoard" xml:space="preserve"><value>Lua la bord</value></data>
-  <data name="Home_LastAdded" xml:space="preserve"><value>ULTIMUL ADĂUGAT</value></data>
   <data name="Home_PluginStatus" xml:space="preserve"><value>Starea pluginului</value></data>
   <data name="Home_RecentlyAdded" xml:space="preserve"><value>Adăugate recent</value></data>
   <data name="Home_ViewDetails" xml:space="preserve"><value>Vezi detalii</value></data>
@@ -224,7 +221,6 @@
   <data name="Manage_Filter_SortBy" xml:space="preserve"><value>Sortează după</value></data>
   <data name="Manage_ClearFilters" xml:space="preserve"><value>Șterge filtrele</value></data>
   <data name="Manage_Select" xml:space="preserve"><value>Selectează</value></data>
-  <data name="Manage_DeleteThisLua" xml:space="preserve"><value>Șterge acest lua</value></data>
   <data name="Manage_ResultsPerPage" xml:space="preserve"><value>Rezultate pe pagină</value></data>
   <data name="Manage_Action_ViewDetails" xml:space="preserve"><value>Vezi detalii</value></data>
   <data name="Manage_Action_Update" xml:space="preserve"><value>Actualizează / descarcă din nou</value></data>
@@ -236,7 +232,6 @@
   <data name="Manage_ActionsHeader" xml:space="preserve"><value>Acțiuni</value></data>
   <data name="Manage_Steamless_Confirm_Title" xml:space="preserve"><value>Elimini DRM-ul Steam?</value></data>
   <data name="Manage_Steamless_Confirm_Body" xml:space="preserve"><value>Aceasta rulează Steamless pe executabilul jocului pentru a elimina DRM-ul SteamStub. Fișierul .exe original este mai întâi salvat ca .bak. Unele jocuri pot necesita apoi o verificare a fișierelor în Steam. Continui?</value></data>
-  <data name="Manage_Steamless_Working" xml:space="preserve"><value>Se elimină DRM-ul Steam…</value></data>
   <data name="Manage_Toast_Steamless_Done" xml:space="preserve"><value>{0} modificate, {1} nemodificate.</value></data>
   <data name="Manage_Steamless_NoInstall" xml:space="preserve"><value>Folderul jocului nu a fost găsit — este instalat?</value></data>
   <data name="Manage_Steamless_Failed" xml:space="preserve"><value>Nu s-a putut elimina DRM-ul. {0}</value></data>
@@ -273,19 +268,11 @@
   <data name="Manage_Depot" xml:space="preserve"><value>Depozit</value></data>
   <data name="Manage_SharedDepot" xml:space="preserve"><value>Depozit partajat</value></data>
   <data name="Manage_DlcName" xml:space="preserve"><value>DLC {0}</value></data>
-  <data name="Manage_Delete_Title" xml:space="preserve"><value>Elimină fișierul lua</value></data>
-  <data name="Manage_Delete_Body" xml:space="preserve"><value>Elimini „{0}” (App ID {1})?
-
-Aceasta șterge fișierul .lua din Steam\config\stplug-in. Repornește Steam după aceea pentru ca modificarea să aibă efect.</value></data>
   <data name="Manage_DeleteMany_Title" xml:space="preserve"><value>Elimină fișierele lua</value></data>
   <data name="Manage_DeleteMany_Body" xml:space="preserve"><value>Elimini {0} fișiere lua?
 
 Aceasta șterge fișierele .lua din Steam\config\stplug-in. Repornește Steam după aceea pentru ca modificările să aibă efect.</value></data>
   <data name="Manage_RemoveFailed_Title" xml:space="preserve"><value>Eliminare eșuată</value></data>
-  <data name="Manage_RemoveFailed_File" xml:space="preserve"><value>Fișierul nu a putut fi șters:
-{0}</value></data>
-  <data name="Manage_RemoveFailed_Named" xml:space="preserve"><value>„{0}” nu a putut fi șters:
-{1}</value></data>
   <data name="Manage_RemoveFailed_Count" xml:space="preserve"><value>{0} fișiere nu au putut fi șterse.</value></data>
   <data name="Manage_RestartSteam_Title" xml:space="preserve"><value>Repornește Steam</value></data>
   <data name="Manage_RestartSteam_Ask" xml:space="preserve"><value>Repornești Steam acum pentru ca modificările să aibă efect?</value></data>
@@ -346,7 +333,6 @@ Aceasta șterge fișierele .lua din Steam\config\stplug-in. Repornește Steam du
   <data name="Add_Err_BaseGame" xml:space="preserve"><value>Nu s-a putut determina jocul de bază pentru acest DLC</value></data>
   <data name="Add_Err_Generic" xml:space="preserve"><value>Ceva nu a mers bine — verifică-ți conexiunea și încearcă din nou.</value></data>
   <data name="Add_Err_Download" xml:space="preserve"><value>Descărcare eșuată — verifică-ți conexiunea și încearcă din nou.</value></data>
-  <data name="Add_Err_Generate" xml:space="preserve"><value>Generare eșuată — verifică-ți conexiunea și încearcă din nou.</value></data>
   <data name="Add_Confirm_Replace" xml:space="preserve"><value>Înlocuiești „{0}”?</value></data>
   <data name="Add_Confirm_NoChanges" xml:space="preserve"><value>Nicio modificare de depozit/DLC — același conținut.</value></data>
   <data name="Add_Status_Cancelled" xml:space="preserve"><value>Instalare anulată — fișierele existente au rămas neschimbate.</value></data>
@@ -377,7 +363,6 @@ Aceasta șterge fișierele .lua din Steam\config\stplug-in. Repornește Steam du
   <data name="Plugin_CardTitle" xml:space="preserve"><value>Stare</value></data>
   <data name="Plugin_Badge_UpdateAvailable" xml:space="preserve"><value>Actualizare disponibilă</value></data>
   <data name="Plugin_Row_InstalledVersion" xml:space="preserve"><value>Versiune instalată</value></data>
-  <data name="Plugin_Row_LatestVersion" xml:space="preserve"><value>Cea mai recentă versiune</value></data>
   <data name="Plugin_Row_Frontend" xml:space="preserve"><value>Frontend</value></data>
   <data name="Plugin_Row_Loader" xml:space="preserve"><value>Încărcător (winmm.dll)</value></data>
   <data name="Plugin_Millennium_Coexisting" xml:space="preserve"><value>Millennium detectat — LuaTools rulează alături de el. Instalarea dezactivează copia proprie a acestui plugin din Millennium, astfel încât doar LuaLoader să injecteze.</value></data>
@@ -421,7 +406,6 @@ Aceasta șterge fișierele .lua din Steam\config\stplug-in. Repornește Steam du
   <data name="Nav_Builds" xml:space="preserve"><value>Depozite</value></data>
   <data name="Builds_Title" xml:space="preserve"><value>Depozite</value></data>
   <data name="Builds_Subtitle" xml:space="preserve"><value>Păstrează mai multe variante ale fișierului lua al unui joc și alege pe care o folosește Steam.</value></data>
-  <data name="Builds_NoSelection" xml:space="preserve"><value>Alege un joc din stânga pentru a-i vedea presetările.</value></data>
   <data name="Builds_ActiveBuild" xml:space="preserve"><value>Presetarea activă</value></data>
   <data name="Builds_Active" xml:space="preserve"><value>ACTIVĂ</value></data>
   <data name="Builds_Variant_Default" xml:space="preserve"><value>Implicită</value></data>
@@ -450,7 +434,6 @@ Aceasta șterge fișierele .lua din Steam\config\stplug-in. Repornește Steam du
   <data name="Builds_Delete_ActiveTip" xml:space="preserve"><value>Presetarea aflată în uz nu poate fi ștearsă.</value></data>
   <data name="Builds_Apply_Done" xml:space="preserve"><value>Se folosește acum „{0}”. Repornește Steam pentru a avea efect.</value></data>
   <data name="Builds_Apply_Failed" xml:space="preserve"><value>Nu s-a putut schimba presetarea — fișierul lua ar putea fi în uz.</value></data>
-  <data name="Builds_Save_Done" xml:space="preserve"><value>Salvat. Repornește Steam pentru a avea efect.</value></data>
   <data name="Builds_Save_Failed" xml:space="preserve"><value>Nu s-a putut salva — fișierul lua ar putea fi în uz.</value></data>
   <data name="Builds_Preset_Saved" xml:space="preserve"><value>Salvat ca presetare.</value></data>
   <data name="Builds_Action_SaveTo" xml:space="preserve"><value>Salvează în „{0}”</value></data>
@@ -509,7 +492,6 @@ Aceasta șterge fișierele .lua din Steam\config\stplug-in. Repornește Steam du
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam nu a putut fi pornit. Setează locația în Setări și încearcă din nou.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
   <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
-  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Fișiere Steam</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool a fost instalat. Steam a fost repornit ca să îl încarce.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Instalarea AmethystTool a eșuat: {0}</value></data>
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Cea mai recentă versiune AmethystTool nu publică {0}.</value></data>
@@ -557,7 +539,6 @@ Aceasta șterge fișierele .lua din Steam\config\stplug-in. Repornește Steam du
   <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>Din descărcare lipsește: {0}.</value></data>
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>{0} nu a fost găsit în nicio versiune.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} nu a trecut verificarea (sha256 nu corespunde sau nu există digest publicat).</value></data>
-  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Versiunii îi lipsește {0}.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Schimbul de token a eșuat ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Schimbul de token a returnat o sesiune goală.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Nu ești conectat.</value></data>
@@ -630,8 +611,6 @@ Forțezi închiderea? Tot ce nu a salvat încă Steam se poate pierde. Alege Nu 
   <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
   <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Adaugă folder…</value></data>
   <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Elimină</value></data>
-  <data name="Saves_Note" xml:space="preserve"><value>Face copie folderului Steam pe joc (userdata). Jocurile care își păstrează salvările în Documente sau AppData nu sunt incluse.</value></data>
-  <data name="Saves_Toast_Created" xml:space="preserve"><value>S-au salvat {0} fișier(e), {1}.</value></data>
   <data name="Saves_Toast_Restored" xml:space="preserve"><value>S-au restaurat {0} fișier(e). O copie a salvărilor anterioare a fost păstrată.</value></data>
   <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Copia de siguranță a fost ștearsă.</value></data>
   <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Nu s-au găsit salvări pentru acest joc. Adaugă folderul în care le păstrează cu „Adaugă folder manual…”.</value></data>
@@ -700,7 +679,6 @@ Verificat: {4}</value></data>
   <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>arhivă analizată</value></data>
   <data name="Download_Notice_Cancel" xml:space="preserve"><value>Anulează</value></data>
   <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Anulat înainte de a se instala ceva.</value></data>
-  <data name="Builds_RemoveGame" xml:space="preserve"><value>Elimină jocul</value></data>
   <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Scoate acest joc din lista Depozite. Șterge fișierele sale lua și toate build-urile salvate.</value></data>
   <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Elimină jocul</value></data>
   <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>Elimini {0} ({1}) din Depozite?
@@ -741,7 +719,6 @@ O activezi?</value></data>
   <data name="About_What_Header" xml:space="preserve"><value>Ce este acesta</value></data>
   <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst este un fork al comunității pentru LuaTools, axat pe confidențialitate. Elimină pingul de analiză și trimiterea de chei pe care le face versiunea originală, ține toate descărcările pe HTTPS și vine cu tema violet Amethyst.</value></data>
   <data name="About_Version_Header" xml:space="preserve"><value>Versiune</value></data>
-  <data name="About_Repo_Header" xml:space="preserve"><value>Depozit</value></data>
   <data name="About_Updates_Header" xml:space="preserve"><value>Actualizări</value></data>
   <data name="About_Updates_Enabled" xml:space="preserve"><value>Actualizările automate sunt PORNITE. LuaTools Amethyst verifică depozitul de mai jos la pornire și instalează actualizările în fundal.</value></data>
   <data name="About_Updates_Disabled" xml:space="preserve"><value>Actualizările automate sunt OPRITE — nu se face nicio cerere de actualizare. Adaugă „AppUpdateRepos” în settings.json pentru a le porni sau actualizează manual din depozitul de mai jos.</value></data>
@@ -896,9 +873,6 @@ O activezi?</value></data>
   <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Modul Personalizat este activ</value></data>
   <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>LuaTools Amethyst va gestiona acum doar fișierele .lua din config\stplug-in fără a modifica DLL-urile Steam.</value></data>
   <data name="Home_CustomActive" xml:space="preserve"><value>Personalizat · gestionat de tine</value></data>
-  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>Elimini „{0}” (App ID {1})?
-
-Aceasta șterge doar fișierul .lua activ din Steam\config\stplug-in. Versiunile salvate ale acestui joc vor rămâne disponibile în fila Depots. Repornește Steam după aceea pentru aplicarea modificării.</value></data>
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Elimini {0} fișiere .lua?
 
 Aceasta șterge doar fișierele .lua active din Steam\config\stplug-in. {1} dintre aceste jocuri au versiuni salvate care vor rămâne disponibile în fila Depots. Repornește Steam după aceea pentru aplicarea modificărilor.</value></data>
@@ -938,7 +912,7 @@ Aceasta șterge doar fișierele .lua active din Steam\config\stplug-in. {1} dint
   <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>Dezinstalează doar fișierele jocului</value></data>
   <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>Șterge folderul de instalare al jocului și appmanifest-ul Steam. Păstrează fișierele .lua și .manifest.</value></data>
   <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>Elimină doar fișierul .lua</value></data>
-  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Șterge config\stplug-in\{0}.lua. Păstrează fișierele jocului, fișierele .manifest și build-urile salvate.</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Șterge config\stplug-in\{0}.lua (și {0}.lua.disabled, dacă există). Păstrează fișierele jocului, fișierele .manifest și build-urile salvate.</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>Elimină doar fișierele .manifest</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>Șterge fișierele .manifest exclusive acestui joc din depotcache. Păstrează fișierul .lua și manifestele partajate.</value></data>
   <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>Elimină .lua + fișierele .manifest</value></data>
@@ -964,4 +938,6 @@ Aceasta șterge doar fișierele .lua active din Steam\config\stplug-in. {1} dint
   <data name="ViewMode_Grid" xml:space="preserve"><value>Vizualizare grilă</value></data>
   <data name="ViewMode_List" xml:space="preserve"><value>Vizualizare listă</value></data>
   <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Mod de afișare</value></data>
+  <data name="Cleanup_Err_OperationInProgress" xml:space="preserve"><value>{0} este descărcat, instalat, salvat de rezervă sau restaurat chiar acum. Așteaptă să se termine și încearcă din nou.</value></data>
+  <data name="Settings_ManifestBackup_Cancelled" xml:space="preserve"><value>Anulat. Jocurile deja procesate au fost păstrate.</value></data>
 </root>

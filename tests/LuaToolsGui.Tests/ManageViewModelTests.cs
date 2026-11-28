@@ -80,18 +80,6 @@ public class ManageViewModelTests
     // ── Manage × Depots delete confirmation (#35) ────────────────────────────
 
     [Fact]
-    public void Delete_confirmation_differentiates_games_with_and_without_stored_builds()
-    {
-        string plain = ManageViewModel.BuildDeleteConfirmBody("Portal", 400, hasStoredBuilds: false);
-        string withBuilds = ManageViewModel.BuildDeleteConfirmBody("Portal", 400, hasStoredBuilds: true);
-
-        plain.Should().Be(string.Format(Resources.Strings.Manage_Delete_Body, "Portal", 400));
-        withBuilds.Should().Be(string.Format(Resources.Strings.Manage_Delete_BodyWithBuilds, "Portal", 400));
-        withBuilds.Should().NotBe(plain);
-        withBuilds.Should().Contain("Portal").And.Contain("400").And.Contain("Depots");
-    }
-
-    [Fact]
     public void Bulk_delete_confirmation_differentiates_when_any_selected_game_has_stored_builds()
     {
         string plain = ManageViewModel.BuildDeleteManyConfirmBody(3, withStoredBuildsCount: 0);

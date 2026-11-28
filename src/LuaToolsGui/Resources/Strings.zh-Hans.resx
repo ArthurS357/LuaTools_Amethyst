@@ -93,7 +93,6 @@
   <data name="Settings_BotLink_Body" xml:space="preserve"><value>你正在使用临时 Discord 账户登录。请在 lua.tools 登录，然后再次运行 /login 并输入代码以关联你的完整账户。</value></data>
   <data name="Settings_BotLink_Dismiss" xml:space="preserve"><value>忽略</value></data>
   <data name="Settings_LoginRequired" xml:space="preserve"><value>此操作需要登录。</value></data>
-  <data name="Settings_ManageKeyHintPrefix" xml:space="preserve"><value>在以下网站管理你的 Hubcap API 密钥和个人资料：</value></data>
   <data name="Settings_Section_Hubcap" xml:space="preserve"><value>HUBCAP</value></data>
   <data name="Settings_HubcapKey" xml:space="preserve"><value>Hubcap API 密钥</value></data>
   <data name="Settings_HubcapKey_Hint" xml:space="preserve"><value>粘贴你的个人 Hubcap API 密钥以解锁 Hubcap 清单。应用会使用你的密钥直接连接 Hubcap。</value></data>
@@ -105,7 +104,6 @@
   <data name="Settings_HubcapKeyOkExpiry" xml:space="preserve"><value>今日 {0}/{1} · 到期 {2}</value></data>
   <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>这看起来不是有效的密钥。</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>无法验证密钥 — 它可能无效、已过期，或无法连接 Hubcap。</value></data>
-  <data name="Settings_HubcapActive" xml:space="preserve"><value>已激活</value></data>
   <data name="Settings_HubcapRefresh" xml:space="preserve"><value>刷新</value></data>
   <data name="Settings_Language" xml:space="preserve"><value>语言</value></data>
   <data name="Settings_Language_Hint" xml:space="preserve"><value>选择应用的显示语言。重启后生效。</value></data>
@@ -131,7 +129,6 @@
   <!-- ── 主页 ── -->
   <data name="Home_Welcome" xml:space="preserve"><value>欢迎使用 LuaTools Amethyst</value></data>
   <data name="Home_LuasOnBoard" xml:space="preserve"><value>已添加的 Lua</value></data>
-  <data name="Home_LastAdded" xml:space="preserve"><value>最近添加</value></data>
   <data name="Home_PluginStatus" xml:space="preserve"><value>插件状态</value></data>
   <data name="Home_RecentlyAdded" xml:space="preserve"><value>最近添加</value></data>
   <data name="Home_ViewDetails" xml:space="preserve"><value>查看详情</value></data>
@@ -238,7 +235,6 @@
   <data name="Manage_Filter_SortBy" xml:space="preserve"><value>排序方式</value></data>
   <data name="Manage_ClearFilters" xml:space="preserve"><value>清除筛选</value></data>
   <data name="Manage_Select" xml:space="preserve"><value>选择</value></data>
-  <data name="Manage_DeleteThisLua" xml:space="preserve"><value>删除此 lua</value></data>
   <data name="Manage_ResultsPerPage" xml:space="preserve"><value>每页结果数</value></data>
   <data name="Manage_Action_ViewDetails" xml:space="preserve"><value>查看详情</value></data>
   <data name="Manage_Action_Update" xml:space="preserve"><value>更新 / 重新下载</value></data>
@@ -250,7 +246,6 @@
   <data name="Manage_ActionsHeader" xml:space="preserve"><value>操作</value></data>
   <data name="Manage_Steamless_Confirm_Title" xml:space="preserve"><value>移除 Steam DRM？</value></data>
   <data name="Manage_Steamless_Confirm_Body" xml:space="preserve"><value>这将对游戏的可执行文件运行 Steamless 以移除 SteamStub DRM。原始 .exe 会先备份为 .bak。某些游戏之后可能需要在 Steam 中验证文件。是否继续？</value></data>
-  <data name="Manage_Steamless_Working" xml:space="preserve"><value>正在移除 Steam DRM…</value></data>
   <data name="Manage_Toast_Steamless_Done" xml:space="preserve"><value>已处理 {0} 个，{1} 个未更改。</value></data>
   <data name="Manage_Steamless_NoInstall" xml:space="preserve"><value>未找到游戏文件夹——是否已安装？</value></data>
   <data name="Manage_Steamless_Failed" xml:space="preserve"><value>无法移除 DRM。{0}</value></data>
@@ -287,19 +282,11 @@
   <data name="Manage_Depot" xml:space="preserve"><value>仓库</value></data>
   <data name="Manage_SharedDepot" xml:space="preserve"><value>共享仓库</value></data>
   <data name="Manage_DlcName" xml:space="preserve"><value>DLC {0}</value></data>
-  <data name="Manage_Delete_Title" xml:space="preserve"><value>删除 lua 文件</value></data>
-  <data name="Manage_Delete_Body" xml:space="preserve"><value>删除"{0}"（App ID {1}）？
-
-这将从 Steam\config\stplug-in 中删除其 .lua 文件。删除后请重启 Steam 以使更改生效。</value></data>
   <data name="Manage_DeleteMany_Title" xml:space="preserve"><value>删除 lua 文件</value></data>
   <data name="Manage_DeleteMany_Body" xml:space="preserve"><value>删除 {0} 个 lua 文件？
 
 这将从 Steam\config\stplug-in 中删除这些 .lua 文件。删除后请重启 Steam 以使更改生效。</value></data>
   <data name="Manage_RemoveFailed_Title" xml:space="preserve"><value>删除失败</value></data>
-  <data name="Manage_RemoveFailed_File" xml:space="preserve"><value>无法删除文件：
-{0}</value></data>
-  <data name="Manage_RemoveFailed_Named" xml:space="preserve"><value>无法删除"{0}"：
-{1}</value></data>
   <data name="Manage_RemoveFailed_Count" xml:space="preserve"><value>有 {0} 个文件无法删除。</value></data>
   <data name="Manage_RestartSteam_Title" xml:space="preserve"><value>重启 Steam</value></data>
   <data name="Manage_RestartSteam_Ask" xml:space="preserve"><value>立即重启 Steam 以使更改生效？</value></data>
@@ -364,7 +351,6 @@
   <data name="Add_Err_BaseGame" xml:space="preserve"><value>无法确定此 DLC 的本体游戏</value></data>
   <data name="Add_Err_Generic" xml:space="preserve"><value>出了点问题——请检查你的网络连接后重试。</value></data>
   <data name="Add_Err_Download" xml:space="preserve"><value>下载失败——请检查你的网络连接后重试。</value></data>
-  <data name="Add_Err_Generate" xml:space="preserve"><value>生成失败——请检查你的网络连接后重试。</value></data>
   <data name="Add_Confirm_Replace" xml:space="preserve"><value>替换"{0}"？</value></data>
   <data name="Add_Confirm_NoChanges" xml:space="preserve"><value>仓库/DLC 无变化——内容相同。</value></data>
   <data name="Add_Status_Cancelled" xml:space="preserve"><value>安装已取消——现有文件保持不变。</value></data>
@@ -397,7 +383,6 @@
   <data name="Plugin_CardTitle" xml:space="preserve"><value>状态</value></data>
   <data name="Plugin_Badge_UpdateAvailable" xml:space="preserve"><value>有可用更新</value></data>
   <data name="Plugin_Row_InstalledVersion" xml:space="preserve"><value>已安装版本</value></data>
-  <data name="Plugin_Row_LatestVersion" xml:space="preserve"><value>最新版本</value></data>
   <data name="Plugin_Row_Frontend" xml:space="preserve"><value>前端</value></data>
   <data name="Plugin_Row_Loader" xml:space="preserve"><value>加载器 (winmm.dll)</value></data>
   <data name="Plugin_Millennium_Coexisting" xml:space="preserve"><value>检测到 Millennium——LuaTools 与其并行运行。安装会禁用 Millennium 自带的该插件副本，以便仅由 LuaLoader 注入。</value></data>
@@ -441,7 +426,6 @@
   <data name="Nav_Builds" xml:space="preserve"><value>仓库</value></data>
   <data name="Builds_Title" xml:space="preserve"><value>仓库</value></data>
   <data name="Builds_Subtitle" xml:space="preserve"><value>为一款游戏保留多个 lua 版本，并随时切换 Steam 使用哪一个。</value></data>
-  <data name="Builds_NoSelection" xml:space="preserve"><value>在左侧选择一款游戏以查看它的预设。</value></data>
   <data name="Builds_ActiveBuild" xml:space="preserve"><value>当前预设</value></data>
   <data name="Builds_Active" xml:space="preserve"><value>使用中</value></data>
   <data name="Builds_Variant_Default" xml:space="preserve"><value>默认</value></data>
@@ -470,7 +454,6 @@
   <data name="Builds_Delete_ActiveTip" xml:space="preserve"><value>无法删除正在使用的预设。</value></data>
   <data name="Builds_Apply_Done" xml:space="preserve"><value>已切换到“{0}”。重启 Steam 后生效。</value></data>
   <data name="Builds_Apply_Failed" xml:space="preserve"><value>切换预设失败 — lua 文件可能正被占用。</value></data>
-  <data name="Builds_Save_Done" xml:space="preserve"><value>已保存。重启 Steam 后生效。</value></data>
   <data name="Builds_Save_Failed" xml:space="preserve"><value>保存失败 — lua 文件可能正被占用。</value></data>
   <data name="Builds_Preset_Saved" xml:space="preserve"><value>已另存为预设。</value></data>
   <data name="Builds_Action_SaveTo" xml:space="preserve"><value>保存到“{0}”</value></data>
@@ -529,7 +512,6 @@
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>无法启动 Steam。请在设置中指定其位置后重试。</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
   <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
-  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam 文件</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool 已安装。已重启 Steam 以加载它。</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>AmethystTool 安装失败：{0}</value></data>
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>最新的 AmethystTool 版本未发布 {0}。</value></data>
@@ -577,7 +559,6 @@
   <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>下载缺少：{0}。</value></data>
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>在任何版本中都找不到 {0}。</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} 未通过验证（sha256 不匹配或没有已发布的 digest）。</value></data>
-  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>该版本缺少 {0}。</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>令牌交换失败（{0}）：{1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>令牌交换返回了空会话。</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>未登录。</value></data>
@@ -650,8 +631,6 @@
   <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
   <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>添加文件夹…</value></data>
   <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>移除</value></data>
-  <data name="Saves_Note" xml:space="preserve"><value>备份 Steam 的每游戏文件夹（userdata）。将存档保存在“文档”或 AppData 中的游戏不包括在内。</value></data>
-  <data name="Saves_Toast_Created" xml:space="preserve"><value>已备份 {0} 个文件，{1}。</value></data>
   <data name="Saves_Toast_Restored" xml:space="preserve"><value>已还原 {0} 个文件。已保留之前存档的副本。</value></data>
   <data name="Saves_Toast_Deleted" xml:space="preserve"><value>备份已删除。</value></data>
   <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>未找到此游戏的存档。请通过“手动添加文件夹…”添加它保存存档的文件夹。</value></data>
@@ -720,7 +699,6 @@ SHA-256 {3}
   <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>压缩包已检查</value></data>
   <data name="Download_Notice_Cancel" xml:space="preserve"><value>取消</value></data>
   <data name="Download_Notice_Cancelled" xml:space="preserve"><value>在安装任何内容之前已取消。</value></data>
-  <data name="Builds_RemoveGame" xml:space="preserve"><value>移除游戏</value></data>
   <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>将此游戏从仓库列表中移除。会删除其 lua 文件和所有已存储的构建。</value></data>
   <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>移除游戏</value></data>
   <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>要从仓库中移除 {0}（{1}）吗？
@@ -761,7 +739,6 @@ SHA-256 {3}
   <data name="About_What_Header" xml:space="preserve"><value>这是什么</value></data>
   <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst 是 LuaTools 的社区分支，注重隐私。它移除了原版构建所做的分析 ping 和密钥捐赠上传，保持所有下载均通过 HTTPS，并附带 Amethyst 紫色主题。</value></data>
   <data name="About_Version_Header" xml:space="preserve"><value>版本</value></data>
-  <data name="About_Repo_Header" xml:space="preserve"><value>存储库</value></data>
   <data name="About_Updates_Header" xml:space="preserve"><value>更新</value></data>
   <data name="About_Updates_Enabled" xml:space="preserve"><value>自动更新已开启。LuaTools Amethyst 会在启动时检查下方的存储库，并在后台安装更新。</value></data>
   <data name="About_Updates_Disabled" xml:space="preserve"><value>自动更新已关闭——不会发出任何更新请求。在 settings.json 中添加“AppUpdateRepos”可将其开启，或从下方存储库手动更新。</value></data>
@@ -916,9 +893,6 @@ SHA-256 {3}
   <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>已启用自定义模式</value></data>
   <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>LuaTools Amethyst 现在仅管理 config\stplug-in 中的 .lua 文件，不会修改 Steam DLL。</value></data>
   <data name="Home_CustomActive" xml:space="preserve"><value>自定义 · 用户自行管理</value></data>
-  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>移除“{0}”（App ID {1}）？
-
-这只会删除 Steam\config\stplug-in 中的当前 .lua 文件。该游戏已保存的版本仍会保留在 Depots 标签页中。之后请重启 Steam 以使更改生效。</value></data>
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>移除 {0} 个 .lua 文件？
 
 这只会删除 Steam\config\stplug-in 中的当前 .lua 文件。其中 {1} 款游戏有已保存的版本，仍会保留在 Depots 标签页中。之后请重启 Steam 以使更改生效。</value></data>
@@ -958,7 +932,7 @@ SHA-256 {3}
   <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>仅卸载游戏文件</value></data>
   <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>删除游戏安装文件夹和 Steam appmanifest。保留 .lua 和 .manifest 文件。</value></data>
   <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>仅移除 .lua 文件</value></data>
-  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>删除 config\stplug-in\{0}.lua。保留游戏文件、.manifest 文件和已保存构建。</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>删除 config\stplug-in\{0}.lua(以及存在时的 {0}.lua.disabled)。保留游戏文件、.manifest 文件和已保存构建。</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>仅移除 .manifest 文件</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>删除 depotcache 中此游戏独占的 .manifest 文件。保留 .lua 文件和共享清单。</value></data>
   <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>移除 .lua + .manifest 文件</value></data>
@@ -984,4 +958,6 @@ SHA-256 {3}
   <data name="ViewMode_Grid" xml:space="preserve"><value>网格视图</value></data>
   <data name="ViewMode_List" xml:space="preserve"><value>列表视图</value></data>
   <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>库布局模式</value></data>
+  <data name="Cleanup_Err_OperationInProgress" xml:space="preserve"><value>{0} 正在下载、安装、备份或恢复。请等待完成后再试。</value></data>
+  <data name="Settings_ManifestBackup_Cancelled" xml:space="preserve"><value>已取消。已处理的游戏均已保留。</value></data>
 </root>

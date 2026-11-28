@@ -91,7 +91,6 @@
   <data name="Settings_BotLink_Body" xml:space="preserve"><value>คุณลงชื่อเข้าใช้ด้วยบัญชี Discord ชั่วคราว ลงชื่อเข้าใช้ที่ lua.tools แล้วเรียกใช้ /login อีกครั้งและป้อนรหัสเพื่อเชื่อมโยงบัญชีเต็มของคุณ</value></data>
   <data name="Settings_BotLink_Dismiss" xml:space="preserve"><value>ปิด</value></data>
   <data name="Settings_LoginRequired" xml:space="preserve"><value>จำเป็นต้องเข้าสู่ระบบสำหรับการดำเนินการนี้</value></data>
-  <data name="Settings_ManageKeyHintPrefix" xml:space="preserve"><value>จัดการคีย์ API Hubcap และโปรไฟล์ของคุณที่</value></data>
   <data name="Settings_Section_Hubcap" xml:space="preserve"><value>HUBCAP</value></data>
   <data name="Settings_HubcapKey" xml:space="preserve"><value>คีย์ API ของ Hubcap</value></data>
   <data name="Settings_HubcapKey_Hint" xml:space="preserve"><value>วางคีย์ API ของ Hubcap ส่วนตัวของคุณเพื่อปลดล็อกแมนิเฟสต์ของ Hubcap แอปจะเชื่อมต่อกับ Hubcap โดยตรงด้วยคีย์ของคุณ</value></data>
@@ -103,7 +102,6 @@
   <data name="Settings_HubcapKeyOkExpiry" xml:space="preserve"><value>{0}/{1} วันนี้ · หมดอายุ {2}</value></data>
   <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>นี่ดูเหมือนจะไม่ใช่คีย์ที่ถูกต้อง</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>ไม่สามารถยืนยันคีย์ได้ — อาจไม่ถูกต้อง หมดอายุ หรือไม่สามารถเข้าถึง Hubcap ได้</value></data>
-  <data name="Settings_HubcapActive" xml:space="preserve"><value>เปิดใช้งาน</value></data>
   <data name="Settings_HubcapRefresh" xml:space="preserve"><value>รีเฟรช</value></data>
   <data name="Settings_Language" xml:space="preserve"><value>ภาษา</value></data>
   <data name="Settings_Language_Hint" xml:space="preserve"><value>เลือกภาษาที่แสดงของแอป จะมีผลหลังจากรีสตาร์ท</value></data>
@@ -125,7 +123,6 @@
   <data name="Lang_Changed_Restart" xml:space="preserve"><value>รีสตาร์ทเดี๋ยวนี้</value></data>
   <data name="Home_Welcome" xml:space="preserve"><value>ยินดีต้อนรับสู่ LuaTools Amethyst</value></data>
   <data name="Home_LuasOnBoard" xml:space="preserve"><value>Lua ที่มีอยู่</value></data>
-  <data name="Home_LastAdded" xml:space="preserve"><value>เพิ่มล่าสุด</value></data>
   <data name="Home_PluginStatus" xml:space="preserve"><value>สถานะปลั๊กอิน</value></data>
   <data name="Home_RecentlyAdded" xml:space="preserve"><value>เพิ่มเมื่อเร็ว ๆ นี้</value></data>
   <data name="Home_ViewDetails" xml:space="preserve"><value>ดูรายละเอียด</value></data>
@@ -224,7 +221,6 @@
   <data name="Manage_Filter_SortBy" xml:space="preserve"><value>เรียงตาม</value></data>
   <data name="Manage_ClearFilters" xml:space="preserve"><value>ล้างตัวกรอง</value></data>
   <data name="Manage_Select" xml:space="preserve"><value>เลือก</value></data>
-  <data name="Manage_DeleteThisLua" xml:space="preserve"><value>ลบ lua นี้</value></data>
   <data name="Manage_ResultsPerPage" xml:space="preserve"><value>ผลลัพธ์ต่อหน้า</value></data>
   <data name="Manage_Action_ViewDetails" xml:space="preserve"><value>ดูรายละเอียด</value></data>
   <data name="Manage_Action_Update" xml:space="preserve"><value>อัปเดต / ดาวน์โหลดใหม่</value></data>
@@ -236,7 +232,6 @@
   <data name="Manage_ActionsHeader" xml:space="preserve"><value>การดำเนินการ</value></data>
   <data name="Manage_Steamless_Confirm_Title" xml:space="preserve"><value>ลบ DRM ของ Steam หรือไม่?</value></data>
   <data name="Manage_Steamless_Confirm_Body" xml:space="preserve"><value>การดำเนินการนี้จะเรียกใช้ Steamless กับไฟล์เรียกทำงานของเกมเพื่อลบ DRM SteamStub ไฟล์ .exe ต้นฉบับจะถูกสำรองเป็น .bak ก่อน บางเกมอาจต้องตรวจสอบไฟล์ใน Steam ภายหลัง ดำเนินการต่อหรือไม่?</value></data>
-  <data name="Manage_Steamless_Working" xml:space="preserve"><value>กำลังลบ DRM ของ Steam…</value></data>
   <data name="Manage_Toast_Steamless_Done" xml:space="preserve"><value>แก้ไขแล้ว {0} รายการ, ไม่เปลี่ยนแปลง {1} รายการ</value></data>
   <data name="Manage_Steamless_NoInstall" xml:space="preserve"><value>ไม่พบโฟลเดอร์เกม — ติดตั้งไว้หรือไม่?</value></data>
   <data name="Manage_Steamless_Failed" xml:space="preserve"><value>ไม่สามารถลบ DRM ได้ {0}</value></data>
@@ -273,19 +268,11 @@
   <data name="Manage_Depot" xml:space="preserve"><value>Depot</value></data>
   <data name="Manage_SharedDepot" xml:space="preserve"><value>depot ที่ใช้ร่วมกัน</value></data>
   <data name="Manage_DlcName" xml:space="preserve"><value>DLC {0}</value></data>
-  <data name="Manage_Delete_Title" xml:space="preserve"><value>ลบไฟล์ lua</value></data>
-  <data name="Manage_Delete_Body" xml:space="preserve"><value>ลบ "{0}" (App ID {1}) หรือไม่?
-
-การดำเนินการนี้จะลบไฟล์ .lua ของมันออกจาก Steam\config\stplug-in หลังจากนั้นให้รีสตาร์ท Steam เพื่อให้การเปลี่ยนแปลงมีผล</value></data>
   <data name="Manage_DeleteMany_Title" xml:space="preserve"><value>ลบไฟล์ lua</value></data>
   <data name="Manage_DeleteMany_Body" xml:space="preserve"><value>ลบไฟล์ lua {0} ไฟล์หรือไม่?
 
 การดำเนินการนี้จะลบไฟล์ .lua ออกจาก Steam\config\stplug-in หลังจากนั้นให้รีสตาร์ท Steam เพื่อให้การเปลี่ยนแปลงมีผล</value></data>
   <data name="Manage_RemoveFailed_Title" xml:space="preserve"><value>การลบล้มเหลว</value></data>
-  <data name="Manage_RemoveFailed_File" xml:space="preserve"><value>ไม่สามารถลบไฟล์ได้:
-{0}</value></data>
-  <data name="Manage_RemoveFailed_Named" xml:space="preserve"><value>ไม่สามารถลบ "{0}" ได้:
-{1}</value></data>
   <data name="Manage_RemoveFailed_Count" xml:space="preserve"><value>ไม่สามารถลบ {0} ไฟล์ได้</value></data>
   <data name="Manage_RestartSteam_Title" xml:space="preserve"><value>รีสตาร์ท Steam</value></data>
   <data name="Manage_RestartSteam_Ask" xml:space="preserve"><value>รีสตาร์ท Steam ตอนนี้เพื่อให้การเปลี่ยนแปลงมีผลหรือไม่?</value></data>
@@ -346,7 +333,6 @@
   <data name="Add_Err_BaseGame" xml:space="preserve"><value>ไม่สามารถระบุเกมหลักของ DLC นี้ได้</value></data>
   <data name="Add_Err_Generic" xml:space="preserve"><value>มีบางอย่างผิดพลาด — ตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง</value></data>
   <data name="Add_Err_Download" xml:space="preserve"><value>การดาวน์โหลดล้มเหลว — ตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง</value></data>
-  <data name="Add_Err_Generate" xml:space="preserve"><value>การสร้างล้มเหลว — ตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง</value></data>
   <data name="Add_Confirm_Replace" xml:space="preserve"><value>แทนที่ "{0}" หรือไม่?</value></data>
   <data name="Add_Confirm_NoChanges" xml:space="preserve"><value>ไม่มีการเปลี่ยนแปลง depot/DLC — เนื้อหาเหมือนเดิม</value></data>
   <data name="Add_Status_Cancelled" xml:space="preserve"><value>ยกเลิกการติดตั้งแล้ว — ไฟล์ที่มีอยู่ไม่เปลี่ยนแปลง</value></data>
@@ -377,7 +363,6 @@
   <data name="Plugin_CardTitle" xml:space="preserve"><value>สถานะ</value></data>
   <data name="Plugin_Badge_UpdateAvailable" xml:space="preserve"><value>มีอัปเดต</value></data>
   <data name="Plugin_Row_InstalledVersion" xml:space="preserve"><value>เวอร์ชันที่ติดตั้ง</value></data>
-  <data name="Plugin_Row_LatestVersion" xml:space="preserve"><value>เวอร์ชันล่าสุด</value></data>
   <data name="Plugin_Row_Frontend" xml:space="preserve"><value>ฟรอนต์เอนด์</value></data>
   <data name="Plugin_Row_Loader" xml:space="preserve"><value>ตัวโหลด (winmm.dll)</value></data>
   <data name="Plugin_Millennium_Coexisting" xml:space="preserve"><value>ตรวจพบ Millennium — LuaTools ทำงานควบคู่กับมัน การติดตั้งจะปิดใช้งานสำเนาปลั๊กอินนี้ของ Millennium เพื่อให้เฉพาะ LuaLoader ทำการฉีดเท่านั้น</value></data>
@@ -421,7 +406,6 @@
   <data name="Nav_Builds" xml:space="preserve"><value>ดีโป</value></data>
   <data name="Builds_Title" xml:space="preserve"><value>ดีโป</value></data>
   <data name="Builds_Subtitle" xml:space="preserve"><value>เก็บไฟล์ lua ของเกมไว้ได้หลายเวอร์ชัน แล้วเลือกว่าจะให้ Steam ใช้อันไหน</value></data>
-  <data name="Builds_NoSelection" xml:space="preserve"><value>เลือกเกมทางด้านซ้ายเพื่อดูพรีเซ็ตของเกมนั้น</value></data>
   <data name="Builds_ActiveBuild" xml:space="preserve"><value>พรีเซ็ตที่ใช้อยู่</value></data>
   <data name="Builds_Active" xml:space="preserve"><value>ใช้อยู่</value></data>
   <data name="Builds_Variant_Default" xml:space="preserve"><value>ค่าเริ่มต้น</value></data>
@@ -450,7 +434,6 @@
   <data name="Builds_Delete_ActiveTip" xml:space="preserve"><value>ไม่สามารถลบพรีเซ็ตที่กำลังใช้งานอยู่</value></data>
   <data name="Builds_Apply_Done" xml:space="preserve"><value>ตอนนี้ใช้ “{0}” แล้ว รีสตาร์ท Steam เพื่อให้มีผล</value></data>
   <data name="Builds_Apply_Failed" xml:space="preserve"><value>สลับพรีเซ็ตไม่สำเร็จ — ไฟล์ lua อาจกำลังถูกใช้งานอยู่</value></data>
-  <data name="Builds_Save_Done" xml:space="preserve"><value>บันทึกแล้ว รีสตาร์ท Steam เพื่อให้มีผล</value></data>
   <data name="Builds_Save_Failed" xml:space="preserve"><value>บันทึกไม่สำเร็จ — ไฟล์ lua อาจกำลังถูกใช้งานอยู่</value></data>
   <data name="Builds_Preset_Saved" xml:space="preserve"><value>บันทึกเป็นพรีเซ็ตแล้ว</value></data>
   <data name="Builds_Action_SaveTo" xml:space="preserve"><value>บันทึกลงใน “{0}”</value></data>
@@ -509,7 +492,6 @@
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>ไม่สามารถเริ่ม Steam ได้ กำหนดตำแหน่งในการตั้งค่าแล้วลองอีกครั้ง</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
   <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
-  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>ไฟล์ของ Steam</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>ติดตั้ง AmethystTool แล้ว รีสตาร์ต Steam เพื่อโหลดแล้ว</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>ติดตั้ง AmethystTool ไม่สำเร็จ: {0}</value></data>
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>รุ่นล่าสุดของ AmethystTool ไม่ได้เผยแพร่ {0}</value></data>
@@ -557,7 +539,6 @@
   <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>ไฟล์ดาวน์โหลดขาด: {0}</value></data>
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>ไม่พบ {0} ในรุ่นใดเลย</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>การตรวจสอบ {0} ล้มเหลว (sha256 ไม่ตรงกันหรือไม่มี digest ที่เผยแพร่)</value></data>
-  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>รุ่นนี้ไม่มี {0}</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>การแลกเปลี่ยนโทเค็นล้มเหลว ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>การแลกเปลี่ยนโทเค็นส่งคืนเซสชันว่าง</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>ยังไม่ได้เข้าสู่ระบบ</value></data>
@@ -630,8 +611,6 @@
   <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
   <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>เพิ่มโฟลเดอร์…</value></data>
   <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>ลบออก</value></data>
-  <data name="Saves_Note" xml:space="preserve"><value>สำรองโฟลเดอร์ต่อเกมของ Steam (userdata) เกมที่เก็บเซฟใน เอกสาร หรือ AppData จะไม่รวมอยู่ด้วย</value></data>
-  <data name="Saves_Toast_Created" xml:space="preserve"><value>สำรองข้อมูล {0} ไฟล์แล้ว, {1}</value></data>
   <data name="Saves_Toast_Restored" xml:space="preserve"><value>กู้คืน {0} ไฟล์แล้ว เก็บสำเนาของเซฟก่อนหน้าไว้</value></data>
   <data name="Saves_Toast_Deleted" xml:space="preserve"><value>ลบข้อมูลสำรองแล้ว</value></data>
   <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>ไม่พบเซฟของเกมนี้ เพิ่มโฟลเดอร์ที่เกมเก็บเซฟด้วย “เพิ่มโฟลเดอร์ด้วยตนเอง…”</value></data>
@@ -700,7 +679,6 @@ SHA-256 {3}
   <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>ตรวจสอบไฟล์เก็บถาวรแล้ว</value></data>
   <data name="Download_Notice_Cancel" xml:space="preserve"><value>ยกเลิก</value></data>
   <data name="Download_Notice_Cancelled" xml:space="preserve"><value>ยกเลิกก่อนที่จะติดตั้งอะไร</value></data>
-  <data name="Builds_RemoveGame" xml:space="preserve"><value>ลบเกม</value></data>
   <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>นำเกมนี้ออกจากรายการดีโป ลบไฟล์ lua ของเกมและบิลด์ที่เก็บไว้ทั้งหมด</value></data>
   <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>ลบเกม</value></data>
   <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>ลบ {0} ({1}) ออกจากดีโปหรือไม่
@@ -741,7 +719,6 @@ SHA-256 {3}
   <data name="About_What_Header" xml:space="preserve"><value>นี่คืออะไร</value></data>
   <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst เป็นฟอร์กของชุมชนจาก LuaTools ที่เน้นความเป็นส่วนตัว ลบการ ping วิเคราะห์และการอัปโหลดคีย์บริจาคที่บิลด์ต้นฉบับทำ คงทุกการดาวน์โหลดผ่าน HTTPS และมาพร้อมธีมสีม่วง Amethyst</value></data>
   <data name="About_Version_Header" xml:space="preserve"><value>เวอร์ชัน</value></data>
-  <data name="About_Repo_Header" xml:space="preserve"><value>ที่เก็บ</value></data>
   <data name="About_Updates_Header" xml:space="preserve"><value>การอัปเดต</value></data>
   <data name="About_Updates_Enabled" xml:space="preserve"><value>การอัปเดตอัตโนมัติ เปิดอยู่ LuaTools Amethyst ตรวจสอบที่เก็บด้านล่างเมื่อเริ่มต้นและติดตั้งการอัปเดตในเบื้องหลัง</value></data>
   <data name="About_Updates_Disabled" xml:space="preserve"><value>การอัปเดตอัตโนมัติ ปิดอยู่ — ไม่มีการส่งคำขออัปเดต เพิ่ม “AppUpdateRepos” ใน settings.json เพื่อเปิด หรืออัปเดตด้วยตนเองจากที่เก็บด้านล่าง</value></data>
@@ -896,9 +873,6 @@ SHA-256 {3}
   <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>เปิดใช้โหมดกำหนดเองแล้ว</value></data>
   <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>จากนี้ไป LuaTools Amethyst จะจัดการเฉพาะไฟล์ .lua ใน config\stplug-in โดยไม่แก้ไขไฟล์ DLL ของ Steam</value></data>
   <data name="Home_CustomActive" xml:space="preserve"><value>กำหนดเอง · จัดการโดยผู้ใช้</value></data>
-  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>ลบ "{0}" (App ID {1}) หรือไม่?
-
-การดำเนินการนี้จะลบเฉพาะไฟล์ .lua ที่ใช้งานอยู่ใน Steam\config\stplug-in เท่านั้น บิลด์ที่บันทึกไว้ของเกมนี้จะยังคงอยู่ในแท็บ Depots รีสตาร์ท Steam หลังจากนั้นเพื่อให้การเปลี่ยนแปลงมีผล</value></data>
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>ลบไฟล์ .lua จำนวน {0} ไฟล์หรือไม่?
 
 การดำเนินการนี้จะลบเฉพาะไฟล์ .lua ที่ใช้งานอยู่ใน Steam\config\stplug-in เท่านั้น โดย {1} เกมในกลุ่มนี้มีบิลด์ที่บันทึกไว้ซึ่งจะยังคงอยู่ในแท็บ Depots รีสตาร์ท Steam หลังจากนั้นเพื่อให้การเปลี่ยนแปลงมีผล</value></data>
@@ -938,7 +912,7 @@ SHA-256 {3}
   <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>ถอนการติดตั้งเฉพาะไฟล์เกม</value></data>
   <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>ลบโฟลเดอร์ติดตั้งเกมและไฟล์ appmanifest ของ Steam โดยยังคงเก็บไฟล์ .lua และ .manifest ไว้</value></data>
   <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>ลบเฉพาะไฟล์ .lua</value></data>
-  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>ลบ config\stplug-in\{0}.lua โดยยังคงเก็บไฟล์เกม ไฟล์ .manifest และบิลด์ที่บันทึกไว้</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>ลบ config\stplug-in\{0}.lua (และ {0}.lua.disabled หากมี) โดยยังคงเก็บไฟล์เกม ไฟล์ .manifest และบิลด์ที่บันทึกไว้</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>ลบเฉพาะไฟล์ .manifest</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>ลบไฟล์ .manifest เฉพาะของเกมนี้ใน depotcache โดยยังคงเก็บไฟล์ .lua และ manifest ที่ใช้ร่วมกันไว้</value></data>
   <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>ลบไฟล์ .lua + .manifest</value></data>
@@ -964,4 +938,6 @@ SHA-256 {3}
   <data name="ViewMode_Grid" xml:space="preserve"><value>มุมมองตาราง</value></data>
   <data name="ViewMode_List" xml:space="preserve"><value>มุมมองรายการ</value></data>
   <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>โหมดมุมมองคลัง</value></data>
+  <data name="Cleanup_Err_OperationInProgress" xml:space="preserve"><value>{0} กำลังถูกดาวน์โหลด ติดตั้ง สำรองข้อมูล หรือกู้คืนอยู่ในขณะนี้ โปรดรอให้เสร็จแล้วลองอีกครั้ง</value></data>
+  <data name="Settings_ManifestBackup_Cancelled" xml:space="preserve"><value>ยกเลิกแล้ว เกมที่ประมวลผลไปแล้วยังคงถูกเก็บไว้</value></data>
 </root>

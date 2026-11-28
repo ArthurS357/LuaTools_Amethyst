@@ -144,6 +144,23 @@
                         Style="{StaticResource TextBodyStrong}"
                         Text="{x:Static res:Strings.Cleanup_ChooseScope}" />
 
+                    <!-- Known at inspection: why the scopes that delete game files are disabled (shared folder…) -->
+                    <Border
+                        Margin="{DynamicResource SpaceTop8}"
+                        Padding="{DynamicResource SpaceAll12}"
+                        AutomationProperties.LiveSetting="Polite"
+                        Background="{StaticResource WarningTintBrush}"
+                        BorderBrush="{StaticResource WarningOutlineBrush}"
+                        BorderThickness="1"
+                        CornerRadius="{DynamicResource RadiusMedium}"
+                        Visibility="{Binding GameFilesNotice, Converter={StaticResource NullToCollapsed}}">
+                        <TextBlock
+                            Foreground="{StaticResource TextSecondaryBrush}"
+                            Style="{StaticResource TextCaption}"
+                            Text="{Binding GameFilesNotice}"
+                            TextWrapping="Wrap" />
+                    </Border>
+
                     <!-- Manage 1: Uninstall game files only -->
                     <RadioButton
                         GroupName="CleanupScope"

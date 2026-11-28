@@ -256,4 +256,40 @@ public class ManifestFileTests : IDisposable
 
         ManifestFile.KeyLooksValid(path, RandomNumberGenerator.GetBytes(32)).Should().BeTrue();
     }
+
+    // ── creation_time (field 3) ───────────────────────────────────────────────
+
+    [Fact]
+    public void Reads_creation_time_from_raw_zipped_and_in_memory_bytes()
+    {
+        var expected = new DateTime(2025, 6, 1, 12, 30, 0, DateTimeKind.Utc);
+        ulong unix = (ulong)(expected - DateTime.UnixEpoch).TotalSeconds;
+        byte[] bytes = TestManifests.Build(depotId: 3003, gid: 9, creationTime: unix);
+
+        ManifestFile.TryRead(Write("raw.manifest", bytes))!.Value.CreationTimeUtc.Should().Be(expected);
+        ManifestFile.TryRead(WriteZipped("zip.manifest", bytes))!.Value.CreationTimeUtc.Should().Be(expected);
+        ManifestFile.TryRead(bytes)!.Value.Should().Be(new ManifestInfo(3003, false, 4096, 9, expected));
+    }
+
+    [Theory]
+    [InlineData(null)]               // field absent (older manifests): never a failure
+    [InlineData(0UL)]                // 1970: not a Steam build
+    [InlineData(1_000_000_000UL)]    // 2001: predates every Steam manifest
+    [InlineData(4_200_000_000UL)]    // 2103: corruption
+    [InlineData(ulong.MaxValue)]
+    public void An_absent_or_implausible_creation_time_is_null_and_the_rest_still_parses(ulong? unix)
+    {
+        byte[] bytes = TestManifests.Build(depotId: 3003, gid: 9, sizeOnDisk: 77, creationTime: unix);
+
+        var info = ManifestFile.TryRead(bytes);
+
+        info.Should().NotBeNull();
+        info!.Value.CreationTimeUtc.Should().BeNull();
+        info.Value.DepotId.Should().Be(3003);
+        info.Value.SizeOnDisk.Should().Be(77);
+    }
+
+    [Fact]
+    public void Garbage_bytes_yield_null_not_an_exception() =>
+        ManifestFile.TryRead([0x50, 0x4B, 0x03, 0x04, 0xFF]).Should().BeNull();
 }

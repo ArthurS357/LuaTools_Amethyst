@@ -91,7 +91,6 @@
   <data name="Settings_BotLink_Body" xml:space="preserve"><value>一時的な Discord アカウントでサインインしています。lua.tools でサインインし、もう一度 /login を実行してコードを入力すると、完全なアカウントにリンクできます。</value></data>
   <data name="Settings_BotLink_Dismiss" xml:space="preserve"><value>閉じる</value></data>
   <data name="Settings_LoginRequired" xml:space="preserve"><value>この操作にはログインが必要です。</value></data>
-  <data name="Settings_ManageKeyHintPrefix" xml:space="preserve"><value>Hubcap APIキーとプロフィールはこちらで管理：</value></data>
   <data name="Settings_Section_Hubcap" xml:space="preserve"><value>HUBCAP</value></data>
   <data name="Settings_HubcapKey" xml:space="preserve"><value>Hubcap APIキー</value></data>
   <data name="Settings_HubcapKey_Hint" xml:space="preserve"><value>あなたの個人用 Hubcap APIキーを貼り付けて Hubcap のマニフェストをアンロックします。アプリはあなたのキーで Hubcap に直接接続します。</value></data>
@@ -103,7 +102,6 @@
   <data name="Settings_HubcapKeyOkExpiry" xml:space="preserve"><value>本日 {0}/{1} · 有効期限 {2}</value></data>
   <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>有効なキーではないようです。</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>キーを確認できませんでした — 無効・期限切れ、または Hubcap に接続できない可能性があります。</value></data>
-  <data name="Settings_HubcapActive" xml:space="preserve"><value>有効</value></data>
   <data name="Settings_HubcapRefresh" xml:space="preserve"><value>更新</value></data>
   <data name="Settings_Language" xml:space="preserve"><value>言語</value></data>
   <data name="Settings_Language_Hint" xml:space="preserve"><value>アプリの表示言語を選択します。再起動後に適用されます。</value></data>
@@ -125,7 +123,6 @@
   <data name="Lang_Changed_Restart" xml:space="preserve"><value>今すぐ再起動</value></data>
   <data name="Home_Welcome" xml:space="preserve"><value>LuaTools Amethystへようこそ</value></data>
   <data name="Home_LuasOnBoard" xml:space="preserve"><value>登録済みのLua</value></data>
-  <data name="Home_LastAdded" xml:space="preserve"><value>最後に追加</value></data>
   <data name="Home_PluginStatus" xml:space="preserve"><value>プラグインの状態</value></data>
   <data name="Home_RecentlyAdded" xml:space="preserve"><value>最近追加</value></data>
   <data name="Home_ViewDetails" xml:space="preserve"><value>詳細を表示</value></data>
@@ -224,7 +221,6 @@
   <data name="Manage_Filter_SortBy" xml:space="preserve"><value>並べ替え</value></data>
   <data name="Manage_ClearFilters" xml:space="preserve"><value>フィルターをクリア</value></data>
   <data name="Manage_Select" xml:space="preserve"><value>選択</value></data>
-  <data name="Manage_DeleteThisLua" xml:space="preserve"><value>このluaを削除</value></data>
   <data name="Manage_ResultsPerPage" xml:space="preserve"><value>1ページあたりの件数</value></data>
   <data name="Manage_Action_ViewDetails" xml:space="preserve"><value>詳細を表示</value></data>
   <data name="Manage_Action_Update" xml:space="preserve"><value>更新 / 再ダウンロード</value></data>
@@ -236,7 +232,6 @@
   <data name="Manage_ActionsHeader" xml:space="preserve"><value>アクション</value></data>
   <data name="Manage_Steamless_Confirm_Title" xml:space="preserve"><value>Steam DRM を削除しますか？</value></data>
   <data name="Manage_Steamless_Confirm_Body" xml:space="preserve"><value>ゲームの実行ファイルに Steamless を実行して SteamStub DRM を除去します。元の .exe は先に .bak としてバックアップされます。一部のゲームでは後で Steam のファイル整合性確認が必要になる場合があります。続行しますか？</value></data>
-  <data name="Manage_Steamless_Working" xml:space="preserve"><value>Steam DRM を削除中…</value></data>
   <data name="Manage_Toast_Steamless_Done" xml:space="preserve"><value>{0} 件処理、{1} 件変更なし。</value></data>
   <data name="Manage_Steamless_NoInstall" xml:space="preserve"><value>ゲームフォルダーが見つかりません。インストールされていますか？</value></data>
   <data name="Manage_Steamless_Failed" xml:space="preserve"><value>DRM を削除できませんでした。{0}</value></data>
@@ -273,19 +268,11 @@
   <data name="Manage_Depot" xml:space="preserve"><value>デポ</value></data>
   <data name="Manage_SharedDepot" xml:space="preserve"><value>共有デポ</value></data>
   <data name="Manage_DlcName" xml:space="preserve"><value>DLC {0}</value></data>
-  <data name="Manage_Delete_Title" xml:space="preserve"><value>luaファイルを削除</value></data>
-  <data name="Manage_Delete_Body" xml:space="preserve"><value>「{0}」（App ID {1}）を削除しますか？
-
-これにより Steam\config\stplug-in からその .lua ファイルが削除されます。変更を反映するには、その後Steamを再起動してください。</value></data>
   <data name="Manage_DeleteMany_Title" xml:space="preserve"><value>luaファイルを削除</value></data>
   <data name="Manage_DeleteMany_Body" xml:space="preserve"><value>{0} 個のluaファイルを削除しますか？
 
 これにより Steam\config\stplug-in から .lua ファイルが削除されます。変更を反映するには、その後Steamを再起動してください。</value></data>
   <data name="Manage_RemoveFailed_Title" xml:space="preserve"><value>削除に失敗しました</value></data>
-  <data name="Manage_RemoveFailed_File" xml:space="preserve"><value>ファイルを削除できませんでした：
-{0}</value></data>
-  <data name="Manage_RemoveFailed_Named" xml:space="preserve"><value>「{0}」を削除できませんでした：
-{1}</value></data>
   <data name="Manage_RemoveFailed_Count" xml:space="preserve"><value>{0} 個のファイルを削除できませんでした。</value></data>
   <data name="Manage_RestartSteam_Title" xml:space="preserve"><value>Steamを再起動</value></data>
   <data name="Manage_RestartSteam_Ask" xml:space="preserve"><value>変更を反映するために今すぐSteamを再起動しますか？</value></data>
@@ -346,7 +333,6 @@
   <data name="Add_Err_BaseGame" xml:space="preserve"><value>このDLCのベースゲームを特定できませんでした</value></data>
   <data name="Add_Err_Generic" xml:space="preserve"><value>問題が発生しました — 接続を確認してもう一度お試しください。</value></data>
   <data name="Add_Err_Download" xml:space="preserve"><value>ダウンロードに失敗しました — 接続を確認してもう一度お試しください。</value></data>
-  <data name="Add_Err_Generate" xml:space="preserve"><value>生成に失敗しました — 接続を確認してもう一度お試しください。</value></data>
   <data name="Add_Confirm_Replace" xml:space="preserve"><value>「{0}」を置き換えますか？</value></data>
   <data name="Add_Confirm_NoChanges" xml:space="preserve"><value>デポ/DLCの変更なし — 同じ内容です。</value></data>
   <data name="Add_Status_Cancelled" xml:space="preserve"><value>インストールをキャンセルしました — 既存のファイルは変更されていません。</value></data>
@@ -377,7 +363,6 @@
   <data name="Plugin_CardTitle" xml:space="preserve"><value>ステータス</value></data>
   <data name="Plugin_Badge_UpdateAvailable" xml:space="preserve"><value>更新があります</value></data>
   <data name="Plugin_Row_InstalledVersion" xml:space="preserve"><value>インストール済みバージョン</value></data>
-  <data name="Plugin_Row_LatestVersion" xml:space="preserve"><value>最新バージョン</value></data>
   <data name="Plugin_Row_Frontend" xml:space="preserve"><value>フロントエンド</value></data>
   <data name="Plugin_Row_Loader" xml:space="preserve"><value>ローダー (winmm.dll)</value></data>
   <data name="Plugin_Millennium_Coexisting" xml:space="preserve"><value>Millennium を検出しました。LuaTools はそれと並行して動作します。インストールすると Millennium 側のこのプラグインのコピーが無効化され、LuaLoader のみが注入します。</value></data>
@@ -421,7 +406,6 @@
   <data name="Nav_Builds" xml:space="preserve"><value>デポ</value></data>
   <data name="Builds_Title" xml:space="preserve"><value>デポ</value></data>
   <data name="Builds_Subtitle" xml:space="preserve"><value>1 つのゲームに複数の lua を保存し、Steam が使うものを切り替えられます。</value></data>
-  <data name="Builds_NoSelection" xml:space="preserve"><value>左側でゲームを選ぶと、そのプリセットが表示されます。</value></data>
   <data name="Builds_ActiveBuild" xml:space="preserve"><value>使用中のプリセット</value></data>
   <data name="Builds_Active" xml:space="preserve"><value>使用中</value></data>
   <data name="Builds_Variant_Default" xml:space="preserve"><value>既定</value></data>
@@ -450,7 +434,6 @@
   <data name="Builds_Delete_ActiveTip" xml:space="preserve"><value>使用中のプリセットは削除できません。</value></data>
   <data name="Builds_Apply_Done" xml:space="preserve"><value>「{0}」に切り替えました。反映するには Steam を再起動してください。</value></data>
   <data name="Builds_Apply_Failed" xml:space="preserve"><value>プリセットを切り替えられませんでした — lua ファイルが使用中の可能性があります。</value></data>
-  <data name="Builds_Save_Done" xml:space="preserve"><value>保存しました。反映するには Steam を再起動してください。</value></data>
   <data name="Builds_Save_Failed" xml:space="preserve"><value>保存できませんでした — lua ファイルが使用中の可能性があります。</value></data>
   <data name="Builds_Preset_Saved" xml:space="preserve"><value>プリセットとして保存しました。</value></data>
   <data name="Builds_Action_SaveTo" xml:space="preserve"><value>「{0}」に保存</value></data>
@@ -509,7 +492,6 @@
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam を起動できませんでした。設定でその場所を指定して、もう一度お試しください。</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
   <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
-  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam のファイル</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool をインストールしました。読み込むため Steam を再起動しました。</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>AmethystTool のインストールに失敗しました: {0}</value></data>
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>最新の AmethystTool リリースは {0} を公開していません。</value></data>
@@ -557,7 +539,6 @@
   <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>ダウンロードに不足しているもの: {0}。</value></data>
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>どのリリースにも {0} が見つかりませんでした。</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} の検証に失敗しました (sha256 の不一致、または公開された digest がありません)。</value></data>
-  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>リリースに {0} が含まれていません。</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>トークンの交換に失敗しました ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>トークンの交換で空のセッションが返されました。</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>サインインしていません。</value></data>
@@ -630,8 +611,6 @@
   <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
   <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>フォルダーを追加…</value></data>
   <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>削除</value></data>
-  <data name="Saves_Note" xml:space="preserve"><value>Steam のゲームごとのフォルダー (userdata) をバックアップします。ドキュメントや AppData にセーブを保存するゲームは含まれません。</value></data>
-  <data name="Saves_Toast_Created" xml:space="preserve"><value>{0} ファイルをバックアップしました ({1})。</value></data>
   <data name="Saves_Toast_Restored" xml:space="preserve"><value>{0} ファイルを復元しました。以前のセーブのコピーは保持されています。</value></data>
   <data name="Saves_Toast_Deleted" xml:space="preserve"><value>バックアップを削除しました。</value></data>
   <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>このゲームのセーブは見つかりませんでした。「フォルダーを手動で追加…」で保存先のフォルダーを追加してください。</value></data>
@@ -700,7 +679,6 @@ SHA-256 {3}
   <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>アーカイブを検査済み</value></data>
   <data name="Download_Notice_Cancel" xml:space="preserve"><value>キャンセル</value></data>
   <data name="Download_Notice_Cancelled" xml:space="preserve"><value>何もインストールされる前にキャンセルされました。</value></data>
-  <data name="Builds_RemoveGame" xml:space="preserve"><value>ゲームを削除</value></data>
   <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>このゲームをデポの一覧から外します。lua ファイルと保存済みのビルドをすべて削除します。</value></data>
   <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>ゲームを削除</value></data>
   <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>{0} ({1}) をデポから削除しますか？
@@ -741,7 +719,6 @@ lua ファイル、その横にあるビルドの lua、保存済みのビルド
   <data name="About_What_Header" xml:space="preserve"><value>これは何か</value></data>
   <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst は、プライバシーを重視した LuaTools のコミュニティフォークです。元のビルドが行うアナリティクスの ping とキーの寄付アップロードを取り除き、すべてのダウンロードを HTTPS で行い、Amethyst パープルのテーマを備えています。</value></data>
   <data name="About_Version_Header" xml:space="preserve"><value>バージョン</value></data>
-  <data name="About_Repo_Header" xml:space="preserve"><value>リポジトリ</value></data>
   <data name="About_Updates_Header" xml:space="preserve"><value>更新</value></data>
   <data name="About_Updates_Enabled" xml:space="preserve"><value>自動更新は ON です。LuaTools Amethyst は起動時に下のリポジトリを確認し、バックグラウンドで更新をインストールします。</value></data>
   <data name="About_Updates_Disabled" xml:space="preserve"><value>自動更新は OFF です — 更新リクエストは行われません。オンにするには settings.json に "AppUpdateRepos" を追加するか、下のリポジトリから手動で更新してください。</value></data>
@@ -896,9 +873,6 @@ lua ファイル、その横にあるビルドの lua、保存済みのビルド
   <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>カスタムモードを有効化しました</value></data>
   <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>LuaTools Amethyst は今後 Steam の DLL を変更せず、config\stplug-in 内の .lua ファイルのみを管理します。</value></data>
   <data name="Home_CustomActive" xml:space="preserve"><value>カスタム · ユーザー管理</value></data>
-  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>「{0}」（App ID {1}）を削除しますか？
-
-Steam\config\stplug-in 内の有効な .lua ファイルのみが削除されます。このゲームの保存済みビルドは Depots タブに残ります。変更を反映するには Steam を再起動してください。</value></data>
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>{0} 件の .lua ファイルを削除しますか？
 
 Steam\config\stplug-in 内の有効な .lua ファイルのみが削除されます。このうち {1} 件のゲームには保存済みビルドがあり、Depots タブに残ります。変更を反映するには Steam を再起動してください。</value></data>
@@ -938,7 +912,7 @@ Steam\config\stplug-in 内の有効な .lua ファイルのみが削除されま
   <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>ゲームファイルのみをアンインストール</value></data>
   <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>ゲームのインストールフォルダと Steam の appmanifest を削除します。.lua と .manifest ファイルは保持されます。</value></data>
   <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>.lua ファイルのみを削除</value></data>
-  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>config\stplug-in\{0}.lua を削除します。ゲームファイル、.manifest ファイル、保存済みビルドは保持されます。</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>config\stplug-in\{0}.lua(存在する場合は {0}.lua.disabled も)を削除します。ゲームファイル、.manifest ファイル、保存済みビルドは保持されます。</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>.manifest ファイルのみを削除</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>depotcache 内のこのゲーム専用 .manifest ファイルを削除します。.lua ファイルと共有マニフェストは保持されます。</value></data>
   <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>.lua + .manifest ファイルを削除</value></data>
@@ -964,4 +938,6 @@ Steam\config\stplug-in 内の有効な .lua ファイルのみが削除されま
   <data name="ViewMode_Grid" xml:space="preserve"><value>グリッド表示</value></data>
   <data name="ViewMode_List" xml:space="preserve"><value>リスト表示</value></data>
   <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>ライブラリ表示モード</value></data>
+  <data name="Cleanup_Err_OperationInProgress" xml:space="preserve"><value>{0} は現在、ダウンロード、インストール、バックアップ、または復元の処理中です。完了してからもう一度お試しください。</value></data>
+  <data name="Settings_ManifestBackup_Cancelled" xml:space="preserve"><value>キャンセルしました。処理済みのゲームは保持されています。</value></data>
 </root>

@@ -161,6 +161,10 @@ public sealed class DownloadQueue : IHostedService
         return item;
     });
 
+    /// <summary>True while any queued/running/paused item targets <paramref name="appId"/> (marshalled to the UI
+    /// thread, where <see cref="Items"/> lives).</summary>
+    public bool HasActiveFor(long appId) => _dispatcher.Invoke(() => Items.Any(i => i.IsActive && i.AppId == appId));
+
     /// <summary>The in-flight item for a dedupe key, or null.</summary>
     public DownloadItem? FindActive(string dedupeKey) => _dispatcher.Invoke(() => FindActiveCore(dedupeKey));
 

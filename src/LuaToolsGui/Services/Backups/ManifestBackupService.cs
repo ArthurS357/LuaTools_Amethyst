@@ -78,6 +78,29 @@ public sealed class ManifestBackupService : IDisposable
 
     /// <summary>Restores in flight, by appid: a second request for the same game joins the first.</summary>
     private readonly ConcurrentDictionary<long, Lazy<Task<ManifestBackupRestoreResult>>> _restoring = new();
+    private readonly ConcurrentDictionary<long, int> _pendingBackups = new(); // post-install backups not finished yet
+    private int _batchRuns;
+
+    /// <summary>
+    /// True while this service is restoring <paramref name="appId"/>, still has its post-install backup pending,
+    /// or a "back up all" pass is reading every game. Game cleanup refuses then (fail-closed) instead of deleting
+    /// files a backup is copying or a restore is installing.
+    /// </summary>
+    public bool IsBusyWith(long appId) =>
+        Volatile.Read(ref _batchRuns) > 0 || _restoring.ContainsKey(appId) || _pendingBackups.ContainsKey(appId);
+
+    private void MarkPending(long appId) => _pendingBackups.AddOrUpdate(appId, 1, static (_, n) => n + 1);
+
+    private void UnmarkPending(long appId)
+    {
+        while (_pendingBackups.TryGetValue(appId, out int n))
+        {
+            bool done = n <= 1
+                ? _pendingBackups.TryRemove(KeyValuePair.Create(appId, n))
+                : _pendingBackups.TryUpdate(appId, n - 1, n);
+            if (done) return;
+        }
+    }
 
     public void Dispose()
     {
@@ -109,14 +132,19 @@ public sealed class ManifestBackupService : IDisposable
             return null;
 
         using var linked = CancellationTokenSource.CreateLinkedTokenSource(ct, ShutdownToken);
-        await _gate.WaitAsync(linked.Token);
+        Interlocked.Increment(ref _batchRuns);
         try
         {
-            return await Task.Run(
-                () => ManifestBackupStore.BackupAll(plug, depot, dest, _appList.GetName, progress, linked.Token),
-                linked.Token);
+            await _gate.WaitAsync(linked.Token);
+            try
+            {
+                return await Task.Run(
+                    () => ManifestBackupStore.BackupAll(plug, depot, dest, _appList.GetName, progress, linked.Token),
+                    linked.Token);
+            }
+            finally { _gate.Release(); }
         }
-        finally { _gate.Release(); }
+        finally { Interlocked.Decrement(ref _batchRuns); }
     }
 
     /// <summary><see cref="LuaInstaller.Installed"/> handler: queue a background backup of that game.</summary>
@@ -125,6 +153,7 @@ public sealed class ManifestBackupService : IDisposable
         // Path-only check here: this runs inside the install, on whatever thread installed. The disk-touching
         // ActiveFolder check happens on the pool thread below.
         if (ShutdownToken.IsCancellationRequested || !IsConfigured) return;
+        MarkPending(appId); // before the hop: a cleanup right after the install already sees it
         _ = Task.Run(() => BackupAfterInstallAsync(appId));
     }
 
@@ -156,6 +185,10 @@ public sealed class ManifestBackupService : IDisposable
         catch (Exception ex)
         {
             Warn(appId, ex.Message); // a thread-pool task: an escaping exception would go unobserved
+        }
+        finally
+        {
+            UnmarkPending(appId);
         }
     }
 

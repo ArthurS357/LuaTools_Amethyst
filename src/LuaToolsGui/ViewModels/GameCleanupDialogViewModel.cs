@@ -31,6 +31,7 @@ public sealed partial class GameCleanupDialogViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(ShowEverythingOption))]
     [NotifyPropertyChangedFor(nameof(ShowManifestsOnlyOption))]
     [NotifyPropertyChangedFor(nameof(ShowSizeLine))]
+    [NotifyPropertyChangedFor(nameof(GameFilesNotice))]
     private GameCleanupDialogMode _mode = GameCleanupDialogMode.Manage;
 
     [ObservableProperty]
@@ -53,6 +54,7 @@ public sealed partial class GameCleanupDialogViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(CanSelectLuaAndManifests))]
     [NotifyPropertyChangedFor(nameof(CanSelectManifestsOnly))]
     [NotifyPropertyChangedFor(nameof(CanSelectEverything))]
+    [NotifyPropertyChangedFor(nameof(GameFilesNotice))]
     [NotifyPropertyChangedFor(nameof(ShowSizeLine))]
     [NotifyPropertyChangedFor(nameof(SizeLabel))]
     [NotifyPropertyChangedFor(nameof(CanConfirm))]
@@ -80,11 +82,18 @@ public sealed partial class GameCleanupDialogViewModel : ObservableObject
     public bool ShowEverythingOption => Mode == GameCleanupDialogMode.Manage;
     public bool ShowManifestsOnlyOption => Mode == GameCleanupDialogMode.Depots;
 
-    public bool CanSelectGameOnly => Availability.HasInstalledGame;
+    public bool CanSelectGameOnly => Availability.HasInstalledGame && !Availability.GameFilesBlocked;
     public bool CanSelectLuaOnly => Availability.HasActiveLua;
     public bool CanSelectLuaAndManifests => Availability.HasActiveLua || Availability.HasStoredBuilds || Availability.HasInstalledGame;
     public bool CanSelectManifestsOnly => Availability.HasActiveLua || Availability.HasStoredBuilds || Availability.HasInstalledGame;
-    public bool CanSelectEverything => Availability.HasActiveLua || Availability.HasInstalledGame || Availability.HasStoredBuilds;
+    public bool CanSelectEverything =>
+        (Availability.HasActiveLua || Availability.HasInstalledGame || Availability.HasStoredBuilds) && !Availability.GameFilesBlocked;
+
+    /// <summary>Shown on open when the scopes that delete game files are disabled, saying why (Manage only:
+    /// Depots never offers them). Null = nothing to explain.</summary>
+    public string? GameFilesNotice => Mode == GameCleanupDialogMode.Manage && Availability.GameFilesBlocked
+        ? GameCleanupMessages.DescribeBlock(GameName, Availability.GameFilesBlockedBy)
+        : null;
 
     public bool ShowSizeLine =>
         Mode == GameCleanupDialogMode.Manage && (IsInspecting || Availability.EstimatedGameBytes is > 0);
@@ -179,7 +188,7 @@ public sealed partial class GameCleanupDialogViewModel : ObservableObject
     private static GameCleanupScope PickDefaultScope(GameCleanupDialogMode mode, GameCleanupAvailability a) =>
         mode == GameCleanupDialogMode.Manage
             ? a.HasActiveLua ? GameCleanupScope.LuaOnly
-            : a.HasInstalledGame ? GameCleanupScope.GameFilesOnly
+            : a.HasInstalledGame && !a.GameFilesBlocked ? GameCleanupScope.GameFilesOnly
             : GameCleanupScope.LuaAndManifests
             : a.HasActiveLua ? GameCleanupScope.LuaAndManifests
             : GameCleanupScope.ManifestsOnly;

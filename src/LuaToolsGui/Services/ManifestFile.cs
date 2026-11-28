@@ -25,8 +25,13 @@ namespace LuaToolsGui.Services;
 /// lets a cached <c>&lt;depot&gt;_&lt;gid&gt;.manifest</c> be CHECKED against its name rather than trusted
 /// because it exists.
 /// </param>
+/// <param name="CreationTimeUtc">
+/// When Steam built this manifest (<c>creation_time</c>, field 3, unix seconds from Steam's servers). Unlike a
+/// file's write time it travels with the bytes and ignores the local clock, so it orders builds across PCs.
+/// Null when the field is absent or implausible (see <see cref="ManifestFile.ToCreationTime"/>).
+/// </param>
 internal readonly record struct ManifestInfo(
-    long DepotId, bool FilenamesEncrypted, long SizeOnDisk, ulong GidManifest);
+    long DepotId, bool FilenamesEncrypted, long SizeOnDisk, ulong GidManifest, DateTime? CreationTimeUtc = null);
 
 /// <summary>
 /// Minimal reader for Steam's depot manifest format. Local, allocation-light, no network, nothing beyond
@@ -52,6 +57,7 @@ internal static class ManifestFile
     // ContentManifestMetadata field numbers (DepotDownloader's manifest.proto).
     private const int FieldDepotId = 1;
     private const int FieldGidManifest = 2;
+    private const int FieldCreationTime = 3;
     private const int FieldFilenamesEncrypted = 4;
     private const int FieldSizeOnDisk = 5;
 
@@ -86,6 +92,26 @@ internal static class ManifestFile
         {
             return false; // cannot prove it is a manifest, so it isn't one
         }
+    }
+
+    // Fixed, clock-independent bounds for a plausible creation_time: no Steam manifest predates 2003, and a value
+    // past 2100 is corruption, not a build. Deterministic on purpose: comparing to "now" would let a skewed clock in.
+    internal static readonly DateTime MinCreationTimeUtc = new(2003, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+    internal static readonly DateTime MaxCreationTimeUtc = new(2100, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+    /// <summary>A <c>creation_time</c> value as UTC, or null when it cannot be a real build time.</summary>
+    internal static DateTime? ToCreationTime(ulong unixSeconds)
+    {
+        if (unixSeconds >= (ulong)(MaxCreationTimeUtc - DateTime.UnixEpoch).TotalSeconds) return null;
+        var utc = DateTime.UnixEpoch.AddSeconds(unixSeconds);
+        return utc >= MinCreationTimeUtc ? utc : null;
+    }
+
+    /// <summary>Metadata of manifest bytes already in memory (raw or zipped), or null if unparseable.</summary>
+    public static ManifestInfo? TryRead(byte[] data)
+    {
+        try { return ParseMetadata(FindSection(Unwrap(data), MetadataMagic)); }
+        catch (InvalidDataException) { return null; }
     }
 
     /// <summary>Read a manifest's metadata, or null if the file is missing or unparseable.</summary>
@@ -395,6 +421,7 @@ internal static class ManifestFile
         long depotId = 0, size = 0;
         ulong gid = 0;
         bool encrypted = false;
+        DateTime? created = null;
 
         int o = 0;
         while (o < meta.Length)
@@ -407,6 +434,7 @@ internal static class ManifestFile
                 {
                     case FieldDepotId: depotId = (long)v; break;
                     case FieldGidManifest: gid = v; break;
+                    case FieldCreationTime: created = ToCreationTime(v); break;
                     case FieldFilenamesEncrypted: encrypted = v != 0; break;
                     case FieldSizeOnDisk: size = (long)v; break;
                     default: break;
@@ -415,7 +443,7 @@ internal static class ManifestFile
             else if (!SkipField(meta, ref o, wire)) return null;
         }
 
-        return new ManifestInfo(depotId, encrypted, size, gid);
+        return new ManifestInfo(depotId, encrypted, size, gid, created);
     }
 
     private static bool ReadTag(byte[] d, ref int o, out int field, out int wire)

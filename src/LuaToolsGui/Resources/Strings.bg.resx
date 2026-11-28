@@ -91,7 +91,6 @@
   <data name="Settings_BotLink_Body" xml:space="preserve"><value>Влезли сте с временен Discord акаунт. Влезте в lua.tools, след това изпълнете /login отново и въведете кода, за да свържете пълния си акаунт.</value></data>
   <data name="Settings_BotLink_Dismiss" xml:space="preserve"><value>Отхвърляне</value></data>
   <data name="Settings_LoginRequired" xml:space="preserve"><value>За това действие е необходимо влизане.</value></data>
-  <data name="Settings_ManageKeyHintPrefix" xml:space="preserve"><value>Управлявайте своя Hubcap API ключ и профил на</value></data>
   <data name="Settings_Section_Hubcap" xml:space="preserve"><value>HUBCAP</value></data>
   <data name="Settings_HubcapKey" xml:space="preserve"><value>Ключ за API на Hubcap</value></data>
   <data name="Settings_HubcapKey_Hint" xml:space="preserve"><value>Поставете личния си ключ за API на Hubcap, за да отключите манифестите на Hubcap. Приложението се свързва с Hubcap директно с вашия ключ.</value></data>
@@ -103,7 +102,6 @@
   <data name="Settings_HubcapKeyOkExpiry" xml:space="preserve"><value>{0}/{1} днес · изтича на {2}</value></data>
   <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>Това не прилича на валиден ключ.</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>Ключът не можа да бъде проверен — може да е невалиден, изтекъл или Hubcap е недостъпен.</value></data>
-  <data name="Settings_HubcapActive" xml:space="preserve"><value>Активен</value></data>
   <data name="Settings_HubcapRefresh" xml:space="preserve"><value>Обновяване</value></data>
   <data name="Settings_Language" xml:space="preserve"><value>Език</value></data>
   <data name="Settings_Language_Hint" xml:space="preserve"><value>Изберете езика на приложението. Прилага се след рестартиране.</value></data>
@@ -125,7 +123,6 @@
   <data name="Lang_Changed_Restart" xml:space="preserve"><value>Рестартиране сега</value></data>
   <data name="Home_Welcome" xml:space="preserve"><value>Добре дошли в LuaTools Amethyst</value></data>
   <data name="Home_LuasOnBoard" xml:space="preserve"><value>Lua на борда</value></data>
-  <data name="Home_LastAdded" xml:space="preserve"><value>ПОСЛЕДНО ДОБАВЕНО</value></data>
   <data name="Home_PluginStatus" xml:space="preserve"><value>Състояние на плъгина</value></data>
   <data name="Home_RecentlyAdded" xml:space="preserve"><value>Наскоро добавени</value></data>
   <data name="Home_ViewDetails" xml:space="preserve"><value>Преглед на детайли</value></data>
@@ -224,7 +221,6 @@
   <data name="Manage_Filter_SortBy" xml:space="preserve"><value>Подреждане по</value></data>
   <data name="Manage_ClearFilters" xml:space="preserve"><value>Изчистване на филтрите</value></data>
   <data name="Manage_Select" xml:space="preserve"><value>Избор</value></data>
-  <data name="Manage_DeleteThisLua" xml:space="preserve"><value>Изтриване на този lua</value></data>
   <data name="Manage_ResultsPerPage" xml:space="preserve"><value>Резултати на страница</value></data>
   <data name="Manage_Action_ViewDetails" xml:space="preserve"><value>Преглед на детайли</value></data>
   <data name="Manage_Action_Update" xml:space="preserve"><value>Обновяване / повторно изтегляне</value></data>
@@ -236,7 +232,6 @@
   <data name="Manage_ActionsHeader" xml:space="preserve"><value>Действия</value></data>
   <data name="Manage_Steamless_Confirm_Title" xml:space="preserve"><value>Да се премахне ли DRM на Steam?</value></data>
   <data name="Manage_Steamless_Confirm_Body" xml:space="preserve"><value>Това стартира Steamless върху изпълнимия файл на играта, за да премахне DRM SteamStub. Оригиналният .exe първо се архивира като .bak. Някои игри може да изискват след това проверка на файловете в Steam. Да се продължи ли?</value></data>
-  <data name="Manage_Steamless_Working" xml:space="preserve"><value>Премахване на DRM на Steam…</value></data>
   <data name="Manage_Toast_Steamless_Done" xml:space="preserve"><value>{0} обработени, {1} без промяна.</value></data>
   <data name="Manage_Steamless_NoInstall" xml:space="preserve"><value>Папката на играта не е намерена — инсталирана ли е?</value></data>
   <data name="Manage_Steamless_Failed" xml:space="preserve"><value>DRM не можа да бъде премахнат. {0}</value></data>
@@ -273,19 +268,11 @@
   <data name="Manage_Depot" xml:space="preserve"><value>Депо</value></data>
   <data name="Manage_SharedDepot" xml:space="preserve"><value>Споделено депо</value></data>
   <data name="Manage_DlcName" xml:space="preserve"><value>DLC {0}</value></data>
-  <data name="Manage_Delete_Title" xml:space="preserve"><value>Премахване на lua файл</value></data>
-  <data name="Manage_Delete_Body" xml:space="preserve"><value>Премахване на „{0}“ (App ID {1})?
-
-Това изтрива неговия .lua файл от Steam\config\stplug-in. След това рестартирайте Steam, за да влезе в сила промяната.</value></data>
   <data name="Manage_DeleteMany_Title" xml:space="preserve"><value>Премахване на lua файлове</value></data>
   <data name="Manage_DeleteMany_Body" xml:space="preserve"><value>Премахване на {0} lua файла?
 
 Това изтрива .lua файловете от Steam\config\stplug-in. След това рестартирайте Steam, за да влязат в сила промените.</value></data>
   <data name="Manage_RemoveFailed_Title" xml:space="preserve"><value>Премахването е неуспешно</value></data>
-  <data name="Manage_RemoveFailed_File" xml:space="preserve"><value>Файлът не може да бъде изтрит:
-{0}</value></data>
-  <data name="Manage_RemoveFailed_Named" xml:space="preserve"><value>„{0}“ не може да бъде изтрит:
-{1}</value></data>
   <data name="Manage_RemoveFailed_Count" xml:space="preserve"><value>{0} файла не можаха да бъдат изтрити.</value></data>
   <data name="Manage_RestartSteam_Title" xml:space="preserve"><value>Рестартиране на Steam</value></data>
   <data name="Manage_RestartSteam_Ask" xml:space="preserve"><value>Рестартиране на Steam сега, за да влязат в сила промените?</value></data>
@@ -346,7 +333,6 @@
   <data name="Add_Err_BaseGame" xml:space="preserve"><value>Не може да се определи основната игра за това DLC</value></data>
   <data name="Add_Err_Generic" xml:space="preserve"><value>Нещо се обърка — проверете връзката си и опитайте отново.</value></data>
   <data name="Add_Err_Download" xml:space="preserve"><value>Изтеглянето е неуспешно — проверете връзката си и опитайте отново.</value></data>
-  <data name="Add_Err_Generate" xml:space="preserve"><value>Генерирането е неуспешно — проверете връзката си и опитайте отново.</value></data>
   <data name="Add_Confirm_Replace" xml:space="preserve"><value>Замяна на „{0}“?</value></data>
   <data name="Add_Confirm_NoChanges" xml:space="preserve"><value>Няма промени в депо/DLC — същото съдържание.</value></data>
   <data name="Add_Status_Cancelled" xml:space="preserve"><value>Инсталирането е отказано — съществуващите файлове са непроменени.</value></data>
@@ -377,7 +363,6 @@
   <data name="Plugin_CardTitle" xml:space="preserve"><value>Състояние</value></data>
   <data name="Plugin_Badge_UpdateAvailable" xml:space="preserve"><value>Налично обновление</value></data>
   <data name="Plugin_Row_InstalledVersion" xml:space="preserve"><value>Инсталирана версия</value></data>
-  <data name="Plugin_Row_LatestVersion" xml:space="preserve"><value>Най-нова версия</value></data>
   <data name="Plugin_Row_Frontend" xml:space="preserve"><value>Интерфейс</value></data>
   <data name="Plugin_Row_Loader" xml:space="preserve"><value>Зареждащ модул (winmm.dll)</value></data>
   <data name="Plugin_Millennium_Coexisting" xml:space="preserve"><value>Открит е Millennium — LuaTools работи заедно с него. Инсталирането изключва собственото копие на този плъгин в Millennium, така че само LuaLoader да инжектира.</value></data>
@@ -421,7 +406,6 @@
   <data name="Nav_Builds" xml:space="preserve"><value>Депота</value></data>
   <data name="Builds_Title" xml:space="preserve"><value>Депота</value></data>
   <data name="Builds_Subtitle" xml:space="preserve"><value>Пазете няколко версии на lua файла на дадена игра и избирайте коя използва Steam.</value></data>
-  <data name="Builds_NoSelection" xml:space="preserve"><value>Изберете игра отляво, за да видите нейните настройки.</value></data>
   <data name="Builds_ActiveBuild" xml:space="preserve"><value>Активна настройка</value></data>
   <data name="Builds_Active" xml:space="preserve"><value>АКТИВНА</value></data>
   <data name="Builds_Variant_Default" xml:space="preserve"><value>По подразбиране</value></data>
@@ -450,7 +434,6 @@
   <data name="Builds_Delete_ActiveTip" xml:space="preserve"><value>Настройката, която се използва в момента, не може да бъде изтрита.</value></data>
   <data name="Builds_Apply_Done" xml:space="preserve"><value>Сега се използва „{0}“. Рестартирайте Steam, за да влезе в сила.</value></data>
   <data name="Builds_Apply_Failed" xml:space="preserve"><value>Настройката не можа да бъде сменена — lua файлът може да е зает.</value></data>
-  <data name="Builds_Save_Done" xml:space="preserve"><value>Запазено. Рестартирайте Steam, за да влезе в сила.</value></data>
   <data name="Builds_Save_Failed" xml:space="preserve"><value>Запазването е неуспешно — lua файлът може да е зает.</value></data>
   <data name="Builds_Preset_Saved" xml:space="preserve"><value>Запазено като предварителна настройка.</value></data>
   <data name="Builds_Action_SaveTo" xml:space="preserve"><value>Запази в „{0}“</value></data>
@@ -509,7 +492,6 @@
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam не можа да бъде стартиран. Задайте местоположението му в Настройки и опитайте отново.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
   <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
-  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Файлове на Steam</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool е инсталиран. Steam беше рестартиран, за да го зареди.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Инсталирането на AmethystTool се провали: {0}</value></data>
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Най-новото издание на AmethystTool не публикува {0}.</value></data>
@@ -557,7 +539,6 @@
   <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>В изтеглянето липсва: {0}.</value></data>
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>{0} не може да бъде намерен в нито една версия.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} не премина проверката (несъответствие на sha256 или няма публикуван digest).</value></data>
-  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Във версията липсва {0}.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Размяната на токена е неуспешна ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Размяната на токена върна празна сесия.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Не сте влезли.</value></data>
@@ -630,8 +611,6 @@
   <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
   <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Добави папка…</value></data>
   <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Премахни</value></data>
-  <data name="Saves_Note" xml:space="preserve"><value>Архивира папката на Steam за всяка игра (userdata). Игрите, които пазят записите си в Документи или AppData, не са включени.</value></data>
-  <data name="Saves_Toast_Created" xml:space="preserve"><value>Архивирани файлове: {0}, {1}.</value></data>
   <data name="Saves_Toast_Restored" xml:space="preserve"><value>Възстановени файлове: {0}. Запазено е копие на предишните записи.</value></data>
   <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Резервното копие е изтрито.</value></data>
   <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Не са намерени записи за тази игра. Добавете папката, в която ги пази, чрез „Добави папка ръчно…“.</value></data>
@@ -700,7 +679,6 @@ SHA-256 {3}
   <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>архивът е проверен</value></data>
   <data name="Download_Notice_Cancel" xml:space="preserve"><value>Отказ</value></data>
   <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Отменено, преди нещо да бъде инсталирано.</value></data>
-  <data name="Builds_RemoveGame" xml:space="preserve"><value>Премахване на играта</value></data>
   <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Маха тази игра от списъка с депа. Изтрива файловете ѝ lua и всички запазени билдове.</value></data>
   <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Премахване на играта</value></data>
   <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>Да се премахне ли {0} ({1}) от депата?
@@ -741,7 +719,6 @@ SHA-256 {3}
   <data name="About_What_Header" xml:space="preserve"><value>Какво е това</value></data>
   <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst е общностен форк на LuaTools, фокусиран върху поверителността. Премахва аналитичния пинг и изпращането на ключове, които прави оригиналната версия, държи всички изтегляния през HTTPS и носи лилавата тема Amethyst.</value></data>
   <data name="About_Version_Header" xml:space="preserve"><value>Версия</value></data>
-  <data name="About_Repo_Header" xml:space="preserve"><value>Хранилище</value></data>
   <data name="About_Updates_Header" xml:space="preserve"><value>Обновявания</value></data>
   <data name="About_Updates_Enabled" xml:space="preserve"><value>Автоматичните обновявания са ВКЛЮЧЕНИ. LuaTools Amethyst проверява хранилището по-долу при стартиране и инсталира обновяванията във фонов режим.</value></data>
   <data name="About_Updates_Disabled" xml:space="preserve"><value>Автоматичните обновявания са ИЗКЛЮЧЕНИ — не се прави заявка за обновяване. Добавете „AppUpdateRepos“ в settings.json, за да ги включите, или обновявайте ръчно от хранилището по-долу.</value></data>
@@ -896,9 +873,6 @@ SHA-256 {3}
   <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Персонализираният режим е активен</value></data>
   <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>LuaTools Amethyst вече ще управлява само .lua файловете в config\stplug-in без да променя DLL файлове на Steam.</value></data>
   <data name="Home_CustomActive" xml:space="preserve"><value>Персонализиран · управляван от вас</value></data>
-  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>Премахване на „{0}“ (App ID {1})?
-
-Това изтрива само активния му .lua файл от Steam\config\stplug-in. Запазените версии за тази игра ще останат налични в раздела Depots. Рестартирайте Steam след това, за да влезе промяната в сила.</value></data>
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Премахване на {0} .lua файла?
 
 Това изтрива само активните .lua файлове от Steam\config\stplug-in. {1} от тези игри имат запазени версии, които ще останат налични в раздела Depots. Рестартирайте Steam след това, за да влязат промените в сила.</value></data>
@@ -938,7 +912,7 @@ SHA-256 {3}
   <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>Деинсталирай само файловете на играта</value></data>
   <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>Изтрива папката с инсталацията на играта и appmanifest на Steam. Запазва файловете .lua и .manifest.</value></data>
   <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>Премахни само .lua файла</value></data>
-  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Изтрива config\stplug-in\{0}.lua. Запазва файловете на играта, файловете .manifest и запазените билдове.</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Изтрива config\stplug-in\{0}.lua (и {0}.lua.disabled, ако съществува). Запазва файловете на играта, файловете .manifest и запазените билдове.</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>Премахни само .manifest файловете</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>Изтрива изключителните .manifest файлове за тази игра в depotcache. Запазва .lua файла и споделените манифести.</value></data>
   <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>Премахни .lua + .manifest файлове</value></data>
@@ -964,4 +938,6 @@ SHA-256 {3}
   <data name="ViewMode_Grid" xml:space="preserve"><value>Изглед в мрежа</value></data>
   <data name="ViewMode_List" xml:space="preserve"><value>Изглед в списък</value></data>
   <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Режим на изглед на библиотеката</value></data>
+  <data name="Cleanup_Err_OperationInProgress" xml:space="preserve"><value>{0} в момента се изтегля, инсталира, архивира или възстановява. Изчакайте да приключи и опитайте отново.</value></data>
+  <data name="Settings_ManifestBackup_Cancelled" xml:space="preserve"><value>Отменено. Вече обработените игри са запазени.</value></data>
 </root>

@@ -91,7 +91,6 @@
   <data name="Settings_BotLink_Body" xml:space="preserve"><value>Ideiglenes Discord-fiókkal vagy bejelentkezve. Jelentkezz be a lua.tools oldalon, majd futtasd újra a /login parancsot, és add meg a kódot a teljes fiókod összekapcsolásához.</value></data>
   <data name="Settings_BotLink_Dismiss" xml:space="preserve"><value>Elvetés</value></data>
   <data name="Settings_LoginRequired" xml:space="preserve"><value>Ehhez a művelethez bejelentkezés szükséges.</value></data>
-  <data name="Settings_ManageKeyHintPrefix" xml:space="preserve"><value>Kezeld a Hubcap API-kulcsodat és profilodat itt:</value></data>
   <data name="Settings_Section_Hubcap" xml:space="preserve"><value>HUBCAP</value></data>
   <data name="Settings_HubcapKey" xml:space="preserve"><value>Hubcap API-kulcs</value></data>
   <data name="Settings_HubcapKey_Hint" xml:space="preserve"><value>Illeszd be a személyes Hubcap API-kulcsodat a Hubcap manifesztek feloldásához. Az alkalmazás a kulcsoddal közvetlenül a Hubcaphez csatlakozik.</value></data>
@@ -103,7 +102,6 @@
   <data name="Settings_HubcapKeyOkExpiry" xml:space="preserve"><value>{0}/{1} ma · lejár: {2}</value></data>
   <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>Ez nem tűnik érvényes kulcsnak.</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>A kulcs nem ellenőrizhető — lehet, hogy érvénytelen, lejárt, vagy a Hubcap nem elérhető.</value></data>
-  <data name="Settings_HubcapActive" xml:space="preserve"><value>Aktív</value></data>
   <data name="Settings_HubcapRefresh" xml:space="preserve"><value>Frissítés</value></data>
   <data name="Settings_Language" xml:space="preserve"><value>Nyelv</value></data>
   <data name="Settings_Language_Hint" xml:space="preserve"><value>Válaszd ki az alkalmazás megjelenítési nyelvét. Újraindítás után lép érvénybe.</value></data>
@@ -125,7 +123,6 @@
   <data name="Lang_Changed_Restart" xml:space="preserve"><value>Újraindítás most</value></data>
   <data name="Home_Welcome" xml:space="preserve"><value>Üdvözöl a LuaTools Amethyst</value></data>
   <data name="Home_LuasOnBoard" xml:space="preserve"><value>Hozzáadott Luák</value></data>
-  <data name="Home_LastAdded" xml:space="preserve"><value>UTOLJÁRA HOZZÁADVA</value></data>
   <data name="Home_PluginStatus" xml:space="preserve"><value>Bővítmény állapota</value></data>
   <data name="Home_RecentlyAdded" xml:space="preserve"><value>Nemrég hozzáadott</value></data>
   <data name="Home_ViewDetails" xml:space="preserve"><value>Részletek megtekintése</value></data>
@@ -224,7 +221,6 @@
   <data name="Manage_Filter_SortBy" xml:space="preserve"><value>Rendezés</value></data>
   <data name="Manage_ClearFilters" xml:space="preserve"><value>Szűrők törlése</value></data>
   <data name="Manage_Select" xml:space="preserve"><value>Kijelölés</value></data>
-  <data name="Manage_DeleteThisLua" xml:space="preserve"><value>Lua törlése</value></data>
   <data name="Manage_ResultsPerPage" xml:space="preserve"><value>Találat oldalanként</value></data>
   <data name="Manage_Action_ViewDetails" xml:space="preserve"><value>Részletek megtekintése</value></data>
   <data name="Manage_Action_Update" xml:space="preserve"><value>Frissítés / újraletöltés</value></data>
@@ -236,7 +232,6 @@
   <data name="Manage_ActionsHeader" xml:space="preserve"><value>Műveletek</value></data>
   <data name="Manage_Steamless_Confirm_Title" xml:space="preserve"><value>Eltávolítja a Steam DRM-et?</value></data>
   <data name="Manage_Steamless_Confirm_Body" xml:space="preserve"><value>Ez lefuttatja a Steamlesst a játék futtatható fájlján a SteamStub DRM eltávolításához. Az eredeti .exe előbb .bak néven biztonsági mentésre kerül. Egyes játékoknál utána fájlellenőrzés lehet szükséges a Steamben. Folytatja?</value></data>
-  <data name="Manage_Steamless_Working" xml:space="preserve"><value>Steam DRM eltávolítása…</value></data>
   <data name="Manage_Toast_Steamless_Done" xml:space="preserve"><value>{0} módosítva, {1} változatlan.</value></data>
   <data name="Manage_Steamless_NoInstall" xml:space="preserve"><value>A játék mappája nem található — telepítve van?</value></data>
   <data name="Manage_Steamless_Failed" xml:space="preserve"><value>A DRM nem távolítható el. {0}</value></data>
@@ -273,19 +268,11 @@
   <data name="Manage_Depot" xml:space="preserve"><value>Depó</value></data>
   <data name="Manage_SharedDepot" xml:space="preserve"><value>Megosztott depó</value></data>
   <data name="Manage_DlcName" xml:space="preserve"><value>DLC {0}</value></data>
-  <data name="Manage_Delete_Title" xml:space="preserve"><value>Lua fájl eltávolítása</value></data>
-  <data name="Manage_Delete_Body" xml:space="preserve"><value>Eltávolítod a következőt: „{0}” (App ID {1})?
-
-Ez törli a .lua fájlját a Steam\config\stplug-in mappából. Ezután indítsd újra a Steamet, hogy a változás érvénybe lépjen.</value></data>
   <data name="Manage_DeleteMany_Title" xml:space="preserve"><value>Lua fájlok eltávolítása</value></data>
   <data name="Manage_DeleteMany_Body" xml:space="preserve"><value>Eltávolítasz {0} lua fájlt?
 
 Ez törli a .lua fájlokat a Steam\config\stplug-in mappából. Ezután indítsd újra a Steamet, hogy a változások érvénybe lépjenek.</value></data>
   <data name="Manage_RemoveFailed_Title" xml:space="preserve"><value>Az eltávolítás sikertelen</value></data>
-  <data name="Manage_RemoveFailed_File" xml:space="preserve"><value>A fájlt nem sikerült törölni:
-{0}</value></data>
-  <data name="Manage_RemoveFailed_Named" xml:space="preserve"><value>A(z) „{0}” nem törölhető:
-{1}</value></data>
   <data name="Manage_RemoveFailed_Count" xml:space="preserve"><value>{0} fájlt nem sikerült törölni.</value></data>
   <data name="Manage_RestartSteam_Title" xml:space="preserve"><value>Steam újraindítása</value></data>
   <data name="Manage_RestartSteam_Ask" xml:space="preserve"><value>Újraindítod most a Steamet, hogy a változások érvénybe lépjenek?</value></data>
@@ -346,7 +333,6 @@ Ez törli a .lua fájlokat a Steam\config\stplug-in mappából. Ezután indítsd
   <data name="Add_Err_BaseGame" xml:space="preserve"><value>Nem sikerült meghatározni a DLC alapjátékát</value></data>
   <data name="Add_Err_Generic" xml:space="preserve"><value>Hiba történt — ellenőrizd a kapcsolatot, és próbáld újra.</value></data>
   <data name="Add_Err_Download" xml:space="preserve"><value>Letöltés sikertelen — ellenőrizd a kapcsolatot, és próbáld újra.</value></data>
-  <data name="Add_Err_Generate" xml:space="preserve"><value>Generálás sikertelen — ellenőrizd a kapcsolatot, és próbáld újra.</value></data>
   <data name="Add_Confirm_Replace" xml:space="preserve"><value>Lecseréled a következőt: „{0}”?</value></data>
   <data name="Add_Confirm_NoChanges" xml:space="preserve"><value>Nincs depó-/DLC-változás — ugyanaz a tartalom.</value></data>
   <data name="Add_Status_Cancelled" xml:space="preserve"><value>Telepítés megszakítva — a meglévő fájlok változatlanok.</value></data>
@@ -377,7 +363,6 @@ Ez törli a .lua fájlokat a Steam\config\stplug-in mappából. Ezután indítsd
   <data name="Plugin_CardTitle" xml:space="preserve"><value>Állapot</value></data>
   <data name="Plugin_Badge_UpdateAvailable" xml:space="preserve"><value>Frissítés érhető el</value></data>
   <data name="Plugin_Row_InstalledVersion" xml:space="preserve"><value>Telepített verzió</value></data>
-  <data name="Plugin_Row_LatestVersion" xml:space="preserve"><value>Legújabb verzió</value></data>
   <data name="Plugin_Row_Frontend" xml:space="preserve"><value>Frontend</value></data>
   <data name="Plugin_Row_Loader" xml:space="preserve"><value>Betöltő (winmm.dll)</value></data>
   <data name="Plugin_Millennium_Coexisting" xml:space="preserve"><value>Millennium észlelve — a LuaTools mellette fut. A telepítés letiltja e bővítmény Millennium-féle másolatát, hogy csak a LuaLoader injektáljon.</value></data>
@@ -421,7 +406,6 @@ Ez törli a .lua fájlokat a Steam\config\stplug-in mappából. Ezután indítsd
   <data name="Nav_Builds" xml:space="preserve"><value>Tárolók</value></data>
   <data name="Builds_Title" xml:space="preserve"><value>Tárolók</value></data>
   <data name="Builds_Subtitle" xml:space="preserve"><value>Tarts meg egy játék lua fájljából több változatot, és válaszd ki, melyiket használja a Steam.</value></data>
-  <data name="Builds_NoSelection" xml:space="preserve"><value>Válassz egy játékot a bal oldalon az előbeállításai megtekintéséhez.</value></data>
   <data name="Builds_ActiveBuild" xml:space="preserve"><value>Aktív előbeállítás</value></data>
   <data name="Builds_Active" xml:space="preserve"><value>AKTÍV</value></data>
   <data name="Builds_Variant_Default" xml:space="preserve"><value>Alapértelmezett</value></data>
@@ -450,7 +434,6 @@ Ez törli a .lua fájlokat a Steam\config\stplug-in mappából. Ezután indítsd
   <data name="Builds_Delete_ActiveTip" xml:space="preserve"><value>A jelenleg használt előbeállítás nem törölhető.</value></data>
   <data name="Builds_Apply_Done" xml:space="preserve"><value>Mostantól a(z) „{0}” van használatban. Indítsd újra a Steamet, hogy érvénybe lépjen.</value></data>
   <data name="Builds_Apply_Failed" xml:space="preserve"><value>Nem sikerült előbeállítást váltani — a lua fájl használatban lehet.</value></data>
-  <data name="Builds_Save_Done" xml:space="preserve"><value>Mentve. Indítsd újra a Steamet, hogy érvénybe lépjen.</value></data>
   <data name="Builds_Save_Failed" xml:space="preserve"><value>Nem sikerült menteni — a lua fájl használatban lehet.</value></data>
   <data name="Builds_Preset_Saved" xml:space="preserve"><value>Mentve előbeállításként.</value></data>
   <data name="Builds_Action_SaveTo" xml:space="preserve"><value>Mentés ide: „{0}”</value></data>
@@ -509,7 +492,6 @@ Ez törli a .lua fájlokat a Steam\config\stplug-in mappából. Ezután indítsd
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>A Steam nem indítható el. Adja meg a helyét a Beállításokban, majd próbálja újra.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
   <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
-  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam-fájlok</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>Az AmethystTool telepítve. A Steam újraindult, hogy betöltse.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Az AmethystTool telepítése nem sikerült: {0}</value></data>
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>A legfrissebb AmethystTool kiadás nem tesz közzé {0} fájlt.</value></data>
@@ -557,7 +539,6 @@ Ez törli a .lua fájlokat a Steam\config\stplug-in mappából. Ezután indítsd
   <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>A letöltésből hiányzik: {0}.</value></data>
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>{0} egyik kiadásban sem található.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} nem ment át az ellenőrzésen (eltérő sha256 vagy nincs közzétett digest).</value></data>
-  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>A kiadásból hiányzik: {0}.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>A token cseréje sikertelen ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>A token cseréje üres munkamenetet adott vissza.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Nem vagy bejelentkezve.</value></data>
@@ -630,8 +611,6 @@ Erőltetett bezárás? Minden, amit a Steam még nem mentett el, elveszhet. Vál
   <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
   <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Mappa hozzáadása…</value></data>
   <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Eltávolítás</value></data>
-  <data name="Saves_Note" xml:space="preserve"><value>Lementi a Steam játékonkénti mappáját (userdata). A Dokumentumokba vagy az AppDataba mentő játékok nem tartoznak bele.</value></data>
-  <data name="Saves_Toast_Created" xml:space="preserve"><value>{0} fájl lementve, {1}.</value></data>
   <data name="Saves_Toast_Restored" xml:space="preserve"><value>{0} fájl visszaállítva. Az előző mentések másolata megmaradt.</value></data>
   <data name="Saves_Toast_Deleted" xml:space="preserve"><value>A biztonsági másolat törölve.</value></data>
   <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Ehhez a játékhoz nem találtunk mentéseket. Add hozzá azt a mappát, ahol tárolja őket, a „Mappa hozzáadása kézzel…” gombbal.</value></data>
@@ -700,7 +679,6 @@ Ellenőrizve: {4}</value></data>
   <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>archívum átvizsgálva</value></data>
   <data name="Download_Notice_Cancel" xml:space="preserve"><value>Mégse</value></data>
   <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Megszakítva, mielőtt bármi telepítve lett volna.</value></data>
-  <data name="Builds_RemoveGame" xml:space="preserve"><value>Játék eltávolítása</value></data>
   <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Leveszi ezt a játékot a Tárolók listájáról. Törli a lua-fájljait és az összes mentett buildet.</value></data>
   <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Játék eltávolítása</value></data>
   <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>Eltávolítod a(z) {0} ({1}) játékot a Tárolókból?
@@ -741,7 +719,6 @@ Bekapcsolod?</value></data>
   <data name="About_What_Header" xml:space="preserve"><value>Mi ez</value></data>
   <data name="About_What_Body" xml:space="preserve"><value>A LuaTools Amethyst a LuaTools közösségi forkja, amely az adatvédelemre összpontosít. Eltávolítja az eredeti build által végzett analitikai pinget és kulcsfeltöltést, minden letöltést HTTPS-en tart, és a lila Amethyst-témával érkezik.</value></data>
   <data name="About_Version_Header" xml:space="preserve"><value>Verzió</value></data>
-  <data name="About_Repo_Header" xml:space="preserve"><value>Tároló</value></data>
   <data name="About_Updates_Header" xml:space="preserve"><value>Frissítések</value></data>
   <data name="About_Updates_Enabled" xml:space="preserve"><value>Az automatikus frissítések BE vannak kapcsolva. A LuaTools Amethyst induláskor ellenőrzi az alábbi tárolót, és a háttérben telepíti a frissítéseket.</value></data>
   <data name="About_Updates_Disabled" xml:space="preserve"><value>Az automatikus frissítések KI vannak kapcsolva — nem történik frissítési kérés. Add hozzá az „AppUpdateRepos” értéket a settings.json fájlhoz a bekapcsolásukhoz, vagy frissíts kézzel az alábbi tárolóból.</value></data>
@@ -896,9 +873,6 @@ Bekapcsolod?</value></data>
   <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Egyéni mód aktív</value></data>
   <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>A LuaTools Amethyst mostantól csak a config\stplug-in mappában lévő .lua fájlokat kezeli a Steam DLL-ek módosítása nélkül.</value></data>
   <data name="Home_CustomActive" xml:space="preserve"><value>Egyéni · saját kezelésű</value></data>
-  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>Eltávolítod a(z) „{0}” (App ID {1}) elemet?
-
-Ez csak az aktív .lua fájlt törli a Steam\config\stplug-in mappából. A játék mentett buildjei továbbra is elérhetők maradnak a Depots lapon. A módosítás érvényesítéséhez utána indítsd újra a Steamet.</value></data>
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Eltávolítasz {0} .lua fájlt?
 
 Ez csak az aktív .lua fájlokat törli a Steam\config\stplug-in mappából. Ezen játékok közül {1} rendelkezik mentett buildekkel, amelyek továbbra is elérhetők maradnak a Depots lapon. A módosítások érvényesítéséhez utána indítsd újra a Steamet.</value></data>
@@ -938,7 +912,7 @@ Ez csak az aktív .lua fájlokat törli a Steam\config\stplug-in mappából. Eze
   <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>Csak a játékfájlok eltávolítása</value></data>
   <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>Törli a játék telepítési mappáját és a Steam appmanifest fájlját. Megtartja a .lua és .manifest fájlokat.</value></data>
   <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>Csak a .lua fájl eltávolítása</value></data>
-  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Törli a config\stplug-in\{0}.lua fájlt. Megtartja a játékfájlokat, a .manifest fájlokat és a mentett buildeket.</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Törli a config\stplug-in\{0}.lua fájlt (és a {0}.lua.disabled fájlt, ha létezik). Megtartja a játékfájlokat, a .manifest fájlokat és a mentett buildeket.</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>Csak a .manifest fájlok eltávolítása</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>Törli a játék kizárólagos .manifest fájljait a depotcache mappából. Megtartja a .lua fájlt és a megosztott manifesteket.</value></data>
   <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>.lua + .manifest fájlok eltávolítása</value></data>
@@ -964,4 +938,6 @@ Ez csak az aktív .lua fájlokat törli a Steam\config\stplug-in mappából. Eze
   <data name="ViewMode_Grid" xml:space="preserve"><value>Rácsnézet</value></data>
   <data name="ViewMode_List" xml:space="preserve"><value>Listanézet</value></data>
   <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Könyvtár elrendezési mód</value></data>
+  <data name="Cleanup_Err_OperationInProgress" xml:space="preserve"><value>A(z) {0} letöltése, telepítése, biztonsági mentése vagy visszaállítása éppen folyamatban van. Várd meg, amíg befejeződik, majd próbáld újra.</value></data>
+  <data name="Settings_ManifestBackup_Cancelled" xml:space="preserve"><value>Megszakítva. A már feldolgozott játékok megmaradtak.</value></data>
 </root>

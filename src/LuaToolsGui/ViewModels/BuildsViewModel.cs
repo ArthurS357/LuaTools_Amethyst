@@ -284,7 +284,12 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
     /// <summary>Set by App — dark "Remove game" confirmation (name, appid) → true to remove.</summary>
     public Func<string, long, bool>? ConfirmRemoveGame { get; set; }
 
-    /// <summary>Test seam to avoid modal MessageBox during unit tests.</summary>
+    /// <summary>Set by App — dark confirmation for every other prompt. Unset = declined (fail-closed).</summary>
+    public Func<ConfirmRequest, bool>? Confirm { get; set; }
+
+    private bool Ask(ConfirmRequest request) => Confirm?.Invoke(request) == true;
+
+    /// <summary>Test seam replacing the restart-Steam offer (the dark confirm is already declined when unwired).</summary>
     internal Action? OfferRestartSteamOverride { get; set; }
 
     partial void OnSelectedGameChanged(LuaTileViewModel? value)
@@ -866,11 +871,12 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
     {
         if (ActiveGame is not { } game || SelectedVariant?.Variant is not { } variant) return;
 
-        var result = MessageBox.Show(
-            string.Format(Resources.Strings.Builds_Delete_Body, variant.DisplayLabel),
-            Resources.Strings.Builds_Delete_Title,
-            MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-        if (result != MessageBoxResult.OK) return;
+        if (!Ask(new ConfirmRequest(
+                Resources.Strings.Builds_Delete_Title,
+                string.Format(Resources.Strings.Builds_Delete_Body, variant.DisplayLabel),
+                Resources.Strings.Builds_Action_Delete,
+                Heading: game.Name)))
+            return;
 
         if (_vault.Delete(game.AppId, variant.Hash)) RefreshVariants();
     }
@@ -1426,14 +1432,16 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
 
     private void OfferRestartSteam()
     {
-        var r = MessageBox.Show(
-            Resources.Strings.Manage_RestartSteam_Ask,
-            Resources.Strings.Manage_RestartSteam_Title,
-            MessageBoxButton.YesNo, MessageBoxImage.Question);
-        if (r == MessageBoxResult.Yes && !_steam.RestartSteam())
-            MessageBox.Show(Resources.Strings.Manage_RestartSteam_Failed,
-                Resources.Strings.Manage_RestartSteam_Title, MessageBoxButton.OK, MessageBoxImage.Warning);
+        if (Ask(RestartSteamRequest) && !_steam.RestartSteam())
+            _toast.Show(Resources.Strings.Manage_RestartSteam_Title, Resources.Strings.Manage_RestartSteam_Failed, error: true);
     }
+
+    /// <summary>Not destructive: a Primary (not Danger) confirm, still Cancel by default.</summary>
+    internal static ConfirmRequest RestartSteamRequest => new(
+        Resources.Strings.Manage_RestartSteam_Title,
+        Resources.Strings.Manage_RestartSteam_Ask,
+        Resources.Strings.Manage_RestartSteam_Title,
+        IsDanger: false);
 
     private static void OnUi(Action action)
     {

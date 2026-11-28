@@ -91,7 +91,6 @@
   <data name="Settings_BotLink_Body" xml:space="preserve"><value>Je bent ingelogd met een tijdelijk Discord-account. Log in op lua.tools, voer daarna /login opnieuw uit en voer de code in om je volledige account te koppelen.</value></data>
   <data name="Settings_BotLink_Dismiss" xml:space="preserve"><value>Sluiten</value></data>
   <data name="Settings_LoginRequired" xml:space="preserve"><value>Inloggen is vereist voor deze actie.</value></data>
-  <data name="Settings_ManageKeyHintPrefix" xml:space="preserve"><value>Beheer je Hubcap-API-sleutel en profiel op</value></data>
   <data name="Settings_Section_Hubcap" xml:space="preserve"><value>HUBCAP</value></data>
   <data name="Settings_HubcapKey" xml:space="preserve"><value>Hubcap-API-sleutel</value></data>
   <data name="Settings_HubcapKey_Hint" xml:space="preserve"><value>Plak je persoonlijke Hubcap-API-sleutel om Hubcap-manifesten te ontgrendelen. De app maakt met jouw sleutel rechtstreeks verbinding met Hubcap.</value></data>
@@ -103,7 +102,6 @@
   <data name="Settings_HubcapKeyOkExpiry" xml:space="preserve"><value>{0}/{1} vandaag · verloopt op {2}</value></data>
   <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>Dit lijkt geen geldige sleutel.</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>Kan de sleutel niet verifiëren — deze is mogelijk ongeldig, verlopen, of Hubcap is onbereikbaar.</value></data>
-  <data name="Settings_HubcapActive" xml:space="preserve"><value>Actief</value></data>
   <data name="Settings_HubcapRefresh" xml:space="preserve"><value>Vernieuwen</value></data>
   <data name="Settings_Language" xml:space="preserve"><value>Taal</value></data>
   <data name="Settings_Language_Hint" xml:space="preserve"><value>Kies de weergavetaal van de app. Wordt toegepast na een herstart.</value></data>
@@ -125,7 +123,6 @@
   <data name="Lang_Changed_Restart" xml:space="preserve"><value>Nu herstarten</value></data>
   <data name="Home_Welcome" xml:space="preserve"><value>Welkom bij LuaTools Amethyst</value></data>
   <data name="Home_LuasOnBoard" xml:space="preserve"><value>Lua's aan boord</value></data>
-  <data name="Home_LastAdded" xml:space="preserve"><value>LAATST TOEGEVOEGD</value></data>
   <data name="Home_PluginStatus" xml:space="preserve"><value>Pluginstatus</value></data>
   <data name="Home_RecentlyAdded" xml:space="preserve"><value>Onlangs toegevoegd</value></data>
   <data name="Home_ViewDetails" xml:space="preserve"><value>Details bekijken</value></data>
@@ -224,7 +221,6 @@
   <data name="Manage_Filter_SortBy" xml:space="preserve"><value>Sorteren op</value></data>
   <data name="Manage_ClearFilters" xml:space="preserve"><value>Filters wissen</value></data>
   <data name="Manage_Select" xml:space="preserve"><value>Selecteren</value></data>
-  <data name="Manage_DeleteThisLua" xml:space="preserve"><value>Deze lua verwijderen</value></data>
   <data name="Manage_ResultsPerPage" xml:space="preserve"><value>Resultaten per pagina</value></data>
   <data name="Manage_Action_ViewDetails" xml:space="preserve"><value>Details bekijken</value></data>
   <data name="Manage_Action_Update" xml:space="preserve"><value>Bijwerken / opnieuw downloaden</value></data>
@@ -236,7 +232,6 @@
   <data name="Manage_ActionsHeader" xml:space="preserve"><value>Acties</value></data>
   <data name="Manage_Steamless_Confirm_Title" xml:space="preserve"><value>Steam-DRM verwijderen?</value></data>
   <data name="Manage_Steamless_Confirm_Body" xml:space="preserve"><value>Dit voert Steamless uit op het uitvoerbare bestand van het spel om de SteamStub-DRM te verwijderen. De originele .exe wordt eerst als .bak geback-upt. Sommige spellen hebben daarna een bestandsverificatie in Steam nodig. Doorgaan?</value></data>
-  <data name="Manage_Steamless_Working" xml:space="preserve"><value>Steam-DRM verwijderen…</value></data>
   <data name="Manage_Toast_Steamless_Done" xml:space="preserve"><value>{0} aangepast, {1} ongewijzigd.</value></data>
   <data name="Manage_Steamless_NoInstall" xml:space="preserve"><value>Spelmap niet gevonden — is het geïnstalleerd?</value></data>
   <data name="Manage_Steamless_Failed" xml:space="preserve"><value>Kan DRM niet verwijderen. {0}</value></data>
@@ -273,19 +268,11 @@
   <data name="Manage_Depot" xml:space="preserve"><value>Depot</value></data>
   <data name="Manage_SharedDepot" xml:space="preserve"><value>Gedeeld depot</value></data>
   <data name="Manage_DlcName" xml:space="preserve"><value>DLC {0}</value></data>
-  <data name="Manage_Delete_Title" xml:space="preserve"><value>Lua-bestand verwijderen</value></data>
-  <data name="Manage_Delete_Body" xml:space="preserve"><value>"{0}" (App ID {1}) verwijderen?
-
-Dit verwijdert het .lua-bestand uit Steam\config\stplug-in. Herstart Steam daarna om de wijziging door te voeren.</value></data>
   <data name="Manage_DeleteMany_Title" xml:space="preserve"><value>Lua-bestanden verwijderen</value></data>
   <data name="Manage_DeleteMany_Body" xml:space="preserve"><value>{0} lua-bestanden verwijderen?
 
 Dit verwijdert de .lua-bestanden uit Steam\config\stplug-in. Herstart Steam daarna om de wijzigingen door te voeren.</value></data>
   <data name="Manage_RemoveFailed_Title" xml:space="preserve"><value>Verwijderen mislukt</value></data>
-  <data name="Manage_RemoveFailed_File" xml:space="preserve"><value>Kon het bestand niet verwijderen:
-{0}</value></data>
-  <data name="Manage_RemoveFailed_Named" xml:space="preserve"><value>Kon "{0}" niet verwijderen:
-{1}</value></data>
   <data name="Manage_RemoveFailed_Count" xml:space="preserve"><value>{0} bestanden konden niet worden verwijderd.</value></data>
   <data name="Manage_RestartSteam_Title" xml:space="preserve"><value>Steam herstarten</value></data>
   <data name="Manage_RestartSteam_Ask" xml:space="preserve"><value>Steam nu herstarten zodat de wijzigingen worden doorgevoerd?</value></data>
@@ -346,7 +333,6 @@ Dit verwijdert de .lua-bestanden uit Steam\config\stplug-in. Herstart Steam daar
   <data name="Add_Err_BaseGame" xml:space="preserve"><value>Kon de basisgame voor deze DLC niet bepalen</value></data>
   <data name="Add_Err_Generic" xml:space="preserve"><value>Er is iets misgegaan — controleer je verbinding en probeer opnieuw.</value></data>
   <data name="Add_Err_Download" xml:space="preserve"><value>Download mislukt — controleer je verbinding en probeer opnieuw.</value></data>
-  <data name="Add_Err_Generate" xml:space="preserve"><value>Genereren mislukt — controleer je verbinding en probeer opnieuw.</value></data>
   <data name="Add_Confirm_Replace" xml:space="preserve"><value>"{0}" vervangen?</value></data>
   <data name="Add_Confirm_NoChanges" xml:space="preserve"><value>Geen depot-/DLC-wijzigingen — dezelfde inhoud.</value></data>
   <data name="Add_Status_Cancelled" xml:space="preserve"><value>Installatie geannuleerd — bestaande bestanden ongewijzigd.</value></data>
@@ -377,7 +363,6 @@ Dit verwijdert de .lua-bestanden uit Steam\config\stplug-in. Herstart Steam daar
   <data name="Plugin_CardTitle" xml:space="preserve"><value>Status</value></data>
   <data name="Plugin_Badge_UpdateAvailable" xml:space="preserve"><value>Update beschikbaar</value></data>
   <data name="Plugin_Row_InstalledVersion" xml:space="preserve"><value>Geïnstalleerde versie</value></data>
-  <data name="Plugin_Row_LatestVersion" xml:space="preserve"><value>Nieuwste versie</value></data>
   <data name="Plugin_Row_Frontend" xml:space="preserve"><value>Frontend</value></data>
   <data name="Plugin_Row_Loader" xml:space="preserve"><value>Loader (winmm.dll)</value></data>
   <data name="Plugin_Millennium_Coexisting" xml:space="preserve"><value>Millennium gedetecteerd — LuaTools draait ernaast. Bij installatie wordt de eigen kopie van deze plug-in van Millennium uitgeschakeld, zodat alleen LuaLoader injecteert.</value></data>
@@ -421,7 +406,6 @@ Dit verwijdert de .lua-bestanden uit Steam\config\stplug-in. Herstart Steam daar
   <data name="Nav_Builds" xml:space="preserve"><value>Depots</value></data>
   <data name="Builds_Title" xml:space="preserve"><value>Depots</value></data>
   <data name="Builds_Subtitle" xml:space="preserve"><value>Bewaar meerdere versies van de lua van een game en kies welke Steam gebruikt.</value></data>
-  <data name="Builds_NoSelection" xml:space="preserve"><value>Kies links een game om de voorinstellingen ervan te zien.</value></data>
   <data name="Builds_ActiveBuild" xml:space="preserve"><value>Actieve voorinstelling</value></data>
   <data name="Builds_Active" xml:space="preserve"><value>ACTIEF</value></data>
   <data name="Builds_Variant_Default" xml:space="preserve"><value>Standaard</value></data>
@@ -450,7 +434,6 @@ Dit verwijdert de .lua-bestanden uit Steam\config\stplug-in. Herstart Steam daar
   <data name="Builds_Delete_ActiveTip" xml:space="preserve"><value>De voorinstelling die in gebruik is, kan niet worden verwijderd.</value></data>
   <data name="Builds_Apply_Done" xml:space="preserve"><value>‘{0}’ wordt nu gebruikt. Start Steam opnieuw op om het door te voeren.</value></data>
   <data name="Builds_Apply_Failed" xml:space="preserve"><value>Kon niet van voorinstelling wisselen — het lua-bestand is mogelijk in gebruik.</value></data>
-  <data name="Builds_Save_Done" xml:space="preserve"><value>Opgeslagen. Start Steam opnieuw op om het door te voeren.</value></data>
   <data name="Builds_Save_Failed" xml:space="preserve"><value>Opslaan mislukt — het lua-bestand is mogelijk in gebruik.</value></data>
   <data name="Builds_Preset_Saved" xml:space="preserve"><value>Opgeslagen als voorinstelling.</value></data>
   <data name="Builds_Action_SaveTo" xml:space="preserve"><value>Opslaan in ‘{0}’</value></data>
@@ -509,7 +492,6 @@ Dit verwijdert de .lua-bestanden uit Steam\config\stplug-in. Herstart Steam daar
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam kon niet worden gestart. Stel de locatie in bij Instellingen en probeer het opnieuw.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
   <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
-  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam-bestanden</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool is geïnstalleerd. Steam is opnieuw gestart zodat het wordt geladen.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Installatie van AmethystTool mislukt: {0}</value></data>
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>De nieuwste AmethystTool-release publiceert {0} niet.</value></data>
@@ -557,7 +539,6 @@ Dit verwijdert de .lua-bestanden uit Steam\config\stplug-in. Herstart Steam daar
   <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>De download mist: {0}.</value></data>
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>Kon {0} in geen enkele release vinden.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} heeft de verificatie niet doorstaan (sha256 komt niet overeen of geen gepubliceerde digest).</value></data>
-  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>De release mist {0}.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Tokenuitwisseling mislukt ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>De tokenuitwisseling gaf een lege sessie terug.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Niet aangemeld.</value></data>
@@ -630,8 +611,6 @@ Afsluiten forceren? Alles wat Steam nog niet heeft opgeslagen kan verloren gaan.
   <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
   <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Map toevoegen…</value></data>
   <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Verwijderen</value></data>
-  <data name="Saves_Note" xml:space="preserve"><value>Maakt een back-up van de map per spel van Steam (userdata). Spellen die hun voortgang in Documenten of AppData bewaren, zijn niet inbegrepen.</value></data>
-  <data name="Saves_Toast_Created" xml:space="preserve"><value>Back-up gemaakt van {0} bestand(en), {1}.</value></data>
   <data name="Saves_Toast_Restored" xml:space="preserve"><value>{0} bestand(en) hersteld. Een kopie van de vorige opgeslagen spellen is bewaard.</value></data>
   <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Back-up verwijderd.</value></data>
   <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Er zijn geen opgeslagen spellen gevonden voor dit spel. Voeg de map waarin het ze bewaart toe via “Map handmatig toevoegen…”.</value></data>
@@ -700,7 +679,6 @@ Geverifieerd: {4}</value></data>
   <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>archief gecontroleerd</value></data>
   <data name="Download_Notice_Cancel" xml:space="preserve"><value>Annuleren</value></data>
   <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Geannuleerd voordat er iets is geïnstalleerd.</value></data>
-  <data name="Builds_RemoveGame" xml:space="preserve"><value>Spel verwijderen</value></data>
   <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Haalt dit spel van de Depots-lijst. Verwijdert de lua-bestanden en alle opgeslagen builds.</value></data>
   <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Spel verwijderen</value></data>
   <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>{0} ({1}) uit Depots verwijderen?
@@ -741,7 +719,6 @@ Inschakelen?</value></data>
   <data name="About_What_Header" xml:space="preserve"><value>Wat dit is</value></data>
   <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst is een community-fork van LuaTools, gericht op privacy. Hij verwijdert de analyse-ping en de sleutelupload die de originele build uitvoert, houdt elke download via HTTPS en levert het paarse Amethyst-thema mee.</value></data>
   <data name="About_Version_Header" xml:space="preserve"><value>Versie</value></data>
-  <data name="About_Repo_Header" xml:space="preserve"><value>Repository</value></data>
   <data name="About_Updates_Header" xml:space="preserve"><value>Updates</value></data>
   <data name="About_Updates_Enabled" xml:space="preserve"><value>Automatische updates staan AAN. LuaTools Amethyst controleert bij het opstarten de onderstaande repository en installeert updates op de achtergrond.</value></data>
   <data name="About_Updates_Disabled" xml:space="preserve"><value>Automatische updates staan UIT — er wordt geen updateverzoek gedaan. Voeg "AppUpdateRepos" toe aan settings.json om ze in te schakelen, of werk handmatig bij via de onderstaande repository.</value></data>
@@ -896,9 +873,6 @@ Inschakelen?</value></data>
   <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Aangepaste modus actief</value></data>
   <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>LuaTools Amethyst beheert voortaan alleen .lua-bestanden in config\stplug-in zonder Steam-DLL's te wijzigen.</value></data>
   <data name="Home_CustomActive" xml:space="preserve"><value>Aangepast · zelf beheerd</value></data>
-  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>"{0}" (App-ID {1}) verwijderen?
-
-Hiermee wordt alleen het actieve .lua-bestand uit Steam\config\stplug-in verwijderd. Opgeslagen builds voor dit spel blijven beschikbaar op het tabblad Depots. Start Steam daarna opnieuw op om de wijziging toe te passen.</value></data>
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>{0} .lua-bestanden verwijderen?
 
 Hiermee worden alleen de actieve .lua-bestanden uit Steam\config\stplug-in verwijderd. {1} van deze spellen hebben opgeslagen builds die beschikbaar blijven op het tabblad Depots. Start Steam daarna opnieuw op om de wijzigingen toe te passen.</value></data>
@@ -938,7 +912,7 @@ Hiermee worden alleen de actieve .lua-bestanden uit Steam\config\stplug-in verwi
   <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>Alleen spelbestanden verwijderen</value></data>
   <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>Verwijdert de installatiemap van het spel en het Steam-appmanifest. Behoudt .lua- en .manifest-bestanden.</value></data>
   <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>Alleen .lua-bestand verwijderen</value></data>
-  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Verwijdert config\stplug-in\{0}.lua. Behoudt spelbestanden, .manifest-bestanden en opgeslagen builds.</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Verwijdert config\stplug-in\{0}.lua (en {0}.lua.disabled, indien aanwezig). Behoudt spelbestanden, .manifest-bestanden en opgeslagen builds.</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>Alleen .manifest-bestanden verwijderen</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>Verwijdert exclusieve .manifest-bestanden van dit spel in depotcache. Behoudt het .lua-bestand en gedeelde manifests.</value></data>
   <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>.lua + .manifest-bestanden verwijderen</value></data>
@@ -964,4 +938,6 @@ Hiermee worden alleen de actieve .lua-bestanden uit Steam\config\stplug-in verwi
   <data name="ViewMode_Grid" xml:space="preserve"><value>Rasterweergave</value></data>
   <data name="ViewMode_List" xml:space="preserve"><value>Lijstweergave</value></data>
   <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Weergavemodus</value></data>
+  <data name="Cleanup_Err_OperationInProgress" xml:space="preserve"><value>{0} wordt nu gedownload, geïnstalleerd, geback-upt of hersteld. Wacht tot dit klaar is en probeer het opnieuw.</value></data>
+  <data name="Settings_ManifestBackup_Cancelled" xml:space="preserve"><value>Geannuleerd. Al verwerkte games zijn behouden.</value></data>
 </root>

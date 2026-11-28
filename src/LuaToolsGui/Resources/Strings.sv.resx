@@ -91,7 +91,6 @@
   <data name="Settings_BotLink_Body" xml:space="preserve"><value>Du är inloggad med ett tillfälligt Discord-konto. Logga in på lua.tools, kör sedan /login igen och ange koden för att länka ditt fullständiga konto.</value></data>
   <data name="Settings_BotLink_Dismiss" xml:space="preserve"><value>Avfärda</value></data>
   <data name="Settings_LoginRequired" xml:space="preserve"><value>Inloggning krävs för den här åtgärden.</value></data>
-  <data name="Settings_ManageKeyHintPrefix" xml:space="preserve"><value>Hantera din Hubcap API-nyckel och profil på</value></data>
   <data name="Settings_Section_Hubcap" xml:space="preserve"><value>HUBCAP</value></data>
   <data name="Settings_HubcapKey" xml:space="preserve"><value>Hubcap API-nyckel</value></data>
   <data name="Settings_HubcapKey_Hint" xml:space="preserve"><value>Klistra in din personliga Hubcap API-nyckel för att låsa upp Hubcap-manifest. Appen ansluter till Hubcap direkt med din nyckel.</value></data>
@@ -103,7 +102,6 @@
   <data name="Settings_HubcapKeyOkExpiry" xml:space="preserve"><value>{0}/{1} idag · upphör {2}</value></data>
   <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>Detta ser inte ut som en giltig nyckel.</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>Det gick inte att verifiera nyckeln — den kan vara ogiltig, utgången, eller så är Hubcap inte nåbar.</value></data>
-  <data name="Settings_HubcapActive" xml:space="preserve"><value>Aktiv</value></data>
   <data name="Settings_HubcapRefresh" xml:space="preserve"><value>Uppdatera</value></data>
   <data name="Settings_Language" xml:space="preserve"><value>Språk</value></data>
   <data name="Settings_Language_Hint" xml:space="preserve"><value>Välj appens visningsspråk. Tillämpas efter en omstart.</value></data>
@@ -125,7 +123,6 @@
   <data name="Lang_Changed_Restart" xml:space="preserve"><value>Starta om nu</value></data>
   <data name="Home_Welcome" xml:space="preserve"><value>Välkommen till LuaTools Amethyst</value></data>
   <data name="Home_LuasOnBoard" xml:space="preserve"><value>Lua-filer ombord</value></data>
-  <data name="Home_LastAdded" xml:space="preserve"><value>SENAST TILLAGD</value></data>
   <data name="Home_PluginStatus" xml:space="preserve"><value>Tilläggsstatus</value></data>
   <data name="Home_RecentlyAdded" xml:space="preserve"><value>Nyligen tillagda</value></data>
   <data name="Home_ViewDetails" xml:space="preserve"><value>Visa detaljer</value></data>
@@ -224,7 +221,6 @@
   <data name="Manage_Filter_SortBy" xml:space="preserve"><value>Sortera efter</value></data>
   <data name="Manage_ClearFilters" xml:space="preserve"><value>Rensa filter</value></data>
   <data name="Manage_Select" xml:space="preserve"><value>Markera</value></data>
-  <data name="Manage_DeleteThisLua" xml:space="preserve"><value>Ta bort denna lua</value></data>
   <data name="Manage_ResultsPerPage" xml:space="preserve"><value>Resultat per sida</value></data>
   <data name="Manage_Action_ViewDetails" xml:space="preserve"><value>Visa detaljer</value></data>
   <data name="Manage_Action_Update" xml:space="preserve"><value>Uppdatera / ladda ner igen</value></data>
@@ -236,7 +232,6 @@
   <data name="Manage_ActionsHeader" xml:space="preserve"><value>Åtgärder</value></data>
   <data name="Manage_Steamless_Confirm_Title" xml:space="preserve"><value>Ta bort Steam-DRM?</value></data>
   <data name="Manage_Steamless_Confirm_Body" xml:space="preserve"><value>Detta kör Steamless på spelets körbara fil för att ta bort SteamStub-DRM. Den ursprungliga .exe-filen säkerhetskopieras först till .bak. Vissa spel kan behöva en filverifiering i Steam efteråt. Fortsätta?</value></data>
-  <data name="Manage_Steamless_Working" xml:space="preserve"><value>Tar bort Steam-DRM…</value></data>
   <data name="Manage_Toast_Steamless_Done" xml:space="preserve"><value>{0} ändrade, {1} oförändrade.</value></data>
   <data name="Manage_Steamless_NoInstall" xml:space="preserve"><value>Spelmappen hittades inte — är det installerat?</value></data>
   <data name="Manage_Steamless_Failed" xml:space="preserve"><value>Det gick inte att ta bort DRM. {0}</value></data>
@@ -273,19 +268,11 @@
   <data name="Manage_Depot" xml:space="preserve"><value>Depå</value></data>
   <data name="Manage_SharedDepot" xml:space="preserve"><value>Delad depå</value></data>
   <data name="Manage_DlcName" xml:space="preserve"><value>DLC {0}</value></data>
-  <data name="Manage_Delete_Title" xml:space="preserve"><value>Ta bort lua-fil</value></data>
-  <data name="Manage_Delete_Body" xml:space="preserve"><value>Ta bort "{0}" (App ID {1})?
-
-Detta tar bort dess .lua-fil från Steam\config\stplug-in. Starta om Steam efteråt för att ändringen ska träda i kraft.</value></data>
   <data name="Manage_DeleteMany_Title" xml:space="preserve"><value>Ta bort lua-filer</value></data>
   <data name="Manage_DeleteMany_Body" xml:space="preserve"><value>Ta bort {0} lua-filer?
 
 Detta tar bort .lua-filerna från Steam\config\stplug-in. Starta om Steam efteråt för att ändringarna ska träda i kraft.</value></data>
   <data name="Manage_RemoveFailed_Title" xml:space="preserve"><value>Borttagningen misslyckades</value></data>
-  <data name="Manage_RemoveFailed_File" xml:space="preserve"><value>Det gick inte att ta bort filen:
-{0}</value></data>
-  <data name="Manage_RemoveFailed_Named" xml:space="preserve"><value>Det gick inte att ta bort "{0}":
-{1}</value></data>
   <data name="Manage_RemoveFailed_Count" xml:space="preserve"><value>{0} filer kunde inte tas bort.</value></data>
   <data name="Manage_RestartSteam_Title" xml:space="preserve"><value>Starta om Steam</value></data>
   <data name="Manage_RestartSteam_Ask" xml:space="preserve"><value>Starta om Steam nu så att ändringarna träder i kraft?</value></data>
@@ -346,7 +333,6 @@ Detta tar bort .lua-filerna från Steam\config\stplug-in. Starta om Steam efter�
   <data name="Add_Err_BaseGame" xml:space="preserve"><value>Det gick inte att fastställa grundspelet för denna DLC</value></data>
   <data name="Add_Err_Generic" xml:space="preserve"><value>Något gick fel — kontrollera din anslutning och försök igen.</value></data>
   <data name="Add_Err_Download" xml:space="preserve"><value>Nedladdningen misslyckades — kontrollera din anslutning och försök igen.</value></data>
-  <data name="Add_Err_Generate" xml:space="preserve"><value>Genereringen misslyckades — kontrollera din anslutning och försök igen.</value></data>
   <data name="Add_Confirm_Replace" xml:space="preserve"><value>Ersätta "{0}"?</value></data>
   <data name="Add_Confirm_NoChanges" xml:space="preserve"><value>Inga depå-/DLC-ändringar — samma innehåll.</value></data>
   <data name="Add_Status_Cancelled" xml:space="preserve"><value>Installationen avbröts — befintliga filer är oförändrade.</value></data>
@@ -377,7 +363,6 @@ Detta tar bort .lua-filerna från Steam\config\stplug-in. Starta om Steam efter�
   <data name="Plugin_CardTitle" xml:space="preserve"><value>Status</value></data>
   <data name="Plugin_Badge_UpdateAvailable" xml:space="preserve"><value>Uppdatering tillgänglig</value></data>
   <data name="Plugin_Row_InstalledVersion" xml:space="preserve"><value>Installerad version</value></data>
-  <data name="Plugin_Row_LatestVersion" xml:space="preserve"><value>Senaste version</value></data>
   <data name="Plugin_Row_Frontend" xml:space="preserve"><value>Frontend</value></data>
   <data name="Plugin_Row_Loader" xml:space="preserve"><value>Laddare (winmm.dll)</value></data>
   <data name="Plugin_Millennium_Coexisting" xml:space="preserve"><value>Millennium upptäcktes — LuaTools körs vid sidan av det. Installationen inaktiverar Milleniums egen kopia av det här tillägget så att bara LuaLoader injicerar.</value></data>
@@ -421,7 +406,6 @@ Detta tar bort .lua-filerna från Steam\config\stplug-in. Starta om Steam efter�
   <data name="Nav_Builds" xml:space="preserve"><value>Depåer</value></data>
   <data name="Builds_Title" xml:space="preserve"><value>Depåer</value></data>
   <data name="Builds_Subtitle" xml:space="preserve"><value>Spara flera versioner av ett spels lua och välj vilken Steam använder.</value></data>
-  <data name="Builds_NoSelection" xml:space="preserve"><value>Välj ett spel till vänster för att se dess förinställningar.</value></data>
   <data name="Builds_ActiveBuild" xml:space="preserve"><value>Aktiv förinställning</value></data>
   <data name="Builds_Active" xml:space="preserve"><value>AKTIV</value></data>
   <data name="Builds_Variant_Default" xml:space="preserve"><value>Standard</value></data>
@@ -450,7 +434,6 @@ Detta tar bort .lua-filerna från Steam\config\stplug-in. Starta om Steam efter�
   <data name="Builds_Delete_ActiveTip" xml:space="preserve"><value>Den förinställning som används kan inte tas bort.</value></data>
   <data name="Builds_Apply_Done" xml:space="preserve"><value>Använder nu ”{0}”. Starta om Steam för att det ska börja gälla.</value></data>
   <data name="Builds_Apply_Failed" xml:space="preserve"><value>Kunde inte byta förinställning — lua-filen kan vara upptagen.</value></data>
-  <data name="Builds_Save_Done" xml:space="preserve"><value>Sparat. Starta om Steam för att det ska börja gälla.</value></data>
   <data name="Builds_Save_Failed" xml:space="preserve"><value>Kunde inte spara — lua-filen kan vara upptagen.</value></data>
   <data name="Builds_Preset_Saved" xml:space="preserve"><value>Sparad som förinställning.</value></data>
   <data name="Builds_Action_SaveTo" xml:space="preserve"><value>Spara till ”{0}”</value></data>
@@ -509,7 +492,6 @@ Detta tar bort .lua-filerna från Steam\config\stplug-in. Starta om Steam efter�
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam kunde inte startas. Ange dess plats i Inställningar och försök igen.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
   <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
-  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam-filer</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool installerades. Steam startades om så att det läses in.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Installationen av AmethystTool misslyckades: {0}</value></data>
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Den senaste AmethystTool-versionen publicerar inte {0}.</value></data>
@@ -557,7 +539,6 @@ Detta tar bort .lua-filerna från Steam\config\stplug-in. Starta om Steam efter�
   <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>Nedladdningen saknar: {0}.</value></data>
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>Det gick inte att hitta {0} i någon version.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} klarade inte verifieringen (sha256 stämmer inte eller ingen publicerad digest).</value></data>
-  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Versionen saknar {0}.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Tokenutbytet misslyckades ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Tokenutbytet returnerade en tom session.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Inte inloggad.</value></data>
@@ -630,8 +611,6 @@ Tvinga stängning? Allt som Steam inte har sparat än kan gå förlorat. Välj N
   <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
   <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Lägg till mapp…</value></data>
   <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Ta bort</value></data>
-  <data name="Saves_Note" xml:space="preserve"><value>Säkerhetskopierar Steams mapp per spel (userdata). Spel som sparar i Dokument eller AppData ingår inte.</value></data>
-  <data name="Saves_Toast_Created" xml:space="preserve"><value>Säkerhetskopierade {0} fil(er), {1}.</value></data>
   <data name="Saves_Toast_Restored" xml:space="preserve"><value>Återställde {0} fil(er). En kopia av de tidigare sparfilerna behölls.</value></data>
   <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Säkerhetskopian togs bort.</value></data>
   <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Inga sparfiler hittades för det här spelet. Lägg till mappen där det sparar med ”Lägg till mapp manuellt…”.</value></data>
@@ -700,7 +679,6 @@ Verifierat: {4}</value></data>
   <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>arkiv genomsökt</value></data>
   <data name="Download_Notice_Cancel" xml:space="preserve"><value>Avbryt</value></data>
   <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Avbröts innan något installerades.</value></data>
-  <data name="Builds_RemoveGame" xml:space="preserve"><value>Ta bort spel</value></data>
   <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Tar bort det här spelet från Depå-listan. Raderar dess lua-filer och alla sparade byggen.</value></data>
   <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Ta bort spel</value></data>
   <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>Ta bort {0} ({1}) från Depåer?
@@ -741,7 +719,6 @@ Aktivera?</value></data>
   <data name="About_What_Header" xml:space="preserve"><value>Vad det här är</value></data>
   <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst är en community-fork av LuaTools med fokus på integritet. Den tar bort analys-pingen och nyckeluppladdningen som originalversionen gör, håller alla nedladdningar över HTTPS och levereras med det lila Amethyst-temat.</value></data>
   <data name="About_Version_Header" xml:space="preserve"><value>Version</value></data>
-  <data name="About_Repo_Header" xml:space="preserve"><value>Arkiv</value></data>
   <data name="About_Updates_Header" xml:space="preserve"><value>Uppdateringar</value></data>
   <data name="About_Updates_Enabled" xml:space="preserve"><value>Automatiska uppdateringar är PÅ. LuaTools Amethyst kontrollerar arkivet nedan vid start och installerar uppdateringar i bakgrunden.</value></data>
   <data name="About_Updates_Disabled" xml:space="preserve"><value>Automatiska uppdateringar är AV — ingen uppdateringsbegäran görs. Lägg till ”AppUpdateRepos” i settings.json för att slå på dem, eller uppdatera manuellt från arkivet nedan.</value></data>
@@ -896,9 +873,6 @@ Aktivera?</value></data>
   <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Anpassat läge aktivt</value></data>
   <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>LuaTools Amethyst hanterar nu endast .lua-filer i config\stplug-in utan att ändra Steam-DLL-filer.</value></data>
   <data name="Home_CustomActive" xml:space="preserve"><value>Anpassat · användarhanterat</value></data>
-  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>Ta bort "{0}" (App ID {1})?
-
-Detta tar endast bort den aktiva .lua-filen från Steam\config\stplug-in. Sparade versioner för det här spelet finns kvar på fliken Depots. Starta om Steam efteråt för att ändringen ska träda i kraft.</value></data>
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Ta bort {0} .lua-filer?
 
 Detta tar endast bort de aktiva .lua-filerna från Steam\config\stplug-in. {1} av dessa spel har sparade versioner som finns kvar på fliken Depots. Starta om Steam efteråt för att ändringarna ska träda i kraft.</value></data>
@@ -938,7 +912,7 @@ Detta tar endast bort de aktiva .lua-filerna från Steam\config\stplug-in. {1} a
   <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>Avinstallera endast spelfiler</value></data>
   <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>Tar bort spelets installationsmapp och Steam-appmanifest. Behåller .lua- och .manifest-filer.</value></data>
   <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>Ta endast bort .lua-fil</value></data>
-  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Tar bort config\stplug-in\{0}.lua. Behåller spelfiler, .manifest-filer och sparade byggen.</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Tar bort config\stplug-in\{0}.lua (och {0}.lua.disabled, om den finns). Behåller spelfiler, .manifest-filer och sparade byggen.</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>Ta endast bort .manifest-filer</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>Tar bort spelets exklusiva .manifest-filer i depotcache. Behåller .lua-filen och delade manifest.</value></data>
   <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>Ta bort .lua + .manifest-filer</value></data>
@@ -964,4 +938,6 @@ Detta tar endast bort de aktiva .lua-filerna från Steam\config\stplug-in. {1} a
   <data name="ViewMode_Grid" xml:space="preserve"><value>Rutnätsvy</value></data>
   <data name="ViewMode_List" xml:space="preserve"><value>Listvy</value></data>
   <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Visningsläge för bibliotek</value></data>
+  <data name="Cleanup_Err_OperationInProgress" xml:space="preserve"><value>{0} laddas ner, installeras, säkerhetskopieras eller återställs just nu. Vänta tills det är klart och försök igen.</value></data>
+  <data name="Settings_ManifestBackup_Cancelled" xml:space="preserve"><value>Avbrutet. Spel som redan behandlats har behållits.</value></data>
 </root>

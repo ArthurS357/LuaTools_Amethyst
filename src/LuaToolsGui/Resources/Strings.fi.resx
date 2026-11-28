@@ -91,7 +91,6 @@
   <data name="Settings_BotLink_Body" xml:space="preserve"><value>Olet kirjautunut väliaikaisella Discord-tilillä. Kirjaudu sisään osoitteessa lua.tools, suorita sitten /login uudelleen ja syötä koodi linkittääksesi täyden tilisi.</value></data>
   <data name="Settings_BotLink_Dismiss" xml:space="preserve"><value>Hylkää</value></data>
   <data name="Settings_LoginRequired" xml:space="preserve"><value>Tämä toiminto vaatii kirjautumisen.</value></data>
-  <data name="Settings_ManageKeyHintPrefix" xml:space="preserve"><value>Hallinnoi Hubcap API -avaintasi ja profiiliasi osoitteessa</value></data>
   <data name="Settings_Section_Hubcap" xml:space="preserve"><value>HUBCAP</value></data>
   <data name="Settings_HubcapKey" xml:space="preserve"><value>Hubcap API -avain</value></data>
   <data name="Settings_HubcapKey_Hint" xml:space="preserve"><value>Liitä henkilökohtainen Hubcap API -avaimesi avataksesi Hubcap-manifestit. Sovellus yhdistää Hubcapiin suoraan avaimellasi.</value></data>
@@ -103,7 +102,6 @@
   <data name="Settings_HubcapKeyOkExpiry" xml:space="preserve"><value>{0}/{1} tänään · vanhenee {2}</value></data>
   <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>Tämä ei näytä kelvolliselta avaimelta.</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>Avainta ei voitu vahvistaa — se voi olla virheellinen, vanhentunut, tai Hubcapiin ei saada yhteyttä.</value></data>
-  <data name="Settings_HubcapActive" xml:space="preserve"><value>Aktiivinen</value></data>
   <data name="Settings_HubcapRefresh" xml:space="preserve"><value>Päivitä</value></data>
   <data name="Settings_Language" xml:space="preserve"><value>Kieli</value></data>
   <data name="Settings_Language_Hint" xml:space="preserve"><value>Valitse sovelluksen näyttökieli. Otetaan käyttöön uudelleenkäynnistyksen jälkeen.</value></data>
@@ -125,7 +123,6 @@
   <data name="Lang_Changed_Restart" xml:space="preserve"><value>Käynnistä nyt uudelleen</value></data>
   <data name="Home_Welcome" xml:space="preserve"><value>Tervetuloa LuaTools Amethystiin</value></data>
   <data name="Home_LuasOnBoard" xml:space="preserve"><value>Lua-tiedostoja</value></data>
-  <data name="Home_LastAdded" xml:space="preserve"><value>VIIMEKSI LISÄTTY</value></data>
   <data name="Home_PluginStatus" xml:space="preserve"><value>Laajennuksen tila</value></data>
   <data name="Home_RecentlyAdded" xml:space="preserve"><value>Äskettäin lisätyt</value></data>
   <data name="Home_ViewDetails" xml:space="preserve"><value>Näytä tiedot</value></data>
@@ -224,7 +221,6 @@
   <data name="Manage_Filter_SortBy" xml:space="preserve"><value>Lajittele</value></data>
   <data name="Manage_ClearFilters" xml:space="preserve"><value>Tyhjennä suodattimet</value></data>
   <data name="Manage_Select" xml:space="preserve"><value>Valitse</value></data>
-  <data name="Manage_DeleteThisLua" xml:space="preserve"><value>Poista tämä lua</value></data>
   <data name="Manage_ResultsPerPage" xml:space="preserve"><value>Tuloksia sivulla</value></data>
   <data name="Manage_Action_ViewDetails" xml:space="preserve"><value>Näytä tiedot</value></data>
   <data name="Manage_Action_Update" xml:space="preserve"><value>Päivitä / lataa uudelleen</value></data>
@@ -236,7 +232,6 @@
   <data name="Manage_ActionsHeader" xml:space="preserve"><value>Toiminnot</value></data>
   <data name="Manage_Steamless_Confirm_Title" xml:space="preserve"><value>Poistetaanko Steam-DRM?</value></data>
   <data name="Manage_Steamless_Confirm_Body" xml:space="preserve"><value>Tämä suorittaa Steamlessin pelin suoritettavaan tiedostoon SteamStub-DRM:n poistamiseksi. Alkuperäinen .exe varmuuskopioidaan ensin .bak-tiedostoksi. Jotkin pelit voivat vaatia jälkeenpäin tiedostojen vahvistuksen Steamissa. Jatketaanko?</value></data>
-  <data name="Manage_Steamless_Working" xml:space="preserve"><value>Poistetaan Steam-DRM:ää…</value></data>
   <data name="Manage_Toast_Steamless_Done" xml:space="preserve"><value>{0} käsitelty, {1} ennallaan.</value></data>
   <data name="Manage_Steamless_NoInstall" xml:space="preserve"><value>Pelikansiota ei löytynyt — onko se asennettu?</value></data>
   <data name="Manage_Steamless_Failed" xml:space="preserve"><value>DRM:n poistaminen epäonnistui. {0}</value></data>
@@ -273,19 +268,11 @@
   <data name="Manage_Depot" xml:space="preserve"><value>Depo</value></data>
   <data name="Manage_SharedDepot" xml:space="preserve"><value>Jaettu depo</value></data>
   <data name="Manage_DlcName" xml:space="preserve"><value>DLC {0}</value></data>
-  <data name="Manage_Delete_Title" xml:space="preserve"><value>Poista lua-tiedosto</value></data>
-  <data name="Manage_Delete_Body" xml:space="preserve"><value>Poistetaanko "{0}" (App ID {1})?
-
-Tämä poistaa sen .lua-tiedoston sijainnista Steam\config\stplug-in. Käynnistä Steam tämän jälkeen uudelleen, jotta muutos tulee voimaan.</value></data>
   <data name="Manage_DeleteMany_Title" xml:space="preserve"><value>Poista lua-tiedostot</value></data>
   <data name="Manage_DeleteMany_Body" xml:space="preserve"><value>Poistetaanko {0} lua-tiedostoa?
 
 Tämä poistaa .lua-tiedostot sijainnista Steam\config\stplug-in. Käynnistä Steam tämän jälkeen uudelleen, jotta muutokset tulevat voimaan.</value></data>
   <data name="Manage_RemoveFailed_Title" xml:space="preserve"><value>Poisto epäonnistui</value></data>
-  <data name="Manage_RemoveFailed_File" xml:space="preserve"><value>Tiedostoa ei voitu poistaa:
-{0}</value></data>
-  <data name="Manage_RemoveFailed_Named" xml:space="preserve"><value>"{0}" ei voitu poistaa:
-{1}</value></data>
   <data name="Manage_RemoveFailed_Count" xml:space="preserve"><value>{0} tiedostoa ei voitu poistaa.</value></data>
   <data name="Manage_RestartSteam_Title" xml:space="preserve"><value>Käynnistä Steam uudelleen</value></data>
   <data name="Manage_RestartSteam_Ask" xml:space="preserve"><value>Käynnistetäänkö Steam nyt uudelleen, jotta muutokset tulevat voimaan?</value></data>
@@ -346,7 +333,6 @@ Tämä poistaa .lua-tiedostot sijainnista Steam\config\stplug-in. Käynnistä St
   <data name="Add_Err_BaseGame" xml:space="preserve"><value>Tämän DLC:n peruspeliä ei voitu määrittää</value></data>
   <data name="Add_Err_Generic" xml:space="preserve"><value>Jokin meni pieleen — tarkista yhteytesi ja yritä uudelleen.</value></data>
   <data name="Add_Err_Download" xml:space="preserve"><value>Lataus epäonnistui — tarkista yhteytesi ja yritä uudelleen.</value></data>
-  <data name="Add_Err_Generate" xml:space="preserve"><value>Luonti epäonnistui — tarkista yhteytesi ja yritä uudelleen.</value></data>
   <data name="Add_Confirm_Replace" xml:space="preserve"><value>Korvataanko "{0}"?</value></data>
   <data name="Add_Confirm_NoChanges" xml:space="preserve"><value>Ei depo-/DLC-muutoksia — sama sisältö.</value></data>
   <data name="Add_Status_Cancelled" xml:space="preserve"><value>Asennus peruutettu — olemassa olevat tiedostot ennallaan.</value></data>
@@ -377,7 +363,6 @@ Tämä poistaa .lua-tiedostot sijainnista Steam\config\stplug-in. Käynnistä St
   <data name="Plugin_CardTitle" xml:space="preserve"><value>Tila</value></data>
   <data name="Plugin_Badge_UpdateAvailable" xml:space="preserve"><value>Päivitys saatavilla</value></data>
   <data name="Plugin_Row_InstalledVersion" xml:space="preserve"><value>Asennettu versio</value></data>
-  <data name="Plugin_Row_LatestVersion" xml:space="preserve"><value>Uusin versio</value></data>
   <data name="Plugin_Row_Frontend" xml:space="preserve"><value>Käyttöliittymä</value></data>
   <data name="Plugin_Row_Loader" xml:space="preserve"><value>Lataaja (winmm.dll)</value></data>
   <data name="Plugin_Millennium_Coexisting" xml:space="preserve"><value>Millennium havaittu — LuaTools toimii sen rinnalla. Asennus poistaa käytöstä Millenniumin oman kopion tästä laajennuksesta, jotta vain LuaLoader injektoi.</value></data>
@@ -421,7 +406,6 @@ Tämä poistaa .lua-tiedostot sijainnista Steam\config\stplug-in. Käynnistä St
   <data name="Nav_Builds" xml:space="preserve"><value>Varastot</value></data>
   <data name="Builds_Title" xml:space="preserve"><value>Varastot</value></data>
   <data name="Builds_Subtitle" xml:space="preserve"><value>Säilytä pelin lua-tiedostosta useita versioita ja valitse, mitä Steam käyttää.</value></data>
-  <data name="Builds_NoSelection" xml:space="preserve"><value>Valitse peli vasemmalta nähdäksesi sen esiasetukset.</value></data>
   <data name="Builds_ActiveBuild" xml:space="preserve"><value>Aktiivinen esiasetus</value></data>
   <data name="Builds_Active" xml:space="preserve"><value>AKTIIVINEN</value></data>
   <data name="Builds_Variant_Default" xml:space="preserve"><value>Oletus</value></data>
@@ -450,7 +434,6 @@ Tämä poistaa .lua-tiedostot sijainnista Steam\config\stplug-in. Käynnistä St
   <data name="Builds_Delete_ActiveTip" xml:space="preserve"><value>Käytössä olevaa esiasetusta ei voi poistaa.</value></data>
   <data name="Builds_Apply_Done" xml:space="preserve"><value>Käytössä on nyt ”{0}”. Käynnistä Steam uudelleen, jotta muutos tulee voimaan.</value></data>
   <data name="Builds_Apply_Failed" xml:space="preserve"><value>Esiasetusta ei voitu vaihtaa — lua-tiedosto saattaa olla käytössä.</value></data>
-  <data name="Builds_Save_Done" xml:space="preserve"><value>Tallennettu. Käynnistä Steam uudelleen, jotta muutos tulee voimaan.</value></data>
   <data name="Builds_Save_Failed" xml:space="preserve"><value>Tallennus epäonnistui — lua-tiedosto saattaa olla käytössä.</value></data>
   <data name="Builds_Preset_Saved" xml:space="preserve"><value>Tallennettu esiasetuksena.</value></data>
   <data name="Builds_Action_SaveTo" xml:space="preserve"><value>Tallenna kohteeseen ”{0}”</value></data>
@@ -509,7 +492,6 @@ Tämä poistaa .lua-tiedostot sijainnista Steam\config\stplug-in. Käynnistä St
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steamiä ei voitu käynnistää. Määritä sen sijainti Asetuksissa ja yritä uudelleen.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
   <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
-  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam-tiedostot</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool asennettiin. Steam käynnistettiin uudelleen sen lataamiseksi.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>AmethystToolin asennus epäonnistui: {0}</value></data>
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Uusin AmethystTool-julkaisu ei julkaise tiedostoa {0}.</value></data>
@@ -557,7 +539,6 @@ Tämä poistaa .lua-tiedostot sijainnista Steam\config\stplug-in. Käynnistä St
   <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>Latauksesta puuttuu: {0}.</value></data>
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>Kohdetta {0} ei löytynyt mistään julkaisusta.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} ei läpäissyt tarkistusta (sha256 ei täsmää tai julkaistua digestiä ei ole).</value></data>
-  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Julkaisusta puuttuu {0}.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Tokenin vaihto epäonnistui ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Tokenin vaihto palautti tyhjän istunnon.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Et ole kirjautunut sisään.</value></data>
@@ -630,8 +611,6 @@ Pakotetaanko sulkeminen? Kaikki, mitä Steam ei ole vielä tallentanut, voi kado
   <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
   <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Lisää kansio…</value></data>
   <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Poista</value></data>
-  <data name="Saves_Note" xml:space="preserve"><value>Varmuuskopioi Steamin pelikohtaisen kansion (userdata). Pelejä, jotka tallentavat Asiakirjoihin tai AppDataan, ei sisällytetä.</value></data>
-  <data name="Saves_Toast_Created" xml:space="preserve"><value>Varmuuskopioitu {0} tiedosto(a), {1}.</value></data>
   <data name="Saves_Toast_Restored" xml:space="preserve"><value>Palautettu {0} tiedosto(a). Edellisten tallennusten kopio säilytettiin.</value></data>
   <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Varmuuskopio poistettu.</value></data>
   <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Tämän pelin tallennuksia ei löytynyt. Lisää kansio, johon peli ne tallentaa, valinnalla ”Lisää kansio käsin…”.</value></data>
@@ -700,7 +679,6 @@ Varmennettu: {4}</value></data>
   <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>arkisto tarkistettu</value></data>
   <data name="Download_Notice_Cancel" xml:space="preserve"><value>Peruuta</value></data>
   <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Peruutettu ennen kuin mitään asennettiin.</value></data>
-  <data name="Builds_RemoveGame" xml:space="preserve"><value>Poista peli</value></data>
   <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Poistaa tämän pelin Varastot-luettelosta. Poistaa sen lua-tiedostot ja kaikki tallennetut koosteet.</value></data>
   <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Poista peli</value></data>
   <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>Poistetaanko {0} ({1}) Varastoista?
@@ -741,7 +719,6 @@ Otetaanko käyttöön?</value></data>
   <data name="About_What_Header" xml:space="preserve"><value>Mikä tämä on</value></data>
   <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst on yhteisön LuaTools-haarautuma, joka keskittyy yksityisyyteen. Se poistaa analytiikkapingin ja avainlähetyksen, jotka alkuperäinen versio tekee, pitää kaikki lataukset HTTPS:n yli ja sisältää violetin Amethyst-teeman.</value></data>
   <data name="About_Version_Header" xml:space="preserve"><value>Versio</value></data>
-  <data name="About_Repo_Header" xml:space="preserve"><value>Arkisto</value></data>
   <data name="About_Updates_Header" xml:space="preserve"><value>Päivitykset</value></data>
   <data name="About_Updates_Enabled" xml:space="preserve"><value>Automaattiset päivitykset ovat PÄÄLLÄ. LuaTools Amethyst tarkistaa alla olevan arkiston käynnistyksessä ja asentaa päivitykset taustalla.</value></data>
   <data name="About_Updates_Disabled" xml:space="preserve"><value>Automaattiset päivitykset ovat POIS — päivityspyyntöjä ei tehdä. Lisää ”AppUpdateRepos” tiedostoon settings.json ottaaksesi ne käyttöön tai päivitä käsin alla olevasta arkistosta.</value></data>
@@ -896,9 +873,6 @@ Otetaanko käyttöön?</value></data>
   <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Mukautettu tila käytössä</value></data>
   <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>LuaTools Amethyst hallinnoi nyt vain .lua-tiedostoja kansiossa config\stplug-in muokkaamatta Steamin DLL-tiedostoja.</value></data>
   <data name="Home_CustomActive" xml:space="preserve"><value>Mukautettu · käyttäjän hallinnoima</value></data>
-  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>Poistetaanko "{0}" (App ID {1})?
-
-Tämä poistaa vain aktiivisen .lua-tiedoston kansiosta Steam\config\stplug-in. Pelin tallennetut versiot pysyvät käytettävissä Depots-välilehdellä. Käynnistä Steam uudelleen, jotta muutos tulee voimaan.</value></data>
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Poistetaanko {0} .lua-tiedostoa?
 
 Tämä poistaa vain aktiiviset .lua-tiedostot kansiosta Steam\config\stplug-in. {1} näistä peleistä sisältää tallennettuja versioita, jotka pysyvät käytettävissä Depots-välilehdellä. Käynnistä Steam uudelleen, jotta muutokset tulevat voimaan.</value></data>
@@ -938,7 +912,7 @@ Tämä poistaa vain aktiiviset .lua-tiedostot kansiosta Steam\config\stplug-in. 
   <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>Poista vain pelin tiedostot</value></data>
   <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>Poistaa pelin asennuskansion ja Steam-appmanifestin. Säilyttää .lua- ja .manifest-tiedostot.</value></data>
   <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>Poista vain .lua-tiedosto</value></data>
-  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Poistaa tiedoston config\stplug-in\{0}.lua. Säilyttää pelin tiedostot, .manifest-tiedostot ja tallennetut koosteet.</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Poistaa tiedoston config\stplug-in\{0}.lua (ja {0}.lua.disabled, jos se on olemassa). Säilyttää pelin tiedostot, .manifest-tiedostot ja tallennetut koosteet.</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>Poista vain .manifest-tiedostot</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>Poistaa tämän pelin omat .manifest-tiedostot depotcache-kansiosta. Säilyttää .lua-tiedoston ja jaetut manifestit.</value></data>
   <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>Poista .lua + .manifest-tiedostot</value></data>
@@ -964,4 +938,6 @@ Tämä poistaa vain aktiiviset .lua-tiedostot kansiosta Steam\config\stplug-in. 
   <data name="ViewMode_Grid" xml:space="preserve"><value>Ruudukkonäkymä</value></data>
   <data name="ViewMode_List" xml:space="preserve"><value>Luettelonäkymä</value></data>
   <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Kirjaston näyttötila</value></data>
+  <data name="Cleanup_Err_OperationInProgress" xml:space="preserve"><value>Peliä {0} ladataan, asennetaan, varmuuskopioidaan tai palautetaan juuri nyt. Odota, että toiminto valmistuu, ja yritä uudelleen.</value></data>
+  <data name="Settings_ManifestBackup_Cancelled" xml:space="preserve"><value>Peruttu. Jo käsitellyt pelit säilytettiin.</value></data>
 </root>

@@ -20,13 +20,17 @@ public sealed class GameCleanupService
     private readonly Func<int?> _readRunningAppId;
     private readonly Func<bool> _isSteamRunning;
     private readonly Func<string, bool> _isLink;
+    private readonly Func<long, bool> _isAppBusy;
 
     public GameCleanupService(
         SteamService steam,
         SteamLibraryService library,
         LuaVault vault,
         CacheService cache,
-        SettingsService settings)
+        SettingsService settings,
+        Downloads.DownloadQueue downloads,
+        Backups.ManifestBackupService backups,
+        LuaInstaller installer)
         : this(
             () => steam.StPlugInDir,
             () => steam.DepotCacheDir,
@@ -35,7 +39,8 @@ public sealed class GameCleanupService
             cache,
             () => settings.ManifestBackupFolder,
             SteamService.ReadRunningAppId,
-            SteamService.IsSteamRunning)
+            SteamService.IsSteamRunning,
+            isAppBusy: appId => installer.IsInstalling || downloads.HasActiveFor(appId) || backups.IsBusyWith(appId))
     {
     }
 
@@ -48,7 +53,8 @@ public sealed class GameCleanupService
         Func<string?> manifestBackupFolder,
         Func<int?> readRunningAppId,
         Func<bool> isSteamRunning,
-        Func<string, bool>? isLink = null)
+        Func<string, bool>? isLink = null,
+        Func<long, bool>? isAppBusy = null)
     {
         _stPlugInDir = stPlugInDir;
         _depotCacheDir = depotCacheDir;
@@ -59,6 +65,7 @@ public sealed class GameCleanupService
         _readRunningAppId = readRunningAppId;
         _isSteamRunning = isSteamRunning;
         _isLink = isLink ?? IsLink;
+        _isAppBusy = isAppBusy ?? (static _ => false);
     }
 
     /// <summary>Raised when at least one file or game directory was removed for an app.</summary>
@@ -114,11 +121,10 @@ public sealed class GameCleanupService
         if (install is null)
             return new GameCleanupAvailability(hasActiveLua, hasStoredBuilds, false, null, null);
 
-        var pathCheck = GameCleanupPolicy.ValidateInstallDirectory(
-            install.CommonDir, install.RawInstallDir, _isLink, _manifestBackupFolder());
+        var gameFilesBlock = CheckGameFiles(install, appId, _manifestBackupFolder(), out string? canonicalDir);
 
         long? bytes = install.SizeOnDisk;
-        if (bytes is null or <= 0 && pathCheck.IsValid && pathCheck.CanonicalPath is { } dir && Directory.Exists(dir))
+        if (bytes is null or <= 0 && canonicalDir is { } dir && Directory.Exists(dir))
         {
             long measured = ComputeDirectorySizeSafe(dir, _isLink, ct);
             if (measured > 0) bytes = measured;
@@ -128,8 +134,39 @@ public sealed class GameCleanupService
             hasActiveLua,
             hasStoredBuilds,
             HasInstalledGame: true,
-            pathCheck.CanonicalPath,
-            bytes);
+            canonicalDir,
+            bytes,
+            gameFilesBlock);
+    }
+
+    /// <summary>
+    /// The fail-closed checks a game-files delete needs, shared by <see cref="InspectAsync"/> (so the dialog can
+    /// disable those scopes and say why before the click) and <see cref="CleanAsync"/> (which re-runs them, since
+    /// the disk can change while the dialog is open). <paramref name="canonicalGameDir"/> is set once the path
+    /// itself is valid, even when a later check (shared folder) refuses the delete.
+    /// </summary>
+    private GameCleanupBlockReason CheckGameFiles(
+        SteamAppInstallLocation install, long appId, string? backupRoot, out string? canonicalGameDir)
+    {
+        canonicalGameDir = null;
+        if (_isLink(install.SteamAppsDir) || _isLink(install.AcfPath))
+            return GameCleanupBlockReason.SymlinkDetected;
+        if (GameCleanupPolicy.IsOverlappingPath(install.AcfPath, backupRoot))
+            return GameCleanupBlockReason.BackupVaultOverlap;
+
+        var pathCheck = GameCleanupPolicy.ValidateInstallDirectory(
+            install.CommonDir, install.RawInstallDir, _isLink, backupRoot);
+        if (!pathCheck.IsValid || pathCheck.CanonicalPath is not { } dir)
+            return pathCheck.IsValid ? GameCleanupBlockReason.UnsafeInstallPath : pathCheck.BlockReason;
+        canonicalGameDir = dir;
+
+        // Valve ships apps sharing one folder (HL2, its episodes, Lost Coast → "Half-Life 2"): deleting
+        // it would take another app's game and saves with it.
+        if (_library.GetOtherInstallDirsInLibrary(install, appId) is not { } otherDirs)
+            return GameCleanupBlockReason.UnreadableSteamLibrary;
+        return otherDirs.Any(d => GameCleanupPolicy.IsOverlappingPath(d, dir))
+            ? GameCleanupBlockReason.SharedInstallDir
+            : GameCleanupBlockReason.None;
     }
 
     /// <summary>Execute cleanup for <paramref name="appId"/> under the given <paramref name="scope"/>.</summary>
@@ -153,6 +190,12 @@ public sealed class GameCleanupService
 
         ct.ThrowIfCancellationRequested();
 
+        // Never delete under a download/install or a manifest backup/restore of the same game.
+        // ponytail: probed once, before the deletes; an operation starting mid-delete is not seen. Hold a shared
+        // lock across the whole cleanup if that window ever matters.
+        if (IsAppBusy(appId))
+            return Blocked(scope, GameCleanupBlockReason.OperationInProgress);
+
         string? backupRoot = _manifestBackupFolder();
         bool wantLua = GameCleanupPolicy.IncludesLua(scope);
         bool wantManifests = GameCleanupPolicy.IncludesManifests(scope);
@@ -171,28 +214,9 @@ public sealed class GameCleanupService
                 return Blocked(scope, GameCleanupBlockReason.GameRunning);
 
             install = _library.FindAppInstall(appId);
-            if (install is not null)
-            {
-                if (_isLink(install.SteamAppsDir) || _isLink(install.AcfPath))
-                    return Blocked(scope, GameCleanupBlockReason.SymlinkDetected);
-
-                if (GameCleanupPolicy.IsOverlappingPath(install.AcfPath, backupRoot))
-                    return Blocked(scope, GameCleanupBlockReason.BackupVaultOverlap);
-
-                var pathCheck = GameCleanupPolicy.ValidateInstallDirectory(
-                    install.CommonDir, install.RawInstallDir, _isLink, backupRoot);
-                if (!pathCheck.IsValid)
-                    return Blocked(scope, pathCheck.BlockReason);
-
-                canonicalGameDir = pathCheck.CanonicalPath;
-
-                // Valve ships apps sharing one folder (HL2, its episodes, Lost Coast → "Half-Life 2"): deleting
-                // it would take another app's game and saves with it.
-                if (_library.GetOtherInstallDirsInLibrary(install, appId) is not { } otherDirs)
-                    return Blocked(scope, GameCleanupBlockReason.UnreadableSteamLibrary);
-                if (otherDirs.Any(d => GameCleanupPolicy.IsOverlappingPath(d, canonicalGameDir)))
-                    return Blocked(scope, GameCleanupBlockReason.SharedInstallDir);
-            }
+            if (install is not null &&
+                CheckGameFiles(install, appId, backupRoot, out canonicalGameDir) is var gameBlock and not GameCleanupBlockReason.None)
+                return Blocked(scope, gameBlock);
         }
 
         string? liveLuaPath = null;
@@ -395,17 +419,17 @@ public sealed class GameCleanupService
             string livePath = Path.Combine(plugDir, $"{appId}.lua");
             if (File.Exists(livePath))
             {
-                if (!TryReadSharedText(livePath, out string? liveText))
+                if (SteamLibraryService.ReadSharedText(livePath) is not { } liveText)
                     return false;
-                AddLuaDepots(targetDepots, liveText!, appId);
+                AddLuaDepots(targetDepots, liveText, appId);
             }
 
             foreach (var (looseAppId, _, loosePath) in _vault.EnumerateLooseBuildLuas())
             {
                 if (looseAppId != appId) continue;
-                if (!TryReadSharedText(loosePath, out string? looseText))
+                if (SteamLibraryService.ReadSharedText(loosePath) is not { } looseText)
                     return false;
-                AddLuaDepots(targetDepots, looseText!, appId);
+                AddLuaDepots(targetDepots, looseText, appId);
             }
         }
 
@@ -439,9 +463,9 @@ public sealed class GameCleanupService
             foreach (var (otherAppId, path) in LuaInstaller.EnumerateInstalled(plugDir))
             {
                 if (otherAppId == targetAppId) continue;
-                if (!TryReadSharedText(path, out string? text))
+                if (SteamLibraryService.ReadSharedText(path) is not { } text)
                     return false; // fail-closed: cannot prove a sibling active lua doesn't use a depot
-                AddLuaDepots(otherDepots, text!, otherAppId);
+                AddLuaDepots(otherDepots, text, otherAppId);
             }
 
             // A disabled game (<appid>.lua.disabled) still owns its depots: re-enabling it must find its manifests.
@@ -451,17 +475,17 @@ public sealed class GameCleanupService
                 if (!long.TryParse(name.AsSpan(0, name.Length - ".lua.disabled".Length), NumberStyles.None,
                         CultureInfo.InvariantCulture, out long disabledAppId) || disabledAppId == targetAppId)
                     continue;
-                if (!TryReadSharedText(path, out string? text))
+                if (SteamLibraryService.ReadSharedText(path) is not { } text)
                     return false;
-                AddLuaDepots(otherDepots, text!, disabledAppId);
+                AddLuaDepots(otherDepots, text, disabledAppId);
             }
 
             foreach (var (looseAppId, _, loosePath) in _vault.EnumerateLooseBuildLuas())
             {
                 if (looseAppId == targetAppId) continue;
-                if (!TryReadSharedText(loosePath, out string? text))
+                if (SteamLibraryService.ReadSharedText(loosePath) is not { } text)
                     return false;
-                AddLuaDepots(otherDepots, text!, looseAppId);
+                AddLuaDepots(otherDepots, text, looseAppId);
             }
         }
 
@@ -494,22 +518,6 @@ public sealed class GameCleanupService
         if (!Directory.Exists(depotDir)) yield break;
         foreach (string path in Directory.EnumerateFiles(depotDir, "*.manifest"))
             yield return (Path.GetFileName(path), path);
-    }
-
-    private static bool TryReadSharedText(string path, out string? text)
-    {
-        try
-        {
-            using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
-            using var reader = new StreamReader(fs);
-            text = reader.ReadToEnd();
-            return true;
-        }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
-        {
-            text = null;
-            return false;
-        }
     }
 
     private static long SafeFileLength(string path)
@@ -623,6 +631,16 @@ public sealed class GameCleanupService
         }
 
         return !Directory.Exists(rootDir);
+    }
+
+    /// <summary>Fail-closed: if the busy probe itself fails (dispatcher shutting down), treat the app as busy.</summary>
+    private bool IsAppBusy(long appId)
+    {
+        try { return _isAppBusy(appId); }
+        catch (Exception ex) when (ex is InvalidOperationException or OperationCanceledException)
+        {
+            return true;
+        }
     }
 
     private static GameCleanupResult Blocked(GameCleanupScope scope, GameCleanupBlockReason reason) =>

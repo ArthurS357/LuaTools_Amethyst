@@ -466,6 +466,37 @@ public sealed class LibraryViewModeAndPerformanceTests(ThemeHost host) : IDispos
         }
     }
 
+    [Fact]
+    public void ViewModeToggle_exposes_the_active_mode_to_UI_Automation_in_both_modes()
+    {
+        host.On(_ =>
+        {
+            var toggle = new ViewModeToggle();
+            var other = new ViewModeToggle();
+            static bool Selected(UIElement e) =>
+                ((System.Windows.Automation.Provider.ISelectionItemProvider)System.Windows.Automation.Peers.UIElementAutomationPeer
+                    .CreatePeerForElement(e)
+                    .GetPattern(System.Windows.Automation.Peers.PatternInterface.SelectionItem)).IsSelected;
+
+            toggle.GridButton.IsChecked.Should().BeTrue();
+            Selected(toggle.GridButton).Should().BeTrue();
+            Selected(toggle.ListButton).Should().BeFalse();
+
+            toggle.ViewMode = LibraryViewMode.List; // binding / settings → radios
+            toggle.ListButton.IsChecked.Should().BeTrue();
+            toggle.GridButton.IsChecked.Should().BeFalse();
+            Selected(toggle.ListButton).Should().BeTrue();
+            Selected(toggle.GridButton).Should().BeFalse();
+
+            toggle.GridButton.IsChecked = true; // user picks a radio → ViewMode
+            toggle.ViewMode.Should().Be(LibraryViewMode.Grid);
+            toggle.ListButton.IsChecked.Should().BeFalse();
+
+            other.ViewMode.Should().Be(LibraryViewMode.Grid, "Manage's and Depots' toggles never share a radio group");
+            other.GridButton.IsChecked.Should().BeTrue();
+        });
+    }
+
     // ── Audit regressions: hover lifecycle, row click/keyboard isolation, transforms, cover cache ──
 
     [Fact]

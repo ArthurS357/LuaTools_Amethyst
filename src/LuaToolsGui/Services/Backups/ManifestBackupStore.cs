@@ -126,7 +126,7 @@ public static class ManifestBackupStore
             var depots = lua.Entries.Select(static e => e.Id).Concat(pins.Keys).Distinct().ToList();
             // An empty, truncated or misnamed depotcache file is treated as absent, so a stored copy of the same
             // manifest is carried instead of being replaced by the damaged one.
-            var usable = depots.SelectMany(d => index[d]).Where(m => IsUsableLocal(appId, m)).ToList();
+            var usable = depots.SelectMany(d => index[d]).Where(m => IsUsableLocal(appId, m)).Select(WithCreationTime).ToList();
             var selected = ManifestBackupPolicy.SelectManifests(depots, pins, usable);
 
             string appDir = Path.Combine(destRoot, appId.ToString(CultureInfo.InvariantCulture));
@@ -243,6 +243,11 @@ public static class ManifestBackupStore
         }
     }
 
+    /// <summary>Steam's creation_time from the file's metadata (a few dozen bytes; the payload is seeked over).
+    /// Only for the declared depots' candidates, never the whole depotcache.</summary>
+    private static DepotManifest WithCreationTime(DepotManifest m) =>
+        m with { CreationTimeUtc = ManifestFile.TryRead(m.Path)?.CreationTimeUtc };
+
     private static bool IsUsableLocal(long appId, DepotManifest m)
     {
         if (ManifestFile.IsIntact(m.Path, m.DepotId, m.ManifestId)) return true;
@@ -300,6 +305,9 @@ public static class ManifestBackupStore
             var carriedMeta = m.LastWriteUtc is null && entry.LastWriteTime.UtcDateTime > DosEpochCutoffUtc
                 ? m with { LastWriteUtc = ClampUtc(entry.LastWriteTime.UtcDateTime, nowUtc) }
                 : m;
+            // A pre-1.8.9 entry gains Steam's creation_time from the bytes already in hand (no extra I/O), so an old
+            // vault converges to one time basis on its next rewrite instead of mixing write and creation times.
+            carriedMeta = carriedMeta with { CreationTimeUtc = carriedMeta.CreationTimeUtc ?? ManifestFile.TryRead(bytes)?.CreationTimeUtc };
             kept.Add(new CarriedManifest(carriedMeta, bytes, entry.LastWriteTime));
         }
         return kept;
@@ -411,8 +419,10 @@ public static class ManifestBackupStore
             if (!ManifestFile.IsIntact(bytes, m.DepotId, m.ManifestId))
                 throw new InvalidDataException("a depotcache manifest changed while it was being backed up; stored backup kept");
             DateTime clampedUtc = ClampUtc(m.LastWriteUtc, nowUtc);
+            // creation_time from the bytes actually stored, not from the earlier read of the file.
             var entry = new BackedUpManifest(
-                m.DepotId, m.ManifestId, Convert.ToHexStringLower(SHA256.HashData(bytes)), clampedUtc);
+                m.DepotId, m.ManifestId, Convert.ToHexStringLower(SHA256.HashData(bytes)), clampedUtc,
+                ManifestFile.TryRead(bytes)?.CreationTimeUtc);
             // The canonical name, the one metadata.json and the restore gate look up ("0123_4.manifest" → "123_4").
             AddEntry(zip, ManifestEntryName(entry), bytes, ToDosTimestamp(clampedUtc));
             recorded.Add(entry);

@@ -47,6 +47,7 @@ public sealed partial class ManifestBackupViewModel : ObservableObject
     [NotifyCanExecuteChangedFor(nameof(BrowseCommand))]
     [NotifyCanExecuteChangedFor(nameof(BackupAllCommand))]
     [NotifyCanExecuteChangedFor(nameof(VerifyCommand))]
+    [NotifyCanExecuteChangedFor(nameof(CancelRunCommand))]
     private bool _isRunning;
 
     public bool IsNotRunning => !IsRunning;
@@ -112,6 +113,18 @@ public sealed partial class ManifestBackupViewModel : ObservableObject
         return report is null ? Resources.Strings.Settings_ManifestBackup_FolderRefused : Describe(report);
     }, Resources.Strings.Settings_ManifestBackup_Verifying);
 
+    /// <summary>
+    /// Stop whichever run is active. The toolkit owns each command's token source (created per execution,
+    /// never disposed under us), so this only signals it: the batch stops between games and its finally still
+    /// re-syncs index.json; verify stops between games too. The buttons come back when the run returns.
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(IsRunning))]
+    private void CancelRun()
+    {
+        BackupAllCommand.Cancel();
+        VerifyCommand.Cancel();
+    }
+
     /// <summary>Shared run shell: IsRunning, progress text that a late callback cannot overwrite, and the outcome.</summary>
     private async Task RunAsync(string what, Func<IProgress<(int Done, int Total)>, Task<string>> run, string progressFormat)
     {
@@ -131,7 +144,7 @@ public sealed partial class ManifestBackupViewModel : ObservableObject
         catch (OperationCanceledException)
         {
             active = false;
-            Status = null;
+            Status = Resources.Strings.Settings_ManifestBackup_Cancelled; // stopped on request: not an error
         }
         catch (Exception ex) when (ex is ArgumentException or System.IO.IOException or UnauthorizedAccessException)
         {

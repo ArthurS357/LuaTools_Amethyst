@@ -182,7 +182,9 @@ public partial class SteamLibraryService(SteamService steam)
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { return null; }
     }
 
-    private static string? ReadSharedText(string path)
+    /// <summary>Whole text of a file Steam may hold open (shared read/write/delete), or null on any failure —
+    /// callers treat null as "unreadable" and fail closed. Shared with <see cref="GameCleanupService"/>.</summary>
+    internal static string? ReadSharedText(string path)
     {
         try
         {

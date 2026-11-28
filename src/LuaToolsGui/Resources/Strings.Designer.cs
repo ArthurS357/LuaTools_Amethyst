@@ -55,7 +55,6 @@ public static class Strings
     public static string Settings_BotLink_Body => Get(nameof(Settings_BotLink_Body));
     public static string Settings_BotLink_Dismiss => Get(nameof(Settings_BotLink_Dismiss));
     public static string Settings_LoginRequired => Get(nameof(Settings_LoginRequired));
-    public static string Settings_ManageKeyHintPrefix => Get(nameof(Settings_ManageKeyHintPrefix));
     public static string Settings_Section_Hubcap => Get(nameof(Settings_Section_Hubcap));
     public static string Settings_HubcapKey => Get(nameof(Settings_HubcapKey));
     public static string Settings_HubcapKey_Hint => Get(nameof(Settings_HubcapKey_Hint));
@@ -116,8 +115,6 @@ public static class Strings
     public static string Saves_Delete => Get(nameof(Saves_Delete));
     public static string Saves_Close => Get(nameof(Saves_Close));
     public static string Saves_Empty => Get(nameof(Saves_Empty));
-    public static string Saves_Note => Get(nameof(Saves_Note));
-    public static string Saves_Toast_Created => Get(nameof(Saves_Toast_Created));
     public static string Saves_Toast_Restored => Get(nameof(Saves_Toast_Restored));
     public static string Saves_Toast_Deleted => Get(nameof(Saves_Toast_Deleted));
     public static string Saves_Toast_NoSaves => Get(nameof(Saves_Toast_NoSaves));
@@ -146,7 +143,6 @@ public static class Strings
     public static string About_Changelog_Title => Get(nameof(About_Changelog_Title));
     public static string About_Changelog_Show => Get(nameof(About_Changelog_Show));
     public static string About_Changelog_Hide => Get(nameof(About_Changelog_Hide));
-    public static string Settings_HubcapActive => Get(nameof(Settings_HubcapActive));
     public static string Settings_HubcapRefresh => Get(nameof(Settings_HubcapRefresh));
     public static string Settings_Language => Get(nameof(Settings_Language));
     public static string Settings_Language_Hint => Get(nameof(Settings_Language_Hint));
@@ -214,7 +210,6 @@ public static class Strings
     // ── Home ──
     public static string Home_Welcome => Get(nameof(Home_Welcome));
     public static string Home_LuasOnBoard => Get(nameof(Home_LuasOnBoard));
-    public static string Home_LastAdded => Get(nameof(Home_LastAdded));
     public static string Home_PluginStatus => Get(nameof(Home_PluginStatus));
     public static string Home_RecentlyAdded => Get(nameof(Home_RecentlyAdded));
     public static string Home_ViewDetails => Get(nameof(Home_ViewDetails));
@@ -330,7 +325,6 @@ public static class Strings
     public static string Manage_Filter_SortBy => Get(nameof(Manage_Filter_SortBy));
     public static string Manage_ClearFilters => Get(nameof(Manage_ClearFilters));
     public static string Manage_Select => Get(nameof(Manage_Select));
-    public static string Manage_DeleteThisLua => Get(nameof(Manage_DeleteThisLua));
     public static string Manage_ResultsPerPage => Get(nameof(Manage_ResultsPerPage));
     public static string Manage_Action_ViewDetails => Get(nameof(Manage_Action_ViewDetails));
     public static string Manage_Action_Update => Get(nameof(Manage_Action_Update));
@@ -353,7 +347,6 @@ public static class Strings
     public static string Manage_ActionsHeader => Get(nameof(Manage_ActionsHeader));
     public static string Manage_Steamless_Confirm_Title => Get(nameof(Manage_Steamless_Confirm_Title));
     public static string Manage_Steamless_Confirm_Body => Get(nameof(Manage_Steamless_Confirm_Body));
-    public static string Manage_Steamless_Working => Get(nameof(Manage_Steamless_Working));
     public static string Manage_Toast_Steamless_Done => Get(nameof(Manage_Toast_Steamless_Done));
     public static string Manage_Steamless_NoInstall => Get(nameof(Manage_Steamless_NoInstall));
     public static string Manage_Steamless_Failed => Get(nameof(Manage_Steamless_Failed));
@@ -406,13 +399,9 @@ public static class Strings
     public static string Manage_Depot => Get(nameof(Manage_Depot));
     public static string Manage_SharedDepot => Get(nameof(Manage_SharedDepot));
     public static string Manage_DlcName => Get(nameof(Manage_DlcName));
-    public static string Manage_Delete_Title => Get(nameof(Manage_Delete_Title));
-    public static string Manage_Delete_Body => Get(nameof(Manage_Delete_Body));
     public static string Manage_DeleteMany_Title => Get(nameof(Manage_DeleteMany_Title));
     public static string Manage_DeleteMany_Body => Get(nameof(Manage_DeleteMany_Body));
     public static string Manage_RemoveFailed_Title => Get(nameof(Manage_RemoveFailed_Title));
-    public static string Manage_RemoveFailed_File => Get(nameof(Manage_RemoveFailed_File));
-    public static string Manage_RemoveFailed_Named => Get(nameof(Manage_RemoveFailed_Named));
     public static string Manage_RemoveFailed_Count => Get(nameof(Manage_RemoveFailed_Count));
     public static string Manage_RestartSteam_Title => Get(nameof(Manage_RestartSteam_Title));
     public static string Manage_RestartSteam_Ask => Get(nameof(Manage_RestartSteam_Ask));
@@ -498,7 +487,6 @@ public static class Strings
     public static string Add_Err_BaseGame => Get(nameof(Add_Err_BaseGame));
     public static string Add_Err_Generic => Get(nameof(Add_Err_Generic));
     public static string Add_Err_Download => Get(nameof(Add_Err_Download));
-    public static string Add_Err_Generate => Get(nameof(Add_Err_Generate));
     public static string Add_Confirm_Replace => Get(nameof(Add_Confirm_Replace));
     public static string Add_Confirm_NoChanges => Get(nameof(Add_Confirm_NoChanges));
     public static string Add_Status_Cancelled => Get(nameof(Add_Status_Cancelled));
@@ -525,7 +513,6 @@ public static class Strings
         public static string Plugin_CardTitle => Get(nameof(Plugin_CardTitle));
         public static string Plugin_Badge_UpdateAvailable => Get(nameof(Plugin_Badge_UpdateAvailable));
         public static string Plugin_Row_InstalledVersion => Get(nameof(Plugin_Row_InstalledVersion));
-        public static string Plugin_Row_LatestVersion => Get(nameof(Plugin_Row_LatestVersion));
         public static string Plugin_Row_Frontend => Get(nameof(Plugin_Row_Frontend));
         public static string Plugin_Row_Loader => Get(nameof(Plugin_Row_Loader));
         public static string Plugin_Row_Source => Get(nameof(Plugin_Row_Source));
@@ -600,7 +587,6 @@ public static class Strings
     // whose Strings.<tag>.resx is missing the key). See Resources/README.md → "Pending translation".
     public static string Builds_Title => Get(nameof(Builds_Title));
     public static string Builds_Subtitle => Get(nameof(Builds_Subtitle));
-    public static string Builds_NoSelection => Get(nameof(Builds_NoSelection));
     public static string Builds_ActiveBuild => Get(nameof(Builds_ActiveBuild));
     public static string Builds_Active => Get(nameof(Builds_Active));
     public static string Builds_Variant_Default => Get(nameof(Builds_Variant_Default));
@@ -627,7 +613,6 @@ public static class Strings
     public static string Builds_Delete_Title => Get(nameof(Builds_Delete_Title));
     public static string Builds_Delete_Body => Get(nameof(Builds_Delete_Body));
     public static string Builds_Delete_ActiveTip => Get(nameof(Builds_Delete_ActiveTip));
-    public static string Builds_RemoveGame => Get(nameof(Builds_RemoveGame));
     public static string Builds_RemoveGame_Tip => Get(nameof(Builds_RemoveGame_Tip));
     public static string Builds_RemoveGame_Title => Get(nameof(Builds_RemoveGame_Title));
     public static string Builds_RemoveGame_Body => Get(nameof(Builds_RemoveGame_Body));
@@ -637,7 +622,6 @@ public static class Strings
     public static string Builds_SavedBuildsNoLua => Get(nameof(Builds_SavedBuildsNoLua));
     public static string Builds_Apply_Done => Get(nameof(Builds_Apply_Done));
     public static string Builds_Apply_Failed => Get(nameof(Builds_Apply_Failed));
-    public static string Builds_Save_Done => Get(nameof(Builds_Save_Done));
     public static string Builds_Save_Failed => Get(nameof(Builds_Save_Failed));
     public static string Builds_Preset_Saved => Get(nameof(Builds_Preset_Saved));
     public static string Builds_Action_SaveTo => Get(nameof(Builds_Action_SaveTo));
@@ -743,7 +727,6 @@ public static class Strings
     public static string About_What_Header => Get(nameof(About_What_Header));
     public static string About_What_Body => Get(nameof(About_What_Body));
     public static string About_Version_Header => Get(nameof(About_Version_Header));
-    public static string About_Repo_Header => Get(nameof(About_Repo_Header));
     public static string About_Updates_Header => Get(nameof(About_Updates_Header));
     public static string About_Updates_Enabled => Get(nameof(About_Updates_Enabled));
     public static string About_Updates_Disabled => Get(nameof(About_Updates_Disabled));
@@ -762,7 +745,6 @@ public static class Strings
     // ── AmethystTool card (Mode page) ──
     public static string Amethyst_CardTitle => Get(nameof(Amethyst_CardTitle));
     public static string Amethyst_Description => Get(nameof(Amethyst_Description));
-    public static string Amethyst_Row_Payload => Get(nameof(Amethyst_Row_Payload));
     public static string Amethyst_Toast_Installed => Get(nameof(Amethyst_Toast_Installed));
     public static string Amethyst_Toast_Failed => Get(nameof(Amethyst_Toast_Failed));
     public static string Amethyst_Err_MissingAsset => Get(nameof(Amethyst_Err_MissingAsset));
@@ -874,7 +856,6 @@ public static class Strings
     public static string Unlocker_Err_DownloadMissing => Get(nameof(Unlocker_Err_DownloadMissing));
     public static string Unlocker_Err_FileNotInRelease => Get(nameof(Unlocker_Err_FileNotInRelease));
     public static string Unlocker_Err_FileVerification => Get(nameof(Unlocker_Err_FileVerification));
-    public static string Unlocker_Err_ReleaseMissingAsset => Get(nameof(Unlocker_Err_ReleaseMissingAsset));
     public static string Installer_Err_ManifestNameRefused => Get(nameof(Installer_Err_ManifestNameRefused));
     public static string Auth_Err_TokenExchangeFailed => Get(nameof(Auth_Err_TokenExchangeFailed));
     public static string Auth_Err_TokenExchangeEmpty => Get(nameof(Auth_Err_TokenExchangeEmpty));
@@ -898,7 +879,6 @@ public static class Strings
     public static string Mode_Custom_Toast_Title => Get(nameof(Mode_Custom_Toast_Title));
     public static string Mode_Custom_Toast_Body => Get(nameof(Mode_Custom_Toast_Body));
     public static string Home_CustomActive => Get(nameof(Home_CustomActive));
-    public static string Manage_Delete_BodyWithBuilds => Get(nameof(Manage_Delete_BodyWithBuilds));
     public static string Manage_DeleteMany_BodyWithBuilds => Get(nameof(Manage_DeleteMany_BodyWithBuilds));
     public static string Settings_ManifestBackup_Title => Get(nameof(Settings_ManifestBackup_Title));
     public static string Settings_ManifestBackup_Hint => Get(nameof(Settings_ManifestBackup_Hint));
@@ -962,4 +942,6 @@ public static class Strings
     public static string ViewMode_Grid => Get(nameof(ViewMode_Grid));
     public static string ViewMode_List => Get(nameof(ViewMode_List));
     public static string ViewMode_SwitchLabel => Get(nameof(ViewMode_SwitchLabel));
+    public static string Cleanup_Err_OperationInProgress => Get(nameof(Cleanup_Err_OperationInProgress));
+    public static string Settings_ManifestBackup_Cancelled => Get(nameof(Settings_ManifestBackup_Cancelled));
 }

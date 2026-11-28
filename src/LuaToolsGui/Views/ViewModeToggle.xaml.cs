@@ -11,7 +11,10 @@ public partial class ViewModeToggle : UserControl
         nameof(ViewMode),
         typeof(LibraryViewMode),
         typeof(ViewModeToggle),
-        new FrameworkPropertyMetadata(LibraryViewMode.Grid, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        new FrameworkPropertyMetadata(
+            LibraryViewMode.Grid,
+            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+            static (d, _) => ((ViewModeToggle)d).SyncChecked()));
 
     public LibraryViewMode ViewMode
     {
@@ -19,9 +22,20 @@ public partial class ViewModeToggle : UserControl
         set => SetValue(ViewModeProperty, value);
     }
 
-    public ViewModeToggle() => InitializeComponent();
+    public ViewModeToggle()
+    {
+        InitializeComponent();
+        SyncChecked();
+    }
 
-    private void GridButton_Click(object sender, RoutedEventArgs e) => ViewMode = LibraryViewMode.Grid;
+    /// <summary>IsChecked mirrors ViewMode (both ways), so screen readers report the active layout.</summary>
+    private void SyncChecked()
+    {
+        GridButton.IsChecked = ViewMode == LibraryViewMode.Grid;
+        ListButton.IsChecked = ViewMode == LibraryViewMode.List;
+    }
 
-    private void ListButton_Click(object sender, RoutedEventArgs e) => ViewMode = LibraryViewMode.List;
+    private void GridButton_Checked(object sender, RoutedEventArgs e) => ViewMode = LibraryViewMode.Grid;
+
+    private void ListButton_Checked(object sender, RoutedEventArgs e) => ViewMode = LibraryViewMode.List;
 }

@@ -91,7 +91,6 @@
   <data name="Settings_BotLink_Body" xml:space="preserve"><value>Geçici bir Discord hesabıyla giriş yaptın. lua.tools'ta oturum aç, ardından /login komutunu tekrar çalıştır ve tam hesabını bağlamak için kodu gir.</value></data>
   <data name="Settings_BotLink_Dismiss" xml:space="preserve"><value>Kapat</value></data>
   <data name="Settings_LoginRequired" xml:space="preserve"><value>Bu işlem için giriş yapmanız gerekiyor.</value></data>
-  <data name="Settings_ManageKeyHintPrefix" xml:space="preserve"><value>Hubcap API anahtarınızı ve profilinizi şurada yönetin:</value></data>
   <data name="Settings_Section_Hubcap" xml:space="preserve"><value>HUBCAP</value></data>
   <data name="Settings_HubcapKey" xml:space="preserve"><value>Hubcap API anahtarı</value></data>
   <data name="Settings_HubcapKey_Hint" xml:space="preserve"><value>Hubcap manifestolarının kilidini açmak için kişisel Hubcap API anahtarınızı yapıştırın. Uygulama, anahtarınızla doğrudan Hubcap'e bağlanır.</value></data>
@@ -103,7 +102,6 @@
   <data name="Settings_HubcapKeyOkExpiry" xml:space="preserve"><value>Bugün {0}/{1} · {2} tarihinde sona erer</value></data>
   <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>Bu geçerli bir anahtara benzemiyor.</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>Anahtar doğrulanamadı — geçersiz, süresi dolmuş olabilir veya Hubcap'e ulaşılamıyor.</value></data>
-  <data name="Settings_HubcapActive" xml:space="preserve"><value>Aktif</value></data>
   <data name="Settings_HubcapRefresh" xml:space="preserve"><value>Yenile</value></data>
   <data name="Settings_Language" xml:space="preserve"><value>Dil</value></data>
   <data name="Settings_Language_Hint" xml:space="preserve"><value>Uygulamanın görüntüleme dilini seçin. Yeniden başlatmadan sonra uygulanır.</value></data>
@@ -125,7 +123,6 @@
   <data name="Lang_Changed_Restart" xml:space="preserve"><value>Şimdi yeniden başlat</value></data>
   <data name="Home_Welcome" xml:space="preserve"><value>LuaTools Amethyst'e hoş geldiniz</value></data>
   <data name="Home_LuasOnBoard" xml:space="preserve"><value>Eklenen Lua'lar</value></data>
-  <data name="Home_LastAdded" xml:space="preserve"><value>SON EKLENEN</value></data>
   <data name="Home_PluginStatus" xml:space="preserve"><value>Eklenti durumu</value></data>
   <data name="Home_RecentlyAdded" xml:space="preserve"><value>Son eklenenler</value></data>
   <data name="Home_ViewDetails" xml:space="preserve"><value>Ayrıntıları görüntüle</value></data>
@@ -224,7 +221,6 @@
   <data name="Manage_Filter_SortBy" xml:space="preserve"><value>Sıralama ölçütü</value></data>
   <data name="Manage_ClearFilters" xml:space="preserve"><value>Filtreleri temizle</value></data>
   <data name="Manage_Select" xml:space="preserve"><value>Seç</value></data>
-  <data name="Manage_DeleteThisLua" xml:space="preserve"><value>Bu lua'yı sil</value></data>
   <data name="Manage_ResultsPerPage" xml:space="preserve"><value>Sayfa başına sonuç</value></data>
   <data name="Manage_Action_ViewDetails" xml:space="preserve"><value>Ayrıntıları görüntüle</value></data>
   <data name="Manage_Action_Update" xml:space="preserve"><value>Güncelle / yeniden indir</value></data>
@@ -236,7 +232,6 @@
   <data name="Manage_ActionsHeader" xml:space="preserve"><value>Eylemler</value></data>
   <data name="Manage_Steamless_Confirm_Title" xml:space="preserve"><value>Steam DRM'si kaldırılsın mı?</value></data>
   <data name="Manage_Steamless_Confirm_Body" xml:space="preserve"><value>Bu, SteamStub DRM'sini kaldırmak için oyunun yürütülebilir dosyasında Steamless'i çalıştırır. Orijinal .exe önce .bak olarak yedeklenir. Bazı oyunlar sonrasında Steam'de dosya doğrulaması gerektirebilir. Devam edilsin mi?</value></data>
-  <data name="Manage_Steamless_Working" xml:space="preserve"><value>Steam DRM'si kaldırılıyor…</value></data>
   <data name="Manage_Toast_Steamless_Done" xml:space="preserve"><value>{0} işlendi, {1} değişmedi.</value></data>
   <data name="Manage_Steamless_NoInstall" xml:space="preserve"><value>Oyun klasörü bulunamadı — yüklü mü?</value></data>
   <data name="Manage_Steamless_Failed" xml:space="preserve"><value>DRM kaldırılamadı. {0}</value></data>
@@ -273,19 +268,11 @@
   <data name="Manage_Depot" xml:space="preserve"><value>Depo</value></data>
   <data name="Manage_SharedDepot" xml:space="preserve"><value>Paylaşılan depo</value></data>
   <data name="Manage_DlcName" xml:space="preserve"><value>DLC {0}</value></data>
-  <data name="Manage_Delete_Title" xml:space="preserve"><value>Lua dosyasını kaldır</value></data>
-  <data name="Manage_Delete_Body" xml:space="preserve"><value>"{0}" (App ID {1}) kaldırılsın mı?
-
-Bu işlem, .lua dosyasını Steam\config\stplug-in konumundan siler. Değişikliğin uygulanması için ardından Steam'i yeniden başlatın.</value></data>
   <data name="Manage_DeleteMany_Title" xml:space="preserve"><value>Lua dosyalarını kaldır</value></data>
   <data name="Manage_DeleteMany_Body" xml:space="preserve"><value>{0} lua dosyası kaldırılsın mı?
 
 Bu işlem, .lua dosyalarını Steam\config\stplug-in konumundan siler. Değişikliklerin uygulanması için ardından Steam'i yeniden başlatın.</value></data>
   <data name="Manage_RemoveFailed_Title" xml:space="preserve"><value>Kaldırma başarısız</value></data>
-  <data name="Manage_RemoveFailed_File" xml:space="preserve"><value>Dosya silinemedi:
-{0}</value></data>
-  <data name="Manage_RemoveFailed_Named" xml:space="preserve"><value>"{0}" silinemedi:
-{1}</value></data>
   <data name="Manage_RemoveFailed_Count" xml:space="preserve"><value>{0} dosya silinemedi.</value></data>
   <data name="Manage_RestartSteam_Title" xml:space="preserve"><value>Steam'i Yeniden Başlat</value></data>
   <data name="Manage_RestartSteam_Ask" xml:space="preserve"><value>Değişikliklerin uygulanması için Steam şimdi yeniden başlatılsın mı?</value></data>
@@ -346,7 +333,6 @@ Bu işlem, .lua dosyalarını Steam\config\stplug-in konumundan siler. Değişik
   <data name="Add_Err_BaseGame" xml:space="preserve"><value>Bu DLC'nin ana oyunu belirlenemedi</value></data>
   <data name="Add_Err_Generic" xml:space="preserve"><value>Bir şeyler ters gitti — bağlantınızı kontrol edip tekrar deneyin.</value></data>
   <data name="Add_Err_Download" xml:space="preserve"><value>İndirme başarısız — bağlantınızı kontrol edip tekrar deneyin.</value></data>
-  <data name="Add_Err_Generate" xml:space="preserve"><value>Oluşturma başarısız — bağlantınızı kontrol edip tekrar deneyin.</value></data>
   <data name="Add_Confirm_Replace" xml:space="preserve"><value>"{0}" değiştirilsin mi?</value></data>
   <data name="Add_Confirm_NoChanges" xml:space="preserve"><value>Depo/DLC değişikliği yok — aynı içerik.</value></data>
   <data name="Add_Status_Cancelled" xml:space="preserve"><value>Kurulum iptal edildi — mevcut dosyalar değiştirilmedi.</value></data>
@@ -377,7 +363,6 @@ Bu işlem, .lua dosyalarını Steam\config\stplug-in konumundan siler. Değişik
   <data name="Plugin_CardTitle" xml:space="preserve"><value>Durum</value></data>
   <data name="Plugin_Badge_UpdateAvailable" xml:space="preserve"><value>Güncelleme mevcut</value></data>
   <data name="Plugin_Row_InstalledVersion" xml:space="preserve"><value>Kurulu sürüm</value></data>
-  <data name="Plugin_Row_LatestVersion" xml:space="preserve"><value>En son sürüm</value></data>
   <data name="Plugin_Row_Frontend" xml:space="preserve"><value>Ön yüz</value></data>
   <data name="Plugin_Row_Loader" xml:space="preserve"><value>Yükleyici (winmm.dll)</value></data>
   <data name="Plugin_Millennium_Coexisting" xml:space="preserve"><value>Millennium algılandı — LuaTools onun yanında çalışır. Kurulum, yalnızca LuaLoader enjekte etsin diye bu eklentinin Millennium'a ait kopyasını devre dışı bırakır.</value></data>
@@ -421,7 +406,6 @@ Bu işlem, .lua dosyalarını Steam\config\stplug-in konumundan siler. Değişik
   <data name="Nav_Builds" xml:space="preserve"><value>Depolar</value></data>
   <data name="Builds_Title" xml:space="preserve"><value>Depolar</value></data>
   <data name="Builds_Subtitle" xml:space="preserve"><value>Bir oyunun lua dosyasının birden çok sürümünü saklayın ve Steam'in hangisini kullanacağını seçin.</value></data>
-  <data name="Builds_NoSelection" xml:space="preserve"><value>Ön ayarlarını görmek için soldan bir oyun seçin.</value></data>
   <data name="Builds_ActiveBuild" xml:space="preserve"><value>Etkin ön ayar</value></data>
   <data name="Builds_Active" xml:space="preserve"><value>ETKİN</value></data>
   <data name="Builds_Variant_Default" xml:space="preserve"><value>Varsayılan</value></data>
@@ -450,7 +434,6 @@ Bu işlem, .lua dosyalarını Steam\config\stplug-in konumundan siler. Değişik
   <data name="Builds_Delete_ActiveTip" xml:space="preserve"><value>Kullanımda olan ön ayar silinemez.</value></data>
   <data name="Builds_Apply_Done" xml:space="preserve"><value>Artık “{0}” kullanılıyor. Etkili olması için Steam'i yeniden başlatın.</value></data>
   <data name="Builds_Apply_Failed" xml:space="preserve"><value>Ön ayar değiştirilemedi — lua dosyası kullanımda olabilir.</value></data>
-  <data name="Builds_Save_Done" xml:space="preserve"><value>Kaydedildi. Etkili olması için Steam'i yeniden başlatın.</value></data>
   <data name="Builds_Save_Failed" xml:space="preserve"><value>Kaydedilemedi — lua dosyası kullanımda olabilir.</value></data>
   <data name="Builds_Preset_Saved" xml:space="preserve"><value>Ön ayar olarak kaydedildi.</value></data>
   <data name="Builds_Action_SaveTo" xml:space="preserve"><value>“{0}” içine kaydet</value></data>
@@ -509,7 +492,6 @@ Bu işlem, .lua dosyalarını Steam\config\stplug-in konumundan siler. Değişik
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam başlatılamadı. Konumunu Ayarlar'da belirtip tekrar deneyin.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
   <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
-  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Steam dosyaları</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool kuruldu. Yüklenmesi için Steam yeniden başlatıldı.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>AmethystTool kurulumu başarısız: {0}</value></data>
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>En son AmethystTool sürümü {0} yayımlamıyor.</value></data>
@@ -557,7 +539,6 @@ Bu işlem, .lua dosyalarını Steam\config\stplug-in konumundan siler. Değişik
   <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>İndirmede eksik: {0}.</value></data>
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>{0} hiçbir sürümde bulunamadı.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} doğrulamayı geçemedi (sha256 uyuşmazlığı veya yayımlanmış digest yok).</value></data>
-  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Sürümde {0} eksik.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Token değişimi başarısız ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Token değişimi boş bir oturum döndürdü.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Giriş yapılmadı.</value></data>
@@ -630,8 +611,6 @@ Zorla kapatılsın mı? Steam'in henüz kaydetmediği her şey kaybolabilir. Ça
   <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
   <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Klasör ekle…</value></data>
   <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Kaldır</value></data>
-  <data name="Saves_Note" xml:space="preserve"><value>Steam'in oyun başına klasörünü (userdata) yedekler. Kayıtlarını Belgeler veya AppData içinde tutan oyunlar dahil değildir.</value></data>
-  <data name="Saves_Toast_Created" xml:space="preserve"><value>{0} dosya yedeklendi, {1}.</value></data>
   <data name="Saves_Toast_Restored" xml:space="preserve"><value>{0} dosya geri yüklendi. Önceki kayıtların bir kopyası saklandı.</value></data>
   <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Yedek silindi.</value></data>
   <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Bu oyun için kayıt bulunamadı. Kayıtları tuttuğu klasörü “Klasörü elle ekle…” ile ekle.</value></data>
@@ -700,7 +679,6 @@ Doğrulandı: {4}</value></data>
   <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>arşiv incelendi</value></data>
   <data name="Download_Notice_Cancel" xml:space="preserve"><value>İptal</value></data>
   <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Hiçbir şey yüklenmeden iptal edildi.</value></data>
-  <data name="Builds_RemoveGame" xml:space="preserve"><value>Oyunu kaldır</value></data>
   <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Bu oyunu Depolar listesinden çıkarır. lua dosyalarını ve kayıtlı tüm sürümleri siler.</value></data>
   <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Oyunu kaldır</value></data>
   <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>{0} ({1}) Depolar'dan kaldırılsın mı?
@@ -741,7 +719,6 @@ Etkinleştirilsin mi?</value></data>
   <data name="About_What_Header" xml:space="preserve"><value>Bu nedir</value></data>
   <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst, gizliliğe odaklanan, topluluk tarafından geliştirilen bir LuaTools çatalıdır. Orijinal sürümün yaptığı analitik pingini ve anahtar bağışı yüklemesini kaldırır, tüm indirmeleri HTTPS üzerinden tutar ve mor Amethyst temasıyla gelir.</value></data>
   <data name="About_Version_Header" xml:space="preserve"><value>Sürüm</value></data>
-  <data name="About_Repo_Header" xml:space="preserve"><value>Depo</value></data>
   <data name="About_Updates_Header" xml:space="preserve"><value>Güncellemeler</value></data>
   <data name="About_Updates_Enabled" xml:space="preserve"><value>Otomatik güncellemeler AÇIK. LuaTools Amethyst başlangıçta aşağıdaki depoyu denetler ve güncellemeleri arka planda yükler.</value></data>
   <data name="About_Updates_Disabled" xml:space="preserve"><value>Otomatik güncellemeler KAPALI — hiçbir güncelleme isteği yapılmaz. Açmak için settings.json'a “AppUpdateRepos” ekle veya aşağıdaki depodan elle güncelle.</value></data>
@@ -896,9 +873,6 @@ Etkinleştirilsin mi?</value></data>
   <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Özel mod etkin</value></data>
   <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>LuaTools Amethyst artık Steam DLL dosyalarını değiştirmeden yalnızca config\stplug-in içindeki .lua dosyalarını yönetecek.</value></data>
   <data name="Home_CustomActive" xml:space="preserve"><value>Özel · kullanıcı yönetimli</value></data>
-  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>"{0}" (App ID {1}) kaldırılsın mı?
-
-Bu işlem yalnızca Steam\config\stplug-in içindeki etkin .lua dosyasını siler. Bu oyunun kayıtlı sürümleri Depots sekmesinde kalmaya devam eder. Değişikliğin geçerli olması için sonrasında Steam'i yeniden başlatın.</value></data>
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>{0} .lua dosyası kaldırılsın mı?
 
 Bu işlem yalnızca Steam\config\stplug-in içindeki etkin .lua dosyalarını siler. Bu oyunlardan {1} tanesinin kayıtlı sürümleri Depots sekmesinde kalmaya devam eder. Değişikliklerin geçerli olması için sonrasında Steam'i yeniden başlatın.</value></data>
@@ -938,7 +912,7 @@ Bu işlem yalnızca Steam\config\stplug-in içindeki etkin .lua dosyalarını si
   <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>Yalnızca oyun dosyalarını kaldır</value></data>
   <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>Oyunun kurulum klasörünü ve Steam appmanifest dosyasını siler. .lua ve .manifest dosyalarını korur.</value></data>
   <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>Yalnızca .lua dosyasını kaldır</value></data>
-  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>config\stplug-in\{0}.lua dosyasını siler. Oyun dosyalarını, .manifest dosyalarını ve kayıtlı sürümleri korur.</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>config\stplug-in\{0}.lua dosyasını (varsa {0}.lua.disabled dosyasını da) siler. Oyun dosyalarını, .manifest dosyalarını ve kayıtlı sürümleri korur.</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>Yalnızca .manifest dosyalarını kaldır</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>Bu oyunun depotcache içindeki özel .manifest dosyalarını siler. .lua dosyasını ve paylaşılan manifestleri korur.</value></data>
   <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>.lua + .manifest dosyalarını kaldır</value></data>
@@ -964,4 +938,6 @@ Bu işlem yalnızca Steam\config\stplug-in içindeki etkin .lua dosyalarını si
   <data name="ViewMode_Grid" xml:space="preserve"><value>Izgara görünümü</value></data>
   <data name="ViewMode_List" xml:space="preserve"><value>Liste görünümü</value></data>
   <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Kütüphane görünüm modu</value></data>
+  <data name="Cleanup_Err_OperationInProgress" xml:space="preserve"><value>{0} şu anda indiriliyor, yükleniyor, yedekleniyor veya geri yükleniyor. Bitmesini bekleyip yeniden deneyin.</value></data>
+  <data name="Settings_ManifestBackup_Cancelled" xml:space="preserve"><value>İptal edildi. Zaten işlenen oyunlar korundu.</value></data>
 </root>

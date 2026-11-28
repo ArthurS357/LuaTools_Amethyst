@@ -91,7 +91,6 @@
   <data name="Settings_BotLink_Body" xml:space="preserve"><value>Jste přihlášeni dočasným účtem Discord. Přihlaste se na lua.tools, poté znovu spusťte /login a zadejte kód pro propojení svého plného účtu.</value></data>
   <data name="Settings_BotLink_Dismiss" xml:space="preserve"><value>Zavřít</value></data>
   <data name="Settings_LoginRequired" xml:space="preserve"><value>Pro tuto akci je vyžadováno přihlášení.</value></data>
-  <data name="Settings_ManageKeyHintPrefix" xml:space="preserve"><value>Spravujte svůj klíč API Hubcap a profil na</value></data>
   <data name="Settings_Section_Hubcap" xml:space="preserve"><value>HUBCAP</value></data>
   <data name="Settings_HubcapKey" xml:space="preserve"><value>Klíč API Hubcap</value></data>
   <data name="Settings_HubcapKey_Hint" xml:space="preserve"><value>Vložte svůj osobní klíč API Hubcap pro odemčení manifestů Hubcap. Aplikace se připojuje k Hubcap přímo pomocí vašeho klíče.</value></data>
@@ -103,7 +102,6 @@
   <data name="Settings_HubcapKeyOkExpiry" xml:space="preserve"><value>{0}/{1} dnes · vyprší {2}</value></data>
   <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>Toto nevypadá jako platný klíč.</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>Klíč se nepodařilo ověřit — může být neplatný, vypršel, nebo je Hubcap nedostupný.</value></data>
-  <data name="Settings_HubcapActive" xml:space="preserve"><value>Aktivní</value></data>
   <data name="Settings_HubcapRefresh" xml:space="preserve"><value>Obnovit</value></data>
   <data name="Settings_Language" xml:space="preserve"><value>Jazyk</value></data>
   <data name="Settings_Language_Hint" xml:space="preserve"><value>Vyberte jazyk zobrazení aplikace. Použije se po restartu.</value></data>
@@ -125,7 +123,6 @@
   <data name="Lang_Changed_Restart" xml:space="preserve"><value>Restartovat nyní</value></data>
   <data name="Home_Welcome" xml:space="preserve"><value>Vítejte v LuaTools Amethyst</value></data>
   <data name="Home_LuasOnBoard" xml:space="preserve"><value>Lua na palubě</value></data>
-  <data name="Home_LastAdded" xml:space="preserve"><value>NAPOSLEDY PŘIDÁNO</value></data>
   <data name="Home_PluginStatus" xml:space="preserve"><value>Stav pluginu</value></data>
   <data name="Home_RecentlyAdded" xml:space="preserve"><value>Nedávno přidané</value></data>
   <data name="Home_ViewDetails" xml:space="preserve"><value>Zobrazit podrobnosti</value></data>
@@ -224,7 +221,6 @@
   <data name="Manage_Filter_SortBy" xml:space="preserve"><value>Seřadit podle</value></data>
   <data name="Manage_ClearFilters" xml:space="preserve"><value>Vymazat filtry</value></data>
   <data name="Manage_Select" xml:space="preserve"><value>Vybrat</value></data>
-  <data name="Manage_DeleteThisLua" xml:space="preserve"><value>Smazat tento lua</value></data>
   <data name="Manage_ResultsPerPage" xml:space="preserve"><value>Výsledků na stránku</value></data>
   <data name="Manage_Action_ViewDetails" xml:space="preserve"><value>Zobrazit podrobnosti</value></data>
   <data name="Manage_Action_Update" xml:space="preserve"><value>Aktualizovat / stáhnout znovu</value></data>
@@ -236,7 +232,6 @@
   <data name="Manage_ActionsHeader" xml:space="preserve"><value>Akce</value></data>
   <data name="Manage_Steamless_Confirm_Title" xml:space="preserve"><value>Odebrat Steam DRM?</value></data>
   <data name="Manage_Steamless_Confirm_Body" xml:space="preserve"><value>Tímto se na spustitelném souboru hry spustí Steamless, aby odstranil DRM SteamStub. Původní .exe se nejprve zazálohuje jako .bak. Některé hry mohou poté vyžadovat ověření souborů ve Steamu. Pokračovat?</value></data>
-  <data name="Manage_Steamless_Working" xml:space="preserve"><value>Odebírání Steam DRM…</value></data>
   <data name="Manage_Toast_Steamless_Done" xml:space="preserve"><value>{0} upraveno, {1} beze změny.</value></data>
   <data name="Manage_Steamless_NoInstall" xml:space="preserve"><value>Složka hry nenalezena — je nainstalovaná?</value></data>
   <data name="Manage_Steamless_Failed" xml:space="preserve"><value>DRM se nepodařilo odebrat. {0}</value></data>
@@ -273,19 +268,11 @@
   <data name="Manage_Depot" xml:space="preserve"><value>Depot</value></data>
   <data name="Manage_SharedDepot" xml:space="preserve"><value>Sdílený depot</value></data>
   <data name="Manage_DlcName" xml:space="preserve"><value>DLC {0}</value></data>
-  <data name="Manage_Delete_Title" xml:space="preserve"><value>Odebrat soubor lua</value></data>
-  <data name="Manage_Delete_Body" xml:space="preserve"><value>Odebrat „{0}“ (App ID {1})?
-
-Tím se smaže jeho soubor .lua ze Steam\config\stplug-in. Poté restartujte Steam, aby se změna projevila.</value></data>
   <data name="Manage_DeleteMany_Title" xml:space="preserve"><value>Odebrat soubory lua</value></data>
   <data name="Manage_DeleteMany_Body" xml:space="preserve"><value>Odebrat {0} souborů lua?
 
 Tím se smažou soubory .lua ze Steam\config\stplug-in. Poté restartujte Steam, aby se změny projevily.</value></data>
   <data name="Manage_RemoveFailed_Title" xml:space="preserve"><value>Odebrání se nezdařilo</value></data>
-  <data name="Manage_RemoveFailed_File" xml:space="preserve"><value>Soubor se nepodařilo smazat:
-{0}</value></data>
-  <data name="Manage_RemoveFailed_Named" xml:space="preserve"><value>„{0}“ se nepodařilo smazat:
-{1}</value></data>
   <data name="Manage_RemoveFailed_Count" xml:space="preserve"><value>{0} souborů se nepodařilo smazat.</value></data>
   <data name="Manage_RestartSteam_Title" xml:space="preserve"><value>Restartovat Steam</value></data>
   <data name="Manage_RestartSteam_Ask" xml:space="preserve"><value>Restartovat Steam nyní, aby se změny projevily?</value></data>
@@ -346,7 +333,6 @@ Tím se smažou soubory .lua ze Steam\config\stplug-in. Poté restartujte Steam,
   <data name="Add_Err_BaseGame" xml:space="preserve"><value>Nepodařilo se určit základní hru pro toto DLC</value></data>
   <data name="Add_Err_Generic" xml:space="preserve"><value>Něco se pokazilo — zkontrolujte připojení a zkuste to znovu.</value></data>
   <data name="Add_Err_Download" xml:space="preserve"><value>Stahování se nezdařilo — zkontrolujte připojení a zkuste to znovu.</value></data>
-  <data name="Add_Err_Generate" xml:space="preserve"><value>Generování se nezdařilo — zkontrolujte připojení a zkuste to znovu.</value></data>
   <data name="Add_Confirm_Replace" xml:space="preserve"><value>Nahradit „{0}“?</value></data>
   <data name="Add_Confirm_NoChanges" xml:space="preserve"><value>Žádné změny depotu/DLC — stejný obsah.</value></data>
   <data name="Add_Status_Cancelled" xml:space="preserve"><value>Instalace zrušena — stávající soubory zůstaly beze změny.</value></data>
@@ -377,7 +363,6 @@ Tím se smažou soubory .lua ze Steam\config\stplug-in. Poté restartujte Steam,
   <data name="Plugin_CardTitle" xml:space="preserve"><value>Stav</value></data>
   <data name="Plugin_Badge_UpdateAvailable" xml:space="preserve"><value>Dostupná aktualizace</value></data>
   <data name="Plugin_Row_InstalledVersion" xml:space="preserve"><value>Nainstalovaná verze</value></data>
-  <data name="Plugin_Row_LatestVersion" xml:space="preserve"><value>Nejnovější verze</value></data>
   <data name="Plugin_Row_Frontend" xml:space="preserve"><value>Frontend</value></data>
   <data name="Plugin_Row_Loader" xml:space="preserve"><value>Zavaděč (winmm.dll)</value></data>
   <data name="Plugin_Millennium_Coexisting" xml:space="preserve"><value>Zjištěn Millennium — LuaTools běží vedle něj. Instalace zakáže vlastní kopii tohoto pluginu v Millenniu, takže vkládá pouze LuaLoader.</value></data>
@@ -421,7 +406,6 @@ Tím se smažou soubory .lua ze Steam\config\stplug-in. Poté restartujte Steam,
   <data name="Nav_Builds" xml:space="preserve"><value>Depoty</value></data>
   <data name="Builds_Title" xml:space="preserve"><value>Depoty</value></data>
   <data name="Builds_Subtitle" xml:space="preserve"><value>Uchovávejte více verzí souboru lua dané hry a vybírejte, kterou Steam používá.</value></data>
-  <data name="Builds_NoSelection" xml:space="preserve"><value>Vyberte hru vlevo a zobrazí se její předvolby.</value></data>
   <data name="Builds_ActiveBuild" xml:space="preserve"><value>Aktivní předvolba</value></data>
   <data name="Builds_Active" xml:space="preserve"><value>AKTIVNÍ</value></data>
   <data name="Builds_Variant_Default" xml:space="preserve"><value>Výchozí</value></data>
@@ -450,7 +434,6 @@ Tím se smažou soubory .lua ze Steam\config\stplug-in. Poté restartujte Steam,
   <data name="Builds_Delete_ActiveTip" xml:space="preserve"><value>Předvolbu, která se právě používá, nelze smazat.</value></data>
   <data name="Builds_Apply_Done" xml:space="preserve"><value>Nyní se používá „{0}“. Restartujte Steam, aby se změna projevila.</value></data>
   <data name="Builds_Apply_Failed" xml:space="preserve"><value>Předvolbu se nepodařilo přepnout — soubor lua může být používán.</value></data>
-  <data name="Builds_Save_Done" xml:space="preserve"><value>Uloženo. Restartujte Steam, aby se změna projevila.</value></data>
   <data name="Builds_Save_Failed" xml:space="preserve"><value>Nepodařilo se uložit — soubor lua může být používán.</value></data>
   <data name="Builds_Preset_Saved" xml:space="preserve"><value>Uloženo jako předvolba.</value></data>
   <data name="Builds_Action_SaveTo" xml:space="preserve"><value>Uložit do „{0}“</value></data>
@@ -509,7 +492,6 @@ Tím se smažou soubory .lua ze Steam\config\stplug-in. Poté restartujte Steam,
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam se nepodařilo spustit. Nastavte jeho umístění v Nastavení a zkuste to znovu.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
   <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
-  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Soubory Steamu</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool byl nainstalován. Steam byl restartován, aby se načetl.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Instalace AmethystTool selhala: {0}</value></data>
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Nejnovější verze AmethystTool nepublikuje {0}.</value></data>
@@ -557,7 +539,6 @@ Tím se smažou soubory .lua ze Steam\config\stplug-in. Poté restartujte Steam,
   <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>Ve stažených souborech chybí: {0}.</value></data>
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>{0} nebyl nalezen v žádné verzi.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} neprošel ověřením (nesoulad sha256 nebo chybí zveřejněný digest).</value></data>
-  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Ve verzi chybí {0}.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Výměna tokenu selhala ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Výměna tokenu vrátila prázdnou relaci.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Nejste přihlášeni.</value></data>
@@ -630,8 +611,6 @@ Vynutit zavření? Vše, co Steam ještě neuložil, může být ztraceno. Zvolt
   <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
   <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Přidat složku…</value></data>
   <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Odebrat</value></data>
-  <data name="Saves_Note" xml:space="preserve"><value>Zálohuje složku Steamu pro jednotlivé hry (userdata). Hry, které ukládají pozice do Dokumentů nebo AppData, nejsou zahrnuty.</value></data>
-  <data name="Saves_Toast_Created" xml:space="preserve"><value>Zazálohováno souborů: {0}, {1}.</value></data>
   <data name="Saves_Toast_Restored" xml:space="preserve"><value>Obnoveno souborů: {0}. Kopie předchozích uložených her byla zachována.</value></data>
   <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Záloha smazána.</value></data>
   <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Pro tuto hru nebyly nalezeny žádné uložené hry. Přidejte složku, kam je ukládá, přes „Přidat složku ručně…“.</value></data>
@@ -700,7 +679,6 @@ Ověřeno: {4}</value></data>
   <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>archiv zkontrolován</value></data>
   <data name="Download_Notice_Cancel" xml:space="preserve"><value>Zrušit</value></data>
   <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Zrušeno před instalací čehokoli.</value></data>
-  <data name="Builds_RemoveGame" xml:space="preserve"><value>Odebrat hru</value></data>
   <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Odebere tuto hru ze seznamu Depotů. Smaže její soubory lua a všechny uložené buildy.</value></data>
   <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Odebrat hru</value></data>
   <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>Odebrat {0} ({1}) z Depotů?
@@ -741,7 +719,6 @@ Zapnout?</value></data>
   <data name="About_What_Header" xml:space="preserve"><value>Co to je</value></data>
   <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst je komunitní fork LuaTools zaměřený na soukromí. Odstraňuje analytický ping a odesílání klíčů, které provádí původní build, drží všechna stahování přes HTTPS a dodává fialový motiv Amethyst.</value></data>
   <data name="About_Version_Header" xml:space="preserve"><value>Verze</value></data>
-  <data name="About_Repo_Header" xml:space="preserve"><value>Repozitář</value></data>
   <data name="About_Updates_Header" xml:space="preserve"><value>Aktualizace</value></data>
   <data name="About_Updates_Enabled" xml:space="preserve"><value>Automatické aktualizace jsou ZAPNUTY. LuaTools Amethyst při spuštění zkontroluje repozitář níže a aktualizace instaluje na pozadí.</value></data>
   <data name="About_Updates_Disabled" xml:space="preserve"><value>Automatické aktualizace jsou VYPNUTY — neprovádí se žádný požadavek na aktualizaci. Přidejte „AppUpdateRepos“ do settings.json, abyste je zapnuli, nebo aktualizujte ručně z repozitáře níže.</value></data>
@@ -896,9 +873,6 @@ Zapnout?</value></data>
   <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Vlastní režim je aktivní</value></data>
   <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>LuaTools Amethyst nyní spravuje pouze soubory .lua v config\stplug-in bez úprav DLL ve Steamu.</value></data>
   <data name="Home_CustomActive" xml:space="preserve"><value>Vlastní · spravováno vámi</value></data>
-  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>Odebrat „{0}“ (App ID {1})?
-
-Tím se smaže pouze aktivní soubor .lua ze Steam\config\stplug-in. Uložené sestavení této hry zůstanou dostupné na kartě Depots. Poté restartujte Steam, aby se změna projevila.</value></data>
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Odebrat {0} souborů .lua?
 
 Tím se smažou pouze aktivní soubory .lua ze Steam\config\stplug-in. {1} z těchto her má uložená sestavení, která zůstanou dostupná na kartě Depots. Poté restartujte Steam, aby se změny projevily.</value></data>
@@ -938,7 +912,7 @@ Tím se smažou pouze aktivní soubory .lua ze Steam\config\stplug-in. {1} z tě
   <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>Odinstalovat pouze soubory hry</value></data>
   <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>Smaže instalační složku hry a soubor appmanifest služby Steam. Ponechá soubory .lua a .manifest.</value></data>
   <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>Odebrat pouze soubor .lua</value></data>
-  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Smaže config\stplug-in\{0}.lua. Ponechá soubory hry, soubory .manifest a uložené buildy.</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Smaže config\stplug-in\{0}.lua (a {0}.lua.disabled, pokud existuje). Ponechá soubory hry, soubory .manifest a uložené buildy.</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>Odebrat pouze soubory .manifest</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>Smaže výhradní soubory .manifest této hry v depotcache. Ponechá soubor .lua a sdílené manifesty.</value></data>
   <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>Odebrat .lua + soubory .manifest</value></data>
@@ -964,4 +938,6 @@ Tím se smažou pouze aktivní soubory .lua ze Steam\config\stplug-in. {1} z tě
   <data name="ViewMode_Grid" xml:space="preserve"><value>Zobrazení mřížky</value></data>
   <data name="ViewMode_List" xml:space="preserve"><value>Zobrazení seznamu</value></data>
   <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Režim zobrazení knihovny</value></data>
+  <data name="Cleanup_Err_OperationInProgress" xml:space="preserve"><value>{0} se právě stahuje, instaluje, zálohuje nebo obnovuje. Počkejte na dokončení a zkuste to znovu.</value></data>
+  <data name="Settings_ManifestBackup_Cancelled" xml:space="preserve"><value>Zrušeno. Již zpracované hry zůstaly zachovány.</value></data>
 </root>

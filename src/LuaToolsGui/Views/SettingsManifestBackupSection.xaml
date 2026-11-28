@@ -78,6 +78,13 @@
                             VerticalAlignment="Center"
                             IsIndeterminate="True"
                             Visibility="{Binding IsRunning, Converter={StaticResource BoolToVis}}" />
+                        <!-- Only while a batch or verify runs; stops it between games (index.json re-synced). -->
+                        <ui:Button
+                            Margin="{DynamicResource SpaceLeft8}"
+                            Command="{Binding CancelRunCommand}"
+                            Content="{x:Static res:Strings.Builds_Action_Cancel}"
+                            Icon="{ui:SymbolIcon Dismiss24}"
+                            Visibility="{Binding IsRunning, Converter={StaticResource BoolToVis}}" />
                     </StackPanel>
                     <TextBlock
                         Margin="{DynamicResource SpaceTop8}"

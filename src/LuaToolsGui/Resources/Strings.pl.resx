@@ -91,7 +91,6 @@
   <data name="Settings_BotLink_Body" xml:space="preserve"><value>Jesteś zalogowany tymczasowym kontem Discord. Zaloguj się na lua.tools, następnie uruchom /login ponownie i wprowadź kod, aby połączyć pełne konto.</value></data>
   <data name="Settings_BotLink_Dismiss" xml:space="preserve"><value>Odrzuć</value></data>
   <data name="Settings_LoginRequired" xml:space="preserve"><value>Ta akcja wymaga zalogowania.</value></data>
-  <data name="Settings_ManageKeyHintPrefix" xml:space="preserve"><value>Zarządzaj swoim kluczem API Hubcap i profilem na</value></data>
   <data name="Settings_Section_Hubcap" xml:space="preserve"><value>HUBCAP</value></data>
   <data name="Settings_HubcapKey" xml:space="preserve"><value>Klucz API Hubcap</value></data>
   <data name="Settings_HubcapKey_Hint" xml:space="preserve"><value>Wklej swój osobisty klucz API Hubcap, aby odblokować manifesty Hubcap. Aplikacja łączy się z Hubcap bezpośrednio przy użyciu Twojego klucza.</value></data>
@@ -103,7 +102,6 @@
   <data name="Settings_HubcapKeyOkExpiry" xml:space="preserve"><value>{0}/{1} dzisiaj · wygasa {2}</value></data>
   <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>To nie wygląda na prawidłowy klucz.</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>Nie udało się zweryfikować klucza — może być nieprawidłowy, wygasły lub Hubcap jest nieosiągalny.</value></data>
-  <data name="Settings_HubcapActive" xml:space="preserve"><value>Aktywny</value></data>
   <data name="Settings_HubcapRefresh" xml:space="preserve"><value>Odśwież</value></data>
   <data name="Settings_Language" xml:space="preserve"><value>Język</value></data>
   <data name="Settings_Language_Hint" xml:space="preserve"><value>Wybierz język wyświetlania aplikacji. Stosowane po ponownym uruchomieniu.</value></data>
@@ -125,7 +123,6 @@
   <data name="Lang_Changed_Restart" xml:space="preserve"><value>Uruchom ponownie teraz</value></data>
   <data name="Home_Welcome" xml:space="preserve"><value>Witamy w LuaTools Amethyst</value></data>
   <data name="Home_LuasOnBoard" xml:space="preserve"><value>Lua na pokładzie</value></data>
-  <data name="Home_LastAdded" xml:space="preserve"><value>OSTATNIO DODANE</value></data>
   <data name="Home_PluginStatus" xml:space="preserve"><value>Stan wtyczki</value></data>
   <data name="Home_RecentlyAdded" xml:space="preserve"><value>Ostatnio dodane</value></data>
   <data name="Home_ViewDetails" xml:space="preserve"><value>Zobacz szczegóły</value></data>
@@ -224,7 +221,6 @@
   <data name="Manage_Filter_SortBy" xml:space="preserve"><value>Sortuj według</value></data>
   <data name="Manage_ClearFilters" xml:space="preserve"><value>Wyczyść filtry</value></data>
   <data name="Manage_Select" xml:space="preserve"><value>Zaznacz</value></data>
-  <data name="Manage_DeleteThisLua" xml:space="preserve"><value>Usuń ten lua</value></data>
   <data name="Manage_ResultsPerPage" xml:space="preserve"><value>Wyników na stronę</value></data>
   <data name="Manage_Action_ViewDetails" xml:space="preserve"><value>Zobacz szczegóły</value></data>
   <data name="Manage_Action_Update" xml:space="preserve"><value>Aktualizuj / pobierz ponownie</value></data>
@@ -236,7 +232,6 @@
   <data name="Manage_ActionsHeader" xml:space="preserve"><value>Akcje</value></data>
   <data name="Manage_Steamless_Confirm_Title" xml:space="preserve"><value>Usunąć DRM Steam?</value></data>
   <data name="Manage_Steamless_Confirm_Body" xml:space="preserve"><value>To uruchomi Steamless na pliku wykonywalnym gry, aby usunąć DRM SteamStub. Oryginalny .exe zostanie najpierw zapisany jako .bak. Niektóre gry mogą wymagać później weryfikacji plików w Steam. Kontynuować?</value></data>
-  <data name="Manage_Steamless_Working" xml:space="preserve"><value>Usuwanie DRM Steam…</value></data>
   <data name="Manage_Toast_Steamless_Done" xml:space="preserve"><value>{0} zmienione, {1} bez zmian.</value></data>
   <data name="Manage_Steamless_NoInstall" xml:space="preserve"><value>Nie znaleziono folderu gry — czy jest zainstalowana?</value></data>
   <data name="Manage_Steamless_Failed" xml:space="preserve"><value>Nie udało się usunąć DRM. {0}</value></data>
@@ -273,19 +268,11 @@
   <data name="Manage_Depot" xml:space="preserve"><value>Depot</value></data>
   <data name="Manage_SharedDepot" xml:space="preserve"><value>Współdzielony depot</value></data>
   <data name="Manage_DlcName" xml:space="preserve"><value>DLC {0}</value></data>
-  <data name="Manage_Delete_Title" xml:space="preserve"><value>Usuń plik lua</value></data>
-  <data name="Manage_Delete_Body" xml:space="preserve"><value>Usunąć „{0}” (App ID {1})?
-
-Spowoduje to usunięcie jego pliku .lua z Steam\config\stplug-in. Następnie uruchom ponownie Steam, aby zmiana zaczęła obowiązywać.</value></data>
   <data name="Manage_DeleteMany_Title" xml:space="preserve"><value>Usuń pliki lua</value></data>
   <data name="Manage_DeleteMany_Body" xml:space="preserve"><value>Usunąć {0} plików lua?
 
 Spowoduje to usunięcie plików .lua z Steam\config\stplug-in. Następnie uruchom ponownie Steam, aby zmiany zaczęły obowiązywać.</value></data>
   <data name="Manage_RemoveFailed_Title" xml:space="preserve"><value>Usuwanie nie powiodło się</value></data>
-  <data name="Manage_RemoveFailed_File" xml:space="preserve"><value>Nie udało się usunąć pliku:
-{0}</value></data>
-  <data name="Manage_RemoveFailed_Named" xml:space="preserve"><value>Nie udało się usunąć „{0}”:
-{1}</value></data>
   <data name="Manage_RemoveFailed_Count" xml:space="preserve"><value>Nie udało się usunąć {0} plików.</value></data>
   <data name="Manage_RestartSteam_Title" xml:space="preserve"><value>Uruchom ponownie Steam</value></data>
   <data name="Manage_RestartSteam_Ask" xml:space="preserve"><value>Uruchomić ponownie Steam teraz, aby zmiany zaczęły obowiązywać?</value></data>
@@ -346,7 +333,6 @@ Spowoduje to usunięcie plików .lua z Steam\config\stplug-in. Następnie urucho
   <data name="Add_Err_BaseGame" xml:space="preserve"><value>Nie udało się ustalić gry podstawowej dla tego DLC</value></data>
   <data name="Add_Err_Generic" xml:space="preserve"><value>Coś poszło nie tak — sprawdź połączenie i spróbuj ponownie.</value></data>
   <data name="Add_Err_Download" xml:space="preserve"><value>Pobieranie nie powiodło się — sprawdź połączenie i spróbuj ponownie.</value></data>
-  <data name="Add_Err_Generate" xml:space="preserve"><value>Generowanie nie powiodło się — sprawdź połączenie i spróbuj ponownie.</value></data>
   <data name="Add_Confirm_Replace" xml:space="preserve"><value>Zastąpić „{0}”?</value></data>
   <data name="Add_Confirm_NoChanges" xml:space="preserve"><value>Brak zmian depotu/DLC — ta sama zawartość.</value></data>
   <data name="Add_Status_Cancelled" xml:space="preserve"><value>Anulowano instalację — istniejące pliki pozostały bez zmian.</value></data>
@@ -377,7 +363,6 @@ Spowoduje to usunięcie plików .lua z Steam\config\stplug-in. Następnie urucho
   <data name="Plugin_CardTitle" xml:space="preserve"><value>Stan</value></data>
   <data name="Plugin_Badge_UpdateAvailable" xml:space="preserve"><value>Dostępna aktualizacja</value></data>
   <data name="Plugin_Row_InstalledVersion" xml:space="preserve"><value>Zainstalowana wersja</value></data>
-  <data name="Plugin_Row_LatestVersion" xml:space="preserve"><value>Najnowsza wersja</value></data>
   <data name="Plugin_Row_Frontend" xml:space="preserve"><value>Frontend</value></data>
   <data name="Plugin_Row_Loader" xml:space="preserve"><value>Loader (winmm.dll)</value></data>
   <data name="Plugin_Millennium_Coexisting" xml:space="preserve"><value>Wykryto Millennium — LuaTools działa obok niego. Instalacja wyłącza kopię tej wtyczki należącą do Millennium, aby wstrzykiwał tylko LuaLoader.</value></data>
@@ -421,7 +406,6 @@ Spowoduje to usunięcie plików .lua z Steam\config\stplug-in. Następnie urucho
   <data name="Nav_Builds" xml:space="preserve"><value>Depoty</value></data>
   <data name="Builds_Title" xml:space="preserve"><value>Depoty</value></data>
   <data name="Builds_Subtitle" xml:space="preserve"><value>Przechowuj wiele wersji pliku lua danej gry i wybieraj, której używa Steam.</value></data>
-  <data name="Builds_NoSelection" xml:space="preserve"><value>Wybierz grę po lewej, aby zobaczyć jej ustawienia.</value></data>
   <data name="Builds_ActiveBuild" xml:space="preserve"><value>Aktywne ustawienie</value></data>
   <data name="Builds_Active" xml:space="preserve"><value>AKTYWNA</value></data>
   <data name="Builds_Variant_Default" xml:space="preserve"><value>Domyślna</value></data>
@@ -450,7 +434,6 @@ Spowoduje to usunięcie plików .lua z Steam\config\stplug-in. Następnie urucho
   <data name="Builds_Delete_ActiveTip" xml:space="preserve"><value>Nie można usunąć ustawienia, które jest w użyciu.</value></data>
   <data name="Builds_Apply_Done" xml:space="preserve"><value>Używana jest teraz „{0}”. Uruchom Steam ponownie, aby zmiana zadziałała.</value></data>
   <data name="Builds_Apply_Failed" xml:space="preserve"><value>Nie udało się przełączyć ustawienia — plik lua może być w użyciu.</value></data>
-  <data name="Builds_Save_Done" xml:space="preserve"><value>Zapisano. Uruchom Steam ponownie, aby zmiana zadziałała.</value></data>
   <data name="Builds_Save_Failed" xml:space="preserve"><value>Nie udało się zapisać — plik lua może być w użyciu.</value></data>
   <data name="Builds_Preset_Saved" xml:space="preserve"><value>Zapisano jako ustawienie.</value></data>
   <data name="Builds_Action_SaveTo" xml:space="preserve"><value>Zapisz w „{0}”</value></data>
@@ -509,7 +492,6 @@ Spowoduje to usunięcie plików .lua z Steam\config\stplug-in. Następnie urucho
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Nie można uruchomić Steam. Ustaw jego lokalizację w Ustawieniach i spróbuj ponownie.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
   <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
-  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Pliki Steam</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>Zainstalowano AmethystTool. Steam został ponownie uruchomiony, aby go wczytać.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Instalacja AmethystTool nie powiodła się: {0}</value></data>
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Najnowsze wydanie AmethystTool nie publikuje {0}.</value></data>
@@ -557,7 +539,6 @@ Spowoduje to usunięcie plików .lua z Steam\config\stplug-in. Następnie urucho
   <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>W pobranych plikach brakuje: {0}.</value></data>
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>Nie znaleziono {0} w żadnym wydaniu.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} nie przeszedł weryfikacji (niezgodność sha256 lub brak opublikowanego digestu).</value></data>
-  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>W wydaniu brakuje {0}.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Wymiana tokenu nie powiodła się ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Wymiana tokenu zwróciła pustą sesję.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Nie zalogowano.</value></data>
@@ -630,8 +611,6 @@ Wymusić zamknięcie? Wszystko, czego Steam jeszcze nie zapisał, może zostać 
   <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
   <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Dodaj folder…</value></data>
   <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Usuń</value></data>
-  <data name="Saves_Note" xml:space="preserve"><value>Tworzy kopię folderu Steam przypisanego do gry (userdata). Gry przechowujące zapisy w Dokumentach lub AppData nie są uwzględniane.</value></data>
-  <data name="Saves_Toast_Created" xml:space="preserve"><value>Skopiowano {0} plik(ów), {1}.</value></data>
   <data name="Saves_Toast_Restored" xml:space="preserve"><value>Przywrócono {0} plik(ów). Zachowano kopię poprzednich zapisów.</value></data>
   <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Kopia zapasowa usunięta.</value></data>
   <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Nie znaleziono zapisów tej gry. Dodaj folder, w którym je przechowuje, przez „Dodaj folder ręcznie…”.</value></data>
@@ -700,7 +679,6 @@ Zweryfikowano: {4}</value></data>
   <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>archiwum sprawdzone</value></data>
   <data name="Download_Notice_Cancel" xml:space="preserve"><value>Anuluj</value></data>
   <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Anulowano przed zainstalowaniem czegokolwiek.</value></data>
-  <data name="Builds_RemoveGame" xml:space="preserve"><value>Usuń grę</value></data>
   <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Zdejmuje tę grę z listy Depotów. Usuwa jej pliki lua i wszystkie zapisane buildy.</value></data>
   <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Usuń grę</value></data>
   <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>Usunąć {0} ({1}) z Depotów?
@@ -741,7 +719,6 @@ Włączyć?</value></data>
   <data name="About_What_Header" xml:space="preserve"><value>Czym to jest</value></data>
   <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst to społecznościowy fork LuaTools skupiony na prywatności. Usuwa ping analityczny i wysyłanie kluczy, które wykonuje oryginalna wersja, utrzymuje wszystkie pobrania przez HTTPS i zawiera fioletowy motyw Amethyst.</value></data>
   <data name="About_Version_Header" xml:space="preserve"><value>Wersja</value></data>
-  <data name="About_Repo_Header" xml:space="preserve"><value>Repozytorium</value></data>
   <data name="About_Updates_Header" xml:space="preserve"><value>Aktualizacje</value></data>
   <data name="About_Updates_Enabled" xml:space="preserve"><value>Aktualizacje automatyczne są WŁĄCZONE. LuaTools Amethyst sprawdza poniższe repozytorium przy uruchomieniu i instaluje aktualizacje w tle.</value></data>
   <data name="About_Updates_Disabled" xml:space="preserve"><value>Aktualizacje automatyczne są WYŁĄCZONE — nie jest wysyłane żadne żądanie aktualizacji. Dodaj „AppUpdateRepos” do settings.json, aby je włączyć, albo aktualizuj ręcznie z poniższego repozytorium.</value></data>
@@ -896,9 +873,6 @@ Włączyć?</value></data>
   <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Tryb Własny aktywny</value></data>
   <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>LuaTools Amethyst będzie teraz zarządzać wyłącznie plikami .lua w config\stplug-in bez modyfikowania plików DLL Steam.</value></data>
   <data name="Home_CustomActive" xml:space="preserve"><value>Własny · zarządzany przez Ciebie</value></data>
-  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>Usunąć „{0}” (App ID {1})?
-
-Spowoduje to usunięcie wyłącznie aktywnego pliku .lua z Steam\config\stplug-in. Zapisane kompilacje tej gry pozostaną dostępne w zakładce Depots. Uruchom ponownie Steam, aby zmiana weszła w życie.</value></data>
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Usunąć {0} plików .lua?
 
 Spowoduje to usunięcie wyłącznie aktywnych plików .lua z Steam\config\stplug-in. {1} z tych gier ma zapisane kompilacje, które pozostaną dostępne w zakładce Depots. Uruchom ponownie Steam, aby zmiany weszły w życie.</value></data>
@@ -938,7 +912,7 @@ Spowoduje to usunięcie wyłącznie aktywnych plików .lua z Steam\config\stplug
   <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>Odinstaluj tylko pliki gry</value></data>
   <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>Usuwa folder instalacji gry i plik appmanifest Steam. Zachowuje pliki .lua i .manifest.</value></data>
   <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>Usuń tylko plik .lua</value></data>
-  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Usuwa config\stplug-in\{0}.lua. Zachowuje pliki gry, pliki .manifest oraz zapisane buildy.</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Usuwa config\stplug-in\{0}.lua (oraz {0}.lua.disabled, jeśli istnieje). Zachowuje pliki gry, pliki .manifest oraz zapisane buildy.</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>Usuń tylko pliki .manifest</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>Usuwa wyłączne pliki .manifest tej gry w depotcache. Zachowuje plik .lua i współdzielone manifesty.</value></data>
   <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>Usuń .lua + pliki .manifest</value></data>
@@ -964,4 +938,6 @@ Spowoduje to usunięcie wyłącznie aktywnych plików .lua z Steam\config\stplug
   <data name="ViewMode_Grid" xml:space="preserve"><value>Widok siatki</value></data>
   <data name="ViewMode_List" xml:space="preserve"><value>Widok listy</value></data>
   <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Tryb wyświetlania biblioteki</value></data>
+  <data name="Cleanup_Err_OperationInProgress" xml:space="preserve"><value>{0} jest właśnie pobierana, instalowana, archiwizowana lub przywracana. Poczekaj na zakończenie i spróbuj ponownie.</value></data>
+  <data name="Settings_ManifestBackup_Cancelled" xml:space="preserve"><value>Anulowano. Już przetworzone gry zostały zachowane.</value></data>
 </root>

@@ -447,4 +447,145 @@ public sealed class GameCleanupAndDepotsUiTests(ThemeHost host) : IDisposable
                 element.DesiredSize.Height.Should().BeGreaterThan(0);
         });
     }
+
+    // ── 1.8.9: dark confirm hooks (Depots + Manage) and the download-queue busy probe ──
+
+    [Fact]
+    public async Task Depots_delete_preset_asks_the_dark_confirm_and_fails_closed_without_it()
+    {
+        var env = new Env(_root, host);
+        env.WriteLua(400, "addappid(400)");
+        var preset = env.Vault.SaveText(400, "addappid(400)\n-- older preset", "Older")!;
+        await env.BuildsVm.LoadAsync();
+        await env.BuildsVm.SelectAppAsync(400);
+        env.BuildsVm.SelectedVariant = env.BuildsVm.Variants.Single(v => v.Hash == preset.Hash);
+        bool Stored() => env.Vault.GetVariants(400).Any(v => v.Hash == preset.Hash);
+
+        env.BuildsVm.Confirm = null; // App never wired it: nothing is deleted
+        env.BuildsVm.DeleteVariantCommand.Execute(null);
+        Stored().Should().BeTrue();
+
+        ConfirmRequest? asked = null;
+        env.BuildsVm.Confirm = r => { asked = r; return false; };
+        env.BuildsVm.DeleteVariantCommand.Execute(null);
+        Stored().Should().BeTrue("Cancel deletes nothing");
+        asked.Should().NotBeNull();
+        asked!.Title.Should().Be(Resources.Strings.Builds_Delete_Title);
+        asked.ConfirmText.Should().Be(Resources.Strings.Builds_Action_Delete);
+        asked.IsDanger.Should().BeTrue();
+        asked.Body.Should().Contain(preset.DisplayLabel);
+
+        env.BuildsVm.Confirm = _ => true;
+        env.BuildsVm.DeleteVariantCommand.Execute(null);
+        Stored().Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task Manage_bulk_removal_and_the_restart_offer_go_through_the_dark_confirm()
+    {
+        var env = new Env(_root, host);
+        env.WriteLua(400, "addappid(400)");
+        env.WriteLua(620, "addappid(620)");
+        await env.ManageVm.LoadAsync();
+        env.ManageVm.CancelBackgroundPrefetch();
+        await env.ManageVm.PrefetchTask;
+        env.ManageVm.OfferRestartSteamOverride = null; // exercise the real prompt
+        foreach (var t in env.ManageVm.Items) t.IsSelected = true;
+
+        env.ManageVm.Confirm = null;
+        await env.ManageVm.DeleteSelectedCommand.ExecuteAsync(null);
+        File.Exists(Path.Combine(env.PlugDir, "400.lua")).Should().BeTrue("no confirm wired = declined");
+
+        var asked = new List<ConfirmRequest>();
+        env.ManageVm.Confirm = r => { asked.Add(r); return r.IsDanger; }; // remove: yes; restart Steam: not now
+        await env.ManageVm.DeleteSelectedCommand.ExecuteAsync(null);
+
+        File.Exists(Path.Combine(env.PlugDir, "400.lua")).Should().BeFalse();
+        File.Exists(Path.Combine(env.PlugDir, "620.lua")).Should().BeFalse();
+        asked.Should().HaveCount(2);
+        asked[0].Title.Should().Be(Resources.Strings.Manage_DeleteMany_Title);
+        asked[0].IsDanger.Should().BeTrue();
+        asked[1].Should().Be(BuildsViewModel.RestartSteamRequest);
+        asked[1].IsDanger.Should().BeFalse("restarting Steam is not destructive: Primary, still Cancel by default");
+    }
+
+    [Fact]
+    public void The_dark_confirm_dialog_renders_any_request_with_Cancel_as_the_safe_default()
+    {
+        host.On(_ =>
+        {
+            var danger = new Views.RemoveGameDialog(new ConfirmRequest("Delete?", "body", "Delete", Heading: "Portal"));
+            danger.Title.Should().Be("Delete?");
+            danger.GameNameText.Text.Should().Be("Portal");
+            danger.AppIdText.Visibility.Should().Be(Visibility.Collapsed);
+            danger.VaultNotice.Visibility.Should().Be(Visibility.Collapsed);
+            danger.RemoveButton.Content.Should().Be("Delete");
+            danger.RemoveButton.Appearance.Should().Be(Wpf.Ui.Controls.ControlAppearance.Danger);
+            danger.RemoveButton.IsDefault.Should().BeFalse();
+            danger.CancelButton.IsCancel.Should().BeTrue();
+
+            var restart = new Views.RemoveGameDialog(BuildsViewModel.RestartSteamRequest);
+            restart.RemoveButton.Appearance.Should().Be(Wpf.Ui.Controls.ControlAppearance.Primary);
+            restart.GameNameText.Visibility.Should().Be(Visibility.Collapsed);
+
+            var removeGame = new Views.RemoveGameDialog("Portal", 400);
+            removeGame.VaultNotice.Visibility.Should().Be(Visibility.Visible);
+            removeGame.AppIdText.Visibility.Should().Be(Visibility.Visible);
+            removeGame.RemoveButton.Appearance.Should().Be(Wpf.Ui.Controls.ControlAppearance.Danger);
+        });
+    }
+
+    [Fact]
+    public async Task The_wired_cleanup_service_refuses_while_any_install_holds_the_install_lock()
+    {
+        var env = new Env(_root, host);
+        env.WriteLua(400, "addappid(400)");
+        var installer = new LuaInstaller(env.Steam, env.Settings, env.Cache, env.Vault);
+        var appList = new SteamAppListCache(Path.Combine(_root, "applist2.json"), new StubOfflineHandler());
+        var backups = new Services.Backups.ManifestBackupService(env.Settings, env.Steam, installer, appList, env.Toast);
+        var queue = host.On(_ => new DownloadQueue(env.Cache));
+        var cleanup = new GameCleanupService(env.Steam, env.Library, env.Vault, env.Cache, env.Settings, queue, backups, installer);
+
+        var installLock = (Lock)typeof(LuaInstaller)
+            .GetField("_installLock", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!
+            .GetValue(installer)!;
+        using var entered = new ManualResetEventSlim();
+        using var release = new ManualResetEventSlim();
+        var holder = Task.Run(() => { lock (installLock) { entered.Set(); release.Wait(); } }); // an install mid-flight
+        entered.Wait();
+        try
+        {
+            installer.IsInstalling.Should().BeTrue();
+            (await cleanup.CleanAsync(400, GameCleanupScope.LuaOnly)).BlockReason
+                .Should().Be(GameCleanupBlockReason.OperationInProgress);
+            File.Exists(Path.Combine(env.PlugDir, "400.lua")).Should().BeTrue();
+        }
+        finally
+        {
+            release.Set();
+            await holder;
+        }
+
+        installer.IsInstalling.Should().BeFalse();
+        (await cleanup.CleanAsync(400, GameCleanupScope.LuaOnly)).LuaDeleted.Should().BeTrue();
+    }
+
+    [Fact]
+    public void The_download_queue_reports_an_active_item_per_appid()
+    {
+        var cache = new CacheService(Path.Combine(_root, "q-cache"));
+        var queue = host.On(_ => new DownloadQueue(cache));
+        var job = new DownloadJob(
+            DownloadKind.Manifest, "manifest:400", 400, "Portal", "", null,
+            (_, _, _) => throw new InvalidOperationException("never run"),
+            (_, _, _) => throw new InvalidOperationException("never run"));
+
+        queue.HasActiveFor(400).Should().BeFalse();
+        var item = host.On(_ => { var i = new DownloadItem(job); queue.Items.Add(i); return i; });
+        queue.HasActiveFor(400).Should().BeTrue();
+        queue.HasActiveFor(620).Should().BeFalse();
+
+        host.On(_ => item.Status = DownloadStatus.Completed);
+        queue.HasActiveFor(400).Should().BeFalse("a finished download no longer blocks cleanup");
+    }
 }

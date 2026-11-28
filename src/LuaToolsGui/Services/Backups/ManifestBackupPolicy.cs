@@ -16,10 +16,14 @@ public enum ManifestBackupMode
 }
 
 /// <summary>One <c>&lt;depot&gt;_&lt;manifest&gt;.manifest</c> sitting in Steam's depotcache.</summary>
-public readonly record struct DepotManifest(long DepotId, string ManifestId, string Path, DateTime LastWriteUtc);
+public readonly record struct DepotManifest(
+    long DepotId, string ManifestId, string Path, DateTime LastWriteUtc, DateTime? CreationTimeUtc = null);
 
 /// <summary>A manifest recorded in a backup's metadata.json.</summary>
-public sealed record BackedUpManifest(long DepotId, string ManifestId, string Sha256, DateTime? LastWriteUtc = null);
+/// <param name="CreationTimeUtc">Steam's own <c>creation_time</c> from the manifest bytes. Null in metadata.json
+/// written before 1.8.9 (schema stays 1: the field is optional both ways), and for a manifest without it.</param>
+public sealed record BackedUpManifest(
+    long DepotId, string ManifestId, string Sha256, DateTime? LastWriteUtc = null, DateTime? CreationTimeUtc = null);
 
 /// <summary>Result of reconciling local depotcache candidates against a stored backup.</summary>
 public sealed record ManifestReconcileResult(
@@ -119,8 +123,9 @@ public static class ManifestBackupPolicy
     /// Steam has updated is backed up at its current version), plus the file a <c>setManifestid</c> pin
     /// names when it is a different one (so a pinned build still restores).
     /// </summary>
-    /// <remarks>"Newest" is by write time, not by manifest id: Steam manifest ids are not monotonic, so the
-    /// numerically larger id is not the later build. The id only breaks a timestamp tie, for determinism.</remarks>
+    /// <remarks>"Newest" is by Steam's <c>creation_time</c> when the file carries it, else by write time — never
+    /// by manifest id: Steam manifest ids are not monotonic, so the numerically larger id is not the later build.
+    /// The id only breaks a timestamp tie, for determinism.</remarks>
     public static IReadOnlyList<DepotManifest> SelectManifests(
         IEnumerable<long> depotIds,
         IReadOnlyDictionary<long, string> pins,
@@ -131,8 +136,9 @@ public static class ManifestBackupPolicy
 
         foreach (var group in available.Where(m => wanted.Contains(m.DepotId)).GroupBy(static m => m.DepotId))
         {
+            var recency = RecencyOf([.. group]);
             var newest = group
-                .OrderByDescending(static m => m.LastWriteUtc)
+                .OrderByDescending(recency)
                 .ThenByDescending(static m => ulong.TryParse(m.ManifestId, NumberStyles.None, CultureInfo.InvariantCulture, out ulong id) ? id : 0)
                 .First();
             picked.Add(newest);
@@ -155,6 +161,25 @@ public static class ManifestBackupPolicy
         value.Kind == DateTimeKind.Local
             ? value.ToUniversalTime()
             : DateTime.SpecifyKind(value, DateTimeKind.Utc);
+
+    /// <summary>One time basis per comparison: Steam's creation_time only when EVERY candidate carries it, otherwise
+    /// write time for all. Mixing them would rank a file by its (later) write time against another's (earlier)
+    /// creation time and back up an old build as "newest".</summary>
+    private static Func<DepotManifest, DateTime> RecencyOf(IReadOnlyCollection<DepotManifest> candidates) =>
+        candidates.All(static m => m.CreationTimeUtc.HasValue)
+            ? static m => ToUtc(m.CreationTimeUtc.GetValueOrDefault())
+            : static m => ToUtc(m.LastWriteUtc);
+
+    /// <summary>
+    /// Whether the stored copy is a later build than the local one. Both carry Steam's <c>creation_time</c> → that
+    /// decides (Steam's clock, so a PC whose clock runs ahead cannot make an old backup look newer). Otherwise —
+    /// a backup recorded before 1.8.9, or a manifest without the field — the file write times decide, with
+    /// <see cref="TimestampTolerance"/>, exactly as before.
+    /// </summary>
+    public static bool IsStoredNewer(BackedUpManifest stored, DepotManifest local) =>
+        stored.CreationTimeUtc is { } s && local.CreationTimeUtc is { } l
+            ? ToUtc(s) > ToUtc(l)
+            : IsStoredNewer(stored.LastWriteUtc, local.LastWriteUtc);
 
     /// <summary>True when <paramref name="storedUtc"/> leads <paramref name="localUtc"/> by more than
     /// <see cref="TimestampTolerance"/> (DOS ZIP 2-second timestamp granularity).</summary>
@@ -221,19 +246,25 @@ public static class ManifestBackupPolicy
                 if (localForDepot.Count == 0) continue;
 
                 var newestLocal = localForDepot
-                    .OrderByDescending(static m => ToUtc(m.LastWriteUtc))
+                    .OrderByDescending(RecencyOf(localForDepot))
                     .ThenByDescending(static m => ulong.TryParse(m.ManifestId, NumberStyles.None, CultureInfo.InvariantCulture, out ulong id) ? id : 0)
                     .First();
 
-                var newestStored = group
-                    .Where(static m => m.LastWriteUtc.HasValue)
-                    .OrderByDescending(static m => ToUtc(m.LastWriteUtc.GetValueOrDefault()))
+                // Same rule for the stored side: creation_time only if every timed entry has it, else write times
+                // (and then an entry with creation time but no write time cannot be ranked, so it is not a candidate).
+                var timedStored = group.Where(static m => m.CreationTimeUtc.HasValue || m.LastWriteUtc.HasValue).ToList();
+                bool storedByCreation = timedStored.Count > 0 && timedStored.All(static m => m.CreationTimeUtc.HasValue);
+                var newestStored = timedStored
+                    .Where(m => storedByCreation || m.LastWriteUtc.HasValue)
+                    .OrderByDescending(m => storedByCreation
+                        ? ToUtc(m.CreationTimeUtc.GetValueOrDefault())
+                        : ToUtc(m.LastWriteUtc.GetValueOrDefault()))
                     .ThenByDescending(static m => ulong.TryParse(m.ManifestId, NumberStyles.None, CultureInfo.InvariantCulture, out ulong id) ? id : 0)
                     .FirstOrDefault();
 
                 if (newestStored is null
                     || localForDepot.Any(s => s.ManifestId == newestStored.ManifestId)
-                    || !IsStoredNewer(newestStored.LastWriteUtc, newestLocal.LastWriteUtc))
+                    || !IsStoredNewer(newestStored, newestLocal))
                 {
                     continue;
                 }

@@ -91,7 +91,6 @@
   <data name="Settings_BotLink_Body" xml:space="preserve"><value>Έχετε συνδεθεί με προσωρινό λογαριασμό Discord. Συνδεθείτε στο lua.tools, μετά εκτελέστε ξανά /login και εισαγάγετε τον κωδικό για να συνδέσετε τον πλήρη λογαριασμό σας.</value></data>
   <data name="Settings_BotLink_Dismiss" xml:space="preserve"><value>Απόρριψη</value></data>
   <data name="Settings_LoginRequired" xml:space="preserve"><value>Απαιτείται σύνδεση για αυτήν την ενέργεια.</value></data>
-  <data name="Settings_ManageKeyHintPrefix" xml:space="preserve"><value>Διαχειριστείτε το κλειδί API Hubcap και το προφίλ σας στο</value></data>
   <data name="Settings_Section_Hubcap" xml:space="preserve"><value>HUBCAP</value></data>
   <data name="Settings_HubcapKey" xml:space="preserve"><value>Κλειδί API Hubcap</value></data>
   <data name="Settings_HubcapKey_Hint" xml:space="preserve"><value>Επικόλλησε το προσωπικό σου κλειδί API Hubcap για να ξεκλειδώσεις τα μανιφέστα Hubcap. Η εφαρμογή συνδέεται απευθείας στο Hubcap με το κλειδί σου.</value></data>
@@ -103,7 +102,6 @@
   <data name="Settings_HubcapKeyOkExpiry" xml:space="preserve"><value>{0}/{1} σήμερα · λήγει {2}</value></data>
   <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>Αυτό δεν μοιάζει με έγκυρο κλειδί.</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>Δεν ήταν δυνατή η επαλήθευση του κλειδιού — μπορεί να είναι άκυρο, ληγμένο ή το Hubcap δεν είναι προσβάσιμο.</value></data>
-  <data name="Settings_HubcapActive" xml:space="preserve"><value>Ενεργό</value></data>
   <data name="Settings_HubcapRefresh" xml:space="preserve"><value>Ανανέωση</value></data>
   <data name="Settings_Language" xml:space="preserve"><value>Γλώσσα</value></data>
   <data name="Settings_Language_Hint" xml:space="preserve"><value>Επιλέξτε τη γλώσσα εμφάνισης της εφαρμογής. Εφαρμόζεται μετά από επανεκκίνηση.</value></data>
@@ -125,7 +123,6 @@
   <data name="Lang_Changed_Restart" xml:space="preserve"><value>Επανεκκίνηση τώρα</value></data>
   <data name="Home_Welcome" xml:space="preserve"><value>Καλώς ήρθατε στο LuaTools Amethyst</value></data>
   <data name="Home_LuasOnBoard" xml:space="preserve"><value>Lua στη συλλογή</value></data>
-  <data name="Home_LastAdded" xml:space="preserve"><value>ΤΕΛΕΥΤΑΙΑ ΠΡΟΣΘΗΚΗ</value></data>
   <data name="Home_PluginStatus" xml:space="preserve"><value>Κατάσταση προσθέτου</value></data>
   <data name="Home_RecentlyAdded" xml:space="preserve"><value>Προστέθηκαν πρόσφατα</value></data>
   <data name="Home_ViewDetails" xml:space="preserve"><value>Προβολή λεπτομερειών</value></data>
@@ -224,7 +221,6 @@
   <data name="Manage_Filter_SortBy" xml:space="preserve"><value>Ταξινόμηση κατά</value></data>
   <data name="Manage_ClearFilters" xml:space="preserve"><value>Εκκαθάριση φίλτρων</value></data>
   <data name="Manage_Select" xml:space="preserve"><value>Επιλογή</value></data>
-  <data name="Manage_DeleteThisLua" xml:space="preserve"><value>Διαγραφή αυτού του lua</value></data>
   <data name="Manage_ResultsPerPage" xml:space="preserve"><value>Αποτελέσματα ανά σελίδα</value></data>
   <data name="Manage_Action_ViewDetails" xml:space="preserve"><value>Προβολή λεπτομερειών</value></data>
   <data name="Manage_Action_Update" xml:space="preserve"><value>Ενημέρωση / επανάληψη λήψης</value></data>
@@ -236,7 +232,6 @@
   <data name="Manage_ActionsHeader" xml:space="preserve"><value>Ενέργειες</value></data>
   <data name="Manage_Steamless_Confirm_Title" xml:space="preserve"><value>Κατάργηση του DRM του Steam;</value></data>
   <data name="Manage_Steamless_Confirm_Body" xml:space="preserve"><value>Αυτό εκτελεί το Steamless στο εκτελέσιμο του παιχνιδιού για να αφαιρέσει το DRM SteamStub. Το αρχικό .exe δημιουργείται πρώτα ως αντίγραφο .bak. Ορισμένα παιχνίδια ίσως χρειαστούν έπειτα επαλήθευση αρχείων στο Steam. Συνέχεια;</value></data>
-  <data name="Manage_Steamless_Working" xml:space="preserve"><value>Κατάργηση DRM του Steam…</value></data>
   <data name="Manage_Toast_Steamless_Done" xml:space="preserve"><value>{0} επεξεργάστηκαν, {1} αμετάβλητα.</value></data>
   <data name="Manage_Steamless_NoInstall" xml:space="preserve"><value>Δεν βρέθηκε ο φάκελος του παιχνιδιού — είναι εγκατεστημένο;</value></data>
   <data name="Manage_Steamless_Failed" xml:space="preserve"><value>Δεν ήταν δυνατή η κατάργηση του DRM. {0}</value></data>
@@ -273,19 +268,11 @@
   <data name="Manage_Depot" xml:space="preserve"><value>Depot</value></data>
   <data name="Manage_SharedDepot" xml:space="preserve"><value>Κοινόχρηστο depot</value></data>
   <data name="Manage_DlcName" xml:space="preserve"><value>DLC {0}</value></data>
-  <data name="Manage_Delete_Title" xml:space="preserve"><value>Κατάργηση αρχείου lua</value></data>
-  <data name="Manage_Delete_Body" xml:space="preserve"><value>Κατάργηση του «{0}» (App ID {1});
-
-Αυτό διαγράφει το αρχείο .lua του από το Steam\config\stplug-in. Επανεκκινήστε το Steam έπειτα για να τεθεί σε ισχύ η αλλαγή.</value></data>
   <data name="Manage_DeleteMany_Title" xml:space="preserve"><value>Κατάργηση αρχείων lua</value></data>
   <data name="Manage_DeleteMany_Body" xml:space="preserve"><value>Κατάργηση {0} αρχείων lua;
 
 Αυτό διαγράφει τα αρχεία .lua από το Steam\config\stplug-in. Επανεκκινήστε το Steam έπειτα για να τεθούν σε ισχύ οι αλλαγές.</value></data>
   <data name="Manage_RemoveFailed_Title" xml:space="preserve"><value>Η κατάργηση απέτυχε</value></data>
-  <data name="Manage_RemoveFailed_File" xml:space="preserve"><value>Δεν ήταν δυνατή η διαγραφή του αρχείου:
-{0}</value></data>
-  <data name="Manage_RemoveFailed_Named" xml:space="preserve"><value>Δεν ήταν δυνατή η διαγραφή του «{0}»:
-{1}</value></data>
   <data name="Manage_RemoveFailed_Count" xml:space="preserve"><value>Δεν ήταν δυνατή η διαγραφή {0} αρχείων.</value></data>
   <data name="Manage_RestartSteam_Title" xml:space="preserve"><value>Επανεκκίνηση Steam</value></data>
   <data name="Manage_RestartSteam_Ask" xml:space="preserve"><value>Επανεκκίνηση του Steam τώρα ώστε να τεθούν σε ισχύ οι αλλαγές;</value></data>
@@ -346,7 +333,6 @@
   <data name="Add_Err_BaseGame" xml:space="preserve"><value>Δεν ήταν δυνατός ο προσδιορισμός του βασικού παιχνιδιού για αυτό το DLC</value></data>
   <data name="Add_Err_Generic" xml:space="preserve"><value>Κάτι πήγε στραβά — ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά.</value></data>
   <data name="Add_Err_Download" xml:space="preserve"><value>Η λήψη απέτυχε — ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά.</value></data>
-  <data name="Add_Err_Generate" xml:space="preserve"><value>Η δημιουργία απέτυχε — ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά.</value></data>
   <data name="Add_Confirm_Replace" xml:space="preserve"><value>Αντικατάσταση του «{0}»;</value></data>
   <data name="Add_Confirm_NoChanges" xml:space="preserve"><value>Καμία αλλαγή depot/DLC — ίδιο περιεχόμενο.</value></data>
   <data name="Add_Status_Cancelled" xml:space="preserve"><value>Η εγκατάσταση ακυρώθηκε — τα υπάρχοντα αρχεία παρέμειναν αμετάβλητα.</value></data>
@@ -377,7 +363,6 @@
   <data name="Plugin_CardTitle" xml:space="preserve"><value>Κατάσταση</value></data>
   <data name="Plugin_Badge_UpdateAvailable" xml:space="preserve"><value>Διαθέσιμη ενημέρωση</value></data>
   <data name="Plugin_Row_InstalledVersion" xml:space="preserve"><value>Εγκατεστημένη έκδοση</value></data>
-  <data name="Plugin_Row_LatestVersion" xml:space="preserve"><value>Τελευταία έκδοση</value></data>
   <data name="Plugin_Row_Frontend" xml:space="preserve"><value>Frontend</value></data>
   <data name="Plugin_Row_Loader" xml:space="preserve"><value>Φορτωτής (winmm.dll)</value></data>
   <data name="Plugin_Millennium_Coexisting" xml:space="preserve"><value>Εντοπίστηκε το Millennium — το LuaTools εκτελείται παράλληλα. Η εγκατάσταση απενεργοποιεί το αντίγραφο αυτού του πρόσθετου του Millennium, ώστε να κάνει ένεση μόνο το LuaLoader.</value></data>
@@ -421,7 +406,6 @@
   <data name="Nav_Builds" xml:space="preserve"><value>Depots</value></data>
   <data name="Builds_Title" xml:space="preserve"><value>Depots</value></data>
   <data name="Builds_Subtitle" xml:space="preserve"><value>Κρατήστε πολλές εκδόσεις του lua ενός παιχνιδιού και επιλέξτε ποια χρησιμοποιεί το Steam.</value></data>
-  <data name="Builds_NoSelection" xml:space="preserve"><value>Επιλέξτε ένα παιχνίδι στα αριστερά για να δείτε τις προρυθμίσεις του.</value></data>
   <data name="Builds_ActiveBuild" xml:space="preserve"><value>Ενεργή προρύθμιση</value></data>
   <data name="Builds_Active" xml:space="preserve"><value>ΕΝΕΡΓΗ</value></data>
   <data name="Builds_Variant_Default" xml:space="preserve"><value>Προεπιλογή</value></data>
@@ -450,7 +434,6 @@
   <data name="Builds_Delete_ActiveTip" xml:space="preserve"><value>Δεν μπορείτε να διαγράψετε την προρύθμιση που χρησιμοποιείται.</value></data>
   <data name="Builds_Apply_Done" xml:space="preserve"><value>Χρησιμοποιείται πλέον η «{0}». Επανεκκινήστε το Steam για να τεθεί σε ισχύ.</value></data>
   <data name="Builds_Apply_Failed" xml:space="preserve"><value>Δεν ήταν δυνατή η αλλαγή προρύθμισης — το αρχείο lua μπορεί να χρησιμοποιείται.</value></data>
-  <data name="Builds_Save_Done" xml:space="preserve"><value>Αποθηκεύτηκε. Επανεκκινήστε το Steam για να τεθεί σε ισχύ.</value></data>
   <data name="Builds_Save_Failed" xml:space="preserve"><value>Δεν ήταν δυνατή η αποθήκευση — το αρχείο lua μπορεί να χρησιμοποιείται.</value></data>
   <data name="Builds_Preset_Saved" xml:space="preserve"><value>Αποθηκεύτηκε ως προρύθμιση.</value></data>
   <data name="Builds_Action_SaveTo" xml:space="preserve"><value>Αποθήκευση στην «{0}»</value></data>
@@ -509,7 +492,6 @@
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Δεν ήταν δυνατή η εκκίνηση του Steam. Ορίστε τη θέση του στις Ρυθμίσεις και δοκιμάστε ξανά.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
   <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
-  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Αρχεία Steam</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>Το AmethystTool εγκαταστάθηκε. Το Steam επανεκκινήθηκε για να φορτωθεί.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Η εγκατάσταση του AmethystTool απέτυχε: {0}</value></data>
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Η τελευταία έκδοση του AmethystTool δεν δημοσιεύει {0}.</value></data>
@@ -557,7 +539,6 @@
   <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>Από τη λήψη λείπει: {0}.</value></data>
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>Δεν βρέθηκε το {0} σε καμία έκδοση.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>Το {0} απέτυχε στον έλεγχο (ασυμφωνία sha256 ή δεν υπάρχει δημοσιευμένο digest).</value></data>
-  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Από την έκδοση λείπει το {0}.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Η ανταλλαγή token απέτυχε ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Η ανταλλαγή token επέστρεψε κενή συνεδρία.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Δεν έχετε συνδεθεί.</value></data>
@@ -630,8 +611,6 @@
   <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
   <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Προσθήκη φακέλου…</value></data>
   <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Αφαίρεση</value></data>
-  <data name="Saves_Note" xml:space="preserve"><value>Δημιουργεί αντίγραφο του φακέλου ανά παιχνίδι του Steam (userdata). Τα παιχνίδια που κρατούν αποθηκεύσεις στα Έγγραφα ή στο AppData δεν περιλαμβάνονται.</value></data>
-  <data name="Saves_Toast_Created" xml:space="preserve"><value>Δημιουργήθηκε αντίγραφο {0} αρχείου/ων, {1}.</value></data>
   <data name="Saves_Toast_Restored" xml:space="preserve"><value>Επαναφέρθηκαν {0} αρχείο/α. Διατηρήθηκε αντίγραφο των προηγούμενων αποθηκεύσεων.</value></data>
   <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Το αντίγραφο ασφαλείας διαγράφηκε.</value></data>
   <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Δεν βρέθηκαν αποθηκεύσεις για αυτό το παιχνίδι. Πρόσθεσε τον φάκελο όπου τις κρατά με «Προσθήκη φακέλου με το χέρι…».</value></data>
@@ -700,7 +679,6 @@ SHA-256 {3}
   <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>το αρχείο ελέγχθηκε</value></data>
   <data name="Download_Notice_Cancel" xml:space="preserve"><value>Ακύρωση</value></data>
   <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Ακυρώθηκε πριν εγκατασταθεί οτιδήποτε.</value></data>
-  <data name="Builds_RemoveGame" xml:space="preserve"><value>Αφαίρεση παιχνιδιού</value></data>
   <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Βγάζει αυτό το παιχνίδι από τη λίστα των Depots. Διαγράφει τα αρχεία lua του και όλα τα αποθηκευμένα builds.</value></data>
   <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Αφαίρεση παιχνιδιού</value></data>
   <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>Αφαίρεση του {0} ({1}) από τα Depots;
@@ -741,7 +719,6 @@ SHA-256 {3}
   <data name="About_What_Header" xml:space="preserve"><value>Τι είναι αυτό</value></data>
   <data name="About_What_Body" xml:space="preserve"><value>Το LuaTools Amethyst είναι ένα fork της κοινότητας του LuaTools με έμφαση στο απόρρητο. Αφαιρεί το ping ανάλυσης και την αποστολή κλειδιών που κάνει η αρχική έκδοση, κρατά κάθε λήψη μέσω HTTPS και συνοδεύεται από το μοβ θέμα Amethyst.</value></data>
   <data name="About_Version_Header" xml:space="preserve"><value>Έκδοση</value></data>
-  <data name="About_Repo_Header" xml:space="preserve"><value>Αποθετήριο</value></data>
   <data name="About_Updates_Header" xml:space="preserve"><value>Ενημερώσεις</value></data>
   <data name="About_Updates_Enabled" xml:space="preserve"><value>Οι αυτόματες ενημερώσεις είναι ΕΝΕΡΓΕΣ. Το LuaTools Amethyst ελέγχει το παρακάτω αποθετήριο κατά την εκκίνηση και εγκαθιστά ενημερώσεις στο παρασκήνιο.</value></data>
   <data name="About_Updates_Disabled" xml:space="preserve"><value>Οι αυτόματες ενημερώσεις είναι ΑΝΕΝΕΡΓΕΣ — δεν γίνεται κανένα αίτημα ενημέρωσης. Πρόσθεσε το «AppUpdateRepos» στο settings.json για να τις ενεργοποιήσεις ή ενημέρωσε με το χέρι από το παρακάτω αποθετήριο.</value></data>
@@ -896,9 +873,6 @@ SHA-256 {3}
   <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Ενεργή προσαρμοσμένη λειτουργία</value></data>
   <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>Το LuaTools Amethyst θα διαχειρίζεται πλέον μόνο τα αρχεία .lua στο config\stplug-in χωρίς να τροποποιεί DLL του Steam.</value></data>
   <data name="Home_CustomActive" xml:space="preserve"><value>Προσαρμοσμένη · διαχείριση από χρήστη</value></data>
-  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>Αφαίρεση του «{0}» (App ID {1});
-
-Αυτό διαγράφει μόνο το ενεργό αρχείο .lua από το Steam\config\stplug-in. Οι αποθηκευμένες εκδόσεις για αυτό το παιχνίδι θα παραμείνουν διαθέσιμες στην καρτέλα Depots. Επανεκκινήστε το Steam στη συνέχεια για να εφαρμοστεί η αλλαγή.</value></data>
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Αφαίρεση {0} αρχείων .lua;
 
 Αυτό διαγράφει μόνο τα ενεργά αρχεία .lua από το Steam\config\stplug-in. {1} από αυτά τα παιχνίδια έχουν αποθηκευμένες εκδόσεις που θα παραμείνουν διαθέσιμες στην καρτέλα Depots. Επανεκκινήστε το Steam στη συνέχεια για να εφαρμοστούν οι αλλαγές.</value></data>
@@ -938,7 +912,7 @@ SHA-256 {3}
   <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>Απεγκατάσταση μόνο αρχείων παιχνιδιού</value></data>
   <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>Διαγράφει τον φάκελο εγκατάστασης του παιχνιδιού και το appmanifest του Steam. Διατηρεί τα αρχεία .lua και .manifest.</value></data>
   <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>Κατάργηση μόνο του αρχείου .lua</value></data>
-  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Διαγράφει το config\stplug-in\{0}.lua. Διατηρεί τα αρχεία του παιχνιδιού, τα .manifest και τα αποθηκευμένα builds.</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Διαγράφει το config\stplug-in\{0}.lua (και το {0}.lua.disabled, αν υπάρχει). Διατηρεί τα αρχεία του παιχνιδιού, τα .manifest και τα αποθηκευμένα builds.</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>Κατάργηση μόνο αρχείων .manifest</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>Διαγράφει τα αποκλειστικά αρχεία .manifest αυτού του παιχνιδιού από το depotcache. Διατηρεί το .lua και τα κοινόχρηστα manifest.</value></data>
   <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>Κατάργηση .lua + αρχείων .manifest</value></data>
@@ -964,4 +938,6 @@ SHA-256 {3}
   <data name="ViewMode_Grid" xml:space="preserve"><value>Προβολή πλέγματος</value></data>
   <data name="ViewMode_List" xml:space="preserve"><value>Προβολή λίστας</value></data>
   <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Λειτουργία προβολής βιβλιοθήκης</value></data>
+  <data name="Cleanup_Err_OperationInProgress" xml:space="preserve"><value>Το {0} λαμβάνεται, εγκαθίσταται, αντιγράφεται ή επαναφέρεται αυτή τη στιγμή. Περιμένετε να ολοκληρωθεί και δοκιμάστε ξανά.</value></data>
+  <data name="Settings_ManifestBackup_Cancelled" xml:space="preserve"><value>Ακυρώθηκε. Τα παιχνίδια που είχαν ήδη επεξεργαστεί διατηρήθηκαν.</value></data>
 </root>

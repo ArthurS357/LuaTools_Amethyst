@@ -42,7 +42,7 @@ public class ViewLoadSmokeTests(ThemeHost host)
             dir = dir.Parent;
         string xaml = File.ReadAllText(Path.Combine(dir!.FullName, "src", "LuaToolsGui", "Views", name + ".xaml"));
         xaml = Regex.Replace(xaml, @"\s+x:Class=""[^""]+""", "");
-        xaml = Regex.Replace(xaml, @"\s+(?:Click|Loaded|DataContextChanged|KeyDown|MouseLeftButtonUp|PreviewKeyDown|PreviewMouseWheel|DragEnter|DragLeave|DragOver|Drop)=""[^""]+""", "");
+        xaml = Regex.Replace(xaml, @"\s+(?:Click|Checked|Loaded|DataContextChanged|KeyDown|MouseLeftButtonUp|PreviewKeyDown|PreviewMouseWheel|DragEnter|DragLeave|DragOver|Drop)=""[^""]+""", "");
         // A loose document has no "local assembly" to resolve clr-namespaces against.
         xaml = Regex.Replace(xaml, @"clr-namespace:(LuaToolsGui\.\w+)""", "clr-namespace:$1;assembly=LuaTools\"");
 

@@ -5,11 +5,44 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:res="clr-namespace:LuaToolsGui.Resources"
-    xmlns:svc="clr-namespace:LuaToolsGui.Services"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     x:Name="ToggleHost"
     AutomationProperties.Name="{x:Static res:Strings.ViewMode_SwitchLabel}"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <!-- Real radio semantics (UI Automation: SelectionItem.IsSelected), segmented-button look. Grouped by
+             their shared parent, not GroupName, so Manage's and Depots' toggles never clear each other. -->
+        <Style x:Key="ModeSegmentStyle" TargetType="RadioButton">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+            <Setter Property="FocusVisualStyle" Value="{StaticResource DefaultControlFocusVisualStyle}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border
+                            x:Name="Segment"
+                            MinWidth="32"
+                            MinHeight="28"
+                            Padding="{DynamicResource SpaceAll4}"
+                            Background="Transparent"
+                            CornerRadius="{DynamicResource RadiusSmall}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Segment" Property="Background" Value="{StaticResource SurfaceCardHoverBrush}" />
+                                <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Segment" Property="Background" Value="{StaticResource AccentBrush}" />
+                                <Setter Property="Foreground" Value="{StaticResource TextOnAccentBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
     <Border
         Padding="{DynamicResource SpaceAll4}"
         Background="{StaticResource SurfaceCardBrush}"
@@ -17,41 +50,23 @@
         BorderThickness="1"
         CornerRadius="{DynamicResource RadiusMedium}">
         <StackPanel Orientation="Horizontal">
-            <ui:Button
-                Padding="{DynamicResource SpaceAll4}"
+            <RadioButton
+                x:Name="GridButton"
                 AutomationProperties.Name="{x:Static res:Strings.ViewMode_Grid}"
-                Click="GridButton_Click"
-                Icon="{ui:SymbolIcon Grid24}"
+                Checked="GridButton_Checked"
+                Style="{StaticResource ModeSegmentStyle}"
                 ToolTip="{x:Static res:Strings.ViewMode_Grid}">
-                <ui:Button.Style>
-                    <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
-                        <Setter Property="Appearance" Value="Transparent" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding ViewMode, ElementName=ToggleHost}" Value="{x:Static svc:LibraryViewMode.Grid}">
-                                <Setter Property="Appearance" Value="Primary" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </ui:Button.Style>
-            </ui:Button>
-            <ui:Button
+                <ui:SymbolIcon FontSize="{DynamicResource FontSizeSubtitle}" Symbol="Grid24" />
+            </RadioButton>
+            <RadioButton
+                x:Name="ListButton"
                 Margin="{DynamicResource SpaceLeft4}"
-                Padding="{DynamicResource SpaceAll4}"
                 AutomationProperties.Name="{x:Static res:Strings.ViewMode_List}"
-                Click="ListButton_Click"
-                Icon="{ui:SymbolIcon List24}"
+                Checked="ListButton_Checked"
+                Style="{StaticResource ModeSegmentStyle}"
                 ToolTip="{x:Static res:Strings.ViewMode_List}">
-                <ui:Button.Style>
-                    <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
-                        <Setter Property="Appearance" Value="Transparent" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding ViewMode, ElementName=ToggleHost}" Value="{x:Static svc:LibraryViewMode.List}">
-                                <Setter Property="Appearance" Value="Primary" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </ui:Button.Style>
-            </ui:Button>
+                <ui:SymbolIcon FontSize="{DynamicResource FontSizeSubtitle}" Symbol="List24" />
+            </RadioButton>
         </StackPanel>
     </Border>
 </UserControl>

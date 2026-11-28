@@ -1132,6 +1132,10 @@ public partial class App : Application
         });
         builds.ConfirmRemoveGame = (name, appId) => Dispatcher.Invoke(() =>
             new RemoveGameDialog(name, appId) { Owner = window }.ShowDialog() == true);
+        Func<ConfirmRequest, bool> confirm = request => Dispatcher.Invoke(() =>
+            new RemoveGameDialog(request) { Owner = window }.ShowDialog() == true);
+        builds.Confirm = confirm;
+        manage.Confirm = confirm;
         builds.OpenCleanupDialog = (appId, name) => Dispatcher.Invoke(() =>
         {
             var dialog = new GameCleanupDialog(

@@ -91,7 +91,6 @@
   <data name="Settings_BotLink_Body" xml:space="preserve"><value>Anda masuk dengan akun Discord sementara. Masuk di lua.tools, lalu jalankan /login lagi dan masukkan kode untuk menautkan akun lengkap Anda.</value></data>
   <data name="Settings_BotLink_Dismiss" xml:space="preserve"><value>Tutup</value></data>
   <data name="Settings_LoginRequired" xml:space="preserve"><value>Login diperlukan untuk tindakan ini.</value></data>
-  <data name="Settings_ManageKeyHintPrefix" xml:space="preserve"><value>Kelola kunci API Hubcap dan profil Anda di</value></data>
   <data name="Settings_Section_Hubcap" xml:space="preserve"><value>HUBCAP</value></data>
   <data name="Settings_HubcapKey" xml:space="preserve"><value>Kunci API Hubcap</value></data>
   <data name="Settings_HubcapKey_Hint" xml:space="preserve"><value>Tempel kunci API Hubcap pribadi Anda untuk membuka manifes Hubcap. Aplikasi terhubung ke Hubcap secara langsung dengan kunci Anda.</value></data>
@@ -103,7 +102,6 @@
   <data name="Settings_HubcapKeyOkExpiry" xml:space="preserve"><value>{0}/{1} hari ini · kedaluwarsa {2}</value></data>
   <data name="Settings_HubcapKeyBad" xml:space="preserve"><value>Ini sepertinya bukan kunci yang valid.</value></data>
   <data name="Settings_HubcapKeyError" xml:space="preserve"><value>Tidak dapat memverifikasi kunci — mungkin tidak valid, kedaluwarsa, atau Hubcap tidak dapat dijangkau.</value></data>
-  <data name="Settings_HubcapActive" xml:space="preserve"><value>Aktif</value></data>
   <data name="Settings_HubcapRefresh" xml:space="preserve"><value>Segarkan</value></data>
   <data name="Settings_Language" xml:space="preserve"><value>Bahasa</value></data>
   <data name="Settings_Language_Hint" xml:space="preserve"><value>Pilih bahasa tampilan aplikasi. Diterapkan setelah memulai ulang.</value></data>
@@ -125,7 +123,6 @@
   <data name="Lang_Changed_Restart" xml:space="preserve"><value>Mulai ulang sekarang</value></data>
   <data name="Home_Welcome" xml:space="preserve"><value>Selamat datang di LuaTools Amethyst</value></data>
   <data name="Home_LuasOnBoard" xml:space="preserve"><value>Lua yang ada</value></data>
-  <data name="Home_LastAdded" xml:space="preserve"><value>TERAKHIR DITAMBAHKAN</value></data>
   <data name="Home_PluginStatus" xml:space="preserve"><value>Status plugin</value></data>
   <data name="Home_RecentlyAdded" xml:space="preserve"><value>Baru ditambahkan</value></data>
   <data name="Home_ViewDetails" xml:space="preserve"><value>Lihat detail</value></data>
@@ -224,7 +221,6 @@
   <data name="Manage_Filter_SortBy" xml:space="preserve"><value>Urutkan menurut</value></data>
   <data name="Manage_ClearFilters" xml:space="preserve"><value>Hapus filter</value></data>
   <data name="Manage_Select" xml:space="preserve"><value>Pilih</value></data>
-  <data name="Manage_DeleteThisLua" xml:space="preserve"><value>Hapus lua ini</value></data>
   <data name="Manage_ResultsPerPage" xml:space="preserve"><value>Hasil per halaman</value></data>
   <data name="Manage_Action_ViewDetails" xml:space="preserve"><value>Lihat detail</value></data>
   <data name="Manage_Action_Update" xml:space="preserve"><value>Perbarui / unduh ulang</value></data>
@@ -236,7 +232,6 @@
   <data name="Manage_ActionsHeader" xml:space="preserve"><value>Tindakan</value></data>
   <data name="Manage_Steamless_Confirm_Title" xml:space="preserve"><value>Hapus DRM Steam?</value></data>
   <data name="Manage_Steamless_Confirm_Body" xml:space="preserve"><value>Ini menjalankan Steamless pada file eksekusi game untuk menghapus DRM SteamStub. File .exe asli dicadangkan ke .bak terlebih dahulu. Beberapa game mungkin perlu verifikasi file di Steam setelahnya. Lanjutkan?</value></data>
-  <data name="Manage_Steamless_Working" xml:space="preserve"><value>Menghapus DRM Steam…</value></data>
   <data name="Manage_Toast_Steamless_Done" xml:space="preserve"><value>{0} diubah, {1} tidak berubah.</value></data>
   <data name="Manage_Steamless_NoInstall" xml:space="preserve"><value>Folder game tidak ditemukan — apakah sudah terpasang?</value></data>
   <data name="Manage_Steamless_Failed" xml:space="preserve"><value>Tidak dapat menghapus DRM. {0}</value></data>
@@ -273,19 +268,11 @@
   <data name="Manage_Depot" xml:space="preserve"><value>Depot</value></data>
   <data name="Manage_SharedDepot" xml:space="preserve"><value>Depot bersama</value></data>
   <data name="Manage_DlcName" xml:space="preserve"><value>DLC {0}</value></data>
-  <data name="Manage_Delete_Title" xml:space="preserve"><value>Hapus file lua</value></data>
-  <data name="Manage_Delete_Body" xml:space="preserve"><value>Hapus "{0}" (App ID {1})?
-
-Ini menghapus file .lua-nya dari Steam\config\stplug-in. Mulai ulang Steam setelahnya agar perubahan berlaku.</value></data>
   <data name="Manage_DeleteMany_Title" xml:space="preserve"><value>Hapus file lua</value></data>
   <data name="Manage_DeleteMany_Body" xml:space="preserve"><value>Hapus {0} file lua?
 
 Ini menghapus file .lua dari Steam\config\stplug-in. Mulai ulang Steam setelahnya agar perubahan berlaku.</value></data>
   <data name="Manage_RemoveFailed_Title" xml:space="preserve"><value>Penghapusan gagal</value></data>
-  <data name="Manage_RemoveFailed_File" xml:space="preserve"><value>Tidak dapat menghapus file:
-{0}</value></data>
-  <data name="Manage_RemoveFailed_Named" xml:space="preserve"><value>Tidak dapat menghapus "{0}":
-{1}</value></data>
   <data name="Manage_RemoveFailed_Count" xml:space="preserve"><value>{0} file tidak dapat dihapus.</value></data>
   <data name="Manage_RestartSteam_Title" xml:space="preserve"><value>Mulai Ulang Steam</value></data>
   <data name="Manage_RestartSteam_Ask" xml:space="preserve"><value>Mulai ulang Steam sekarang agar perubahan berlaku?</value></data>
@@ -346,7 +333,6 @@ Ini menghapus file .lua dari Steam\config\stplug-in. Mulai ulang Steam setelahny
   <data name="Add_Err_BaseGame" xml:space="preserve"><value>Tidak dapat menentukan gim dasar untuk DLC ini</value></data>
   <data name="Add_Err_Generic" xml:space="preserve"><value>Terjadi kesalahan — periksa koneksi Anda dan coba lagi.</value></data>
   <data name="Add_Err_Download" xml:space="preserve"><value>Unduhan gagal — periksa koneksi Anda dan coba lagi.</value></data>
-  <data name="Add_Err_Generate" xml:space="preserve"><value>Pembuatan gagal — periksa koneksi Anda dan coba lagi.</value></data>
   <data name="Add_Confirm_Replace" xml:space="preserve"><value>Ganti "{0}"?</value></data>
   <data name="Add_Confirm_NoChanges" xml:space="preserve"><value>Tidak ada perubahan depot/DLC — konten sama.</value></data>
   <data name="Add_Status_Cancelled" xml:space="preserve"><value>Pemasangan dibatalkan — file yang ada tidak berubah.</value></data>
@@ -377,7 +363,6 @@ Ini menghapus file .lua dari Steam\config\stplug-in. Mulai ulang Steam setelahny
   <data name="Plugin_CardTitle" xml:space="preserve"><value>Status</value></data>
   <data name="Plugin_Badge_UpdateAvailable" xml:space="preserve"><value>Pembaruan tersedia</value></data>
   <data name="Plugin_Row_InstalledVersion" xml:space="preserve"><value>Versi terpasang</value></data>
-  <data name="Plugin_Row_LatestVersion" xml:space="preserve"><value>Versi terbaru</value></data>
   <data name="Plugin_Row_Frontend" xml:space="preserve"><value>Frontend</value></data>
   <data name="Plugin_Row_Loader" xml:space="preserve"><value>Pemuat (winmm.dll)</value></data>
   <data name="Plugin_Millennium_Coexisting" xml:space="preserve"><value>Millennium terdeteksi — LuaTools berjalan berdampingan dengannya. Pemasangan menonaktifkan salinan plugin ini milik Millennium sehingga hanya LuaLoader yang menyuntikkan.</value></data>
@@ -421,7 +406,6 @@ Ini menghapus file .lua dari Steam\config\stplug-in. Mulai ulang Steam setelahny
   <data name="Nav_Builds" xml:space="preserve"><value>Depot</value></data>
   <data name="Builds_Title" xml:space="preserve"><value>Depot</value></data>
   <data name="Builds_Subtitle" xml:space="preserve"><value>Simpan beberapa versi berkas lua sebuah game dan pilih mana yang dipakai Steam.</value></data>
-  <data name="Builds_NoSelection" xml:space="preserve"><value>Pilih game di sebelah kiri untuk melihat praaturnya.</value></data>
   <data name="Builds_ActiveBuild" xml:space="preserve"><value>Praatur aktif</value></data>
   <data name="Builds_Active" xml:space="preserve"><value>AKTIF</value></data>
   <data name="Builds_Variant_Default" xml:space="preserve"><value>Bawaan</value></data>
@@ -450,7 +434,6 @@ Ini menghapus file .lua dari Steam\config\stplug-in. Mulai ulang Steam setelahny
   <data name="Builds_Delete_ActiveTip" xml:space="preserve"><value>Praatur yang sedang dipakai tidak bisa dihapus.</value></data>
   <data name="Builds_Apply_Done" xml:space="preserve"><value>Sekarang memakai “{0}”. Mulai ulang Steam agar berlaku.</value></data>
   <data name="Builds_Apply_Failed" xml:space="preserve"><value>Tidak bisa mengganti praatur — berkas lua mungkin sedang dipakai.</value></data>
-  <data name="Builds_Save_Done" xml:space="preserve"><value>Tersimpan. Mulai ulang Steam agar berlaku.</value></data>
   <data name="Builds_Save_Failed" xml:space="preserve"><value>Tidak bisa menyimpan — berkas lua mungkin sedang dipakai.</value></data>
   <data name="Builds_Preset_Saved" xml:space="preserve"><value>Disimpan sebagai praatur.</value></data>
   <data name="Builds_Action_SaveTo" xml:space="preserve"><value>Simpan ke “{0}”</value></data>
@@ -509,7 +492,6 @@ Ini menghapus file .lua dari Steam\config\stplug-in. Mulai ulang Steam setelahny
   <data name="Manage_Play_SteamUnavailable_Body" xml:space="preserve"><value>Steam tidak dapat dijalankan. Tentukan lokasinya di Pengaturan lalu coba lagi.</value></data>
   <data name="Amethyst_CardTitle" xml:space="preserve"><value>AmethystTool</value></data>
   <data name="Amethyst_Description" xml:space="preserve"><value>Independent BetterSteamTools fork focused on privacy: auto-update is disabled and nothing is reported back. Injects natively from the Steam folder — installing places four files there, keeping anything already present in a backup folder first, and restarts Steam so it loads.</value></data>
-  <data name="Amethyst_Row_Payload" xml:space="preserve"><value>Berkas Steam</value></data>
   <data name="Amethyst_Toast_Installed" xml:space="preserve"><value>AmethystTool terpasang. Steam dimulai ulang agar dimuat.</value></data>
   <data name="Amethyst_Toast_Failed" xml:space="preserve"><value>Pemasangan AmethystTool gagal: {0}</value></data>
   <data name="Amethyst_Err_MissingAsset" xml:space="preserve"><value>Rilis AmethystTool terbaru tidak menerbitkan {0}.</value></data>
@@ -557,7 +539,6 @@ Ini menghapus file .lua dari Steam\config\stplug-in. Mulai ulang Steam setelahny
   <data name="Unlocker_Err_DownloadMissing" xml:space="preserve"><value>Unduhan tidak berisi: {0}.</value></data>
   <data name="Unlocker_Err_FileNotInRelease" xml:space="preserve"><value>Tidak dapat menemukan {0} di rilis mana pun.</value></data>
   <data name="Unlocker_Err_FileVerification" xml:space="preserve"><value>{0} gagal diverifikasi (sha256 tidak cocok atau tidak ada digest yang dipublikasikan).</value></data>
-  <data name="Unlocker_Err_ReleaseMissingAsset" xml:space="preserve"><value>Rilis tidak berisi {0}.</value></data>
   <data name="Auth_Err_TokenExchangeFailed" xml:space="preserve"><value>Pertukaran token gagal ({0}): {1}</value></data>
   <data name="Auth_Err_TokenExchangeEmpty" xml:space="preserve"><value>Pertukaran token mengembalikan sesi kosong.</value></data>
   <data name="Auth_Err_NotSignedIn" xml:space="preserve"><value>Belum masuk.</value></data>
@@ -630,8 +611,6 @@ Paksa tutup? Apa pun yang belum disimpan Steam bisa hilang. Pilih Tidak untuk me
   <data name="Settings_CustomSaveFolders_AppId" xml:space="preserve"><value>AppID</value></data>
   <data name="Settings_CustomSaveFolders_Add" xml:space="preserve"><value>Tambah folder…</value></data>
   <data name="Settings_CustomSaveFolders_Remove" xml:space="preserve"><value>Hapus</value></data>
-  <data name="Saves_Note" xml:space="preserve"><value>Mencadangkan folder per-game milik Steam (userdata). Game yang menyimpan save di Dokumen atau AppData tidak disertakan.</value></data>
-  <data name="Saves_Toast_Created" xml:space="preserve"><value>{0} file dicadangkan, {1}.</value></data>
   <data name="Saves_Toast_Restored" xml:space="preserve"><value>{0} file dipulihkan. Salinan save sebelumnya disimpan.</value></data>
   <data name="Saves_Toast_Deleted" xml:space="preserve"><value>Cadangan dihapus.</value></data>
   <data name="Saves_Toast_NoSaves" xml:space="preserve"><value>Tidak ada save yang ditemukan untuk game ini. Tambahkan folder tempat game menyimpannya dengan “Tambahkan folder secara manual…”.</value></data>
@@ -700,7 +679,6 @@ Terverifikasi: {4}</value></data>
   <data name="Download_Notice_Check_Archive" xml:space="preserve"><value>arsip diperiksa</value></data>
   <data name="Download_Notice_Cancel" xml:space="preserve"><value>Batal</value></data>
   <data name="Download_Notice_Cancelled" xml:space="preserve"><value>Dibatalkan sebelum ada yang dipasang.</value></data>
-  <data name="Builds_RemoveGame" xml:space="preserve"><value>Hapus game</value></data>
   <data name="Builds_RemoveGame_Tip" xml:space="preserve"><value>Mengeluarkan game ini dari daftar Depot. Menghapus file lua-nya dan semua build tersimpan.</value></data>
   <data name="Builds_RemoveGame_Title" xml:space="preserve"><value>Hapus game</value></data>
   <data name="Builds_RemoveGame_Body" xml:space="preserve"><value>Hapus {0} ({1}) dari Depot?
@@ -741,7 +719,6 @@ Aktifkan?</value></data>
   <data name="About_What_Header" xml:space="preserve"><value>Apa ini</value></data>
   <data name="About_What_Body" xml:space="preserve"><value>LuaTools Amethyst adalah fork komunitas dari LuaTools yang berfokus pada privasi. Fork ini menghapus ping analitik dan unggahan kunci yang dilakukan build asli, menjaga setiap unduhan lewat HTTPS, dan menyertakan tema ungu Amethyst.</value></data>
   <data name="About_Version_Header" xml:space="preserve"><value>Versi</value></data>
-  <data name="About_Repo_Header" xml:space="preserve"><value>Repositori</value></data>
   <data name="About_Updates_Header" xml:space="preserve"><value>Pembaruan</value></data>
   <data name="About_Updates_Enabled" xml:space="preserve"><value>Pembaruan otomatis AKTIF. LuaTools Amethyst memeriksa repositori di bawah saat startup dan memasang pembaruan di latar belakang.</value></data>
   <data name="About_Updates_Disabled" xml:space="preserve"><value>Pembaruan otomatis MATI — tidak ada permintaan pembaruan yang dikirim. Tambahkan “AppUpdateRepos” ke settings.json untuk menyalakannya, atau perbarui secara manual dari repositori di bawah.</value></data>
@@ -896,9 +873,6 @@ Aktifkan?</value></data>
   <data name="Mode_Custom_Toast_Title" xml:space="preserve"><value>Mode Kustom aktif</value></data>
   <data name="Mode_Custom_Toast_Body" xml:space="preserve"><value>LuaTools Amethyst kini hanya akan mengelola file .lua di config\stplug-in tanpa mengubah DLL Steam.</value></data>
   <data name="Home_CustomActive" xml:space="preserve"><value>Kustom · dikelola pengguna</value></data>
-  <data name="Manage_Delete_BodyWithBuilds" xml:space="preserve"><value>Hapus "{0}" (App ID {1})?
-
-Ini hanya menghapus file .lua aktifnya dari Steam\config\stplug-in. Build tersimpan untuk game ini akan tetap tersedia di tab Depots. Mulai ulang Steam setelahnya agar perubahan diterapkan.</value></data>
   <data name="Manage_DeleteMany_BodyWithBuilds" xml:space="preserve"><value>Hapus {0} file .lua?
 
 Ini hanya menghapus file .lua aktif dari Steam\config\stplug-in. {1} dari game tersebut memiliki build tersimpan yang akan tetap tersedia di tab Depots. Mulai ulang Steam setelahnya agar perubahan diterapkan.</value></data>
@@ -938,7 +912,7 @@ Ini hanya menghapus file .lua aktif dari Steam\config\stplug-in. {1} dari game t
   <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>Copot file game saja</value></data>
   <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>Menghapus folder instalasi game dan appmanifest Steam. Menyimpan file .lua dan .manifest.</value></data>
   <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>Hapus file .lua saja</value></data>
-  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Menghapus config\stplug-in\{0}.lua. Menyimpan file game, file .manifest, dan build tersimpan.</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Menghapus config\stplug-in\{0}.lua (dan {0}.lua.disabled, jika ada). Menyimpan file game, file .manifest, dan build tersimpan.</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>Hapus file .manifest saja</value></data>
   <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>Menghapus file .manifest khusus game ini di depotcache. Menyimpan file .lua dan manifest bersama.</value></data>
   <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>Hapus .lua + file .manifest</value></data>
@@ -964,4 +938,6 @@ Ini hanya menghapus file .lua aktif dari Steam\config\stplug-in. {1} dari game t
   <data name="ViewMode_Grid" xml:space="preserve"><value>Tampilan kisi</value></data>
   <data name="ViewMode_List" xml:space="preserve"><value>Tampilan daftar</value></data>
   <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Mode tampilan pustaka</value></data>
+  <data name="Cleanup_Err_OperationInProgress" xml:space="preserve"><value>{0} sedang diunduh, dipasang, dicadangkan, atau dipulihkan saat ini. Tunggu hingga selesai, lalu coba lagi.</value></data>
+  <data name="Settings_ManifestBackup_Cancelled" xml:space="preserve"><value>Dibatalkan. Game yang sudah diproses tetap disimpan.</value></data>
 </root>

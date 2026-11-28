@@ -2,6 +2,7 @@ using System.Globalization;
 using System.IO;
 using AwesomeAssertions;
 using LuaToolsGui.Services;
+using LuaToolsGui.ViewModels;
 using Xunit;
 
 namespace LuaToolsGui.Tests;
@@ -85,7 +86,8 @@ public sealed class GameCleanupTests : IDisposable
     private GameCleanupService NewService(
         Func<int?>? runningAppId = null,
         Func<bool>? isSteamRunning = null,
-        Func<string, bool>? isLink = null) =>
+        Func<string, bool>? isLink = null,
+        Func<long, bool>? isAppBusy = null) =>
         new(
             () => _steam.StPlugInDir,
             () => _steam.DepotCacheDir,
@@ -95,7 +97,8 @@ public sealed class GameCleanupTests : IDisposable
             () => _settings.ManifestBackupFolder,
             runningAppId ?? (() => null),
             isSteamRunning ?? (() => false),
-            isLink);
+            isLink,
+            isAppBusy);
 
     private string WriteLua(long appId, string text)
     {
@@ -610,6 +613,81 @@ public sealed class GameCleanupTests : IDisposable
         File.Exists(gameFile).Should().BeFalse();
         Directory.Exists(Path.Combine(_commonDir, "NormalGame")).Should().BeFalse();
         File.Exists(keepFile).Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Inspect_flags_a_shared_install_dir_up_front_and_Clean_still_refuses_it()
+    {
+        WriteLua(380, "addappid(380)\naddappid(381, 1, \"k\")");
+        string acf = WriteAcf(380, "Half-Life 2", 100, [381]);
+        WriteAcf(220, "Half-Life 2", 100, [221]);
+        var service = NewService();
+
+        var inspected = await service.InspectAsync(380);
+        inspected.HasInstalledGame.Should().BeTrue();
+        inspected.GameFilesBlockedBy.Should().Be(GameCleanupBlockReason.SharedInstallDir);
+        inspected.GameFilesBlocked.Should().BeTrue();
+
+        var dialog = new GameCleanupDialogViewModel(service);
+        await dialog.LoadAsync(380, "Half-Life 2", GameCleanupDialogMode.Manage);
+        dialog.CanSelectGameOnly.Should().BeFalse("deleting the folder would take Half-Life 2's sibling app with it");
+        dialog.CanSelectEverything.Should().BeFalse();
+        dialog.CanSelectLuaOnly.Should().BeTrue();
+        dialog.SelectedScope.Should().Be(GameCleanupScope.LuaOnly);
+        dialog.GameFilesNotice.Should().Be(Resources.Strings.Cleanup_Err_SharedInstallDir);
+
+        // The VM refuses the scope, and CleanAsync re-checks on its own (fail-closed even if a caller skipped the VM).
+        dialog.IsScopeEnabled(GameCleanupScope.GameFilesOnly).Should().BeFalse();
+        (await service.CleanAsync(380, GameCleanupScope.GameFilesOnly)).BlockReason
+            .Should().Be(GameCleanupBlockReason.SharedInstallDir);
+        File.Exists(acf).Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Inspect_of_an_ordinary_install_blocks_nothing_and_shows_no_notice()
+    {
+        WriteLua(400, "addappid(400)");
+        WriteAcf(400, "OwnFolder", 100, [401]);
+        var dialog = new GameCleanupDialogViewModel(NewService());
+
+        await dialog.LoadAsync(400, "Own", GameCleanupDialogMode.Manage);
+
+        dialog.Availability.GameFilesBlockedBy.Should().Be(GameCleanupBlockReason.None);
+        dialog.CanSelectGameOnly.Should().BeTrue();
+        dialog.CanSelectEverything.Should().BeTrue();
+        dialog.GameFilesNotice.Should().BeNull();
+    }
+
+    [Theory]
+    [InlineData(GameCleanupScope.LuaOnly)]
+    [InlineData(GameCleanupScope.ManifestsOnly)]
+    [InlineData(GameCleanupScope.GameFilesOnly)]
+    [InlineData(GameCleanupScope.Everything)]
+    public async Task Clean_refuses_every_scope_while_the_app_is_busy_elsewhere(GameCleanupScope scope)
+    {
+        string lua = WriteLua(400, "addappid(400)\naddappid(401, 1, \"k\")");
+        string acf = WriteAcf(400, "BusyGame", 100, [401]);
+        long? probed = null;
+
+        var result = await NewService(isAppBusy: id => { probed = id; return true; }).CleanAsync(400, scope);
+
+        probed.Should().Be(400);
+        result.BlockReason.Should().Be(GameCleanupBlockReason.OperationInProgress);
+        GameCleanupMessages.Describe("Busy", result).Should().Contain("Busy");
+        File.Exists(lua).Should().BeTrue();
+        File.Exists(acf).Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task A_failing_busy_probe_counts_as_busy()
+    {
+        string lua = WriteLua(400, "addappid(400)");
+
+        var result = await NewService(isAppBusy: _ => throw new InvalidOperationException("dispatcher gone"))
+            .CleanAsync(400, GameCleanupScope.LuaOnly);
+
+        result.BlockReason.Should().Be(GameCleanupBlockReason.OperationInProgress);
+        File.Exists(lua).Should().BeTrue();
     }
 
     [Theory]

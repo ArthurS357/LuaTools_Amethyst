@@ -13,7 +13,8 @@
     WindowCornerPreference="Round"
     WindowStartupLocation="CenterOwner">
 
-    <!-- Same chrome and tokens as GameCleanupDialog (Manage), minus the scope list: one action, one confirm. -->
+    <!-- Same chrome and tokens as GameCleanupDialog (Manage), minus the scope list: one action, one confirm.
+         Title, heading, caption, body, confirm label/appearance and the vault notice come from a ConfirmRequest. -->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -21,6 +22,7 @@
         </Grid.RowDefinitions>
 
         <ui:TitleBar
+            x:Name="DialogTitleBar"
             Grid.Row="0"
             ShowMaximize="False"
             ShowMinimize="False"
@@ -47,6 +49,7 @@
 
             <!-- Manifest Backup vault safety note (same banner as GameCleanupDialog) -->
             <Border
+                x:Name="VaultNotice"
                 Margin="{DynamicResource SpaceTop12}"
                 Padding="{DynamicResource SpaceAll12}"
                 Background="{StaticResource InfoTintBrush}"

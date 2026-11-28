@@ -612,8 +612,13 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
     /// <summary>Set by App — opens the 4-scope consolidated cleanup dialog for a game.</summary>
     public Func<long, string, Task<GameCleanupResult?>>? OpenCleanupDialog { get; set; }
 
-    /// <summary>Test seam to avoid modal MessageBox during unit tests.</summary>
+    /// <summary>Test seam replacing the restart-Steam offer (the dark confirm is already declined when unwired).</summary>
     internal Action? OfferRestartSteamOverride { get; set; }
+
+    /// <summary>Set by App — dark confirmation (Steamless, bulk removal, restart Steam). Unset = declined (fail-closed).</summary>
+    public Func<ConfirmRequest, bool>? Confirm { get; set; }
+
+    private bool Ask(ConfirmRequest request) => Confirm?.Invoke(request) == true;
 
     [ObservableProperty] private double _progress;
     [ObservableProperty] private bool _isProgressIndeterminate;
@@ -624,11 +629,12 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
     {
         if (tile is null || IsBusy) return;
 
-        var confirm = MessageBox.Show(
-            Resources.Strings.Manage_Steamless_Confirm_Body,
-            Resources.Strings.Manage_Steamless_Confirm_Title,
-            MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-        if (confirm != MessageBoxResult.OK) return;
+        if (!Ask(new ConfirmRequest(
+                Resources.Strings.Manage_Steamless_Confirm_Title,
+                Resources.Strings.Manage_Steamless_Confirm_Body,
+                Resources.Strings.Manage_Action_RemoveDrm,
+                Heading: tile.Name)))
+            return;
 
         IsBusy = true;
         IsProgressIndeterminate = true;
@@ -669,12 +675,6 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
             IsProgressIndeterminate = false;
         }
     }
-
-    /// <summary>Build the confirmation body for deleting one active lua, noting preserved Depots builds when present.</summary>
-    internal static string BuildDeleteConfirmBody(string gameName, long appId, bool hasStoredBuilds) =>
-        hasStoredBuilds
-            ? string.Format(Resources.Strings.Manage_Delete_BodyWithBuilds, gameName, appId)
-            : string.Format(Resources.Strings.Manage_Delete_Body, gameName, appId);
 
     /// <summary>Build the confirmation body for bulk-deleting active luas, noting preserved Depots builds when present.</summary>
     internal static string BuildDeleteManyConfirmBody(int totalCount, int withStoredBuildsCount) =>
@@ -751,12 +751,11 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
         if (targets.Count == 0) return;
 
         int withStoredBuilds = targets.Count(t => _vault.HasStoredBuilds(t.AppId));
-        var confirm = MessageBox.Show(
-            BuildDeleteManyConfirmBody(targets.Count, withStoredBuilds),
-            Resources.Strings.Manage_DeleteMany_Title,
-            MessageBoxButton.OKCancel,
-            MessageBoxImage.Warning);
-        if (confirm != MessageBoxResult.OK) return;
+        if (!Ask(new ConfirmRequest(
+                Resources.Strings.Manage_DeleteMany_Title,
+                BuildDeleteManyConfirmBody(targets.Count, withStoredBuilds),
+                Resources.Strings.Cleanup_Action_Confirm)))
+            return;
 
         IsRemoving = true;
         int failed = 0;
@@ -790,8 +789,8 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
         }
 
         if (failed > 0)
-            MessageBox.Show(string.Format(Resources.Strings.Manage_RemoveFailed_Count, failed),
-                Resources.Strings.Manage_RemoveFailed_Title, MessageBoxButton.OK, MessageBoxImage.Warning);
+            _toast.Show(Resources.Strings.Manage_RemoveFailed_Title,
+                string.Format(Resources.Strings.Manage_RemoveFailed_Count, failed), error: true);
 
         if (anyRemoved)
         {
@@ -802,14 +801,8 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
 
     private void OfferRestartSteam()
     {
-        var r = MessageBox.Show(
-            Resources.Strings.Manage_RestartSteam_Ask,
-            Resources.Strings.Manage_RestartSteam_Title,
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Question);
-        if (r == MessageBoxResult.Yes && !_steam.RestartSteam())
-            MessageBox.Show(Resources.Strings.Manage_RestartSteam_Failed,
-                Resources.Strings.Manage_RestartSteam_Title, MessageBoxButton.OK, MessageBoxImage.Warning);
+        if (Ask(BuildsViewModel.RestartSteamRequest) && !_steam.RestartSteam())
+            _toast.Show(Resources.Strings.Manage_RestartSteam_Title, Resources.Strings.Manage_RestartSteam_Failed, error: true);
     }
 
     /// <summary>Remove a tile from the lists after its file is gone; update empty/detail state.</summary>

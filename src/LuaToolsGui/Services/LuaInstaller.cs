@@ -45,6 +45,18 @@ public partial class LuaInstaller(SteamService steam, SettingsService settings, 
     /// after the lua, before the remaining manifests are extracted), so a subscriber that reads the result —
     /// the manifest backup — calls this from its own thread first to see the finished install.
     /// </summary>
+    /// <summary>True while any install (queue, drag-drop, Add page, Fixes, plugin, restore) holds the install lock.
+    /// Game cleanup refuses then, so it never deletes a lua or manifest an install is writing.</summary>
+    public bool IsInstalling
+    {
+        get
+        {
+            if (!_installLock.TryEnter()) return true;
+            _installLock.Exit();
+            return false;
+        }
+    }
+
     public void WaitForInstallsToSettle(CancellationToken ct = default)
     {
         while (!_installLock.TryEnter(50))

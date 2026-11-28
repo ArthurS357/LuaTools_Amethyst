@@ -32,6 +32,8 @@ public enum GameCleanupBlockReason
     SharedInstallDir,
     /// <summary>libraryfolders.vdf, a listed library or another app's ACF could not be read.</summary>
     UnreadableSteamLibrary,
+    /// <summary>A download/install in the queue, or a manifest backup/restore, is working on this app right now.</summary>
+    OperationInProgress,
 }
 
 /// <summary>Result of validating a Steam game's <c>installdir</c> inside <c>steamapps\common</c>.</summary>
@@ -52,7 +54,13 @@ public sealed record GameCleanupAvailability(
     bool HasStoredBuilds,
     bool HasInstalledGame,
     string? InstallDir,
-    long? EstimatedGameBytes);
+    long? EstimatedGameBytes,
+    GameCleanupBlockReason GameFilesBlockedBy = GameCleanupBlockReason.None)
+{
+    /// <summary>The game is installed but deleting its files would be refused (shared folder, unsafe path…):
+    /// known at inspection so the dialog disables those scopes up front. CleanAsync re-checks regardless.</summary>
+    public bool GameFilesBlocked => HasInstalledGame && GameFilesBlockedBy != GameCleanupBlockReason.None;
+}
 
 /// <summary>Structured outcome of a unified game cleanup operation.</summary>
 public sealed record GameCleanupResult(

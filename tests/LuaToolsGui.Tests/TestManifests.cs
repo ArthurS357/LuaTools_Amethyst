@@ -41,12 +41,14 @@ internal static class TestManifests
         return [.. s];
     }
 
-    /// <summary>The metadata section body: depot id, gid, filenames-encrypted flag, size on disk.</summary>
-    public static byte[] Metadata(long depotId, ulong gid, bool encrypted, long sizeOnDisk)
+    /// <summary>The metadata section body: depot id, gid, optional creation_time (field 3), filenames-encrypted
+    /// flag, size on disk.</summary>
+    public static byte[] Metadata(long depotId, ulong gid, bool encrypted, long sizeOnDisk, ulong? creationTime = null)
     {
         var m = new List<byte>();
         Field(m, 1, (ulong)depotId);
         Field(m, 2, gid);
+        if (creationTime is { } created) Field(m, 3, created);
         Field(m, 4, encrypted ? 1UL : 0UL);
         Field(m, 5, (ulong)sizeOnDisk);
         return [.. m];
@@ -71,11 +73,11 @@ internal static class TestManifests
 
     public static byte[] Build(
         long depotId = 1001, ulong gid = 7777777777, bool encrypted = false,
-        long sizeOnDisk = 4096, string firstFilename = "game/data.pak")
+        long sizeOnDisk = 4096, string firstFilename = "game/data.pak", ulong? creationTime = null)
     {
         var all = new List<byte>();
         all.AddRange(Section(PayloadMagic, Payload(firstFilename)));
-        all.AddRange(Section(MetadataMagic, Metadata(depotId, gid, encrypted, sizeOnDisk)));
+        all.AddRange(Section(MetadataMagic, Metadata(depotId, gid, encrypted, sizeOnDisk, creationTime)));
         all.AddRange(Section(EofMagic, []));
         return [.. all];
     }
