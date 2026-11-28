@@ -29,6 +29,14 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.8.8", "2026-11-27",
+            "Internal build: one shared, fail-closed cleanup service for Manage and a full-width Depots page.",
+            [
+                "Manage > Remove game… opens one dialog with 4 scopes (uninstall game files, .lua only, .lua + manifests, everything); Depots gets full-width cards, quick filters and a 3-scope Remove files… in the game detail.",
+                "Every removal goes through GameCleanupService: install path contained in steamapps\\common, a folder shared with another app (Half-Life 2 and its episodes) refused, junctions and symlinks severed and never walked, game blocked while running, and the manifest backup vault never touched.",
+                "Shared manifests stay when another lua (active or disabled), stored build or Steam app manifest uses the depot; an unreadable one or a disconnected library blocks the removal instead of guessing (39 new keys translated across all 30 resource files).",
+            ]),
+
         new("1.8.7", "2026-11-26",
             "Internal build: structural manifest validation, read-only vault integrity check, and strict atomic writes.",
             [

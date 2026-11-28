@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.8.7");
+        AppVersion.Current.Should().Be("1.8.8");
     }
 
     [Fact]
@@ -53,6 +53,18 @@ public class ChangelogTests
         text.Should().ContainEquivalentOf("memory for the session only");    // never written to settings.json
         text.Should().ContainEquivalentOf("%USERPROFILE%");                  // profile masking in logs
         text.Should().ContainEquivalentOf("DNS fallback");                   // Auto clears the failure flag
+    }
+
+    [Fact]
+    public void The_1_8_8_entry_names_what_that_release_was_about()
+    {
+        string text = string.Join(" ", Changelog.Entries.Single(e => e.Version == "1.8.8").Highlights);
+
+        text.Should().ContainEquivalentOf("GameCleanupService");             // one shared removal path
+        text.Should().ContainEquivalentOf("4 scopes");                       // Manage dialog
+        text.Should().ContainEquivalentOf("3-scope");                        // Depots detail
+        text.Should().ContainEquivalentOf("never touched");                  // manifest backup vault
+        text.Should().ContainEquivalentOf("blocks the removal");             // fail-closed shared depots
     }
 
     [Fact]

@@ -1,5 +1,34 @@
 # Changelog
 
+## 1.8.8 — 2026-11-27 (build interna, sem tag nem release)
+
+Servico unico de limpeza (`GameCleanupService`) para Gerenciar e Depots, exclusao consolidada de 4 escopos no Gerenciar e redesign em largura total do Depots com remocao granular de 3 escopos. So existe na `main` e em pacote local; a proxima versao publica e a 1.9.0.
+
+### Limpeza unificada (`GameCleanupService` + `GameCleanupPolicy`)
+
+- **Um caminho so:** exclusao unitaria e em lote do Gerenciar e "Remover arquivos…" do Depots passam pelo mesmo servico. Politica pura (sem I/O) separada do adaptador de disco.
+- **Gerenciar > Remover jogo…:** dialogo com 4 escopos (so arquivos do jogo, so `.lua`, `.lua` + manifests, tudo), tamanho estimado pelo `SizeOnDisk` do ACF, trava `IsRemoving` contra clique duplo, `Esc` e fechar a janela.
+- **Caminho de instalacao fail-closed:** `installdir` precisa resolver dentro de `steamapps\common` (sem `..`, raiz, caminho absoluto, `:`, segmento vazio ou terminado em ponto/espaco, nem a propria `common`); junction/symlink no caminho bloqueia; jogo em execucao bloqueia a desinstalacao; pasta igual, contida ou que contem o `installdir` de outro app da mesma biblioteca bloqueia (HL2, episodios e Lost Coast usam `Half-Life 2`).
+- **ACF so sai com a pasta:** se algum arquivo do jogo nao pode ser apagado (em uso), o `appmanifest` fica, para a Steam continuar rastreando a pasta.
+- **Links dentro da pasta do jogo:** removidos sem recursao (o destino externo nunca e tocado), inclusive junction pendente e qualquer reparse point de diretorio.
+- **Depots compartilhados:** manifest so e apagado se nenhum outro `.lua` (ativo ou `.lua.disabled`), build guardada no `LuaVault` ou `appmanifest_*.acf` usa o depot. Lua, indice do cofre, ACF, `libraryfolders.vdf` ilegivel ou biblioteca listada fora do disco bloqueia a operacao.
+- **Sem ressurreicao:** antes de apagar o `.lua`, builds soltas `<appid>_<buildid>.lua` ainda nao adotadas entram no cofre, entao abrir o jogo no Depots nao recria o `.lua`.
+- **Cofre de Backup de manifests intocado:** todo caminho apagado e conferido contra `ManifestBackupFolder` (sobreposicao bloqueia).
+
+### Depots em largura total
+
+- Grade de cards com filtros rapidos locais (Todos, Com builds guardadas, Sem `.lua` ativo) e Estado 2 (Detalhe) em largura total; `Esc` volta para a grade; deep-link Gerenciar ↔ Depots limpa busca/filtro e abre o detalhe.
+- "Remover arquivos…" com 3 escopos (`.lua`, manifests, `.lua` + manifests). Apos apagar, o jogo continua no detalhe se ainda tiver builds guardadas ou volta para a grade; abrir o jogo nao ressuscita o `.lua` apagado (`AdoptLooseBuildLuasAndReport` so aplica build solta nova).
+- Paginacao 12/24/48/Todos; tamanhos antigos 10/17/25/50 viram 24 sem regravar a configuracao.
+
+### Auditoria independente (achados corrigidos)
+
+- **HIGH:** dialogo de limpeza nao fechava apos sucesso (`CloseWith` rodava com `IsRemoving` ainda ligado e o `Closing` cancelava), e o resultado era descartado.
+- **HIGH:** ACF de outro jogo ilegivel (ou falha ao listar biblioteca) era ignorado, podendo apagar manifest compartilhado; agora bloqueia.
+- **MEDIUM:** `.lua.disabled` de outro jogo nao protegia seus depots; `IsLink` nao reconhecia junction pendente nem reparse point de diretorio; excecao de I/O na enumeracao derrubava o app (agora bloqueia com erro generico, nada apagado).
+- **Revisao `csharp-reviewer`:** CRITICAL pasta `installdir` compartilhada apagada inteira; HIGH ACF apagado com pasta pela metade; MEDIUM biblioteca desconectada/`vdf` ilegivel, cofre de outro jogo ilegivel e `.lua` ressuscitado por build solta; LOW excecao pos-remocao reportada como bloqueio e detalhe aberto apos exclusao em lote. Decisao mantida: escopos com manifests tambem apagam os manifests das builds guardadas do proprio jogo.
+- 39 chaves novas nos 30 `.resx` (878 por idioma), revisao do pt-BR; testes novos em `GameCleanupTests` e `GameCleanupAndDepotsUiTests`.
+
 ## 1.8.7 — 2026-11-26 (build interna, sem tag nem release)
 
 Lote L5: validador estrutural de manifests (`ManifestFile.IsIntact`), auditoria somente leitura do cofre ("Verificar integridade" / `VerifyVaultAsync`), escrita estritamente atomica no `AtomicFile` e fechamento dos 8 achados LOW da revisao. So existe na `main` e em pacote local; a proxima versao publica e a 1.9.0.
