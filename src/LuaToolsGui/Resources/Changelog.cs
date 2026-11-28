@@ -29,6 +29,15 @@ public static class Changelog
     /// <summary>Newest first. Keep in step with docs/CHANGELOG.md and the csproj &lt;Version&gt;.</summary>
     public static IReadOnlyList<ChangelogEntry> Entries { get; } =
     [
+        new("1.8.9", "2026-11-28",
+            "Internal build: Steam-style Grid/List libraries, dark confirmations everywhere, and safer backup and cleanup.",
+            [
+                "Manage and Depots switch between Grid and a Steam-style List (remembered per page, real radio buttons for screen readers), with GPU-only motion, recycled virtualization and covers decoded once at your display's DPI.",
+                "Every remaining white MessageBox in Manage and Depots (delete preset, restart Steam, Steamless, bulk removal) is now the dark confirmation with Cancel as the safe default; failures show as toasts.",
+                "Remove game… says up front when the install folder is shared with another app and disables those scopes; cleanup refuses while the game is downloading, installing, being backed up or restored.",
+                "Manifest backup gains Cancel for back up all and verify, and anti-downgrade orders builds by Steam's own creation_time, so a PC whose clock ran ahead no longer pins an old build (older backups fall back to write times).",
+            ]),
+
         new("1.8.8", "2026-11-27",
             "Internal build: one shared, fail-closed cleanup service for Manage and a full-width Depots page.",
             [

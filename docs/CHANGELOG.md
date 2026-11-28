@@ -1,5 +1,33 @@
 # Changelog
 
+## 1.8.9 — 2026-11-28 (build interna, sem tag nem release)
+
+Bibliotecas em Blocos/Lista estilo Steam no Gerenciar e no Depots, modais escuros no lugar de todo `MessageBox` restante dessas paginas, limpeza que avisa antes e recusa durante download/backup, e anti-downgrade por `creation_time`. So existe na `main` e em pacote local; a proxima versao publica e a 1.9.0.
+
+### Modo Blocos / Lista + desempenho
+
+- **Alternancia por pagina:** `ManageViewMode` e `DepotsViewMode` persistidos de forma independente (padrao Blocos; valor desconhecido volta para Blocos). `ViewModeToggle` usa `RadioButton` estilizado: UI Automation expoe `SelectionItem.IsSelected`, grupo por pai (as duas paginas nunca se desmarcam).
+- **Lista estilo Steam:** `ManageListView` / `BuildsListView` virtualizadas (`Recycling`, rolagem por pixel), miniatura 36x20 do mesmo bitmap, menu de contexto, `Enter`/`Space` na linha com foco (via `PreviewKeyDown`: o `ListBox` engolia `Space`), clique em CheckBox/Remover nunca abre o detalhe.
+- **`Motion`:** entrada e hover so por opacidade e `TranslateTransform`; hover ressincronizado no `Loaded`/`Unloaded` (troca de aba deixava card aceso); transform do chamador nunca substituido; respeita animacoes desligadas do Windows.
+- **`CoverCache`:** bitmap decodificado uma vez (LRU forte + cache fraco sob um lock), largura conforme o DPI do sistema (248-460 px) com o LRU encolhendo para manter ~23 MB, e `IgnoreImageCache` (o cache por URI do WPF devolvia a capa antiga apos regravar o arquivo).
+- **Detalhe do Gerenciar:** `OpenDetailCommand` concorrente; abrir outro jogo enquanto o anterior carrega troca na hora (antes o clique era ignorado) e a abertura abandonada nao gasta fetch com limite de taxa.
+
+### Modais escuros e limpeza
+
+- **Sem `MessageBox` branco no Gerenciar/Depots:** excluir predefinicao, reiniciar a Steam, Steamless e remocao em lote usam o mesmo dialogo escuro (`RemoveGameDialog` parametrizado por `ConfirmRequest`), foco inicial e `Esc` em Cancelar, trava contra duplo clique; hook ausente = recusado (fail-closed). Falhas viram toast.
+- **Pasta compartilhada avisada na abertura:** `InspectAsync` roda a mesma pre-checagem de arquivos do jogo que `CleanAsync` (pasta compartilhada, caminho inseguro, link, sobreposicao com o cofre); o dialogo desabilita "So arquivos do jogo" e "Tudo" e explica o motivo. `CleanAsync` continua revalidando.
+- **Texto honesto:** "Remover somente .lua" agora diz que `{appid}.lua.disabled` tambem sai.
+- **Guarda de concorrencia:** `CleanAsync` recusa (`OperationInProgress`) quando a `DownloadQueue` tem item ativo do app ou o `ManifestBackupService` restaura, tem backup pos-instalacao pendente ou roda "Fazer backup de todos". Sonda que falha conta como ocupado.
+
+### Backup de manifests
+
+- **Cancelar** em "Fazer backup de todos" e "Verificar integridade": usa o cancelamento nativo do `AsyncRelayCommand` (sem CTS proprio); o lote para entre jogos e o `finally` ressincroniza o `index.json`; status "Cancelado" sem erro falso.
+- **Anti-downgrade por `creation_time`:** `ManifestFile` le o campo 3 da metadata protobuf (limites fixos 2003-2100, nunca falha sem o campo); `BackedUpManifest.CreationTimeUtc` e gravado a partir dos bytes armazenados e decide a ordem quando os dois lados o tem. Entrada antiga (sem o campo) usa `LastWriteUtc` como antes. `schemaVersion` continua 1.
+
+### Higiene
+
+- 20 chaves sem nenhuma referencia removidas dos 30 `.resx` e do `Strings.Designer.cs`; 2 novas (863 por idioma). `BuildDeleteConfirmBody` (so usado em teste) removido; leitor de texto compartilhado unico (`SteamLibraryService.ReadSharedText`) no lugar da copia em `GameCleanupService`.
+
 ## 1.8.8 — 2026-11-27 (build interna, sem tag nem release)
 
 Servico unico de limpeza (`GameCleanupService`) para Gerenciar e Depots, exclusao consolidada de 4 escopos no Gerenciar e redesign em largura total do Depots com remocao granular de 3 escopos. So existe na `main` e em pacote local; a proxima versao publica e a 1.9.0.

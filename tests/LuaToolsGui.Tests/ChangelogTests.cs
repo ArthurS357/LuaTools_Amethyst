@@ -19,7 +19,7 @@ public class ChangelogTests
     [Fact]
     public void The_assembly_reports_the_version_this_release_claims()
     {
-        AppVersion.Current.Should().Be("1.8.8");
+        AppVersion.Current.Should().Be("1.8.9");
     }
 
     [Fact]
@@ -53,6 +53,18 @@ public class ChangelogTests
         text.Should().ContainEquivalentOf("memory for the session only");    // never written to settings.json
         text.Should().ContainEquivalentOf("%USERPROFILE%");                  // profile masking in logs
         text.Should().ContainEquivalentOf("DNS fallback");                   // Auto clears the failure flag
+    }
+
+    [Fact]
+    public void The_1_8_9_entry_names_what_that_release_was_about()
+    {
+        string text = string.Join(" ", Changelog.Entries.Single(e => e.Version == "1.8.9").Highlights);
+
+        text.Should().ContainEquivalentOf("Steam-style List");               // Grid/List view mode
+        text.Should().ContainEquivalentOf("screen readers");                 // RadioButton toggle
+        text.Should().ContainEquivalentOf("dark confirmation");              // MessageBox replaced
+        text.Should().ContainEquivalentOf("shared with another app");        // SharedInstallDir at inspect
+        text.Should().ContainEquivalentOf("creation_time");                  // clock-skew-proof anti-downgrade
     }
 
     [Fact]
