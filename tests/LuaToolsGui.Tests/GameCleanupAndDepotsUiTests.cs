@@ -346,12 +346,85 @@ public sealed class GameCleanupAndDepotsUiTests(ThemeHost host) : IDisposable
         env.BuildsVm.ActiveGame!.HasStoredBuilds.Should().BeTrue();
     }
 
+    [Fact]
+    public async Task BuildsVm_RemoveGame_ConfirmsThroughDarkDialogSeam_AndNeverTouchesTheBackupVault()
+    {
+        using var env = NewEnv();
+        env.WriteLua(400, "addappid(400)");
+        string loose = Path.Combine(env.PlugDir, "400_777.lua");
+        File.WriteAllText(loose, "addappid(400)\n-- build 777");
+        env.Vault.SaveText(400, "addappid(400)\n-- saved", "Saved");
+
+        string backupZip = Path.Combine(env.BackupDir, "400", "400.zip");
+        Directory.CreateDirectory(Path.GetDirectoryName(backupZip)!);
+        File.WriteAllBytes(backupZip, [1, 2, 3, 4]);
+        string vaultAppDir = Path.Combine(env.Dir, "vault", "400");
+
+        await env.BuildsVm.LoadAsync();
+        var tile = env.BuildsVm.Items.Single(g => g.AppId == 400);
+
+        (string Name, long AppId)? asked = null;
+        env.BuildsVm.ConfirmRemoveGame = (name, appId) => { asked = (name, appId); return false; };
+        env.BuildsVm.RemoveGameCommand.Execute(tile);
+
+        asked.Should().Be((tile.Name, 400L));
+        File.Exists(Path.Combine(env.PlugDir, "400.lua")).Should().BeTrue("Cancel must delete nothing");
+        File.Exists(loose).Should().BeTrue();
+        Directory.Exists(vaultAppDir).Should().BeTrue();
+
+        env.BuildsVm.ConfirmRemoveGame = (_, _) => true;
+        env.BuildsVm.RemoveGameCommand.Execute(tile);
+
+        File.Exists(Path.Combine(env.PlugDir, "400.lua")).Should().BeFalse();
+        File.Exists(loose).Should().BeFalse();
+        Directory.Exists(vaultAppDir).Should().BeFalse();
+        File.ReadAllBytes(backupZip).Should().Equal([1, 2, 3, 4]);
+        env.BuildsVm.Items.Should().NotContain(g => g.AppId == 400);
+    }
+
+    [Fact]
+    public void ForgetGame_JunctionInsideVaultFolder_NeverReachesTheBackupVault()
+    {
+        using var env = NewEnv();
+        env.Vault.SaveText(400, "addappid(400)", "Saved");
+        string backupZip = Path.Combine(env.BackupDir, "400", "400.zip");
+        Directory.CreateDirectory(Path.GetDirectoryName(backupZip)!);
+        File.WriteAllBytes(backupZip, [9, 8, 7]);
+        string trap = Path.Combine(env.Dir, "vault", "400", "trap");
+        DirectoryJunction.Create(trap, env.BackupDir).Should().BeTrue();
+
+        try
+        {
+            // Today Windows refuses the recursive delete at the junction (Failed, the safe direction). Whatever
+            // the outcome, nothing behind the link may be touched.
+            env.Vault.ForgetGame(400);
+            File.ReadAllBytes(backupZip).Should().Equal([9, 8, 7]);
+        }
+        finally
+        {
+            if (DirectoryJunction.Exists(trap)) DirectoryJunction.Remove(trap);
+        }
+    }
+
+    [Fact]
+    public async Task BuildsVm_RemoveGame_WithoutConfirmSeam_DeletesNothing()
+    {
+        using var env = NewEnv();
+        env.WriteLua(400, "addappid(400)");
+        await env.BuildsVm.LoadAsync();
+
+        env.BuildsVm.RemoveGameCommand.Execute(env.BuildsVm.Items.Single(g => g.AppId == 400));
+
+        File.Exists(Path.Combine(env.PlugDir, "400.lua")).Should().BeTrue();
+    }
+
     // ── Live WPF Resource & Layout Smoke Tests ────────────────────────────────
 
     [Theory]
     [InlineData("BuildsView")]
     [InlineData("BuildsDetailPane")]
     [InlineData("GameCleanupDialog")]
+    [InlineData("RemoveGameDialog")]
     public void Redesigned_Depots_and_cleanup_XAML_parse_measure_and_arrange_against_app_resources(string name)
     {
         var dir = new DirectoryInfo(AppContext.BaseDirectory);

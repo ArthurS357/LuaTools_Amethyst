@@ -256,6 +256,9 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
     /// <summary>Set by App — opens the 3-scope removal dialog for the open game.</summary>
     public Func<long, string, Task<GameCleanupResult?>>? OpenCleanupDialog { get; set; }
 
+    /// <summary>Set by App — dark "Remove game" confirmation (name, appid) → true to remove.</summary>
+    public Func<string, long, bool>? ConfirmRemoveGame { get; set; }
+
     /// <summary>Test seam to avoid modal MessageBox during unit tests.</summary>
     internal Action? OfferRestartSteamOverride { get; set; }
 
@@ -494,19 +497,14 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
     ///
     /// <para>
     /// Confirmed with a modal rather than an undoable toast because the operation deletes files and cannot
-    /// be taken back — the same bar, and the same MessageBox, the Manage page's delete already uses.
+    /// be taken back — a dark modal (<see cref="ConfirmRemoveGame"/>) in the Manage cleanup dialog's chrome.
     /// </para>
     /// </summary>
     [RelayCommand]
     private void RemoveGame(LuaTileViewModel? tile)
     {
-        if (tile is null) return;
-
-        if (MessageBox.Show(
-                string.Format(Resources.Strings.Builds_RemoveGame_Body, tile.Name, tile.AppId),
-                Resources.Strings.Builds_RemoveGame_Title,
-                MessageBoxButton.OKCancel,
-                MessageBoxImage.Warning) != MessageBoxResult.OK) return;
+        // No confirm wired (tests that forget the seam) = no delete: the files are gone for good.
+        if (tile is null || ConfirmRemoveGame?.Invoke(tile.Name, tile.AppId) != true) return;
 
         // Dropped BEFORE the delete. ForgetGame raises VaultChanged, whose handler re-runs RefreshVariants
         // for the active game — and that path calls SyncDefaultFromLive/AdoptLooseBuildLuas, which is the

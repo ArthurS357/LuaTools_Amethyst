@@ -1,0 +1,95 @@
+<ui:FluentWindow
+    x:Class="LuaToolsGui.Views.RemoveGameDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:res="clr-namespace:LuaToolsGui.Resources"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="{x:Static res:Strings.Builds_RemoveGame_Title}"
+    Width="480"
+    ExtendsContentIntoTitleBar="True"
+    ResizeMode="NoResize"
+    SizeToContent="Height"
+    WindowBackdropType="Mica"
+    WindowCornerPreference="Round"
+    WindowStartupLocation="CenterOwner">
+
+    <!-- Same chrome and tokens as GameCleanupDialog (Manage), minus the scope list: one action, one confirm. -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar
+            Grid.Row="0"
+            ShowMaximize="False"
+            ShowMinimize="False"
+            Title="{x:Static res:Strings.Builds_RemoveGame_Title}" />
+
+        <StackPanel Grid.Row="1" Margin="{DynamicResource SpaceAll16}">
+            <TextBlock
+                x:Name="GameNameText"
+                Style="{StaticResource TextSubtitle}"
+                TextTrimming="CharacterEllipsis"
+                TextWrapping="NoWrap" />
+            <TextBlock
+                x:Name="AppIdText"
+                Margin="{DynamicResource SpaceTop4}"
+                Foreground="{StaticResource TextDimBrush}"
+                Style="{StaticResource TextCaption}" />
+
+            <TextBlock
+                x:Name="BodyText"
+                Margin="{DynamicResource SpaceTop12}"
+                Foreground="{StaticResource TextSecondaryBrush}"
+                Style="{StaticResource TextBody}"
+                TextWrapping="Wrap" />
+
+            <!-- Manifest Backup vault safety note (same banner as GameCleanupDialog) -->
+            <Border
+                Margin="{DynamicResource SpaceTop12}"
+                Padding="{DynamicResource SpaceAll12}"
+                Background="{StaticResource InfoTintBrush}"
+                BorderBrush="{StaticResource InfoOutlineBrush}"
+                BorderThickness="1"
+                CornerRadius="{DynamicResource RadiusMedium}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <ui:SymbolIcon
+                        VerticalAlignment="Top"
+                        FontSize="{DynamicResource FontSizeSubtitle}"
+                        Foreground="{StaticResource InfoBrush}"
+                        Symbol="ShieldCheckmark24" />
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="{DynamicResource SpaceLeft8}"
+                        Foreground="{StaticResource TextSecondaryBrush}"
+                        Style="{StaticResource TextCaption}"
+                        Text="{x:Static res:Strings.Cleanup_BackupSafeNotice}"
+                        TextWrapping="Wrap" />
+                </Grid>
+            </Border>
+
+            <StackPanel
+                Margin="{DynamicResource SpaceTop16}"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <ui:Button
+                    x:Name="CancelButton"
+                    Click="Cancel_Click"
+                    Content="{x:Static res:Strings.Builds_Action_Cancel}"
+                    IsCancel="True" />
+                <ui:Button
+                    x:Name="RemoveButton"
+                    Margin="{DynamicResource SpaceLeft8}"
+                    Appearance="Danger"
+                    Click="Remove_Click"
+                    Content="{x:Static res:Strings.Cleanup_Action_Confirm}"
+                    Icon="{ui:SymbolIcon Delete24}" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</ui:FluentWindow>

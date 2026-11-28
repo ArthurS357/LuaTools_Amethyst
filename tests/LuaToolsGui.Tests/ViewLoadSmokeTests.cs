@@ -31,6 +31,7 @@ public class ViewLoadSmokeTests(ThemeHost host)
     [InlineData("LaunchOverridesDialog")]
     [InlineData("SaveBackupDialog")]
     [InlineData("GameCleanupDialog")]
+    [InlineData("RemoveGameDialog")]
     public void The_page_parses_measures_and_arranges_against_the_app_resources(string name)
     {
         var dir = new DirectoryInfo(AppContext.BaseDirectory);

@@ -1130,6 +1130,8 @@ public partial class App : Application
             { Owner = window };
             return Task.FromResult(dialog.ShowDialog() == true ? dialog.Outcome : null);
         });
+        builds.ConfirmRemoveGame = (name, appId) => Dispatcher.Invoke(() =>
+            new RemoveGameDialog(name, appId) { Owner = window }.ShowDialog() == true);
         builds.OpenCleanupDialog = (appId, name) => Dispatcher.Invoke(() =>
         {
             var dialog = new GameCleanupDialog(
