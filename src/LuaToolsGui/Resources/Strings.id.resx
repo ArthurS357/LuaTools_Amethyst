@@ -961,4 +961,7 @@ Ini hanya menghapus file .lua aktif dari Steam\config\stplug-in. {1} dari game t
   <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>{0} manifest bersama dipertahankan</value></data>
   <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>Sebagian {0} dibersihkan, tetapi beberapa item gagal dihapus: {1}</value></data>
   <data name="Cleanup_Result_Done" xml:space="preserve"><value>{0} selesai dibersihkan.</value></data>
+  <data name="ViewMode_Grid" xml:space="preserve"><value>Tampilan kisi</value></data>
+  <data name="ViewMode_List" xml:space="preserve"><value>Tampilan daftar</value></data>
+  <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Mode tampilan pustaka</value></data>
 </root>

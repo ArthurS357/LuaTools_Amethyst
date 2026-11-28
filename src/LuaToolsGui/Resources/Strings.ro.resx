@@ -961,4 +961,7 @@ Aceasta șterge doar fișierele .lua active din Steam\config\stplug-in. {1} dint
   <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>{0} manifest(e) partajat(e) păstrat(e)</value></data>
   <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>Curățat parțial {0}, dar unele elemente nu au putut fi eliminate: {1}</value></data>
   <data name="Cleanup_Result_Done" xml:space="preserve"><value>{0} a fost curățat.</value></data>
+  <data name="ViewMode_Grid" xml:space="preserve"><value>Vizualizare grilă</value></data>
+  <data name="ViewMode_List" xml:space="preserve"><value>Vizualizare listă</value></data>
+  <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Mod de afișare</value></data>
 </root>

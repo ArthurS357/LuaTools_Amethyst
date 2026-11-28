@@ -961,4 +961,7 @@ SHA-256 {3}
   <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>сохранено общих манифестов: {0}</value></data>
   <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>Частично очищено {0}, но некоторые элементы не удалось удалить: {1}</value></data>
   <data name="Cleanup_Result_Done" xml:space="preserve"><value>Очистка для {0} завершена.</value></data>
+  <data name="ViewMode_Grid" xml:space="preserve"><value>Сетка</value></data>
+  <data name="ViewMode_List" xml:space="preserve"><value>Список</value></data>
+  <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Режим отображения библиотеки</value></data>
 </root>

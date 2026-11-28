@@ -1,5 +1,7 @@
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using LuaToolsGui.Themes;
 using LuaToolsGui.ViewModels;
 
 namespace LuaToolsGui.Views;
@@ -15,7 +17,8 @@ public partial class ManageView : UserControl
         // On a page change, jump the grid back to the top (the new page starts fresh).
         _viewModel.ScrollToTop = ScrollGridToTop;
         // Re-scan stplug-in each time the page is shown (lua files change as games are added).
-        Loaded += async (_, _) => await _viewModel.LoadAsync();
+        Loaded += OnLoaded;
+        Unloaded += OnUnloaded;
         PreviewKeyDown += (_, e) =>
         {
             if (e.Key == System.Windows.Input.Key.Escape && _viewModel.IsDetailOpen && !_viewModel.IsRemoving)
@@ -26,12 +29,39 @@ public partial class ManageView : UserControl
         };
     }
 
-    /// <summary>Scroll the tile grid back to offset 0. Dispatched so it runs after the new page's items
-    /// have been laid out (the ScrollViewer exists once the control is templated).</summary>
-    private void ScrollGridToTop() => Dispatcher.BeginInvoke(() =>
+    private async void OnLoaded(object sender, RoutedEventArgs e)
     {
-        if (FindDescendant<ScrollViewer>(TileScroller) is { } sv) sv.ScrollToTop();
-    }, System.Windows.Threading.DispatcherPriority.Background);
+        _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        _viewModel.PropertyChanged += OnViewModelPropertyChanged;
+        await _viewModel.LoadAsync();
+    }
+
+    private void OnUnloaded(object sender, RoutedEventArgs e) =>
+        _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
+
+    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ManageViewModel.ViewMode) && IsLoaded)
+        {
+            FrameworkElement target = _viewModel.IsListMode ? GameListView : TileScroller;
+            Motion.AnimateEntrance(target, fromY: 8, duration: Motion.ModeSwitchDuration);
+        }
+    }
+
+    /// <summary>Scroll the active grid or list back to offset 0 after page changes.</summary>
+    private void ScrollGridToTop()
+    {
+        if (_viewModel.IsListMode)
+        {
+            GameListView.ScrollToTop();
+            return;
+        }
+
+        Dispatcher.BeginInvoke(() =>
+        {
+            if (FindDescendant<ScrollViewer>(TileScroller) is { } sv) sv.ScrollToTop();
+        }, System.Windows.Threading.DispatcherPriority.Background);
+    }
 
     private static T? FindDescendant<T>(DependencyObject root) where T : DependencyObject
     {

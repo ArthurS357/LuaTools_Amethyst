@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:res="clr-namespace:LuaToolsGui.Resources"
+    xmlns:themes="clr-namespace:LuaToolsGui.Themes"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:views="clr-namespace:LuaToolsGui.Views"
     xmlns:vm="clr-namespace:LuaToolsGui.ViewModels"
@@ -50,18 +51,23 @@
             </StackPanel>
         </HeaderedContentControl>
 
-        <!-- Search + Filters toggle -->
+        <!-- Search + View mode toggle + Filters toggle -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <ui:TextBox
                 Icon="{ui:SymbolIcon Search24}"
                 PlaceholderText="{x:Static res:Strings.Common_SearchPlaceholder}"
                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
-            <ui:Button
+            <views:ViewModeToggle
                 Grid.Column="1"
+                Margin="{DynamicResource SpaceLeft8}"
+                ViewMode="{Binding ViewMode, Mode=TwoWay}" />
+            <ui:Button
+                Grid.Column="2"
                 Margin="{DynamicResource SpaceLeft8}"
                 Command="{Binding ToggleFilterPanelCommand}"
                 Content="{x:Static res:Strings.Manage_Filters}"
@@ -141,41 +147,46 @@
             </StackPanel>
         </Border>
 
-        <!-- Virtualized scrolling grid of all tiles -->
-        <vwp:VirtualizingItemsControl
-            x:Name="TileScroller"
+        <!-- Virtualized Grid / Steam-style List container (zero extra I/O when toggling mode) -->
+        <Grid
             Grid.Row="3"
             Margin="{DynamicResource SpaceTop12}"
-            ItemsSource="{Binding Items}"
-            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-            ScrollViewer.VerticalScrollBarVisibility="Auto"
-            Visibility="{Binding ShowItems, Converter={StaticResource BoolToVis}}"
-            VirtualizingPanel.CacheLengthUnit="Page"
-            VirtualizingPanel.ScrollUnit="Pixel"
-            VirtualizingPanel.VirtualizationMode="Standard">
-            <vwp:VirtualizingItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <vwp:VirtualizingWrapPanel
-                        Orientation="Horizontal"
-                        SpacingMode="StartAndEndOnly"
-                        StretchItems="False" />
-                </ItemsPanelTemplate>
-            </vwp:VirtualizingItemsControl.ItemsPanel>
-            <vwp:VirtualizingItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Border
-                        x:Name="TileRoot"
-                        Width="248"
-                        Height="208"
-                        Margin="0,0,12,12"
-                        Background="{StaticResource SurfaceCardBrush}"
-                        BorderBrush="{StaticResource BorderDefaultBrush}"
-                        BorderThickness="1"
-                        Cursor="Hand"
-                        CornerRadius="{DynamicResource RadiusLarge}"
-                        DataContextChanged="Tile_DataContextChanged"
-                        Loaded="Tile_Loaded"
-                        MouseLeftButtonUp="Tile_Click">
+            Visibility="{Binding ShowItems, Converter={StaticResource BoolToVis}}">
+            <vwp:VirtualizingItemsControl
+                x:Name="TileScroller"
+                ItemsSource="{Binding GridItems}"
+                ScrollViewer.CanContentScroll="True"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                Visibility="{Binding IsGridMode, Converter={StaticResource BoolToVis}}"
+                VirtualizingPanel.CacheLength="1,1"
+                VirtualizingPanel.CacheLengthUnit="Page"
+                VirtualizingPanel.ScrollUnit="Pixel"
+                VirtualizingPanel.VirtualizationMode="Recycling">
+                <vwp:VirtualizingItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <vwp:VirtualizingWrapPanel
+                            Orientation="Horizontal"
+                            SpacingMode="StartAndEndOnly"
+                            StretchItems="False" />
+                    </ItemsPanelTemplate>
+                </vwp:VirtualizingItemsControl.ItemsPanel>
+                <vwp:VirtualizingItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            x:Name="TileRoot"
+                            Width="248"
+                            Height="208"
+                            Margin="0,0,12,12"
+                            themes:Motion.EnableSmoothHover="True"
+                            Background="{StaticResource SurfaceCardBrush}"
+                            BorderBrush="{StaticResource BorderDefaultBrush}"
+                            BorderThickness="1"
+                            Cursor="Hand"
+                            CornerRadius="{DynamicResource RadiusLarge}"
+                            DataContextChanged="Tile_DataContextChanged"
+                            Loaded="Tile_Loaded"
+                            MouseLeftButtonUp="Tile_Click">
                         <Border.ContextMenu>
                             <ContextMenu>
                                 <MenuItem
@@ -249,6 +260,7 @@
                         <Border.Tag>
                             <Binding ElementName="Root" Path="DataContext" />
                         </Border.Tag>
+                        <Grid>
                         <StackPanel>
                             <!-- Cover (with a hover delete button) -->
                             <Border
@@ -368,10 +380,22 @@
                                     TextTrimming="CharacterEllipsis" />
                             </StackPanel>
                         </StackPanel>
+                        <Border
+                            x:Name="HoverOverlay"
+                            BorderBrush="{StaticResource BorderStrongBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{DynamicResource RadiusLarge}"
+                            IsHitTestVisible="False"
+                            Opacity="0" />
+                        </Grid>
                     </Border>
                 </DataTemplate>
             </vwp:VirtualizingItemsControl.ItemTemplate>
         </vwp:VirtualizingItemsControl>
+            <views:ManageListView
+                x:Name="GameListView"
+                Visibility="{Binding IsListMode, Converter={StaticResource BoolToVis}}" />
+        </Grid>
 
         <!-- Loading state (first run downloads the Steam app list) -->
         <StackPanel

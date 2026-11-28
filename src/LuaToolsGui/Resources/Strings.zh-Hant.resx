@@ -961,4 +961,7 @@ SHA-256 {3}
   <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>已保留 {0} 個共用資訊清單</value></data>
   <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>已部分清理 {0}，但部分項目無法移除：{1}</value></data>
   <data name="Cleanup_Result_Done" xml:space="preserve"><value>已清理 {0}。</value></data>
+  <data name="ViewMode_Grid" xml:space="preserve"><value>格線檢視</value></data>
+  <data name="ViewMode_List" xml:space="preserve"><value>清單檢視</value></data>
+  <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>收藏庫檢視模式</value></data>
 </root>

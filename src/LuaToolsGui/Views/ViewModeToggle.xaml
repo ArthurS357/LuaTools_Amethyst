@@ -1,0 +1,57 @@
+<UserControl
+    x:Class="LuaToolsGui.Views.ViewModeToggle"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:res="clr-namespace:LuaToolsGui.Resources"
+    xmlns:svc="clr-namespace:LuaToolsGui.Services"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    x:Name="ToggleHost"
+    AutomationProperties.Name="{x:Static res:Strings.ViewMode_SwitchLabel}"
+    mc:Ignorable="d">
+    <Border
+        Padding="{DynamicResource SpaceAll4}"
+        Background="{StaticResource SurfaceCardBrush}"
+        BorderBrush="{StaticResource BorderDefaultBrush}"
+        BorderThickness="1"
+        CornerRadius="{DynamicResource RadiusMedium}">
+        <StackPanel Orientation="Horizontal">
+            <ui:Button
+                Padding="{DynamicResource SpaceAll4}"
+                AutomationProperties.Name="{x:Static res:Strings.ViewMode_Grid}"
+                Click="GridButton_Click"
+                Icon="{ui:SymbolIcon Grid24}"
+                ToolTip="{x:Static res:Strings.ViewMode_Grid}">
+                <ui:Button.Style>
+                    <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
+                        <Setter Property="Appearance" Value="Transparent" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ViewMode, ElementName=ToggleHost}" Value="{x:Static svc:LibraryViewMode.Grid}">
+                                <Setter Property="Appearance" Value="Primary" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ui:Button.Style>
+            </ui:Button>
+            <ui:Button
+                Margin="{DynamicResource SpaceLeft4}"
+                Padding="{DynamicResource SpaceAll4}"
+                AutomationProperties.Name="{x:Static res:Strings.ViewMode_List}"
+                Click="ListButton_Click"
+                Icon="{ui:SymbolIcon List24}"
+                ToolTip="{x:Static res:Strings.ViewMode_List}">
+                <ui:Button.Style>
+                    <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
+                        <Setter Property="Appearance" Value="Transparent" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ViewMode, ElementName=ToggleHost}" Value="{x:Static svc:LibraryViewMode.List}">
+                                <Setter Property="Appearance" Value="Primary" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ui:Button.Style>
+            </ui:Button>
+        </StackPanel>
+    </Border>
+</UserControl>

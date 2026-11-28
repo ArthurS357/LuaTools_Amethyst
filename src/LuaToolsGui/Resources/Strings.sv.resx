@@ -961,4 +961,7 @@ Detta tar endast bort de aktiva .lua-filerna från Steam\config\stplug-in. {1} a
   <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>{0} delade manifest behållna</value></data>
   <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>Rensade {0} delvis, men vissa objekt kunde inte tas bort: {1}</value></data>
   <data name="Cleanup_Result_Done" xml:space="preserve"><value>Rensade {0}.</value></data>
+  <data name="ViewMode_Grid" xml:space="preserve"><value>Rutnätsvy</value></data>
+  <data name="ViewMode_List" xml:space="preserve"><value>Listvy</value></data>
+  <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Visningsläge för bibliotek</value></data>
 </root>

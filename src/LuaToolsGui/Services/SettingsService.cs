@@ -59,6 +59,11 @@ public class AppSettings
     // list is a narrow sidebar, so a size that suits the Manage grid rarely suits both.
     public int? BuildsPageSize { get; set; }
 
+    // Per-panel layout mode ("Grid" | "List"). Null = Grid (default). Any unknown/garbled *string* falls
+    // back to Grid on read; a non-string JSON token fails the whole file like any other type mismatch.
+    public string? ManageViewMode { get; set; }
+    public string? DepotsViewMode { get; set; }
+
     // UI language as a BCP-47 tag ("en", "zh-Hans"). Null = follow the Windows display language.
     public string? Language { get; set; }
 
@@ -352,6 +357,20 @@ public sealed class SettingsService
     {
         get => _settings.BuildsPageSize ?? 10; // default 10
         set { _settings.BuildsPageSize = value; Save(); }
+    }
+
+    /// <summary>Manage-page layout mode (default <see cref="LibraryViewMode.Grid"/>).</summary>
+    public LibraryViewMode ManageViewMode
+    {
+        get => LibraryViewModeParser.Parse(_settings.ManageViewMode);
+        set { _settings.ManageViewMode = value == LibraryViewMode.Grid ? null : nameof(LibraryViewMode.List); Save(); }
+    }
+
+    /// <summary>Depots-page layout mode (default <see cref="LibraryViewMode.Grid"/>).</summary>
+    public LibraryViewMode DepotsViewMode
+    {
+        get => LibraryViewModeParser.Parse(_settings.DepotsViewMode);
+        set { _settings.DepotsViewMode = value == LibraryViewMode.Grid ? null : nameof(LibraryViewMode.List); Save(); }
     }
 
     /// <summary>UI language tag ("en" | "zh-Hans"), or null to follow the Windows display language.</summary>
@@ -660,6 +679,8 @@ public sealed class SettingsService
             && _settings.CustomSaveFolders is null
             && _settings.FixesPageSize is null
             && _settings.BuildsPageSize is null
+            && _settings.ManageViewMode is null
+            && _settings.DepotsViewMode is null
             && _settings.Language is null
             && _settings.AccentColor is null
             && _settings.EnableGlassmorphism is null

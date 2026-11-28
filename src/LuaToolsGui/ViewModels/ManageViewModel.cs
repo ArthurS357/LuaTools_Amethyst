@@ -1,8 +1,9 @@
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LuaToolsGui.Services;
@@ -13,13 +14,18 @@ namespace LuaToolsGui.ViewModels;
 public partial class LuaTileViewModel : ObservableObject
 {
     public long AppId { get; }
+    public string AppIdText { get; }
     public string FilePath { get; }
     public DateTime AddedAt { get; }
     // Invariant culture so the month is always the 3-letter abbreviation ("Jun", not "June" or a
     // localized long form), 2-digit year ("'26") — keeps the combined "Added … • Released …" line
     // short enough to fit the card.
-    public string AddedLabel =>
-        "Added " + AddedAt.ToString(@"MMM d, \'yy", System.Globalization.CultureInfo.InvariantCulture);
+    public string AddedLabel { get; }
+
+    [GeneratedRegex(@"\b(19|20)(\d{2})\b")]
+    private static partial Regex FourDigitYearRegex();
+
+    private string? _lastReleaseDateRaw;
 
     /// <summary>Steam release date for the card (e.g. "Released Feb 24, 2022"), or "" until details
     /// are cached. Set by <see cref="UpdateReleaseLabel"/> once the appdetails blob is available.</summary>
@@ -98,16 +104,26 @@ public partial class LuaTileViewModel : ObservableObject
 
     /// <summary>Populate <see cref="ReleaseLabel"/> from cached app-details (no-op until they exist).
     /// Shows Steam's own date string ("Released 24 Feb, 2022"); blank for unreleased/unknown.</summary>
-    public void UpdateReleaseLabel(SteamAppInfoCache appInfo)
+    public void UpdateReleaseLabel(SteamAppInfoCache appInfo) =>
+        UpdateReleaseLabel(appInfo.GetFilterData(AppId));
+
+    internal void UpdateReleaseLabel(AppFilterData? data)
     {
-        var data = appInfo.GetFilterData(AppId);
         string? text = data?.ReleaseDateText;
-        if (string.IsNullOrWhiteSpace(text)) { ReleaseLabel = ""; return; }
+        if (_lastReleaseDateRaw == text && (!string.IsNullOrEmpty(ReleaseLabel) || string.IsNullOrWhiteSpace(text)))
+            return;
+
+        _lastReleaseDateRaw = text;
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            ReleaseLabel = "";
+            return;
+        }
 
         // Shorten a 4-digit year to 2 digits ("May 26, 2025" → "May 26, '25") to keep the combined
         // line on one row. Leaves non-date wording ("Coming soon") untouched.
-        text = System.Text.RegularExpressions.Regex.Replace(text, @"\b(19|20)(\d{2})\b", "'$2");
-        ReleaseLabel = $"Released {text}";
+        string formatted = FourDigitYearRegex().Replace(text, "'$2");
+        ReleaseLabel = $"Released {formatted}";
     }
 
     /// <summary>Raised when IsSelected changes so the page can update its selection count/bar.</summary>
@@ -117,8 +133,10 @@ public partial class LuaTileViewModel : ObservableObject
     public LuaTileViewModel(long appId, string filePath, DateTime addedAt, string name, bool nameIsPlaceholder)
     {
         AppId = appId;
+        AppIdText = appId.ToString(CultureInfo.InvariantCulture);
         FilePath = filePath;
         AddedAt = addedAt;
+        AddedLabel = "Added " + addedAt.ToString(@"MMM d, \'yy", CultureInfo.InvariantCulture);
         _name = name;
         _nameIsPlaceholder = nameIsPlaceholder;
         // Cover stays blank until resolved — avoids flashing Steam's "Header Capsule" placeholder.
@@ -126,7 +144,7 @@ public partial class LuaTileViewModel : ObservableObject
 
     /// <summary>
     /// For a VISIBLE tile: ensure the cover file (warming if needed), decode off-UI, show it.
-    /// Retries on later views while Cover is still null (so transient failures self-heal).
+    /// Reuses decoded frozen bitmaps from <see cref="CoverCache"/> across Manage/Depots switches.
     /// </summary>
     public async Task EnsureResolvedAsync(SteamAppInfoCache appInfo, CoverCache covers)
     {
@@ -135,6 +153,12 @@ public partial class LuaTileViewModel : ObservableObject
         if (string.IsNullOrEmpty(ReleaseLabel)) OnUi(() => UpdateReleaseLabel(appInfo));
 
         if (Cover is not null) return;
+        if (!_nameIsPlaceholder && covers.TryGetDecoded(AppId) is { } memCover)
+        {
+            OnUi(() => Cover = memCover);
+            return;
+        }
+
         if (Interlocked.Exchange(ref _resolving, 1) == 1) return;
         try
         {
@@ -150,7 +174,7 @@ public partial class LuaTileViewModel : ObservableObject
             }
 
             if (local is null) return;
-            var image = await Task.Run(() => LoadFrozen(local));
+            var image = covers.TryGetDecoded(AppId) ?? await Task.Run(() => covers.GetOrDecode(AppId, local));
             if (image is not null) OnUi(() => Cover = image);
         }
         finally
@@ -188,26 +212,6 @@ public partial class LuaTileViewModel : ObservableObject
         return local;
     }
 
-    /// <summary>Decode a local image file into a frozen, thumbnail-sized bitmap (off-UI, lock-free).</summary>
-    private static ImageSource? LoadFrozen(string path)
-    {
-        try
-        {
-            var bmp = new BitmapImage();
-            bmp.BeginInit();
-            bmp.CacheOption = BitmapCacheOption.OnLoad; // load fully, release the file handle
-            bmp.DecodePixelWidth = 248;                 // tile width — faster decode, less memory
-            bmp.UriSource = new Uri(path, UriKind.Absolute);
-            bmp.EndInit();
-            bmp.Freeze();
-            return bmp;
-        }
-        catch
-        {
-            return null; // unreadable file → leave blank
-        }
-    }
-
     private void SetName(string name)
     {
         _nameIsPlaceholder = false; // got a real name — don't re-resolve
@@ -222,7 +226,8 @@ public partial class LuaTileViewModel : ObservableObject
     }
 
     public bool Matches(string q) =>
-        Name.Contains(q, StringComparison.OrdinalIgnoreCase) || AppId.ToString().Contains(q);
+        Name.Contains(q, StringComparison.OrdinalIgnoreCase) ||
+        AppIdText.Contains(q, StringComparison.OrdinalIgnoreCase);
 }
 
 public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
@@ -241,6 +246,8 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
 
     private List<LuaTileViewModel> _all = [];
     private CancellationTokenSource? _prefetchCts;
+    internal Task PrefetchTask { get; private set; } = Task.CompletedTask;
+    internal void CancelBackgroundPrefetch() => _prefetchCts?.Cancel();
 
     /// <summary>Set by App so "Update" can navigate to the Add page pre-seeded with the appid.</summary>
     public Action<long>? NavigateToAdd { get; set; }
@@ -252,6 +259,31 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
     // and the empty-state gating all live in PagedListViewModel<LuaTileViewModel>.
 
     [ObservableProperty] private string _searchText = "";
+
+    // ── View mode (Grid vs Steam-style compact List) ──────────────────
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsGridMode))]
+    [NotifyPropertyChangedFor(nameof(IsListMode))]
+    [NotifyPropertyChangedFor(nameof(GridItems))]
+    [NotifyPropertyChangedFor(nameof(ListItems))]
+    private LibraryViewMode _viewMode = LibraryViewMode.Grid;
+
+    public bool IsGridMode => ViewMode == LibraryViewMode.Grid;
+    public bool IsListMode => ViewMode == LibraryViewMode.List;
+    public ObservableCollection<LuaTileViewModel>? GridItems => IsGridMode ? Items : null;
+    public ObservableCollection<LuaTileViewModel>? ListItems => IsListMode ? Items : null;
+
+    protected override void OnPageSliced(IReadOnlyList<LuaTileViewModel> slice)
+    {
+        OnPropertyChanged(nameof(GridItems));
+        OnPropertyChanged(nameof(ListItems));
+    }
+
+    partial void OnViewModeChanged(LibraryViewMode value)
+    {
+        if (_settings.ManageViewMode != value)
+            _settings.ManageViewMode = value;
+    }
 
     // ── Filters & sort (Manage page) ─────────────────────────────────
     [ObservableProperty] private bool _isFilterPanelOpen;
@@ -345,6 +377,7 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
         _library = library;
         _vault = vault;
         _cleanup = cleanup;
+        ViewMode = settings.ManageViewMode;
         InitPageSize(settings.ManagePageSize);
     }
 
@@ -377,19 +410,23 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
     /// Null when this game has no details cached (the section collapses).</summary>
     [ObservableProperty] private AppOverview? _overview;
 
-    /// <summary>Open the detail flyout for a tile (cover, title, game info, actions).</summary>
-    [RelayCommand]
+    /// <summary>Open the detail flyout for a tile (cover, title, game info, actions). Concurrent: the
+    /// body re-checks SelectedTile after every await, so opening another game while the previous one's
+    /// details are still loading must switch immediately instead of being silently ignored.</summary>
+    [RelayCommand(AllowConcurrentExecutions = true)]
     private async Task OpenDetailAsync(LuaTileViewModel tile)
     {
         SelectedTile = tile;
         Overview = null;
         var overview = await _appInfo.GetOverviewAsync(tile.AppId);
-        if (SelectedTile == tile) Overview = overview;
+        if (SelectedTile != tile) return; // superseded: don't spend a rate-limited fetch on a game left behind
+        Overview = overview;
 
         // The flyout binds its cover to SelectedTile.Cover. When opened from outside Manage
         // (Home → game detail) the tile was never rendered/scrolled into view, so its cover
         // was never resolved and the pullout image is blank. Ensure it here (idempotent).
         await tile.EnsureResolvedAsync(_appInfo, _covers);
+        if (SelectedTile != tile) return;
 
         // No cached blob yet (the background backfill hasn't reached this game) — fetch it at
         // interactive priority, then fill the section in. Re-checked afterwards because the user can
@@ -857,7 +894,7 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
         _prefetchCts?.Cancel();
         var cts = _prefetchCts = new CancellationTokenSource();
         var appids = tiles.Select(t => t.AppId).ToList();
-        _ = Task.Run(async () =>
+        PrefetchTask = Task.Run(async () =>
         {
             try
             {
@@ -920,33 +957,31 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
     private void ApplyFilter(bool resetPage = true)
     {
         string q = SearchText.Trim();
+        bool hasQuery = !string.IsNullOrEmpty(q);
         bool filtersActive = HasActiveFilters;
 
-        IEnumerable<LuaTileViewModel> result = _all;
+        var matched = new List<LuaTileViewModel>(_all.Count);
+        int pending = 0;
 
-        // Text search (name / appid).
-        if (!string.IsNullOrEmpty(q)) result = result.Where(t => t.Matches(q));
-
-        // Detail-based filters. A tile with no cached details yet can't be confirmed to match — keep
-        // it visible while details are still being fetched.
-        result = result.Where(t =>
+        foreach (var t in _all)
         {
             var data = _appInfo.GetFilterData(t.AppId);
-            t.DetailsLoaded = data is not null;
-            t.UpdateReleaseLabel(_appInfo);
-            if (!filtersActive) return true;             // no filter → show everything
-            if (data is null) return false;              // filter active but details unknown → can't
-                                                         // confirm a match, so HIDE it (appears once
-                                                         // its details load and actually match)
-            return MatchesFilters(data);
-        });
+            if (data is null) pending++;
 
-        var list = result.ToList();
-        list = SortTiles(list);
+            t.DetailsLoaded = data is not null;
+            t.UpdateReleaseLabel(data);
+
+            if (hasQuery && !t.Matches(q)) continue;
+            if (filtersActive && (data is null || !MatchesFilters(data))) continue;
+
+            matched.Add(t);
+        }
+
+        var list = SortTiles(matched);
 
         // How many library apps still lack details — shown always while backfilling (even with no
         // filters), since on startup nothing's filtered but details are still loading.
-        PendingDetailsCount = _all.Count(t => _appInfo.GetFilterData(t.AppId) is null);
+        PendingDetailsCount = pending;
 
         EmptyMessage = _all.Count > 0
             ? Resources.Strings.Manage_Empty_NoMatch

@@ -961,4 +961,7 @@ Thao tác này chỉ xóa các tệp .lua đang hoạt động trong Steam\confi
   <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>đã giữ lại {0} manifest dùng chung</value></data>
   <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>Đã dọn dẹp một phần {0}, nhưng không thể xóa một số mục: {1}</value></data>
   <data name="Cleanup_Result_Done" xml:space="preserve"><value>Đã dọn dẹp {0}.</value></data>
+  <data name="ViewMode_Grid" xml:space="preserve"><value>Chế độ lưới</value></data>
+  <data name="ViewMode_List" xml:space="preserve"><value>Chế độ danh sách</value></data>
+  <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Chế độ hiển thị thư viện</value></data>
 </root>

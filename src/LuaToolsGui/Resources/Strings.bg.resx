@@ -961,4 +961,7 @@ SHA-256 {3}
   <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>{0} запазени споделени манифеста</value></data>
   <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>Частично почистване на {0}, но някои елементи не можаха да бъдат премахнати: {1}</value></data>
   <data name="Cleanup_Result_Done" xml:space="preserve"><value>Почистването на {0} завърши.</value></data>
+  <data name="ViewMode_Grid" xml:space="preserve"><value>Изглед в мрежа</value></data>
+  <data name="ViewMode_List" xml:space="preserve"><value>Изглед в списък</value></data>
+  <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Режим на изглед на библиотеката</value></data>
 </root>

@@ -22,8 +22,11 @@ public class ViewSplitTests(ThemeHost host)
 
     [Theory]
     [InlineData("ManageDetailFlyout")]
+    [InlineData("ManageListView")]
     [InlineData("BuildsDetailPane")]
+    [InlineData("BuildsListView")]
     [InlineData("BuildsDepotPicker")]
+    [InlineData("ViewModeToggle")]
     [InlineData("SettingsBackupsSection")]
     [InlineData("SettingsManifestBackupSection")]
     public void The_split_controls_sit_in_the_scanned_views_folder(string name)
@@ -62,8 +65,11 @@ public class ViewSplitTests(ThemeHost host)
         host.On(_ =>
         {
             new LuaToolsGui.Views.ManageDetailFlyout().Should().NotBeNull();
+            new LuaToolsGui.Views.ManageListView().Should().NotBeNull();
             new LuaToolsGui.Views.BuildsDetailPane().Should().NotBeNull();
+            new LuaToolsGui.Views.BuildsListView().Should().NotBeNull();
             new LuaToolsGui.Views.BuildsDepotPicker().Should().NotBeNull();
+            new LuaToolsGui.Views.ViewModeToggle().Should().NotBeNull();
             new LuaToolsGui.Views.SettingsBackupsSection().Should().NotBeNull();
             new LuaToolsGui.Views.SettingsManifestBackupSection().Should().NotBeNull();
         });

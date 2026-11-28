@@ -961,4 +961,7 @@ SHA-256 {3}
   <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>διατηρήθηκαν {0} κοινόχρηστα manifest</value></data>
   <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>Μερική εκκαθάριση του {0}, αλλά ορισμένα στοιχεία δεν μπόρεσαν να καταργηθούν: {1}</value></data>
   <data name="Cleanup_Result_Done" xml:space="preserve"><value>Ολοκληρώθηκε η εκκαθάριση του {0}.</value></data>
+  <data name="ViewMode_Grid" xml:space="preserve"><value>Προβολή πλέγματος</value></data>
+  <data name="ViewMode_List" xml:space="preserve"><value>Προβολή λίστας</value></data>
+  <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Λειτουργία προβολής βιβλιοθήκης</value></data>
 </root>

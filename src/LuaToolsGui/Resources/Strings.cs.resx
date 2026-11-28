@@ -961,4 +961,7 @@ Tím se smažou pouze aktivní soubory .lua ze Steam\config\stplug-in. {1} z tě
   <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>ponecháno sdílených manifestů: {0}</value></data>
   <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>Hra {0} byla částečně vyčištěna, ale některé položky se nepodařilo odebrat: {1}</value></data>
   <data name="Cleanup_Result_Done" xml:space="preserve"><value>Vyčištěno: {0}.</value></data>
+  <data name="ViewMode_Grid" xml:space="preserve"><value>Zobrazení mřížky</value></data>
+  <data name="ViewMode_List" xml:space="preserve"><value>Zobrazení seznamu</value></data>
+  <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Režim zobrazení knihovny</value></data>
 </root>

@@ -19,6 +19,7 @@
         <!-- Click the scrim to dismiss -->
         <Border Background="Transparent" MouseLeftButtonUp="Scrim_Click" />
         <Border
+            x:Name="FlyoutPanel"
             Width="380"
             HorizontalAlignment="Right"
             Background="{StaticResource SurfaceOverlayBrush}"

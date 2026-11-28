@@ -961,4 +961,7 @@ Bu işlem yalnızca Steam\config\stplug-in içindeki etkin .lua dosyalarını si
   <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>{0} paylaşılan manifest korundu</value></data>
   <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>{0} kısmen temizlendi, ancak bazı öğeler kaldırılamadı: {1}</value></data>
   <data name="Cleanup_Result_Done" xml:space="preserve"><value>{0} temizlendi.</value></data>
+  <data name="ViewMode_Grid" xml:space="preserve"><value>Izgara görünümü</value></data>
+  <data name="ViewMode_List" xml:space="preserve"><value>Liste görünümü</value></data>
+  <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Kütüphane görünüm modu</value></data>
 </root>

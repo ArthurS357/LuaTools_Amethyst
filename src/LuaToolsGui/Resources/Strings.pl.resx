@@ -961,4 +961,7 @@ Spowoduje to usunięcie wyłącznie aktywnych plików .lua z Steam\config\stplug
   <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>zachowano współdzielonych manifestów: {0}</value></data>
   <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>Częściowo wyczyszczono {0}, ale niektórych elementów nie udało się usunąć: {1}</value></data>
   <data name="Cleanup_Result_Done" xml:space="preserve"><value>Wyczyszczono {0}.</value></data>
+  <data name="ViewMode_Grid" xml:space="preserve"><value>Widok siatki</value></data>
+  <data name="ViewMode_List" xml:space="preserve"><value>Widok listy</value></data>
+  <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Tryb wyświetlania biblioteki</value></data>
 </root>

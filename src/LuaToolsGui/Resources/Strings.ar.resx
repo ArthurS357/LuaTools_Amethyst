@@ -987,4 +987,7 @@ SHA-256 {3}
   <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>تم الحفاظ على {0} ملف manifest مشترك</value></data>
   <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>تم تنظيف {0} جزئيًا، ولكن تعذّرت إزالة بعض العناصر: {1}</value></data>
   <data name="Cleanup_Result_Done" xml:space="preserve"><value>تم تنظيف {0}.</value></data>
+  <data name="ViewMode_Grid" xml:space="preserve"><value>عرض الشبكة</value></data>
+  <data name="ViewMode_List" xml:space="preserve"><value>عرض القائمة</value></data>
+  <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>وضع عرض المكتبة</value></data>
 </root>

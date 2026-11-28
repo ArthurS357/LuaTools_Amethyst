@@ -959,4 +959,7 @@ public static class Strings
     public static string Cleanup_Result_SharedPreserved => Get(nameof(Cleanup_Result_SharedPreserved));
     public static string Cleanup_Result_PartialError => Get(nameof(Cleanup_Result_PartialError));
     public static string Cleanup_Result_Done => Get(nameof(Cleanup_Result_Done));
+    public static string ViewMode_Grid => Get(nameof(ViewMode_Grid));
+    public static string ViewMode_List => Get(nameof(ViewMode_List));
+    public static string ViewMode_SwitchLabel => Get(nameof(ViewMode_SwitchLabel));
 }

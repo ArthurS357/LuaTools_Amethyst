@@ -961,4 +961,7 @@ Isso exclui apenas os arquivos .lua ativos em Steam\config\stplug-in. {1} destes
   <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>{0} manifest(s) compartilhado(s) preservado(s)</value></data>
   <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>{0} foi limpo em parte; alguns itens não puderam ser removidos: {1}</value></data>
   <data name="Cleanup_Result_Done" xml:space="preserve"><value>Limpeza concluída para {0}.</value></data>
+  <data name="ViewMode_Grid" xml:space="preserve"><value>Exibir em blocos</value></data>
+  <data name="ViewMode_List" xml:space="preserve"><value>Exibir em lista</value></data>
+  <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Modo de exibição da biblioteca</value></data>
 </root>

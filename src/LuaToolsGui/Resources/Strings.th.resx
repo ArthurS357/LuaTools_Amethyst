@@ -961,4 +961,7 @@ SHA-256 {3}
   <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>เก็บรักษา manifest ที่ใช้ร่วมกัน {0} ไฟล์</value></data>
   <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>ทำความสะอาด {0} บางส่วนแล้ว แต่ไม่สามารถลบบางรายการได้: {1}</value></data>
   <data name="Cleanup_Result_Done" xml:space="preserve"><value>ทำความสะอาด {0} เสร็จสิ้น</value></data>
+  <data name="ViewMode_Grid" xml:space="preserve"><value>มุมมองตาราง</value></data>
+  <data name="ViewMode_List" xml:space="preserve"><value>มุมมองรายการ</value></data>
+  <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>โหมดมุมมองคลัง</value></data>
 </root>

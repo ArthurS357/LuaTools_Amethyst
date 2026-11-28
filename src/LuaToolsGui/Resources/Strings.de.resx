@@ -961,4 +961,7 @@ Es werden nur die aktiven .lua-Dateien aus Steam\config\stplug-in gelöscht. {1}
   <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>{0} gemeinsame(s) Manifest(s) behalten</value></data>
   <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>{0} teilweise bereinigt, aber einige Elemente konnten nicht entfernt werden: {1}</value></data>
   <data name="Cleanup_Result_Done" xml:space="preserve"><value>{0} bereinigt.</value></data>
+  <data name="ViewMode_Grid" xml:space="preserve"><value>Rasteransicht</value></data>
+  <data name="ViewMode_List" xml:space="preserve"><value>Listenansicht</value></data>
+  <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Ansichtsmodus der Bibliothek</value></data>
 </root>

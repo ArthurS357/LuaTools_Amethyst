@@ -192,6 +192,7 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
         // Full-width grid uses the same 12/24/48/All steps as Manage & Fixes. Legacy 10/17/25/50
         // sidebar defaults normalize to 24 in memory without writing to settings until changed.
         int savedSize = settings.BuildsPageSize;
+        ViewMode = settings.DepotsViewMode;
         InitPageSize(savedSize is 0 or 12 or 24 or 48 ? savedSize : 24);
 
         // Any install (Add page, drag-drop, plugin) captures into the vault on a background thread —
@@ -206,7 +207,31 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
     // are inherited from PagedListViewModel<LuaTileViewModel>.
     protected override void SavePageSizeSetting(int size) => _settings.BuildsPageSize = size;
 
-    // ── Full-width Grid ↔ Detail navigation + local filters ─────────
+    // ── Full-width Grid ↔ List ↔ Detail navigation + local filters ────
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsGridMode))]
+    [NotifyPropertyChangedFor(nameof(IsListMode))]
+    [NotifyPropertyChangedFor(nameof(GridItems))]
+    [NotifyPropertyChangedFor(nameof(ListItems))]
+    private LibraryViewMode _viewMode = LibraryViewMode.Grid;
+
+    public bool IsGridMode => ViewMode == LibraryViewMode.Grid;
+    public bool IsListMode => ViewMode == LibraryViewMode.List;
+    public ObservableCollection<LuaTileViewModel>? GridItems => IsGridMode ? Items : null;
+    public ObservableCollection<LuaTileViewModel>? ListItems => IsListMode ? Items : null;
+
+    protected override void OnPageSliced(IReadOnlyList<LuaTileViewModel> slice)
+    {
+        OnPropertyChanged(nameof(GridItems));
+        OnPropertyChanged(nameof(ListItems));
+    }
+
+    partial void OnViewModeChanged(LibraryViewMode value)
+    {
+        if (_settings.DepotsViewMode != value)
+            _settings.DepotsViewMode = value;
+    }
 
     [ObservableProperty] private string _searchText = "";
     partial void OnSearchTextChanged(string value) => ApplyGameFilter();
@@ -457,18 +482,21 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
     internal static List<LuaTileViewModel> FilterGames(
         IEnumerable<LuaTileViewModel> games, string searchText, BuildsQuickFilter filter)
     {
-        IEnumerable<LuaTileViewModel> query = filter switch
-        {
-            BuildsQuickFilter.WithStoredBuilds => games.Where(static g => g.HasStoredBuilds),
-            BuildsQuickFilter.WithoutActiveLua => games.Where(static g => g.SavedBuildsOnly || !g.HasActiveLua),
-            _ => games,
-        };
-
         string q = (searchText ?? string.Empty).Trim();
-        if (!string.IsNullOrEmpty(q))
-            query = query.Where(g => g.Matches(q));
+        bool hasQuery = !string.IsNullOrEmpty(q);
+        var result = games is ICollection<LuaTileViewModel> col
+            ? new List<LuaTileViewModel>(col.Count)
+            : new List<LuaTileViewModel>();
 
-        return query.ToList();
+        foreach (var g in games)
+        {
+            if (filter == BuildsQuickFilter.WithStoredBuilds && !g.HasStoredBuilds) continue;
+            if (filter == BuildsQuickFilter.WithoutActiveLua && !g.SavedBuildsOnly && g.HasActiveLua) continue;
+            if (hasQuery && !g.Matches(q)) continue;
+            result.Add(g);
+        }
+
+        return result;
     }
 
     /// <summary>Filtering only — badges are computed by <see cref="RefreshBadgesAsync"/>, not here. This

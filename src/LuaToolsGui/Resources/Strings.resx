@@ -996,4 +996,7 @@ This deletes only the active .lua files from Steam\config\stplug-in. {1} of thes
   <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>{0} shared manifest(s) preserved</value></data>
   <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>Partially cleaned {0}, but some items couldn't be removed: {1}</value></data>
   <data name="Cleanup_Result_Done" xml:space="preserve"><value>Cleaned up {0}.</value></data>
+  <data name="ViewMode_Grid" xml:space="preserve"><value>Grid view</value></data>
+  <data name="ViewMode_List" xml:space="preserve"><value>List view</value></data>
+  <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Library layout mode</value></data>
 </root>

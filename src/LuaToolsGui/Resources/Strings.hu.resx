@@ -961,4 +961,7 @@ Ez csak az aktív .lua fájlokat törli a Steam\config\stplug-in mappából. Eze
   <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>{0} megosztott manifest megőrizve</value></data>
   <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>{0} részben megtisztítva, de néhány elem nem távolítható el: {1}</value></data>
   <data name="Cleanup_Result_Done" xml:space="preserve"><value>{0} megtisztítva.</value></data>
+  <data name="ViewMode_Grid" xml:space="preserve"><value>Rácsnézet</value></data>
+  <data name="ViewMode_List" xml:space="preserve"><value>Listanézet</value></data>
+  <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Könyvtár elrendezési mód</value></data>
 </root>

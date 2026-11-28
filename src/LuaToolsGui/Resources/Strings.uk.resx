@@ -961,4 +961,7 @@ SHA-256 {3}
   <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>збережено спільних маніфестів: {0}</value></data>
   <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>Частково очищено {0}, але деякі елементи не вдалося видалити: {1}</value></data>
   <data name="Cleanup_Result_Done" xml:space="preserve"><value>Очищення для {0} завершено.</value></data>
+  <data name="ViewMode_Grid" xml:space="preserve"><value>Сітка</value></data>
+  <data name="ViewMode_List" xml:space="preserve"><value>Список</value></data>
+  <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Режим перегляду бібліотеки</value></data>
 </root>

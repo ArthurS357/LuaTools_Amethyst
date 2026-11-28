@@ -961,4 +961,7 @@ Tämä poistaa vain aktiiviset .lua-tiedostot kansiosta Steam\config\stplug-in. 
   <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>{0} jaettua manifestia säilytetty</value></data>
   <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>Peli {0} puhdistettiin osittain, mutta joitain kohteita ei voitu poistaa: {1}</value></data>
   <data name="Cleanup_Result_Done" xml:space="preserve"><value>Puhdistettu: {0}.</value></data>
+  <data name="ViewMode_Grid" xml:space="preserve"><value>Ruudukkonäkymä</value></data>
+  <data name="ViewMode_List" xml:space="preserve"><value>Luettelonäkymä</value></data>
+  <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Kirjaston näyttötila</value></data>
 </root>

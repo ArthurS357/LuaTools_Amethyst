@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:res="clr-namespace:LuaToolsGui.Resources"
+    xmlns:themes="clr-namespace:LuaToolsGui.Themes"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:views="clr-namespace:LuaToolsGui.Views"
     xmlns:vm="clr-namespace:LuaToolsGui.ViewModels"
@@ -22,8 +23,8 @@
     </UserControl.Resources>
 
     <Grid x:Name="Root" Margin="8,16,16,8">
-        <!-- ── State 1: Full-width 3-column game grid ───────────────── -->
-        <Grid Visibility="{Binding IsShowingGrid, Converter={StaticResource BoolToVis}}">
+        <!-- ── State 1: Full-width Grid / Steam-style List ─────────── -->
+        <Grid x:Name="State1Host" Visibility="{Binding IsShowingGrid, Converter={StaticResource BoolToVis}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -43,12 +44,22 @@
                     Icon="{ui:SymbolIcon ArrowSync24}" />
             </HeaderedContentControl>
 
-            <!-- Search + instant local filter pills (zero network calls) -->
+            <!-- Search + View mode + instant local filter pills (zero network calls) -->
             <StackPanel Grid.Row="1">
-                <ui:TextBox
-                    Icon="{ui:SymbolIcon Search24}"
-                    PlaceholderText="{x:Static res:Strings.Common_SearchPlaceholder}"
-                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ui:TextBox
+                        Icon="{ui:SymbolIcon Search24}"
+                        PlaceholderText="{x:Static res:Strings.Common_SearchPlaceholder}"
+                        Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+                    <views:ViewModeToggle
+                        Grid.Column="1"
+                        Margin="{DynamicResource SpaceLeft8}"
+                        ViewMode="{Binding ViewMode, Mode=TwoWay}" />
+                </Grid>
                 <WrapPanel Margin="{DynamicResource SpaceTop12}" Orientation="Horizontal">
                     <ui:Button
                         Margin="{DynamicResource SpaceAll4}"
@@ -112,35 +123,40 @@
                 Style="{StaticResource EmptyStateStyle}"
                 Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}" />
 
-            <!-- Virtualized 3-column game grid -->
-            <vwp:VirtualizingItemsControl
-                x:Name="GameGrid"
+            <!-- Virtualized Grid / Steam-style List container (zero extra I/O when toggling mode) -->
+            <Grid
                 Grid.Row="2"
                 Margin="{DynamicResource SpaceTop12}"
-                ItemsSource="{Binding Items}"
-                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                ScrollViewer.VerticalScrollBarVisibility="Auto"
-                Visibility="{Binding ShowItems, Converter={StaticResource BoolToVis}}"
-                VirtualizingPanel.CacheLengthUnit="Page"
-                VirtualizingPanel.ScrollUnit="Pixel"
-                VirtualizingPanel.VirtualizationMode="Standard">
-                <vwp:VirtualizingItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <vwp:VirtualizingWrapPanel
-                            Orientation="Horizontal"
-                            SpacingMode="StartAndEndOnly"
-                            StretchItems="False" />
-                    </ItemsPanelTemplate>
-                </vwp:VirtualizingItemsControl.ItemsPanel>
-                <vwp:VirtualizingItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid
-                            x:Name="CardRoot"
-                            Width="260"
-                            Height="220"
-                            Margin="{DynamicResource SpaceAll8}"
-                            DataContextChanged="GameRow_DataContextChanged"
-                            Loaded="GameRow_Loaded">
+                Visibility="{Binding ShowItems, Converter={StaticResource BoolToVis}}">
+                <vwp:VirtualizingItemsControl
+                    x:Name="GameGrid"
+                    ItemsSource="{Binding GridItems}"
+                    ScrollViewer.CanContentScroll="True"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    Visibility="{Binding IsGridMode, Converter={StaticResource BoolToVis}}"
+                    VirtualizingPanel.CacheLength="1,1"
+                    VirtualizingPanel.CacheLengthUnit="Page"
+                    VirtualizingPanel.ScrollUnit="Pixel"
+                    VirtualizingPanel.VirtualizationMode="Recycling">
+                    <vwp:VirtualizingItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <vwp:VirtualizingWrapPanel
+                                Orientation="Horizontal"
+                                SpacingMode="StartAndEndOnly"
+                                StretchItems="False" />
+                        </ItemsPanelTemplate>
+                    </vwp:VirtualizingItemsControl.ItemsPanel>
+                    <vwp:VirtualizingItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid
+                                x:Name="CardRoot"
+                                Width="260"
+                                Height="220"
+                                Margin="{DynamicResource SpaceAll8}"
+                                themes:Motion.EnableSmoothHover="True"
+                                DataContextChanged="GameRow_DataContextChanged"
+                                Loaded="GameRow_Loaded">
                             <Button
                                 HorizontalContentAlignment="Stretch"
                                 VerticalContentAlignment="Stretch"
@@ -256,6 +272,14 @@
                             </Button>
 
                             <!-- Hover / keyboard-focus remove-game affordance (sibling, never nested inside the card button) -->
+                            <Border
+                                x:Name="HoverOverlay"
+                                Background="{StaticResource SurfaceGhostBrush}"
+                                BorderBrush="{StaticResource BorderStrongBrush}"
+                                BorderThickness="1"
+                                CornerRadius="{DynamicResource RadiusLarge}"
+                                IsHitTestVisible="False"
+                                Opacity="0" />
                             <ui:Button
                                 x:Name="RemoveGameButton"
                                 Margin="{DynamicResource SpaceAll8}"
@@ -286,6 +310,10 @@
                     </DataTemplate>
                 </vwp:VirtualizingItemsControl.ItemTemplate>
             </vwp:VirtualizingItemsControl>
+                <views:BuildsListView
+                    x:Name="GameListView"
+                    Visibility="{Binding IsListMode, Converter={StaticResource BoolToVis}}" />
+            </Grid>
 
             <!-- Pager bar: centered page numbers + right-aligned results-per-page (including All) -->
             <Grid
@@ -395,6 +423,8 @@
         </Grid>
 
         <!-- ── State 2: Full-width game detail ──────────────────────── -->
-        <views:BuildsDetailPane Visibility="{Binding IsShowingDetail, Converter={StaticResource BoolToVis}}" />
+        <views:BuildsDetailPane
+            x:Name="DetailPane"
+            Visibility="{Binding IsShowingDetail, Converter={StaticResource BoolToVis}}" />
     </Grid>
 </UserControl>

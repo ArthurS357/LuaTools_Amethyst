@@ -961,4 +961,7 @@ Hiermee worden alleen de actieve .lua-bestanden uit Steam\config\stplug-in verwi
   <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>{0} gedeelde manifest(s) behouden</value></data>
   <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>{0} gedeeltelijk opgeschoond, maar sommige items konden niet worden verwijderd: {1}</value></data>
   <data name="Cleanup_Result_Done" xml:space="preserve"><value>{0} opgeschoond.</value></data>
+  <data name="ViewMode_Grid" xml:space="preserve"><value>Rasterweergave</value></data>
+  <data name="ViewMode_List" xml:space="preserve"><value>Lijstweergave</value></data>
+  <data name="ViewMode_SwitchLabel" xml:space="preserve"><value>Weergavemodus</value></data>
 </root>
