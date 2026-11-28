@@ -922,4 +922,43 @@ SHA-256 {3}
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} е инсталирана, но резервното ѝ копие е неуспешно: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Инсталирано от резервно копие</value></data>
   <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>Източникът се провали, затова {0} е инсталирана от резервното ви копие на манифестите.</value></data>
+  <data name="Manage_RemoveGame" xml:space="preserve"><value>Премахни играта…</value></data>
+  <data name="Builds_Card_OnePreset" xml:space="preserve"><value>1 запазена настройка</value></data>
+  <data name="Builds_Card_PresetsCount" xml:space="preserve"><value>{0} запазени настройки</value></data>
+  <data name="Builds_Filter_All" xml:space="preserve"><value>Всички</value></data>
+  <data name="Builds_Filter_WithStoredBuilds" xml:space="preserve"><value>Със запазени билдове</value></data>
+  <data name="Builds_Filter_WithoutActiveLua" xml:space="preserve"><value>Без активен lua</value></data>
+  <data name="Builds_BackToList" xml:space="preserve"><value>Назад към Депота</value></data>
+  <data name="Builds_RemoveFiles" xml:space="preserve"><value>Премахни файлове…</value></data>
+  <data name="Builds_Action_DeletePreset" xml:space="preserve"><value>Изтрий настройка</value></data>
+  <data name="Cleanup_Dialog_Title" xml:space="preserve"><value>Премахване на файловете на играта</value></data>
+  <data name="Cleanup_Size_Calculating" xml:space="preserve"><value>Изчисляване на инсталирания размер…</value></data>
+  <data name="Cleanup_Size_Estimated" xml:space="preserve"><value>Очаквано освободено място при деинсталиране: {0}</value></data>
+  <data name="Cleanup_ChooseScope" xml:space="preserve"><value>Изберете какво да се премахне</value></data>
+  <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>Деинсталирай само файловете на играта</value></data>
+  <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>Изтрива папката с инсталацията на играта и appmanifest на Steam. Запазва файловете .lua и .manifest.</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>Премахни само .lua файла</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Изтрива config\stplug-in\{0}.lua. Запазва файловете на играта, файловете .manifest и запазените билдове.</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>Премахни само .manifest файловете</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>Изтрива изключителните .manifest файлове за тази игра в depotcache. Запазва .lua файла и споделените манифести.</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>Премахни .lua + .manifest файлове</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Desc" xml:space="preserve"><value>Изтрива активния .lua файл и изключителните .manifest файлове на играта. Запазва файловете на играта и споделените манифести.</value></data>
+  <data name="Cleanup_Scope_Everything_Title" xml:space="preserve"><value>Изтрий всичко (игра + .lua + .manifest файлове)</value></data>
+  <data name="Cleanup_Scope_Everything_Desc" xml:space="preserve"><value>Деинсталира играта от Steam и изтрива нейния .lua файл и изключителните .manifest файлове. Споделените с други игри манифести се запазват.</value></data>
+  <data name="Cleanup_BackupSafeNotice" xml:space="preserve"><value>Вашето Резервно копие на манифестите никога не се засяга или изтрива от това действие.</value></data>
+  <data name="Cleanup_Removing" xml:space="preserve"><value>Премахване на избраните файлове…</value></data>
+  <data name="Cleanup_Action_Confirm" xml:space="preserve"><value>Премахни</value></data>
+  <data name="Cleanup_Err_GameRunning" xml:space="preserve"><value>Затворете {0} в Steam, преди да деинсталирате файловете на играта.</value></data>
+  <data name="Cleanup_Err_UnsafePath" xml:space="preserve"><value>Блокирано: пътят на инсталация на Steam не може да бъде потвърден като сигурна папка в steamapps\common.</value></data>
+  <data name="Cleanup_Err_Symlink" xml:space="preserve"><value>Блокирано: пътят на инсталация съдържа символна връзка или свързана директория.</value></data>
+  <data name="Cleanup_Err_BackupOverlap" xml:space="preserve"><value>Блокирано: целевият път съвпада с папката на Резервно копие на манифестите.</value></data>
+  <data name="Cleanup_Err_UnreadableSibling" xml:space="preserve"><value>Блокирано: .lua файлът на друга игра не може да бъде прочетен, затова споделените манифести не могат да се проверят безопасно.</value></data>
+  <data name="Cleanup_Err_SharedInstallDir" xml:space="preserve"><value>Блокирано: папката за инсталиране на тази игра се споделя с друго инсталирано приложение в Steam. Деинсталирайте я през Steam.</value></data>
+  <data name="Cleanup_Err_Generic" xml:space="preserve"><value>Почистването не може да завърши. Затворете Steam и опитайте отново.</value></data>
+  <data name="Cleanup_Result_Nothing" xml:space="preserve"><value>Не са открити подходящи файлове за премахване.</value></data>
+  <data name="Cleanup_Result_Freed" xml:space="preserve"><value>{0} освободени</value></data>
+  <data name="Cleanup_Result_ManifestsDeleted" xml:space="preserve"><value>{0} изтрити манифеста</value></data>
+  <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>{0} запазени споделени манифеста</value></data>
+  <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>Частично почистване на {0}, но някои елементи не можаха да бъдат премахнати: {1}</value></data>
+  <data name="Cleanup_Result_Done" xml:space="preserve"><value>Почистването на {0} завърши.</value></data>
 </root>

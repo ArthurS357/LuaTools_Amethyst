@@ -50,6 +50,25 @@ public partial class LuaTileViewModel : ObservableObject
     /// hint so the row does not look like an installed game; "Remove game" stays the way to drop it.</summary>
     [ObservableProperty] private bool _savedBuildsOnly;
 
+    /// <summary>Depots grid: true while <c>config\stplug-in\&lt;appid&gt;.lua</c> exists on disk.</summary>
+    [ObservableProperty] private bool _hasActiveLua = true;
+
+    /// <summary>Depots grid: true when at least one stored variant or loose build file exists.</summary>
+    [ObservableProperty] private bool _hasStoredBuilds;
+
+    /// <summary>Depots grid: number of stored presets/variants in <see cref="LuaVault"/>.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasPresetsCount))]
+    [NotifyPropertyChangedFor(nameof(PresetsCountLabel))]
+    private int _variantCount;
+
+    public bool HasPresetsCount => VariantCount > 0;
+
+    public string PresetsCountLabel => VariantCount == 1
+        ? Resources.Strings.Builds_Card_OnePreset
+        : string.Format(System.Globalization.CultureInfo.CurrentCulture,
+            Resources.Strings.Builds_Card_PresetsCount, VariantCount);
+
     /// <summary>Whether Steam has this game's files. Starts Unknown and is filled in by
     /// <see cref="ManageViewModel.RefreshInstallStatesAsync"/>; Unknown is a usable state, not a broken one
     /// (see <see cref="SteamLaunchPolicy"/>), so the Play button works before it resolves.</summary>
@@ -218,6 +237,7 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
     private readonly SteamGameLauncher _launcher;
     private readonly SteamLibraryService _library;
     private readonly LuaVault _vault;
+    private readonly GameCleanupService _cleanup;
 
     private List<LuaTileViewModel> _all = [];
     private CancellationTokenSource? _prefetchCts;
@@ -312,7 +332,7 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
     public ManageViewModel(SteamService steam, SteamAppListCache appList, SteamAppInfoCache appInfo,
         CoverCache covers, ToastService toast, SettingsService settings,
         SteamlessService steamless, SteamGameLauncher launcher, SteamLibraryService library,
-        LuaVault vault)
+        LuaVault vault, GameCleanupService cleanup)
     {
         _steam = steam;
         _appList = appList;
@@ -324,6 +344,7 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
         _launcher = launcher;
         _library = library;
         _vault = vault;
+        _cleanup = cleanup;
         InitPageSize(settings.ManagePageSize);
     }
 
@@ -380,12 +401,15 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanCloseDetail))]
     private void CloseDetail()
     {
+        if (IsRemoving) return;
         SelectedTile = null;
         Overview = null;
     }
+
+    private bool CanCloseDetail() => !IsRemoving;
 
     /// <summary>
     /// Run the game through Steam, or put it in to download when Steam does not have it yet — starting
@@ -532,11 +556,27 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
     [RelayCommand]
     private void Update(LuaTileViewModel tile) => NavigateToAdd?.Invoke(tile.AppId);
 
-    // ── Steamless: remove SteamStub DRM ──────────────────────────────
+    // ── Steamless + Cleanup locks ─────────────────────────────────────
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(NotBusy))]
+    [NotifyCanExecuteChangedFor(nameof(DeleteCommand))]
+    [NotifyCanExecuteChangedFor(nameof(DeleteSelectedCommand))]
     private bool _isBusy;
-    public bool NotBusy => !IsBusy;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(NotBusy))]
+    [NotifyCanExecuteChangedFor(nameof(DeleteCommand))]
+    [NotifyCanExecuteChangedFor(nameof(DeleteSelectedCommand))]
+    [NotifyCanExecuteChangedFor(nameof(CloseDetailCommand))]
+    private bool _isRemoving;
+
+    public bool NotBusy => !IsBusy && !IsRemoving;
+
+    /// <summary>Set by App — opens the 4-scope consolidated cleanup dialog for a game.</summary>
+    public Func<long, string, Task<GameCleanupResult?>>? OpenCleanupDialog { get; set; }
+
+    /// <summary>Test seam to avoid modal MessageBox during unit tests.</summary>
+    internal Action? OfferRestartSteamOverride { get; set; }
 
     [ObservableProperty] private double _progress;
     [ObservableProperty] private bool _isProgressIndeterminate;
@@ -605,31 +645,55 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
             ? string.Format(Resources.Strings.Manage_DeleteMany_BodyWithBuilds, totalCount, withStoredBuildsCount)
             : string.Format(Resources.Strings.Manage_DeleteMany_Body, totalCount);
 
-    /// <summary>Confirm, then delete the &lt;appid&gt;.lua file and remove the tile from the grid.</summary>
-    [RelayCommand]
-    private void Delete(LuaTileViewModel tile)
+    /// <summary>Open the 4-scope removal/uninstall dialog for a game and apply the outcome cleanly.</summary>
+    [RelayCommand(CanExecute = nameof(CanDeleteTile))]
+    private async Task DeleteAsync(LuaTileViewModel? tile)
     {
-        bool hasStoredBuilds = _vault.HasStoredBuilds(tile.AppId);
-        var result = MessageBox.Show(
-            BuildDeleteConfirmBody(tile.Name, tile.AppId, hasStoredBuilds),
-            Resources.Strings.Manage_Delete_Title,
-            MessageBoxButton.OKCancel,
-            MessageBoxImage.Warning);
-        if (result != MessageBoxResult.OK) return;
+        if (tile is null || IsRemoving || IsBusy) return;
+        if (OpenCleanupDialog is null) return;
 
+        IsRemoving = true;
         try
         {
-            if (File.Exists(tile.FilePath)) File.Delete(tile.FilePath);
+            var result = await OpenCleanupDialog(tile.AppId, tile.Name);
+            if (result is null) return;
+            await ApplyCleanupResultAsync(tile, result);
         }
-        catch (Exception ex)
+        finally
         {
-            MessageBox.Show(string.Format(Resources.Strings.Manage_RemoveFailed_File, ex.Message), Resources.Strings.Manage_RemoveFailed_Title,
-                MessageBoxButton.OK, MessageBoxImage.Error);
+            IsRemoving = false;
+        }
+    }
+
+    private bool CanDeleteTile(LuaTileViewModel? tile) => tile is not null && NotBusy;
+
+    internal async Task ApplyCleanupResultAsync(LuaTileViewModel tile, GameCleanupResult result)
+    {
+        if (result.IsBlocked)
+        {
+            _toast.Show(tile.Name, GameCleanupMessages.Describe(tile.Name, result), error: true);
             return;
         }
 
-        if (!TryDeleteFile(tile.FilePath, tile.Name)) return;
-        RemoveTile(tile);
+        _toast.Show(tile.Name, GameCleanupMessages.Describe(tile.Name, result), error: result.HasErrors);
+
+        if (result.LuaDeleted)
+        {
+            RemoveTile(tile);
+        }
+        else if (result.GameFilesDeleted || result.AcfDeleted)
+        {
+            tile.IsInstalled = false;
+            tile.InstallState = SteamGameInstallState.NotInstalled;
+            ApplyFilter(resetPage: false);
+            await RefreshInstallStatesAsync();
+        }
+
+        if (result.AnyRemoved)
+        {
+            if (OfferRestartSteamOverride is not null) OfferRestartSteamOverride();
+            else OfferRestartSteam();
+        }
     }
 
     private void RecountSelection() => SelectedCount = _all.Count(t => t.IsSelected);
@@ -642,41 +706,61 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
     }
 
     /// <summary>Delete all selected lua files after one confirm; offer a Steam restart afterwards.</summary>
-    [RelayCommand]
-    private void DeleteSelected()
+    [RelayCommand(CanExecute = nameof(NotBusy))]
+    private async Task DeleteSelectedAsync()
     {
+        if (IsRemoving || IsBusy) return;
         var targets = _all.Where(t => t.IsSelected).ToList();
         if (targets.Count == 0) return;
 
         int withStoredBuilds = targets.Count(t => _vault.HasStoredBuilds(t.AppId));
-        var result = MessageBox.Show(
+        var confirm = MessageBox.Show(
             BuildDeleteManyConfirmBody(targets.Count, withStoredBuilds),
             Resources.Strings.Manage_DeleteMany_Title,
             MessageBoxButton.OKCancel,
             MessageBoxImage.Warning);
-        if (result != MessageBoxResult.OK) return;
+        if (confirm != MessageBoxResult.OK) return;
 
+        IsRemoving = true;
         int failed = 0;
-        foreach (var t in targets)
+        bool anyRemoved = false;
+        try
         {
-            if (TryDeleteFile(t.FilePath, t.Name, silent: true))
+            foreach (var t in targets)
             {
-                t.SelectionChanged = null;
-                _all.Remove(t);
-                if (SelectedTile == t) CloseDetail();
+                var outcome = await _cleanup.CleanAsync(t.AppId, GameCleanupScope.LuaOnly);
+                if (outcome.LuaDeleted)
+                {
+                    anyRemoved = true;
+                    t.SelectionChanged = null;
+                    _all.Remove(t);
+                    // Not CloseDetail(): it refuses while IsRemoving, which is true for this whole batch.
+                    if (SelectedTile == t) { SelectedTile = null; Overview = null; }
+                }
+                else if (outcome.IsBlocked || outcome.HasErrors)
+                {
+                    failed++;
+                }
             }
-            else failed++;
+            // Rebuild the (filtered) grid in one pass — reliable refresh vs. per-item Tiles.Remove on the
+            // virtualized panel, which didn't always visually update when filters were active.
+            ApplyFilter();
+            SelectedCount = _all.Count(t => t.IsSelected);
         }
-        // Rebuild the (filtered) grid in one pass — reliable refresh vs. per-item Tiles.Remove on the
-        // virtualized panel, which didn't always visually update when filters were active.
-        ApplyFilter();
-        SelectedCount = _all.Count(t => t.IsSelected);
+        finally
+        {
+            IsRemoving = false;
+        }
 
         if (failed > 0)
             MessageBox.Show(string.Format(Resources.Strings.Manage_RemoveFailed_Count, failed),
                 Resources.Strings.Manage_RemoveFailed_Title, MessageBoxButton.OK, MessageBoxImage.Warning);
 
-        OfferRestartSteam();
+        if (anyRemoved)
+        {
+            if (OfferRestartSteamOverride is not null) OfferRestartSteamOverride();
+            else OfferRestartSteam();
+        }
     }
 
     private void OfferRestartSteam()
@@ -691,29 +775,16 @@ public partial class ManageViewModel : PagedListViewModel<LuaTileViewModel>
                 Resources.Strings.Manage_RestartSteam_Title, MessageBoxButton.OK, MessageBoxImage.Warning);
     }
 
-    /// <summary>Delete one lua file; returns false (and warns, unless silent) on failure.</summary>
-    private static bool TryDeleteFile(string path, string name, bool silent = false)
-    {
-        try
-        {
-            if (File.Exists(path)) File.Delete(path);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            if (!silent)
-                MessageBox.Show(string.Format(Resources.Strings.Manage_RemoveFailed_Named, name, ex.Message), Resources.Strings.Manage_RemoveFailed_Title,
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            return false;
-        }
-    }
-
     /// <summary>Remove a tile from the lists after its file is gone; update empty/detail state.</summary>
     private void RemoveTile(LuaTileViewModel tile)
     {
         tile.SelectionChanged = null;
         _all.Remove(tile);
-        if (SelectedTile == tile) CloseDetail();
+        if (SelectedTile == tile)
+        {
+            SelectedTile = null;
+            Overview = null;
+        }
         ApplyFilter(); // rebuild the (filtered) grid in one pass — reliable virtualized refresh
     }
 

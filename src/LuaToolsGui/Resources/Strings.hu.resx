@@ -922,4 +922,43 @@ Ez csak az aktív .lua fájlokat törli a Steam\config\stplug-in mappából. Eze
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>A(z) {0} telepítve lett, de a mentése sikertelen: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Telepítve a mentésből</value></data>
   <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>A forrás hibázott, ezért a(z) {0} a manifestmentésből lett telepítve.</value></data>
+  <data name="Manage_RemoveGame" xml:space="preserve"><value>Játék eltávolítása…</value></data>
+  <data name="Builds_Card_OnePreset" xml:space="preserve"><value>1 mentett előbeállítás</value></data>
+  <data name="Builds_Card_PresetsCount" xml:space="preserve"><value>{0} mentett előbeállítás</value></data>
+  <data name="Builds_Filter_All" xml:space="preserve"><value>Összes</value></data>
+  <data name="Builds_Filter_WithStoredBuilds" xml:space="preserve"><value>Mentett buildekkel</value></data>
+  <data name="Builds_Filter_WithoutActiveLua" xml:space="preserve"><value>Nincs aktív lua</value></data>
+  <data name="Builds_BackToList" xml:space="preserve"><value>Vissza a Tárolókhoz</value></data>
+  <data name="Builds_RemoveFiles" xml:space="preserve"><value>Fájlok eltávolítása…</value></data>
+  <data name="Builds_Action_DeletePreset" xml:space="preserve"><value>Előbeállítás törlése</value></data>
+  <data name="Cleanup_Dialog_Title" xml:space="preserve"><value>Játékfájlok eltávolítása</value></data>
+  <data name="Cleanup_Size_Calculating" xml:space="preserve"><value>Telepített méret számítása…</value></data>
+  <data name="Cleanup_Size_Estimated" xml:space="preserve"><value>Eltávolítással felszabadítható becsült hely: {0}</value></data>
+  <data name="Cleanup_ChooseScope" xml:space="preserve"><value>Válassza ki, mit szeretne eltávolítani</value></data>
+  <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>Csak a játékfájlok eltávolítása</value></data>
+  <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>Törli a játék telepítési mappáját és a Steam appmanifest fájlját. Megtartja a .lua és .manifest fájlokat.</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>Csak a .lua fájl eltávolítása</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Törli a config\stplug-in\{0}.lua fájlt. Megtartja a játékfájlokat, a .manifest fájlokat és a mentett buildeket.</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>Csak a .manifest fájlok eltávolítása</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>Törli a játék kizárólagos .manifest fájljait a depotcache mappából. Megtartja a .lua fájlt és a megosztott manifesteket.</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>.lua + .manifest fájlok eltávolítása</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Desc" xml:space="preserve"><value>Törli az aktív .lua fájlt és a játék kizárólagos .manifest fájljait. Megtartja a játékfájlokat és a megosztott manifesteket.</value></data>
+  <data name="Cleanup_Scope_Everything_Title" xml:space="preserve"><value>Minden törlése (játék + .lua + .manifest fájlok)</value></data>
+  <data name="Cleanup_Scope_Everything_Desc" xml:space="preserve"><value>Eltávolítja a játékot a Steamből, és törli a .lua fájlját valamint a kizárólagos .manifest fájlokat. A más játékokkal megosztott manifestek megmaradnak.</value></data>
+  <data name="Cleanup_BackupSafeNotice" xml:space="preserve"><value>Ez a művelet soha nem érinti és nem törli a Manifestbiztonsági mentés tárolóját.</value></data>
+  <data name="Cleanup_Removing" xml:space="preserve"><value>Kijelölt fájlok eltávolítása…</value></data>
+  <data name="Cleanup_Action_Confirm" xml:space="preserve"><value>Eltávolítás</value></data>
+  <data name="Cleanup_Err_GameRunning" xml:space="preserve"><value>A játékfájlok eltávolítása előtt zárja be a(z) {0} játékot a Steamben.</value></data>
+  <data name="Cleanup_Err_UnsafePath" xml:space="preserve"><value>Blokkolva: a Steam telepítési útvonala nem ellenőrizhető biztonságos mappaként a steamapps\common könyvtárban.</value></data>
+  <data name="Cleanup_Err_Symlink" xml:space="preserve"><value>Blokkolva: a telepítési útvonal szimbolikus hivatkozást vagy könyvtárcsatolást tartalmaz.</value></data>
+  <data name="Cleanup_Err_BackupOverlap" xml:space="preserve"><value>Blokkolva: a célútvonal átfedésben van a Manifestbiztonsági mentés mappával.</value></data>
+  <data name="Cleanup_Err_UnreadableSibling" xml:space="preserve"><value>Blokkolva: egy másik játék .lua fájlja nem olvasható, ezért a megosztott manifestek nem ellenőrizhetők biztonságosan.</value></data>
+  <data name="Cleanup_Err_SharedInstallDir" xml:space="preserve"><value>Letiltva: a játék telepítési mappáját egy másik telepített Steam-alkalmazás is használja. Távolítsa el a Steamen keresztül.</value></data>
+  <data name="Cleanup_Err_Generic" xml:space="preserve"><value>Nem sikerült befejezni a tisztítást. Zárja be a Steamet, és próbálja újra.</value></data>
+  <data name="Cleanup_Result_Nothing" xml:space="preserve"><value>Nem találhatók eltávolítható egyező fájlok.</value></data>
+  <data name="Cleanup_Result_Freed" xml:space="preserve"><value>{0} felszabadítva</value></data>
+  <data name="Cleanup_Result_ManifestsDeleted" xml:space="preserve"><value>{0} manifest törölve</value></data>
+  <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>{0} megosztott manifest megőrizve</value></data>
+  <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>{0} részben megtisztítva, de néhány elem nem távolítható el: {1}</value></data>
+  <data name="Cleanup_Result_Done" xml:space="preserve"><value>{0} megtisztítva.</value></data>
 </root>

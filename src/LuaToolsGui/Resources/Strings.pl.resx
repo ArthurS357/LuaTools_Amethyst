@@ -922,4 +922,43 @@ Spowoduje to usunięcie wyłącznie aktywnych plików .lua z Steam\config\stplug
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>Gra {0} została zainstalowana, ale jej kopia nie powiodła się: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Zainstalowano z kopii</value></data>
   <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>Źródło zawiodło, więc gra {0} została zainstalowana z Twojej kopii manifestów.</value></data>
+  <data name="Manage_RemoveGame" xml:space="preserve"><value>Usuń grę…</value></data>
+  <data name="Builds_Card_OnePreset" xml:space="preserve"><value>1 zapisane ustawienie</value></data>
+  <data name="Builds_Card_PresetsCount" xml:space="preserve"><value>{0} zapisanych ustawień</value></data>
+  <data name="Builds_Filter_All" xml:space="preserve"><value>Wszystkie</value></data>
+  <data name="Builds_Filter_WithStoredBuilds" xml:space="preserve"><value>Z zapisanymi buildami</value></data>
+  <data name="Builds_Filter_WithoutActiveLua" xml:space="preserve"><value>Brak aktywnego lua</value></data>
+  <data name="Builds_BackToList" xml:space="preserve"><value>Powrót do Depots</value></data>
+  <data name="Builds_RemoveFiles" xml:space="preserve"><value>Usuń pliki…</value></data>
+  <data name="Builds_Action_DeletePreset" xml:space="preserve"><value>Usuń ustawienie</value></data>
+  <data name="Cleanup_Dialog_Title" xml:space="preserve"><value>Usuń pliki gry</value></data>
+  <data name="Cleanup_Size_Calculating" xml:space="preserve"><value>Obliczanie rozmiaru instalacji…</value></data>
+  <data name="Cleanup_Size_Estimated" xml:space="preserve"><value>Szacowane miejsce do zwolnienia po odinstalowaniu: {0}</value></data>
+  <data name="Cleanup_ChooseScope" xml:space="preserve"><value>Wybierz, co usunąć</value></data>
+  <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>Odinstaluj tylko pliki gry</value></data>
+  <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>Usuwa folder instalacji gry i plik appmanifest Steam. Zachowuje pliki .lua i .manifest.</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>Usuń tylko plik .lua</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Usuwa config\stplug-in\{0}.lua. Zachowuje pliki gry, pliki .manifest oraz zapisane buildy.</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>Usuń tylko pliki .manifest</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>Usuwa wyłączne pliki .manifest tej gry w depotcache. Zachowuje plik .lua i współdzielone manifesty.</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>Usuń .lua + pliki .manifest</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Desc" xml:space="preserve"><value>Usuwa aktywny plik .lua i wyłączne pliki .manifest tej gry. Zachowuje pliki gry i współdzielone manifesty.</value></data>
+  <data name="Cleanup_Scope_Everything_Title" xml:space="preserve"><value>Usuń wszystko (gra + .lua + pliki .manifest)</value></data>
+  <data name="Cleanup_Scope_Everything_Desc" xml:space="preserve"><value>Odinstalowuje grę ze Steam i usuwa jej plik .lua oraz wyłączne pliki .manifest. Współdzielone manifesty innych gier są zachowane.</value></data>
+  <data name="Cleanup_BackupSafeNotice" xml:space="preserve"><value>Twój magazyn Kopii manifestów nigdy nie jest zmieniany ani usuwany przez tę akcję.</value></data>
+  <data name="Cleanup_Removing" xml:space="preserve"><value>Usuwanie wybranych plików…</value></data>
+  <data name="Cleanup_Action_Confirm" xml:space="preserve"><value>Usuń</value></data>
+  <data name="Cleanup_Err_GameRunning" xml:space="preserve"><value>Zamknij {0} na Steam przed odinstalowaniem plików gry.</value></data>
+  <data name="Cleanup_Err_UnsafePath" xml:space="preserve"><value>Zablokowano: nie udało się zweryfikować ścieżki instalacji Steam jako bezpiecznego folderu w steamapps\common.</value></data>
+  <data name="Cleanup_Err_Symlink" xml:space="preserve"><value>Zablokowano: ścieżka instalacji zawiera dowiązanie symboliczne lub połączenie katalogów.</value></data>
+  <data name="Cleanup_Err_BackupOverlap" xml:space="preserve"><value>Zablokowano: ścieżka docelowa pokrywa się z folderem Kopii manifestów.</value></data>
+  <data name="Cleanup_Err_UnreadableSibling" xml:space="preserve"><value>Zablokowano: nie udało się odczytać pliku .lua innej gry, więc nie można bezpiecznie sprawdzić współdzielonych manifestów.</value></data>
+  <data name="Cleanup_Err_SharedInstallDir" xml:space="preserve"><value>Zablokowano: folder instalacyjny tej gry jest współdzielony z inną zainstalowaną aplikacją Steam. Odinstaluj ją przez Steam.</value></data>
+  <data name="Cleanup_Err_Generic" xml:space="preserve"><value>Nie udało się ukończyć czyszczenia. Zamknij Steam i spróbuj ponownie.</value></data>
+  <data name="Cleanup_Result_Nothing" xml:space="preserve"><value>Nie znaleziono pasujących plików do usunięcia.</value></data>
+  <data name="Cleanup_Result_Freed" xml:space="preserve"><value>zwolniono {0}</value></data>
+  <data name="Cleanup_Result_ManifestsDeleted" xml:space="preserve"><value>usunięto manifestów: {0}</value></data>
+  <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>zachowano współdzielonych manifestów: {0}</value></data>
+  <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>Częściowo wyczyszczono {0}, ale niektórych elementów nie udało się usunąć: {1}</value></data>
+  <data name="Cleanup_Result_Done" xml:space="preserve"><value>Wyczyszczono {0}.</value></data>
 </root>

@@ -241,7 +241,7 @@
                                     Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                                     CommandParameter="{Binding}"
                                     Foreground="{StaticResource DangerBrush}"
-                                    Header="{x:Static res:Strings.Manage_DeleteThisLua}"
+                                    Header="{x:Static res:Strings.Manage_RemoveGame}"
                                     Icon="{ui:SymbolIcon Delete24}" />
                             </ContextMenu>
                         </Border.ContextMenu>
@@ -331,7 +331,7 @@
                                         Command="{Binding DataContext.DeleteCommand, ElementName=Root}"
                                         CommandParameter="{Binding}"
                                         Icon="{ui:SymbolIcon Delete24}"
-                                        ToolTip="{x:Static res:Strings.Manage_DeleteThisLua}">
+                                        ToolTip="{x:Static res:Strings.Manage_RemoveGame}">
                                         <ui:Button.Style>
                                             <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
                                                 <Setter Property="Opacity" Value="0" />

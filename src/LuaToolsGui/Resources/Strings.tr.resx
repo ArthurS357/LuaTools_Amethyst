@@ -922,4 +922,43 @@ Bu işlem yalnızca Steam\config\stplug-in içindeki etkin .lua dosyalarını si
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} kuruldu ancak yedeği başarısız oldu: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Yedekten kuruldu</value></data>
   <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>Kaynak başarısız oldu, bu yüzden {0} manifest yedeğinizden kuruldu.</value></data>
+  <data name="Manage_RemoveGame" xml:space="preserve"><value>Oyunu kaldır…</value></data>
+  <data name="Builds_Card_OnePreset" xml:space="preserve"><value>1 kayıtlı ön ayar</value></data>
+  <data name="Builds_Card_PresetsCount" xml:space="preserve"><value>{0} kayıtlı ön ayar</value></data>
+  <data name="Builds_Filter_All" xml:space="preserve"><value>Tümü</value></data>
+  <data name="Builds_Filter_WithStoredBuilds" xml:space="preserve"><value>Kayıtlı sürümlerle</value></data>
+  <data name="Builds_Filter_WithoutActiveLua" xml:space="preserve"><value>Etkin lua yok</value></data>
+  <data name="Builds_BackToList" xml:space="preserve"><value>Depolara dön</value></data>
+  <data name="Builds_RemoveFiles" xml:space="preserve"><value>Dosyaları kaldır…</value></data>
+  <data name="Builds_Action_DeletePreset" xml:space="preserve"><value>Ön ayarı sil</value></data>
+  <data name="Cleanup_Dialog_Title" xml:space="preserve"><value>Oyun dosyalarını kaldır</value></data>
+  <data name="Cleanup_Size_Calculating" xml:space="preserve"><value>Yüklü boyut hesaplanıyor…</value></data>
+  <data name="Cleanup_Size_Estimated" xml:space="preserve"><value>Kaldırmada açılacak tahmini alan: {0}</value></data>
+  <data name="Cleanup_ChooseScope" xml:space="preserve"><value>Ne kaldırılacağını seçin</value></data>
+  <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>Yalnızca oyun dosyalarını kaldır</value></data>
+  <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>Oyunun kurulum klasörünü ve Steam appmanifest dosyasını siler. .lua ve .manifest dosyalarını korur.</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>Yalnızca .lua dosyasını kaldır</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>config\stplug-in\{0}.lua dosyasını siler. Oyun dosyalarını, .manifest dosyalarını ve kayıtlı sürümleri korur.</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>Yalnızca .manifest dosyalarını kaldır</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>Bu oyunun depotcache içindeki özel .manifest dosyalarını siler. .lua dosyasını ve paylaşılan manifestleri korur.</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>.lua + .manifest dosyalarını kaldır</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Desc" xml:space="preserve"><value>Etkin .lua dosyasını ve bu oyunun özel .manifest dosyalarını siler. Yüklü oyun dosyalarını ve paylaşılan manifestleri korur.</value></data>
+  <data name="Cleanup_Scope_Everything_Title" xml:space="preserve"><value>Her şeyi sil (oyun + .lua + .manifest dosyaları)</value></data>
+  <data name="Cleanup_Scope_Everything_Desc" xml:space="preserve"><value>Oyunu Steam'den kaldırır ve .lua ile özel .manifest dosyalarını siler. Diğer oyunların kullandığı paylaşılan manifestler korunur.</value></data>
+  <data name="Cleanup_BackupSafeNotice" xml:space="preserve"><value>Manifest yedeği kasanız bu işlemden hiçbir zaman etkilenmez veya silinmez.</value></data>
+  <data name="Cleanup_Removing" xml:space="preserve"><value>Seçili dosyalar kaldırılıyor…</value></data>
+  <data name="Cleanup_Action_Confirm" xml:space="preserve"><value>Kaldır</value></data>
+  <data name="Cleanup_Err_GameRunning" xml:space="preserve"><value>Oyun dosyalarını kaldırmadan önce Steam'de {0} oyununu kapatın.</value></data>
+  <data name="Cleanup_Err_UnsafePath" xml:space="preserve"><value>Engellendi: Steam kurulum yolu steamapps\common içinde güvenli bir klasör olarak doğrulanamadı.</value></data>
+  <data name="Cleanup_Err_Symlink" xml:space="preserve"><value>Engellendi: kurulum yolu sembolik bağlantı veya dizin birleşimi içeriyor.</value></data>
+  <data name="Cleanup_Err_BackupOverlap" xml:space="preserve"><value>Engellendi: hedef kurulum yolu Manifest yedeği klasörünüzle çakışıyor.</value></data>
+  <data name="Cleanup_Err_UnreadableSibling" xml:space="preserve"><value>Engellendi: başka bir oyunun .lua dosyası okunamadı; paylaşılan manifestler güvenli biçimde doğrulanamıyor.</value></data>
+  <data name="Cleanup_Err_SharedInstallDir" xml:space="preserve"><value>Engellendi: bu oyunun kurulum klasörü yüklü başka bir Steam uygulamasıyla paylaşılıyor. Oyunu Steam üzerinden kaldırın.</value></data>
+  <data name="Cleanup_Err_Generic" xml:space="preserve"><value>Temizlik tamamlanamadı. Steam'i kapatıp tekrar deneyin.</value></data>
+  <data name="Cleanup_Result_Nothing" xml:space="preserve"><value>Kaldırılacak eşleşen dosya bulunamadı.</value></data>
+  <data name="Cleanup_Result_Freed" xml:space="preserve"><value>{0} boşaltıldı</value></data>
+  <data name="Cleanup_Result_ManifestsDeleted" xml:space="preserve"><value>{0} manifest silindi</value></data>
+  <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>{0} paylaşılan manifest korundu</value></data>
+  <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>{0} kısmen temizlendi, ancak bazı öğeler kaldırılamadı: {1}</value></data>
+  <data name="Cleanup_Result_Done" xml:space="preserve"><value>{0} temizlendi.</value></data>
 </root>

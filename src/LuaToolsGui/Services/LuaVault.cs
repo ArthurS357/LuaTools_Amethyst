@@ -187,11 +187,29 @@ public class LuaVault
 
     /// <summary>Store any loose build-named luas for this app as build variants (idempotent — the
     /// content-addressed capture no-ops once they're already in).</summary>
-    public void AdoptLooseBuildLuas(long appId)
+    public void AdoptLooseBuildLuas(long appId) => AdoptLooseBuildLuasAndReport(appId);
+
+    /// <summary>
+    /// Store any loose build-named luas for this app and return true only when at least one new
+    /// variant was captured from disk, preventing deleted live luas from being silently re-applied
+    /// when a game is merely opened in Depots.
+    /// </summary>
+    internal bool AdoptLooseBuildLuasAndReport(long appId)
     {
-        foreach (var (id, buildId, path) in EnumerateLooseBuildLuas())
-            if (id == appId)
-                Capture(appId, path, LuaVariantKind.Build, buildId);
+        var loose = EnumerateLooseBuildLuas().Where(b => b.AppId == appId).ToList();
+        if (loose.Count == 0) return false;
+
+        bool adoptedNew = false;
+        var existingHashes = GetVariants(appId).Select(static v => v.Hash).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        foreach (var (_, buildId, path) in loose)
+        {
+            string? fileHash = null;
+            try { fileHash = HashFile(path); } catch { /* Capture handles unreadable files */ }
+            var captured = Capture(appId, path, LuaVariantKind.Build, buildId);
+            if (captured is not null && (fileHash is null || existingHashes.Add(captured.Hash)))
+                adoptedNew = true;
+        }
+        return adoptedNew;
     }
 
     /// <summary>
@@ -225,6 +243,45 @@ public class LuaVault
                 .ToList();
         }
         catch { return []; }
+    }
+
+    /// <summary>
+    /// Every stored variant of every game except <paramref name="excludeAppId"/>, with its lua text (null when the
+    /// file is gone), for cleanup's shared-depot check. Unlike the lenient readers above, false (fail-closed) when
+    /// the vault can't be listed, an index.json is present but neither it nor its .bak parses, or a stored lua
+    /// exists but can't be read: any of those could be the build pinning a manifest about to be deleted.
+    /// </summary>
+    internal bool TryReadOtherVariants(long excludeAppId, out List<(long AppId, LuaVariant Variant, string? Text)> variants)
+    {
+        variants = [];
+        try
+        {
+            if (!Directory.Exists(_root)) return true;
+            foreach (string dir in Directory.EnumerateDirectories(_root))
+            {
+                if (!long.TryParse(Path.GetFileName(dir), out long appId) || appId <= 0 || appId == excludeAppId) continue;
+
+                string index = IndexPath(appId);
+                VaultIndex? parsed;
+                lock (_gate) parsed = TryReadIndex(index) ?? TryReadIndex(index + ".bak");
+                if (parsed is null)
+                {
+                    if (File.Exists(index) || File.Exists(index + ".bak")) return false;
+                    continue; // a folder without an index holds no variants
+                }
+
+                foreach (var variant in parsed.Variants)
+                {
+                    string path = VariantPath(appId, variant.Hash);
+                    variants.Add((appId, variant, File.Exists(path) ? File.ReadAllText(path) : null));
+                }
+            }
+            return true;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            return false;
+        }
     }
 
     /// <summary>The stored lua's text (for the editor). Empty string if it's gone.</summary>

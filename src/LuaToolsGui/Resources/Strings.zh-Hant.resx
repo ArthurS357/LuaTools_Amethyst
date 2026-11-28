@@ -922,4 +922,43 @@ SHA-256 {3}
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} 已安裝，但備份失敗：{1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>已從備份安裝</value></data>
   <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>下載來源失敗，已從你的資訊清單備份安裝 {0}。</value></data>
+  <data name="Manage_RemoveGame" xml:space="preserve"><value>移除遊戲…</value></data>
+  <data name="Builds_Card_OnePreset" xml:space="preserve"><value>1 個已儲存預設集</value></data>
+  <data name="Builds_Card_PresetsCount" xml:space="preserve"><value>{0} 個已儲存預設集</value></data>
+  <data name="Builds_Filter_All" xml:space="preserve"><value>全部</value></data>
+  <data name="Builds_Filter_WithStoredBuilds" xml:space="preserve"><value>有已儲存組建</value></data>
+  <data name="Builds_Filter_WithoutActiveLua" xml:space="preserve"><value>無作用中的 lua</value></data>
+  <data name="Builds_BackToList" xml:space="preserve"><value>返回倉庫</value></data>
+  <data name="Builds_RemoveFiles" xml:space="preserve"><value>移除檔案…</value></data>
+  <data name="Builds_Action_DeletePreset" xml:space="preserve"><value>刪除預設集</value></data>
+  <data name="Cleanup_Dialog_Title" xml:space="preserve"><value>移除遊戲檔案</value></data>
+  <data name="Cleanup_Size_Calculating" xml:space="preserve"><value>正在計算安裝大小…</value></data>
+  <data name="Cleanup_Size_Estimated" xml:space="preserve"><value>解除安裝預計可釋放空間：{0}</value></data>
+  <data name="Cleanup_ChooseScope" xml:space="preserve"><value>選擇要移除的項目</value></data>
+  <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>僅解除安裝遊戲檔案</value></data>
+  <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>刪除遊戲安裝資料夾與 Steam appmanifest。保留 .lua 與 .manifest 檔案。</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>僅移除 .lua 檔案</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>刪除 config\stplug-in\{0}.lua。保留遊戲檔案、.manifest 檔案與已儲存組建。</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>僅移除 .manifest 檔案</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>刪除 depotcache 中此遊戲專用的 .manifest 檔案。保留 .lua 檔案與共用資訊清單。</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>移除 .lua + .manifest 檔案</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Desc" xml:space="preserve"><value>刪除作用中的 .lua 檔案與此遊戲專用的 .manifest 檔案。保留遊戲檔案與共用資訊清單。</value></data>
+  <data name="Cleanup_Scope_Everything_Title" xml:space="preserve"><value>全部刪除（遊戲 + .lua + .manifest 檔案）</value></data>
+  <data name="Cleanup_Scope_Everything_Desc" xml:space="preserve"><value>從 Steam 解除安裝遊戲並刪除其 .lua 檔案與專用 .manifest 檔案。其他遊戲共用的資訊清單會予以保留。</value></data>
+  <data name="Cleanup_BackupSafeNotice" xml:space="preserve"><value>此動作絕不會變更或刪除您的資訊清單備份庫。</value></data>
+  <data name="Cleanup_Removing" xml:space="preserve"><value>正在移除選取的檔案…</value></data>
+  <data name="Cleanup_Action_Confirm" xml:space="preserve"><value>移除</value></data>
+  <data name="Cleanup_Err_GameRunning" xml:space="preserve"><value>解除安裝遊戲檔案前，請先在 Steam 中關閉 {0}。</value></data>
+  <data name="Cleanup_Err_UnsafePath" xml:space="preserve"><value>已封鎖：無法驗證 Steam 安裝路徑是否為 steamapps\common 內的安全資料夾。</value></data>
+  <data name="Cleanup_Err_Symlink" xml:space="preserve"><value>已封鎖：安裝路徑包含符號連結或目錄連接點。</value></data>
+  <data name="Cleanup_Err_BackupOverlap" xml:space="preserve"><value>已封鎖：目標路徑與您的資訊清單備份資料夾重疊。</value></data>
+  <data name="Cleanup_Err_UnreadableSibling" xml:space="preserve"><value>已封鎖：無法讀取其他遊戲的 .lua 檔案，因此無法安全確認共用資訊清單。</value></data>
+  <data name="Cleanup_Err_SharedInstallDir" xml:space="preserve"><value>已封鎖：此遊戲的安裝資料夾與另一個已安裝的 Steam 應用程式共用。請透過 Steam 解除安裝。</value></data>
+  <data name="Cleanup_Err_Generic" xml:space="preserve"><value>無法完成清理。請關閉 Steam 後重試。</value></data>
+  <data name="Cleanup_Result_Nothing" xml:space="preserve"><value>找不到可移除的相符檔案。</value></data>
+  <data name="Cleanup_Result_Freed" xml:space="preserve"><value>已釋放 {0}</value></data>
+  <data name="Cleanup_Result_ManifestsDeleted" xml:space="preserve"><value>已刪除 {0} 個資訊清單</value></data>
+  <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>已保留 {0} 個共用資訊清單</value></data>
+  <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>已部分清理 {0}，但部分項目無法移除：{1}</value></data>
+  <data name="Cleanup_Result_Done" xml:space="preserve"><value>已清理 {0}。</value></data>
 </root>

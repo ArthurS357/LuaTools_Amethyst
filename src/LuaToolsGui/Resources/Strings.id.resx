@@ -922,4 +922,43 @@ Ini hanya menghapus file .lua aktif dari Steam\config\stplug-in. {1} dari game t
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} sudah terpasang, tetapi pencadangannya gagal: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Dipasang dari cadangan</value></data>
   <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>Sumber gagal, jadi {0} dipasang dari cadangan manifest Anda.</value></data>
+  <data name="Manage_RemoveGame" xml:space="preserve"><value>Hapus game…</value></data>
+  <data name="Builds_Card_OnePreset" xml:space="preserve"><value>1 praatur tersimpan</value></data>
+  <data name="Builds_Card_PresetsCount" xml:space="preserve"><value>{0} praatur tersimpan</value></data>
+  <data name="Builds_Filter_All" xml:space="preserve"><value>Semua</value></data>
+  <data name="Builds_Filter_WithStoredBuilds" xml:space="preserve"><value>Dengan build tersimpan</value></data>
+  <data name="Builds_Filter_WithoutActiveLua" xml:space="preserve"><value>Tanpa lua aktif</value></data>
+  <data name="Builds_BackToList" xml:space="preserve"><value>Kembali ke Depot</value></data>
+  <data name="Builds_RemoveFiles" xml:space="preserve"><value>Hapus file…</value></data>
+  <data name="Builds_Action_DeletePreset" xml:space="preserve"><value>Hapus praatur</value></data>
+  <data name="Cleanup_Dialog_Title" xml:space="preserve"><value>Hapus file game</value></data>
+  <data name="Cleanup_Size_Calculating" xml:space="preserve"><value>Menghitung ukuran terpasang…</value></data>
+  <data name="Cleanup_Size_Estimated" xml:space="preserve"><value>Perkiraan ruang yang dibebaskan saat mencopot: {0}</value></data>
+  <data name="Cleanup_ChooseScope" xml:space="preserve"><value>Pilih yang ingin dihapus</value></data>
+  <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>Copot file game saja</value></data>
+  <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>Menghapus folder instalasi game dan appmanifest Steam. Menyimpan file .lua dan .manifest.</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>Hapus file .lua saja</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Menghapus config\stplug-in\{0}.lua. Menyimpan file game, file .manifest, dan build tersimpan.</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>Hapus file .manifest saja</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>Menghapus file .manifest khusus game ini di depotcache. Menyimpan file .lua dan manifest bersama.</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>Hapus .lua + file .manifest</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Desc" xml:space="preserve"><value>Menghapus file .lua aktif dan file .manifest khusus game ini. Menyimpan file game terpasang dan manifest bersama.</value></data>
+  <data name="Cleanup_Scope_Everything_Title" xml:space="preserve"><value>Hapus semua (game + .lua + file .manifest)</value></data>
+  <data name="Cleanup_Scope_Everything_Desc" xml:space="preserve"><value>Mencopot game dari Steam serta menghapus file .lua dan file .manifest khususnya. Manifest bersama yang dipakai game lain tetap dipertahankan.</value></data>
+  <data name="Cleanup_BackupSafeNotice" xml:space="preserve"><value>Brankas Cadangan manifest Anda tidak pernah disentuh atau dihapus oleh tindakan ini.</value></data>
+  <data name="Cleanup_Removing" xml:space="preserve"><value>Menghapus file terpilih…</value></data>
+  <data name="Cleanup_Action_Confirm" xml:space="preserve"><value>Hapus</value></data>
+  <data name="Cleanup_Err_GameRunning" xml:space="preserve"><value>Tutup {0} di Steam sebelum mencopot file game-nya.</value></data>
+  <data name="Cleanup_Err_UnsafePath" xml:space="preserve"><value>Diblokir: jalur instalasi Steam tidak dapat diverifikasi sebagai folder aman di dalam steamapps\common.</value></data>
+  <data name="Cleanup_Err_Symlink" xml:space="preserve"><value>Diblokir: jalur instalasi berisi tautan simbolik atau junction direktori.</value></data>
+  <data name="Cleanup_Err_BackupOverlap" xml:space="preserve"><value>Diblokir: jalur tujuan tumpang tindih dengan folder Cadangan manifest Anda.</value></data>
+  <data name="Cleanup_Err_UnreadableSibling" xml:space="preserve"><value>Diblokir: file .lua game lain tidak dapat dibaca, sehingga manifest bersama tidak dapat diverifikasi dengan aman.</value></data>
+  <data name="Cleanup_Err_SharedInstallDir" xml:space="preserve"><value>Diblokir: folder instalasi game ini digunakan bersama aplikasi Steam lain yang terpasang. Copot pemasangannya melalui Steam.</value></data>
+  <data name="Cleanup_Err_Generic" xml:space="preserve"><value>Tidak dapat menyelesaikan pembersihan. Tutup Steam lalu coba lagi.</value></data>
+  <data name="Cleanup_Result_Nothing" xml:space="preserve"><value>Tidak ada file yang cocok untuk dihapus.</value></data>
+  <data name="Cleanup_Result_Freed" xml:space="preserve"><value>{0} dibebaskan</value></data>
+  <data name="Cleanup_Result_ManifestsDeleted" xml:space="preserve"><value>{0} manifest dihapus</value></data>
+  <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>{0} manifest bersama dipertahankan</value></data>
+  <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>Sebagian {0} dibersihkan, tetapi beberapa item gagal dihapus: {1}</value></data>
+  <data name="Cleanup_Result_Done" xml:space="preserve"><value>{0} selesai dibersihkan.</value></data>
 </root>

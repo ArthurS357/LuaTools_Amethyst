@@ -922,4 +922,43 @@ Tämä poistaa vain aktiiviset .lua-tiedostot kansiosta Steam\config\stplug-in. 
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} asennettiin, mutta sen varmuuskopiointi epäonnistui: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Asennettu varmuuskopiosta</value></data>
   <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>Lähde epäonnistui, joten {0} asennettiin manifestien varmuuskopiosta.</value></data>
+  <data name="Manage_RemoveGame" xml:space="preserve"><value>Poista peli…</value></data>
+  <data name="Builds_Card_OnePreset" xml:space="preserve"><value>1 tallennettu esiasetus</value></data>
+  <data name="Builds_Card_PresetsCount" xml:space="preserve"><value>{0} tallennettua esiasetusta</value></data>
+  <data name="Builds_Filter_All" xml:space="preserve"><value>Kaikki</value></data>
+  <data name="Builds_Filter_WithStoredBuilds" xml:space="preserve"><value>Tallennetuilla koosteilla</value></data>
+  <data name="Builds_Filter_WithoutActiveLua" xml:space="preserve"><value>Ei aktiivista luaa</value></data>
+  <data name="Builds_BackToList" xml:space="preserve"><value>Takaisin varastoihin</value></data>
+  <data name="Builds_RemoveFiles" xml:space="preserve"><value>Poista tiedostoja…</value></data>
+  <data name="Builds_Action_DeletePreset" xml:space="preserve"><value>Poista esiasetus</value></data>
+  <data name="Cleanup_Dialog_Title" xml:space="preserve"><value>Poista pelin tiedostot</value></data>
+  <data name="Cleanup_Size_Calculating" xml:space="preserve"><value>Lasketaan asennettua kokoa…</value></data>
+  <data name="Cleanup_Size_Estimated" xml:space="preserve"><value>Arvioitu vapautuva tila asennuksen poistossa: {0}</value></data>
+  <data name="Cleanup_ChooseScope" xml:space="preserve"><value>Valitse poistettavat kohteet</value></data>
+  <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>Poista vain pelin tiedostot</value></data>
+  <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>Poistaa pelin asennuskansion ja Steam-appmanifestin. Säilyttää .lua- ja .manifest-tiedostot.</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>Poista vain .lua-tiedosto</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Poistaa tiedoston config\stplug-in\{0}.lua. Säilyttää pelin tiedostot, .manifest-tiedostot ja tallennetut koosteet.</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>Poista vain .manifest-tiedostot</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>Poistaa tämän pelin omat .manifest-tiedostot depotcache-kansiosta. Säilyttää .lua-tiedoston ja jaetut manifestit.</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>Poista .lua + .manifest-tiedostot</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Desc" xml:space="preserve"><value>Poistaa aktiivisen .lua-tiedoston ja tämän pelin omat .manifest-tiedostot. Säilyttää pelin tiedostot ja jaetut manifestit.</value></data>
+  <data name="Cleanup_Scope_Everything_Title" xml:space="preserve"><value>Poista kaikki (peli + .lua + .manifest-tiedostot)</value></data>
+  <data name="Cleanup_Scope_Everything_Desc" xml:space="preserve"><value>Poistaa pelin Steamista ja poistaa sen .lua- sekä omat .manifest-tiedostot. Muiden pelien käyttämät jaetut manifestit säilytetään.</value></data>
+  <data name="Cleanup_BackupSafeNotice" xml:space="preserve"><value>Tämä toiminto ei koskaan muokkaa tai poista Manifestien varmuuskopio -holvia.</value></data>
+  <data name="Cleanup_Removing" xml:space="preserve"><value>Poistetaan valittuja tiedostoja…</value></data>
+  <data name="Cleanup_Action_Confirm" xml:space="preserve"><value>Poista</value></data>
+  <data name="Cleanup_Err_GameRunning" xml:space="preserve"><value>Sulje {0} Steamissa ennen pelin tiedostojen poistamista.</value></data>
+  <data name="Cleanup_Err_UnsafePath" xml:space="preserve"><value>Estetty: Steamin asennuspolkua ei voitu varmistaa turvalliseksi kansioksi steamapps\common-kansiossa.</value></data>
+  <data name="Cleanup_Err_Symlink" xml:space="preserve"><value>Estetty: asennuspolku sisältää symbolisen linkin tai kansioiden liitoksen.</value></data>
+  <data name="Cleanup_Err_BackupOverlap" xml:space="preserve"><value>Estetty: kohdepolku menee päällekkäin Manifestien varmuuskopio -kansion kanssa.</value></data>
+  <data name="Cleanup_Err_UnreadableSibling" xml:space="preserve"><value>Estetty: toisen pelin .lua-tiedostoa ei voitu lukea, joten jaettuja manifesteja ei voi tarkistaa turvallisesti.</value></data>
+  <data name="Cleanup_Err_SharedInstallDir" xml:space="preserve"><value>Estetty: tämän pelin asennuskansio on jaettu toisen asennetun Steam-sovelluksen kanssa. Poista se Steamin kautta.</value></data>
+  <data name="Cleanup_Err_Generic" xml:space="preserve"><value>Puhdistusta ei voitu suorittaa loppuun. Sulje Steam ja yritä uudelleen.</value></data>
+  <data name="Cleanup_Result_Nothing" xml:space="preserve"><value>Poistettavia vastaavia tiedostoja ei löytynyt.</value></data>
+  <data name="Cleanup_Result_Freed" xml:space="preserve"><value>{0} vapautettu</value></data>
+  <data name="Cleanup_Result_ManifestsDeleted" xml:space="preserve"><value>{0} manifesti(a) poistettu</value></data>
+  <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>{0} jaettua manifestia säilytetty</value></data>
+  <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>Peli {0} puhdistettiin osittain, mutta joitain kohteita ei voitu poistaa: {1}</value></data>
+  <data name="Cleanup_Result_Done" xml:space="preserve"><value>Puhdistettu: {0}.</value></data>
 </root>

@@ -3,6 +3,16 @@ using System.Text.RegularExpressions;
 
 namespace LuaToolsGui.Services;
 
+/// <summary>Resolved location and manifest metadata for a Steam app installed in a library.</summary>
+public sealed record SteamAppInstallLocation(
+    string LibraryRoot,
+    string SteamAppsDir,
+    string CommonDir,
+    string AcfPath,
+    string RawInstallDir,
+    long? SizeOnDisk,
+    IReadOnlyList<long> MountedDepotIds);
+
 /// <summary>
 /// Resolves where a Steam game is installed on disk by walking Valve's KeyValues files:
 /// registry Steam root → steamapps\libraryfolders.vdf (every library, possibly across drives) →
@@ -50,6 +60,137 @@ public partial class SteamLibraryService(SteamService steam)
         }
         catch { /* unreadable VDF/ACF or odd path — treat as not found */ }
         return null;
+    }
+
+    /// <summary>
+    /// Locate an app's <c>appmanifest_&lt;appid&gt;.acf</c> across all Steam libraries without pre-filtering
+    /// <see cref="SteamAppInstallLocation.RawInstallDir"/>, so callers can enforce fail-closed validation.
+    /// </summary>
+    public SteamAppInstallLocation? FindAppInstall(long appId)
+    {
+        if (appId <= 0) return null;
+        try
+        {
+            string? steamRoot = steam.EffectivePath;
+            if (steamRoot is null) return null;
+
+            foreach (string library in GetLibraryRoots(steamRoot))
+            {
+                string steamApps = Path.Combine(library, "steamapps");
+                string acf = Path.Combine(steamApps, $"appmanifest_{appId}.acf");
+                if (!File.Exists(acf)) continue;
+
+                string common = Path.Combine(steamApps, "common");
+                if (GameCleanupService.IsLink(acf))
+                    return new SteamAppInstallLocation(library, steamApps, common, acf, string.Empty, null, []);
+
+                string? text = ReadSharedText(acf);
+                if (text is null)
+                    return new SteamAppInstallLocation(library, steamApps, common, acf, string.Empty, null, []);
+
+                var m = InstallDirRegex().Match(text);
+                string rawInstallDir = m.Success ? Unescape(m.Groups[1].Value) : string.Empty;
+                long? sizeOnDisk = GameCleanupPolicy.ParseAcfSizeOnDisk(text);
+                IReadOnlyList<long> depots = GameCleanupPolicy.ParseAcfDepotIds(text);
+                return new SteamAppInstallLocation(library, steamApps, common, acf, rawInstallDir, sizeOnDisk, depots);
+            }
+        }
+        catch { /* unreadable VDF/ACF or odd path — treat as not found */ }
+        return null;
+    }
+
+    /// <summary>
+    /// All depot ids declared in <c>appmanifest_*.acf</c> files belonging to games other than
+    /// <paramref name="excludeAppId"/>, used to protect shared depots during cleanup.
+    /// </summary>
+    /// <returns>Null (fail-closed) when libraryfolders.vdf cannot be read, a library it lists is not on disk
+    /// (a disconnected drive hides that library's ACFs), a library could not be listed, or any other ACF could
+    /// not be read: its depots cannot be proven unshared, so the caller must not delete manifests.</returns>
+    public HashSet<long>? GetOtherAppDepotIds(long excludeAppId)
+    {
+        if (steam.EffectivePath is not { } steamRoot) return null;
+
+        // Libraries come from THIS read of the vdf, not a second one: GetLibraryRoots swallows a failed read
+        // (Steam rewriting the file) and would silently scan only the main library.
+        var roots = new List<string> { steamRoot };
+        string vdf = Path.Combine(steamRoot, "steamapps", "libraryfolders.vdf");
+        if (File.Exists(vdf))
+        {
+            if (ReadSharedText(vdf) is not { } vdfText) return null;
+            foreach (Match m in PathRegex().Matches(vdfText))
+            {
+                string library = Unescape(m.Groups[1].Value);
+                if (!Directory.Exists(Path.Combine(library, "steamapps"))) return null;
+                roots.Add(library);
+            }
+        }
+
+        var manifests = new List<(long AppId, string Path)>();
+        try
+        {
+            foreach (string library in roots.Distinct(StringComparer.OrdinalIgnoreCase))
+            {
+                string steamapps = Path.Combine(library, "steamapps");
+                if (!Directory.Exists(steamapps)) continue; // only the main root can reach here
+                foreach (string acf in Directory.EnumerateFiles(steamapps, "appmanifest_*.acf"))
+                    if (long.TryParse(Path.GetFileNameWithoutExtension(acf).AsSpan("appmanifest_".Length), out long appId))
+                        manifests.Add((appId, acf));
+            }
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { return null; }
+
+        return ReadDepotsOfOthers(manifests, excludeAppId);
+    }
+
+    private static HashSet<long>? ReadDepotsOfOthers(IEnumerable<(long AppId, string Path)> manifests, long excludeAppId)
+    {
+        var depots = new HashSet<long>();
+        foreach (var (appId, acfPath) in manifests)
+        {
+            if (appId == excludeAppId) continue;
+            // Read even when the ACF is a link: only reading, and claiming MORE depots is the safe direction.
+            if (ReadSharedText(acfPath) is not { } text) return null;
+            foreach (long depotId in GameCleanupPolicy.ParseAcfDepotIds(text))
+                depots.Add(depotId);
+        }
+        return depots;
+    }
+
+    /// <summary>
+    /// The resolved install folders of every OTHER app in the same library as <paramref name="install"/>.
+    /// Valve ships apps that share one folder (Half-Life 2, its episodes and Lost Coast all use
+    /// <c>installdir "Half-Life 2"</c>), so deleting one app's folder can delete another's game and saves.
+    /// </summary>
+    /// <returns>Null (fail-closed) when the library cannot be listed or any of its ACFs cannot be read.</returns>
+    public List<string>? GetOtherInstallDirsInLibrary(SteamAppInstallLocation install, long excludeAppId)
+    {
+        ArgumentNullException.ThrowIfNull(install);
+        try
+        {
+            var dirs = new List<string>();
+            foreach (string acf in Directory.EnumerateFiles(install.SteamAppsDir, "appmanifest_*.acf"))
+            {
+                string name = Path.GetFileNameWithoutExtension(acf);
+                if (long.TryParse(name.AsSpan("appmanifest_".Length), out long appId) && appId == excludeAppId) continue;
+                if (ReadSharedText(acf) is not { } text) return null;
+                var m = InstallDirRegex().Match(text);
+                if (m.Success && Unescape(m.Groups[1].Value) is { Length: > 0 } raw)
+                    dirs.Add(Path.Combine(install.CommonDir, raw));
+            }
+            return dirs;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { return null; }
+    }
+
+    private static string? ReadSharedText(string path)
+    {
+        try
+        {
+            using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+            using var reader = new StreamReader(fs);
+            return reader.ReadToEnd();
+        }
+        catch { return null; }
     }
 
     /// <summary>

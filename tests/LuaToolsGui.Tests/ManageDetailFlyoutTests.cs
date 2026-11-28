@@ -61,7 +61,7 @@ public class ManageDetailFlyoutTests(ThemeHost host)
         string scrollerXml = scroller.ToString();
         scrollerXml.Should().Contain("Manage_AboutHeader", "the About section must live inside the ScrollViewer");
         scrollerXml.Should().Contain("Manage_ActionsHeader", "the Actions section must live inside the ScrollViewer");
-        scrollerXml.Should().Contain("Manage_DeleteThisLua", "bottom action buttons must be scrollable and never clipped");
+        scrollerXml.Should().Contain("Manage_RemoveGame", "bottom action buttons must be scrollable and never clipped");
         scrollerXml.Should().NotContain("CloseDetailCommand", "the Close button must remain pinned outside the ScrollViewer");
         scrollerXml.Should().NotContain("MinHeightToVis", "About must stay visible inside the ScrollViewer rather than collapsing on short windows");
     }

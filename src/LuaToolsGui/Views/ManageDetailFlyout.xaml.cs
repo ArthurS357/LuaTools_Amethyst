@@ -8,6 +8,9 @@ public partial class ManageDetailFlyout : UserControl
 {
     public ManageDetailFlyout() => InitializeComponent();
 
-    private void Scrim_Click(object sender, System.Windows.Input.MouseButtonEventArgs e) =>
-        (DataContext as ManageViewModel)?.CloseDetailCommand.Execute(null);
+    private void Scrim_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        if (DataContext is ManageViewModel { IsRemoving: false } vm)
+            vm.CloseDetailCommand.Execute(null);
+    }
 }

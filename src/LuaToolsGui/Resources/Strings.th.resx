@@ -922,4 +922,43 @@ SHA-256 {3}
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>ติดตั้ง {0} แล้ว แต่การสำรองข้อมูลล้มเหลว: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>ติดตั้งจากข้อมูลสำรอง</value></data>
   <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>แหล่งที่มาล้มเหลว จึงติดตั้ง {0} จากข้อมูลสำรอง manifest ของคุณ</value></data>
+  <data name="Manage_RemoveGame" xml:space="preserve"><value>ลบเกม…</value></data>
+  <data name="Builds_Card_OnePreset" xml:space="preserve"><value>พรีเซ็ตที่บันทึกไว้ 1 รายการ</value></data>
+  <data name="Builds_Card_PresetsCount" xml:space="preserve"><value>พรีเซ็ตที่บันทึกไว้ {0} รายการ</value></data>
+  <data name="Builds_Filter_All" xml:space="preserve"><value>ทั้งหมด</value></data>
+  <data name="Builds_Filter_WithStoredBuilds" xml:space="preserve"><value>มีบิลด์ที่เก็บไว้</value></data>
+  <data name="Builds_Filter_WithoutActiveLua" xml:space="preserve"><value>ไม่มี lua ที่ใช้งาน</value></data>
+  <data name="Builds_BackToList" xml:space="preserve"><value>กลับไปที่ดีโป</value></data>
+  <data name="Builds_RemoveFiles" xml:space="preserve"><value>ลบไฟล์…</value></data>
+  <data name="Builds_Action_DeletePreset" xml:space="preserve"><value>ลบพรีเซ็ต</value></data>
+  <data name="Cleanup_Dialog_Title" xml:space="preserve"><value>ลบไฟล์เกม</value></data>
+  <data name="Cleanup_Size_Calculating" xml:space="preserve"><value>กำลังคำนวณขนาดที่ติดตั้ง…</value></data>
+  <data name="Cleanup_Size_Estimated" xml:space="preserve"><value>พื้นที่โดยประมาณที่จะได้คืนเมื่อถอนการติดตั้ง: {0}</value></data>
+  <data name="Cleanup_ChooseScope" xml:space="preserve"><value>เลือกสิ่งที่ต้องการลบ</value></data>
+  <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>ถอนการติดตั้งเฉพาะไฟล์เกม</value></data>
+  <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>ลบโฟลเดอร์ติดตั้งเกมและไฟล์ appmanifest ของ Steam โดยยังคงเก็บไฟล์ .lua และ .manifest ไว้</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>ลบเฉพาะไฟล์ .lua</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>ลบ config\stplug-in\{0}.lua โดยยังคงเก็บไฟล์เกม ไฟล์ .manifest และบิลด์ที่บันทึกไว้</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>ลบเฉพาะไฟล์ .manifest</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>ลบไฟล์ .manifest เฉพาะของเกมนี้ใน depotcache โดยยังคงเก็บไฟล์ .lua และ manifest ที่ใช้ร่วมกันไว้</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>ลบไฟล์ .lua + .manifest</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Desc" xml:space="preserve"><value>ลบไฟล์ .lua ที่ใช้งานอยู่และไฟล์ .manifest เฉพาะของเกมนี้ โดยยังคงเก็บไฟล์เกมและ manifest ที่ใช้ร่วมกันไว้</value></data>
+  <data name="Cleanup_Scope_Everything_Title" xml:space="preserve"><value>ลบทั้งหมด (เกม + .lua + ไฟล์ .manifest)</value></data>
+  <data name="Cleanup_Scope_Everything_Desc" xml:space="preserve"><value>ถอนการติดตั้งเกมออกจาก Steam และลบไฟล์ .lua รวมถึงไฟล์ .manifest เฉพาะของเกมนี้ โดยยังคงรักษา manifest ที่ใช้ร่วมกับเกมอื่นไว้</value></data>
+  <data name="Cleanup_BackupSafeNotice" xml:space="preserve"><value>การดำเนินการนี้จะไม่แตะต้องหรือลบคลังสำรองข้อมูล manifest ของคุณ</value></data>
+  <data name="Cleanup_Removing" xml:space="preserve"><value>กำลังลบไฟล์ที่เลือก…</value></data>
+  <data name="Cleanup_Action_Confirm" xml:space="preserve"><value>ลบ</value></data>
+  <data name="Cleanup_Err_GameRunning" xml:space="preserve"><value>ปิด {0} ใน Steam ก่อนถอนการติดตั้งไฟล์เกม</value></data>
+  <data name="Cleanup_Err_UnsafePath" xml:space="preserve"><value>ถูกบล็อก: ไม่สามารถยืนยันได้ว่าเส้นทางติดตั้ง Steam เป็นโฟลเดอร์ที่ปลอดภัยภายใน steamapps\common</value></data>
+  <data name="Cleanup_Err_Symlink" xml:space="preserve"><value>ถูกบล็อก: เส้นทางติดตั้งมี symbolic link หรือ directory junction</value></data>
+  <data name="Cleanup_Err_BackupOverlap" xml:space="preserve"><value>ถูกบล็อก: เส้นทางปลายทางซ้อนทับกับโฟลเดอร์สำรองข้อมูล manifest ของคุณ</value></data>
+  <data name="Cleanup_Err_UnreadableSibling" xml:space="preserve"><value>ถูกบล็อก: ไม่สามารถอ่านไฟล์ .lua ของเกมอื่นได้ จึงไม่สามารถตรวจสอบ manifest ที่ใช้ร่วมกันได้อย่างปลอดภัย</value></data>
+  <data name="Cleanup_Err_SharedInstallDir" xml:space="preserve"><value>ถูกบล็อก: โฟลเดอร์ติดตั้งของเกมนี้ใช้ร่วมกับแอป Steam อื่นที่ติดตั้งอยู่ โปรดถอนการติดตั้งผ่าน Steam</value></data>
+  <data name="Cleanup_Err_Generic" xml:space="preserve"><value>ไม่สามารถทำความสะอาดได้เสร็จสมบูรณ์ ปิด Steam แล้วลองอีกครั้ง</value></data>
+  <data name="Cleanup_Result_Nothing" xml:space="preserve"><value>ไม่พบไฟล์ที่ตรงกันสำหรับลบ</value></data>
+  <data name="Cleanup_Result_Freed" xml:space="preserve"><value>ได้พื้นที่คืน {0}</value></data>
+  <data name="Cleanup_Result_ManifestsDeleted" xml:space="preserve"><value>ลบ manifest แล้ว {0} ไฟล์</value></data>
+  <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>เก็บรักษา manifest ที่ใช้ร่วมกัน {0} ไฟล์</value></data>
+  <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>ทำความสะอาด {0} บางส่วนแล้ว แต่ไม่สามารถลบบางรายการได้: {1}</value></data>
+  <data name="Cleanup_Result_Done" xml:space="preserve"><value>ทำความสะอาด {0} เสร็จสิ้น</value></data>
 </root>

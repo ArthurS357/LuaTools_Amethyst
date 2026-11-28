@@ -1,0 +1,340 @@
+<ui:FluentWindow
+    x:Class="LuaToolsGui.Views.GameCleanupDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:res="clr-namespace:LuaToolsGui.Resources"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:vm="clr-namespace:LuaToolsGui.ViewModels"
+    Title="{x:Static res:Strings.Cleanup_Dialog_Title}"
+    Width="540"
+    MaxHeight="700"
+    d:DataContext="{d:DesignInstance Type=vm:GameCleanupDialogViewModel}"
+    ExtendsContentIntoTitleBar="True"
+    ResizeMode="NoResize"
+    SizeToContent="Height"
+    WindowBackdropType="Mica"
+    WindowCornerPreference="Round"
+    WindowStartupLocation="CenterOwner"
+    mc:Ignorable="d">
+
+    <ui:FluentWindow.Resources>
+        <Style x:Key="ScopeOptionRadioStyle" TargetType="RadioButton">
+            <Setter Property="Margin" Value="{DynamicResource SpaceTop8}" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="FocusVisualStyle" Value="{StaticResource DefaultControlFocusVisualStyle}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border
+                            x:Name="Card"
+                            Padding="{DynamicResource SpaceAll12}"
+                            Background="{StaticResource SurfaceCardBrush}"
+                            BorderBrush="{StaticResource BorderDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{DynamicResource RadiusMedium}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Border
+                                    x:Name="Ring"
+                                    Width="16"
+                                    Height="16"
+                                    Margin="{DynamicResource SpaceTop4}"
+                                    VerticalAlignment="Top"
+                                    BorderBrush="{StaticResource BorderStrongBrush}"
+                                    BorderThickness="2"
+                                    CornerRadius="{DynamicResource RadiusLarge}">
+                                    <Border
+                                        x:Name="Dot"
+                                        Width="8"
+                                        Height="8"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Background="{StaticResource AccentBrush}"
+                                        CornerRadius="{DynamicResource RadiusSmall}"
+                                        Visibility="Collapsed" />
+                                </Border>
+                                <ContentPresenter Grid.Column="1" Margin="{DynamicResource SpaceLeft12}" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Card" Property="Background" Value="{StaticResource SurfaceCardHoverBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Card" Property="Background" Value="{StaticResource AccentTintBrush}" />
+                                <Setter TargetName="Card" Property="BorderBrush" Value="{StaticResource AccentOutlineBrush}" />
+                                <Setter TargetName="Ring" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                                <Setter TargetName="Dot" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Card" Property="Opacity" Value="0.45" />
+                                <Setter Property="Cursor" Value="Arrow" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </ui:FluentWindow.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar
+            Grid.Row="0"
+            ShowMaximize="False"
+            ShowMinimize="False"
+            Title="{x:Static res:Strings.Cleanup_Dialog_Title}" />
+
+        <Grid x:Name="Root" Grid.Row="1" Margin="{DynamicResource SpaceAll16}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Game header + estimated size -->
+            <StackPanel Grid.Row="0">
+                <TextBlock
+                    Style="{StaticResource TextSubtitle}"
+                    Text="{Binding GameName}"
+                    TextTrimming="CharacterEllipsis"
+                    TextWrapping="NoWrap" />
+                <TextBlock
+                    Margin="{DynamicResource SpaceTop4}"
+                    Foreground="{StaticResource TextDimBrush}"
+                    Style="{StaticResource TextCaption}"
+                    Text="{Binding AppId, StringFormat={x:Static res:Strings.Common_AppId}}" />
+                <StackPanel
+                    Margin="{DynamicResource SpaceTop8}"
+                    Orientation="Horizontal"
+                    Visibility="{Binding ShowSizeLine, Converter={StaticResource BoolToVis}}">
+                    <ui:ProgressRing
+                        Width="14"
+                        Height="14"
+                        Margin="{DynamicResource SpaceAll4}"
+                        VerticalAlignment="Center"
+                        IsIndeterminate="True"
+                        Visibility="{Binding IsInspecting, Converter={StaticResource BoolToVis}}" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource TextSecondaryBrush}"
+                        Style="{StaticResource TextCaption}"
+                        Text="{Binding SizeLabel}" />
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Scopes + backup vault guarantee -->
+            <ScrollViewer
+                Grid.Row="1"
+                Margin="{DynamicResource SpaceTop12}"
+                VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock
+                        Foreground="{StaticResource TextSecondaryBrush}"
+                        Style="{StaticResource TextBodyStrong}"
+                        Text="{x:Static res:Strings.Cleanup_ChooseScope}" />
+
+                    <!-- Manage 1: Uninstall game files only -->
+                    <RadioButton
+                        GroupName="CleanupScope"
+                        IsChecked="{Binding IsGameOnlySelected, Mode=TwoWay}"
+                        IsEnabled="{Binding CanSelectGameOnly}"
+                        Style="{StaticResource ScopeOptionRadioStyle}"
+                        Visibility="{Binding ShowGameOnlyOption, Converter={StaticResource BoolToVis}}">
+                        <StackPanel>
+                            <TextBlock
+                                Foreground="{StaticResource TextPrimaryBrush}"
+                                Style="{StaticResource TextBodyStrong}"
+                                Text="{x:Static res:Strings.Cleanup_Scope_GameOnly_Title}" />
+                            <TextBlock
+                                Margin="{DynamicResource SpaceTop4}"
+                                Style="{StaticResource TextCaption}"
+                                Text="{x:Static res:Strings.Cleanup_Scope_GameOnly_Desc}" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <!-- Depots 1: Lua + exclusive manifests (in Manage it sits at #3; both bind identically, order adjusted cleanly below) -->
+                    <RadioButton
+                        GroupName="CleanupScope"
+                        IsChecked="{Binding IsLuaAndManifestsSelected, Mode=TwoWay}"
+                        IsEnabled="{Binding CanSelectLuaAndManifests}"
+                        Style="{StaticResource ScopeOptionRadioStyle}"
+                        Visibility="{Binding ShowManifestsOnlyOption, Converter={StaticResource BoolToVis}}">
+                        <StackPanel>
+                            <TextBlock
+                                Foreground="{StaticResource TextPrimaryBrush}"
+                                Style="{StaticResource TextBodyStrong}"
+                                Text="{x:Static res:Strings.Cleanup_Scope_LuaAndManifests_Title}" />
+                            <TextBlock
+                                Margin="{DynamicResource SpaceTop4}"
+                                Style="{StaticResource TextCaption}"
+                                Text="{x:Static res:Strings.Cleanup_Scope_LuaAndManifests_Desc}" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <!-- Depots 2: Manifests only -->
+                    <RadioButton
+                        GroupName="CleanupScope"
+                        IsChecked="{Binding IsManifestsOnlySelected, Mode=TwoWay}"
+                        IsEnabled="{Binding CanSelectManifestsOnly}"
+                        Style="{StaticResource ScopeOptionRadioStyle}"
+                        Visibility="{Binding ShowManifestsOnlyOption, Converter={StaticResource BoolToVis}}">
+                        <StackPanel>
+                            <TextBlock
+                                Foreground="{StaticResource TextPrimaryBrush}"
+                                Style="{StaticResource TextBodyStrong}"
+                                Text="{x:Static res:Strings.Cleanup_Scope_ManifestsOnly_Title}" />
+                            <TextBlock
+                                Margin="{DynamicResource SpaceTop4}"
+                                Style="{StaticResource TextCaption}"
+                                Text="{x:Static res:Strings.Cleanup_Scope_ManifestsOnly_Desc}" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <!-- Shared: Lua only (Manage #2, Depots #3) -->
+                    <RadioButton
+                        GroupName="CleanupScope"
+                        IsChecked="{Binding IsLuaOnlySelected, Mode=TwoWay}"
+                        IsEnabled="{Binding CanSelectLuaOnly}"
+                        Style="{StaticResource ScopeOptionRadioStyle}">
+                        <StackPanel>
+                            <TextBlock
+                                Foreground="{StaticResource TextPrimaryBrush}"
+                                Style="{StaticResource TextBodyStrong}"
+                                Text="{x:Static res:Strings.Cleanup_Scope_LuaOnly_Title}" />
+                            <TextBlock
+                                Margin="{DynamicResource SpaceTop4}"
+                                Style="{StaticResource TextCaption}"
+                                Text="{Binding LuaOnlyDesc}" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <!-- Manage 3: Lua + exclusive manifests -->
+                    <RadioButton
+                        GroupName="CleanupScope"
+                        IsChecked="{Binding IsLuaAndManifestsSelected, Mode=TwoWay}"
+                        IsEnabled="{Binding CanSelectLuaAndManifests}"
+                        Style="{StaticResource ScopeOptionRadioStyle}"
+                        Visibility="{Binding ShowGameOnlyOption, Converter={StaticResource BoolToVis}}">
+                        <StackPanel>
+                            <TextBlock
+                                Foreground="{StaticResource TextPrimaryBrush}"
+                                Style="{StaticResource TextBodyStrong}"
+                                Text="{x:Static res:Strings.Cleanup_Scope_LuaAndManifests_Title}" />
+                            <TextBlock
+                                Margin="{DynamicResource SpaceTop4}"
+                                Style="{StaticResource TextCaption}"
+                                Text="{x:Static res:Strings.Cleanup_Scope_LuaAndManifests_Desc}" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <!-- Manage 4: Delete everything -->
+                    <RadioButton
+                        GroupName="CleanupScope"
+                        IsChecked="{Binding IsEverythingSelected, Mode=TwoWay}"
+                        IsEnabled="{Binding CanSelectEverything}"
+                        Style="{StaticResource ScopeOptionRadioStyle}"
+                        Visibility="{Binding ShowEverythingOption, Converter={StaticResource BoolToVis}}">
+                        <StackPanel>
+                            <TextBlock
+                                Foreground="{StaticResource DangerBrush}"
+                                Style="{StaticResource TextBodyStrong}"
+                                Text="{x:Static res:Strings.Cleanup_Scope_Everything_Title}" />
+                            <TextBlock
+                                Margin="{DynamicResource SpaceTop4}"
+                                Style="{StaticResource TextCaption}"
+                                Text="{x:Static res:Strings.Cleanup_Scope_Everything_Desc}" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <!-- Explicit Manifest Backup vault safety note -->
+                    <Border
+                        Margin="{DynamicResource SpaceTop12}"
+                        Padding="{DynamicResource SpaceAll12}"
+                        Background="{StaticResource InfoTintBrush}"
+                        BorderBrush="{StaticResource InfoOutlineBrush}"
+                        BorderThickness="1"
+                        CornerRadius="{DynamicResource RadiusMedium}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <ui:SymbolIcon
+                                VerticalAlignment="Top"
+                                FontSize="{DynamicResource FontSizeSubtitle}"
+                                Foreground="{StaticResource InfoBrush}"
+                                Symbol="ShieldCheckmark24" />
+                            <TextBlock
+                                Grid.Column="1"
+                                Margin="{DynamicResource SpaceLeft8}"
+                                Foreground="{StaticResource TextSecondaryBrush}"
+                                Style="{StaticResource TextCaption}"
+                                Text="{x:Static res:Strings.Cleanup_BackupSafeNotice}" />
+                        </Grid>
+                    </Border>
+
+                    <!-- Fail-closed block / error message -->
+                    <Border
+                        Margin="{DynamicResource SpaceTop12}"
+                        Padding="{DynamicResource SpaceAll12}"
+                        Background="{StaticResource WarningTintBrush}"
+                        BorderBrush="{StaticResource WarningOutlineBrush}"
+                        BorderThickness="1"
+                        CornerRadius="{DynamicResource RadiusMedium}"
+                        Visibility="{Binding ErrorMessage, Converter={StaticResource NullToCollapsed}}">
+                        <TextBlock
+                            Foreground="{StaticResource DangerBrush}"
+                            Style="{StaticResource TextCaption}"
+                            Text="{Binding ErrorMessage}" />
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Footer -->
+            <Grid Grid.Row="2" Margin="{DynamicResource SpaceTop16}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal"
+                    Visibility="{Binding IsRemoving, Converter={StaticResource BoolToVis}}">
+                    <ui:ProgressRing Width="16" Height="16" IsIndeterminate="True" />
+                    <TextBlock
+                        Margin="{DynamicResource SpaceLeft8}"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource TextCaption}"
+                        Text="{x:Static res:Strings.Cleanup_Removing}" />
+                </StackPanel>
+                <StackPanel
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <ui:Button
+                        Command="{Binding CancelCommand}"
+                        Content="{x:Static res:Strings.Builds_Action_Cancel}"
+                        IsCancel="True"
+                        IsEnabled="{Binding NotRemoving}" />
+                    <ui:Button
+                        Margin="{DynamicResource SpaceLeft8}"
+                        Appearance="Danger"
+                        Command="{Binding ConfirmCleanupCommand}"
+                        Content="{x:Static res:Strings.Cleanup_Action_Confirm}"
+                        Icon="{ui:SymbolIcon Delete24}" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</ui:FluentWindow>

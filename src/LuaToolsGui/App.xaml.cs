@@ -122,6 +122,7 @@ public partial class App : Application
                 services.AddSingleton<LuaInstaller>();
                 services.AddSingleton<Services.Backups.ManifestBackupService>();
                 services.AddSingleton<SteamLibraryService>();
+                services.AddSingleton<GameCleanupService>();
                 services.AddSingleton<DepotCacheMigrationService>();
                 services.AddSingleton<DenuvoFixService>();
                 services.AddSingleton<SteamGameLauncher>();
@@ -168,6 +169,7 @@ public partial class App : Application
                 services.AddSingleton<ManifestBackupViewModel>();
                 services.AddSingleton<ManageViewModel>();
                 services.AddSingleton<BuildsViewModel>();
+                services.AddTransient<GameCleanupDialogViewModel>();
                 services.AddTransient<LaunchOptionsViewModel>(); // one per dialog
                 services.AddTransient<LaunchOverridesViewModel>(); // one per dialog
                 services.AddSingleton<Services.Backups.SaveBackupService>();
@@ -1118,6 +1120,25 @@ public partial class App : Application
         manage.NavigateToBuilds = appId =>
             Dispatcher.Invoke(() => { window.NavigateToBuilds(); _ = builds.SelectAppAsync(appId); });
 
+        // Consolidated game cleanup / uninstall dialogs (Manage: 4 scopes; Depots: 3 scopes).
+        var cleanup = _host.Services.GetRequiredService<GameCleanupService>();
+        manage.OpenCleanupDialog = (appId, name) => Dispatcher.Invoke(() =>
+        {
+            var dialog = new GameCleanupDialog(
+                _host.Services.GetRequiredService<GameCleanupDialogViewModel>(),
+                appId, name, GameCleanupDialogMode.Manage)
+            { Owner = window };
+            return Task.FromResult(dialog.ShowDialog() == true ? dialog.Outcome : null);
+        });
+        builds.OpenCleanupDialog = (appId, name) => Dispatcher.Invoke(() =>
+        {
+            var dialog = new GameCleanupDialog(
+                _host.Services.GetRequiredService<GameCleanupDialogViewModel>(),
+                appId, name, GameCleanupDialogMode.Depots)
+            { Owner = window };
+            return Task.FromResult(dialog.ShowDialog() == true ? dialog.Outcome : null);
+        });
+
         // Manage flyout "Launch options…" → modal editor over Steam's appinfo cache.
         manage.OpenLaunchOptions = (appId, name) => Dispatcher.Invoke(() =>
         {
@@ -1162,6 +1183,15 @@ public partial class App : Application
         home.NavigateToGame = openInManage;
         download.NavigateToGame = openInManage;
         builds.NavigateToManage = openInManage; // Builds "Manage" button — the reverse of "Manage Build"
+
+        cleanup.GameCleaned += (_, result) => Dispatcher.InvokeAsync(async () =>
+        {
+            if (!manage.IsRemoving && (result.LuaDeleted || result.GameFilesDeleted || result.AcfDeleted))
+                await manage.LoadAsync();
+            if (!builds.IsRemoving && result.LuaDeleted)
+                await builds.LoadAsync();
+            await home.RefreshLibraryAsync();
+        });
 
         // Dragging a SteamDB / Steam store link onto either drop box installs that appid. Routed through
         // HandleProtocolUrl rather than calling ProtocolInstall directly, so a dropped link and

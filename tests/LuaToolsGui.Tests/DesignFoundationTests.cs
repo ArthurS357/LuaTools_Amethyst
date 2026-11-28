@@ -266,15 +266,16 @@ public class DesignFoundationTests(ThemeHost host)
 
     /// <summary>
     /// Literal values still hardcoded in Views/*.xaml (pages AND dialogs, which live there) and MainWindow.xaml.
-    /// Measured 2026-11-23: 209 / 485 / 50 before any page moved (Lote B), 2 / 149 / 7 after Lote H2.
-    /// What is left on purpose: FontSize 42 (BuildsDetailPane hero number) and 32 (ManageView empty icon);
+    /// Measured 2026-11-23: 209 / 485 / 50 before any page moved (Lote B), 2 / 149 / 7 after Lote H2,
+    /// 1 / 126 / 6 after full-width Depots redesign and consolidated cleanup modal.
+    /// What is left on purpose: FontSize 32 (ManageView empty icon);
     /// CornerRadius for top-only corners (no token for a partial radius), the circular avatar and a 3 px bar;
     /// Margin/Padding mostly in DownloadView and ManageView (Lotes F, G) plus each page's root margin.
     /// They never go up; lower them when one of those goes.
     /// </summary>
-    private const int FontSizeCeiling = 2;
-    private const int MarginPaddingCeiling = 149;
-    private const int CornerRadiusCeiling = 7;
+    private const int FontSizeCeiling = 1;
+    private const int MarginPaddingCeiling = 126;
+    private const int CornerRadiusCeiling = 6;
 
     private static readonly (string Name, Regex Pattern, int Ceiling)[] Literals =
     [

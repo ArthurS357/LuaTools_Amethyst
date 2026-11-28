@@ -8,224 +8,393 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:views="clr-namespace:LuaToolsGui.Views"
     xmlns:vm="clr-namespace:LuaToolsGui.ViewModels"
+    xmlns:vwp="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel"
     d:DataContext="{d:DesignInstance Type=vm:BuildsViewModel}"
     TextElement.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     mc:Ignorable="d">
 
     <UserControl.Resources>
         <!-- Results-per-page item display: shows the localized label while the bound value stays the
-             English key ("All"), which PagedListViewModel parses. Same as Manage. -->
+             English key ("All"), which PagedListViewModel parses. Same as Manage & Fixes. -->
         <DataTemplate x:Key="FilterOptionTemplate">
             <TextBlock Text="{Binding Converter={StaticResource FilterOptionDisplay}}" />
         </DataTemplate>
-
-
-        <!-- One game in the left-hand list: cover thumb, name, and what build it's running. -->
-        <DataTemplate x:Key="GameRowTemplate">
-            <Grid Margin="0,0,0,2" DataContextChanged="GameRow_DataContextChanged" Loaded="GameRow_Loaded">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Border
-                    Width="46"
-                    Height="22"
-                    Background="{StaticResource SurfaceCardHoverBrush}"
-                    ClipToBounds="True"
-                    CornerRadius="3">
-                    <Image Source="{Binding Cover}" Stretch="UniformToFill" />
-                </Border>
-                <StackPanel Grid.Column="1" Margin="{DynamicResource SpaceLeft8}">
-                    <TextBlock
-                        FontSize="{DynamicResource FontSizeBody}"
-                        Text="{Binding Name}"
-                        TextTrimming="CharacterEllipsis" />
-                    <TextBlock
-                        FontSize="{DynamicResource FontSizeCaption}"
-                        Foreground="{StaticResource AccentBrush}"
-                        Text="{Binding VariantBadge}"
-                        TextTrimming="CharacterEllipsis"
-                        Visibility="{Binding VariantBadge, Converter={StaticResource NullToCollapsed}}" />
-                    <TextBlock
-                        FontSize="{DynamicResource FontSizeCaption}"
-                        Foreground="{StaticResource TextDimBrush}"
-                        Text="{x:Static res:Strings.Builds_SavedBuildsNoLua}"
-                        TextTrimming="CharacterEllipsis"
-                        Visibility="{Binding SavedBuildsOnly, Converter={StaticResource BoolToVis}}" />
-                </StackPanel>
-
-                <!-- Remove-game affordance. Deliberately quiet: it deletes files, so it must not sit at
-                     the same visual weight as selecting a row, but it also cannot be hidden behind a
-                     right-click nobody discovers. Held at 0 opacity until the pointer is over the row,
-                     which keeps the list clean while making it obvious the moment you reach for it.
-
-                     Bound through the ListBox rather than the row: the command lives on the page's
-                     view-model, and the row's DataContext is the game — which is what it passes back
-                     as the parameter. -->
-                <ui:Button
-                    x:Name="RemoveGameButton"
-                    Grid.Column="2"
-                    Width="26"
-                    Height="26"
-                    Padding="0"
-                    VerticalAlignment="Center"
-                    Appearance="Transparent"
-                    Command="{Binding DataContext.RemoveGameCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
-                    CommandParameter="{Binding}"
-                    Icon="{ui:SymbolIcon Delete24}"
-                    ToolTip="{x:Static res:Strings.Builds_RemoveGame_Tip}">
-                    <ui:Button.Style>
-                        <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
-                            <!-- Opacity and Foreground are SETTERS, not attributes on the element. A local
-                                 value outranks a style trigger in WPF, so writing Opacity="0" inline would
-                                 pin the button invisible and the reveal triggers below would never win. -->
-                            <Setter Property="Opacity" Value="0" />
-                            <Setter Property="Foreground" Value="{StaticResource TextDimBrush}" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
-                                    <Setter Property="Opacity" Value="1" />
-                                </DataTrigger>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Foreground" Value="{StaticResource DangerBrush}" />
-                                </Trigger>
-                                <!-- Keyboard users never raise IsMouseOver, so focus has to reveal it too;
-                                     otherwise the control is reachable by Tab but invisible while focused. -->
-                                <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                                    <Setter Property="Opacity" Value="1" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ui:Button.Style>
-                </ui:Button>
-            </Grid>
-        </DataTemplate>
-
     </UserControl.Resources>
 
     <Grid x:Name="Root" Margin="8,16,16,8">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+        <!-- ── State 1: Full-width 3-column game grid ───────────────── -->
+        <Grid Visibility="{Binding IsShowingGrid, Converter={StaticResource BoolToVis}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-        <!-- Header -->
-        <HeaderedContentControl
-            Grid.Row="0"
-            Header="{x:Static res:Strings.Builds_Title}"
-            Style="{StaticResource PageHeaderStyle}"
-            Tag="{x:Static res:Strings.Builds_Subtitle}">
-            <!-- Save lives up here rather than in a banner over the depot list: it only appears mid-edit,
-                 and anything that appears/disappears inside the page body shoves the whole list up and
-                 down. In the header row nothing below it moves.
-
-                 Both buttons key off HasEditBase, which now means exactly "a build or preset is part-way
-                 through an edit". Editing the DEFAULT shows neither: it follows the live lua by itself,
-                 so there is nothing to save it to. -->
-            <StackPanel Orientation="Horizontal">
+            <!-- Header -->
+            <HeaderedContentControl
+                Grid.Row="0"
+                Header="{x:Static res:Strings.Builds_Title}"
+                Style="{StaticResource PageHeaderStyle}"
+                Tag="{x:Static res:Strings.Builds_Subtitle}">
                 <ui:Button
-                    Appearance="Primary"
-                    Command="{Binding SaveInPlaceCommand}"
-                    Content="{Binding SaveInPlaceLabel}"
-                    Icon="{ui:SymbolIcon Save24}"
-                    Visibility="{Binding HasEditBase, Converter={StaticResource BoolToVis}}" />
-                <ui:Button
-                    Margin="{DynamicResource SpaceLeft8}"
-                    Command="{Binding SaveAsPresetCommand}"
-                    Content="{x:Static res:Strings.Builds_Action_SaveAsNew}"
-                    Icon="{ui:SymbolIcon Bookmark24}"
-                    Visibility="{Binding HasEditBase, Converter={StaticResource BoolToVis}}" />
-                <!-- Jump to this game on the Manage page (its detail flyout) — the return trip for
-                     Manage's "Manage Build". Disabled rather than hidden so the header doesn't reflow
-                     when you select a game. -->
-                <ui:Button
-                    Margin="{DynamicResource SpaceLeft8}"
-                    Command="{Binding OpenInManageCommand}"
-                    Content="{x:Static res:Strings.Nav_Manage}"
-                    Icon="{ui:SymbolIcon Games24}"
-                    IsEnabled="{Binding HasSelection}" />
-                <ui:Button
-                    Margin="{DynamicResource SpaceLeft8}"
                     Command="{Binding RefreshCommand}"
                     Content="{x:Static res:Strings.Manage_Refresh}"
                     Icon="{ui:SymbolIcon ArrowSync24}" />
+            </HeaderedContentControl>
+
+            <!-- Search + instant local filter pills (zero network calls) -->
+            <StackPanel Grid.Row="1">
+                <ui:TextBox
+                    Icon="{ui:SymbolIcon Search24}"
+                    PlaceholderText="{x:Static res:Strings.Common_SearchPlaceholder}"
+                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+                <WrapPanel Margin="{DynamicResource SpaceTop12}" Orientation="Horizontal">
+                    <ui:Button
+                        Margin="{DynamicResource SpaceAll4}"
+                        Command="{Binding SetQuickFilterCommand}"
+                        CommandParameter="{x:Static vm:BuildsQuickFilter.All}"
+                        Content="{x:Static res:Strings.Builds_Filter_All}">
+                        <ui:Button.Style>
+                            <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsFilterAll}" Value="True">
+                                        <Setter Property="Appearance" Value="Primary" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ui:Button.Style>
+                    </ui:Button>
+                    <ui:Button
+                        Margin="{DynamicResource SpaceAll4}"
+                        Command="{Binding SetQuickFilterCommand}"
+                        CommandParameter="{x:Static vm:BuildsQuickFilter.WithStoredBuilds}"
+                        Content="{x:Static res:Strings.Builds_Filter_WithStoredBuilds}">
+                        <ui:Button.Style>
+                            <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsFilterWithStoredBuilds}" Value="True">
+                                        <Setter Property="Appearance" Value="Primary" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ui:Button.Style>
+                    </ui:Button>
+                    <ui:Button
+                        Margin="{DynamicResource SpaceAll4}"
+                        Command="{Binding SetQuickFilterCommand}"
+                        CommandParameter="{x:Static vm:BuildsQuickFilter.WithoutActiveLua}"
+                        Content="{x:Static res:Strings.Builds_Filter_WithoutActiveLua}">
+                        <ui:Button.Style>
+                            <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsFilterWithoutActiveLua}" Value="True">
+                                        <Setter Property="Appearance" Value="Primary" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ui:Button.Style>
+                    </ui:Button>
+                </WrapPanel>
             </StackPanel>
-        </HeaderedContentControl>
 
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="260" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+            <!-- Loading state -->
+            <ContentControl
+                Grid.Row="2"
+                Content="{x:Static res:Strings.Manage_LoadingGames}"
+                Style="{StaticResource LoadingStateStyle}"
+                Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}" />
 
-            <!-- ── Left: game picker ────────────────────────────────── -->
-            <Border Padding="{DynamicResource SpaceAll8}" Style="{StaticResource CardStyle}">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <ui:TextBox
-                        Icon="{ui:SymbolIcon Search24}"
-                        PlaceholderText="{x:Static res:Strings.Common_SearchPlaceholder}"
-                        Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+            <!-- Empty state -->
+            <HeaderedContentControl
+                Grid.Row="2"
+                Header="{Binding EmptyMessage}"
+                Style="{StaticResource EmptyStateStyle}"
+                Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}" />
 
-                    <TextBlock
-                        Grid.Row="1"
-                        Margin="4,16,4,0"
-                        VerticalAlignment="Top"
-                        FontSize="{DynamicResource FontSizeCaption}"
-                        Foreground="{StaticResource TextDimBrush}"
-                        Text="{Binding EmptyMessage}"
-                        TextWrapping="Wrap"
-                        Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}" />
+            <!-- Virtualized 3-column game grid -->
+            <vwp:VirtualizingItemsControl
+                x:Name="GameGrid"
+                Grid.Row="2"
+                Margin="{DynamicResource SpaceTop12}"
+                ItemsSource="{Binding Items}"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                Visibility="{Binding ShowItems, Converter={StaticResource BoolToVis}}"
+                VirtualizingPanel.CacheLengthUnit="Page"
+                VirtualizingPanel.ScrollUnit="Pixel"
+                VirtualizingPanel.VirtualizationMode="Standard">
+                <vwp:VirtualizingItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <vwp:VirtualizingWrapPanel
+                            Orientation="Horizontal"
+                            SpacingMode="StartAndEndOnly"
+                            StretchItems="False" />
+                    </ItemsPanelTemplate>
+                </vwp:VirtualizingItemsControl.ItemsPanel>
+                <vwp:VirtualizingItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid
+                            x:Name="CardRoot"
+                            Width="260"
+                            Height="220"
+                            Margin="{DynamicResource SpaceAll8}"
+                            DataContextChanged="GameRow_DataContextChanged"
+                            Loaded="GameRow_Loaded">
+                            <Button
+                                HorizontalContentAlignment="Stretch"
+                                VerticalContentAlignment="Stretch"
+                                Background="{StaticResource SurfaceCardBrush}"
+                                BorderBrush="{StaticResource BorderDefaultBrush}"
+                                BorderThickness="1"
+                                Command="{Binding DataContext.OpenGameCommand, ElementName=Root}"
+                                CommandParameter="{Binding}"
+                                Cursor="Hand"
+                                FocusVisualStyle="{StaticResource DefaultControlFocusVisualStyle}">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border
+                                            x:Name="CardBorder"
+                                            Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                            CornerRadius="{DynamicResource RadiusLarge}">
+                                            <StackPanel>
+                                                <!-- Cover + high-contrast status badges -->
+                                                <Border
+                                                    Height="116"
+                                                    Margin="{DynamicResource SpaceAll4}"
+                                                    Background="{StaticResource SurfaceCardHoverBrush}"
+                                                    ClipToBounds="True"
+                                                    CornerRadius="{DynamicResource RadiusMedium}">
+                                                    <Grid>
+                                                        <Image Source="{Binding Cover}" Stretch="UniformToFill" />
+                                                        <StackPanel
+                                                            Margin="{DynamicResource SpaceAll4}"
+                                                            HorizontalAlignment="Left"
+                                                            VerticalAlignment="Bottom"
+                                                            Orientation="Vertical">
+                                                            <Border
+                                                                Padding="{DynamicResource SpaceAll4}"
+                                                                HorizontalAlignment="Left"
+                                                                Background="{StaticResource ScrimPanelBrush}"
+                                                                CornerRadius="{DynamicResource RadiusSmall}"
+                                                                Visibility="{Binding VariantBadge, Converter={StaticResource NullToCollapsed}}">
+                                                                <TextBlock
+                                                                    FontSize="{DynamicResource FontSizeCaption}"
+                                                                    FontWeight="SemiBold"
+                                                                    Foreground="{StaticResource AccentSoftBrush}"
+                                                                    Text="{Binding VariantBadge}"
+                                                                    TextTrimming="CharacterEllipsis" />
+                                                            </Border>
+                                                            <Border
+                                                                Margin="{DynamicResource SpaceTop4}"
+                                                                Padding="{DynamicResource SpaceAll4}"
+                                                                HorizontalAlignment="Left"
+                                                                Background="{StaticResource WarningInsetBrush}"
+                                                                BorderBrush="{StaticResource WarningOutlineBrush}"
+                                                                BorderThickness="1"
+                                                                CornerRadius="{DynamicResource RadiusSmall}"
+                                                                Visibility="{Binding SavedBuildsOnly, Converter={StaticResource BoolToVis}}">
+                                                                <TextBlock
+                                                                    FontSize="{DynamicResource FontSizeCaption}"
+                                                                    FontWeight="SemiBold"
+                                                                    Foreground="{StaticResource WarningSoftBrush}"
+                                                                    Text="{x:Static res:Strings.Builds_SavedBuildsNoLua}"
+                                                                    TextTrimming="CharacterEllipsis" />
+                                                            </Border>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </Border>
 
-                    <ListBox
-                        x:Name="GameList"
-                        Grid.Row="1"
-                        Margin="-4,8,-4,0"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        ItemContainerStyle="{StaticResource ListItemStyle}"
-                        ItemTemplate="{StaticResource GameRowTemplate}"
-                        ItemsSource="{Binding Items}"
-                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                        SelectedItem="{Binding SelectedGame}">
-                    </ListBox>
+                                                <!-- Card metadata -->
+                                                <StackPanel Margin="{DynamicResource SpaceAll12}">
+                                                    <TextBlock
+                                                        Height="36"
+                                                        Foreground="{StaticResource TextPrimaryBrush}"
+                                                        Style="{StaticResource TextBodyStrong}"
+                                                        Text="{Binding Name}"
+                                                        TextTrimming="CharacterEllipsis"
+                                                        TextWrapping="Wrap" />
+                                                    <Grid Margin="{DynamicResource SpaceTop4}">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock
+                                                            VerticalAlignment="Center"
+                                                            Foreground="{StaticResource TextDimBrush}"
+                                                            Style="{StaticResource TextCaption}"
+                                                            Text="{Binding AppId, StringFormat={x:Static res:Strings.Common_AppId}}"
+                                                            TextTrimming="CharacterEllipsis"
+                                                            TextWrapping="NoWrap" />
+                                                        <Border
+                                                            Grid.Column="1"
+                                                            Margin="{DynamicResource SpaceLeft8}"
+                                                            Padding="{DynamicResource SpaceAll4}"
+                                                            Background="{StaticResource SurfaceInsetBrush}"
+                                                            CornerRadius="{DynamicResource RadiusSmall}"
+                                                            Visibility="{Binding HasPresetsCount, Converter={StaticResource BoolToVis}}">
+                                                            <TextBlock
+                                                                FontSize="{DynamicResource FontSizeCaption}"
+                                                                FontWeight="SemiBold"
+                                                                Foreground="{StaticResource AccentSoftBrush}"
+                                                                Text="{Binding PresetsCountLabel}" />
+                                                        </Border>
+                                                    </Grid>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="CardBorder" Property="Background" Value="{StaticResource SurfaceCardHoverBrush}" />
+                                                <Setter TargetName="CardBorder" Property="BorderBrush" Value="{StaticResource BorderStrongBrush}" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
 
-                    <!-- Pager. Deliberately minimal: prev / "Page x of y" / next. The base VM also exposes
-                         windowed PageNumbers (as Manage renders) but there's no room for them here, and
-                         the list is a picker, not a browsing grid. Always shown — even on a single page —
-                         so the results-per-page control stays reachable; the arrows just disable. -->
-                    <StackPanel Grid.Row="2" Margin="{DynamicResource SpaceTop8}">
-                        <ContentControl
-                            Content="{Binding}"
-                            ContentTemplate="{StaticResource PagerTemplate}"
-                            Focusable="False"
-                            IsTabStop="False" />
-                        <StackPanel
-                            Margin="{DynamicResource SpaceTop8}"
-                            HorizontalAlignment="Center"
-                            Orientation="Horizontal">
-                            <TextBlock
-                                Margin="0,0,6,0"
-                                VerticalAlignment="Center"
-                                FontSize="{DynamicResource FontSizeCaption}"
-                                Foreground="{StaticResource TextDimBrush}"
-                                Text="{x:Static res:Strings.Manage_ResultsPerPage}" />
-                            <ComboBox
-                                MinWidth="66"
-                                ItemTemplate="{StaticResource FilterOptionTemplate}"
-                                ItemsSource="{Binding PageSizeOptions}"
-                                SelectedItem="{Binding SelectedPageSize}" />
-                        </StackPanel>
-                    </StackPanel>
+                            <!-- Hover / keyboard-focus remove-game affordance (sibling, never nested inside the card button) -->
+                            <ui:Button
+                                x:Name="RemoveGameButton"
+                                Margin="{DynamicResource SpaceAll8}"
+                                Padding="{DynamicResource SpaceAll4}"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                AutomationProperties.Name="{x:Static res:Strings.Builds_RemoveGame_Tip}"
+                                Background="{StaticResource DangerScrimBrush}"
+                                Command="{Binding DataContext.RemoveGameCommand, ElementName=Root}"
+                                CommandParameter="{Binding}"
+                                Icon="{ui:SymbolIcon Delete24}"
+                                ToolTip="{x:Static res:Strings.Builds_RemoveGame_Tip}">
+                                <ui:Button.Style>
+                                    <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
+                                        <Setter Property="Opacity" Value="0" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsMouseOver, ElementName=CardRoot}" Value="True">
+                                                <Setter Property="Opacity" Value="1" />
+                                            </DataTrigger>
+                                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                                <Setter Property="Opacity" Value="1" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ui:Button.Style>
+                            </ui:Button>
+                        </Grid>
+                    </DataTemplate>
+                </vwp:VirtualizingItemsControl.ItemTemplate>
+            </vwp:VirtualizingItemsControl>
+
+            <!-- Pager bar: centered page numbers + right-aligned results-per-page (including All) -->
+            <Grid
+                Grid.Row="3"
+                Margin="{DynamicResource SpaceTop12}"
+                Visibility="{Binding ShowItems, Converter={StaticResource BoolToVis}}">
+                <Grid
+                    HorizontalAlignment="Center"
+                    Visibility="{Binding ShowPager, Converter={StaticResource BoolToVis}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="320" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ui:Button
+                        Grid.Column="0"
+                        Padding="{DynamicResource SpaceAll8}"
+                        AutomationProperties.Name="{x:Static res:Strings.Pager_Prev}"
+                        Command="{Binding PrevPageCommand}"
+                        Content="‹"
+                        FontSize="{DynamicResource FontSizeBody}"
+                        IsEnabled="{Binding CanGoPrev}"
+                        ToolTip="{x:Static res:Strings.Pager_Prev}" />
+                    <ItemsControl Grid.Column="1" HorizontalAlignment="Center" ItemsSource="{Binding PageNumbers}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <TextBlock
+                                        Margin="{DynamicResource SpaceLeft8}"
+                                        VerticalAlignment="Center"
+                                        Foreground="{StaticResource TextDimBrush}"
+                                        Text="…">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding}" Value="0">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <ui:Button
+                                        Margin="{DynamicResource SpaceLeft4}"
+                                        Padding="{DynamicResource SpaceAll8}"
+                                        Command="{Binding DataContext.GoToPageCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        CommandParameter="{Binding}"
+                                        Content="{Binding}"
+                                        FontSize="{DynamicResource FontSizeBody}">
+                                        <ui:Button.Style>
+                                            <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding}" Value="0">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Value="True">
+                                                        <DataTrigger.Binding>
+                                                            <MultiBinding Converter="{StaticResource EqualityMulti}">
+                                                                <Binding />
+                                                                <Binding Path="DataContext.CurrentPage" RelativeSource="{RelativeSource AncestorType=ItemsControl}" />
+                                                            </MultiBinding>
+                                                        </DataTrigger.Binding>
+                                                        <Setter Property="Appearance" Value="Primary" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ui:Button.Style>
+                                    </ui:Button>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <ui:Button
+                        Grid.Column="2"
+                        Margin="{DynamicResource SpaceLeft4}"
+                        Padding="{DynamicResource SpaceAll8}"
+                        AutomationProperties.Name="{x:Static res:Strings.Pager_Next}"
+                        Command="{Binding NextPageCommand}"
+                        Content="›"
+                        FontSize="{DynamicResource FontSizeBody}"
+                        IsEnabled="{Binding CanGoNext}"
+                        ToolTip="{x:Static res:Strings.Pager_Next}" />
                 </Grid>
-            </Border>
 
-            <!-- ── Right: the selected game's builds ────────────────── -->
-            <views:BuildsDetailPane Grid.Column="1" Margin="14,0,0,0" />
+                <StackPanel
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Style="{StaticResource TextCaption}"
+                        Text="{x:Static res:Strings.Manage_ResultsPerPage}" />
+                    <ComboBox
+                        MinWidth="72"
+                        Margin="{DynamicResource SpaceLeft8}"
+                        ItemTemplate="{StaticResource FilterOptionTemplate}"
+                        ItemsSource="{Binding PageSizeOptions}"
+                        SelectedItem="{Binding SelectedPageSize}" />
+                </StackPanel>
+            </Grid>
         </Grid>
+
+        <!-- ── State 2: Full-width game detail ──────────────────────── -->
+        <views:BuildsDetailPane Visibility="{Binding IsShowingDetail, Converter={StaticResource BoolToVis}}" />
     </Grid>
 </UserControl>

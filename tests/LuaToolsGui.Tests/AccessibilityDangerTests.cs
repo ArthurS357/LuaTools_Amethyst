@@ -63,6 +63,8 @@ public class AccessibilityDangerTests
     [InlineData("DeleteOlderThan30DaysCommand")]
     [InlineData("ClearHubcapKeyCommand")]
     [InlineData("ConfirmRevertCommand")]
+    [InlineData("ConfirmCleanupCommand")]
+    [InlineData("OpenRemoveFilesCommand")]
     public void Destructive_actions_use_the_Danger_appearance_and_are_never_the_default(string command)
     {
         var buttons = AllButtons().Where(b => b.Tag.Contains(command)).ToList();

@@ -922,4 +922,43 @@ Tím se smažou pouze aktivní soubory .lua ze Steam\config\stplug-in. {1} z tě
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} byla nainstalována, ale její záloha selhala: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Nainstalováno ze zálohy</value></data>
   <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>Zdroj selhal, proto byla {0} nainstalována z vaší zálohy manifestů.</value></data>
+  <data name="Manage_RemoveGame" xml:space="preserve"><value>Odebrat hru…</value></data>
+  <data name="Builds_Card_OnePreset" xml:space="preserve"><value>1 uložená předvolba</value></data>
+  <data name="Builds_Card_PresetsCount" xml:space="preserve"><value>{0} uložených předvoleb</value></data>
+  <data name="Builds_Filter_All" xml:space="preserve"><value>Vše</value></data>
+  <data name="Builds_Filter_WithStoredBuilds" xml:space="preserve"><value>S uloženými buildy</value></data>
+  <data name="Builds_Filter_WithoutActiveLua" xml:space="preserve"><value>Bez aktivního lua</value></data>
+  <data name="Builds_BackToList" xml:space="preserve"><value>Zpět do Depoty</value></data>
+  <data name="Builds_RemoveFiles" xml:space="preserve"><value>Odebrat soubory…</value></data>
+  <data name="Builds_Action_DeletePreset" xml:space="preserve"><value>Smazat předvolbu</value></data>
+  <data name="Cleanup_Dialog_Title" xml:space="preserve"><value>Odebrat soubory hry</value></data>
+  <data name="Cleanup_Size_Calculating" xml:space="preserve"><value>Výpočet velikosti instalace…</value></data>
+  <data name="Cleanup_Size_Estimated" xml:space="preserve"><value>Odhadované uvolněné místo po odinstalaci: {0}</value></data>
+  <data name="Cleanup_ChooseScope" xml:space="preserve"><value>Vyberte, co chcete odebrat</value></data>
+  <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>Odinstalovat pouze soubory hry</value></data>
+  <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>Smaže instalační složku hry a soubor appmanifest služby Steam. Ponechá soubory .lua a .manifest.</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>Odebrat pouze soubor .lua</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Smaže config\stplug-in\{0}.lua. Ponechá soubory hry, soubory .manifest a uložené buildy.</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>Odebrat pouze soubory .manifest</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>Smaže výhradní soubory .manifest této hry v depotcache. Ponechá soubor .lua a sdílené manifesty.</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>Odebrat .lua + soubory .manifest</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Desc" xml:space="preserve"><value>Smaže aktivní soubor .lua a výhradní soubory .manifest této hry. Ponechá soubory hry a sdílené manifesty.</value></data>
+  <data name="Cleanup_Scope_Everything_Title" xml:space="preserve"><value>Smazat vše (hra + .lua + soubory .manifest)</value></data>
+  <data name="Cleanup_Scope_Everything_Desc" xml:space="preserve"><value>Odinstaluje hru ze služby Steam a smaže její soubor .lua a výhradní soubory .manifest. Sdílené manifesty jiných her zůstanou zachovány.</value></data>
+  <data name="Cleanup_BackupSafeNotice" xml:space="preserve"><value>Tato akce se nikdy nedotkne vaší složky Záloha manifestů ani ji nesmaže.</value></data>
+  <data name="Cleanup_Removing" xml:space="preserve"><value>Odebírání vybraných souborů…</value></data>
+  <data name="Cleanup_Action_Confirm" xml:space="preserve"><value>Odebrat</value></data>
+  <data name="Cleanup_Err_GameRunning" xml:space="preserve"><value>Před odinstalováním souborů hry zavřete {0} ve službě Steam.</value></data>
+  <data name="Cleanup_Err_UnsafePath" xml:space="preserve"><value>Blokováno: instalační cestu služby Steam nebylo možné ověřit jako bezpečnou složku v steamapps\common.</value></data>
+  <data name="Cleanup_Err_Symlink" xml:space="preserve"><value>Blokováno: instalační cesta obsahuje symbolický odkaz nebo spojovací bod složky.</value></data>
+  <data name="Cleanup_Err_BackupOverlap" xml:space="preserve"><value>Blokováno: cílová cesta se překrývá se složkou Záloha manifestů.</value></data>
+  <data name="Cleanup_Err_UnreadableSibling" xml:space="preserve"><value>Blokováno: soubor .lua jiné hry nelze přečíst, takže nelze bezpečně ověřit sdílené manifesty.</value></data>
+  <data name="Cleanup_Err_SharedInstallDir" xml:space="preserve"><value>Zablokováno: instalační složku této hry sdílí jiná nainstalovaná aplikace Steam. Odinstalujte ji přes Steam.</value></data>
+  <data name="Cleanup_Err_Generic" xml:space="preserve"><value>Čištění se nepodařilo dokončit. Zavřete Steam a zkuste to znovu.</value></data>
+  <data name="Cleanup_Result_Nothing" xml:space="preserve"><value>Nebyly nalezeny žádné odpovídající soubory k odebrání.</value></data>
+  <data name="Cleanup_Result_Freed" xml:space="preserve"><value>uvolněno {0}</value></data>
+  <data name="Cleanup_Result_ManifestsDeleted" xml:space="preserve"><value>smazáno manifestů: {0}</value></data>
+  <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>ponecháno sdílených manifestů: {0}</value></data>
+  <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>Hra {0} byla částečně vyčištěna, ale některé položky se nepodařilo odebrat: {1}</value></data>
+  <data name="Cleanup_Result_Done" xml:space="preserve"><value>Vyčištěno: {0}.</value></data>
 </root>

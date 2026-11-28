@@ -309,7 +309,7 @@
                                 Command="{Binding DataContext.DeleteCommand, ElementName=Root}"
                                 CommandParameter="{Binding}"
                                 Appearance="Danger"
-                                Content="{x:Static res:Strings.Manage_DeleteThisLua}"
+                                Content="{x:Static res:Strings.Manage_RemoveGame}"
                                 Icon="{ui:SymbolIcon Delete24}" />
                         </StackPanel>
                     </StackPanel>

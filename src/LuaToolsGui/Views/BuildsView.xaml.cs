@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using LuaToolsGui.ViewModels;
 
 namespace LuaToolsGui.Views;
@@ -12,17 +13,46 @@ public partial class BuildsView : UserControl
     {
         InitializeComponent();
         DataContext = _viewModel = viewModel;
-        // On a page change, jump the list back to the top (the new page starts fresh).
-        _viewModel.ScrollToTop = ScrollListToTop;
+        // On a page change, jump the grid back to the top (the new page starts fresh).
+        _viewModel.ScrollToTop = ScrollGridToTop;
         // Re-scan stplug-in each time the page is shown (lua files change as games are added/switched).
         Loaded += async (_, _) => await _viewModel.LoadAsync();
+        PreviewKeyDown += OnViewPreviewKeyDown;
     }
 
-    /// <summary>Scroll the game list back to offset 0. Dispatched so it runs after the new page's items
-    /// have been laid out (the ScrollViewer exists once the control is templated).</summary>
-    private void ScrollListToTop() => Dispatcher.BeginInvoke(() =>
+    private void OnViewPreviewKeyDown(object sender, KeyEventArgs e)
     {
-        if (FindDescendant<ScrollViewer>(GameList) is { } sv) sv.ScrollToTop();
+        if (e.Key != Key.Escape || !_viewModel.IsShowingDetail || _viewModel.IsRemoving)
+            return;
+
+        if (_viewModel.IsDepotPickerOpen)
+        {
+            e.Handled = true;
+            _viewModel.CancelDepotDownloadCommand.Execute(null);
+            return;
+        }
+        if (_viewModel.IsRenaming)
+        {
+            e.Handled = true;
+            _viewModel.CancelRenameCommand.Execute(null);
+            return;
+        }
+        if (_viewModel.IsEditing)
+        {
+            e.Handled = true;
+            _viewModel.CancelEditCommand.Execute(null);
+            return;
+        }
+
+        e.Handled = true;
+        _viewModel.BackToGridCommand.Execute(null);
+    }
+
+    /// <summary>Scroll the game grid back to offset 0. Dispatched so it runs after the new page's items
+    /// have been laid out (the ScrollViewer exists once the control is templated).</summary>
+    private void ScrollGridToTop() => Dispatcher.BeginInvoke(() =>
+    {
+        if (FindDescendant<ScrollViewer>(GameGrid) is { } sv) sv.ScrollToTop();
     }, System.Windows.Threading.DispatcherPriority.Background);
 
     private static T? FindDescendant<T>(DependencyObject root) where T : DependencyObject
@@ -37,7 +67,7 @@ public partial class BuildsView : UserControl
         return null;
     }
 
-    // Both fire as a virtualized game row is realized/scrolled into view — resolve its cover.
+    // Both fire as a virtualized game card is realized/scrolled into view — resolve its cover.
     // EnsureResolvedAsync is idempotent (skips if a cover is already loaded), so double-firing is safe.
     private void GameRow_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {

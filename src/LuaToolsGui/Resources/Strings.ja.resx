@@ -922,4 +922,43 @@ Steam\config\stplug-in 内の有効な .lua ファイルのみが削除されま
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} はインストールされましたが、バックアップに失敗しました: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>バックアップからインストールしました</value></data>
   <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>ダウンロード元が失敗したため、{0} をマニフェストのバックアップからインストールしました。</value></data>
+  <data name="Manage_RemoveGame" xml:space="preserve"><value>ゲームを削除…</value></data>
+  <data name="Builds_Card_OnePreset" xml:space="preserve"><value>保存済みプリセット 1 件</value></data>
+  <data name="Builds_Card_PresetsCount" xml:space="preserve"><value>保存済みプリセット {0} 件</value></data>
+  <data name="Builds_Filter_All" xml:space="preserve"><value>すべて</value></data>
+  <data name="Builds_Filter_WithStoredBuilds" xml:space="preserve"><value>保存済みビルドあり</value></data>
+  <data name="Builds_Filter_WithoutActiveLua" xml:space="preserve"><value>有効な lua なし</value></data>
+  <data name="Builds_BackToList" xml:space="preserve"><value>デポ一覧に戻る</value></data>
+  <data name="Builds_RemoveFiles" xml:space="preserve"><value>ファイルを削除…</value></data>
+  <data name="Builds_Action_DeletePreset" xml:space="preserve"><value>プリセットを削除</value></data>
+  <data name="Cleanup_Dialog_Title" xml:space="preserve"><value>ゲームファイルを削除</value></data>
+  <data name="Cleanup_Size_Calculating" xml:space="preserve"><value>インストールサイズを計算中…</value></data>
+  <data name="Cleanup_Size_Estimated" xml:space="preserve"><value>アンインストールで解放される推定容量: {0}</value></data>
+  <data name="Cleanup_ChooseScope" xml:space="preserve"><value>削除する項目を選択</value></data>
+  <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>ゲームファイルのみをアンインストール</value></data>
+  <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>ゲームのインストールフォルダと Steam の appmanifest を削除します。.lua と .manifest ファイルは保持されます。</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>.lua ファイルのみを削除</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>config\stplug-in\{0}.lua を削除します。ゲームファイル、.manifest ファイル、保存済みビルドは保持されます。</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>.manifest ファイルのみを削除</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>depotcache 内のこのゲーム専用 .manifest ファイルを削除します。.lua ファイルと共有マニフェストは保持されます。</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>.lua + .manifest ファイルを削除</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Desc" xml:space="preserve"><value>有効な .lua ファイルとこのゲーム専用の .manifest ファイルを削除します。ゲームファイルと共有マニフェストは保持されます。</value></data>
+  <data name="Cleanup_Scope_Everything_Title" xml:space="preserve"><value>すべて削除（ゲーム + .lua + .manifest ファイル）</value></data>
+  <data name="Cleanup_Scope_Everything_Desc" xml:space="preserve"><value>Steam からゲームをアンインストールし、.lua ファイルと専用 .manifest ファイルを削除します。他のゲームと共有のマニフェストは保護されます。</value></data>
+  <data name="Cleanup_BackupSafeNotice" xml:space="preserve"><value>この操作によってマニフェストのバックアップフォルダが変更または削除されることはありません。</value></data>
+  <data name="Cleanup_Removing" xml:space="preserve"><value>選択したファイルを削除中…</value></data>
+  <data name="Cleanup_Action_Confirm" xml:space="preserve"><value>削除</value></data>
+  <data name="Cleanup_Err_GameRunning" xml:space="preserve"><value>ゲームファイルをアンインストールする前に Steam で {0} を終了してください。</value></data>
+  <data name="Cleanup_Err_UnsafePath" xml:space="preserve"><value>ブロックされました: Steam のインストールパスを steamapps\common 内の安全なフォルダとして検証できませんでした。</value></data>
+  <data name="Cleanup_Err_Symlink" xml:space="preserve"><value>ブロックされました: インストールパスにシンボリックリンクまたはジャンクションが含まれています。</value></data>
+  <data name="Cleanup_Err_BackupOverlap" xml:space="preserve"><value>ブロックされました: 対象パスがマニフェストのバックアップフォルダと重複しています。</value></data>
+  <data name="Cleanup_Err_UnreadableSibling" xml:space="preserve"><value>ブロックされました: 他のゲームの .lua ファイルを読み取れなかったため、共有マニフェストを安全に確認できません。</value></data>
+  <data name="Cleanup_Err_SharedInstallDir" xml:space="preserve"><value>ブロックされました: このゲームのインストールフォルダーは、インストール済みの別の Steam アプリと共有されています。Steam からアンインストールしてください。</value></data>
+  <data name="Cleanup_Err_Generic" xml:space="preserve"><value>クリーンアップを完了できませんでした。Steam を閉じて再試行してください。</value></data>
+  <data name="Cleanup_Result_Nothing" xml:space="preserve"><value>削除対象に一致するファイルが見つかりませんでした。</value></data>
+  <data name="Cleanup_Result_Freed" xml:space="preserve"><value>{0} を解放</value></data>
+  <data name="Cleanup_Result_ManifestsDeleted" xml:space="preserve"><value>{0} 件のマニフェストを削除</value></data>
+  <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>{0} 件の共有マニフェストを保護</value></data>
+  <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>{0} を部分的にクリーンアップしましたが、一部の項目を削除できませんでした: {1}</value></data>
+  <data name="Cleanup_Result_Done" xml:space="preserve"><value>{0} をクリーンアップしました。</value></data>
 </root>

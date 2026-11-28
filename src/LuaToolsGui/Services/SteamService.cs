@@ -271,7 +271,15 @@ public class SteamService(SettingsService settings)
     /// <summary>True while Steam reports a running game and steam.exe is alive.</summary>
     public static bool IsGameRunning() => IsGameRunning(ReadRunningAppId(), IsSteamRunning);
 
-    private static int? ReadRunningAppId()
+    /// <summary>True when Steam reports <paramref name="appId"/> is the active running app and steam.exe is alive.</summary>
+    internal static bool IsAppRunning(long appId, int? runningAppId, Func<bool> isSteamAlive) =>
+        appId > 0 && runningAppId is > 0 && unchecked((uint)runningAppId.Value) == appId && isSteamAlive();
+
+    /// <summary>True while Steam reports <paramref name="appId"/> is running and steam.exe is alive.</summary>
+    public static bool IsAppRunning(long appId) =>
+        IsAppRunning(appId, ReadRunningAppId(), IsSteamRunning);
+
+    internal static int? ReadRunningAppId()
     {
         try
         {

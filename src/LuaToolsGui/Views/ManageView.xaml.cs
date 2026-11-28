@@ -16,6 +16,14 @@ public partial class ManageView : UserControl
         _viewModel.ScrollToTop = ScrollGridToTop;
         // Re-scan stplug-in each time the page is shown (lua files change as games are added).
         Loaded += async (_, _) => await _viewModel.LoadAsync();
+        PreviewKeyDown += (_, e) =>
+        {
+            if (e.Key == System.Windows.Input.Key.Escape && _viewModel.IsDetailOpen && !_viewModel.IsRemoving)
+            {
+                e.Handled = true;
+                _viewModel.CloseDetailCommand.Execute(null);
+            }
+        };
     }
 
     /// <summary>Scroll the tile grid back to offset 0. Dispatched so it runs after the new page's items

@@ -12,21 +12,17 @@
     TextElement.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     mc:Ignorable="d">
 
-
-    <!-- The selected game's builds: variant switcher, depot/DLC rows and the depot-download picker. Split out of
-         BuildsView (Lote G); its templates came with it. DataContext is inherited from BuildsView, and "Root" below is
-         the name the row templates use to reach the page view model. -->
+    <!-- Full-width Detail state of Depots: top back/actions bar, game summary card,
+         active preset switcher, and wide depot/DLC list + download picker. -->
     <UserControl.Resources>
 
         <!-- Borderless, hover-highlight button used as a clickable depot/DLC row (opens SteamDB). -->
         <Style x:Key="RowButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Padding" Value="6,5" />
-            <Setter Property="Margin" Value="-6,0,-6,2" />
+            <Setter Property="Padding" Value="{DynamicResource SpaceAll8}" />
+            <Setter Property="Margin" Value="{DynamicResource SpaceAll4}" />
             <Setter Property="Cursor" Value="Hand" />
-            <!-- Keyboard focus: WPF-UI's ring, drawn outside the row. The Lote C trigger thickened the border
-                 1 -> 2 and moved the row; a custom template drops the chrome, so the ring is asked for here. -->
             <Setter Property="FocusVisualStyle" Value="{StaticResource DefaultControlFocusVisualStyle}" />
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="Template">
@@ -49,42 +45,33 @@
             </Setter>
         </Style>
 
-        <!-- One depot/DLC row: on/off switch, then the clickable → SteamDB info block (title with its
-             DLC/SHARED tag, id · size · os · lang, this lua's manifest pin greyed when commented out by
-             Auto Update), then the Lock tickbox. -->
+        <!-- One depot/DLC row: on/off switch, clickable → SteamDB block, and Lock tickbox. -->
         <DataTemplate x:Key="DepotRowTemplate">
-          <!-- The switches live OUTSIDE the SteamDB button: nested inside it, clicking one would also
-               fire the button and open a browser tab. -->
-          <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-            <!-- On/off. The container keeps its width even when the switch is hidden, so Missing and
-                 Unknown rows (which never have one) still line their titles up with the In-lua rows. -->
-            <Border Width="52" VerticalAlignment="Center">
-                <ui:ToggleSwitch
-                    HorizontalAlignment="Left"
-                    Command="{Binding DataContext.ToggleEnabledCommand, ElementName=Root}"
+                <Border Width="52" VerticalAlignment="Center">
+                    <ui:ToggleSwitch
+                        HorizontalAlignment="Left"
+                        Command="{Binding DataContext.ToggleEnabledCommand, ElementName=Root}"
+                        CommandParameter="{Binding}"
+                        IsChecked="{Binding IsEnabled, Mode=OneWay}"
+                        IsEnabled="{Binding CanEnable}"
+                        ToolTip="{x:Static res:Strings.Builds_Depot_EnableTip}"
+                        Visibility="{Binding IsInLua, Converter={StaticResource BoolToVis}}" />
+                </Border>
+
+                <Button
+                    Grid.Column="1"
+                    Command="{Binding DataContext.OpenSteamDbCommand, ElementName=Root}"
                     CommandParameter="{Binding}"
-                    IsChecked="{Binding IsEnabled, Mode=OneWay}"
-                    IsEnabled="{Binding CanEnable}"
-                    ToolTip="{x:Static res:Strings.Builds_Depot_EnableTip}"
-                    Visibility="{Binding IsInLua, Converter={StaticResource BoolToVis}}" />
-            </Border>
-
-            <Button
-                Grid.Column="1"
-                Command="{Binding DataContext.OpenSteamDbCommand, ElementName=Root}"
-                CommandParameter="{Binding}"
-                Style="{StaticResource RowButtonStyle}"
-                ToolTip="{x:Static res:Strings.Confirm_OpenSteamDb}">
+                    Style="{StaticResource RowButtonStyle}"
+                    ToolTip="{x:Static res:Strings.Confirm_OpenSteamDb}">
                     <StackPanel>
-                        <!-- Title with its DLC/SHARED tag hugging it. Auto,Auto,* : the tag sits right
-                             after the title instead of being flung to the far edge of the row, and the
-                             trailing * absorbs the slack. -->
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -99,7 +86,7 @@
                             <Border
                                 Grid.Column="1"
                                 Margin="{DynamicResource SpaceLeft8}"
-                                Padding="5,1"
+                                Padding="{DynamicResource SpaceAll4}"
                                 VerticalAlignment="Center"
                                 Background="{StaticResource SurfaceInsetBrush}"
                                 CornerRadius="{DynamicResource RadiusSmall}"
@@ -113,7 +100,7 @@
                             <Border
                                 Grid.Column="1"
                                 Margin="{DynamicResource SpaceLeft8}"
-                                Padding="5,1"
+                                Padding="{DynamicResource SpaceAll4}"
                                 VerticalAlignment="Center"
                                 Background="{StaticResource WarningInsetBrush}"
                                 CornerRadius="{DynamicResource RadiusSmall}"
@@ -126,7 +113,7 @@
                             </Border>
                         </Grid>
                         <TextBlock
-                            Margin="0,1,0,0"
+                            Margin="{DynamicResource SpaceTop4}"
                             FontSize="{DynamicResource FontSizeCaption}"
                             Foreground="{StaticResource TextDimBrush}"
                             Text="{Binding Meta}" />
@@ -139,7 +126,6 @@
                             Visibility="{Binding HasManifest, Converter={StaticResource BoolToVis}}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
-                                    <!-- Dimmed by default = a pin that exists but isn't in force. -->
                                     <Setter Property="Foreground" Value="{StaticResource TextDisabledBrush}" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsPinActive}" Value="True">
@@ -150,7 +136,7 @@
                             </TextBlock.Style>
                         </TextBlock>
                         <TextBlock
-                            Margin="0,1,0,0"
+                            Margin="{DynamicResource SpaceTop4}"
                             FontFamily="Consolas"
                             FontSize="{DynamicResource FontSizeCaption}"
                             Foreground="{StaticResource WarningSoftBrush}"
@@ -158,29 +144,26 @@
                             TextTrimming="CharacterEllipsis"
                             Visibility="{Binding IsOutdated, Converter={StaticResource BoolToVis}}" />
                     </StackPanel>
-            </Button>
+                </Button>
 
-            <!-- Lock = keep the setManifestid pin. Hidden outright when the depot has no pin line to
-                 comment in/out — there'd be nothing to toggle, and a permanently-greyed tickbox on most
-                 rows is just noise. Auto column, so the info block reclaims the space. -->
-            <CheckBox
-                Grid.Column="2"
-                MinWidth="0"
-                Margin="{DynamicResource SpaceLeft12}"
-                VerticalAlignment="Center"
-                Command="{Binding DataContext.ToggleLockCommand, ElementName=Root}"
-                CommandParameter="{Binding}"
-                Content="{x:Static res:Strings.Builds_Depot_Lock}"
-                FontSize="{DynamicResource FontSizeCaption}"
-                IsChecked="{Binding IsLocked, Mode=OneWay}"
-                ToolTip="{x:Static res:Strings.Builds_Depot_LockTip}"
-                Visibility="{Binding CanLock, Converter={StaticResource BoolToVis}}" />
-          </Grid>
+                <CheckBox
+                    Grid.Column="2"
+                    MinWidth="0"
+                    Margin="{DynamicResource SpaceLeft12}"
+                    VerticalAlignment="Center"
+                    Command="{Binding DataContext.ToggleLockCommand, ElementName=Root}"
+                    CommandParameter="{Binding}"
+                    Content="{x:Static res:Strings.Builds_Depot_Lock}"
+                    FontSize="{DynamicResource FontSizeCaption}"
+                    IsChecked="{Binding IsLocked, Mode=OneWay}"
+                    ToolTip="{x:Static res:Strings.Builds_Depot_LockTip}"
+                    Visibility="{Binding CanLock, Converter={StaticResource BoolToVis}}" />
+            </Grid>
         </DataTemplate>
 
-        <!-- One entry in the build switcher: label + "8 depots · 3 DLC · Pinned", active marker right. -->
+        <!-- One entry in the build switcher -->
         <DataTemplate x:Key="VariantRowTemplate">
-            <Grid Margin="0,2">
+            <Grid Margin="{DynamicResource SpaceAll4}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
@@ -200,7 +183,7 @@
                 <Border
                     Grid.Column="1"
                     Margin="{DynamicResource SpaceLeft8}"
-                    Padding="6,1"
+                    Padding="{DynamicResource SpaceAll4}"
                     VerticalAlignment="Center"
                     Background="{StaticResource SuccessInsetBrush}"
                     CornerRadius="{DynamicResource RadiusSmall}"
@@ -216,437 +199,487 @@
     </UserControl.Resources>
 
     <Grid x:Name="Root">
-            <!-- Nothing picked yet -->
-            <StackPanel
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Visibility="{Binding HasSelection, Converter={StaticResource InverseBoolToVis}}">
-                <ui:SymbolIcon
-                    HorizontalAlignment="Center"
-                    FontSize="42"
-                    Foreground="{StaticResource TextDisabledBrush}"
-                    Symbol="BranchFork24" />
-                <TextBlock
-                    Margin="{DynamicResource SpaceTop8}"
-                    HorizontalAlignment="Center"
-                    FontSize="{DynamicResource FontSizeBody}"
-                    Foreground="{StaticResource TextDimBrush}"
-                    Text="{x:Static res:Strings.Builds_NoSelection}"
-                    TextWrapping="Wrap" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Row 0: Full-width navigation + game-level actions -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <ui:Button
+                Command="{Binding BackToGridCommand}"
+                Content="{x:Static res:Strings.Builds_BackToList}"
+                Icon="{ui:SymbolIcon ChevronLeft24}" />
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <ui:Button
+                    Appearance="Primary"
+                    Command="{Binding SaveInPlaceCommand}"
+                    Content="{Binding SaveInPlaceLabel}"
+                    Icon="{ui:SymbolIcon Save24}"
+                    Visibility="{Binding HasEditBase, Converter={StaticResource BoolToVis}}" />
+                <ui:Button
+                    Margin="{DynamicResource SpaceLeft8}"
+                    Command="{Binding SaveAsPresetCommand}"
+                    Content="{x:Static res:Strings.Builds_Action_SaveAsNew}"
+                    Icon="{ui:SymbolIcon Bookmark24}"
+                    Visibility="{Binding HasEditBase, Converter={StaticResource BoolToVis}}" />
+                <ui:Button
+                    Margin="{DynamicResource SpaceLeft8}"
+                    Command="{Binding OpenInManageCommand}"
+                    Content="{x:Static res:Strings.Nav_Manage}"
+                    Icon="{ui:SymbolIcon Games24}"
+                    IsEnabled="{Binding HasSelection}" />
+                <ui:Button
+                    Margin="{DynamicResource SpaceLeft8}"
+                    Appearance="Danger"
+                    Command="{Binding OpenRemoveFilesCommand}"
+                    Content="{x:Static res:Strings.Builds_RemoveFiles}"
+                    Icon="{ui:SymbolIcon Delete24}" />
+                <ui:Button
+                    Margin="{DynamicResource SpaceLeft8}"
+                    Command="{Binding RefreshCommand}"
+                    Content="{x:Static res:Strings.Manage_Refresh}"
+                    Icon="{ui:SymbolIcon ArrowSync24}" />
             </StackPanel>
+        </Grid>
 
-            <Grid Visibility="{Binding HasSelection, Converter={StaticResource BoolToVis}}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
+        <!-- Row 1: Game identity banner (cover + title + AppID + latest Steam build) -->
+        <Border
+            Grid.Row="1"
+            Margin="{DynamicResource SpaceTop12}"
+            Style="{StaticResource CardStyle}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-                <!-- Title + latest-build line -->
-                <!-- ActiveGame, not SelectedGame: paging nulls the list selection, and this panel must
-                     keep showing the game whose builds are open. -->
-                <StackPanel Grid.Row="0" DataContext="{Binding ActiveGame}">
+                <Border
+                    Width="184"
+                    Height="86"
+                    Background="{StaticResource SurfaceCardHoverBrush}"
+                    ClipToBounds="True"
+                    CornerRadius="{DynamicResource RadiusMedium}"
+                    DataContext="{Binding ActiveGame}">
+                    <Image Source="{Binding Cover}" Stretch="UniformToFill" />
+                </Border>
+
+                <StackPanel
+                    Grid.Column="1"
+                    Margin="{DynamicResource SpaceLeft16}"
+                    VerticalAlignment="Center"
+                    DataContext="{Binding ActiveGame}">
                     <TextBlock
-                        FontSize="{DynamicResource FontSizeSubtitle}"
-                        FontWeight="Bold"
+                        Foreground="{StaticResource TextPrimaryBrush}"
+                        Style="{StaticResource TextTitle}"
                         Text="{Binding Name}"
-                        TextTrimming="CharacterEllipsis" />
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="NoWrap" />
                     <TextBlock
                         Margin="{DynamicResource SpaceTop4}"
-                        FontSize="{DynamicResource FontSizeCaption}"
                         Foreground="{StaticResource TextMutedBrush}"
+                        Style="{StaticResource TextCaption}"
                         Text="{Binding AppId, StringFormat={x:Static res:Strings.Common_AppId}}" />
-                </StackPanel>
-                <TextBlock
-                    Grid.Row="0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    FontSize="{DynamicResource FontSizeCaption}"
-                    Foreground="{StaticResource TextDimBrush}"
-                    Text="{Binding LatestBuildLabel}"
-                    Visibility="{Binding LatestBuildLabel, Converter={StaticResource NullToCollapsed}}" />
-
-                <!-- Switcher + actions -->
-                <Border
-                    Grid.Row="1"
-                    Margin="{DynamicResource SpaceTop12}"
-                    Padding="{DynamicResource SpaceAll12}"
-                    Background="{StaticResource SurfaceCardBrush}"
-                    BorderBrush="{StaticResource BorderStrongBrush}"
-                    BorderThickness="1"
-                    CornerRadius="{DynamicResource RadiusMedium}">
-                    <StackPanel>
+                    <Border
+                        Margin="{DynamicResource SpaceTop8}"
+                        Padding="{DynamicResource SpaceAll4}"
+                        HorizontalAlignment="Left"
+                        Background="{StaticResource WarningInsetBrush}"
+                        BorderBrush="{StaticResource WarningOutlineBrush}"
+                        BorderThickness="1"
+                        CornerRadius="{DynamicResource RadiusSmall}"
+                        Visibility="{Binding SavedBuildsOnly, Converter={StaticResource BoolToVis}}">
                         <TextBlock
                             FontSize="{DynamicResource FontSizeCaption}"
                             FontWeight="SemiBold"
-                            Foreground="{StaticResource TextSecondaryBrush}"
-                            Text="{x:Static res:Strings.Builds_ActiveBuild}" />
+                            Foreground="{StaticResource WarningSoftBrush}"
+                            Text="{x:Static res:Strings.Builds_SavedBuildsNoLua}" />
+                    </Border>
+                </StackPanel>
 
-                        <ComboBox
-                            Margin="{DynamicResource SpaceTop8}"
-                            HorizontalContentAlignment="Stretch"
-                            ItemTemplate="{StaticResource VariantRowTemplate}"
-                            ItemsSource="{Binding Variants}"
-                            SelectedItem="{Binding SelectedVariant}" />
-
-                        <!-- Status/save UI stays OUT of the page body on purpose: anything that
-                             appears and vanishes here shoves the depot list up and down as you work.
-                             The switcher row above says which build is live, and "Save to <build>"
-                             sits in the header, where nothing below it moves. -->
-
-                        <!-- Inline rename (replaces the button row while active) -->
-                        <Grid Margin="{DynamicResource SpaceTop8}" Visibility="{Binding IsRenaming, Converter={StaticResource BoolToVis}}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <ui:TextBox
-                                PlaceholderText="{x:Static res:Strings.Builds_RenamePlaceholder}"
-                                Text="{Binding RenameText, UpdateSourceTrigger=PropertyChanged}" />
-                            <ui:Button
-                                Grid.Column="1"
-                                Margin="{DynamicResource SpaceLeft8}"
-                                Appearance="Primary"
-                                Command="{Binding CommitRenameCommand}"
-                                Content="{x:Static res:Strings.Builds_Action_Save}" />
-                            <ui:Button
-                                Grid.Column="2"
-                                Margin="{DynamicResource SpaceLeft8}"
-                                Command="{Binding CancelRenameCommand}"
-                                Content="{x:Static res:Strings.Builds_Action_Cancel}" />
-                        </Grid>
-
-                        <UniformGrid
-                            Margin="{DynamicResource SpaceTop8}"
-                            Columns="4"
-                            Visibility="{Binding IsRenaming, Converter={StaticResource InverseBoolToVis}}">
-                            <ui:Button
-                                Margin="0,0,4,0"
-                                HorizontalAlignment="Stretch"
-                                Appearance="Primary"
-                                Command="{Binding ApplyCommand}"
-                                Content="{x:Static res:Strings.Builds_Action_Apply}"
-                                Icon="{ui:SymbolIcon Checkmark24}"
-                                IsEnabled="{Binding CanApply}" />
-                            <ui:Button
-                                Margin="4,0"
-                                HorizontalAlignment="Stretch"
-                                Command="{Binding StartRenameCommand}"
-                                Content="{x:Static res:Strings.Builds_Action_Rename}"
-                                Icon="{ui:SymbolIcon Rename24}"
-                                IsEnabled="{Binding CanRename}" />
-                            <ui:Button
-                                Margin="4,0"
-                                HorizontalAlignment="Stretch"
-                                Command="{Binding EditCommand}"
-                                Content="{x:Static res:Strings.Builds_Action_Edit}"
-                                Icon="{ui:SymbolIcon Edit24}" />
-                            <ui:Button
-                                Margin="{DynamicResource SpaceLeft4}"
-                                HorizontalAlignment="Stretch"
-                                Command="{Binding DeleteVariantCommand}"
-                                Appearance="Danger"
-                                Content="{x:Static res:Strings.Builds_Action_Delete}"
-                                Icon="{ui:SymbolIcon Delete24}"
-                                IsEnabled="{Binding CanDelete}"
-                                ToolTipService.ShowOnDisabled="True">
-                                <!-- The tooltip EXPLAINS the disabled state, so it must only appear
-                                     while disabled (and WPF hides tooltips on disabled controls
-                                     unless ShowOnDisabled is set above). -->
-                                <ui:Button.Style>
-                                    <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
-                                        <Style.Triggers>
-                                            <Trigger Property="IsEnabled" Value="False">
-                                                <Setter Property="ToolTip" Value="{x:Static res:Strings.Builds_Delete_ActiveTip}" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ui:Button.Style>
-                            </ui:Button>
-                        </UniformGrid>
-                    </StackPanel>
-                </Border>
-
-                <!-- Editor (replaces the depot table while open) -->
-                <Grid Grid.Row="2" Margin="{DynamicResource SpaceTop12}" Visibility="{Binding IsEditing, Converter={StaticResource BoolToVis}}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+                <Border
+                    Grid.Column="2"
+                    Margin="{DynamicResource SpaceLeft12}"
+                    Padding="{DynamicResource SpaceAll8}"
+                    VerticalAlignment="Top"
+                    Background="{StaticResource SurfaceInsetBrush}"
+                    CornerRadius="{DynamicResource RadiusSmall}"
+                    Visibility="{Binding LatestBuildLabel, Converter={StaticResource NullToCollapsed}}">
                     <TextBlock
                         FontSize="{DynamicResource FontSizeCaption}"
                         FontWeight="SemiBold"
-                        Foreground="{StaticResource TextSecondaryBrush}"
-                        Text="{x:Static res:Strings.Builds_Editor_Title}" />
-                    <TextBox
-                        Grid.Row="1"
-                        Margin="{DynamicResource SpaceTop8}"
-                        AcceptsReturn="True"
-                        AcceptsTab="True"
-                        Background="{StaticResource ShadowBrush}"
-                        FontFamily="Consolas"
-                        FontSize="{DynamicResource FontSizeCaption}"
-                        HorizontalScrollBarVisibility="Auto"
-                        Text="{Binding EditorText, UpdateSourceTrigger=PropertyChanged}"
-                        VerticalScrollBarVisibility="Auto" />
-                    <StackPanel
-                        Grid.Row="2"
-                        Margin="{DynamicResource SpaceTop8}"
-                        HorizontalAlignment="Right"
-                        Orientation="Horizontal">
-                        <ui:Button
-                            Command="{Binding CancelEditCommand}"
-                            Content="{x:Static res:Strings.Builds_Action_Cancel}" />
-                        <ui:Button
-                            Margin="{DynamicResource SpaceLeft8}"
-                            Command="{Binding SaveAsPresetCommand}"
-                            Content="{x:Static res:Strings.Builds_Action_SaveAsPreset}"
-                            Icon="{ui:SymbolIcon Bookmark24}" />
-                        <ui:Button
-                            Margin="{DynamicResource SpaceLeft8}"
-                            Appearance="Primary"
-                            Command="{Binding SaveEditCommand}"
-                            Content="{x:Static res:Strings.Builds_Action_Save}"
-                            Icon="{ui:SymbolIcon Save24}" />
-                    </StackPanel>
+                        Foreground="{StaticResource AccentSoftBrush}"
+                        Text="{Binding LatestBuildLabel}" />
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Row 2: Active preset switcher & preset-scoped actions -->
+        <Border
+            Grid.Row="2"
+            Margin="{DynamicResource SpaceTop12}"
+            Padding="{DynamicResource SpaceAll12}"
+            Background="{StaticResource SurfaceCardBrush}"
+            BorderBrush="{StaticResource BorderStrongBrush}"
+            BorderThickness="1"
+            CornerRadius="{DynamicResource RadiusMedium}">
+            <StackPanel>
+                <TextBlock
+                    FontSize="{DynamicResource FontSizeCaption}"
+                    FontWeight="SemiBold"
+                    Foreground="{StaticResource TextSecondaryBrush}"
+                    Text="{x:Static res:Strings.Builds_ActiveBuild}" />
+
+                <ComboBox
+                    Margin="{DynamicResource SpaceTop8}"
+                    HorizontalContentAlignment="Stretch"
+                    ItemTemplate="{StaticResource VariantRowTemplate}"
+                    ItemsSource="{Binding Variants}"
+                    SelectedItem="{Binding SelectedVariant}" />
+
+                <!-- Inline rename -->
+                <Grid Margin="{DynamicResource SpaceTop8}" Visibility="{Binding IsRenaming, Converter={StaticResource BoolToVis}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ui:TextBox
+                        PlaceholderText="{x:Static res:Strings.Builds_RenamePlaceholder}"
+                        Text="{Binding RenameText, UpdateSourceTrigger=PropertyChanged}" />
+                    <ui:Button
+                        Grid.Column="1"
+                        Margin="{DynamicResource SpaceLeft8}"
+                        Appearance="Primary"
+                        Command="{Binding CommitRenameCommand}"
+                        Content="{x:Static res:Strings.Builds_Action_Save}" />
+                    <ui:Button
+                        Grid.Column="2"
+                        Margin="{DynamicResource SpaceLeft8}"
+                        Command="{Binding CancelRenameCommand}"
+                        Content="{x:Static res:Strings.Builds_Action_Cancel}" />
                 </Grid>
 
-                <!-- Depot/DLC breakdown for the SELECTED variant (moved here from the Manage flyout).
-                     The search box is OUTSIDE the ScrollViewer so it stays put on a long list. -->
-                <Grid
-                    Grid.Row="2"
-                    Margin="{DynamicResource SpaceTop12}"
-                    Visibility="{Binding IsEditing, Converter={StaticResource InverseBoolToVis}}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+                <UniformGrid
+                    Margin="{DynamicResource SpaceTop8}"
+                    Columns="4"
+                    Visibility="{Binding IsRenaming, Converter={StaticResource InverseBoolToVis}}">
+                    <ui:Button
+                        Margin="{DynamicResource SpaceAll4}"
+                        HorizontalAlignment="Stretch"
+                        Appearance="Primary"
+                        Command="{Binding ApplyCommand}"
+                        Content="{x:Static res:Strings.Builds_Action_Apply}"
+                        Icon="{ui:SymbolIcon Checkmark24}"
+                        IsEnabled="{Binding CanApply}" />
+                    <ui:Button
+                        Margin="{DynamicResource SpaceAll4}"
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding StartRenameCommand}"
+                        Content="{x:Static res:Strings.Builds_Action_Rename}"
+                        Icon="{ui:SymbolIcon Rename24}"
+                        IsEnabled="{Binding CanRename}" />
+                    <ui:Button
+                        Margin="{DynamicResource SpaceAll4}"
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding EditCommand}"
+                        Content="{x:Static res:Strings.Builds_Action_Edit}"
+                        Icon="{ui:SymbolIcon Edit24}" />
+                    <ui:Button
+                        Margin="{DynamicResource SpaceAll4}"
+                        HorizontalAlignment="Stretch"
+                        Appearance="Danger"
+                        Command="{Binding DeleteVariantCommand}"
+                        Content="{x:Static res:Strings.Builds_Action_DeletePreset}"
+                        Icon="{ui:SymbolIcon Delete24}"
+                        IsEnabled="{Binding CanDelete}"
+                        ToolTipService.ShowOnDisabled="True">
+                        <ui:Button.Style>
+                            <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
+                                <Style.Triggers>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter Property="ToolTip" Value="{x:Static res:Strings.Builds_Delete_ActiveTip}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ui:Button.Style>
+                    </ui:Button>
+                </UniformGrid>
+            </StackPanel>
+        </Border>
 
-                    <Grid Margin="0,0,12,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+        <!-- Row 3A: Raw lua editor -->
+        <Grid Grid.Row="3" Margin="{DynamicResource SpaceTop12}" Visibility="{Binding IsEditing, Converter={StaticResource BoolToVis}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock
+                FontSize="{DynamicResource FontSizeCaption}"
+                FontWeight="SemiBold"
+                Foreground="{StaticResource TextSecondaryBrush}"
+                Text="{x:Static res:Strings.Builds_Editor_Title}" />
+            <TextBox
+                Grid.Row="1"
+                Margin="{DynamicResource SpaceTop8}"
+                AcceptsReturn="True"
+                AcceptsTab="True"
+                Background="{StaticResource ShadowBrush}"
+                FontFamily="Consolas"
+                FontSize="{DynamicResource FontSizeCaption}"
+                HorizontalScrollBarVisibility="Auto"
+                Text="{Binding EditorText, UpdateSourceTrigger=PropertyChanged}"
+                VerticalScrollBarVisibility="Auto" />
+            <StackPanel
+                Grid.Row="2"
+                Margin="{DynamicResource SpaceTop8}"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <ui:Button
+                    Command="{Binding CancelEditCommand}"
+                    Content="{x:Static res:Strings.Builds_Action_Cancel}" />
+                <ui:Button
+                    Margin="{DynamicResource SpaceLeft8}"
+                    Command="{Binding SaveAsPresetCommand}"
+                    Content="{x:Static res:Strings.Builds_Action_SaveAsPreset}"
+                    Icon="{ui:SymbolIcon Bookmark24}" />
+                <ui:Button
+                    Margin="{DynamicResource SpaceLeft8}"
+                    Appearance="Primary"
+                    Command="{Binding SaveEditCommand}"
+                    Content="{x:Static res:Strings.Builds_Action_Save}"
+                    Icon="{ui:SymbolIcon Save24}" />
+            </StackPanel>
+        </Grid>
 
-                        <ui:TextBox
-                            Icon="{ui:SymbolIcon Search24}"
-                            PlaceholderText="{x:Static res:Strings.Builds_Depot_Search}"
-                            Text="{Binding DepotSearchText, UpdateSourceTrigger=PropertyChanged}" />
+        <!-- Row 3B: Wide Depot / DLC breakdown + Depot download picker -->
+        <Grid
+            Grid.Row="3"
+            Margin="{DynamicResource SpaceTop12}"
+            Visibility="{Binding IsEditing, Converter={StaticResource InverseBoolToVis}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-                        <!-- Opens the picker rather than starting anything: the destination and the
-                             free-space figure have to be on screen while the user is still choosing
-                             what to tick, not after they commit to tens of GB. -->
-                        <ui:Button
-                            Grid.Column="1"
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <ui:TextBox
+                    Icon="{ui:SymbolIcon Search24}"
+                    PlaceholderText="{x:Static res:Strings.Builds_Depot_Search}"
+                    Text="{Binding DepotSearchText, UpdateSourceTrigger=PropertyChanged}" />
+
+                <ui:Button
+                    Grid.Column="1"
+                    Margin="{DynamicResource SpaceLeft8}"
+                    Command="{Binding StartDepotDownloadCommand}"
+                    Content="{x:Static res:Strings.Builds_Depot_Download}"
+                    Icon="{ui:SymbolIcon ArrowDownload24}"
+                    ToolTip="{x:Static res:Strings.Builds_Depot_PickHint}" />
+            </Grid>
+
+            <TextBlock
+                Grid.Row="1"
+                Margin="{DynamicResource SpaceTop12}"
+                VerticalAlignment="Top"
+                FontSize="{DynamicResource FontSizeCaption}"
+                Foreground="{StaticResource TextDimBrush}"
+                Text="{x:Static res:Strings.Builds_Depot_NoMatch}"
+                TextWrapping="Wrap"
+                Visibility="{Binding HasNoDepotMatches, Converter={StaticResource BoolToVis}}" />
+
+            <ScrollViewer
+                Grid.Row="1"
+                Margin="{DynamicResource SpaceTop8}"
+                VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="{DynamicResource SpaceAll4}">
+                    <StackPanel
+                        Margin="{DynamicResource SpaceTop4}"
+                        Orientation="Horizontal"
+                        Visibility="{Binding IsLoadingDepots, Converter={StaticResource BoolToVis}}">
+                        <ui:ProgressRing
+                            Width="16"
+                            Height="16"
+                            IsIndeterminate="True" />
+                        <TextBlock
                             Margin="{DynamicResource SpaceLeft8}"
-                            Command="{Binding StartDepotDownloadCommand}"
-                            Content="{x:Static res:Strings.Builds_Depot_Download}"
-                            Icon="{ui:SymbolIcon ArrowDownload24}"
-                            ToolTip="{x:Static res:Strings.Builds_Depot_PickHint}" />
-                    </Grid>
+                            VerticalAlignment="Center"
+                            FontSize="{DynamicResource FontSizeCaption}"
+                            Foreground="{StaticResource TextMutedBrush}"
+                            Text="{x:Static res:Strings.Manage_LoadingDepotInfo}" />
+                    </StackPanel>
+                    <TextBlock
+                        FontSize="{DynamicResource FontSizeCaption}"
+                        Foreground="{StaticResource DangerBrush}"
+                        Text="{Binding DepotError}"
+                        TextWrapping="Wrap"
+                        Visibility="{Binding DepotError, Converter={StaticResource NullToCollapsed}}" />
 
                     <TextBlock
-                        Grid.Row="1"
-                        Margin="2,12,0,0"
-                        VerticalAlignment="Top"
+                        Margin="{DynamicResource SpaceTop4}"
                         FontSize="{DynamicResource FontSizeCaption}"
-                        Foreground="{StaticResource TextDimBrush}"
-                        Text="{x:Static res:Strings.Builds_Depot_NoMatch}"
+                        Foreground="{StaticResource AccentBrush}"
+                        Text="{x:Static res:Strings.Builds_Depot_InactiveNote}"
                         TextWrapping="Wrap"
-                        Visibility="{Binding HasNoDepotMatches, Converter={StaticResource BoolToVis}}" />
+                        Visibility="{Binding EditingInactiveBuild, Converter={StaticResource BoolToVis}}" />
 
-                <ScrollViewer
-                    Grid.Row="1"
-                    Margin="{DynamicResource SpaceTop8}"
-                    VerticalScrollBarVisibility="Auto">
-                    <!-- Right margin keeps the scrollbar in its own lane instead of sitting on top of
-                         the Lock tickbox. -->
-                    <StackPanel Margin="0,0,12,0">
-                        <StackPanel
-                            Margin="{DynamicResource SpaceTop4}"
-                            Orientation="Horizontal"
-                            Visibility="{Binding IsLoadingDepots, Converter={StaticResource BoolToVis}}">
-                            <ui:ProgressRing
-                                Width="16"
-                                Height="16"
-                                IsIndeterminate="True" />
+                    <!-- In lua -->
+                    <StackPanel Visibility="{Binding HasInLua, Converter={StaticResource BoolToVis}}">
+                        <Button
+                            Padding="0"
+                            HorizontalContentAlignment="Left"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Command="{Binding ToggleInLuaCommand}"
+                            Cursor="Hand">
                             <TextBlock
-                                Margin="{DynamicResource SpaceLeft8}"
-                                VerticalAlignment="Center"
+                                FontSize="{DynamicResource FontSizeBody}"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource TextSecondaryBrush}">
+                                <Run Text="{Binding InLuaToggleLabel, Mode=OneWay}" />
+                                <Run Foreground="{StaticResource TextDimBrush}" Text="{Binding InLuaCount, StringFormat='({0})', Mode=OneWay}" />
+                            </TextBlock>
+                        </Button>
+                        <ItemsControl
+                            Margin="{DynamicResource SpaceTop8}"
+                            ItemTemplate="{StaticResource DepotRowTemplate}"
+                            ItemsSource="{Binding InLua}"
+                            Visibility="{Binding IsInLuaExpanded, Converter={StaticResource BoolToVis}}" />
+                    </StackPanel>
+
+                    <!-- Missing -->
+                    <StackPanel Margin="{DynamicResource SpaceTop8}" Visibility="{Binding HasMissing, Converter={StaticResource BoolToVis}}">
+                        <Button
+                            Padding="0"
+                            HorizontalContentAlignment="Left"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Command="{Binding ToggleMissingCommand}"
+                            Cursor="Hand">
+                            <TextBlock
+                                FontSize="{DynamicResource FontSizeBody}"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource WarningSoftBrush}">
+                                <Run Text="{Binding MissingToggleLabel, Mode=OneWay}" />
+                                <Run Foreground="{StaticResource TextDimBrush}" Text="{Binding MissingCount, StringFormat='({0})', Mode=OneWay}" />
+                            </TextBlock>
+                        </Button>
+                        <StackPanel Visibility="{Binding IsMissingExpanded, Converter={StaticResource BoolToVis}}">
+                            <TextBlock
+                                Margin="{DynamicResource SpaceTop4}"
                                 FontSize="{DynamicResource FontSizeCaption}"
-                                Foreground="{StaticResource TextMutedBrush}"
-                                Text="{x:Static res:Strings.Manage_LoadingDepotInfo}" />
-                        </StackPanel>
-                        <TextBlock
-                            FontSize="{DynamicResource FontSizeCaption}"
-                            Foreground="{StaticResource DangerBrush}"
-                            Text="{Binding DepotError}"
-                            TextWrapping="Wrap"
-                            Visibility="{Binding DepotError, Converter={StaticResource NullToCollapsed}}" />
-
-                        <!-- Editing a build that isn't applied still works, it just lands differently
-                             (saved straight into that build; Steam keeps running the applied one). -->
-                        <TextBlock
-                            Margin="0,0,0,6"
-                            FontSize="{DynamicResource FontSizeCaption}"
-                            Foreground="{StaticResource AccentBrush}"
-                            Text="{x:Static res:Strings.Builds_Depot_InactiveNote}"
-                            TextWrapping="Wrap"
-                            Visibility="{Binding EditingInactiveBuild, Converter={StaticResource BoolToVis}}" />
-
-                        <!-- In lua: depots/DLC this build includes -->
-                        <StackPanel Visibility="{Binding HasInLua, Converter={StaticResource BoolToVis}}">
-                            <Button
-                                Padding="0"
-                                HorizontalContentAlignment="Left"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                Command="{Binding ToggleInLuaCommand}"
-                                Cursor="Hand">
-                                <TextBlock
-                                    FontSize="{DynamicResource FontSizeBody}"
-                                    FontWeight="SemiBold"
-                                    Foreground="{StaticResource TextSecondaryBrush}">
-                                    <Run Text="{Binding InLuaToggleLabel, Mode=OneWay}" />
-                                    <Run Foreground="{StaticResource TextDimBrush}" Text="{Binding InLuaCount, StringFormat='({0})', Mode=OneWay}" />
-                                </TextBlock>
-                            </Button>
+                                Foreground="{StaticResource TextDimBrush}"
+                                Text="{x:Static res:Strings.Manage_MissingHint}"
+                                TextWrapping="Wrap" />
                             <ItemsControl
                                 Margin="{DynamicResource SpaceTop8}"
                                 ItemTemplate="{StaticResource DepotRowTemplate}"
-                                ItemsSource="{Binding InLua}"
-                                Visibility="{Binding IsInLuaExpanded, Converter={StaticResource BoolToVis}}" />
-                        </StackPanel>
-
-                        <!-- Missing: real depots/DLC on Steam this lua omits -->
-                        <StackPanel Margin="{DynamicResource SpaceTop8}" Visibility="{Binding HasMissing, Converter={StaticResource BoolToVis}}">
-                            <Button
-                                Padding="0"
-                                HorizontalContentAlignment="Left"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                Command="{Binding ToggleMissingCommand}"
-                                Cursor="Hand">
-                                <TextBlock
-                                    FontSize="{DynamicResource FontSizeBody}"
-                                    FontWeight="SemiBold"
-                                    Foreground="{StaticResource WarningSoftBrush}">
-                                    <Run Text="{Binding MissingToggleLabel, Mode=OneWay}" />
-                                    <Run Foreground="{StaticResource TextDimBrush}" Text="{Binding MissingCount, StringFormat='({0})', Mode=OneWay}" />
-                                </TextBlock>
-                            </Button>
-                            <StackPanel Visibility="{Binding IsMissingExpanded, Converter={StaticResource BoolToVis}}">
-                                <TextBlock
-                                    Margin="{DynamicResource SpaceTop4}"
-                                    FontSize="{DynamicResource FontSizeCaption}"
-                                    Foreground="{StaticResource TextDimBrush}"
-                                    Text="{x:Static res:Strings.Manage_MissingHint}"
-                                    TextWrapping="Wrap" />
-                                <ItemsControl
-                                    Margin="{DynamicResource SpaceTop8}"
-                                    ItemTemplate="{StaticResource DepotRowTemplate}"
-                                    ItemsSource="{Binding Missing}" />
-                            </StackPanel>
-                        </StackPanel>
-
-                        <!-- Unknown: unnamed DLC, 0-byte/broken depots, shared redists -->
-                        <StackPanel Margin="0,8,0,12" Visibility="{Binding HasUnknown, Converter={StaticResource BoolToVis}}">
-                            <Button
-                                Padding="0"
-                                HorizontalContentAlignment="Left"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                Command="{Binding ToggleUnknownCommand}"
-                                Cursor="Hand">
-                                <TextBlock
-                                    FontSize="{DynamicResource FontSizeBody}"
-                                    FontWeight="SemiBold"
-                                    Foreground="{StaticResource TextMutedBrush}">
-                                    <Run Text="{Binding UnknownToggleLabel, Mode=OneWay}" />
-                                    <Run Foreground="{StaticResource TextDimBrush}" Text="{Binding UnknownCount, StringFormat='({0})', Mode=OneWay}" />
-                                </TextBlock>
-                            </Button>
-                            <StackPanel Visibility="{Binding IsUnknownExpanded, Converter={StaticResource BoolToVis}}">
-                                <TextBlock
-                                    Margin="{DynamicResource SpaceTop4}"
-                                    FontSize="{DynamicResource FontSizeCaption}"
-                                    Foreground="{StaticResource TextDimBrush}"
-                                    Text="{x:Static res:Strings.Manage_UnknownHint}"
-                                    TextWrapping="Wrap" />
-                                <ItemsControl
-                                    Margin="{DynamicResource SpaceTop8}"
-                                    ItemTemplate="{StaticResource DepotRowTemplate}"
-                                    ItemsSource="{Binding Unknown}" />
-                            </StackPanel>
+                                ItemsSource="{Binding Missing}" />
                         </StackPanel>
                     </StackPanel>
-                </ScrollViewer>
 
-                <!--  Download strip: progress while a depot job runs, then its outcome.  -->
-                <Border
-                    Grid.Row="2"
-                    Margin="0,8,12,0"
-                    Padding="12,10"
-                    Background="{StaticResource SurfaceCardBrush}"
-                    BorderBrush="{StaticResource BorderSubtleBrush}"
-                    BorderThickness="1"
-                    CornerRadius="{DynamicResource RadiusMedium}"
-                    Visibility="{Binding IsDepotStripVisible, Converter={StaticResource BoolToVis}}">
-                    <!--  No progress bar here any more: depot downloads run in the app-wide queue, so
-                          this strip only reports that the selection was handed over (or that it could
-                          not be). Everything live about it — bytes, speed, pause, cancel — is on the
-                          Downloads page, which is what the link below opens.  -->
-                    <StackPanel>
-                        <!--  Refused before queueing  -->
-                        <TextBlock
-                            FontSize="{DynamicResource FontSizeCaption}"
-                            Foreground="{StaticResource DangerBrush}"
-                            Text="{Binding DepotDownloadError}"
-                            TextWrapping="Wrap"
-                            Visibility="{Binding HasDepotError, Converter={StaticResource BoolToVis}}" />
-
-                        <!--  Sent to Downloads  -->
-                        <Grid Visibility="{Binding HasDepotResult, Converter={StaticResource BoolToVis}}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                    <!-- Unknown -->
+                    <StackPanel Margin="{DynamicResource SpaceTop8}" Visibility="{Binding HasUnknown, Converter={StaticResource BoolToVis}}">
+                        <Button
+                            Padding="0"
+                            HorizontalContentAlignment="Left"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Command="{Binding ToggleUnknownCommand}"
+                            Cursor="Hand">
                             <TextBlock
-                                VerticalAlignment="Center"
+                                FontSize="{DynamicResource FontSizeBody}"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource TextMutedBrush}">
+                                <Run Text="{Binding UnknownToggleLabel, Mode=OneWay}" />
+                                <Run Foreground="{StaticResource TextDimBrush}" Text="{Binding UnknownCount, StringFormat='({0})', Mode=OneWay}" />
+                            </TextBlock>
+                        </Button>
+                        <StackPanel Visibility="{Binding IsUnknownExpanded, Converter={StaticResource BoolToVis}}">
+                            <TextBlock
+                                Margin="{DynamicResource SpaceTop4}"
                                 FontSize="{DynamicResource FontSizeCaption}"
-                                Foreground="{StaticResource SuccessTextBrush}"
-                                Text="{Binding DepotDownloadDone}"
+                                Foreground="{StaticResource TextDimBrush}"
+                                Text="{x:Static res:Strings.Manage_UnknownHint}"
                                 TextWrapping="Wrap" />
-                            <ui:Button
-                                Grid.Column="1"
-                                Margin="{DynamicResource SpaceLeft8}"
-                                AutomationProperties.Name="{x:Static res:Strings.Nav_Downloads}"
-                                Command="{Binding OpenDownloadsCommand}"
-                                Content="{x:Static res:Strings.Nav_Downloads}"
-                                Icon="{ui:SymbolIcon ArrowDownload24}" />
-                            <ui:Button
-                                Grid.Column="2"
-                                Margin="{DynamicResource SpaceLeft8}"
-                                AutomationProperties.Name="{x:Static res:Strings.Builds_Depot_OpenFolder}"
-                                Command="{Binding OpenDepotFolderCommand}"
-                                Content="{x:Static res:Strings.Builds_Depot_OpenFolder}"
-                                Icon="{ui:SymbolIcon FolderOpen24}" />
-                        </Grid>
+                            <ItemsControl
+                                Margin="{DynamicResource SpaceTop8}"
+                                ItemTemplate="{StaticResource DepotRowTemplate}"
+                                ItemsSource="{Binding Unknown}" />
+                        </StackPanel>
                     </StackPanel>
-                </Border>
+                </StackPanel>
+            </ScrollViewer>
 
-                <!--  Picker overlay (BuildsDepotPicker). Spans the whole depot pane so the list behind it can't be
-                      interacted with while a selection is being made.  -->
-                <views:BuildsDepotPicker
-                    Grid.Row="0"
-                    Grid.RowSpan="3"
-                    Margin="0,0,12,0"
-                    Visibility="{Binding IsDepotPickerOpen, Converter={StaticResource BoolToVis}}" />
-                </Grid>
-            </Grid>
+            <!-- Download strip -->
+            <Border
+                Grid.Row="2"
+                Margin="{DynamicResource SpaceTop8}"
+                Padding="{DynamicResource SpaceAll12}"
+                Background="{StaticResource SurfaceCardBrush}"
+                BorderBrush="{StaticResource BorderSubtleBrush}"
+                BorderThickness="1"
+                CornerRadius="{DynamicResource RadiusMedium}"
+                Visibility="{Binding IsDepotStripVisible, Converter={StaticResource BoolToVis}}">
+                <StackPanel>
+                    <TextBlock
+                        FontSize="{DynamicResource FontSizeCaption}"
+                        Foreground="{StaticResource DangerBrush}"
+                        Text="{Binding DepotDownloadError}"
+                        TextWrapping="Wrap"
+                        Visibility="{Binding HasDepotError, Converter={StaticResource BoolToVis}}" />
+
+                    <Grid Visibility="{Binding HasDepotResult, Converter={StaticResource BoolToVis}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="{DynamicResource FontSizeCaption}"
+                            Foreground="{StaticResource SuccessTextBrush}"
+                            Text="{Binding DepotDownloadDone}"
+                            TextWrapping="Wrap" />
+                        <ui:Button
+                            Grid.Column="1"
+                            Margin="{DynamicResource SpaceLeft8}"
+                            AutomationProperties.Name="{x:Static res:Strings.Nav_Downloads}"
+                            Command="{Binding OpenDownloadsCommand}"
+                            Content="{x:Static res:Strings.Nav_Downloads}"
+                            Icon="{ui:SymbolIcon ArrowDownload24}" />
+                        <ui:Button
+                            Grid.Column="2"
+                            Margin="{DynamicResource SpaceLeft8}"
+                            AutomationProperties.Name="{x:Static res:Strings.Builds_Depot_OpenFolder}"
+                            Command="{Binding OpenDepotFolderCommand}"
+                            Content="{x:Static res:Strings.Builds_Depot_OpenFolder}"
+                            Icon="{ui:SymbolIcon FolderOpen24}" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Picker overlay -->
+            <views:BuildsDepotPicker
+                Grid.Row="0"
+                Grid.RowSpan="3"
+                Visibility="{Binding IsDepotPickerOpen, Converter={StaticResource BoolToVis}}" />
         </Grid>
+    </Grid>
 </UserControl>

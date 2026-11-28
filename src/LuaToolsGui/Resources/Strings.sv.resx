@@ -922,4 +922,43 @@ Detta tar endast bort de aktiva .lua-filerna från Steam\config\stplug-in. {1} a
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} installerades, men säkerhetskopian misslyckades: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Installerat från säkerhetskopia</value></data>
   <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>Källan misslyckades, så {0} installerades från din manifest-säkerhetskopia.</value></data>
+  <data name="Manage_RemoveGame" xml:space="preserve"><value>Ta bort spel…</value></data>
+  <data name="Builds_Card_OnePreset" xml:space="preserve"><value>1 sparad förinställning</value></data>
+  <data name="Builds_Card_PresetsCount" xml:space="preserve"><value>{0} sparade förinställningar</value></data>
+  <data name="Builds_Filter_All" xml:space="preserve"><value>Alla</value></data>
+  <data name="Builds_Filter_WithStoredBuilds" xml:space="preserve"><value>Med sparade byggen</value></data>
+  <data name="Builds_Filter_WithoutActiveLua" xml:space="preserve"><value>Utan aktiv lua</value></data>
+  <data name="Builds_BackToList" xml:space="preserve"><value>Tillbaka till Depåer</value></data>
+  <data name="Builds_RemoveFiles" xml:space="preserve"><value>Ta bort filer…</value></data>
+  <data name="Builds_Action_DeletePreset" xml:space="preserve"><value>Ta bort förinställning</value></data>
+  <data name="Cleanup_Dialog_Title" xml:space="preserve"><value>Ta bort spelfiler</value></data>
+  <data name="Cleanup_Size_Calculating" xml:space="preserve"><value>Beräknar installerad storlek…</value></data>
+  <data name="Cleanup_Size_Estimated" xml:space="preserve"><value>Beräknat frigjort utrymme vid avinstallation: {0}</value></data>
+  <data name="Cleanup_ChooseScope" xml:space="preserve"><value>Välj vad som ska tas bort</value></data>
+  <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>Avinstallera endast spelfiler</value></data>
+  <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>Tar bort spelets installationsmapp och Steam-appmanifest. Behåller .lua- och .manifest-filer.</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>Ta endast bort .lua-fil</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Tar bort config\stplug-in\{0}.lua. Behåller spelfiler, .manifest-filer och sparade byggen.</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>Ta endast bort .manifest-filer</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>Tar bort spelets exklusiva .manifest-filer i depotcache. Behåller .lua-filen och delade manifest.</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>Ta bort .lua + .manifest-filer</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Desc" xml:space="preserve"><value>Tar bort den aktiva .lua-filen och spelets exklusiva .manifest-filer. Behåller spelfiler och delade manifest.</value></data>
+  <data name="Cleanup_Scope_Everything_Title" xml:space="preserve"><value>Ta bort allt (spel + .lua + .manifest-filer)</value></data>
+  <data name="Cleanup_Scope_Everything_Desc" xml:space="preserve"><value>Avinstallerar spelet från Steam och tar bort dess .lua-fil samt exklusiva .manifest-filer. Delade manifest som används av andra spel behålls.</value></data>
+  <data name="Cleanup_BackupSafeNotice" xml:space="preserve"><value>Ditt valv för Manifest-säkerhetskopia rörs eller raderas aldrig av den här åtgärden.</value></data>
+  <data name="Cleanup_Removing" xml:space="preserve"><value>Tar bort valda filer…</value></data>
+  <data name="Cleanup_Action_Confirm" xml:space="preserve"><value>Ta bort</value></data>
+  <data name="Cleanup_Err_GameRunning" xml:space="preserve"><value>Stäng {0} i Steam innan du avinstallerar dess spelfiler.</value></data>
+  <data name="Cleanup_Err_UnsafePath" xml:space="preserve"><value>Blockerad: Steams installationssökväg kunde inte verifieras som en säker mapp i steamapps\common.</value></data>
+  <data name="Cleanup_Err_Symlink" xml:space="preserve"><value>Blockerad: installationssökvägen innehåller en symbolisk länk eller mappkoppling.</value></data>
+  <data name="Cleanup_Err_BackupOverlap" xml:space="preserve"><value>Blockerad: målsökvägen överlappar din mapp för Manifest-säkerhetskopia.</value></data>
+  <data name="Cleanup_Err_UnreadableSibling" xml:space="preserve"><value>Blockerad: ett annat spels .lua-fil kunde inte läsas, så delade manifest kan inte kontrolleras säkert.</value></data>
+  <data name="Cleanup_Err_SharedInstallDir" xml:space="preserve"><value>Blockerat: spelets installationsmapp delas med en annan installerad Steam-app. Avinstallera det via Steam.</value></data>
+  <data name="Cleanup_Err_Generic" xml:space="preserve"><value>Kunde inte slutföra rensningen. Stäng Steam och försök igen.</value></data>
+  <data name="Cleanup_Result_Nothing" xml:space="preserve"><value>Inga matchande filer hittades att ta bort.</value></data>
+  <data name="Cleanup_Result_Freed" xml:space="preserve"><value>{0} frigjort</value></data>
+  <data name="Cleanup_Result_ManifestsDeleted" xml:space="preserve"><value>{0} manifest borttagna</value></data>
+  <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>{0} delade manifest behållna</value></data>
+  <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>Rensade {0} delvis, men vissa objekt kunde inte tas bort: {1}</value></data>
+  <data name="Cleanup_Result_Done" xml:space="preserve"><value>Rensade {0}.</value></data>
 </root>

@@ -922,4 +922,43 @@ Hiermee worden alleen de actieve .lua-bestanden uit Steam\config\stplug-in verwi
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} is geïnstalleerd, maar de back-up is mislukt: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Geïnstalleerd vanuit back-up</value></data>
   <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>De bron faalde, dus {0} is geïnstalleerd vanuit je manifest-back-up.</value></data>
+  <data name="Manage_RemoveGame" xml:space="preserve"><value>Spel verwijderen…</value></data>
+  <data name="Builds_Card_OnePreset" xml:space="preserve"><value>1 opgeslagen voorinstelling</value></data>
+  <data name="Builds_Card_PresetsCount" xml:space="preserve"><value>{0} opgeslagen voorinstellingen</value></data>
+  <data name="Builds_Filter_All" xml:space="preserve"><value>Alles</value></data>
+  <data name="Builds_Filter_WithStoredBuilds" xml:space="preserve"><value>Met opgeslagen builds</value></data>
+  <data name="Builds_Filter_WithoutActiveLua" xml:space="preserve"><value>Geen actieve lua</value></data>
+  <data name="Builds_BackToList" xml:space="preserve"><value>Terug naar Depots</value></data>
+  <data name="Builds_RemoveFiles" xml:space="preserve"><value>Bestanden verwijderen…</value></data>
+  <data name="Builds_Action_DeletePreset" xml:space="preserve"><value>Voorinstelling verwijderen</value></data>
+  <data name="Cleanup_Dialog_Title" xml:space="preserve"><value>Spelbestanden verwijderen</value></data>
+  <data name="Cleanup_Size_Calculating" xml:space="preserve"><value>Geïnstalleerde grootte berekenen…</value></data>
+  <data name="Cleanup_Size_Estimated" xml:space="preserve"><value>Geschatte vrijgekomen ruimte bij verwijderen: {0}</value></data>
+  <data name="Cleanup_ChooseScope" xml:space="preserve"><value>Kies wat te verwijderen</value></data>
+  <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>Alleen spelbestanden verwijderen</value></data>
+  <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>Verwijdert de installatiemap van het spel en het Steam-appmanifest. Behoudt .lua- en .manifest-bestanden.</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>Alleen .lua-bestand verwijderen</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Verwijdert config\stplug-in\{0}.lua. Behoudt spelbestanden, .manifest-bestanden en opgeslagen builds.</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>Alleen .manifest-bestanden verwijderen</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>Verwijdert exclusieve .manifest-bestanden van dit spel in depotcache. Behoudt het .lua-bestand en gedeelde manifests.</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>.lua + .manifest-bestanden verwijderen</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Desc" xml:space="preserve"><value>Verwijdert het actieve .lua-bestand en exclusieve .manifest-bestanden van dit spel. Behoudt spelbestanden en gedeelde manifests.</value></data>
+  <data name="Cleanup_Scope_Everything_Title" xml:space="preserve"><value>Alles verwijderen (spel + .lua + .manifest-bestanden)</value></data>
+  <data name="Cleanup_Scope_Everything_Desc" xml:space="preserve"><value>Verwijdert het spel uit Steam en wist het .lua-bestand en exclusieve .manifest-bestanden. Gedeelde manifests van andere spellen blijven behouden.</value></data>
+  <data name="Cleanup_BackupSafeNotice" xml:space="preserve"><value>Je Manifest-back-upkluis wordt nooit aangeraakt of verwijderd door deze actie.</value></data>
+  <data name="Cleanup_Removing" xml:space="preserve"><value>Geselecteerde bestanden verwijderen…</value></data>
+  <data name="Cleanup_Action_Confirm" xml:space="preserve"><value>Verwijderen</value></data>
+  <data name="Cleanup_Err_GameRunning" xml:space="preserve"><value>Sluit {0} in Steam voordat je de spelbestanden verwijdert.</value></data>
+  <data name="Cleanup_Err_UnsafePath" xml:space="preserve"><value>Geblokkeerd: het Steam-installatiepad kon niet worden geverifieerd als een veilige map in steamapps\common.</value></data>
+  <data name="Cleanup_Err_Symlink" xml:space="preserve"><value>Geblokkeerd: het installatiepad bevat een symbolische link of directory junction.</value></data>
+  <data name="Cleanup_Err_BackupOverlap" xml:space="preserve"><value>Geblokkeerd: het doelpad overlapt met je Manifest-back-upmap.</value></data>
+  <data name="Cleanup_Err_UnreadableSibling" xml:space="preserve"><value>Geblokkeerd: het .lua-bestand van een ander spel kon niet worden gelezen, dus gedeelde manifests kunnen niet veilig worden gecontroleerd.</value></data>
+  <data name="Cleanup_Err_SharedInstallDir" xml:space="preserve"><value>Geblokkeerd: de installatiemap van deze game wordt gedeeld met een andere geïnstalleerde Steam-app. Verwijder de game via Steam.</value></data>
+  <data name="Cleanup_Err_Generic" xml:space="preserve"><value>Opschonen mislukt. Sluit Steam en probeer het opnieuw.</value></data>
+  <data name="Cleanup_Result_Nothing" xml:space="preserve"><value>Geen overeenkomende bestanden gevonden om te verwijderen.</value></data>
+  <data name="Cleanup_Result_Freed" xml:space="preserve"><value>{0} vrijgemaakt</value></data>
+  <data name="Cleanup_Result_ManifestsDeleted" xml:space="preserve"><value>{0} manifest(s) verwijderd</value></data>
+  <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>{0} gedeelde manifest(s) behouden</value></data>
+  <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>{0} gedeeltelijk opgeschoond, maar sommige items konden niet worden verwijderd: {1}</value></data>
+  <data name="Cleanup_Result_Done" xml:space="preserve"><value>{0} opgeschoond.</value></data>
 </root>

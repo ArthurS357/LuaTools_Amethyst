@@ -922,4 +922,43 @@ Dette sletter kun de aktive .lua-filer fra Steam\config\stplug-in. {1} af disse 
   <data name="ManifestBackup_Toast_Failed" xml:space="preserve"><value>{0} blev installeret, men sikkerhedskopien mislykkedes: {1}</value></data>
   <data name="ManifestBackup_Toast_Restored_Title" xml:space="preserve"><value>Installeret fra sikkerhedskopi</value></data>
   <data name="ManifestBackup_Toast_Restored" xml:space="preserve"><value>Kilden fejlede, så {0} blev installeret fra din manifest-sikkerhedskopi.</value></data>
+  <data name="Manage_RemoveGame" xml:space="preserve"><value>Fjern spil…</value></data>
+  <data name="Builds_Card_OnePreset" xml:space="preserve"><value>1 gemt forudindstilling</value></data>
+  <data name="Builds_Card_PresetsCount" xml:space="preserve"><value>{0} gemte forudindstillinger</value></data>
+  <data name="Builds_Filter_All" xml:space="preserve"><value>Alle</value></data>
+  <data name="Builds_Filter_WithStoredBuilds" xml:space="preserve"><value>Med gemte builds</value></data>
+  <data name="Builds_Filter_WithoutActiveLua" xml:space="preserve"><value>Ingen aktiv lua</value></data>
+  <data name="Builds_BackToList" xml:space="preserve"><value>Tilbage til Depoter</value></data>
+  <data name="Builds_RemoveFiles" xml:space="preserve"><value>Fjern filer…</value></data>
+  <data name="Builds_Action_DeletePreset" xml:space="preserve"><value>Slet forudindstilling</value></data>
+  <data name="Cleanup_Dialog_Title" xml:space="preserve"><value>Fjern spilfiler</value></data>
+  <data name="Cleanup_Size_Calculating" xml:space="preserve"><value>Beregner installeret størrelse…</value></data>
+  <data name="Cleanup_Size_Estimated" xml:space="preserve"><value>Anslået frigjort plads ved afinstallation: {0}</value></data>
+  <data name="Cleanup_ChooseScope" xml:space="preserve"><value>Vælg hvad der skal fjernes</value></data>
+  <data name="Cleanup_Scope_GameOnly_Title" xml:space="preserve"><value>Afinstaller kun spilfiler</value></data>
+  <data name="Cleanup_Scope_GameOnly_Desc" xml:space="preserve"><value>Sletter spillets installationsmappe og Steams appmanifest. Beholder .lua- og .manifest-filer.</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Title" xml:space="preserve"><value>Fjern kun .lua-fil</value></data>
+  <data name="Cleanup_Scope_LuaOnly_Desc" xml:space="preserve"><value>Sletter config\stplug-in\{0}.lua. Beholder spilfiler, .manifest-filer og gemte builds.</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Title" xml:space="preserve"><value>Fjern kun .manifest-filer</value></data>
+  <data name="Cleanup_Scope_ManifestsOnly_Desc" xml:space="preserve"><value>Sletter dette spils eksklusive .manifest-filer i depotcache. Beholder .lua-filen og delte manifests.</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Title" xml:space="preserve"><value>Fjern .lua + .manifest-filer</value></data>
+  <data name="Cleanup_Scope_LuaAndManifests_Desc" xml:space="preserve"><value>Sletter den aktive .lua-fil og dette spils eksklusive .manifest-filer. Beholder spilfiler og delte manifests.</value></data>
+  <data name="Cleanup_Scope_Everything_Title" xml:space="preserve"><value>Slet alt (spil + .lua + .manifest-filer)</value></data>
+  <data name="Cleanup_Scope_Everything_Desc" xml:space="preserve"><value>Afinstallerer spillet fra Steam og sletter dets .lua-fil og eksklusive .manifest-filer. Delte manifests fra andre spil bevares.</value></data>
+  <data name="Cleanup_BackupSafeNotice" xml:space="preserve"><value>Din Manifest-sikkerhedskopi-boks berøres eller slettes aldrig af denne handling.</value></data>
+  <data name="Cleanup_Removing" xml:space="preserve"><value>Fjerner valgte filer…</value></data>
+  <data name="Cleanup_Action_Confirm" xml:space="preserve"><value>Fjern</value></data>
+  <data name="Cleanup_Err_GameRunning" xml:space="preserve"><value>Luk {0} i Steam, før du afinstallerer spilfilerne.</value></data>
+  <data name="Cleanup_Err_UnsafePath" xml:space="preserve"><value>Blokeret: Steam-installationsstien kunne ikke bekræftes som en sikker mappe i steamapps\common.</value></data>
+  <data name="Cleanup_Err_Symlink" xml:space="preserve"><value>Blokeret: installationsstien indeholder et symbolsk link eller en mappe-junction.</value></data>
+  <data name="Cleanup_Err_BackupOverlap" xml:space="preserve"><value>Blokeret: målstien overlapper din mappe til Manifest-sikkerhedskopi.</value></data>
+  <data name="Cleanup_Err_UnreadableSibling" xml:space="preserve"><value>Blokeret: et andet spils .lua-fil kunne ikke læses, så delte manifests kan ikke kontrolleres sikkert.</value></data>
+  <data name="Cleanup_Err_SharedInstallDir" xml:space="preserve"><value>Blokeret: spillets installationsmappe deles med en anden installeret Steam-app. Afinstaller det via Steam.</value></data>
+  <data name="Cleanup_Err_Generic" xml:space="preserve"><value>Kunne ikke fuldføre oprydningen. Luk Steam og prøv igen.</value></data>
+  <data name="Cleanup_Result_Nothing" xml:space="preserve"><value>Ingen matchende filer fundet at fjerne.</value></data>
+  <data name="Cleanup_Result_Freed" xml:space="preserve"><value>{0} frigjort</value></data>
+  <data name="Cleanup_Result_ManifestsDeleted" xml:space="preserve"><value>{0} manifest(s) slettet</value></data>
+  <data name="Cleanup_Result_SharedPreserved" xml:space="preserve"><value>{0} delte manifest(s) bevaret</value></data>
+  <data name="Cleanup_Result_PartialError" xml:space="preserve"><value>{0} blev delvist ryddet op, men nogle elementer kunne ikke fjernes: {1}</value></data>
+  <data name="Cleanup_Result_Done" xml:space="preserve"><value>Ryddede op i {0}.</value></data>
 </root>

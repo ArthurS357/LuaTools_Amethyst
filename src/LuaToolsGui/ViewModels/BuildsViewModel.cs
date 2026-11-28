@@ -7,6 +7,14 @@ using LuaToolsGui.Services;
 
 namespace LuaToolsGui.ViewModels;
 
+/// <summary>Instant local filter pills for the full-width Depots grid (zero network calls).</summary>
+public enum BuildsQuickFilter
+{
+    All,
+    WithStoredBuilds,
+    WithoutActiveLua,
+}
+
 /// <summary>
 /// One depot/DLC row in the Builds page's breakdown. Title = name or "Depot"; Meta = id · size · os ·
 /// lang. ManifestId is this lua's ACTIVE pin, CommentedManifestId a pin that exists but was commented
@@ -181,17 +189,10 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
         _toast = toast;
         _settings = settings;
 
-        // The base offers 12/24/48/All, sized for the full-width Manage and Fixes grids. This list is a
-        // narrow sidebar of single-line rows, so it gets its own steps. PageSizeOptions is a per-instance
-        // collection, so replacing its contents here doesn't touch the other pages.
-        PageSizeOptions.Clear();
-        foreach (string option in new[] { "10", "17", "25", "50", AllPages }) PageSizeOptions.Add(option);
-
-        InitPageSize(settings.BuildsPageSize);
-
-        // A size saved before this list existed (12, 24, 48) is no longer offered, which would leave the
-        // dropdown blank. Snap it to the default and persist, rather than showing an empty box.
-        if (!PageSizeOptions.Contains(SelectedPageSize)) SelectedPageSize = "10";
+        // Full-width grid uses the same 12/24/48/All steps as Manage & Fixes. Legacy 10/17/25/50
+        // sidebar defaults normalize to 24 in memory without writing to settings until changed.
+        int savedSize = settings.BuildsPageSize;
+        InitPageSize(savedSize is 0 or 12 or 24 or 48 ? savedSize : 24);
 
         // Any install (Add page, drag-drop, plugin) captures into the vault on a background thread —
         // refresh so a new build shows up without the user leaving the page.
@@ -201,36 +202,62 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
         });
     }
 
-    // Paging (Items/PageSize/CurrentPage/PrevPage/NextPage/…), IsLoading, EmptyMessage and IsEmpty are
-    // inherited from PagedListViewModel<LuaTileViewModel>. The Builds pager renders only prev/label/next
-    // — PageNumbers exists on the base but is deliberately not bound.
+    // Paging (Items/PageSize/CurrentPage/PageNumbers/PrevPage/NextPage/…), IsLoading, EmptyMessage and IsEmpty
+    // are inherited from PagedListViewModel<LuaTileViewModel>.
     protected override void SavePageSizeSetting(int size) => _settings.BuildsPageSize = size;
 
-    // ── Game list (left) ────────────────────────────────────────────
+    // ── Full-width Grid ↔ Detail navigation + local filters ─────────
 
     [ObservableProperty] private string _searchText = "";
     partial void OnSearchTextChanged(string value) => ApplyGameFilter();
 
-    /// <summary>
-    /// The row highlighted in the list. This goes NULL on every page change — the base hands `Items` a
-    /// brand-new collection, and the ListBox pushes null back through the binding when the selected item
-    /// isn't in it. So it can't be what the right-hand panel reads; see <see cref="ActiveGame"/>.
-    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsFilterAll))]
+    [NotifyPropertyChangedFor(nameof(IsFilterWithStoredBuilds))]
+    [NotifyPropertyChangedFor(nameof(IsFilterWithoutActiveLua))]
+    private BuildsQuickFilter _quickFilter = BuildsQuickFilter.All;
+
+    partial void OnQuickFilterChanged(BuildsQuickFilter value) => ApplyGameFilter();
+
+    public bool IsFilterAll => QuickFilter == BuildsQuickFilter.All;
+    public bool IsFilterWithStoredBuilds => QuickFilter == BuildsQuickFilter.WithStoredBuilds;
+    public bool IsFilterWithoutActiveLua => QuickFilter == BuildsQuickFilter.WithoutActiveLua;
+
+    [RelayCommand]
+    private void SetQuickFilter(BuildsQuickFilter filter) => QuickFilter = filter;
+
+    /// <summary>Selected item when synchronized via deep-link or list selection.</summary>
     [ObservableProperty] private LuaTileViewModel? _selectedGame;
 
     /// <summary>
-    /// The game the right-hand panel is showing, and the target of every action on it. Only ever set from
-    /// a non-null selection, so paging away from a game keeps its builds on screen instead of blanking
-    /// the panel back to "pick a game".
+    /// The game currently open in the full-width Detail view, or null while showing the Grid.
     /// </summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasSelection))]
-    // The depot-download button is gated on HasSelection, and a property-changed notification does not
-    // re-evaluate a command's CanExecute — without this it stays disabled after a game is picked.
+    [NotifyPropertyChangedFor(nameof(IsShowingDetail))]
+    [NotifyPropertyChangedFor(nameof(IsShowingGrid))]
+    // The depot-download and remove-files buttons are gated on HasSelection.
     [NotifyCanExecuteChangedFor(nameof(StartDepotDownloadCommand))]
+    [NotifyCanExecuteChangedFor(nameof(OpenRemoveFilesCommand))]
     private LuaTileViewModel? _activeGame;
 
     public bool HasSelection => ActiveGame is not null;
+    public bool IsShowingDetail => HasSelection;
+    public bool IsShowingGrid => !HasSelection;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(NotRemoving))]
+    [NotifyCanExecuteChangedFor(nameof(OpenRemoveFilesCommand))]
+    [NotifyCanExecuteChangedFor(nameof(BackToGridCommand))]
+    private bool _isRemoving;
+
+    public bool NotRemoving => !IsRemoving;
+
+    /// <summary>Set by App — opens the 3-scope removal dialog for the open game.</summary>
+    public Func<long, string, Task<GameCleanupResult?>>? OpenCleanupDialog { get; set; }
+
+    /// <summary>Test seam to avoid modal MessageBox during unit tests.</summary>
+    internal Action? OfferRestartSteamOverride { get; set; }
 
     partial void OnSelectedGameChanged(LuaTileViewModel? value)
     {
@@ -242,11 +269,107 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
     {
         CancelEdit();
         IsRenaming = false;
+        IsDepotPickerOpen = false;
+        DepotDownloadError = null;
+        DepotDownloadDone = null;
         // A filter carried over from the previous game would show the new one's table as empty or
         // half-missing, which reads as a data bug rather than a leftover search.
         DepotSearchText = "";
         RefreshVariants();
         _ = LoadDepotsAsync();
+    }
+
+    /// <summary>Open a game card in full-width Detail view.</summary>
+    [RelayCommand]
+    private void OpenGame(LuaTileViewModel? game)
+    {
+        if (game is null) return;
+        ActiveGame = game;
+        SelectedGame = game;
+        ResolveGame(game);
+    }
+
+    /// <summary>Return from full-width Detail view back to the Depots grid.</summary>
+    [RelayCommand(CanExecute = nameof(NotRemoving))]
+    private void BackToGrid()
+    {
+        if (IsRemoving) return;
+        IsDepotPickerOpen = false;
+        DepotDownloadError = null;
+        DepotDownloadDone = null;
+        CancelEdit();
+        IsRenaming = false;
+        ActiveGame = null;
+        SelectedGame = null;
+    }
+
+    /// <summary>Open the 3-scope file-removal dialog for the currently open game.</summary>
+    [RelayCommand(CanExecute = nameof(CanOpenRemoveFiles))]
+    private async Task OpenRemoveFilesAsync()
+    {
+        if (ActiveGame is not { } game || IsRemoving) return;
+        if (OpenCleanupDialog is null) return;
+
+        IsRemoving = true;
+        try
+        {
+            var result = await OpenCleanupDialog(game.AppId, game.Name);
+            if (result is null) return;
+            await ApplyCleanupResultAsync(game, result);
+        }
+        finally
+        {
+            IsRemoving = false;
+        }
+    }
+
+    private bool CanOpenRemoveFiles() => HasSelection && !IsRemoving;
+
+    internal async Task ApplyCleanupResultAsync(LuaTileViewModel game, GameCleanupResult result)
+    {
+        if (result.IsBlocked)
+        {
+            _toast.Show(game.Name, GameCleanupMessages.Describe(game.Name, result), error: true);
+            return;
+        }
+
+        _toast.Show(game.Name, GameCleanupMessages.Describe(game.Name, result), error: result.HasErrors);
+
+        bool hasActiveLua = _vault.GetActiveHash(game.AppId) is not null;
+        bool hasStoredBuilds = _vault.HasStoredBuilds(game.AppId);
+        var variants = _vault.GetVariants(game.AppId);
+
+        game.HasActiveLua = hasActiveLua;
+        game.HasStoredBuilds = hasStoredBuilds;
+        game.VariantCount = variants.Count;
+        game.SavedBuildsOnly = variants.Count > 0 && !hasActiveLua;
+        game.VariantBadge = BadgeFor(game.AppId);
+
+        if (!hasActiveLua && !hasStoredBuilds)
+        {
+            _allGames = _allGames.Where(g => g.AppId != game.AppId).ToList();
+            if (ActiveGame?.AppId == game.AppId)
+            {
+                ActiveGame = null;
+                SelectedGame = null;
+            }
+            ApplyGameFilter(resetPage: false);
+        }
+        else
+        {
+            if (ActiveGame?.AppId == game.AppId)
+            {
+                RefreshVariants();
+                await LoadDepotsAsync(quiet: true);
+            }
+            ApplyGameFilter(resetPage: false);
+        }
+
+        if (result.AnyRemoved)
+        {
+            if (OfferRestartSteamOverride is not null) OfferRestartSteamOverride();
+            else OfferRestartSteam();
+        }
     }
 
     /// <summary>In-flight load, so concurrent callers JOIN it instead of racing past an empty list.</summary>
@@ -273,12 +396,10 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
         try
         {
             string? dir = _steam.StPlugInDir;
-            if (dir is null || !Directory.Exists(dir))
+            if (dir is null)
             {
                 _allGames = [];
-                EmptyMessage = dir is null
-                    ? Resources.Strings.Manage_Empty_NoSteam
-                    : Resources.Strings.Manage_Empty_NoLuas;
+                EmptyMessage = Resources.Strings.Manage_Empty_NoSteam;
                 ApplyGameFilter();
                 return;
             }
@@ -291,7 +412,9 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
                 //   1. installed  — a live <appid>.lua Steam reads
                 //   2. loose      — <appid>_<buildid>.lua sitting in stplug-in, inert until applied
                 //   3. vaulted    — stored builds whose live lua has since been deleted
-                var installed = LuaInstaller.EnumerateInstalled(dir).ToDictionary(f => f.AppId, f => f.Path);
+                var installed = Directory.Exists(dir)
+                    ? LuaInstaller.EnumerateInstalled(dir).ToDictionary(f => f.AppId, f => f.Path)
+                    : new Dictionary<long, string>();
                 var appIds = new HashSet<long>(installed.Keys);
                 foreach (var (appId, _, _) in _vault.EnumerateLooseBuildLuas()) appIds.Add(appId);
                 foreach (long appId in _vault.AppsWithVariants()) appIds.Add(appId);
@@ -314,8 +437,7 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
             ApplyGameFilter();
             await RefreshBadgesAsync();
 
-            // Keep the current selection across a refresh; otherwise select nothing (the page shows a
-            // "pick a game" prompt) so we never guess at a game the user didn't ask for.
+            // Keep the current selection across a refresh; otherwise stay in Grid view.
             if (ActiveGame is { } prev)
             {
                 ActiveGame = _allGames.FirstOrDefault(g => g.AppId == prev.AppId);
@@ -328,13 +450,37 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
         }
     }
 
+    /// <summary>Pure local filtering across search text and quick filter pill.</summary>
+    internal static List<LuaTileViewModel> FilterGames(
+        IEnumerable<LuaTileViewModel> games, string searchText, BuildsQuickFilter filter)
+    {
+        IEnumerable<LuaTileViewModel> query = filter switch
+        {
+            BuildsQuickFilter.WithStoredBuilds => games.Where(static g => g.HasStoredBuilds),
+            BuildsQuickFilter.WithoutActiveLua => games.Where(static g => g.SavedBuildsOnly || !g.HasActiveLua),
+            _ => games,
+        };
+
+        string q = (searchText ?? string.Empty).Trim();
+        if (!string.IsNullOrEmpty(q))
+            query = query.Where(g => g.Matches(q));
+
+        return query.ToList();
+    }
+
     /// <summary>Filtering only — badges are computed by <see cref="RefreshBadgesAsync"/>, not here. This
     /// runs on every search keystroke, and badging hashes files off disk. Search spans the WHOLE library,
-    /// not just the visible page; the base re-slices and resets to page 1.</summary>
-    private void ApplyGameFilter()
+    /// not just the visible page; the base re-slices and resets to page 1 unless <paramref name="resetPage"/> is false.</summary>
+    private void ApplyGameFilter(bool resetPage = true)
     {
-        string q = SearchText.Trim();
-        SetFiltered(string.IsNullOrEmpty(q) ? _allGames : _allGames.Where(g => g.Matches(q)).ToList());
+        var list = FilterGames(_allGames, SearchText, QuickFilter);
+        if (_steam.StPlugInDir is not null)
+        {
+            EmptyMessage = _allGames.Count > 0
+                ? Resources.Strings.Manage_Empty_NoMatch
+                : Resources.Strings.Manage_Empty_NoLuas;
+        }
+        SetFiltered(list, resetPage);
     }
 
     /// <summary>
@@ -409,15 +555,42 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
         return LoadAsync();
     }
 
-    /// <summary>Recompute every game's "currently running" badge off the UI thread (one file hash + index
-    /// read per vaulted game — fine once per load, far too slow per keystroke).</summary>
+    /// <summary>Recompute every game's status badges and variant counts off the UI thread (purely local, zero HTTP).</summary>
     private async Task RefreshBadgesAsync()
     {
         var games = _allGames.ToList();
-        var badges = await Task.Run(() => games.ToDictionary(
-            g => g.AppId, g => (Badge: BadgeFor(g.AppId), SavedOnly: HasSavedBuildsOnly(_vault, g.AppId))));
+        var badges = await Task.Run(() =>
+        {
+            var looseApps = _vault.EnumerateLooseBuildLuas().Select(static b => b.AppId).ToHashSet();
+            return games.ToDictionary(g => g.AppId, g =>
+            {
+                var variants = _vault.GetVariants(g.AppId);
+                string? activeHash = _vault.GetActiveHash(g.AppId);
+                bool hasActiveLua = activeHash is not null;
+                bool hasStoredBuilds = variants.Count > 0 || looseApps.Contains(g.AppId);
+                bool savedOnly = variants.Count > 0 && !hasActiveLua;
+                string? badge = activeHash is not null
+                    ? variants.FirstOrDefault(v => v.Hash == activeHash)?.DisplayLabel
+                    : null;
+                return (Badge: badge, SavedOnly: savedOnly, HasStoredBuilds: hasStoredBuilds,
+                    HasActiveLua: hasActiveLua, VariantCount: variants.Count);
+            });
+        });
+
         foreach (var g in games)
-            if (badges.TryGetValue(g.AppId, out var b)) (g.VariantBadge, g.SavedBuildsOnly) = (b.Badge, b.SavedOnly);
+        {
+            if (badges.TryGetValue(g.AppId, out var b))
+            {
+                g.VariantBadge = b.Badge;
+                g.SavedBuildsOnly = b.SavedOnly;
+                g.HasStoredBuilds = b.HasStoredBuilds;
+                g.HasActiveLua = b.HasActiveLua;
+                g.VariantCount = b.VariantCount;
+            }
+        }
+
+        if (QuickFilter != BuildsQuickFilter.All)
+            ApplyGameFilter(resetPage: false);
     }
 
     /// <summary>Stored builds but no live lua: the vault-only source of the list, which deleting the lua on
@@ -457,16 +630,21 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
             return;
         }
 
-        // Clear any search so the game is definitely in the filtered set…
-        if (!_filtered.Contains(game)) { SearchText = ""; ApplyGameFilter(); }
+        // Clear any search or quick filter so the game is definitely in the filtered set…
+        if (!_filtered.Contains(game))
+        {
+            SearchText = "";
+            QuickFilter = BuildsQuickFilter.All;
+            ApplyGameFilter();
+        }
 
-        // …then jump to the PAGE holding it. Without this the ListBox simply can't select a game that
-        // isn't on the current page, and the deep link would silently do nothing for anything past page 1.
+        // …then jump to the PAGE holding it and enter full-width Detail view.
         int index = _filtered.IndexOf(game);
         if (index >= 0 && PageSize > 0) CurrentPage = index / PageSize + 1;
 
-        ActiveGame = game;                                             // drives the right-hand panel
-        SelectedGame = Items.FirstOrDefault(g => g.AppId == appId);    // highlights the row
+        ActiveGame = game;
+        SelectedGame = Items.FirstOrDefault(g => g.AppId == appId);
+        ResolveGame(game);
     }
 
     /// <summary>Called by the view as a game row scrolls into view — resolves its cover (cached after).</summary>
@@ -565,13 +743,10 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
         // saved build — a fresh install, a hand edit, another tool — is listed as the Default rather than
         // going unrepresented.
         _vault.SyncDefaultFromLive(game.AppId);
-        // Pick up any <appid>_<buildid>.lua the user already dropped in stplug-in — Steam ignores those
-        // files, so without this they'd sit there looking installed while doing nothing.
-        _vault.AdoptLooseBuildLuas(game.AppId);
-
-        // A dropped-in build lua is inert until it's the <appid>.lua Steam reads — see the method's docs
-        // for why this only fires when the game has nothing live at all.
-        _vault.ApplyBuildIfNothingLive(game.AppId);
+        // Only auto-apply a loose <appid>_<buildid>.lua when one is newly discovered and adopted — never
+        // resurrect a live lua after the user deliberately deleted it via Manage or Depots.
+        if (_vault.AdoptLooseBuildLuasAndReport(game.AppId))
+            _vault.ApplyBuildIfNothingLive(game.AppId);
 
         string? liveHash = _vault.GetActiveHash(game.AppId);
         var stored = _vault.GetVariants(game.AppId);
@@ -598,7 +773,16 @@ public partial class BuildsViewModel : PagedListViewModel<LuaTileViewModel>
 
         string? badge = BadgeFor(game.AppId);
         bool savedOnly = HasSavedBuildsOnly(_vault, game.AppId);
-        foreach (var g in _allGames.Where(g => g.AppId == game.AppId)) (g.VariantBadge, g.SavedBuildsOnly) = (badge, savedOnly);
+        bool hasActiveLua = liveHash is not null;
+        bool hasStoredBuilds = stored.Count > 0 || _vault.EnumerateLooseBuildLuas().Any(b => b.AppId == game.AppId);
+        foreach (var g in _allGames.Where(g => g.AppId == game.AppId))
+        {
+            g.VariantBadge = badge;
+            g.SavedBuildsOnly = savedOnly;
+            g.HasActiveLua = hasActiveLua;
+            g.HasStoredBuilds = hasStoredBuilds;
+            g.VariantCount = stored.Count;
+        }
 
         // Computed from the vault, so they only change when it does.
         OnPropertyChanged(nameof(EditBaseVariant));
